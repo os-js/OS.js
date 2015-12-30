@@ -61,7 +61,6 @@
 <li><a href="#ziparchiver-list">list()</a></li>
 <li><a href="#ziparchiver-create">create()</a></li>
 <li><a href="#ziparchiver-add">add()</a></li>
-<li><a href="#ziparchiver-mkdir">mkdir()</a></li>
 <li><a href="#ziparchiver-remove">remove()</a></li>
 <li><a href="#ziparchiver-extract">extract()</a></li>
 </ul>
@@ -226,6 +225,8 @@ Create a new blank ZIP file
 <h3 id="ziparchiver-add-file-add-args-">ZipArchiver::add(file, add, args)</h3>
 <pre>
 Add a entry to the ZIP file
+
+TODO: Adding directory does not actually add files inside dirs yet
 </pre>
 
 
@@ -267,6 +268,11 @@ Add a entry to the ZIP file
 </thead>
 <tbody>
 <tr>
+<td>path</td>
+<td>String</td>
+<td>Root path to add to (default=&#39;/&#39;)</td>
+</tr>
+<tr>
 <td>onprogress</td>
 <td>Function</td>
 <td>Callback on progress =&gt; fn(state[, args, ...])</td>
@@ -275,46 +281,6 @@ Add a entry to the ZIP file
 <td>oncomplete</td>
 <td>Function</td>
 <td>Callback on complete =&gt; fn(error, result)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="returns">Returns</h4>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<u>void</u></p>
-
-</div>
-<div class="section-method" id="ziparchiver-mkdir">
-<h3 id="ziparchiver-mkdir-file-path-cb-">ZipArchiver::mkdir(file, path, cb)</h3>
-<pre>
-Creates a new directory inside ZIP file
-
-TODO
-</pre>
-
-
-<h4 id="parameters">Parameters</h4>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>file</td>
-<td>OSjs.VFS.File</td>
-<td>Archive File</td>
-</tr>
-<tr>
-<td>path</td>
-<td>String</td>
-<td>Path</td>
-</tr>
-<tr>
-<td>cb</td>
-<td>Function</td>
-<td>Callback function =&gt; fn(err, result)</td>
 </tr>
 </tbody>
 </table>
