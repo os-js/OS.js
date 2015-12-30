@@ -438,18 +438,24 @@
       }
     }
 
-    this._toggleLoading(true);
+    if ( result ) {
+      this._toggleLoading(true);
 
-    var tmp = new Image();
-    tmp.onerror = function() {
-      self._toggleLoading(false);
-      alert('Failed to open image');
-    };
-    tmp.onload = function() {
-      self._toggleLoading(false);
-      open(this);
-    };
-    tmp.src = result;
+      var tmp = new Image();
+      tmp.onerror = function() {
+        self._toggleLoading(false);
+        alert('Failed to open image');
+      };
+      tmp.onload = function() {
+        self._toggleLoading(false);
+        open(this);
+      };
+      tmp.src = result;
+    } else {
+      canvas.width = DEFAULT_WIDTH;
+      canvas.height = DEFAULT_HEIGHT;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
   };
 
   ApplicationDrawWindow.prototype.getFileData = function() {
