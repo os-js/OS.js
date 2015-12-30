@@ -352,15 +352,19 @@
       return false;
     }
 
-    var wm = OSjs.Core.getWindowManager();
     var self = this;
-    this._settingsDialog = new DialogRef(this, wm.scheme, function(button) {
-      if ( button === 'ok' ) {
-        self.applySettings();
-      }
-      self._settingsDialog = null;
-    });
-    OSjs.Core.getWindowManager().addWindow(this._settingsDialog, true);
+    var wm = OSjs.Core.getWindowManager();
+
+    if ( DialogRef ) {
+      this._settingsDialog = new DialogRef(this, wm.scheme, function(button) {
+        if ( button === 'ok' ) {
+          self.applySettings();
+        }
+        self._settingsDialog = null;
+      });
+
+      OSjs.Core.getWindowManager().addWindow(this._settingsDialog, true);
+    }
   };
 
   PanelItem.prototype.getRoot = function() {
