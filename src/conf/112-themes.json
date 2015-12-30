@@ -1,7 +1,7 @@
 {
   "themes": {
     "icons": ["default"],
-    "styles": ["default", "dark", "glass", "windows8"],
+    "styles": ["default", "dark", "glass", "windows8", "material"],
     "sounds": ["default"],
     "fonts": ["Karla", "Roboto"]
   }
