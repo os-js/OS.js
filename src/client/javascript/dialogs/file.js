@@ -332,7 +332,7 @@
           if ( result ) {
             self._toggleDisabled(true);
 
-            if ( this.selected ) {
+            if ( self.selected ) {
               API.createDialog('Confirm', {
                 buttons: ['yes', 'no'],
                 message: API._('DIALOG_FILE_OVERWRITE', self.selected.filename)
