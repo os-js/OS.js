@@ -296,28 +296,25 @@
    * @return  void
    * @api     OSjs.API.call()
    */
-  var doAPICall = (function() {
-    var _cidx = 1;
+  var _CALL_INDEX = 1;
+  function doAPICall(m, a, cok, cerror) {
+    var lname = 'APICall_' + _CALL_INDEX;
 
-    return function(m, a, cok, cerror) {
-      var lname = 'APICall_' + _cidx;
+    if ( typeof a.__loading === 'undefined' || a.__loading === true ) {
+      createLoading(lname, {className: 'BusyNotification', tooltip: 'API Call'});
+    }
 
-      if ( typeof a.__loading === 'undefined' || a.__loading === true ) {
-        createLoading(lname, {className: 'BusyNotification', tooltip: 'API Call'});
-      }
+    _CALL_INDEX++;
 
-      _cidx++;
-
-      var handler = OSjs.Core.getHandler();
-      return handler.callAPI(m, a, function() {
-        destroyLoading(lname);
-        cok.apply(this, arguments);
-      }, function() {
-        destroyLoading(lname);
-        cerror.apply(this, arguments);
-      });
-    };
-  })();
+    var handler = OSjs.Core.getHandler();
+    return handler.callAPI(m, a, function() {
+      destroyLoading(lname);
+      cok.apply(this, arguments);
+    }, function() {
+      destroyLoading(lname);
+      cerror.apply(this, arguments);
+    });
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // PROCESS API METHODS
@@ -969,6 +966,10 @@
     size = size || '16x16';
     app  = app  || null;
 
+    var root = OSjs.API.getConfig('Connection.IconURI');
+    var wm = OSjs.Core.getWindowManager();
+    var theme = wm ? wm.getIconTheme() : 'default';
+
     function checkIcon() {
       if ( name.match(/^\.\//) ) {
         name = name.replace(/^\.\//, '');
@@ -988,9 +989,6 @@
     }
 
     if ( name && !name.match(/^(http|\/\/)/) ) {
-      var wm = OSjs.Core.getWindowManager();
-      var theme = wm ? wm.getIconTheme() : 'default';
-      var root = OSjs.API.getConfig('Connection.IconURI');
       var chk = checkIcon();
       if ( chk !== null ) {
         return chk;
