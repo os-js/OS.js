@@ -396,7 +396,9 @@
         if ( dir && !error ) {
           self.currentPath = dir;
           self.currentSummary = summary;
-          self._app._setArgument('path', dir);
+          if ( self._app ) {
+            self._app._setArgument('path', dir);
+          }
           updateHistory(dir);
         }
         self._toggleLoading(false);
@@ -404,7 +406,7 @@
         self.checkSelection([]);
         self.updateSideView();
 
-        if ( selectFile ) {
+        if ( selectFile && view ) {
           view.set('selected', selectFile.filename, 'filename');
         }
 
