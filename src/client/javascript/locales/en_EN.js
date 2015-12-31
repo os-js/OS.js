@@ -251,7 +251,7 @@
     // PackageManager
     //
 
-    'ERR_PACKAGE_EXISTS': 'Package installation directroy already exists. Cannot continue!',
+    'ERR_PACKAGE_EXISTS': 'Package installation directory already exists. Cannot continue!',
 
     //
     // DefaultApplication

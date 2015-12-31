@@ -1,15 +1,15 @@
 # Contributing
 
-These are some of the ways you can contribute to OS.js
+These are some of the ways you can contribute to OS.js:
 
-* **Open issues** You can post any issues to [Github](https://github.com/andersevenrud/OS.js-v2/issues)
-* **New features** Create a [pull request](https://github.com/andersevenrud/OS.js-v2/pulls) or open a new issue if you have any ideas for new features
-* **Translating** Language support is a bit lacking, so any help appreciated!
+* **Open issues** You can post any issues to [Github](https://github.com/andersevenrud/OS.js-v2/issues).
+* **New features** Create a [pull request](https://github.com/andersevenrud/OS.js-v2/pulls) or open a new issue if you have any ideas for new features.
+* **Translating** Language support is a bit lacking, so any help is appreciated!
 * **Testing** Things are always changing, and automated tests are not enough to ensure everything is working 100%.
-* **Documentation** Found something in the documentation that does not seem right ?
-* **Commuinty** Join in our [Gitter](https://gitter.im/andersevenrud/OS.js-v2) chat room for fun- and tech talk!
+* **Documentation** Found something in the documentation that does not seem right?
+* **Community** Join in our [Gitter](https://gitter.im/andersevenrud/OS.js-v2) chat room for fun and tech talk!
 
-You can also submit patches and questions directly to me via [email](mailto:andersevenrud@gmail.com), but using Github is preferred.
+You can also submit patches and questions directly to me via [email](mailto:andersevenrud@gmail.com), but using GitHub is preferred.
 
 # Resources
 
@@ -28,14 +28,14 @@ You can also submit patches and questions directly to me via [email](mailto:ande
 
 # Guides etc
 
-* [Code style guide](https://github.com/andersevenrud/OS.js-v2/wiki/Style-guide).
+* [Code style guide](https://github.com/andersevenrud/OS.js-v2/wiki/Style-guide)
 * [Commit message style guide](https://robots.thoughtbot.com/5-useful-tips-for-a-better-commit-message)
 * [Github pull-requests guide](https://help.github.com/articles/using-pull-requests/)
 * [Join the Testing team](https://github.com/andersevenrud/OS.js-v2/wiki/Join-the-testing-team)
 * [Join the Translation team](https://github.com/andersevenrud/OS.js-v2/wiki/Join-the-translation-team)
 
 
-# Setting up development Environment
+# Setting up the development environment
 
 To get started you need a [Github](https://github.com/) account.
 
@@ -55,4 +55,4 @@ Commit the changes to your repository and push changes like normal. You can use 
 
 When you're done with the changes and want to submit your work, head over to the [pull request page](https://github.com/andersevenrud/OS.js-v2/pulls) and click "New pull request".
 
-*Please note that you don't have to create a new pull-request if you make new changes to the branch you specified, github will update automatically*
+*Please note that you don't have to create a new pull-request if you make new changes to the branch you specified, GitHub will update automatically.*

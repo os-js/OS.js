@@ -37,7 +37,7 @@ Or head over to the official documentation for a [simplified installation guide]
 
 Read the official [contribution docs](https://github.com/andersevenrud/OS.js-v2/blob/master/CONTRIBUTING.md) for more information.
 
-My contact information is located on my [Github profile](https://github.com/andersevenrud)
+My contact information is located on my [Github profile](https://github.com/andersevenrud).
 
 [Want to join the testing team?](https://github.com/andersevenrud/OS.js-v2/wiki/Join-the-testing-team)
 

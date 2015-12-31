@@ -219,6 +219,8 @@
 
       case 'equal' :
         if ( this.calc_array[0] != '=' && this.calc_array[1] != 1 ) {
+          this.calc_array[2] = this.calc_array[2].replace(/^0+/, '');
+          this.calc_array[3] = this.calc_array[3].replace(/^0+/, '');
           eval('calcul='+this.calc_array[2]+this.calc_array[0]+this.calc_array[3]+';');
           this.calc_array[0] = '=';
           gel.set('value', calcul);

@@ -52,8 +52,9 @@
       "Copying <span>{0}</span> to <span>{1}</span>" : "Kopiowanie <span>{0}</span> do <span>{1}</span>",
       "Refreshing..." : "Odświeżanie...",
       "Loading..." : "Ładowanie...",
+	  "Create a new file in <span>{0}</span>" : "Utwórz nowy plik w <span>{0}</span>",
       "Create a new directory in <span>{0}</span>" : "Utwórz nowy folder w <span>{0}</span>",
-      "Rename <span>{0}</span>" : "Zmień nazwe <span>{0}</span>",
+      "Rename <span>{0}</span>" : "Zmień nazwę <span>{0}</span>",
       "Delete <span>{0}</span> ?" : "Usunąć <span>{0}</span> ?"
     },
     de_DE : {

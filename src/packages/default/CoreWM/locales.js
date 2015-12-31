@@ -59,16 +59,16 @@
     pl_PL : {
       'Open settings' : 'Otwórz ustawienia',
       'Create shortcut' : 'Utwórz skrót',
-      'Set as wallpaper' : 'Ustaw jako tapete',
+      'Set as wallpaper' : 'Ustaw jako tapetę',
       'An error occured while creating PanelItem: {0}' : 'Błąd podczas tworzenia panelu: {0}',
 
       'Development' : 'Development',
       'Education' : 'Edukacja',
       'Games' : 'Gry',
       'Graphics' : 'Grafika',
-      'Network' : 'Internet',
+      'Network' : 'Sieć',
       'Multimedia' : 'Multimedia',
-      'Office' : 'Office',
+      'Office' : 'Biuro',
       'System' : 'System',
       'Utilities' : 'Dodatki',
       'Other' : 'Inne'
