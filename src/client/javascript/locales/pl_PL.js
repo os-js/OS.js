@@ -38,7 +38,7 @@
     //
 
     'ERR_FILE_OPEN'             : 'Błąd otwierania pliku',
-    'ERR_WM_NOT_RUNNING'        : 'Menadżer okien nie jest włączony',
+    'ERR_WM_NOT_RUNNING'        : 'Menedżer okien nie jest włączony',
     'ERR_FILE_OPEN_FMT'         : 'Nie można otworzyć \'<span>{0}</span>\'',
     'ERR_APP_MIME_NOT_FOUND_FMT': 'Nie można znaleźć aplikacji wspierającej \'{0}\'',
     'ERR_APP_LAUNCH_FAILED'     : 'Błąd otwierania aplikacji',
@@ -51,11 +51,11 @@
     'ERR_APP_LAUNCH_MANIFEST_FAILED_FMT'    : 'Nie można otworzyć \'{0}\'. Nie znaleziono danych manifestu aplikacji!',
     'ERR_APP_LAUNCH_COMPABILITY_FAILED_FMT' : 'Nie można otworzyć \'{0}\'. Twoja przeglądarka nie wspiera: {1}',
 
-    'ERR_NO_WM_RUNNING'         : 'Menadżer okien nie został uruchomiony',
+    'ERR_NO_WM_RUNNING'         : 'Menedżer okien nie został uruchomiony',
     'ERR_CORE_INIT_FAILED'      : 'Nie można zainicjalizować OS.js',
     'ERR_CORE_INIT_FAILED_DESC' : 'Błąd podczas inicjalizacji OS.js',
-    'ERR_CORE_INIT_NO_WM'       : 'Nie można uruchomić OS.js: Nie wybrano Menadżera Okien!',
-    'ERR_CORE_INIT_WM_FAILED_FMT'   : 'Nie można uruchomić OS.js: Błąd uruchamiania Menadżera Okien: {0}',
+    'ERR_CORE_INIT_NO_WM'       : 'Nie można uruchomić OS.js: Nie wybrano Menedżera Okien!',
+    'ERR_CORE_INIT_WM_FAILED_FMT'   : 'Nie można uruchomić OS.js: Błąd uruchamiania Menedżera Okien: {0}',
     'ERR_CORE_INIT_PRELOAD_FAILED'  : 'Nie można uruchomić OS.js: Błąd przeładowywania plików...',
     'ERR_JAVASCRIPT_EXCEPTION'      : 'Błąd Javascript',
     'ERR_JAVACSRIPT_EXCEPTION_DESC' : 'Nieznany błąd.',
