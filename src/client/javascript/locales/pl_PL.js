@@ -26,7 +26,6 @@
  *
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
- * Translated by michal4132 <michal4132.tk>
  */
 (function() {
   'use strict';
@@ -66,6 +65,9 @@
     'ERR_APP_MISSING_ARGUMENT_FMT': 'Brakujący argument: {0}',
     'ERR_APP_UNKNOWN_ERROR'       : 'Nieznany błąd',
 
+    'ERR_OPERATION_TIMEOUT'       : 'Przekroczono Czas Operacji',
+    'ERR_OPERATION_TIMEOUT_FMT'   : 'Przekroczono Czas Operacji ({0})',
+
     // Window
     'ERR_WIN_DUPLICATE_FMT' : 'Masz już uruchomione Okno z nazwą \'{0}\'',
     'WINDOW_MINIMIZE' : 'Minimalizuj',
@@ -78,6 +80,9 @@
     // Handler
     'TITLE_SIGN_OUT' : 'Wyloguj',
     'TITLE_SIGNED_IN_AS_FMT' : 'Zalogowano jako: {0}',
+
+    // SESSION
+    'MSG_SESSION_WARNING' : 'Czy na pewno chcesz opuścić OS.js? Wszystkie niezapisane ustawienia i dane aplikacji zostaną utracone!',
 
     // Service
     'BUGREPORT_MSG' : 'Wyślij proszę raport błędu jesli uważasz, że jest to błąd.\nDołącz opis błędu',
@@ -243,6 +248,12 @@
     'ONEDRIVE_ERR_RESOLVE'      : 'Nie znaleziono pozycji',
 
     //
+    // PackageManager
+    //
+
+    'ERR_PACKAGE_EXISTS': 'Folder instalacyjny pakietów juz istnieje. Nie można kontynuować!',
+
+    //
     // DefaultApplication
     //
     'ERR_FILE_APP_OPEN'         : 'Nie można otworzyć',
@@ -321,7 +332,7 @@
     'LBL_TREEVIEW'     : 'Drzewo',
     'LBL_LISTVIEW'     : 'Lista',
     'LBL_REFRESH'      : 'Odśwież',
-    'LBL_VIEWTYPE'     : 'Widok',
+    'LBL_VIEWTYPE'     : 'Typ widoku',
     'LBL_BOLD'         : 'Pogrubienie',
     'LBL_ITALIC'       : 'Kursywa',
     'LBL_UNDERLINE'    : 'Podkreślenie',
@@ -354,7 +365,16 @@
     'LBL_READONLY' : 'Tylko-odczyt',
     'LBL_CREATED' : 'Utworzono',
     'LBL_MODIFIED' : 'Zmodyfikowano',
-    'LBL_SHOW_COLUMNS' : 'Pokaż kolumny'
+    'LBL_SHOW_COLUMNS' : 'Pokaż kolumny',
+    'LBL_MOVE' : 'Przenieś',
+    'LBL_OPTIONS' : 'Opcje',
+    'LBL_OK' : 'OK',
+    'LBL_DIRECTORY' : 'Folder',
+    'LBL_CREATE' : 'Utwórz',
+    'LBL_BUGREPORT' : 'Raport błędu',
+    'LBL_INSTALL' : 'Instaluj',
+    'LBL_UPDATE' : 'Aktualizuj',
+    'LBL_REMOVE' : 'Usuń'
   };
 
 })();
