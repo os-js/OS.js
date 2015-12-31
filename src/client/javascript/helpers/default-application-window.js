@@ -203,7 +203,7 @@
     this.currentFile = file || null;
     this.hasChanged = false;
 
-    if ( this._scheme ) {
+    if ( this._scheme && (this._scheme instanceof GUI.Scheme) ) {
       this._scheme.find(this, 'MenuSave').set('disabled', !file);
     }
 
