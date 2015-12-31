@@ -94,7 +94,7 @@
       }
 
       var value = self.color.hex;
-      if ( self.color.a !== null ) {
+      if ( self.color.a !== null && !isNaN(self.color.a) ) {
         value = Utils.format('rgba({0}, {1}, {2}, {3})', self.color.r, self.color.g, self.color.b, self.color.a);
       }
       self.scheme.find(self, 'ColorPreview').set('value', value);
