@@ -902,6 +902,8 @@
     name = name || null;
     type = type || null;
 
+    var root = OSjs.API.getConfig('Connection.ThemeURI');
+
     function getName(str, theme) {
       if ( !str.match(/^\//) ) {
         if ( type === 'base' || type === null ) {
@@ -916,7 +918,6 @@
     if ( name ) {
       var wm = OSjs.Core.getWindowManager();
       var theme = (wm ? wm.getSetting('theme') : 'default') || 'default';
-      var root = OSjs.API.getConfig('Connection.ThemeURI');
       name = getName(name, theme);
     }
 
