@@ -484,12 +484,12 @@ class CoreAPIHandler
         $error = "Invalid FS operation: {$m}";
       } else {
         if ( !$a ) {
-          $error = "Supply argument for FS operaion: {$m}";
+          $error = "Supply argument for FS operation: {$m}";
         } else {
           try {
             $result = call_user_func_array(Array("FS", $m), $a);
           } catch ( Exception $e ) {
-            $error = "FS operaion error: {$e->getMessage()}";
+            $error = "FS operation error: {$e->getMessage()}";
           }
         }
       }
