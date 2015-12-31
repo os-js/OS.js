@@ -156,8 +156,9 @@
     }
 
     var wm = OSjs.Core.getWindowManager();
-    wm.setSetting('desktopIcons', icons);
-    wm.saveSettings();
+    wm.applySettings({
+      desktopIcons: icons
+    }, false, true);
   };
 
   DesktopIconView.prototype.addShortcut = function(data, wm, save) {
