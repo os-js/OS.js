@@ -695,7 +695,10 @@
       value: 'My new File',
       message: OSjs.Applications.ApplicationFileManager._('Create a new file in <span>{0}</span>', dir)
     }, function(ev, button, result) {
-      if ( !result ) { return; }
+      if ( !result ) {
+        win._toggleDisabled(false);
+        return;
+      }
 
       var item = new VFS.File(dir + '/' + result);
       VFS.exists(item, function(error, result) {
@@ -718,13 +721,18 @@
   ApplicationFileManager.prototype.mkdir = function(dir, win) {
     var self = this;
 
+    win._toggleDisabled(true);
     API.createDialog('Input', {
       message: OSjs.Applications.ApplicationFileManager._('Create a new directory in <span>{0}</span>', dir)
     }, function(ev, button, result) {
-      if ( !result ) { return; }
+      if ( !result ) {
+        win._toggleDisabled(false);
+        return;
+      }
 
       var item = new VFS.File(dir + '/' + result);
       self._action('mkdir', [item], function() {
+        win._toggleDisabled(false);
         win.changePath(null, item);
       });
     }, win);
