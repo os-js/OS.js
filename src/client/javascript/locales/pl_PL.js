@@ -111,7 +111,7 @@
     'DIALOG_CONFIRM_TITLE' : 'Potwierdź',
 
     'DIALOG_ERROR_MESSAGE'   : 'Wiadomość',
-    'DIALOG_ERROR_SUMMARY'   : '',
+    'DIALOG_ERROR_SUMMARY'   : 'Podsumowanie',
     'DIALOG_ERROR_TRACE'     : 'Śledzenie',
     'DIALOG_ERROR_BUGREPORT' : 'Raport błędu',
 
