@@ -297,6 +297,7 @@
 
       done(error, result, summary);
     }, function(iter) {
+      var tooltip = Utils.format('{0}\n{1}\n{2} {3}', iter.type.toUpperCase(), iter.filename, getFileSize(iter), iter.mime || '');
 
       function _createEntry() {
         var row = {
@@ -318,7 +319,6 @@
         return row;
       }
 
-      var tooltip = Utils.format('{0}\n{1}\n{2} {3}', iter.type.toUpperCase(), iter.filename, getFileSize(iter), iter.mime || '');
       if ( tagName === 'gui-icon-view' || tagName === 'gui-tree-view' ) {
         return _createEntry();
       }

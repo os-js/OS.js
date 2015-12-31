@@ -84,6 +84,7 @@
 
   FileUploadDialog.prototype.setFile = function(file, input) {
     var self = this;
+    var progressDialog;
 
     function error(msg, ev) {
       API.error(
@@ -112,7 +113,7 @@
 
       var desc = OSjs.API._('DIALOG_UPLOAD_MSG_FMT', file.name, file.type, fileSize, this.dest);
 
-      var progressDialog = API.createDialog('FileProgress', {
+      progressDialog = API.createDialog('FileProgress', {
         message: desc,
         dest: this.args.dest,
         filename: file.name,
