@@ -299,10 +299,12 @@
       return value;
     }
 
-    return function(grunt, key, value) {
-      value = guessValue(value);
+    return function(grunt, key, value, isTree) {
+      if ( !isTree ) {
+        value = guessValue(value);
+      }
 
-      var newTree = getNewTree(key, value);
+      var newTree = isTree ? value : getNewTree(key, value);
       var oldTree = {};
 
       try {
@@ -347,6 +349,22 @@
         return result;
       }
       return config;
+    };
+  })();
+
+  /**
+   * Adds a preload file
+   */
+  var addPreload = (function() {
+    return function(grunt, name, path, type) {
+      type = type || 'javascript';
+
+      var current = getConfigPath(grunt, 'client.Preloads') || {};
+      current[name] = {type: type, src: path};
+
+      setConfigPath(grunt, 'client.Preloads', current, true);
+
+      return current;
     };
   })();
 
@@ -1423,6 +1441,7 @@
     getConfig: generateBuildConfig,
     getConfigPath: getConfigPath,
     setConfigPath: setConfigPath,
+    addPreload: addPreload,
 
     buildCore:        buildCore,
     buildStandalone:  buildStandalone,

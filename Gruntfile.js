@@ -147,17 +147,23 @@
     /**
      * Task: Build config
      */
-    grunt.registerTask('config', 'Build config files, or get/set config value (`set:path.to.key:value` and `get:path.to.key`)', function(fn, key, value) {
+    grunt.registerTask('config', 'Build config files (or modify `set:path.to.key:value`, `get:path.to.key`, `preload:name:path:type`)', function(fn, key, value, arg) {
       if ( fn ) {
-        grunt.log.writeln('Path: ' + key);
         var result;
         if ( fn === 'get' ) {
+          grunt.log.writeln('Path: ' + key);
+
           result = _build.getConfigPath(grunt, key);
           grunt.log.writeln('Type: ' + typeof result);
           console.log(result);
           console.log();
         } else if ( fn === 'set' ) {
+          grunt.log.writeln('Path: ' + key);
+
           result = _build.setConfigPath(grunt, key, value);
+          console.log(result);
+        } else if ( fn === 'preload' ) {
+          result = _build.addPreload(grunt, key, value, arg);
           console.log(result);
         } else {
           throw new TypeError('Invalid config operation \'' + fn + '\'');
