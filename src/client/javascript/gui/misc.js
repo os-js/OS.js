@@ -102,8 +102,12 @@
         var pos = OSjs.Utils.$position(cv);
         var cx = typeof ev.offsetX === 'undefined' ? (ev.clientX - pos.left) : ev.offsetX;
         var cy = typeof ev.offsetY === 'undefined' ? (ev.clientY - pos.top) : ev.offsetY;
-        var data = ctx.getImageData(cx, cy, 1, 1).data;
 
+        if ( isNaN(cx) || isNaN(cy) ) {
+          return null;
+        }
+
+        var data = ctx.getImageData(cx, cy, 1, 1).data;
         return {
           r: data[0],
           g: data[1],
@@ -133,7 +137,10 @@
       ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
       Utils.$bind(cv, 'click', function(ev) {
-        cv.dispatchEvent(new CustomEvent('_change', {detail: getColor(ev)}));
+        var c = getColor(ev);
+        if ( c ) {
+          cv.dispatchEvent(new CustomEvent('_change', {detail: c}));
+        }
       }, false);
 
       el.appendChild(cv);
