@@ -43,16 +43,9 @@ Then proceed to **fork** OS.js via the official [project page](https://github.co
 
 ## Prepare
 
+Follow the official documentation on how to [install and run OS.js](http://os.js.org/doc/manuals/man-install.html), with one exception -- run the development server instead:
 
 ```
-# Clone your newly created repository (*git*) and build:
-
-sudo npm install -g grunt-cli
-npm install
-grunt
-
-# Start the server and test if everything is working:
-
 ./bin/start-node-dev.sh
 ```
 
