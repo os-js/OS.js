@@ -209,10 +209,15 @@
 
   ApplicationFileManagerWindow.prototype.checkSelection = function(files) {
     // FIXME: Locales
-    var statusbar = this._scheme.find(this, 'Statusbar');
-    var content = '';
     var scheme = this._scheme;
+
+    if ( !scheme ) {
+      return;
+    }
+
     var self = this;
+    var content = '';
+    var statusbar = scheme.find(this, 'Statusbar');
 
     var sum, label;
 
