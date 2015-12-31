@@ -39,42 +39,14 @@
 <h1>Adding custom mountpoints</h1>
 
 <p>
-  Simply update the configurations with the name, description and a path.
+  Simply update the configuration:
 </p>
-
-<p><b>110-client.json</b></p>
 <pre class="code">
-{
-  "client" : {
-    "VFS": {
-      "Mountpoints": {
-        "example": {
-          "description": "Example"
-        }
-      }
-    }
-  }
-}
+# Replace 'your_name' with a identifier of your own
+grunt config:set:client.VFS.Mountpoints.your_name.description:"Your description here"
+grunt config:set:server.vfs.mounts.your_name:/path/to/mountpoint
+grunt config
 </pre>
-
-<p><b>120-server.json</b></p>
-<pre class="code">
-{
-  "server" : {
-    "vfs": {
-      "mounts": {
-        "example": "/opt/example/directory"
-      }
-    }
-  }
-}
-</pre>
-
-
-<p>
-  Then run:
-</p>
-<pre>grunt config</pre>
 
 
       <div class="adddshere">

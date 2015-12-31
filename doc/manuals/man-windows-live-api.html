@@ -39,27 +39,13 @@
 <h1>Adding Windows Live API and OneDrive VFS support</h1>
 
 <p>
-  Simply create a config file to enable both API and VFS. Ex <b>src/conf/902-wl.json</b>:
+  Simply update the configuration:
 </p>
 <pre class="code">
-{
-  "client" : {
-    "WindowsLiveAPI": {
-      "ClientId": "INSERT YOUR CLIENT ID HERE"
-    },
-    "VFS": {
-      "OneDrive": {
-        "Enabled": true
-      }
-    }
-  }
-}
+grunt config:set:client.WindowsLiveAPI.ClientId:YOUR_CLIENT_ID
+grunt config:set:client.VFS.OneDrive.Enabled:true
+grunt config
 </pre>
-
-<p>
-  Then run:
-</p>
-<pre>grunt config</pre>
 
 
       <div class="adddshere">

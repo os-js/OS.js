@@ -73,29 +73,13 @@
 <h1>Adding Google API and VFS support</h1>
 
 <p>
-  Simply create a config file to enable both API and VFS. Ex <b>src/conf/901-gapi.json</b>:
+  Simply update the configuration:
 </p>
 <pre class="code">
-{
-  "client" : {
-    "GoogleAPI": {
-      "ClientId": "INSERT YOUR CLIENT ID HERE"
-    },
-
-    "VFS": {
-      "GoogleDrive": {
-        "Enabled": true
-      }
-    }
-  }
-}
+grunt config:set:client.GoogleAPI.ClientId:YOUR_CLIENT_ID
+grunt config:set:client.VFS.GoogleDrive.Enabled:true
+grunt config
 </pre>
-
-
-<p>
-  Then run:
-</p>
-<pre>grunt config</pre>
 
 
       <div class="adddshere">
