@@ -198,6 +198,29 @@
       'Enable Hotkeys' : 'Bật phím nóng',
       'Enable Icon View' : 'Bật kiểu xem biểu tượng',
       'General': 'Tổng quát'
+    },
+      tr_TR : {
+      'Theme' : 'Tema',
+      'Background' : 'arkaplan',
+      'Desktop' : 'masaüstü',
+      'Background Type' : 'arkaplan türü',
+      'Image (Repeat)' : 'resim (tekrarla)',
+      'Image (Centered)' : 'resm(ortala)',
+      'Image (Fill)' : 'resm (kapla/doldur)',
+      'Image (Streched)' : 'resm (uzat)',
+      'Desktop Margin ({0}px)' : 'masaüstü kenar ({0}px)',
+      'Panel' : 'Panel',
+      'Position' : 'pozisyon',
+      'Ontop' : 'en üst',
+      'Items' : 'nesneler',
+      'Enable Animations' : 'animasyonlar etkin',
+      'Language (requires restart)' : 'Dil(yeniden başlatma gerektirir)',
+      'Enable Sounds' : 'Müzik etkin',
+      'Enable Window Switcher' : 'Ekran(pencere) değiştirme etkin',
+      'Enable Hotkeys' : 'kısayol tuşları etkin',
+      'Enable Icon View' : 'icon görünümü etkin',
+      'Remove shortcut' : 'kısayolları kaldır',
+      'General' : 'genel'
     }
   };
 
