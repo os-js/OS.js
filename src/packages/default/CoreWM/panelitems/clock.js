@@ -74,7 +74,7 @@
       utc: false,
       interval: 1000,
       format: 'H:i:s',
-	  title: 'l, j F Y'
+      title: 'l, j F Y'
     }]);
     this.clockInterval  = null;
     this.$clock = null;
@@ -90,13 +90,13 @@
     var self = this;
     var clock = this.$clock;
     var timeFmt = this._settings.get('format');
-	var titleFmt = this._settings.get('title');
+    var titleFmt = this._settings.get('title');
 
     function update() {
       if ( clock ) {
-		var now = new Date();
+        var now = new Date();
         var t = OSjs.Helpers.Date.format(now, timeFmt);
-		var d = OSjs.Helpers.Date.format(now, titleFmt);
+        var d = OSjs.Helpers.Date.format(now, titleFmt);
         Utils.$empty(clock);
         clock.appendChild(document.createTextNode(t));
         clock.title = d;
