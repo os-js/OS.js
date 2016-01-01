@@ -1,12 +1,19 @@
 <application-window data-id="ClockSettingsDialog">
   <gui-vbox>
     <gui-vbox-container data-grow="1" data-shrink="0">
-      <gui-label>Format String:</gui-label>
+      <gui-label>Time Format String:</gui-label>
     </gui-vbox-container>
     <gui-vbox-container data-grow="1" data-shrink="0" data-expand="true">
-      <gui-text data-id="InputFormatString">H:i:s</gui-text>
+      <gui-text data-id="InputTimeFormatString">H:i:s</gui-text>
     </gui-vbox-container>
 
+	<gui-vbox-container data-grow="1" data-shrink="0">
+      <gui-label>Title Format String:</gui-label>
+    </gui-vbox-container>
+    <gui-vbox-container data-grow="1" data-shrink="0" data-expand="true">
+      <gui-text data-id="InputTitleFormatString">l, j F Y</gui-text>
+    </gui-vbox-container>
+	
     <gui-vbox-container data-grow="1" data-shrink="0">
       <gui-label>Interval:</gui-label>
     </gui-vbox-container>
