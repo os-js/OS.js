@@ -80,7 +80,8 @@
     if ( typeof stamp === 'string' ) {
       var date = null;
       try {
-        date = new Date(stamp.replace('T', ' ').replace(/\..+/, ''));
+        date = new Date(stamp);
+        //date = new Date(stamp.replace('T', ' ').replace(/\..+/, ''));
       } catch ( e ) {}
 
       if ( date ) {
