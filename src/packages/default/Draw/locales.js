@@ -43,7 +43,7 @@
       'Flip Horizontally' : 'Flipp Horisontalt',
       'Flip Vertically' : 'Flipp Vertikalt',
       'Foreground' : 'Forgrunn',
-      'Bakgrunn' : 'Bakgrunn',
+      'Background' : 'Bakgrunn',
       'Foreground (Fill) Color' : 'Forgrunn (Fyll) Farge',
       'Background (Stroke) Color' : 'Bakgrunn (Strøk) Farge',
       'Line join' : 'Linje Knytting',
@@ -363,6 +363,53 @@
 
       'Radius' : 'Bán kính',
       'Iterations' : 'Lặp đi lặp lại'
+    },
+       tr_TR : {
+      'Toggle tools toolbar' : 'araç çubugu değiştirme araçları',  //yanlış olabilir
+      'Toggle layers toolbar' : 'Araç çubugu katmanı değiştirme',
+      'Layer' : 'Katman',
+      'Effect' : 'efekt',
+      'Flip Horizontally' : 'Yatay çevir',
+      'Flip Vertically' : 'Dikey çevir',
+      'Foreground' : 'Önplana al',
+      'Background' : 'Arkaplana al',
+      'Foreground (Fill) Color' : 'Önplan rengi',
+      'Background (Stroke) Color' : 'Arkaplan rengi',
+      'Line join' : 'Çizgi bitişimi',
+      'Line width' : 'Çizgi genişliği',
+      'Toggle Stroke' : 'vuruşu değiştir',  //eklenecek
+      'Enable stroke' : 'vuruş aktif',  //eklenecek
+      'Round' : 'yuvarlamak',
+      'Miter' : 'gönye',
+      'Bevel' : 'eğmek',
+      'Stroked' : 'Stroked',
+      'No stroke' : 'No stroke',
+
+      'Pointer' : 'işaretçi',
+      'Move active layer' : 'hareket eden katman',
+
+      'Picker' : 'toplayıcı',
+      'LMB: set fg color, RMB: set gb color' : 'LMB: fg rengi ayarla, RMB: gb rengi ayarla',
+
+      'Pencil' : 'kalem',
+      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB:fg/bg rengi ile çiz',
+      'Path' : 'yol',
+
+      'Square/Rectangle' : 'kare/üçgen',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: fg/bg renkleri ile çiz , SHIFT: üçgen çiz',
+
+      'Circle/Ellipse' : 'dair/elips',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: fb/bg ile çiz , SHIFT: elips çiz',
+
+      'Blur' : 'Bulanık',
+      'Noise' : 'gürültü',
+      'Invert colors' : 'renkleri tersine çevir',
+      'Grayscale' : 'gri ton',
+      'Sharpen' : 'keskinleştirmek',
+      'Simple Blur' : 'sade Bulanık',
+
+      'Radius' : 'yarıçap',
+      'Iterations' : 'yineleme'
     }
 
   };
