@@ -315,7 +315,7 @@
           if ( button === 'ok' && result ) {
             backImage.set('value', result.path);
           }
-        });
+        }, self);
       });
       var backColor = scheme.find(this, 'BackgroundColor').set('value', this.settings.backgroundColor).on('open', function(ev) {
         self._toggleDisabled(true);
@@ -327,7 +327,7 @@
           if ( button === 'ok' && result ) {
             backColor.set('value', result.hex);
           }
-        });
+        }, self);
       });
 
       var fontName = scheme.find(this, 'FontName').set('value', this.settings.fontFamily);
@@ -342,7 +342,7 @@
           if ( button === 'ok' && result ) {
             fontName.set('value', result.fontName);
           }
-        });
+        }, self);
       });
 
       scheme.find(this, 'BackgroundStyle').add(backgroundTypes);
@@ -445,7 +445,7 @@
         if ( button === 'ok' && result ) {
           panelFg.set('value', result.hex);
         }
-      });
+      }, self);
     });
     var panelBg = scheme.find(this, 'PanelForegroundColor').set('value', panel.options.foreground || '#ffffff').on('open', function(ev) {
       self._toggleDisabled(true);
@@ -457,7 +457,7 @@
         if ( button === 'ok' && result ) {
           panelBg.set('value', result.hex);
         }
-      });
+      }, self);
     });
     scheme.find(this, 'PanelOpacity').set('value', opacity);
 
@@ -706,7 +706,7 @@
             renderInstalled();
           });
         }
-      });
+      }, self);
     });
 
     //
