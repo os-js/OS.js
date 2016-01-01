@@ -197,7 +197,16 @@
       'Enable Window Switcher' : 'Bật chuyển đổi cửa sổ',
       'Enable Hotkeys' : 'Bật phím nóng',
       'Enable Icon View' : 'Bật kiểu xem biểu tượng',
-      'General': 'Tổng quát'
+      'Remove shortcut' : 'Xóa lối tắt',
+      'General': 'Tổng quát',
+      'File View': 'Quản lí tệp',
+      'Show Hidden Files': 'Hiện tập tin ẩn',
+      'Show File Extensions': 'Hiện đuôi tập tin',
+      'File View Options': 'Cài đặt quản lí tệp',
+      'Panels' : 'Khung',
+      'Autohide' : 'Tự động ẩn',
+      'Information' : 'Thông tin',      
+      'Icon View' : 'Biểu tượng'
     },
       tr_TR : {
       'Theme' : 'Tema',
