@@ -32,7 +32,7 @@
 
   OSjs.Locales = OSjs.Locales || {};
 
-  OSjs.Locales.en_EN = {
+  OSjs.Locales.tr_TR = {
     //
     // CORE
     //
