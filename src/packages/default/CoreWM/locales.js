@@ -172,7 +172,26 @@
       'System' : 'Hệ thống',
       'Utilities' : 'Tiện ích',
       'Other' : 'Khác'
-    }
+    },
+    
+    tr_TR : {
+      'Open settings' : 'Ayarları Aç',
+      'Create shortcut' : 'Kısayol Oluştur',
+      'Set as wallpaper' : 'Arkaplan olarak ayarla',
+      'An error occured while creating PanelItem: {0}' : '{0} oluşturulurken bir hata meydana geldi',
+
+      'Development' : 'Geliştirici',
+      'Education' : 'Eğitim',
+      'Games' : 'Oyunlar',
+      'Graphics' : 'Grafikler',
+      'Network' : 'Ağ',
+      'Multimedia' : 'Multimedia',
+      'Office' : 'Ofis',
+      'System' : 'Sistem',
+      'Utilities' : 'Yan Gereksinimler',
+      'Other' : 'Diğer'
+    }    
+    
 
   };
 
