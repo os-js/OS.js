@@ -396,7 +396,7 @@
     }, function(ev, button, result) {
       if ( button !== 'ok' ) { return; }
       self.setToolProperty(param, result.hex);
-    });
+    }, this);
   };
 
   ApplicationDrawWindow.prototype.setToolProperty = function(param, value) {
