@@ -57,6 +57,9 @@
     },
     vi_VN : {
       'Insert URL' : 'Thêm URL'
+    },
+    tr_TR : {
+      'Insert URL' : 'URL ekle'
     }
   };
 

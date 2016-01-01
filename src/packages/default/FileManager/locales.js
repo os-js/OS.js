@@ -98,6 +98,16 @@
       "Create a new directory in <span>{0}</span>" : "Tạo một thư mục mới trong <span>{0}</span>",
       "Rename <span>{0}</span>" : "Đổi tên <span>{0}</span>",
       "Delete <span>{0}</span> ?" : "Xóa <span>{0}</span>?"
+    },
+      tr_TR : {
+      'Show Sidebar' : 'Kenar çubuğunu göster',
+      'Copying file...' : 'kopyalanıyor...',
+      "Copying <span>{0}</span> to <span>{1}</span>" : "<span>{0}</span> dosyası  <span>{1}</span>e kopyalanıyor",
+      "Refreshing..." : "yenileniyor...",
+      "Loading..." : "yükleniyor...",
+      "Create a new directory in <span>{0}</span>" : " <span>{0}</span> içinde yeni bir klasör aç",
+      "Rename <span>{0}</span>" : "yeniden adlandır <span>{0}</span>",
+      "Delete <span>{0}</span> ?" : "sil <span>{0}</span>?"
     }
 
   };

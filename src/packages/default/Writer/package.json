@@ -4,6 +4,7 @@
   "description":"Write rich text documents",
   "names":      {
     "no_NO":      "Writer",
+    "tr_TR":      "Writer",
     "pl_PL":      "Writer",
     "de_DE":      "Writer",
     "ru_RU":      "Текстовый процессор",
@@ -12,6 +13,7 @@
   },
   "descriptions":      {
     "no_NO":      "Skriv riktekst dokumenter",
+    "tr_TR":      "Gelişmiş dökümanlar oluşturun",
     "pl_PL":      "Twórz dokumenty rich text",
     "de_DE":      "Verfassen Sie Rich-Text-Dokumente",
     "ru_RU":      "Текстовый процессор",

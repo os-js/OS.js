@@ -4,6 +4,7 @@
   "description":"The default file manager",
   "names":      {
     "no_NO":      "Fil-håndtering",
+    "tr_TR":      "Dosya Yöneticisi",
     "pl_PL":      "Menedżer Plików",
     "de_DE":      "Dateimanager",
     "ru_RU":      "Файловый менеджер",
@@ -12,6 +13,7 @@
   },
   "descriptions":      {
     "no_NO":      "Standard Fil-håndtering program",
+    "tr_TR":      "Varsayılan dosya yöneticisi",
     "pl_PL":      "Domyślny Menedżer Plików",
     "de_DE":      "Standardmäßiger Dateimanager",
     "ru_RU":      "Стандартный файловый менеджер",

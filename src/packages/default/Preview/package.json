@@ -4,6 +4,7 @@
   "description":"Preview image files",
   "names":      {
     "no_NO":      "Forhåndsviser",
+    "tr_TR":      "Önizle",
     "pl_PL":      "Podgląd",
     "de_DE":      "Vorschau",
     "ru_RU":      "Просмотрщик",
@@ -12,6 +13,7 @@
   },
   "descriptions":      {
     "no_NO":      "Forhåndsvisning av bilde-filer",
+    "tr_TR":      "resim dosyalarını önizle",
     "pl_PL":      "Podgląd zdjęć",
     "de_DE":      "Bildervorschau",
     "ru_RU":      "Просмотрщик изображений",

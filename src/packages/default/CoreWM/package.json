@@ -3,6 +3,7 @@
   "name":       "OS.js Window Manager",
   "names":      {
     "no_NO":      "OS.js Vinduhåndterer",
+    "tr_TR":      "OS.js Pencere Yöneticisi",
     "pl_PL":      "Menedżer Okien OS.js",
     "de_DE":      "OS.js Fenster-Manager",
     "ru_RU":      "OS.js Оконный менеджер",

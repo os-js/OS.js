@@ -141,6 +141,22 @@
       'Media information query failed' : 'Truy vấn phương tiện thông tin thất bại',
       'seek unavailable in format' : 'không tua được trong định dạng này',
       'The audio type is not supported: {0}' : 'Loại âm thanh {0} không được hỗ trợ',
+    },
+        tr_TR : {
+
+      'Playlist' : 'Oynatma listesi',
+      'Playback aborted' : 'kayıt çalma/dinleme durduruldu',
+      'Network or communication error' : 'ağ veya iletişim hatası',
+      'Decoding failed. Corruption or unsupported media' : 'çözümleme hatası. Bozuk veya çalışmıyor.',
+      'Media source not supported' : 'medya kaynağı bulunamadı',
+      'Failed to play file' : 'Oynatma hatası',
+      'Artist' : 'Artist',
+      'Album' : 'Album',
+      'Track' : 'Parça',
+      'Time' : 'zaman',
+      'Media information query failed' : 'medya bilgisini elde etmede hata oluştu',
+      'seek unavailable in format' : 'bu formatta ileri saramazsınız',
+      'The audio type is not supported: {0}' : 'Bu format desteklenmiyor: {0}',
     }
   };
 
