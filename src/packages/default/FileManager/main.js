@@ -108,9 +108,9 @@
       MenuUpload:         function() { app.upload(self.currentPath, null, self); },
       MenuRename:         function() { app.rename(getSelected(), self); },
       MenuDelete:         function() { app.rm(getSelected(), self); },
-      MenuInfo:           function() { app.info(getSelected()); },
-      MenuOpen:           function() { app.open(getSelected()); },
-      MenuDownload:       function() { app.download(getSelected()); },
+      MenuInfo:           function() { app.info(getSelected(), self); },
+      MenuOpen:           function() { app.open(getSelected(), self); },
+      MenuDownload:       function() { app.download(getSelected(), self); },
       MenuRefresh:        function() { self.changePath(); },
       MenuViewList:       function() { self.changeView('gui-list-view', true); },
       MenuViewTree:       function() { self.changeView('gui-tree-view', true); },
@@ -631,16 +631,16 @@
           win.changePath(null);
         });
       });
-    });
+    }, win);
 
   };
 
-  ApplicationFileManager.prototype.info = function(items) {
+  ApplicationFileManager.prototype.info = function(items, win) {
     items.forEach(function(item) {
       if ( item.type === 'file' ) {
         API.createDialog('FileInfo', {
           file: new VFS.File(item)
-        });
+        }, win);
       }
     });
   };
@@ -679,7 +679,7 @@
         if ( button === 'ok' && result ) {
           rename(item, result);
         }
-      });
+      }, win);
       dialog.setRange(Utils.getFilenameRange(item.filename));
     });
   };
@@ -722,7 +722,7 @@
           finished(true, item);
         }
       });
-    });
+    }, win);
   };
 
   ApplicationFileManager.prototype.mkdir = function(dir, win) {
@@ -750,7 +750,7 @@
     var dialog = API.createDialog('FileProgress', {
       message: OSjs.Applications.ApplicationFileManager._('Copying <span>{0}</span> to <span>{1}</span>', src.filename, dest.path)
     }, function() {
-    });
+    }, win);
 
     win._toggleLoading(true);
 
@@ -798,7 +798,7 @@
         if ( result ) {
           win.changePath(null, result.filename);
         }
-      });
+      }, win);
     }
   };
 
