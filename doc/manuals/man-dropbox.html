@@ -54,31 +54,14 @@ git clone https://github.com/dropbox/dropbox-js.git vendor/dropbox-js
 </pre>
 
 <p>
-  Simply create a config file to enable both API and VFS. Ex <b>src/conf/903-dropbox.json</b>:
+  Simply update the configuration:
 </p>
 <pre class="code">
-{
-  "client" : {
-    "Preloads": {
-      "dropbox": {"type": "javascript", "src": "/vendor/dropbox.js"}
-    },
-    "VFS": {
-      "Dropbox": {
-        "Enabled": true
-      }
-    }
-    "DropboxAPI": {
-      "ClientKey": "INSERT YOUR CLIENT ID HERE"
-    }
-  }
-}
+grunt config:set:client.DropboxAPI.ClientKey:YOUR_CLIENT_KEY
+grunt config:set:client.VFS.Dropbox.Enabled:true
+grunt config:preload:dropbox:/vendor/dropbox.js
+grunt config
 </pre>
-
-<p>
-  Then run:
-</p>
-<pre>grunt config</pre>
-
 
 
       <div class="adddshere">
