@@ -95,6 +95,7 @@
       "Copying <span>{0}</span> to <span>{1}</span>" : "Đang chép <span>{0}</span> tới <span>{1}</span>",
       "Refreshing..." : "Đang làm mới...",
       "Loading..." : "Đang tải...",
+      "Create a new file in <span>{0}</span>" : "Tạo một tập tin mới trong <span>{0}</span>",
       "Create a new directory in <span>{0}</span>" : "Tạo một thư mục mới trong <span>{0}</span>",
       "Rename <span>{0}</span>" : "Đổi tên <span>{0}</span>",
       "Delete <span>{0}</span> ?" : "Xóa <span>{0}</span>?"

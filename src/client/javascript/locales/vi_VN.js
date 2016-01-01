@@ -178,7 +178,7 @@
     'WLAPI_INIT_FAILED_FMT'   : 'Windows Live API gửi lại {0} status',
 
     // IndexedDB
-    'IDB_MISSING_DBNAME' : 'Không thể tạo IndexedDB mà không có Database Name',
+    'IDB_MISSING_DBNAME' : 'Không thể tạo IndexedDB mà không có Tên cơ sở dữ liệu',
     'IDB_NO_SUCH_ITEM'   : 'Không có item',
 
     //
@@ -236,10 +236,16 @@
 
     // VFS -> Dropbox
     'DROPBOX_NOTIFICATION_TITLE' : 'Bạn đã đăng nhập vào Dropbox API',
-    'DROPBOX_SIGN_OUT'           : 'Đăng xuất khỏi Google API Services',
+    'DROPBOX_SIGN_OUT'           : 'Đăng xuất khỏi dịch vụ Google API',
 
     // VFS -> OneDrive
     'ONEDRIVE_ERR_RESOLVE'      : 'Không thể giải quyết đường dẫn: mục không tìm thấy',
+    
+    //
+    // PackageManager
+    //
+
+    'ERR_PACKAGE_EXISTS': 'Thư mục cài đặt gói phần mềm đã tồn tại. Không thể tiếp tục!',
 
     //
     // DefaultApplication
@@ -267,19 +273,19 @@
     'LBL_USER'         : 'Người dùng',
     'LBL_NAME'         : 'Tên',
     'LBL_APPLY'        : 'Áp dụng',
-    'LBL_FILENAME'     : 'Tên file',
+    'LBL_FILENAME'     : 'Tên tệp',
     'LBL_PATH'         : 'Đường dẫn',
     'LBL_SIZE'         : 'Kích cỡ',
     'LBL_TYPE'         : 'Kiểu',
     'LBL_MIME'         : 'MIME',
     'LBL_LOADING'      : 'Đang tải',
     'LBL_SETTINGS'     : 'Cài đặt',
-    'LBL_ADD_FILE'     : 'Thêm file',
+    'LBL_ADD_FILE'     : 'Thêm tệp',
     'LBL_COMMENT'      : 'Chú thích',
     'LBL_ACCOUNT'      : 'Tài khoản',
     'LBL_CONNECT'      : 'Kết nối',
-    'LBL_ONLINE'       : 'Online',
-    'LBL_OFFLINE'      : 'Offline',
+    'LBL_ONLINE'       : 'Trực tuyến',
+    'LBL_OFFLINE'      : 'Ngoại tuyến',
     'LBL_AWAY'         : 'Ở xa',
     'LBL_BUSY'         : 'Bận',
     'LBL_CHAT'         : 'Chat',
@@ -331,7 +337,7 @@
     'LBL_UNDO'         : 'Trở lại',
     'LBL_REDO'         : 'Làm lại',
     'LBL_CUT'          : 'Cắt',
-    'LBL_UNLINK'       : 'Bở link',
+    'LBL_UNLINK'       : 'Bỏ link',
     'LBL_COPY'         : 'Sao chép',
     'LBL_PASTE'        : 'Dán',
     'LBL_INSERT'       : 'Thêm',
@@ -355,7 +361,14 @@
     'LBL_MODIFIED' : 'Sửa lúc',
     'LBL_SHOW_COLUMNS' : 'Hiện các cột',
     'LBL_MOVE' : 'Di chuyển',
-    'LBL_OPTIONS' : 'Cài đặt'
+    'LBL_OPTIONS' : 'Tùy chỉnh',
+    'LBL_OK' : 'OK',
+    'LBL_DIRECTORY' : 'Thư mục',
+    'LBL_CREATE' : 'Tạo',
+    'LBL_BUGREPORT' : 'Báo lỗi',
+    'LBL_INSTALL' : 'Cài đặt',
+    'LBL_UPDATE' : 'Cập nhật',
+    'LBL_REMOVE' : 'Xóa'
   };
 
 })();
