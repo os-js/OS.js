@@ -153,12 +153,12 @@
       'Other' : 'Overig'
     },
     vi_VN : {
-      'Killing this process will stop things from working!' : 'Đóng quá trình này sẽ làm mọi thứ dừng làm việc!',
+      'Killing this process will stop things from working!' : 'Đóng quá trình này sẽ làm mọi thứ bị tắt!',
       'Open settings' : 'Mở cài đặt',
       'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Bảng điều khiển của bạn không có mục nào. Vào cài đặt để thiết lập lại mặc định hoặc sửa đổi bằng tay\n(Lỗi này có thể xảy ra sau khi nâng cấp OS.js)',
       'Create shortcut' : 'Tạo lối tắt',
       'Set as wallpaper' : 'Đặt làm hình nền',
-      'An error occured while creating PanelItem: {0}' : 'Có lỗi xảy ra trong khi tạo ra PanelItem: {0}',
+      'An error occured while creating PanelItem: {0}' : 'Có lỗi xảy ra trong khi tạo PanelItem: {0}',
       'Show Icons' : 'Hiện các biểu tượng',
       'Hide Icons' : 'Ẩn các biểu tượng',
 
