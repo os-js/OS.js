@@ -149,7 +149,7 @@
           VFS.url(result, function(error, url) {
             text._call('command', ['insertImage', false, url]);
           });
-        });
+        }, self);
       },
       'MenuInsertLink': function() {
         API.createDialog('Input', {
@@ -160,7 +160,7 @@
             return;
           }
           text._call('command', ['createLink', false, result]);
-        });
+        }, self);
       }
     };
 
@@ -204,7 +204,7 @@
         if ( button === 'ok' && result ) {
           cb(result.hex);
         }
-      });
+      }, self);
     }
 
     function createFontDialog(current, cb) {
@@ -220,7 +220,7 @@
         if ( button === 'ok' && result ) {
           cb(result);
         }
-      });
+      }, self);
     }
 
     var back = scheme.find(this, 'Background').on('click', function() {
