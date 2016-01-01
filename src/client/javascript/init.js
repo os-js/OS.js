@@ -260,7 +260,7 @@
     var append = OSjs.API.getConfig('VersionAppend');
 
     var ver = OSjs.API.getConfig('Version', 'unknown version');
-    var cop = 'Copyright © 2011-2015 ';
+    var cop = 'Copyright © 2011-2016 ';
     var lnk = document.createElement('a');
     lnk.href = 'mailto:andersevenrud@gmail.com';
     lnk.appendChild(document.createTextNode('Anders Evenrud'));
