@@ -439,3 +439,7 @@ iframe.IframeApplicationFrame {
   right : 0px;
   bottom : 0px;
 }
+
+application-window[data-focused="false"] iframe {
+  pointer-events : none;
+}
