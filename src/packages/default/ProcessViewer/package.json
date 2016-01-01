@@ -4,6 +4,7 @@
   "description":"View running processes",
   "names":      {
     "no_NO":      "Prosess oversikt",
+    "tr_TR":      "İşlemleri Görüntüle",
     "pl_PL":      "Procesy",
     "de_DE":      "Prozess-Manager",
     "ru_RU":      "Менеджер процессов",
@@ -12,6 +13,7 @@
   },
   "descriptions":      {
     "no_NO":      "Se oversikt over kjørende prosesser",
+    "tr_TR":      "çalışan işlemleri görüntüle",
     "pl_PL":      "Zobacz działające procesy",
     "de_DE":      "Laufende Prozesse verwalten",
     "ru_RU":      "Менеджер запущенных процессов",

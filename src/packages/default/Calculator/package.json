@@ -3,6 +3,7 @@
   "name":       "Calculator",
   "names":      {
     "no_NO": "Kalkulator",
+    "tr_TR": "Hesap Makinesi",
     "ru_RU": "Калькулятор",
     "pl_PL": "Kalkulator",
     "nl_NL": "Rekenmachine",

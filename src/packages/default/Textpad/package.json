@@ -4,6 +4,7 @@
   "description":"Simple text editor",
   "names":      {
     "no_NO":      "Tekstblokk",
+    "tr_TR":      "Basit Bir Metin Düzenleyicisi",
     "pl_PL":      "Notatnik",
     "de_DE":      "Texteditor",
     "ru_RU":      "Редактор текста",
@@ -12,6 +13,7 @@
   },
   "descriptions":      {
     "no_NO":      "Simpel tekst redigering",
+    "tr_TR":      "Basit Bir Metin Düzenleyicisi",
     "pl_PL":      "Prosty edytor tekstu",
     "de_DE":      "Einfacher Texteditor",
     "ru_RU":      "Простой текстовый редактор",

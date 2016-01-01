@@ -3,6 +3,7 @@
   "name":       "Music Player",
   "names":      {
     "no_NO":      "Musikkspiller",
+    "tr_TR":      "Muzik Çalar",
     "pl_PL":      "Odtwarzacz muzyki",
     "de_DE":      "Musikspieler",
     "ru_RU":      "Аудиоплеер",

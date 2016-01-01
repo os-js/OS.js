@@ -3,6 +3,7 @@
   "name":       "Settings",
   "names":      {
     "no_NO":      "Instillinger",
+    "tr_TR":      "Ayarlar",
     "pl_PL":      "Ustawienia",
     "de_DE":      "Einstellungen",
     "ru_RU":      "Настройки",
@@ -11,6 +12,7 @@
   },
   "descriptions":      {
     "no_NO":      "Instillinger",
+    "tr_TR":      "Program Ayarlarını düzenle",
     "pl_PL":      "Ustawienia",
     "de_DE":      "Einstellungen",
     "ru_RU":      "Настройки",
