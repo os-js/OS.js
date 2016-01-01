@@ -361,7 +361,7 @@
     'LBL_MODIFIED' : 'Sửa lúc',
     'LBL_SHOW_COLUMNS' : 'Hiện các cột',
     'LBL_MOVE' : 'Di chuyển',
-    'LBL_OPTIONS' : 'Cài đặt'
+    'LBL_OPTIONS' : 'Tùy chỉnh',
     'LBL_OK' : 'OK',
     'LBL_DIRECTORY' : 'Thư mục',
     'LBL_CREATE' : 'Tạo',
