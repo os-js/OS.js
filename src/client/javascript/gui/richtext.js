@@ -167,10 +167,12 @@
     },
     call: function(el, method, args) {
       var doc = getDocument(el);
-      if ( doc ) {
-        if ( method === 'command' ) {
+      if ( method === 'command' ) {
+        if ( doc && doc.execCommand ) {
           return doc.execCommand.apply(doc, args);
-        } else if ( method === 'query' ) {
+        }
+      } else if ( method === 'query' ) {
+        if ( doc && doc.queryCommandValue ) {
           return doc.queryCommandValue.apply(doc, args);
         }
       }
