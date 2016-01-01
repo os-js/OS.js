@@ -82,7 +82,7 @@
     'TITLE_SIGNED_IN_AS_FMT' : '{0} olarak giriş yap',
 
     // SESSION
-    'MSG_SESSION_WARNING' : "OS.js'da çıkmak istedigine emin misin? Kaydedilmemiş tüm veriler silinecek!",
+    'MSG_SESSION_WARNING' : 'OS.jsda çıkmak istedigine emin misin? Kaydedilmemiş tüm veriler silinecek!',
 
     // Service
     'BUGREPORT_MSG' : 'Hata olduğunu düşünüyorsan lütfen bizimle irtibata geç.\nHatanın nasıl oluştuğunu kısa bir şekilde yaz ve eğer yapabiliyorsan bir kopyasını bize gönder',
@@ -123,7 +123,7 @@
     'DIALOG_FILE_SAVE'      : 'Kaydet',
     'DIALOG_FILE_OPEN'      : 'Aç',
     'DIALOG_FILE_MKDIR'     : 'Yeni Klasör',
-    'DIALOG_FILE_MKDIR_MSG' : " <span>{0}</span>'da yeni bir Klasör oluştur",
+    'DIALOG_FILE_MKDIR_MSG' : '<span>{0}</span>da yeni bir Klasör oluştur',
     'DIALOG_FILE_OVERWRITE' : 'Dosyanın üzerine yazmak konusunda emin misin \'{0}\'?',
     'DIALOG_FILE_MNU_VIEWTYPE' : 'Görünüm Seçenekleri',
     'DIALOG_FILE_MNU_LISTVIEW' : 'Liste Görünümü',
@@ -179,8 +179,8 @@
     'WLAPI_DISABLED'          : 'Windows Live API inaktif veya kurulu değil',
     'WLAPI_SIGN_OUT'          : 'Window Live API uygulamasında çık',
     'WLAPI_LOAD_FAILURE'      : 'Windows Live API yüklenirken hata oluştu',
-    'WLAPI_LOGIN_FAILED'      : "Windows Live API'e girerken hata oluştu",
-    'WLAPI_LOGIN_FAILED_FMT'  : "Windows Live API'e girerken hata oluştu: {0}",
+    'WLAPI_LOGIN_FAILED'      : 'Windows Live APIe girerken hata oluştu',
+    'WLAPI_LOGIN_FAILED_FMT'  : 'Windows Live APIe girerken hata oluştu: {0}',
     'WLAPI_INIT_FAILED_FMT'   : 'Windows Live API  {0} hatası verdi',
 
     // IndexedDB
@@ -209,16 +209,16 @@
     'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Dosya İndiriliyor',
 
     'ERR_VFSMODULE_XHR_ERROR'      : 'XHR Hatası',
-    'ERR_VFSMODULE_ROOT_ID'        : "Root id'si bulunamadı "
+    'ERR_VFSMODULE_ROOT_ID'        : 'Root idsi bulunamadı',
     'ERR_VFSMODULE_NOSUCH'         : 'Dosya kullanımda değil',
     'ERR_VFSMODULE_PARENT'         : 'Üst Öge Bulunmuyors',
-    'ERR_VFSMODULE_PARENT_FMT'     : "Üst Öge aranırken hata oluştu: {0}",
+    'ERR_VFSMODULE_PARENT_FMT'     : 'Üst Öge aranırken hata oluştu: {0}',
     'ERR_VFSMODULE_SCANDIR'        : 'Klasör Görüntülenirken Hata Meydana Geldi',
     'ERR_VFSMODULE_SCANDIR_FMT'    : 'Klasör Görüntülenirken Hata Meydana Geldi: {0}',
     'ERR_VFSMODULE_READ'           : 'Dosya Okunurken Hata oluştu',
     'ERR_VFSMODULE_READ_FMT'       : 'Dosya Okunurken Hata oluştu: {0}',
-    'ERR_VFSMODULE_WRITE'          : "Dosya'ya yazılırken Hata oluştu",
-    'ERR_VFSMODULE_WRITE_FMT'      : "Dosya'ya yazılırken Hata oluştu: {0}",
+    'ERR_VFSMODULE_WRITE'          : 'Dosyaya yazılırken Hata oluştu',
+    'ERR_VFSMODULE_WRITE_FMT'      : 'Dosyaya yazılırken Hata oluştu: {0}',
     'ERR_VFSMODULE_COPY'           : 'Kopyalanırken Hata meydana geldi.',
     'ERR_VFSMODULE_COPY_FMT'       : 'Kopyalanırken Hata meydana geldi: {0}',
     'ERR_VFSMODULE_UNLINK'         : 'Bağlantısız Dosya',
@@ -241,7 +241,7 @@
     'ERR_VFSMODULE_EMPTYTRASH_FMT' : 'Çöpü boşaltırken hata meydana geldi: {0}',
 
     // VFS -> Dropbox
-    'DROPBOX_NOTIFICATION_TITLE' : "Dropbox API'ya girdiniz",
+    'DROPBOX_NOTIFICATION_TITLE' : 'Dropbox APIya girdiniz',
     'DROPBOX_SIGN_OUT'           : 'Google API servisi oturumunu kapat',
 
     // VFS -> OneDrive
@@ -251,7 +251,7 @@
     // PackageManager
     //
 
-    'ERR_PACKAGE_EXISTS': 'Paketlenecek yer zaten mevcut.Yine de devam etmek istiyor musun?'
+    'ERR_PACKAGE_EXISTS': 'Paketlenecek yer zaten mevcut.Yine de devam etmek istiyor musun?',
     //
     // DefaultApplication
     //
