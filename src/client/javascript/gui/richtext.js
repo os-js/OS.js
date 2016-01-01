@@ -167,14 +167,18 @@
     },
     call: function(el, method, args) {
       var doc = getDocument(el);
-      if ( method === 'command' ) {
-        if ( doc && doc.execCommand ) {
-          return doc.execCommand.apply(doc, args);
+      try {
+        if ( method === 'command' ) {
+          if ( doc && doc.execCommand ) {
+            return doc.execCommand.apply(doc, args);
+          }
+        } else if ( method === 'query' ) {
+          if ( doc && doc.queryCommandValue ) {
+            return doc.queryCommandValue.apply(doc, args);
+          }
         }
-      } else if ( method === 'query' ) {
-        if ( doc && doc.queryCommandValue ) {
-          return doc.queryCommandValue.apply(doc, args);
-        }
+      } catch ( e ) {
+        console.warn('gui-richtext call() warning', e.stack, e);
       }
       return null;
     },
