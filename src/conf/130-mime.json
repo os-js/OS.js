@@ -16,6 +16,7 @@
       "application/x-python"    : "Python Document",
       "application/x-lua"       : "Lua Document",
 
+      "application/pdf"         : "PDF Document",
       "application/zip"         : "ZIP Archive",
 
       "audio/aac"               : "AAC Audio",
@@ -84,6 +85,7 @@
       ".txt"    : "text/plain",
       ".log"    : "text/plain",
       ".doc"    : "text/plain",
+      ".pdf"    : "application/pdf",
 
       ".ipk"    : "application/x-ipkg",
 
