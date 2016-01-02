@@ -28,7 +28,10 @@
  * @licence Simplified BSD License
  */
 
-(function() {
+(function(_path) {
+  var root = _path.join(__dirname, '/../../../');
+  process.chdir(root);
+
   var server = require("./http.js");
 
   if ( server.HANDLER.onServerStart ) {
@@ -50,4 +53,4 @@
   console.log('SERVER IS RUNNING ON \'localhost:' + server.CONFIG.port + '\'');
 
   server.listen();
-})();
+})(require('path'));
