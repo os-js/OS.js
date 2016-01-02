@@ -53,6 +53,9 @@
     opts = opts || {};
     args = args || {};
     callback = callback || function() {};
+    if ( typeof callback !== 'function' ) {
+      throw new TypeError('DialogWindow expects a callback Function, gave: ' + typeof callback);
+    }
 
     console.info('DialogWindow::construct()', className, opts, args);
 

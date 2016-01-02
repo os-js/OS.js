@@ -640,7 +640,7 @@
       if ( item.type === 'file' ) {
         API.createDialog('FileInfo', {
           file: new VFS.File(item)
-        }, win);
+        }, null, win);
       }
     });
   };
