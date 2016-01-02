@@ -535,6 +535,20 @@
    * This is the Metadata object you have to use when passing files around
    * in the VFS API.
    *
+   * This object has the same properties as in the option list below
+   *
+   * @param   Mixed       arg       Either a 'path' or 'object' (filled with properties)
+   * @param   String      mime      MIME type of File Type (ex: 'application/json' or 'dir')
+   *
+   * @option  opts     String          icon              Window Icon
+   *
+   * @option  arg   String      path      Full path
+   * @option  arg   String      filename  Filename (automatically detected)
+   * @option  arg   String      type      File type (file/dir)
+   * @option  arg   int         size      File size (in bytes)
+   * @option  arg   String      mime      File MIME (ex: application/json)
+   * @option  arg   Mixed       id        Unique identifier (not required)
+   *
    * @api     OSjs.VFS.File
    * @class
    */
@@ -557,8 +571,12 @@
       this.setData();
     }
 
-    if ( mime ) {
-      this.mime = mime;
+    if ( typeof mime === 'string' ) {
+      if ( mime.match(/\//) ) {
+        this.mime = mime;
+      } else {
+        this.type = mime;
+      }
     }
   }
 
