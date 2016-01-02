@@ -3,16 +3,16 @@
  *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -40,7 +40,7 @@
 
     try {
       require('time-grunt')(grunt);
-    } catch ( e ) { }
+    } catch (e) { }
 
     grunt.file.defaultEncoding = 'utf-8';
 
@@ -48,6 +48,19 @@
     grunt.loadNpmTasks('grunt-mocha-test');
     //grunt.loadNpmTasks('grunt-mocha');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-jscs');
+
+    var sourceFiles = [
+      'Gruntfile.js',
+      'src/*.js',
+      'src/client/javascript/*.js',
+      'src/client/javascript/**/*.js',
+      'src/packages/default/**/*.js',
+      '!src/packages/default/Broadway/**',
+      '!src/packages/default/**/locales.js',
+      '!src/packages/default/**/locale.js',
+      '!src/packages/default/Calculator/main.js'
+    ];
 
     grunt.initConfig({
       jshint: {
@@ -81,22 +94,12 @@
           node: true,
           maxerr: 9999
         },
-        all: [
-          'Gruntfile.js',
-          'src/*.js',
-          'src/client/javascript/*.js',
-          'src/client/javascript/**/*.js',
-          'src/packages/default/**/*.js',
-          '!src/packages/default/Broadway/**',
-          '!src/packages/default/**/locales.js',
-          '!src/packages/default/**/locale.js',
-          '!src/packages/default/Calculator/main.js'
-        ]
+        all: sourceFiles
       },
       mochaTest: {
         test: {
           src: ['test/server/*.js']
-        },
+        }
       },
       watch: {
         core: {
@@ -135,6 +138,15 @@
           ],
           tasks: ['config', 'manifest']
         }
+      },
+      jscs: {
+        src: sourceFiles,
+        options: {
+          config: '.jscsrc',
+          verbose: true,
+          fix: false,
+          requireCurlyBraces: ['if']
+        }
       }
     });
 
@@ -148,21 +160,21 @@
      * Task: Build config
      */
     grunt.registerTask('config', 'Build config files (or modify `set:path.to.key:value`, `get:path.to.key`, `preload:name:path:type`)', function(fn, key, value, arg) {
-      if ( fn ) {
+      if (fn) {
         var result;
-        if ( fn === 'get' ) {
+        if (fn === 'get') {
           grunt.log.writeln('Path: ' + key);
 
           result = _build.getConfigPath(grunt, key);
           grunt.log.writeln('Type: ' + typeof result);
           console.log(result);
           console.log();
-        } else if ( fn === 'set' ) {
+        } else if (fn === 'set') {
           grunt.log.writeln('Path: ' + key);
 
           result = _build.setConfigPath(grunt, key, value);
           console.log(result);
-        } else if ( fn === 'preload' ) {
+        } else if (fn === 'preload') {
           result = _build.addPreload(grunt, key, value, arg);
           console.log(result);
         } else {
@@ -295,7 +307,7 @@
     grunt.registerTask('default', ['all']);
     grunt.registerTask('dist', ['config', 'dist-index', 'core', 'themes', 'packages', 'manifest']);
     grunt.registerTask('dist-dev', ['config', 'dist-dev-index', 'themes:fonts', 'themes:styles', 'manifest']);
-    grunt.registerTask('test', ['jshint', 'mochaTest'/*, 'mocha'*/]);
+    grunt.registerTask('test', ['jshint', 'jscs', 'mochaTest'/*, 'mocha'*/]);
   };
 
 })(require('node-fs-extra'), require('path'), require('./src/build.js'), require('grunt'), require('less'));
