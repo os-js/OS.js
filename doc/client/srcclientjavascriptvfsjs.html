@@ -1226,12 +1226,98 @@ Useful for canvas data etc.
 This is the Metadata object you have to use when passing files around
 
 in the VFS API.
+
+This object has the same properties as in the option list below
 </pre>
 
 <h4 id="namespace">Namespace</h4>
 <ul>
 <li>OSjs.VFS.File</li>
 </ul>
+<h4 id="constructor">Constructor</h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>arg</td>
+<td>Mixed</td>
+<td>Either a &#39;path&#39; or &#39;object&#39; (filled with properties)</td>
+</tr>
+<tr>
+<td>mime</td>
+<td>String</td>
+<td>MIME type of File Type (ex: &#39;application/json&#39; or &#39;dir&#39;)</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<h4 id="options-for-opts-">Options for <em>opts</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>icon</td>
+<td>String</td>
+<td>Window Icon</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<h4 id="options-for-arg-">Options for <em>arg</em></h4>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>path</td>
+<td>String</td>
+<td>Full path</td>
+</tr>
+<tr>
+<td>filename</td>
+<td>String</td>
+<td>Filename (automatically detected)</td>
+</tr>
+<tr>
+<td>type</td>
+<td>String</td>
+<td>File type (file/dir)</td>
+</tr>
+<tr>
+<td>size</td>
+<td>int</td>
+<td>File size (in bytes)</td>
+</tr>
+<tr>
+<td>mime</td>
+<td>String</td>
+<td>File MIME (ex: application/json)</td>
+</tr>
+<tr>
+<td>id</td>
+<td>Mixed</td>
+<td>Unique identifier (not required)</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
 
 </div>
 
