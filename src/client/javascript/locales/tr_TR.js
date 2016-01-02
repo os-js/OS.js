@@ -3,16 +3,16 @@
  *
  * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -236,7 +236,7 @@
     'ERR_VFSMODULE_TRASH'          : 'Çöp Kutusuna Taşınırken Hata Oluştu',
     'ERR_VFSMODULE_TRASH_FMT'      : 'Çöp Kutusuna Taşınırken Hata Oluştu: {0}',
     'ERR_VFSMODULE_UNTRASH'        : 'Çöp Kutusundan Çıkarılırken Hata Meydana Geldi',
-    'ERR_VFSMODULE_UNTRASH_FMT'    : 'Çöp Kutusundan Çıkarılırken Hata Meydana Geldi: {0}', 
+    'ERR_VFSMODULE_UNTRASH_FMT'    : 'Çöp Kutusundan Çıkarılırken Hata Meydana Geldi: {0}',
     'ERR_VFSMODULE_EMPTYTRASH'     : 'Çöpü boşaltırken hata meydana geldi',
     'ERR_VFSMODULE_EMPTYTRASH_FMT' : 'Çöpü boşaltırken hata meydana geldi: {0}',
 
@@ -336,7 +336,7 @@
     'LBL_ITALIC'       : 'İtalik',
     'LBL_UNDERLINE'    : 'Altı Çizili',
     'LBL_REGULAR'      : 'Düzenli',
-    'LBL_STRIKE'       : 'Vurgulu', 
+    'LBL_STRIKE'       : 'Vurgulu',
     'LBL_INDENT'       : 'Indent',  //eklenecek
     'LBL_OUTDENT'      : 'Outdate', //eklenecek
     'LBL_UNDO'         : 'Geri Al',

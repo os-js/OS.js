@@ -3,16 +3,16 @@
  *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -47,9 +47,9 @@
 
     return function(ontop) {
       if ( typeof ontop !== 'undefined' && ontop === true ) {
-        return (_ltzindex+=2);
+        return (_ltzindex += 2);
       }
-      return (_lzindex+=2);
+      return (_lzindex += 2);
     };
   })();
 
@@ -93,7 +93,6 @@
   /////////////////////////////////////////////////////////////////////////////
   // WINDOW
   /////////////////////////////////////////////////////////////////////////////
-
 
   /**
    * Window Class
@@ -469,7 +468,6 @@
       self._maximize();
     });
 
-
     // Append stuff
     var classNames = ['Window'];
     classNames.push(Utils.$safeName(this._name));
@@ -676,7 +674,6 @@
   // GUI And Event Hooks
   //
 
-
   /**
    * Adds a hook (internal events)
    *
@@ -880,7 +877,7 @@
    */
   Window.prototype._minimize = function() {
     var self = this;
-    console.debug(this._name, '>' , 'OSjs::Core::Window::_minimize()');
+    console.debug(this._name, '>', 'OSjs::Core::Window::_minimize()');
     if ( !this._properties.allow_minimize ) { return false; }
     //if ( this._disabled ) return false;
     if ( this._state.minimized ) {
@@ -926,7 +923,7 @@
    * @method    Window::_maximize()
    */
   Window.prototype._maximize = function() {
-    console.debug(this._name, '>' , 'OSjs::Core::Window::_maximize()');
+    console.debug(this._name, '>', 'OSjs::Core::Window::_maximize()');
     if ( !this._properties.allow_maximize ) { return false; }
     if ( !this._$element ) { return false; }
     //if ( this._disabled ) return false;
@@ -982,7 +979,7 @@
   Window.prototype._restore = function(max, min) {
     if ( !this._$element ) { return; }
 
-    console.debug(this._name, '>' , 'OSjs::Core::Window::_restore()');
+    console.debug(this._name, '>', 'OSjs::Core::Window::_restore()');
     //if ( this._disabled ) return ;
     max = (typeof max === 'undefined') ? true : (max === true);
     min = (typeof min === 'undefined') ? true : (min === true);
@@ -1030,7 +1027,7 @@
     if ( !this._$element ) { return false; }
 
     //if ( !force && this._state.focused ) { return false; }
-    //console.debug(this._name, '>' , 'OSjs::Core::Window::_focus()');
+    //console.debug(this._name, '>', 'OSjs::Core::Window::_focus()');
     this._toggleAttentionBlink(false);
 
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
@@ -1069,7 +1066,7 @@
   Window.prototype._blur = function(force) {
     if ( !this._$element ) { return false; }
     if ( !force && !this._state.focused ) { return false; }
-    //console.debug(this._name, '>' , 'OSjs::Core::Window::_blur()');
+    //console.debug(this._name, '>', 'OSjs::Core::Window::_blur()');
     this._$element.setAttribute('data-focused', 'false');
     this._state.focused = false;
 
@@ -1078,7 +1075,6 @@
 
     // Force all standard HTML input elements to loose focus
     this._blurGUI();
-
 
     var wm = OSjs.Core.getWindowManager();
     var win = wm ? wm.getCurrentWindow() : null;
@@ -1297,7 +1293,7 @@
    * @method    Window::_toggleDisabled()
    */
   Window.prototype._toggleDisabled = function(t) {
-    console.debug(this._name, '>' , 'OSjs::Core::Window::_toggleDisabled()', t);
+    console.debug(this._name, '>', 'OSjs::Core::Window::_toggleDisabled()', t);
     if ( this._$disabled ) {
       this._$disabled.style.display = t ? 'block' : 'none';
     }
@@ -1314,7 +1310,7 @@
    * @method    Window::_toggleLoading()
    */
   Window.prototype._toggleLoading = function(t) {
-    console.debug(this._name, '>' , 'OSjs::Core::Window::_toggleLoading()', t);
+    console.debug(this._name, '>', 'OSjs::Core::Window::_toggleLoading()', t);
     if ( this._$loading ) {
       this._$loading.style.display = t ? 'block' : 'none';
     }
@@ -1350,7 +1346,7 @@
     /*
     if ( t ) {
       if ( !this._blinkTimer ) {
-        console.debug(this._name, '>' , 'OSjs::Core::Window::_toggleAttentionBlink()', t);
+        console.debug(this._name, '>', 'OSjs::Core::Window::_toggleAttentionBlink()', t);
         this._blinkTimer = setInterval(function() {
           s = !s;
 
@@ -1360,7 +1356,7 @@
       }
     } else {
       if ( this._blinkTimer ) {
-        console.debug(this._name, '>' , 'OSjs::Core::Window::_toggleAttentionBlink()', t);
+        console.debug(this._name, '>', 'OSjs::Core::Window::_toggleAttentionBlink()', t);
         clearInterval(this._blinkTimer);
         this._blinkTimer = null;
       }
@@ -1523,7 +1519,7 @@
    * @method  Window::_onWindowIconClick()
    */
   Window.prototype._onWindowIconClick = function(ev, el) {
-    console.debug(this._name, '>' , 'OSjs::Core::Window::_onWindowIconClick()');
+    console.debug(this._name, '>', 'OSjs::Core::Window::_onWindowIconClick()');
     if ( !this._properties.allow_iconmenu ) { return; }
 
     var self = this;
@@ -1610,7 +1606,7 @@
    * @method  Window::_onWindowButtonClick()
    */
   Window.prototype._onWindowButtonClick = function(ev, el, btn) {
-    console.debug(this._name, '>' , 'OSjs::Core::Window::_onWindowButtonClick()', btn);
+    console.debug(this._name, '>', 'OSjs::Core::Window::_onWindowButtonClick()', btn);
 
     this._blurGUI();
 
@@ -1636,7 +1632,7 @@
   Window.prototype._onChange = function(ev, byUser) {
     ev = ev || '';
     if ( ev ) {
-      console.debug(this._name, '>' , 'OSjs::Core::Window::_onChange()', ev);
+      console.debug(this._name, '>', 'OSjs::Core::Window::_onChange()', ev);
       var wm = OSjs.Core.getWindowManager();
       if ( wm ) {
         wm.eventWindow(ev, this);
@@ -1672,8 +1668,8 @@
 
     s.left += borderSize;
     s.top += borderSize;
-    s.width -= (borderSize*2);
-    s.height -= topMargin + (borderSize*2);
+    s.width -= (borderSize * 2);
+    s.height -= topMargin + (borderSize * 2);
 
     return s;
   };
