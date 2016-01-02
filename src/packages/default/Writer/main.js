@@ -316,6 +316,14 @@
     return this._scheme.find(this, 'Text').get('value');
   };
 
+  ApplicationWriterWindow.prototype._focus = function(file, content) {
+    if ( DefaultApplicationWindow.prototype._focus.apply(this, arguments) ) {
+      this._scheme.find(this, 'Text').focus();
+      return true;
+    }
+    return false;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
