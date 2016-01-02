@@ -3,16 +3,16 @@
  *
  * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -180,7 +180,7 @@
             } else {
               obj1[p] = obj2[p];
             }
-          } catch(e) {
+          } catch (e) {
             obj1[p] = obj2[p];
           }
         }
@@ -239,7 +239,7 @@
    */
   function replaceAll(temp, stringToFind,stringToReplace) {
     var index = temp.indexOf(stringToFind);
-    while(index !== -1){
+    while (index !== -1) {
       temp = temp.replace(stringToFind,stringToReplace);
       index = temp.indexOf(stringToFind);
     }
@@ -250,9 +250,9 @@
    * Sets a config variable
    */
   var setConfigPath = (function() {
-    function removeNulls(obj){
+    function removeNulls(obj) {
       var isArray = obj instanceof Array;
-      for (var k in obj){
+      for (var k in obj) {
         if ( obj[k] === null ) {
           if ( isArray ) {
             obj.splice(k, 1);
@@ -271,7 +271,7 @@
       var ns = resulted;
 
       queue.forEach(function(k, i) {
-        if ( i >= queue.length-1 ) {
+        if ( i >= queue.length - 1 ) {
           ns[k] = value;
         } else {
           if ( typeof ns[k] === 'undefined' ) {
@@ -335,7 +335,7 @@
         var ns = config;
 
         queue.forEach(function(k, i) {
-          if ( i >= queue.length-1 ) {
+          if ( i >= queue.length - 1 ) {
             result = ns[k];
           } else {
             ns = ns[k];
@@ -709,7 +709,6 @@
         }
       });
 
-
       settings.Styles = styles;
       settings.Icons = icons;
       settings.Sounds = sounds;
@@ -783,9 +782,9 @@
     }
 
     var tpl = readFile(_path.join(tpldir, 'index.html')).toString();
-        tpl = replaceAll(tpl, '%STYLES%', styles.join('\n'));
-        tpl = replaceAll(tpl, '%SCRIPTS%', scripts.join('\n'));
-        tpl = replaceAll(tpl, '%HANDLER%', cfg.handler);
+    tpl = replaceAll(tpl, '%STYLES%', styles.join('\n'));
+    tpl = replaceAll(tpl, '%SCRIPTS%', scripts.join('\n'));
+    tpl = replaceAll(tpl, '%HANDLER%', cfg.handler);
 
     writeFile(_path.join(outdir, 'index.html'), tpl);
     copyFile(_path.join(tpldir, 'favicon.png'), _path.join(outdir, 'favicon.png'));
@@ -889,7 +888,6 @@
     var repo = tmp.length > 1 ? tmp[0] : 'default';
     var name = tmp.length > 1 ? tmp[1] : arg;
     type = type || 'application';
-
 
     var typemap = {
       iframe: {
@@ -1417,7 +1415,6 @@
         });
       }
     });
-
 
     grunt.log.subhead('Writing metadata...');
     var tpl = readFile(_path.join(PATHS.templates, 'packages.js')).toString();

@@ -162,11 +162,10 @@
       document.body.appendChild(this.$element);
     }
 
-
     // FIXME: This is a very hackish way of doing it and does not work when button is moved!
     Utils.$removeClass(this.$element, 'AtBottom');
     Utils.$removeClass(this.$element, 'AtTop');
-    if ( pos.y > (window.innerHeight/2) ) {
+    if ( pos.y > (window.innerHeight / 2) ) {
       Utils.$addClass(this.$element, 'AtBottom');
 
       this.$element.style.top = 'auto';
@@ -219,7 +218,7 @@
         }
         var rect = Utils.$position(target, document.body);
         if ( rect.left && rect.top && rect.width && rect.height ) {
-          pos.x = rect.left - (rect.width/2) + 4;
+          pos.x = rect.left - (rect.width / 2) + 4;
           pos.y = rect.top + rect.height + 4;
         }
       }

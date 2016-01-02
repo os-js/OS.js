@@ -105,12 +105,12 @@
     }
 
     this.$switcher.style.height    = height + 'px';
-    this.$switcher.style.marginTop = (height ? -((height/2) << 0) : 0) + 'px';
+    this.$switcher.style.marginTop = (height ? -((height / 2) << 0) : 0) + 'px';
 
     // Select
     if ( this.showing ) {
       this.index++;
-      if ( this.index > (items.length-1) ) {
+      if ( this.index > (items.length - 1) ) {
         this.index = -1;
       }
     } else {

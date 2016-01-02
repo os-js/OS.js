@@ -634,7 +634,6 @@
       hidden = pool.get('hidden');
     }
 
-
     function renderInstalled() {
       updateEnabledStates();
 
@@ -790,7 +789,6 @@
     scheme.find(this, 'ShowHiddenFiles').set('value', scandirOptions.showHiddenFiles === true);
   };
 
-
   /**
    * Apply
    */
@@ -830,7 +828,6 @@
 
     var showHiddenFiles = scheme.find(this, 'ShowHiddenFiles').get('value');
     var showFileExtensions = scheme.find(this, 'ShowFileExtensions').get('value');
-
 
     wm.applySettings(this.settings, false, function() {
       OSjs.Core.getSettingsManager().instance('VFS').set(null, {

@@ -99,7 +99,6 @@
 
     cel.add(defaults);
 
-
     var icons = wm.getSetting('desktopIcons') || [];
     icons.forEach(function(icon) {
       self.addShortcut(icon, wm);
