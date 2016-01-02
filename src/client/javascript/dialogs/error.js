@@ -70,7 +70,7 @@
       title: args.title || API._('DIALOG_CONFIRM_TITLE'),
       icon: 'status/dialog-error.png',
       width: 400,
-      height: error ? 400 : 200,
+      height: error ? 400 : 200
     }, args, callback]);
 
     this._sound = 'dialog-warning';

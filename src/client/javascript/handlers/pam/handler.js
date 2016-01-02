@@ -79,7 +79,6 @@
       } else {
         callback(false, response.error ? ('Error while logging in: ' + response.error) : 'Invalid login');
       }
-
     }, function(error) {
       callback(false, 'Login error: ' + error);
     });
@@ -104,7 +103,6 @@
         callback(false, 'Logout error: ' + error);
       });
     }
-
 
     OSjs.Core._Handler.prototype.logout.call(this, save, _finished);
   };

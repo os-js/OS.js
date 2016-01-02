@@ -168,7 +168,7 @@
         var edsplit = split[i].split('<');
         newhtml += split[i] + '></' + edsplit[edsplit.length - 1].split(' ')[0] + '>';
       }
-      return newhtml + split[split.length-1];
+      return newhtml + split[split.length - 1];
     }
 
     var doc = document.createDocumentFragment();
@@ -385,7 +385,6 @@
       parentNode = parentNode.$element;
     }
 
-
     var el;
     if ( OSjs.GUI.Elements[tagName] && OSjs.GUI.Elements[tagName].create ) {
       el = OSjs.GUI.Elements[tagName].create(params);
@@ -462,7 +461,6 @@
     }
     return new OSjs.GUI.Element(el, q);
   };
-
 
   /**
    * Get HTML from Scheme

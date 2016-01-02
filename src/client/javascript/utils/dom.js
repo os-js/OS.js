@@ -225,7 +225,7 @@
     if ( document.defaultView && document.defaultView.getComputedStyle ) {
       strValue = document.defaultView.getComputedStyle(oElm, '').getPropertyValue(strCssRule);
     } else if ( oElm.currentStyle ) {
-      strCssRule = strCssRule.replace(/\-(\w)/g, function (strMatch, p1) {
+      strCssRule = strCssRule.replace(/\-(\w)/g, function(strMatch, p1) {
         return p1.toUpperCase();
       });
       strValue = oElm.currentStyle[strCssRule];
@@ -601,7 +601,6 @@
         mousemove: 'touchmove',
         mousedown: 'touchstart'
       };
-
 
       var cbNormal = function(ev) {
         callback.call(el, ev, pos(ev), false);

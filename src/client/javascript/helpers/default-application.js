@@ -110,7 +110,7 @@
         win._toggleDisabled(true);
         API.createDialog('Confirm', {
           buttons: ['yes', 'no'],
-          message: API._('MSG_FILE_CHANGED'),
+          message: API._('MSG_FILE_CHANGED')
         }, function(ev, button) {
           win._toggleDisabled(false);
           if ( button === 'ok' || button === 'yes' ) {

@@ -58,7 +58,7 @@
   var removeExtension = (function() {
     var mimeConfig;
 
-    return function (str, opts) {
+    return function(str, opts) {
       if ( !mimeConfig ) {
         mimeConfig = API.getConfig('MIME.mapping');
       }
@@ -228,7 +228,9 @@
     };
 
     VFS.scandir(file, function(error, result) {
-      if ( error ) { cb(error); return; }
+      if ( error ) {
+        cb(error); return;
+      }
 
       var list = [];
       var summary = {size: 0, directories: 0, files: 0, hidden: 0};

@@ -69,7 +69,7 @@
     function getUpload() {
       try {
         var xhr = new XMLHttpRequest();
-        return (!! (xhr && ('upload' in xhr) && ('onprogress' in xhr.upload)));
+        return (!!(xhr && ('upload' in xhr) && ('onprogress' in xhr.upload)));
       } catch ( e ) {}
       return false;
     }
@@ -172,8 +172,8 @@
 
       if ( feature === false ) {
         featurenameCapital = featurename.charAt(0).toUpperCase() + featurename.substr(1);
-        for( var i = 0; i < domPrefixes.length; i++ ) {
-          if( elm.style[domPrefixes[i] + featurenameCapital ] !== undefined ) {
+        for ( var i = 0; i < domPrefixes.length; i++ ) {
+          if ( elm.style[domPrefixes[i] + featurenameCapital ] !== undefined ) {
             feature = true;
             break;
           }
@@ -243,7 +243,7 @@
       worker         : 'Worker',
       file           : 'File',
       blob           : 'Blob',
-      orientation    : 'onorientationchange',
+      orientation    : 'onorientationchange'
     };
 
     var compability = {

@@ -136,7 +136,6 @@
     return this;
   };
 
-
   /**
    * Register Event
    *

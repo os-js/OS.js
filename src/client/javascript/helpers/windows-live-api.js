@@ -44,7 +44,6 @@
 
   var SingletonInstance = null;
 
-
   /**
    * The WindowsLiveAPI wrapper class
    *
@@ -253,7 +252,7 @@
         callback(API._('WLAPI_LOGIN_FAILED'));
       }
     }, function(result) {
-        callback(API._('WLAPI_LOGIN_FAILED_FMT', result.error_description));
+      callback(API._('WLAPI_LOGIN_FAILED_FMT', result.error_description));
     });
   };
 

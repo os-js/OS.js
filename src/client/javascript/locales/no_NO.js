@@ -134,7 +134,6 @@
 
     'DIALOG_FONT_TITLE' : 'Tekst Dialog',
 
-
     'DIALOG_APPCHOOSER_TITLE' : 'Velg Applikasjon',
     'DIALOG_APPCHOOSER_MSG'   : 'Velg en applikasjon for åpning',
     'DIALOG_APPCHOOSER_NO_SELECTION' : 'Du må velge en applikasjon',

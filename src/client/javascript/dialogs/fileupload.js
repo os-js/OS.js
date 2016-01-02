@@ -123,7 +123,6 @@
         // Dialog closed
       }, this);
 
-
       if ( this._wmref ) {
         this._wmref.createNotificationIcon(this.notificationId, {className: 'BusyNotification', tooltip: desc, image: false});
       }
@@ -151,7 +150,6 @@
       }, 100);
     }
   };
-
 
   FileUploadDialog.prototype.onClose = function(ev, button, result) {
     result = result || null;

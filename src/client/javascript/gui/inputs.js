@@ -758,5 +758,4 @@
     }
   };
 
-
 })(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

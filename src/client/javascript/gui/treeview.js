@@ -205,7 +205,6 @@
           parentNode = args[0].parentNode || body;
         }
 
-
         recurse(entries, parentNode, 0);
       }
 

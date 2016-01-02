@@ -241,7 +241,6 @@
 
     this._toggleLoading(true);
 
-
     view._call('chdir', {
       path: dir || this.path,
       done: function(error) {
@@ -302,7 +301,7 @@
 
     if ( this.selected && this.selected.type === 'dir' ) {
       if ( wasActivated ) {
-       // this.args.select !== 'dir' &&
+        // this.args.select !== 'dir' &&
         this.changePath(this.selected.path);
         return false;
       }

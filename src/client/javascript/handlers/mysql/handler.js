@@ -105,7 +105,6 @@ See doc/mysql-handler.txt
       });
     }
 
-
     OSjs.Core._Handler.prototype.logout.call(this, save, _finished);
   };
 

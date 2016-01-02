@@ -134,7 +134,6 @@
 
     'DIALOG_FONT_TITLE' : 'Шрифт',
 
-
     'DIALOG_APPCHOOSER_TITLE' : 'Выберите приложение',
     'DIALOG_APPCHOOSER_MSG'   : 'Выберите приложение для открытия',
     'DIALOG_APPCHOOSER_NO_SELECTION' : 'Вам необходимо выбрать приложение',

@@ -57,7 +57,6 @@
       }
     });
 
-
     var nel = GUI.Helpers.createElement('gui-list-view-column', v);
     if ( typeof label === 'function' ) {
       nel.appendChild(label.call(nel, nel, v));

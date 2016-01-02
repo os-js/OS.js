@@ -83,7 +83,7 @@
       if ( args.json && ctype.match(/^application\/json/) ) {
         try {
           response = JSON.parse(response);
-        } catch(ex) {
+        } catch (ex) {
           console.warn('Utils::ajax()', 'handleResponse()', ex);
         }
       }
@@ -246,7 +246,6 @@
       opts.interval = opts.interval || 50;
       opts.maxTries = opts.maxTries || 10;
 
-
       function _finished(result) {
         _LOADED[src] = result;
         console.info('Stylesheet', src, result);
@@ -279,7 +278,7 @@
       }, opts.interval);
     }
 
-     function createScript(src, callback) {
+    function createScript(src, callback) {
       var _finished = function(result) {
         _LOADED[src] = result;
         console.info('JavaScript', src, result);

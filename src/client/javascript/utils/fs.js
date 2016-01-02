@@ -80,12 +80,12 @@
   OSjs.Utils.dirname = function(f) {
     f = f.replace(/\/$/, '');
 
-    var pstr   = f.split(/^(.*)\:\/\/(.*)/).filter(function(n){ return n !== ''; });
+    var pstr   = f.split(/^(.*)\:\/\/(.*)/).filter(function(n) { return n !== ''; });
     var args   = pstr.pop();
     var prot   = pstr.pop();
     var result = '';
 
-    var tmp = args.split('/').filter(function(n){ return n !== ''; });
+    var tmp = args.split('/').filter(function(n) { return n !== ''; });
     if ( tmp.length ) {
       tmp.pop();
     }
@@ -110,7 +110,7 @@
    * @api     OSjs.Utils.filename()
    */
   OSjs.Utils.filename = function(p) {
-    return (p||'').replace(/\/$/, '').split('/').pop();
+    return (p || '').replace(/\/$/, '').split('/').pop();
   };
 
   /**
@@ -128,14 +128,14 @@
    */
   OSjs.Utils.humanFileSize = function(bytes, si) {
     var thresh = si ? 1000 : 1024;
-    if(bytes < thresh) { return bytes + ' B'; }
+    if (bytes < thresh) { return bytes + ' B'; }
     var units = si ? ['kB','MB','GB','TB','PB','EB','ZB','YB'] : ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
     var u = -1;
     do {
       bytes /= thresh;
       ++u;
-    } while(bytes >= thresh);
-    return bytes.toFixed(1)+' '+units[u];
+    } while (bytes >= thresh);
+    return bytes.toFixed(1) + ' ' + units[u];
   };
 
   /**
@@ -309,7 +309,7 @@
     var _escape = window.escape || function(s) {
       function q(c) {
         c = c.charCodeAt();
-        return '%' + (c<16 ? '0' : '') + c.toString(16).toUpperCase();
+        return '%' + (c < 16 ? '0' : '') + c.toString(16).toUpperCase();
       }
       return s.replace(/[\x00-),:-?[-^`{-\xFF]/g, q);
     };

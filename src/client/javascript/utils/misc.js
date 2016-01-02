@@ -128,7 +128,7 @@
           } else {
             obj1[p] = obj2[p];
           }
-        } catch(e) {
+        } catch (e) {
           obj1[p] = obj2[p];
         }
       }
@@ -168,7 +168,7 @@
       if ( response.match(/^\{|\[/) ) {
         try {
           response = JSON.parse(response);
-        } catch ( e  ){
+        } catch ( e  ) {
           console.warn('FAILED TO FORCE JSON MIME TYPE', e);
         }
       }

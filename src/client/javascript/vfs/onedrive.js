@@ -249,7 +249,6 @@
               console.warn('OneDrive', 'resolvePath()', 'getFilesInFolder() error', error);
             }
 
-
             if ( done ) {
               completed(lfound);
             } else {

@@ -206,7 +206,7 @@
   var getAllDirectoryFiles = (function() {
     var clearCacheTimeout;
 
-    return function (item, callback) {
+    return function(item, callback) {
       console.log('GoogleDrive::*getAllDirectoryFiles()', item);
 
       function retrieveAllFiles(cb) {
@@ -410,7 +410,7 @@
         });
 
         request.execute(function(resp) {
-          if ( i >= (item.parents.length-1) ) {
+          if ( i >= (item.parents.length - 1) ) {
             cb();
           }
         });

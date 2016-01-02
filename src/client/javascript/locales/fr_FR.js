@@ -134,7 +134,6 @@
 
     'DIALOG_FONT_TITLE' : 'Fenêtre de police',
 
-
     'DIALOG_APPCHOOSER_TITLE' : 'Choisir une application',
     'DIALOG_APPCHOOSER_MSG'   : 'Choisir une application pour ouvrir',
     'DIALOG_APPCHOOSER_NO_SELECTION' : 'Vous devez sélectionner une application',

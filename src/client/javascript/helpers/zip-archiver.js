@@ -255,7 +255,7 @@
         getEntryFile(current, function(blob) {
           writer.add(current.filename, new zip.BlobReader(blob), function() {
             pr('added', index, current);
-            _next(index+1);
+            _next(index + 1);
           }, function(current, total) {
             pr('reading', index, total, current);
           }, {
@@ -333,16 +333,24 @@
 
     // Proceed!
     openFile(function(err, entries) {
-      if ( err ) { finished(err); return; }
+      if ( err ) {
+        finished(err); return;
+      }
 
       checkIfExists(entries, function(err) {
-        if ( err ) { finished(err); return; }
+        if ( err ) {
+          finished(err); return;
+        }
 
         createZip(function(err, writer) {
-          if ( err ) { finished(err); return; }
+          if ( err ) {
+            finished(err); return;
+          }
 
           importFiles(writer, entries, function(err) {
-            if ( err ) { finished(err); return; }
+            if ( err ) {
+              finished(err); return;
+            }
             addFile(writer, function(err) {
               finished(err, !!err);
             });

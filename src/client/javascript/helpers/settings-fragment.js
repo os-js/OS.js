@@ -125,7 +125,7 @@
     return OSjs.Core.getSettingsManager().save(this._pool, callback);
   };
 
-  SettingsFragment.prototype.getChained = function () {
+  SettingsFragment.prototype.getChained = function() {
     var nestedSetting = this._settings;
     arguments.every(function(key) {
       if (nestedSetting[key]) {

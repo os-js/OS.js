@@ -386,7 +386,6 @@
     return fmt ? format(fmt, date) : new ExtendedDate(date);
   };
 
-
   ExtendedDate.getDaysInMonth = function(y, m, now) {
     now = _now(now);
     y = _y(y, now);
@@ -402,8 +401,8 @@
 
     var d = new Date(+now);
     d.setHours(0,0,0);
-    d.setDate(d.getDate()+4-(d.getDay()||7));
-    return Math.ceil((((d-new Date(d.getFullYear(),0,1))/8.64e7)+1)/7);
+    d.setDate(d.getDate() + 4 - (d.getDay() || 7));
+    return Math.ceil((((d - new Date(d.getFullYear(),0,1)) / 8.64e7) + 1) / 7);
   };
 
   ExtendedDate.getDayName = function(index, shrt) {
@@ -533,7 +532,7 @@
       M: function(s) { return ExtendedDate.monthNames[(utc ? date.getUTCMonth() : date.getMonth())]; },
 
       // Numeric representation of a month, without leading zeros (1 through 12)
-      n: function(s) { return (utc ? date.getUTCMonth() : date.getMonth())+1; },
+      n: function(s) { return (utc ? date.getUTCMonth() : date.getMonth()) + 1; },
 
       // Number of days in the given month (28 through 31)
       t: function(s) { return date.getDaysInMonth(); },
@@ -608,7 +607,7 @@
       //
 
       // Seconds since the Unix Epoch (January 1 1970 00:00:00 GMT)
-      U: function(s) { return date.getTime(); },
+      U: function(s) { return date.getTime(); }
     };
 
     var result = [];

@@ -99,7 +99,7 @@
     var timeout = setTimeout(function() {
       timedOut = true;
       callback(API._('ERR_OPERATION_TIMEOUT_FMT', '60s'));
-    }, 60*1000);
+    }, 60 * 1000);
 
     this.client.authenticate(function(error, client) {
       if ( !timedOut ) {

@@ -139,7 +139,9 @@
     callback = callback || function() {};
 
     this._call(func, data, function(error, response) {
-      if ( error ) { callback(error); return; }
+      if ( error ) {
+        callback(error); return;
+      }
 
       var url = response.manifest_url;
 
@@ -179,7 +181,9 @@
     callback = callback || function() {};
 
     this._call(func, data, function(error, response) {
-      if ( error ) { callback(error); return; }
+      if ( error ) {
+        callback(error); return;
+      }
 
       callback(false, response.objects);
     });
@@ -199,7 +203,9 @@
     callback = callback || function() {};
 
     this._metadata(id, function(error, metadata, url) {
-      if ( error ) { callback(error); return; }
+      if ( error ) {
+        callback(error); return;
+      }
 
       metadata = metadata || {};
 

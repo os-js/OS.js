@@ -83,7 +83,7 @@
             }
           } else {
             if ( !isNaN(newHeight) && newHeight > 0 && newHeight <= maxHeight ) {
-             flex = newHeight.toString() + 'px';
+              flex = newHeight.toString() + 'px';
             }
           }
 
