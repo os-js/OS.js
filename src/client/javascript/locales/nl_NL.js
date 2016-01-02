@@ -41,7 +41,7 @@
 
     'ERR_FILE_OPEN'             : 'Er is een probleem opgetreden tijdens het starten',
     'ERR_WM_NOT_RUNNING'        : 'Window manager is niet gestart',
-    'ERR_FILE_OPEN_FMT'         : 'Het bestand \'<span>{0}</span>\' kon niet worden geopend',
+    'ERR_FILE_OPEN_FMT'         : 'Het bestand \'**{0}**\' kon niet worden geopend',
     'ERR_APP_MIME_NOT_FOUND_FMT': 'Kon geen programma vinden die \'{0}\' kan openen',
     'ERR_APP_LAUNCH_FAILED'     : 'Starten van het programma is mislukt',
     'ERR_APP_LAUNCH_FAILED_FMT' : 'Er is een probleem opgetreden tijden het starten van: {0}',
@@ -119,7 +119,7 @@
     'DIALOG_FILE_SAVE'      : 'Opslaan',
     'DIALOG_FILE_OPEN'      : 'Openen',
     'DIALOG_FILE_MKDIR'     : 'Nieuwe map',
-    'DIALOG_FILE_MKDIR_MSG' : 'Maak nieuwe map in <span>{0}</span>',
+    'DIALOG_FILE_MKDIR_MSG' : 'Maak nieuwe map in **{0}**',
     'DIALOG_FILE_OVERWRITE' : 'Weet u zeker dat het bestand overschreven moet worden \'{0}\'?',
     'DIALOG_FILE_MNU_VIEWTYPE' : 'Weergave',
     'DIALOG_FILE_MNU_LISTVIEW' : 'Lijst weergave',
@@ -133,7 +133,7 @@
     'DIALOG_FILEINFO_TITLE'   : 'Bestands informatie',
     'DIALOG_FILEINFO_LOADING' : 'Bestands informatie laden van: {0}',
     'DIALOG_FILEINFO_ERROR'   : 'Bestanda informatie Error',
-    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Ophalen van informatie van <span>{0}</span> is mislukt',
+    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Ophalen van informatie van **{0}** is mislukt',
     'DIALOG_FILEINFO_ERROR_LOOKUP_FMT' : 'Ophalen van informatie van: {0} is mislukt',
 
     'DIALOG_INPUT_TITLE' : 'Input Dialoog',
@@ -142,7 +142,7 @@
     'DIALOG_FILEPROGRESS_LOADING' : 'Laden...',
 
     'DIALOG_UPLOAD_TITLE'   : 'Upload Dialoog',
-    'DIALOG_UPLOAD_DESC'    : 'Upload bestand naar <span>{0}</span>.<br />Maximum grootte: {1} bytes',
+    'DIALOG_UPLOAD_DESC'    : 'Upload bestand naar **{0}**.<br />Maximum grootte: {1} bytes',
     'DIALOG_UPLOAD_MSG_FMT' : 'Bezig met uploaden \'{0}\' ({1} {2}) to {3}',
     'DIALOG_UPLOAD_MSG'     : 'Bezig met uploaden...',
     'DIALOG_UPLOAD_FAILED'  : 'Uploaden is niet geslaagd',

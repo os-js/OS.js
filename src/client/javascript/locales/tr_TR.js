@@ -40,7 +40,7 @@
 
     'ERR_FILE_OPEN'             : 'Dosya açılırken hata oluştu',
     'ERR_WM_NOT_RUNNING'        : 'Window manager çalışır halde değil',
-    'ERR_FILE_OPEN_FMT'         : '\'<span>{0}</span>\' dosya açılamadı',
+    'ERR_FILE_OPEN_FMT'         : '\'**{0}**\' dosya açılamadı',
     'ERR_APP_MIME_NOT_FOUND_FMT': ' \'{0}\' dosyalarını destekleyen herhangi bir program bulunamadı',
     'ERR_APP_LAUNCH_FAILED'     : 'Program açılırken hata oluştun',
     'ERR_APP_LAUNCH_FAILED_FMT' : 'Dosyanın açılmaya çalışıldığı sırada br hata meydana geldi: {0}',
@@ -124,7 +124,7 @@
     'DIALOG_FILE_SAVE'      : 'Kaydet',
     'DIALOG_FILE_OPEN'      : 'Aç',
     'DIALOG_FILE_MKDIR'     : 'Yeni Klasör',
-    'DIALOG_FILE_MKDIR_MSG' : '<span>{0}</span>da yeni bir Klasör oluştur',
+    'DIALOG_FILE_MKDIR_MSG' : '**{0}**da yeni bir Klasör oluştur',
     'DIALOG_FILE_OVERWRITE' : 'Dosyanın üzerine yazmak konusunda emin misin \'{0}\'?',
     'DIALOG_FILE_MNU_VIEWTYPE' : 'Görünüm Seçenekleri',
     'DIALOG_FILE_MNU_LISTVIEW' : 'Liste Görünümü',
@@ -138,7 +138,7 @@
     'DIALOG_FILEINFO_TITLE'   : 'Dosya Bilgileri',
     'DIALOG_FILEINFO_LOADING' : 'Dosya bilgileri yükleniyor: {0}',
     'DIALOG_FILEINFO_ERROR'   : 'Dosya Bilgi Penceresi Hatası',
-    'DIALOG_FILEINFO_ERROR_LOOKUP'     : ' <span>{0}</span> hakkında bilgi alınırken hata meydana geldi',
+    'DIALOG_FILEINFO_ERROR_LOOKUP'     : ' **{0}** hakkında bilgi alınırken hata meydana geldi',
     'DIALOG_FILEINFO_ERROR_LOOKUP_FMT' : '{0} Hakkında bilgi alınırken hata meydana geldi',
 
     'DIALOG_INPUT_TITLE' : 'Giriş Penceresi',
@@ -147,7 +147,7 @@
     'DIALOG_FILEPROGRESS_LOADING' : 'Yükleniyor...',
 
     'DIALOG_UPLOAD_TITLE'   : 'Yükleme Penceresi',
-    'DIALOG_UPLOAD_DESC'    : 'Yükle <span>{0}</span>.<br />Maksimum boyut: {1} bytes',
+    'DIALOG_UPLOAD_DESC'    : 'Yükle **{0}**.<br />Maksimum boyut: {1} bytes',
     'DIALOG_UPLOAD_MSG_FMT' : 'Yükleniyor \'{0}\' ({1} {2}) to {3}',
     'DIALOG_UPLOAD_MSG'     : 'Yükleniyor...',
     'DIALOG_UPLOAD_FAILED'  : 'Yükleme başarısız oldu',

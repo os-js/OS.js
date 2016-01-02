@@ -40,7 +40,7 @@
 
     'ERR_FILE_OPEN'             : 'Error abriendo archivo',
     'ERR_WM_NOT_RUNNING'        : 'El gestor de ventanas no está en ejecución',
-    'ERR_FILE_OPEN_FMT'         : 'No se pudo abrir el fichero \'<span>{0}</span>\'',
+    'ERR_FILE_OPEN_FMT'         : 'No se pudo abrir el fichero \'**{0}**\'',
     'ERR_APP_MIME_NOT_FOUND_FMT': 'No se pudo encontrar ninguna aplicación asociada a los archivos \'{0}\'',
     'ERR_APP_LAUNCH_FAILED'     : 'Error abriendo aplicación',
     'ERR_APP_LAUNCH_FAILED_FMT' : 'Se produjo un error intentando ejecutar: {0}',
@@ -121,7 +121,7 @@
     'DIALOG_FILE_SAVE'      : 'Guardar',
     'DIALOG_FILE_OPEN'      : 'Abrir',
     'DIALOG_FILE_MKDIR'     : 'Nueva carpeta',
-    'DIALOG_FILE_MKDIR_MSG' : 'Crear una nueva carpeta en <span>{0}</span>',
+    'DIALOG_FILE_MKDIR_MSG' : 'Crear una nueva carpeta en **{0}**',
     'DIALOG_FILE_OVERWRITE' : '¿Seguro que quieres sobreescribir el fichero \'{0}\'?',
     'DIALOG_FILE_MNU_VIEWTYPE' : 'Tipo de vista',
     'DIALOG_FILE_MNU_LISTVIEW' : 'Vista de lista',
@@ -135,7 +135,7 @@
     'DIALOG_FILEINFO_TITLE'   : 'Información de fichero',
     'DIALOG_FILEINFO_LOADING' : 'Cargando la información del fichero: {0}',
     'DIALOG_FILEINFO_ERROR'   : 'Error del diálogo de información de fichero',
-    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'No se pudo obtener la información del fichero <span>{0}</span>',
+    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'No se pudo obtener la información del fichero **{0}**',
     'DIALOG_FILEINFO_ERROR_LOOKUP_FMT' : 'No se pudo obtener la información del fichero: {0}',
 
     'DIALOG_INPUT_TITLE' : 'Diálogo de entrada',
@@ -144,7 +144,7 @@
     'DIALOG_FILEPROGRESS_LOADING' : 'Cargando...',
 
     'DIALOG_UPLOAD_TITLE'   : 'Diálogo de subida',
-    'DIALOG_UPLOAD_DESC'    : 'Subir archivo a <span>{0}</span>.<br />Tamaño máximo: {1} bytes',
+    'DIALOG_UPLOAD_DESC'    : 'Subir archivo a **{0}**.<br />Tamaño máximo: {1} bytes',
     'DIALOG_UPLOAD_MSG_FMT' : 'Subiendo \'{0}\' ({1} {2}) to {3}',
     'DIALOG_UPLOAD_MSG'     : 'Subiendo archivo...',
     'DIALOG_UPLOAD_FAILED'  : 'Fallo en la subida',

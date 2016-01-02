@@ -40,7 +40,7 @@
 
     'ERR_FILE_OPEN'             : 'Lỗi khi mở tệp',
     'ERR_WM_NOT_RUNNING'        : 'Trình quản lí cửa sổ không hoạt động',
-    'ERR_FILE_OPEN_FMT'         : 'Tập tin \'<span>{0}</span>\' không mở được',
+    'ERR_FILE_OPEN_FMT'         : 'Tập tin \'**{0}**\' không mở được',
     'ERR_APP_MIME_NOT_FOUND_FMT': 'Không thể tìm thấy bất kỳ ứng dụng hỗ trợ cho \'{0}\' files',
     'ERR_APP_LAUNCH_FAILED'     : 'Không thể khởi động ứng dụng',
     'ERR_APP_LAUNCH_FAILED_FMT' : 'Có lỗi xảy ra trong khi cố gắng khởi động: {0}',
@@ -118,7 +118,7 @@
     'DIALOG_FILE_SAVE'      : 'Lưu',
     'DIALOG_FILE_OPEN'      : 'Mở',
     'DIALOG_FILE_MKDIR'     : 'Thư mục mới',
-    'DIALOG_FILE_MKDIR_MSG' : 'Tạo một thư mục mới trong <span>{0}</span>',
+    'DIALOG_FILE_MKDIR_MSG' : 'Tạo một thư mục mới trong **{0}**',
     'DIALOG_FILE_OVERWRITE' : 'Bạn có chắc muốn ghi đè lên tập tin \'{0}\'?',
     'DIALOG_FILE_MNU_VIEWTYPE' : 'Kiểu xem',
     'DIALOG_FILE_MNU_LISTVIEW' : 'Danh sách',
@@ -132,7 +132,7 @@
     'DIALOG_FILEINFO_TITLE'   : 'Thông tin file',
     'DIALOG_FILEINFO_LOADING' : 'Đang tải thông tin tập tin cho: {0}',
     'DIALOG_FILEINFO_ERROR'   : 'Lỗi FileInformationDialog',
-    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Không thể có được thông tin file cho <span>{0}</span>',
+    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Không thể có được thông tin file cho **{0}**',
     'DIALOG_FILEINFO_ERROR_LOOKUP_FMT' : 'Không thể có được thông tin file cho: {0}',
 
     'DIALOG_INPUT_TITLE' : 'Nhập liệu',
@@ -141,7 +141,7 @@
     'DIALOG_FILEPROGRESS_LOADING' : 'Đang nạp...',
 
     'DIALOG_UPLOAD_TITLE'   : 'Tải lên',
-    'DIALOG_UPLOAD_DESC'    : 'Tải tập tin lên đến <span>{0}</span>.<br />Kích thước tối đa: {1} byte',
+    'DIALOG_UPLOAD_DESC'    : 'Tải tập tin lên đến **{0}**.<br />Kích thước tối đa: {1} byte',
     'DIALOG_UPLOAD_MSG_FMT' : 'Đang tải lên \'{0}\' ({1} {2}) đến {3}',
     'DIALOG_UPLOAD_MSG'     : 'Đang tải lên file...',
     'DIALOG_UPLOAD_FAILED'  : 'Tải lên thất bại',

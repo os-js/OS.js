@@ -36,7 +36,7 @@
 
   OSjs.Locales.fr_FR = {
     'ERR_FILE_OPEN'             : 'Erreur lors de l\'ouverture du fichier',
-    'ERR_FILE_OPEN_FMT'         : 'Le fichier \'<span>{0}</span>\' n\'a pas pu être ouvert',
+    'ERR_FILE_OPEN_FMT'         : 'Le fichier \'**{0}**\' n\'a pas pu être ouvert',
     'ERR_APP_MIME_NOT_FOUND_FMT': 'Impossible de trouver une application supportant les fichiers \'{0}\'',
     'ERR_APP_LAUNCH_FAILED'     : 'Impossible de lancer l\'application',
     'ERR_APP_LAUNCH_FAILED_FMT' : 'Une erreur est survenue lors du lancement de : {0}',
@@ -102,7 +102,7 @@
     'DIALOG_FILE_SAVE'      : 'Enregistrer',
     'DIALOG_FILE_OPEN'      : 'Ouvrir',
     'DIALOG_FILE_MKDIR'     : 'Nouveau dossier',
-    'DIALOG_FILE_MKDIR_MSG' : 'Créer un nouveau dossier dans <span>{0}</span>',
+    'DIALOG_FILE_MKDIR_MSG' : 'Créer un nouveau dossier dans **{0}**',
     'DIALOG_FILE_OVERWRITE' : 'Êtes-vous sûr de vouloir écraser le fichier \'{0}\'?',
     'DIALOG_FILE_MNU_VIEWTYPE' : 'Type de vue',
     'DIALOG_FILE_MNU_LISTVIEW' : 'Vue en liste',
@@ -116,7 +116,7 @@
     'DIALOG_FILEINFO_TITLE'   : 'Informations sur le fichier',
     'DIALOG_FILEINFO_LOADING' : 'Chargement des informations sur le fichier: {0}',
     'DIALOG_FILEINFO_ERROR'   : 'Erreur FileInformationDialog',
-    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Impossible de récupérer les informations sur : <span>{0}</span>',
+    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Impossible de récupérer les informations sur : **{0}**',
     'DIALOG_FILEINFO_ERROR_LOOKUP_FMT' : 'FImpossible de récupérer les informations sur : {0}',
 
     'DIALOG_INPUT_TITLE' : 'Fenêtre de saisie',
@@ -125,7 +125,7 @@
     'DIALOG_FILEPROGRESS_LOADING' : 'Chargement...',
 
     'DIALOG_UPLOAD_TITLE'   : 'Fenêtre d\'envoi de fichier',
-    'DIALOG_UPLOAD_DESC'    : 'Envoyer un fichier vers <span>{0}</span>.<br />Taille maximum: {1} octets',
+    'DIALOG_UPLOAD_DESC'    : 'Envoyer un fichier vers **{0}**.<br />Taille maximum: {1} octets',
     'DIALOG_UPLOAD_MSG_FMT' : 'Envoi de \'{0}\' ({1} {2}) vers {3}',
     'DIALOG_UPLOAD_MSG'     : 'Envoi du fichier...',
     'DIALOG_UPLOAD_FAILED'  : 'L\'envoi a échoué!',

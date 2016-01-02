@@ -36,7 +36,7 @@
   OSjs.Locales.zh_CN = {
     'ERR_FILE_OPEN'             : '打开文件错误',
     'ERR_WM_NOT_RUNNING'        : '窗口管理器未支持',
-    'ERR_FILE_OPEN_FMT'         : '文件 \'<span>{0}</span>\' 无法打开',
+    'ERR_FILE_OPEN_FMT'         : '文件 \'**{0}**\' 无法打开',
     'ERR_APP_MIME_NOT_FOUND_FMT': '找不到能打开此 \'{0}\' 文件的应用',
     'ERR_APP_LAUNCH_FAILED'     : '应用运行失败',
     'ERR_APP_LAUNCH_FAILED_FMT' : '运行时出现错误: {0}',
@@ -102,7 +102,7 @@
     'DIALOG_FILE_SAVE'      : '保存',
     'DIALOG_FILE_OPEN'      : '打开',
     'DIALOG_FILE_MKDIR'     : '新建目录',
-    'DIALOG_FILE_MKDIR_MSG' : '在 <span>{0}</span> 里创建一个目录',
+    'DIALOG_FILE_MKDIR_MSG' : '在 **{0}** 里创建一个目录',
     'DIALOG_FILE_OVERWRITE' : '你确定要覆盖 \'{0}\'?',
     'DIALOG_FILE_MNU_VIEWTYPE' : '视图类型',
     'DIALOG_FILE_MNU_LISTVIEW' : '列表',
@@ -116,7 +116,7 @@
     'DIALOG_FILEINFO_TITLE'   : '文件信息',
     'DIALOG_FILEINFO_LOADING' : '从 {0} 加载文件信息',
     'DIALOG_FILEINFO_ERROR'   : '读取文件信息错误',
-    'DIALOG_FILEINFO_ERROR_LOOKUP'     : '无法获取<span>{0}</span>的文件信息',
+    'DIALOG_FILEINFO_ERROR_LOOKUP'     : '无法获取**{0}**的文件信息',
     'DIALOG_FILEINFO_ERROR_LOOKUP_FMT' : '无法获取文件信息: {0}',
 
     'DIALOG_INPUT_TITLE' : '输入',
@@ -125,7 +125,7 @@
     'DIALOG_FILEPROGRESS_LOADING' : '加载中...',
 
     'DIALOG_UPLOAD_TITLE'   : '上传',
-    'DIALOG_UPLOAD_DESC'    : '上传文件到<span>{0}</span>.<br />最大限制: {1} bytes',
+    'DIALOG_UPLOAD_DESC'    : '上传文件到**{0}**.<br />最大限制: {1} bytes',
     'DIALOG_UPLOAD_MSG_FMT' : '正在上传 \'{0}\' ({1} {2}) 到 {3}',
     'DIALOG_UPLOAD_MSG'     : '上传文件...',
     'DIALOG_UPLOAD_FAILED'  : '上传失败',

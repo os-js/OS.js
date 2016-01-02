@@ -86,7 +86,9 @@
     var root = DialogWindow.prototype.init.apply(this, arguments);
     var self = this;
 
-    this.scheme.find(this, 'Message').set('value', this.args.message, true);
+    var msg = Utils.$escape(this.args.message || '').replace(/\*\*(\w+)\*\*/, '<span>$1</span>');
+
+    this.scheme.find(this, 'Message').set('value', msg, true);
     this.scheme.find(this, 'Summary').set('value', this.args.error);
     this.scheme.find(this, 'Trace').set('value', this.traceMessage);
     if ( !this.traceMessage ) {

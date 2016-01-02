@@ -40,7 +40,7 @@
 
     'ERR_FILE_OPEN'             : 'Грешка при отваряне на файл',
     'ERR_WM_NOT_RUNNING'        : 'Мениджъра на прозорци не работи ',
-    'ERR_FILE_OPEN_FMT'         : 'Файлът \'<span>{0}</span>\' не може да бъде отворен',
+    'ERR_FILE_OPEN_FMT'         : 'Файлът \'**{0}**\' не може да бъде отворен',
     'ERR_APP_MIME_NOT_FOUND_FMT': 'Няма намерени приложения с поддръжка за \'{0}\' файлове',
     'ERR_APP_LAUNCH_FAILED'     : 'Приложението не можа да бъде стартирано',
     'ERR_APP_LAUNCH_FAILED_FMT' : 'Получи се грешка по време на стартиране: {0}',
@@ -124,7 +124,7 @@
     'DIALOG_FILE_SAVE'      : 'Запази',
     'DIALOG_FILE_OPEN'      : 'Отвори',
     'DIALOG_FILE_MKDIR'     : 'Нова папка',
-    'DIALOG_FILE_MKDIR_MSG' : 'Създай нова директория в <span>{0}</span>',
+    'DIALOG_FILE_MKDIR_MSG' : 'Създай нова директория в **{0}**',
     'DIALOG_FILE_OVERWRITE' : 'Сигурни ли сте, че искате да презапишете фаилът \'{0}\'?',
     'DIALOG_FILE_MNU_VIEWTYPE' : 'Тип на изглед',
     'DIALOG_FILE_MNU_LISTVIEW' : 'Списък',
@@ -138,7 +138,7 @@
     'DIALOG_FILEINFO_TITLE'   : 'Инфорамция за файлът',
     'DIALOG_FILEINFO_LOADING' : 'Зареждане на информация за: {0}',
     'DIALOG_FILEINFO_ERROR'   : 'Грешка в информация за файл',
-    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Не може да бъде намерена информация за файлът <span>{0}</span>',
+    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Не може да бъде намерена информация за файлът **{0}**',
     'DIALOG_FILEINFO_ERROR_LOOKUP_FMT' : 'Не може да бъде намерена информация за файлът: {0}',
 
     'DIALOG_INPUT_TITLE' : 'Входящ диалог',
@@ -147,7 +147,7 @@
     'DIALOG_FILEPROGRESS_LOADING' : 'Зареждане...',
 
     'DIALOG_UPLOAD_TITLE'   : 'Добави диалог',
-    'DIALOG_UPLOAD_DESC'    : 'Добави файл към <span>{0}</span>.<br />Максимален размер: {1} bytes',
+    'DIALOG_UPLOAD_DESC'    : 'Добави файл към **{0}**.<br />Максимален размер: {1} bytes',
     'DIALOG_UPLOAD_MSG_FMT' : 'Добавяне \'{0}\' ({1} {2}) to {3}',
     'DIALOG_UPLOAD_MSG'     : 'Добавяне на фаил...',
     'DIALOG_UPLOAD_FAILED'  : 'Добавяне провалено',

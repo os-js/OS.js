@@ -40,7 +40,7 @@
 
     'ERR_FILE_OPEN'             : 'Błąd otwierania pliku',
     'ERR_WM_NOT_RUNNING'        : 'Menedżer okien nie jest włączony',
-    'ERR_FILE_OPEN_FMT'         : 'Nie można otworzyć \'<span>{0}</span>\'',
+    'ERR_FILE_OPEN_FMT'         : 'Nie można otworzyć \'**{0}**\'',
     'ERR_APP_MIME_NOT_FOUND_FMT': 'Nie można znaleźć aplikacji wspierającej \'{0}\'',
     'ERR_APP_LAUNCH_FAILED'     : 'Błąd otwierania aplikacji',
     'ERR_APP_LAUNCH_FAILED_FMT' : 'Błąd podczas uruchamiania aplikacji: {0}',
@@ -124,7 +124,7 @@
     'DIALOG_FILE_SAVE'      : 'Zapisz',
     'DIALOG_FILE_OPEN'      : 'Otwórz',
     'DIALOG_FILE_MKDIR'     : 'Nowy folder',
-    'DIALOG_FILE_MKDIR_MSG' : 'Nowy folder w <span>{0}</span>',
+    'DIALOG_FILE_MKDIR_MSG' : 'Nowy folder w **{0}**',
     'DIALOG_FILE_OVERWRITE' : 'Czy chcesz nadpisać plik \'{0}\'?',
     'DIALOG_FILE_MNU_VIEWTYPE' : 'Widok',
     'DIALOG_FILE_MNU_LISTVIEW' : 'Lista',
@@ -138,7 +138,7 @@
     'DIALOG_FILEINFO_TITLE'   : 'Informacje',
     'DIALOG_FILEINFO_LOADING' : 'Ładowanie informacji dla: {0}',
     'DIALOG_FILEINFO_ERROR'   : 'Błąd okna Informacji o pliku',
-    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Nie udało się uzyskać informacji dla <span>{0}</span>',
+    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Nie udało się uzyskać informacji dla **{0}**',
     'DIALOG_FILEINFO_ERROR_LOOKUP_FMT' : 'Nie udało się uzyskać informacji dla: {0}',
 
     'DIALOG_INPUT_TITLE' : 'Wprowadzanie',
@@ -147,7 +147,7 @@
     'DIALOG_FILEPROGRESS_LOADING' : 'Ładowanie...',
 
     'DIALOG_UPLOAD_TITLE'   : 'Wysyłanie',
-    'DIALOG_UPLOAD_DESC'    : 'Wysyłanie pliku do <span>{0}</span>.<br />Maksymalny rozmiar: {1} bitów',
+    'DIALOG_UPLOAD_DESC'    : 'Wysyłanie pliku do **{0}**.<br />Maksymalny rozmiar: {1} bitów',
     'DIALOG_UPLOAD_MSG_FMT' : 'Wysyłanie \'{0}\' ({1} {2}) to {3}',
     'DIALOG_UPLOAD_MSG'     : 'Wysyłanie pliku...',
     'DIALOG_UPLOAD_FAILED'  : 'Błąd wywołania',
