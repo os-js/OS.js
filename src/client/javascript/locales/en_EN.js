@@ -250,7 +250,6 @@
     //
     // PackageManager
     //
-
     'ERR_PACKAGE_EXISTS': 'Package installation directroy already exists. Cannot continue!',
 
     //
@@ -273,7 +272,6 @@
     //
     // General
     //
-
     'LBL_UNKNOWN'      : 'Unknown',
     'LBL_APPEARANCE'   : 'Appearance',
     'LBL_USER'         : 'User',

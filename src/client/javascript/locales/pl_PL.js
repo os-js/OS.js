@@ -79,6 +79,9 @@
     'TITLE_SIGN_OUT' : 'Wyloguj',
     'TITLE_SIGNED_IN_AS_FMT' : 'Zalogowano jako: {0}',
 
+    // SESSION
+    'MSG_SESSION_WARNING' : 'Czy na pewno chcesz zamknąć OS.js? Wszystkie niezapisane dane i ustawienia zostaną utracone!',
+
     // Service
     'BUGREPORT_MSG' : 'Wyślij proszę raport błędu jesli uważasz, że jest to błąd.\nDołącz opis błędu',
 
@@ -262,7 +265,6 @@
     //
     // General
     //
-
     'LBL_UNKNOWN'      : 'Nieznany',
     'LBL_APPEARANCE'   : 'Wygląd',
     'LBL_USER'         : 'Użytkownik',
@@ -355,6 +357,15 @@
     'LBL_CREATED' : 'Utworzono',
     'LBL_MODIFIED' : 'Zmodyfikowano',
     'LBL_SHOW_COLUMNS' : 'Pokaż kolumny'
+    'LBL_MOVE' : 'Przenieść',
+    'LBL_OPTIONS' : 'Opcje',
+    'LBL_OK' : 'OK',
+    'LBL_DIRECTORY' : 'Katalog',
+    'LBL_CREATE' : 'Utwórz',
+    'LBL_BUGREPORT' : 'Zgłoś usterkę',
+    'LBL_INSTALL' : 'Zainstaluj',
+    'LBL_UPDATE' : 'Aktualizacja',
+    'LBL_REMOVE' : 'Usuń'
   };
 
 })();
