@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(WindowManager, GUI, Utils, API, VFS) {
+  // jscs:disable validateQuoteMarks
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -173,7 +174,7 @@
       'Utilities' : 'Tiện ích',
       'Other' : 'Khác'
     },
-    
+
     tr_TR : {
       'Open settings' : 'Ayarları Aç',
       'Create shortcut' : 'Kısayol Oluştur',
@@ -190,8 +191,27 @@
       'System' : 'Sistem',
       'Utilities' : 'Yan Gereksinimler',
       'Other' : 'Diğer'
-    }    
-    
+    },
+
+    bg_BG : {
+      'Killing this process will stop things from working!' : 'Прекратяването на този процес ще спре някой приложения!',
+      'Open settings' : 'Отвори настойки',
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Вашият панел няма обекти. Отидете в настойки за да върнете по подразбиране или да модифицирате ръчно\n(Тази грешка може да се появи след актуализация на OS.js)',
+      'Create shortcut' : 'Създай пряк път',
+      'Set as wallpaper' : 'Направи изображение за фон',
+      'An error occured while creating PanelItem: {0}' : 'Появи се грешка докато се създаваше панелен обект: {0}',
+
+      'Development' : 'Разработка',
+      'Education' : 'Образование',
+      'Games' : 'Игри',
+      'Graphics' : 'Графика',
+      'Network' : 'Мрежа',
+      'Multimedia' : 'Мултимедия',
+      'Office' : 'Офис',
+      'System' : 'Система',
+      'Utilities' : 'Инструменти',
+      'Other' : 'Други'
+    }
 
   };
 

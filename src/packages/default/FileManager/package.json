@@ -2,23 +2,25 @@
   "className":  "ApplicationFileManager",
   "name":       "File Manager",
   "description":"The default file manager",
-  "names":      {
-    "no_NO":      "Fil-håndtering",
-    "tr_TR":      "Dosya Yöneticisi",
-    "pl_PL":      "Menedżer Plików",
-    "de_DE":      "Dateimanager",
-    "ru_RU":      "Файловый менеджер",
-    "nl_NL":      "bestands beheer",
-    "vi_VN":      "Quản lí file"
+  "names": {
+    "bg_BG": "Файлов мениджър",
+    "de_DE": "Dateimanager",
+    "nl_NL": "bestands beheer",
+    "no_NO": "Fil-håndtering",
+    "pl_PL": "Menedżer Plików",
+    "ru_RU": "Файловый менеджер",
+    "tr_TR": "Dosya Yöneticisi",
+    "vi_VN": "Quản lí file"
   },
-  "descriptions":      {
-    "no_NO":      "Standard Fil-håndtering program",
-    "tr_TR":      "Varsayılan dosya yöneticisi",
-    "pl_PL":      "Domyślny Menedżer Plików",
-    "de_DE":      "Standardmäßiger Dateimanager",
-    "ru_RU":      "Стандартный файловый менеджер",
-    "nl_NL":      "Standaard bestands beheerder",
-    "vi_VN":      "Trình quản lí file mặc định"
+  "descriptions": {
+    "bg_BG": "Стандартния файлов мениджър",
+    "de_DE": "Standardmäßiger Dateimanager",
+    "nl_NL": "Standaard bestands beheerder",
+    "no_NO": "Standard Fil-håndtering program",
+    "pl_PL": "Domyślny Menedżer Plików",
+    "ru_RU": "Стандартный файловый менеджер",
+    "tr_TR": "Varsayılan dosya yöneticisi",
+    "vi_VN": "Trình quản lí file mặc định"
   },
   "mime":       null,
   "category":   "utilities",

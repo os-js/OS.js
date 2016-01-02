@@ -1,12 +1,13 @@
 {
   "className":  "ApplicationCalculator",
   "name":       "Calculator",
-  "names":      {
-    "no_NO": "Kalkulator",
-    "tr_TR": "Hesap Makinesi",
-    "ru_RU": "Калькулятор",
-    "pl_PL": "Kalkulator",
+  "names": {
+    "bg_Bg": "Клакулатор",
     "nl_NL": "Rekenmachine",
+    "no_NO": "Kalkulator",
+    "pl_PL": "Kalkulator",
+    "ru_RU": "Калькулятор",
+    "tr_TR": "Hesap Makinesi",
     "vi_VN": "Máy tính"
   },
   "mime":       null,

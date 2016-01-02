@@ -2,23 +2,25 @@
   "className":  "ApplicationWriter",
   "name":       "Writer",
   "description":"Write rich text documents",
-  "names":      {
-    "no_NO":      "Writer",
-    "tr_TR":      "Writer",
-    "pl_PL":      "Writer",
-    "de_DE":      "Writer",
-    "ru_RU":      "Текстовый процессор",
-    "nl_NL":      "Tekstverwerker",
-    "vi_VN":      "Viết"
+  "names": {
+    "bg_BG": "Текст",
+    "de_DE": "Writer",
+    "nl_NL": "Tekstverwerker",
+    "no_NO": "Writer",
+    "pl_PL": "Writer",
+    "ru_RU": "Текстовый процессор",
+    "tr_TR": "Writer",
+    "vi_VN": "Viết"
   },
-  "descriptions":      {
-    "no_NO":      "Skriv riktekst dokumenter",
-    "tr_TR":      "Gelişmiş dökümanlar oluşturun",
-    "pl_PL":      "Twórz dokumenty rich text",
-    "de_DE":      "Verfassen Sie Rich-Text-Dokumente",
-    "ru_RU":      "Текстовый процессор",
-    "nl_NL":      "Tekst verwerker met opmaak",
-    "vi_VN":      "Xem, chỉnh sửa văn bản"
+  "descriptions": {
+    "bg_BG": "Писанене на обогатен текст",
+    "de_DE": "Verfassen Sie Rich-Text-Dokumente",
+    "nl_NL": "Tekst verwerker met opmaak",
+    "no_NO": "Skriv riktekst dokumenter",
+    "pl_PL": "Twórz dokumenty rich text",
+    "ru_RU": "Текстовый процессор",
+    "tr_TR": "Gelişmiş dökümanlar oluşturun",
+    "vi_VN": "Xem, chỉnh sửa văn bản"
   },
   "mime":       ["^text", "osjs\\/document"],
   "category":   "office",

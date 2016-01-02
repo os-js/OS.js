@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(Application, Window, GUI, Dialogs, Utils, API, VFS) {
+  // jscs:disable validateQuoteMarks
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -205,10 +206,10 @@
       'File View Options': 'Cài đặt quản lí tệp',
       'Panels' : 'Khung',
       'Autohide' : 'Tự động ẩn',
-      'Information' : 'Thông tin',      
+      'Information' : 'Thông tin',
       'Icon View' : 'Biểu tượng'
     },
-      tr_TR : {
+    tr_TR : {
       'Theme' : 'Tema',
       'Background' : 'arkaplan',
       'Desktop' : 'masaüstü',
@@ -230,6 +231,28 @@
       'Enable Icon View' : 'icon görünümü etkin',
       'Remove shortcut' : 'kısayolları kaldır',
       'General' : 'genel'
+    },
+    bg_BG : {
+      'Theme' : 'Тема',
+      'Background' : 'Фон',
+      'Desktop' : 'Работен плот',
+      'Background Type' : 'Тип на фон',
+      'Image (Repeat)' : 'Изображение (повтарящо се)',
+      'Image (Centered)' : 'Изображение (Центрирано)',
+      'Image (Fill)' : 'Изображение (Запълващо)',
+      'Image (Streched)' : 'Изображение (Разтеглено)',
+      'Desktop Margin ({0}px)' : 'Размер на работен плот ({0}px)',
+      'Panel' : 'Панел',
+      'Position' : 'Позиция',
+      'Ontop' : 'Най-отгоре',
+      'Items' : 'Обекти',
+      'Enable Animations' : 'Разреши анимации',
+      'Language (requires restart)' : 'Език (нуждае се от рестарт)',
+      'Enable Sounds' : 'Включи звуци',
+      'Enable Window Switcher' : 'Включи превключване на прозорци',
+      'Enable Hotkeys' : 'Включи горещи клавиши',
+      'Enable Icon View' : 'Включи иконен-изглед',
+      'General': 'Основен'
     }
   };
 

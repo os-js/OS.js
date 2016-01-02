@@ -9,16 +9,18 @@
     "de_DE":      "Über OS.js",
     "ru_RU":      "Об OS.js",
     "nl_NL":      "Over OS.js",
-    "vi_VN":      "Thông tin về OS.js"
+    "vi_VN": "Thông tin về OS.js",
+    "bg_BG": " За OS.js"
   },
   "descriptions": {
-    "no_NO":      "Om OS.js",
-    "tr_TR":      "hakkında OS.js",
-    "pl_PL":      "o OS.js",
-    "de_DE":      "Über OS.js",
-    "ru_RU":      "Об OS.js",
-    "nl_NL":      "Over OS.js",
-    "vi_VN":      "Thông tin về OS.js"
+    "bg_BG": "За OS.js",
+    "de_DE": "Über OS.js",
+    "nl_NL": "Over OS.js",
+    "no_NO": "Om OS.js",
+    "pl_PL": "o OS.js",
+    "ru_RU": "Об OS.js",
+    "tr_TR": "hakkında OS.js",
+    "vi_VN": "Thông tin về OS.js"
   },
   "singular":   true,
   "mime":       null,

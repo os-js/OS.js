@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(Application, Window, GUI, Dialogs, Utils, API, VFS) {
+  // jscs:disable validateQuoteMarks
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -364,7 +365,7 @@
       'Radius' : 'Bán kính',
       'Iterations' : 'Lặp đi lặp lại'
     },
-       tr_TR : {
+    tr_TR : {
       'Toggle tools toolbar' : 'araç çubugu değiştirme araçları',  //yanlış olabilir
       'Toggle layers toolbar' : 'Araç çubugu katmanı değiştirme',
       'Layer' : 'Katman',
@@ -410,6 +411,54 @@
 
       'Radius' : 'yarıçap',
       'Iterations' : 'yineleme'
+    },
+
+    bg_BG : {
+      'Toggle tools toolbar' : 'Бар с инструменти',
+      'Toggle layers toolbar' : 'Бар с слоеве',
+      'Layer' : 'Слой',
+      'Effect' : 'Ефект',
+      'Flip Horizontally' : 'Обърни хоризонтално',
+      'Flip Vertically' : 'Обърни вертикално',
+      'Foreground' : 'Преден фон',
+      'Bakgrunn' : 'Заден фон',
+      'Foreground (Fill) Color' : 'Преден фон (Запълни) цвят',
+      'Background (Stroke) Color' : 'Заден фон цвят',
+      'Line join' : 'Съединяване на линии',
+      'Line width' : 'Широчина на линия',
+      'Toggle Stroke' : 'Превключване на удър',
+      'Enable stroke' : 'Включи удър',
+      'Round' : 'Кръгъл',
+      'Miter' : 'Митра',
+      'Bevel' : 'Откос',
+      'Stroked' : 'Ударен',
+      'No stroke' : 'Без удър',
+
+      'Pointer' : 'Стрелка',
+      'Move active layer' : 'Премести активен слой',
+
+      'Picker' : 'берач',
+      'LMB: set fg color, RMB: set gb color' : 'LMB: изберете цвят за преден план, RMB: изберете цвят за фон',
+
+      'Pencil' : 'Молив',
+      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: рисувай с fg/bg цвят',
+      'Path' : 'Път',
+
+      'Square/Rectangle' : 'Квадрат/Правоъгъкник',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: рисувай с fb/bg цвят, SHIFT: нарисувай правоъгълник',
+
+      'Circle/Ellipse' : 'Кръг/Елипса',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: рисувай с fb/bg цвят, SHIFT: нарисувай елипса',
+
+      'Blur' : 'Замъгли',
+      'Noise' : 'Шум',
+      'Invert colors' : 'Инвертирай цветове',
+      'Grayscale' : 'Черно-бяло',
+      'Sharpen' : 'Острота',
+      'Simple Blur' : 'Опростено замъгляване',
+
+      'Radius' : 'Радиус',
+      'Iterations' : 'Повторения'
     }
 
   };

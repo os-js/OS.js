@@ -2,23 +2,25 @@
   "className":  "ApplicationProcessViewer",
   "name":       "Process Viewer",
   "description":"View running processes",
-  "names":      {
-    "no_NO":      "Prosess oversikt",
-    "tr_TR":      "İşlemleri Görüntüle",
-    "pl_PL":      "Procesy",
-    "de_DE":      "Prozess-Manager",
-    "ru_RU":      "Менеджер процессов",
-    "nl_NL":      "Proces manager",
-    "vi_VN":      "Xem tiến trình"
+  "names": {
+    "bg_BG": "Процеси",
+    "de_DE": "Prozess-Manager",
+    "nl_NL": "Proces manager",
+    "no_NO": "Prosess oversikt",
+    "pl_PL": "Procesy",
+    "ru_RU": "Менеджер процессов",
+    "tr_TR": "İşlemleri Görüntüle",
+    "vi_VN": "Xem tiến trình"
   },
-  "descriptions":      {
-    "no_NO":      "Se oversikt over kjørende prosesser",
-    "tr_TR":      "çalışan işlemleri görüntüle",
-    "pl_PL":      "Zobacz działające procesy",
-    "de_DE":      "Laufende Prozesse verwalten",
-    "ru_RU":      "Менеджер запущенных процессов",
-    "nl_NL":      "Bekijk de lopende processen",
-    "vi_VN":      "Xem các tiến trình đang chạy"
+  "descriptions": {
+    "bg_BG": "Преглед на процеси",
+    "de_DE": "Laufende Prozesse verwalten",
+    "nl_NL": "Bekijk de lopende processen",
+    "no_NO": "Se oversikt over kjørende prosesser",
+    "pl_PL": "Zobacz działające procesy",
+    "ru_RU": "Менеджер запущенных процессов",
+    "tr_TR": "çalışan işlemleri görüntüle",
+    "vi_VN": "Xem các tiến trình đang chạy"
   },
   "singular":   true,
   "mime":       null,

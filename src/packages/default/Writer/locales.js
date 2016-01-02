@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(Application, Window, GUI, Dialogs, VFS, Utils) {
+  // jscs:disable validateQuoteMarks
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -60,6 +61,9 @@
     },
     tr_TR : {
       'Insert URL' : 'URL ekle'
+    },
+    bg_BG : {
+      'Insert URL' : 'Въведи URL'
     }
   };
 

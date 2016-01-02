@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(Application, Window, GUI, Dialogs, VFS) {
+  // jscs:disable validateQuoteMarks
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -48,7 +49,7 @@
       'Time' : 'Tid',
       'Media information query failed' : 'Media-informasjon forespursel feil',
       'seek unavailable in format' : 'spoling utilgjenglig i format',
-      'The audio type is not supported: {0}' : 'Denne lyd-typen er ikke støttet: {0}',
+      'The audio type is not supported: {0}' : 'Denne lyd-typen er ikke støttet: {0}'
     },
     pl_PL : {
       'Playlist' : 'Playlista',
@@ -63,7 +64,7 @@
       'Time' : 'Czas',
       'Media information query failed' : 'Brak informacji',
       'seek unavailable in format' : 'Przewijanie nie jest obsługiwane w tym formacie',
-      'The audio type is not supported: {0}' : 'Ten typ audio nie jest obsługiwany: {0}',
+      'The audio type is not supported: {0}' : 'Ten typ audio nie jest obsługiwany: {0}'
     },
     de_DE : {
       'Playlist' : 'Wiedergabeliste',
@@ -78,7 +79,7 @@
       'Time' : 'Zeit',
       'Media information query failed' : 'Media Informationssuche gescheitert',
       'seek unavailable in format' : 'Spulen im Format nicht verfügbar',
-      'The audio type is not supported: {0}' : 'Der Audio-Typ {0} ist nicht unterstützt',
+      'The audio type is not supported: {0}' : 'Der Audio-Typ {0} ist nicht unterstützt'
     },
     es_ES : {
       'Playlist' : 'Lista de reproducción',
@@ -93,7 +94,7 @@
       'Time' : 'Tiempo',
       'Media information query failed' : 'Error recupersqndo información del medio',
       'seek unavailable in format' : 'búsqueda no disponible en este formato',
-      'The audio type is not supported: {0}' : 'El tipo de audio no está soportado: {0}',
+      'The audio type is not supported: {0}' : 'El tipo de audio no está soportado: {0}'
     },
     fr_FR : {
     },
@@ -125,7 +126,7 @@
       'Time' : 'Tijd',
       'Media information query failed' : 'Zoeken naar media is niet gelukt',
       'seek unavailable in format' : 'Voor/acteruit spoelen is niet beschikbaar in dit formaat',
-      'The audio type is not supported: {0}' : 'Audio type {0} wordt niet ondersteund',
+      'The audio type is not supported: {0}' : 'Audio type {0} wordt niet ondersteund'
     },
     vi_VN : {
       'Playlist' : 'Danh sách phát',
@@ -140,10 +141,9 @@
       'Time' : 'Thời gian',
       'Media information query failed' : 'Truy vấn thông tin tập tin thất bại',
       'seek unavailable in format' : 'không tua được trong định dạng này',
-      'The audio type is not supported: {0}' : 'Loại âm thanh {0} không được hỗ trợ',
+      'The audio type is not supported: {0}' : 'Loại âm thanh {0} không được hỗ trợ'
     },
-        tr_TR : {
-
+    tr_TR : {
       'Playlist' : 'Oynatma listesi',
       'Playback aborted' : 'kayıt çalma/dinleme durduruldu',
       'Network or communication error' : 'ağ veya iletişim hatası',
@@ -156,7 +156,22 @@
       'Time' : 'zaman',
       'Media information query failed' : 'medya bilgisini elde etmede hata oluştu',
       'seek unavailable in format' : 'bu formatta ileri saramazsınız',
-      'The audio type is not supported: {0}' : 'Bu format desteklenmiyor: {0}',
+      'The audio type is not supported: {0}' : 'Bu format desteklenmiyor: {0}'
+    },
+    bg_BG : {
+      'Playlist' : 'Плейлист',
+      'Playback aborted' : 'Прекратено изпълнение',
+      'Network or communication error' : 'Проблем с връзка към мрежа',
+      'Decoding failed. Corruption or unsupported media' : 'Провалено декодиране, повереден файл или неподдържан формат',
+      'Media source not supported' : 'Източника на медия не се поддържа',
+      'Failed to play file' : 'Изпълнението на файла се провали',
+      'Artist' : 'Изпълнител',
+      'Album' : 'Албум',
+      'Track' : 'Песен',
+      'Time' : 'Време',
+      'Media information query failed' : 'Получаване на информация провалено',
+      'seek unavailable in format' : 'Невъществуващ формат',
+      'The audio type is not supported: {0}' : 'Аудио формата не се поддържа'
     }
   };
 

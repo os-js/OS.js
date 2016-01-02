@@ -4,6 +4,7 @@
   },
   "locales": [
     "src/client/javascript/locales/en_EN.js",
+    "src/client/javascript/locales/bg_BG.js",
     "src/client/javascript/locales/no_NO.js",
     "src/client/javascript/locales/de_DE.js",
     "src/client/javascript/locales/es_ES.js",

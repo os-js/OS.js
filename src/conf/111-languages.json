@@ -2,6 +2,7 @@
   "client" : {
     "Languages": {
       "en_EN": "English",
+      "bg_BG": "Bulgarian (Bulgaria)",
       "no_NO": "Norsk (Norwegian)",
       "de_DE": "Deutsch (German)",
       "es_ES": "Spanish (Spain)",

@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(Application, Window, GUI, Utils, API, VFS) {
+  // jscs:disable validateQuoteMarks
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -52,7 +53,7 @@
       "Copying <span>{0}</span> to <span>{1}</span>" : "Kopiowanie <span>{0}</span> do <span>{1}</span>",
       "Refreshing..." : "Odświeżanie...",
       "Loading..." : "Ładowanie...",
-	  "Create a new file in <span>{0}</span>" : "Utwórz nowy plik w <span>{0}</span>",
+      "Create a new file in <span>{0}</span>" : "Utwórz nowy plik w <span>{0}</span>",
       "Create a new directory in <span>{0}</span>" : "Utwórz nowy folder w <span>{0}</span>",
       "Rename <span>{0}</span>" : "Zmień nazwę <span>{0}</span>",
       "Delete <span>{0}</span> ?" : "Usunąć <span>{0}</span> ?"
@@ -100,7 +101,7 @@
       "Rename <span>{0}</span>" : "Đổi tên <span>{0}</span>",
       "Delete <span>{0}</span> ?" : "Xóa <span>{0}</span>?"
     },
-      tr_TR : {
+    tr_TR : {
       'Show Sidebar' : 'Kenar çubuğunu göster',
       'Copying file...' : 'kopyalanıyor...',
       "Copying <span>{0}</span> to <span>{1}</span>" : "<span>{0}</span> dosyası  <span>{1}</span>e kopyalanıyor",
@@ -109,8 +110,17 @@
       "Create a new directory in <span>{0}</span>" : " <span>{0}</span> içinde yeni bir klasör aç",
       "Rename <span>{0}</span>" : "yeniden adlandır <span>{0}</span>",
       "Delete <span>{0}</span> ?" : "sil <span>{0}</span>?"
+    },
+    bg_BG : {
+      'Show Sidebar' : 'покажи страничен бар',
+      'Copying file...' : 'Копиране на файл...',
+      "Copying <span>{0}</span> to <span>{1}</span>" : "Копиране <span>{0}</span> към <span>{1}</span>",
+      "Refreshing..." : "Опресняване...",
+      "Loading..." : "Зареждане...",
+      "Create a new directory in <span>{0}</span>" : "Създаване на нова директория в <span>{0}</span>",
+      "Rename <span>{0}</span>" : "преименуване на <span>{0}</span>",
+      "Delete <span>{0}</span> ?" : "Изтриване на <span>{0}</span>?"
     }
-
   };
 
   function _() {
