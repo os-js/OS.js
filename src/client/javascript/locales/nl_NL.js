@@ -29,6 +29,7 @@
  * Dutch translation by Imre Biacsics
  */
 (function() {
+  // jscs:disable validateQuoteMarks
   'use strict';
 
   OSjs.Locales = OSjs.Locales || {};

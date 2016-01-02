@@ -50,18 +50,6 @@
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-jscs');
 
-    var sourceFiles = [
-      'Gruntfile.js',
-      'src/*.js',
-      'src/client/javascript/*.js',
-      'src/client/javascript/**/*.js',
-      'src/packages/default/**/*.js',
-      '!src/packages/default/Broadway/**',
-      '!src/packages/default/**/locales.js',
-      '!src/packages/default/**/locale.js',
-      '!src/packages/default/Calculator/main.js'
-    ];
-
     grunt.initConfig({
       jshint: {
         options: {
@@ -94,7 +82,18 @@
           node: true,
           maxerr: 9999
         },
-        all: sourceFiles
+        all: [
+          'Gruntfile.js',
+          'src/*.js',
+          'src/client/javascript/*.js',
+          'src/client/javascript/**/*.js',
+          '!src/client/javascript/locales/bg_BG.js',
+          'src/packages/default/**/*.js',
+          '!src/packages/default/Broadway/**',
+          '!src/packages/default/**/locales.js',
+          '!src/packages/default/**/locale.js',
+          '!src/packages/default/Calculator/main.js'
+        ]
       },
       mochaTest: {
         test: {
@@ -140,7 +139,15 @@
         }
       },
       jscs: {
-        src: sourceFiles,
+        src: [
+          'Gruntfile.js',
+          'src/*.js',
+          'src/client/javascript/*.js',
+          'src/client/javascript/**/*.js',
+          'src/packages/default/**/*.js',
+          '!src/packages/default/Broadway/**',
+          '!src/packages/default/Calculator/main.js'
+        ],
         options: {
           config: '.jscsrc',
           verbose: true,
