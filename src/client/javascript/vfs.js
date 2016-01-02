@@ -187,7 +187,7 @@
 
     function filterFile(iter) {
       if ( iter.filename !== '..' ) {
-        if ( (options.typeFilter && iter.type !== options.typeFilter) || (!options.showHiddenFiles && iter.filename.match(/^\./)) ) {
+        if ( (options.typeFilter && iter.type !== options.typeFilter) || (!options.showHiddenFiles && iter.filename.match(/^\.\w/)) ) {
           return false;
         }
       }
