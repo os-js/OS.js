@@ -50,6 +50,7 @@
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-jscs');
     //grunt.loadNpmTasks('grunt-html-validation');
+    grunt.loadNpmTasks('grunt-nw-builder');
 
     grunt.initConfig({
       jshint: {
@@ -154,7 +155,7 @@
           fix: false,
           requireCurlyBraces: ['if']
         }
-      }/*
+      },/*
       validation: {
         options: {
           wrapfile: 'src/templates/validation.html',
@@ -170,6 +171,14 @@
         }
       }
       */
+      nwjs: {
+        options: {
+          version: '0.12.3',
+          platforms: ['win', 'osx'],
+          buildDir: '.nw',
+        },
+        src: ['src/templates/nw/package.json', '.standalone/**/*']
+      }
     });
 
     /**

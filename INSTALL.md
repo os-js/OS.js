@@ -120,7 +120,7 @@ After you have started a server, simply navigate to http://localhost:8000 (port 
 You can run OS.js in `file:///`, but this will disable VFS and HTTP APIs. Just build and run `.standalone/index.html` with
 
 ```
-grunt standalone
+grunt dist standalone
 ```
 
 Or you can download a nightly (unstable) build [here](http://osjsv2.0o.no/OS.js-v2-minimal-nightly.zip).
