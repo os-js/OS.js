@@ -68,7 +68,6 @@
     out_client_css:           _path.join(ROOT, 'dist', 'osjs.css'),
     out_client_dialogs:       _path.join(ROOT, 'dist', 'dialogs.html'),
     out_client_locales:       _path.join(ROOT, 'dist', 'locales.js'),
-    out_client_schemes:       _path.join(ROOT, 'dist', 'schemes.js'),
     out_client_locale:        _path.join(ROOT, 'dist', 'locales.js'),
     out_client_fontcss:       _path.join(ROOT, 'dist', 'themes', 'fonts.css'),
     out_client_styles:        _path.join(ROOT, 'dist', 'themes', 'styles'),
@@ -79,7 +78,10 @@
     out_client_config:        _path.join(ROOT, 'dist', 'settings.js'),
     out_client_packages:      _path.join(ROOT, 'dist', 'packages'),
     out_client_dev_manifest:  _path.join(ROOT, 'dist-dev', 'packages.js'),
-    out_client_dev_config:    _path.join(ROOT, 'dist-dev', 'settings.js')
+    out_client_dev_config:    _path.join(ROOT, 'dist-dev', 'settings.js'),
+
+    out_standalone:           _path.join(ROOT, '.standalone'),
+    out_standalone_schemes:   _path.join(ROOT, '.standalone', 'schemes.js')
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -778,6 +780,7 @@
     }
 
     if ( arg === 'standalone' ) {
+      outdir = PATHS.out_standalone;
       addScript('schemes.js');
     }
 
@@ -1028,9 +1031,14 @@
       }
     });
 
+    deleteFile(PATHS.out_standalone);
+    copyFile(PATHS.dist, PATHS.out_standalone);
+
     var tpl = readFile(_path.join(PATHS.templates, 'dist', 'schemes.js')).toString();
     tpl = tpl.replace('%JSON%', JSON.stringify(tree, null, 4));
-    writeFile(PATHS.out_client_schemes, tpl);
+    writeFile(PATHS.out_standalone_schemes, tpl);
+
+    createIndex(grunt, 'standalone', 'dist');
   }
 
   /**

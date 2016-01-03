@@ -49,6 +49,7 @@
     //grunt.loadNpmTasks('grunt-mocha');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-jscs');
+    //grunt.loadNpmTasks('grunt-html-validation');
 
     grunt.initConfig({
       jshint: {
@@ -87,7 +88,6 @@
           'src/*.js',
           'src/client/javascript/*.js',
           'src/client/javascript/**/*.js',
-          '!src/client/javascript/locales/bg_BG.js',
           'src/packages/default/**/*.js',
           '!src/packages/default/Broadway/**',
           '!src/packages/default/**/locales.js',
@@ -154,7 +154,22 @@
           fix: false,
           requireCurlyBraces: ['if']
         }
+      }/*
+      validation: {
+        options: {
+          wrapfile: 'src/templates/validation.html',
+          stoponerror: false,
+          relaxerror: [
+          ]
+        },
+        files: {
+          src: [
+            'src/packages/default/ ** /scheme.html',
+            'src/client/dialogs.html'
+          ]
+        }
       }
+      */
     });
 
     /**
