@@ -175,7 +175,7 @@
         options: {
           version: '0.12.3',
           platforms: ['win', 'osx'],
-          buildDir: '.nw',
+          buildDir: '.nw'
         },
         src: ['src/templates/nw/package.json', '.standalone/**/*']
       }
