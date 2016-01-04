@@ -8,7 +8,8 @@
     "pl_PL": "Kalkulator",
     "ru_RU": "Калькулятор",
     "tr_TR": "Hesap Makinesi",
-    "vi_VN": "Máy tính"
+    "vi_VN": "Máy tính",
+    "ka_GE":  "კალკულატორი"
   },
   "mime":       null,
   "icon":       "apps/calc.png",
@@ -18,6 +19,3 @@
     {"src": "main.css", "type": "stylesheet"}
   ]
 }
-
-
-

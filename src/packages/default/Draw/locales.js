@@ -459,6 +459,53 @@
 
       'Radius' : 'Радиус',
       'Iterations' : 'Повторения'
+    },
+    ka_GE : {
+      'Toggle tools toolbar' : 'ინსტრუმენტების პანელი',
+      'Toggle layers toolbar' : 'ფენების პანელი',
+      'Layer' : 'ფენა',
+      'Effect' : 'ეფექტები',
+      'Flip Horizontally' : 'ჰორიზონტალური ასახვა',
+      'Flip Vertically' : 'ვერტიკალური ასახვა',
+      'Foreground' : 'წინა პლანი',
+      'Bakgrunn' : 'ფონი',
+      'Foreground (Fill) Color' : 'წინა პლანის (შევსება) ფერი',
+      'Background (Stroke) Color' : 'ფონის ფერი (საზღვრებზე)',
+      'Line join' : 'ხაზის შეერთება',
+      'Line width' : 'ხაზის სიგანე',
+      'Toggle Stroke' : 'საზღვრების დახატვის ჩართვა/გამორთვა',
+      'Enable stroke' : 'საზღვრების დახატვის გააქტიურება',
+      'Round' : 'მრგვალი',
+      'Miter' : 'სწორი',
+      'Bevel' : 'ბლაგვი',
+      'Stroked' : 'საზღვრებიანი',
+      'No stroke' : 'საზღვრების გარეშე',
+
+      'Pointer' : 'კურსორი',
+      'Move active layer' : 'აქტიური ფენის გადანაცვლება',
+
+      'Picker' : 'ფერების პალიტრა',
+      'LMB: set fg color, RMB: set gb color' : 'LMB: აყენებს პირველად ფერს, RMB: აყენებს მეორად ფერს(ფონის)',
+
+      'Pencil' : 'ფანქარი',
+      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: ხატავს პირველადი/მეორადი ფერით',
+      'Path' : 'გზა',
+
+      'Square/Rectangle' : 'კვადრატი/მართკუთხედი',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'ЛКМ/ПКМ: рисует первичным/вторичным цветом квадрат, SHIFT: нарисовать прямоуголник',
+
+      'Circle/Ellipse' : 'წრე/ელიფსი',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'ЛКМ/ПКМ: рисует первичным/вторичным цветом круг, SHIFT: нарисовать эллипс',
+
+      'Blur' : 'ბუნდოვანი (Blur)',
+      'Noise' : 'ხმაური',
+      'Invert colors' : 'ფერების ინვერსია',
+      'Grayscale' : 'შავთეთრი (grayscale)',
+      'Sharpen' : 'გამკვეთრება',
+      'Simple Blur' : 'მარტივი ბლარის ეფექტი (Blur)',
+
+      'Radius' : 'რადიუსი',
+      'Iterations' : 'გამეორებები'
     }
 
   };

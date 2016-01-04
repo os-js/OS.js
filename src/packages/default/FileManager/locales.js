@@ -120,6 +120,16 @@
       "Create a new directory in <span>{0}</span>" : "Създаване на нова директория в <span>{0}</span>",
       "Rename <span>{0}</span>" : "преименуване на <span>{0}</span>",
       "Delete <span>{0}</span> ?" : "Изтриване на <span>{0}</span>?"
+    },
+    ka_GE : {
+      'Show Sidebar' : 'გვერდითი პანელის ჩვენება',
+      'Copying file...' : 'ფაილი კოპირდება...',
+      "Copying <span>{0}</span> to <span>{1}</span>" : "კოპირდება <span>{0}</span> <span>{1}</span>-ში",
+      "Refreshing..." : "განახლება...",
+      "Loading..." : "ჩატვირთვა...",
+      "Create a new directory in <span>{0}</span>" : "ახალი საქაღალდის შექმნა <span>{0}</span>-ში",
+      "Rename <span>{0}</span>" : "სახელის შეცვლა: <span>{0}</span>",
+      "Delete <span>{0}</span> ?" : "წაიშალოს <span>{0}</span> ?"
     }
   };
 

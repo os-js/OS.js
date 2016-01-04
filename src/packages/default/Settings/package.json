@@ -9,7 +9,8 @@
     "pl_PL": "Ustawienia",
     "ru_RU": "Настройки",
     "tr_TR": "Ayarlar",
-    "vi_VN": "Cài đặt"
+    "vi_VN": "Cài đặt",
+    "ka_GE": "პარამეტრები"
   },
   "descriptions": {
     "bg_BG": "Настройки",
@@ -19,7 +20,8 @@
     "pl_PL": "Ustawienia",
     "ru_RU": "Настройки",
     "tr_TR": "Program Ayarlarını düzenle",
-    "vi_VN": "Cài đặt"
+    "vi_VN": "Cài đặt",
+    "ka_GE": "პარამეტრები"
   },
   "mime":       null,
   "icon":       "categories/applications-system.png",
