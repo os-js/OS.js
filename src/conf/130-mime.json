@@ -81,6 +81,7 @@
       ".xml"    : "text/xml",
       ".js"     : "application/javascript",
       ".css"    : "text/css",
+      ".md"     : "text/plain",
 
       ".txt"    : "text/plain",
       ".log"    : "text/plain",
