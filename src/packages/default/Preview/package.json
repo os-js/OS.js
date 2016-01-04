@@ -8,7 +8,8 @@
     "de_DE":      "Vorschau",
     "ru_RU":      "Просмотрщик",
     "nl_NL":      "Foto viewer",
-    "vi_VN":      "Trình xem ảnh"
+    "vi_VN":      "Trình xem ảnh",
+    "ka_GE":      "ფოტოების გამხსნელი"
   },
   "descriptions":      {
     "no_NO":      "Forhåndsvisning av bilde-filer",
@@ -16,7 +17,8 @@
     "de_DE":      "Bildervorschau",
     "ru_RU":      "Просмотрщик изображений",
     "nl_NL":      "Foto viewer",
-    "vi_VN":      "Trình xem ảnh"
+    "vi_VN":      "Trình xem ảnh",
+    "ka_GE":      "ფოტოების გამხსნელი"
   },
   "mime":       ["^image", "^video"],
   "category":   "multimedia",
@@ -26,4 +28,3 @@
     {"src": "main.css", "type": "stylesheet"}
   ]
 }
-

@@ -6,7 +6,8 @@
     "ru_RU": "Калькулятор",
     "pl_PL": "Kalkulator",
     "nl_NL": "Rekenmachine",
-    "vi_VN": "Máy tính"
+    "vi_VN": "Máy tính",
+    "ka_GE":  "კალკულატორი"
   },
   "mime":       null,
   "icon":       "apps/calc.png",
@@ -16,6 +17,3 @@
     {"src": "main.css", "type": "stylesheet"}
   ]
 }
-
-
-

@@ -8,7 +8,8 @@
     "de_DE":      "Writer",
     "ru_RU":      "Текстовый процессор",
     "nl_NL":      "Tekstverwerker",
-    "vi_VN":      "Viết"
+    "vi_VN":      "Viết",
+    "ka_GE":      "ტექსტის დამმუშავებელი"
   },
   "descriptions":      {
     "no_NO":      "Skriv riktekst dokumenter",
@@ -16,7 +17,8 @@
     "de_DE":      "Verfassen Sie Rich-Text-Dokumente",
     "ru_RU":      "Текстовый процессор",
     "nl_NL":      "Tekst verwerker met opmaak",
-    "vi_VN":      "Xem, chỉnh sửa văn bản"
+    "vi_VN":      "Xem, chỉnh sửa văn bản",
+    "ka_GE":      "ტექსტის დამმუშავებელი"
   },
   "mime":       ["^text", "osjs\\/document"],
   "category":   "office",
@@ -28,6 +30,3 @@
     {"src": "main.css", "type": "stylesheet"}
   ]
 }
-
-
-

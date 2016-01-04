@@ -8,7 +8,8 @@
     "de_DE":      "Prozess-Manager",
     "ru_RU":      "Менеджер процессов",
     "nl_NL":      "Proces manager",
-    "vi_VN":      "Xem tiến trình"
+    "vi_VN":      "Xem tiến trình",
+    "ka_GE":      "პროცესების მენეჯერი"
   },
   "descriptions":      {
     "no_NO":      "Se oversikt over kjørende prosesser",
@@ -16,7 +17,8 @@
     "de_DE":      "Laufende Prozesse verwalten",
     "ru_RU":      "Менеджер запущенных процессов",
     "nl_NL":      "Bekijk de lopende processen",
-    "vi_VN":      "Xem các tiến trình đang chạy"
+    "vi_VN":      "Xem các tiến trình đang chạy",
+    "ka_GE":      "პროცესების მენეჯერი"
   },
   "singular":   true,
   "mime":       null,
@@ -27,5 +29,3 @@
     {"src": "main.css", "type": "stylesheet"}
   ]
 }
-
-

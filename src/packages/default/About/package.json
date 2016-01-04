@@ -8,7 +8,8 @@
     "de_DE":      "Über OS.js",
     "ru_RU":      "Об OS.js",
     "nl_NL":      "Over OS.js",
-    "vi_VN":      "Thông tin về OS.js"
+    "vi_VN":      "Thông tin về OS.js",
+    "ka_GE":      "OS.js - ის შესახებ"
   },
   "descriptions": {
     "no_NO":      "Om OS.js",
@@ -16,7 +17,8 @@
     "de_DE":      "Über OS.js",
     "ru_RU":      "Об OS.js",
     "nl_NL":      "Over OS.js",
-    "vi_VN":      "Thông tin về OS.js"
+    "vi_VN":      "Thông tin về OS.js",
+    "ka_GE":      "OS.js - ის შესახებ"
   },
   "singular":   true,
   "mime":       null,
@@ -27,6 +29,3 @@
     {"src": "main.css", "type": "stylesheet"}
   ]
 }
-
-
-
