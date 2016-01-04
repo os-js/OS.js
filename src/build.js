@@ -1090,8 +1090,8 @@
         _path.join(PATHS.out_standalone, 'node_modules')
       );
 
-      var cmd = "(cd .standalone; npm install)"; // FIXME: Windows
-      require("child_process").exec(cmd, function(err, stdout, stderr) {
+      var cmd = 'cd .standalone && npm install';
+      require('child_process').exec(cmd, function(err, stdout, stderr) {
         console.log(stderr, stdout);
         done();
       });

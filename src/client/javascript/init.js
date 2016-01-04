@@ -535,7 +535,7 @@
 
     console.warn('OS.js was shut down!');
 
-    if ( API.getConfig('Connection.Type') === 'nw' ) {
+    if ( OSjs.API.getConfig('Connection.Type') === 'nw' ) {
       try {
         var gui = require('nw.gui');
         var win = gui.Window.get();
