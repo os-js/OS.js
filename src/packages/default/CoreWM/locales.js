@@ -137,20 +137,20 @@
     nl_NL : {
       'Killing this process will stop things from working!' : 'Het stoppen van dit proces zal er voor zorgen dat dingen niet meer werken!',
       'Open settings' : 'Instellingen openen',
-      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Het paneel bevat geen items. Ga naar instellingen om te hertsellen naar de standaard of om handmatig te wijzigen (Deze fout kan het gevolg zijn van een update)',
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Het paneel bevat geen items. Ga naar instellingen om te herstellen naar de standaard of om handmatig te wijzigen\n(Deze fout kan het gevolg zijn van een update)',
       'Create shortcut' : 'Maak een link',
-      'Set as wallpaper' : 'Als achtegrond gebruiken',
+      'Set as wallpaper' : 'Als achtergrond gebruiken',
       'An error occured while creating PanelItem: {0}' : 'Er is een fout opgetreden tijdens het maken van een paneel item: {0}',
 
       'Development' : 'Ontwikkeling',
       'Education' : 'Educatie',
-      'Games' : 'Spellem',
+      'Games' : 'Spellen',
       'Graphics' : 'Grafisch',
       'Network' : 'Netwerk',
       'Multimedia' : 'Multimedia',
       'Office' : 'Kantoor',
       'System' : 'Systeem',
-      'Utilities' : 'Toebehoor',
+      'Utilities' : 'Toebehoren',
       'Other' : 'Overig'
     },
     vi_VN : {
