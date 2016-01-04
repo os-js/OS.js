@@ -31,8 +31,6 @@ I have also made a [simplified installation guide](http://os.js.org/doc/manuals/
     * [Nginx](#nginx)
     * [WAMP](#wamp)
 * [Setting up optional features](#setting-up-optional-features)
-* [Adding additional applications](#adding-additional-applications)
-* [Update instructions](#update-instructions)
 
 # Dependencies
 
@@ -98,11 +96,11 @@ See [Vagrant.md](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/Vagra
 
 See [Docker.md](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/Docker.md).
 
-## NW.js
+### NW.js
 
 See [NW.md](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/NW.md).
 
-## X11
+### X11
 
 See [X11.md](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/X11.md).
 
@@ -136,6 +134,8 @@ You can start a server manually with `(cd dist; php -S 0.0.0.0:8000 ../src/serve
 
 If you have a "webhost" (or "webhotel") with ex. cPanel without shell access (or no node support), you can run OS.js, but has to be built on another computer, then transfered over to the target machine. The only downside here is that you'd have to run from /OS.js-v2/dist/ without doing modifications to the setup (if you don't have access to mod_rewrite to create proxy rules).
 
+*By default PHP uses 'dist' as the default root*
+
 ### Apache
 
 Run `grunt apache-vhost` to generate config file (or look in doc/ for example)
@@ -156,28 +156,10 @@ Works fine. Just look up the Apache section above for configuration.
 
 # Setting up optional features
 
+* [Add packages](http://os.js.org/doc/manuals/man-package-manager.html)
 * [Google API and Google Drive](http://os.js.org/doc/manuals/man-google-api.html)
 * [Windows Live API and OneDrive](http://os.js.org/doc/manuals/man-windows-live-api.html)
 * [Dropbox](http://os.js.org/doc/manuals/man-dropbox.html)
 * [Broadway](http://os.js.org/doc/manuals/man-broadway.html)
 * [ZIP support](http://os.js.org/doc/manuals/man-zip.html)
 
-# Adding additional applications
-
-You can find instructions [in this manual](http://os.js.org/doc/manuals/man-package-manager.html).
-
-# Update instructions
-
-Download and extract the latest zip, or use the preferred method (git):
-
-```
-# Get latest sources
-$ git pull
-
-# Update dependencies
-$ npm install
-
-# Rebuild
-$ grunt
-
-```
