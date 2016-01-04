@@ -125,6 +125,10 @@ grunt dist standalone
 
 Or you can download a nightly (unstable) build [here](http://osjsv2.0o.no/OS.js-v2-minimal-nightly.zip).
 
+### NW.js
+
+See `doc/NW.md`
+
 ## Node
 
 * Production: `./bin/start-node-dist.sh` or `bin\win-start-node-dist`
