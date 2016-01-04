@@ -22,6 +22,7 @@ I have also made a [simplified installation guide](http://os.js.org/doc/manuals/
     * [Vagrant](#vagrant)
     * [Docker](#docker)
     * [NW.js](#nwjs)
+    * [X11](#x11)
 * [Setting up a server and running](#user-content-setting-up-a-server-and-running)
   2. [Node](#node)
   3. PHP
@@ -30,7 +31,6 @@ I have also made a [simplified installation guide](http://os.js.org/doc/manuals/
     * [Nginx](#nginx)
     * [WAMP](#wamp)
     * [Webhost](#webhost)
-  4. [X11](#x11)
 * [Setting up optional features](#setting-up-optional-features)
 * [Adding additional applications](#adding-additional-applications)
 * [Update instructions](#update-instructions)
@@ -110,7 +110,13 @@ You can grab a configuration from the [community repo](https://registry.hub.dock
 
 ## NW.js
 
-See `doc/NW.md`
+See [NW.md](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/NW.md).
+
+## X11
+
+OS.js can run as a *X11* Desktop.
+
+See [X11.md](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/X11.md).
 
 # Setting up a server and running
 
@@ -119,6 +125,8 @@ Make sure the _VFS_ directories in `vfs/` are given the same permissions as the 
 After you have started a server, simply navigate to http://localhost:8000 (port 8000 is default).
 
 ## Node
+
+If you have *node supervisor* intalled the server will automatically make use of it.
 
 * Production: `./bin/start-dist.sh` or `bin\win-start-dist`
 * Developement: `./bin/start-dev.sh` or `bin\win-start-dev`
@@ -147,18 +155,12 @@ Run `grunt nginx-config` to generate config file (or look in doc/ for example)
 
 Works fine. Just look up the Apache section above for configuration.
 
-## Webhost
+### Webhost
 
 If you have a "webhost" (or "webhotel") with ex. cPanel without shell access (or no node support), you can run OS.js, but
 has to be built on another computer, then transfered over (just follow the instructions above).
 
 The only downside here is that you'd have to run from /OS.js-v2/dist/ without doing modifications to the setup.
-
-## X11
-
-OS.js can run as a *X11* Desktop.
-
-Full documentation [here](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/X11.md).
 
 # Setting up optional features
 
