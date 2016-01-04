@@ -1477,7 +1477,7 @@
    */
   Window.prototype._onDndEvent = function(ev, type) {
     console.debug('OSjs::Core::Window::_onDndEvent()', type);
-    if ( this._disabled ) { return false; }
+    if ( this._disabled || this._destroyed ) { return false; }
     return true;
   };
 
