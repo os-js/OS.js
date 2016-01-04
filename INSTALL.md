@@ -21,8 +21,8 @@ I have also made a [simplified installation guide](http://os.js.org/doc/manuals/
   3. Containers and Virtual Machines
     * [Vagrant](#vagrant)
     * [Docker](#docker)
+    * [NW.js](#nwjs)
 * [Setting up a server and running](#user-content-setting-up-a-server-and-running)
-  1. [NW.js](#nwjs)
   2. [Node](#node)
   3. PHP
     * [Internal Server](#internal-web-server-for-php-54)
@@ -109,15 +109,15 @@ You can also use [Docker](https://www.docker.com/) to set up an environment.
 You can grab a configuration from the [community repo](https://registry.hub.docker.com/u/junland/osjs-dev/) 
 (you can also find detailed instructions here), or generate one yourself with `./bin/build-docker-image.sh`.
 
+## NW.js
+
+See `doc/NW.md`
+
 # Setting up a server and running
 
 Make sure the _VFS_ directories in `vfs/` are given the same permissions as the web-servers running user.
 
 After you have started a server, simply navigate to http://localhost:8000 (port 8000 is default).
-
-## NW.js
-
-See `doc/NW.md`
 
 ## Node
 
