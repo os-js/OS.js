@@ -62,4 +62,10 @@ Follow the official documentation on how to [install and run OS.js](http://os.js
 
 Tip: Have `grunt watch` running in the background to automatically run tasks for you when something changes.
 
+Tip: Run `grunt jscs jshint` to check for syntax problems and style guide violations
+
+Tip: Run `grunt mochaTest` to run server-side checks
+
+Tip: Run `grunt test` to test everything
+
 **NOTE THAT I DO NOT ACCEPT PULL-REQUESTS THAT DO NOT FOLLOW THE GUIDELINES ABOVE (AS OF 2016)**
