@@ -14,7 +14,8 @@
     "src/client/javascript/locales/nl_NL.js",
     "src/client/javascript/locales/pl_PL.js",
     "src/client/javascript/locales/vi_VN.js",
-    "src/client/javascript/locales/tr_TR.js"
+    "src/client/javascript/locales/tr_TR.js",
+    "src/client/javascript/locales/ka_GE.js"
   ],
   "statics": {
     "src/client/dialogs.html": "dist/dialogs.html"

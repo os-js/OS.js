@@ -9,7 +9,8 @@
     "pl_PL": "Odtwarzacz muzyki",
     "ru_RU": "Аудиоплеер",
     "tr_TR": "Muzik Çalar",
-    "vi_VN": "Nghe nhạc"
+    "vi_VN": "Nghe nhạc",
+    "ka_GE": "აუდიო ფლეერი"
   },
   "mime":       ["^audio", "osjs\\/playlist"],
   "category":   "multimedia",

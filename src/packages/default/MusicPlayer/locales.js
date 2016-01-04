@@ -172,6 +172,21 @@
       'Media information query failed' : 'Получаване на информация провалено',
       'seek unavailable in format' : 'Невъществуващ формат',
       'The audio type is not supported: {0}' : 'Аудио формата не се поддържа'
+    },
+    ka_GE : {
+      'Playlist' : 'დასაკრავი სია',
+      'Playback aborted' : 'დაკვრა შეწყვეტილია',
+      'Network or communication error' : 'ქსელის ან კომუნიკაციის შეცდომა',
+      'Decoding failed. Corruption or unsupported media' : 'დეკოდირება ვერ მოხერხდა. ფაილი დაზიანებულია ან ფაილის ფორმატი არასწორია',
+      'Media source not supported' : 'მედიის მოცემული ტიპის მხარდაჭერა არ არსებობს სისტემაში',
+      'Failed to play file' : 'ფაილის დაკვრა შეუძლებელია',
+      'Artist' : 'შემსრულებელი',
+      'Album' : 'ალბომი',
+      'Track' : 'სიმღერა',
+      'Time' : 'დრო',
+      'Media information query failed' : 'მედია ინფორმაციის მოთხოვნა ვერ მოხერხდა',
+      'seek unavailable in format' : 'მოცემულ ფორმატში შეუძლებელია გადახვევა',
+      'The audio type is not supported: {0}' : 'აუდიოს ტიპის მხარდაჭერა არ არსებობს სისტემაში: {0}'
     }
   };
 

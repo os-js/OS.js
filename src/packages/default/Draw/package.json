@@ -10,7 +10,8 @@
     "pl_PL": "Rysowanie",
     "ru_RU": "Графический редактор",
     "tr_TR": "Çiz",
-    "vi_VN": "Vẽ"
+    "vi_VN": "Vẽ",
+    "ka_GE": "გრაფიკული რედაქტორი"
   },
   "descriptions": {
     "bg_BG": "Приложение за рисуване",
@@ -19,7 +20,8 @@
     "no_NO": "Simpelt tegne-program",
     "pl_PL": "Prosta aplikacja do rysowania",
     "ru_RU": "Простой графический редактор",
-    "vi_VN": "Phần mềm vẽ đơn giản"
+    "vi_VN": "Phần mềm vẽ đơn giản",
+    "ka_GE":  "მარტივი გრაფიკული რედაქტორი"
   },
   "mime":       ["^image"],
   "category":   "graphics",

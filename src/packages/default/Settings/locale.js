@@ -253,6 +253,28 @@
       'Enable Hotkeys' : 'Включи горещи клавиши',
       'Enable Icon View' : 'Включи иконен-изглед',
       'General': 'Основен'
+    },
+    ka_GE : {
+      'Theme' : 'თემა',
+      'Background' : 'ფონი',
+      'Desktop' : 'დესკტოპი',
+      'Background Type' : 'ფონის ტიპი',
+      'Image (Repeat)' : 'სურათი (გამეორება)',
+      'Image (Centered)' : 'სურათი (ცენტრში)',
+      'Image (Fill)' : 'სურათი (შევსება)',
+      'Image (Streched)' : 'სურათი (გაწელვა)',
+      'Desktop Margin ({0}px)' : 'დესკტოპის დაშორება ({0}px)',
+      'Panel' : 'პანელი',
+      'Position' : 'პოზიცია',
+      'Ontop' : 'ყოველთვის მაღლა',
+      'Items' : 'ელემენტები',
+      'Enable Animations' : 'ანიმაციების გააქტიურება',
+      'Language (requires restart)' : 'ენა (საჭიროებს გადატვირთვას)',
+      'Enable Sounds' : 'ხმების გააქტიურება',
+      'Enable Window Switcher' : 'ფანჯრების გადამრთველის გააქტიურება',
+      'Enable Hotkeys' : 'სწრაფი კლავიშების გააქტიურება',
+      'Enable Icon View' : 'ხატულების ნახვის გააქტიურება',
+      'General': 'ზოგადი'
     }
   };
 
