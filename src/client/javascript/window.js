@@ -878,7 +878,7 @@
   Window.prototype._minimize = function() {
     var self = this;
     console.debug(this._name, '>', 'OSjs::Core::Window::_minimize()');
-    if ( !this._properties.allow_minimize ) { return false; }
+    if ( !this._properties.allow_minimize || this._destroyed  ) { return false; }
     //if ( this._disabled ) return false;
     if ( this._state.minimized ) {
       this._restore(false, true);
@@ -924,7 +924,7 @@
    */
   Window.prototype._maximize = function() {
     console.debug(this._name, '>', 'OSjs::Core::Window::_maximize()');
-    if ( !this._properties.allow_maximize ) { return false; }
+    if ( !this._properties.allow_maximize || this._destroyed  ) { return false; }
     if ( !this._$element ) { return false; }
     //if ( this._disabled ) return false;
     if ( this._state.maximized ) {
@@ -977,7 +977,7 @@
    * @method    Window::_restore()
    */
   Window.prototype._restore = function(max, min) {
-    if ( !this._$element ) { return; }
+    if ( !this._$element || this._destroyed  ) { return; }
 
     console.debug(this._name, '>', 'OSjs::Core::Window::_restore()');
     //if ( this._disabled ) return ;
@@ -1024,7 +1024,7 @@
    * @method  Window::_focus()
    */
   Window.prototype._focus = function(force) {
-    if ( !this._$element ) { return false; }
+    if ( !this._$element || this._destroyed ) { return false; }
 
     //if ( !force && this._state.focused ) { return false; }
     //console.debug(this._name, '>', 'OSjs::Core::Window::_focus()');
@@ -1064,7 +1064,7 @@
    * @method  Window::_blur()
    */
   Window.prototype._blur = function(force) {
-    if ( !this._$element ) { return false; }
+    if ( !this._$element || this._destroyed  ) { return false; }
     if ( !force && !this._state.focused ) { return false; }
     //console.debug(this._name, '>', 'OSjs::Core::Window::_blur()');
     this._$element.setAttribute('data-focused', 'false');
@@ -1193,7 +1193,7 @@
   };
 
   Window.prototype._resize = function(w, h, force) {
-    if ( !this._$element ) { return false; }
+    if ( !this._$element || this._destroyed  ) { return false; }
     var p = this._properties;
 
     if ( !force ) {
@@ -1271,7 +1271,7 @@
    * @method  Window::_move()
    */
   Window.prototype._move = function(x, y) {
-    if ( !this._$element ) { return false; }
+    if ( !this._$element || this._destroyed  ) { return false; }
     if ( !this._properties.allow_move ) { return false; }
     if ( typeof x === 'undefined' || typeof y === 'undefined') { return false; }
 
@@ -1326,7 +1326,7 @@
    * @method    Window::_toggleAttentionBlink()
    */
   Window.prototype._toggleAttentionBlink = function(t) {
-    if ( !this._$element ) { return false; }
+    if ( !this._$element || this._destroyed  ) { return false; }
     if ( this._state.focused ) { return false; }
 
     var el     = this._$element;
@@ -1520,7 +1520,7 @@
    */
   Window.prototype._onWindowIconClick = function(ev, el) {
     console.debug(this._name, '>', 'OSjs::Core::Window::_onWindowIconClick()');
-    if ( !this._properties.allow_iconmenu ) { return; }
+    if ( !this._properties.allow_iconmenu || this._destroyed  ) { return; }
 
     var self = this;
     var list = [];
