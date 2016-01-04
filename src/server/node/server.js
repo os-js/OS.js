@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(_server) {
+(function(_path, _server) {
   var DISTDIR = (process && process.argv.length > 2) ? process.argv[2] : 'dist';
   if ( (process.argv[1] || '').match(/(mocha|grunt)$/) ) {
     DISTDIR = 'dist-dev';
@@ -51,4 +51,4 @@
 
   console.log(JSON.stringify(_server.config(), null, 2));
   _server.listen(root, DISTDIR);
-})(require("./http.js"));
+})(require("path"), require("./http.js"));
