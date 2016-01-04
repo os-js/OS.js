@@ -120,8 +120,8 @@ After you have started a server, simply navigate to http://localhost:8000 (port 
 
 ## Node
 
-* Production: `./bin/start-node-dist.sh` or `bin\win-start-node-dist`
-* Developement: `./bin/start-node-dev.sh` or `bin\win-start-node-dev`
+* Production: `./bin/start-dist.sh` or `bin\win-start-dist`
+* Developement: `./bin/start-dev.sh` or `bin\win-start-dev`
 
 You can install [node supervisor](https://github.com/petruisfan/node-supervisor) and the development (dist-dev) server will automatically reload on change.
 
