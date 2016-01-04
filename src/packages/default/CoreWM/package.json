@@ -9,7 +9,8 @@
     "pl_PL": "Menedżer Okien OS.js",
     "ru_RU": "OS.js Оконный менеджер",
     "tr_TR": "OS.js Pencere Yöneticisi",
-    "vi_VN": "Quản lí cửa sổ OS.js"
+    "vi_VN": "Quản lí cửa sổ OS.js",
+    "sh_SP": "OS.js menadžer ekrana"
   },
   "singular":   true,
   "type":       "windowmanager",

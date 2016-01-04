@@ -172,6 +172,21 @@
       'Media information query failed' : 'Получаване на информация провалено',
       'seek unavailable in format' : 'Невъществуващ формат',
       'The audio type is not supported: {0}' : 'Аудио формата не се поддържа'
+    },
+    sh_SP : {
+      'Playlist' : 'Plej lista',
+      'Playback aborted' : 'Preslušavanje prekinuto',
+      'Network or communication error' : 'Problem sa mrežom ili komunikacijom',
+      'Decoding failed. Corruption or unsupported media' : 'Dokidiranje neuspješno, oštećen ili nepodržan fajl',
+      'Media source not supported' : 'Medija nije podržana',
+      'Failed to play file' : 'Greška prilikom puštanja fajla',
+      'Artist' : 'Izvođač',
+      'Album' : 'Album',
+      'Track' : 'Pjesma',
+      'Time' : 'Vrijeme',
+      'Media information query failed' : 'Povlačenje informacija za mediji nije uspjelo',
+      'seek unavailable in format' : 'Невъществуващ формат',
+      'The audio type is not supported: {0}' : 'Audio format nije podržan: {0}'
     }
   };
 

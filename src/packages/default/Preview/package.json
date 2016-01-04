@@ -10,7 +10,8 @@
     "pl_PL": "Podgląd",
     "ru_RU": "Просмотрщик",
     "tr_TR": "Önizle",
-    "vi_VN": "Trình xem ảnh"
+    "vi_VN": "Trình xem ảnh",
+    "sh_SP": "Pregledač slika",
   },
   "descriptions": {
     "bg_BG": "Преглед на изображения",
@@ -20,7 +21,8 @@
     "pl_PL": "Podgląd zdjęć",
     "ru_RU": "Просмотрщик изображений",
     "tr_TR": "resim dosyalarını önizle",
-    "vi_VN": "Trình xem ảnh"
+    "vi_VN": "Trình xem ảnh",
+    "sh_SP": "Program za pregled slika"
   },
   "mime":       ["^image", "^video"],
   "category":   "multimedia",

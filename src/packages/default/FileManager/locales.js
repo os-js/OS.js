@@ -120,6 +120,16 @@
       "Create a new directory in <span>{0}</span>" : "Създаване на нова директория в <span>{0}</span>",
       "Rename <span>{0}</span>" : "преименуване на <span>{0}</span>",
       "Delete <span>{0}</span> ?" : "Изтриване на <span>{0}</span>?"
+    },
+    sh_SP : {
+      'Show Sidebar' : 'Prikaži traku sa strane',
+      'Copying file...' : 'Kopiranje fajlova...',
+      "Copying <span>{0}</span> to <span>{1}</span>" : "Kopiram <span>{0}</span> u <span>{1}</span>",
+      "Refreshing..." : "Osvježavanje...",
+      "Loading..." : "Učitavanje...",
+      "Create a new directory in <span>{0}</span>" : "Napravi novi direktorijum u <span>{0}</span>",
+      "Rename <span>{0}</span>" : "Preimenuj <span>{0}</span>",
+      "Delete <span>{0}</span> ?" : "Obriši <span>{0}</span>?"
     }
   };
 
