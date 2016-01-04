@@ -30,7 +30,6 @@ I have also made a [simplified installation guide](http://os.js.org/doc/manuals/
     * [Lighttpd](#lighttpd)
     * [Nginx](#nginx)
     * [WAMP](#wamp)
-    * [Webhost](#webhost)
 * [Setting up optional features](#setting-up-optional-features)
 * [Adding additional applications](#adding-additional-applications)
 * [Update instructions](#update-instructions)
@@ -135,7 +134,9 @@ You can install [node supervisor](https://github.com/petruisfan/node-supervisor)
 
 ## PHP5
 
-You can start a server manually with `(cd dist; php -S 0.0.0.0:8000 ../src/server/php/server.php)` or use a webserver:
+You can start a server manually with `(cd dist; php -S 0.0.0.0:8000 ../src/server/php/server.php)` or use look below for webserver alternatives.
+
+If you have a "webhost" (or "webhotel") with ex. cPanel without shell access (or no node support), you can run OS.js, but has to be built on another computer, then transfered over to the target machine. The only downside here is that you'd have to run from /OS.js-v2/dist/ without doing modifications to the setup (if you don't have access to mod_rewrite to create proxy rules).
 
 ### Apache
 
@@ -154,13 +155,6 @@ Run `grunt nginx-config` to generate config file (or look in doc/ for example)
 ### WAMP
 
 Works fine. Just look up the Apache section above for configuration.
-
-### Webhost
-
-If you have a "webhost" (or "webhotel") with ex. cPanel without shell access (or no node support), you can run OS.js, but
-has to be built on another computer, then transfered over (just follow the instructions above).
-
-The only downside here is that you'd have to run from /OS.js-v2/dist/ without doing modifications to the setup.
 
 # Setting up optional features
 
