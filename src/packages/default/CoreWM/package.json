@@ -7,7 +7,8 @@
     "de_DE":      "OS.js Fenster-Manager",
     "ru_RU":      "OS.js Оконный менеджер",
     "nl_NL":      "OS.js venster beheer",
-    "vi_VN":      "Quản lí cửa sổ OS.js"
+    "vi_VN":      "Quản lí cửa sổ OS.js",
+    "ka_GE":      "OS.js - ის ფანჯრების მენეჯერი"
   },
   "singular":   true,
   "type":       "windowmanager",
@@ -36,4 +37,3 @@
     {"src": "main.css", "type": "stylesheet"}
   ]
 }
-

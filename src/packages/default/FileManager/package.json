@@ -8,7 +8,8 @@
     "de_DE":      "Dateimanager",
     "ru_RU":      "Файловый менеджер",
     "nl_NL":      "bestands beheer",
-    "vi_VN":      "Quản lí file"
+    "vi_VN":      "Quản lí file",
+    "ka_GE":      "ფაილების მენეჯერი"
   },
   "descriptions":      {
     "no_NO":      "Standard Fil-håndtering program",
@@ -16,7 +17,9 @@
     "de_DE":      "Standardmäßiger Dateimanager",
     "ru_RU":      "Стандартный файловый менеджер",
     "nl_NL":      "Standaard bestands beheerder",
-    "vi_VN":      "Trình quản lí file mặc định"
+    "vi_VN":      "Trình quản lí file mặc định",
+    "ka_GE":      "სტანდარტული ფაილების მენეჯერი"
+
   },
   "mime":       null,
   "category":   "utilities",

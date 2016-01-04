@@ -98,7 +98,17 @@
       "Create a new directory in <span>{0}</span>" : "Tạo một thư mục mới trong <span>{0}</span>",
       "Rename <span>{0}</span>" : "Đổi tên <span>{0}</span>",
       "Delete <span>{0}</span> ?" : "Xóa <span>{0}</span>?"
-    }
+    },
+    ka_GE : {
+      'Show Sidebar' : 'გვერდითი პანელის ჩვენება',
+      'Copying file...' : 'ფაილი კოპირდება...',
+      "Copying <span>{0}</span> to <span>{1}</span>" : "კოპირდება <span>{0}</span> <span>{1}</span>-ში",
+      "Refreshing..." : "განახლება...",
+      "Loading..." : "ჩატვირთვა...",
+      "Create a new directory in <span>{0}</span>" : "ახალი საქაღალდის შექმნა <span>{0}</span>-ში",
+      "Rename <span>{0}</span>" : "სახელის შეცვლა: <span>{0}</span>",
+      "Delete <span>{0}</span> ?" : "წაიშალოს <span>{0}</span> ?"
+    },
 
   };
 

@@ -7,7 +7,8 @@
     "de_DE":      "Musikspieler",
     "ru_RU":      "Аудиоплеер",
     "nl_NL":      "Audio speler",
-    "vi_VN":      "Nghe nhạc"
+    "vi_VN":      "Nghe nhạc",
+    "ka_GE":      "აუდიო ფლეერი"
   },
   "mime":       ["^audio", "osjs\\/playlist"],
   "category":   "multimedia",
@@ -20,6 +21,3 @@
     {"src": "main.css", "type": "stylesheet"}
   ]
 }
-
-
-

@@ -172,6 +172,27 @@
       'System' : 'Hệ thống',
       'Utilities' : 'Tiện ích',
       'Other' : 'Khác'
+    },
+    ka_GE : {
+      'Killing this process will stop things from working!' : 'მითითებული პროცესის მოკვლა გამოიწვევს კომპონენტების გაუმართავ მუშაობას!',
+      'Open settings' : 'პარამეტრების გახსნა',
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'პანელს არ აქვს ელემენტები. გახსენით პარამეტრები გადასატვირთვისთვის ან შეცვალეთ ხელით\n(ეს შეცდომა შეიძლება მოხდეს OS.js-ის განახლების შედეგად)',
+      'Create shortcut' : 'მალსახმობის შექმნა',
+      'Set as wallpaper' : 'ფონად გამოყენება',
+      'An error occured while creating PanelItem: {0}' : 'პანელის ელემენტის შემნისას მოხდა შეცდომა: {0}',
+      'Show Icons' : 'ხატულების ჩვენება',
+      'Hide Icons' : 'ხატულების დამალვა',
+
+      'Development' : 'დეველოპმენტი',
+      'Education' : 'განათლება',
+      'Games' : 'თამაშები',
+      'Graphics' : 'გრაფიკა',
+      'Network' : 'ქსელი',
+      'Multimedia' : 'მულტიმედია',
+      'Office' : 'ოფისი',
+      'System' : 'სისტემა',
+      'Utilities' : 'უტილიტები',
+      'Other' : 'სხვა'
     }
 
   };

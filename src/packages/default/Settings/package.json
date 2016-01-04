@@ -7,7 +7,8 @@
     "de_DE":      "Einstellungen",
     "ru_RU":      "Настройки",
     "nl_NL":      "Instellingen",
-    "vi_VN":      "Cài đặt"
+    "vi_VN":      "Cài đặt",
+    "ka_GE":      "პარამეტრები"
   },
   "descriptions":      {
     "no_NO":      "Instillinger",
@@ -15,7 +16,8 @@
     "de_DE":      "Einstellungen",
     "ru_RU":      "Настройки",
     "nl_NL":      "Instellingen",
-    "vi_VN":      "Cài đặt"
+    "vi_VN":      "Cài đặt",
+    "ka_GE":      "პარამეტრები"
   },
   "mime":       null,
   "icon":       "categories/applications-system.png",
@@ -27,6 +29,3 @@
     {"src": "main.css", "type": "stylesheet"}
   ]
 }
-
-
-
