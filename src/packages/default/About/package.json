@@ -9,8 +9,9 @@
     "de_DE":      "Über OS.js",
     "ru_RU":      "Об OS.js",
     "nl_NL":      "Over OS.js",
-    "vi_VN": "Thông tin về OS.js",
-    "bg_BG": " За OS.js"
+    "vi_VN":      "Thông tin về OS.js",
+    "bg_BG":      " За OS.js",
+    "ka_GE":      "OS.js - ის შესახებ"
   },
   "descriptions": {
     "bg_BG": "За OS.js",
@@ -20,7 +21,8 @@
     "pl_PL": "o OS.js",
     "ru_RU": "Об OS.js",
     "tr_TR": "hakkında OS.js",
-    "vi_VN": "Thông tin về OS.js"
+    "vi_VN": "Thông tin về OS.js",
+    "ka_GE":      "OS.js - ის შესახებ"
   },
   "singular":   true,
   "mime":       null,

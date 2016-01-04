@@ -10,7 +10,8 @@
     "pl_PL": "Notatnik",
     "ru_RU": "Редактор текста",
     "tr_TR": "Basit Bir Metin Düzenleyicisi",
-    "vi_VN": "Trình sửa văn bản"
+    "vi_VN": "Trình sửa văn bản",
+    "ka_GE": "ტექსტის რედაქტორი"
   },
   "descriptions": {
     "bg_BG": "Стандартен текстов редактор",
@@ -20,7 +21,8 @@
     "pl_PL": "Prosty edytor tekstu",
     "ru_RU": "Простой текстовый редактор",
     "tr_TR": "Basit Bir Metin Düzenleyicisi",
-    "vi_VN": "Trình sửa văn bản đơn giản"
+    "vi_VN": "Trình sửa văn bản đơn giản",
+    "ka_GE": "მარტივი ტექსტის რედაქტორი"
   },
   "mime":       ["^text", "inode\\/x\\-empty", "application\\/x\\-empty", "application\\/x\\-lua", "application\\/x\\-python", "application\\/javascript", "application\\/json"],
   "category":   "utilities",
