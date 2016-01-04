@@ -45,6 +45,7 @@ Follow the official documentation on how to [install and run OS.js](http://os.js
 
 * Fork OS.js on github
 * Follow the [style guide](https://github.com/andersevenrud/OS.js-v2/wiki/Style-guide)
+* Use **UTF-8** file encoding
 * I **strongly** recommend using a separate branch for your changes.
 * I **strongly** recommend [squashing](http://makandracards.com/makandra/527-squash-several-git-commits-into-a-single-commit) your commits if you have spread out a task into several pieces.
 * Make sure you test **all your changes** before commiting so it does not lead to extra commits with corrections.
