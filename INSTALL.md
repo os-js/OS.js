@@ -92,28 +92,17 @@ $ grunt --force
 
 ### Vagrant
 
-A [Vagrant](https://www.vagrantup.com/) file is also included so you can easily set up a development or testing environment in a Virtual Machine.
-
-Just use [this configuration file](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/Vagrantfile).
-
-```shell
-$ vagrant up
-```
+See [Vagrant.md](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/Vagrant.md).
 
 ### Docker
 
-You can also use [Docker](https://www.docker.com/) to set up an environment.
-
-You can grab a configuration from the [community repo](https://registry.hub.docker.com/u/junland/osjs-dev/) 
-(you can also find detailed instructions here), or generate one yourself with `./bin/build-docker-image.sh`.
+See [Docker.md](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/Docker.md).
 
 ## NW.js
 
 See [NW.md](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/NW.md).
 
 ## X11
-
-OS.js can run as a *X11* Desktop.
 
 See [X11.md](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/X11.md).
 
@@ -127,14 +116,23 @@ After you have started a server, simply navigate to http://localhost:8000 (port 
 
 If you have *node supervisor* intalled the server will automatically make use of it.
 
-* Production: `./bin/start-dist.sh` or `bin\win-start-dist`
-* Developement: `./bin/start-dev.sh` or `bin\win-start-dev`
+### Production (dist)
+
+```
+./bin/start-dist.sh` or `bin\win-start-dist
+```
+
+### Development (dist-dev)
+
+```
+./bin/start-dev.sh` or `bin\win-start-dev
+```
 
 You can install [node supervisor](https://github.com/petruisfan/node-supervisor) and the development (dist-dev) server will automatically reload on change.
 
 ## PHP5
 
-You can start a server manually with `(cd dist; php -S 0.0.0.0:8000 ../src/server/php/server.php)` or use look below for webserver alternatives.
+You can start a server manually with `(cd dist; php -S 0.0.0.0:8000 ../src/server/php/server.php)` or look below for webserver alternatives.
 
 If you have a "webhost" (or "webhotel") with ex. cPanel without shell access (or no node support), you can run OS.js, but has to be built on another computer, then transfered over to the target machine. The only downside here is that you'd have to run from /OS.js-v2/dist/ without doing modifications to the setup (if you don't have access to mod_rewrite to create proxy rules).
 

@@ -1,4 +1,4 @@
-# Making a NW build
+# OS.js on NW
 
 Run:
 
