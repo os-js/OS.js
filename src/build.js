@@ -48,6 +48,7 @@
      */
     src:          _path.join(ROOT, 'src'),
     conf:         _path.join(ROOT, 'src', 'conf'),
+    server:       _path.join(ROOT, 'src', 'server'),
     templates:    _path.join(ROOT, 'src', 'templates'),
     javascript:   _path.join(ROOT, 'src', 'client', 'javascript'),
     stylesheets:  _path.join(ROOT, 'src', 'client', 'stylesheets'),
@@ -1039,6 +1040,27 @@
     writeFile(PATHS.out_standalone_schemes, tpl);
 
     createIndex(grunt, 'standalone', 'dist');
+
+    if ( arg === 'nw' ) {
+      var npmdir = _path.join(PATHS.out_standalone, 'node_modules', 'osjs');
+      mkdir(npmdir, true);
+
+      var nodeFiles = ['packages.json', 'osjs.js'];
+      nodeFiles.forEach(function(f) {
+        copyFile(
+          _path.join(PATHS.server, 'nw', f),
+          _path.join(npmdir, f)
+        );
+      });
+
+      var apiFiles = ['config.js', 'api.js', 'vfs.js', 'handler.js'];
+      apiFiles.forEach(function(f) {
+        copyFile(
+          _path.join(PATHS.server, 'node', f),
+          _path.join(npmdir, f)
+        );
+      });
+    }
   }
 
   /**

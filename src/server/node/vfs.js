@@ -182,6 +182,33 @@
       });
     },
 
+    upload : function(args, request, respond, config) {
+      var srcPath = args[0];
+      var tmpPath = (args[2] + '/' + args[1]).replace('////', '///'); // FIXME
+      var dstPath = getRealPath(tmpPath, config, request).root;
+      var overwrite = args[3] === true;
+
+      _fs.exists(srcPath, function(exists) {
+        if ( exists ) {
+          _fs.exists(dstPath, function(exists) {
+            if ( exists && !overwrite ) {
+              respond('Target already exist!');
+            } else {
+              _fs.rename(srcPath, dstPath, function(error, data) {
+                if ( error ) {
+                  respond('Error renaming/moving: ' + error);
+                } else {
+                  respond(false, "1");
+                }
+              });
+            }
+          });
+        } else {
+          respond('Source does not exist!');
+        }
+      });
+    },
+
     move : function(args, request, respond, config) {
       var src  = args[0];
       var dst  = args[1];
