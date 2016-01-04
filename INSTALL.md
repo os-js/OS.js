@@ -25,7 +25,6 @@ I have also made a [simplified installation guide](http://os.js.org/doc/manuals/
 * [Setting up a server and running](#user-content-setting-up-a-server-and-running)
   2. [Node](#node)
   3. PHP
-    * [Internal Server](#internal-web-server-for-php-54)
     * [Apache](#apache)
     * [Lighttpd](#lighttpd)
     * [Nginx](#nginx)
@@ -128,10 +127,7 @@ You can install [node supervisor](https://github.com/petruisfan/node-supervisor)
 
 ## PHP5
 
-### Internal Web-server for PHP 5.4+
-
-* Production: `./bin/start-php-dist.sh`
-* Developement: `./bin/start-php-dev.sh`
+You can start a server manually with `(cd dist; php -S 0.0.0.0:8000 ../src/server/php/server.php)` or use a webserver:
 
 ### Apache
 
