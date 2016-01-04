@@ -51,8 +51,15 @@ Follow the official documentation on how to [install and run OS.js](http://os.js
 
 ## Making and submitting changes
 
-Commit the changes to your repository and push changes like normal. You can use `grunt watch` to automatically run tasks when you change files.
+* Fork OS.js on github
+* Follow the [style guide](https://github.com/andersevenrud/OS.js-v2/wiki/Style-guide)
+* I **strongly** recommend using a separate branch for your changes.
+* I **strongly** recommend [squashing](http://makandracards.com/makandra/527-squash-several-git-commits-into-a-single-commit) your commits if you have spread out a task into several pieces.
+* Make sure you test **all your changes** before commiting so it does not lead to extra commits with corrections.
+* Keep your commit messages as short as possible and don't include filesnames. Write a short description of **what was done**, not *where*. Example: "Themes: Corrected colors" or "Locales: Added ru_RU locales"
+* Send a [pull-request](https://help.github.com/articles/using-pull-requests/) when you are done
+* Keep your fork [up-to-date](https://robots.thoughtbot.com/keeping-a-github-fork-updated) 
 
-When you're done with the changes and want to submit your work, head over to the [pull request page](https://github.com/andersevenrud/OS.js-v2/pulls) and click "New pull request".
+Tip: Have `grunt watch` running in the background to automatically run tasks for you when something changes.
 
-*Please note that you don't have to create a new pull-request if you make new changes to the branch you specified, GitHub will update automatically.*
+**NOTE THAT I DO NOT ACCEPT PULL-REQUESTS THAT DO NOT FOLLOW THE GUIDELINES ABOVE (AS OF 2016)**
