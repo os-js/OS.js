@@ -535,14 +535,15 @@
 
     console.warn('OS.js was shut down!');
 
-    if ( window.require ) {
+    if ( API.getConfig('Connection.Type') === 'nw' ) {
       try {
         var gui = require('nw.gui');
         var win = gui.Window.get();
         setTimeout(function() {
           win.close();
         }, 500);
-      } catch ( e ) {}
+      } catch ( e ) {
+      }
     }
   };
 

@@ -59,6 +59,19 @@
 
     function _write(dataSource) {
       var wopts = [item.path, dataSource, options];
+
+      /*
+      if ( API.getConfig('Connection.Type') === 'nw' ) {
+        OSjs.Core.getHandler().nw.request('fs', {
+          'method': 'write',
+          'arguments': wopts
+        }, function(err, res) {
+          callback(err, res);
+        });
+        return;
+      }
+      */
+
       OSjs.VFS.internalCall('write', wopts, callback);
     }
 
@@ -72,6 +85,7 @@
         callback(error);
         return;
       }
+
       _write(dataSource);
     });
   };
@@ -79,6 +93,19 @@
   _NullModule.read = function(item, callback, options) {
     options = options || {};
     options.onprogress = options.onprogress || function() {};
+
+    if ( API.getConfig('Connection.Type') === 'nw' ) {
+      OSjs.Core.getHandler().nw.request('fs', {
+        'method': 'read',
+        'arguments': [
+          item.path,
+          {raw: true}
+        ]
+      }, function(err, res) {
+        callback(err, res);
+      });
+      return;
+    }
 
     this.url(item, function(error, url) {
       if ( error ) {

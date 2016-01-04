@@ -6,16 +6,16 @@ node_modules
 *-tmp.*
 twistd.*
 .vagrant/*
-.nightly
 *.pyc
 
-doc/generated
+.nightly
+.standalone
+.nw
+
 vfs/*/*
 
 src/conf/999-*
-src/server/node/node_modules/
 src/server/settings.json
-
 src/installer/installer.exe
 
 dist/test*

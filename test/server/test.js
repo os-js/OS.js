@@ -1,13 +1,10 @@
 var _path = require('path');
 var rootDir = _path.dirname(_path.dirname(__dirname));
-
 var assert = require('assert');
-var osjs = require(rootDir + '/src/server/node/osjs.js');
-var osjsVFS = require(rootDir + '/src/server/node/vfs.js');
+var osjs = require(rootDir + '/src/server/node/node_modules/osjs/osjs.js');
 var osjsServer = require(rootDir + '/src/server/node/http.js');
 
-osjsServer.logging(false);
-
+var instance = osjs.init(rootDir, 'dist', false, false);
 var response = {};
 var request = {
   cookies: {
@@ -22,6 +19,8 @@ var request = {
   }
 };
 
+process.chdir(rootDir);
+
 /////////////////////////////////////////////////////////////////////////////
 // PREPARATION
 /////////////////////////////////////////////////////////////////////////////
@@ -31,12 +30,12 @@ describe('Prepare', function() {
 
   describe('#handler', function() {
     it('handler should be set to demo', function() {
-      assert.equal('demo', osjs.CONFIG.handler);
+      assert.equal('demo', instance.config.handler);
     });
   });
 
   describe('#vfs', function() {
-    var testPath = osjsVFS.getRealPath('home:///', osjs.CONFIG, request);
+    var testPath = instance.vfs.getRealPath('home:///', instance.config, request);
 
     it('read access to demo area', function() {
       assert.doesNotThrow(function() {
@@ -65,31 +64,31 @@ describe('VFS', function() {
       var file = [
         'home:///.mocha'
       ];
-      osjsVFS.exists(file, request, function(json) {
+      instance.vfs.exists(file, request, function(json) {
         assert.equal(null, json.error);
         assert.equal(false, json.result);
         done();
-      }, osjs.CONFIG);
+      }, instance.config);
     });
   });
 
   describe('#exists', function() {
     it('should not find file', function(done) {
-      osjsVFS.exists(['home:///.mocha/test.txt'], request, function(json) {
+      instance.vfs.exists(['home:///.mocha/test.txt'], request, function(json) {
         assert.equal(null, json.error);
         assert.equal(false, json.result);
         done();
-      }, osjs.CONFIG);
+      }, instance.config);
     });
   });
 
   describe('#mkdir', function() {
     it('should create folder without error', function(done) {
-      osjsVFS.mkdir(['home:///.mocha'], request, function(json) {
+      instance.vfs.mkdir(['home:///.mocha'], request, function(json) {
         assert.equal(null, json.error);
         assert.equal(true, json.result);
         done();
-      }, osjs.CONFIG);
+      }, instance.config);
     });
   });
 
@@ -100,17 +99,17 @@ describe('VFS', function() {
         'home:///.mocha/test.txt',
         'data:text/plain;base64,' + data
       ];
-      osjsVFS.write(file, request, function(json) {
+      instance.vfs.write(file, request, function(json) {
         assert.equal(null, json.error);
         assert.equal(true, json.result);
         done();
-      }, osjs.CONFIG);
+      }, instance.config);
     });
   });
 
   describe('#read', function() {
     it('should read file without error', function(done) {
-      osjsVFS.read(['home:///.mocha/test.txt'], request, function(json) {
+      instance.vfs.read(['home:///.mocha/test.txt'], request, function(json) {
         assert.equal(null, json.error);
 
         var result = json.result.replace(/^data\:(.*);base64\,/, '') || '';
@@ -118,7 +117,7 @@ describe('VFS', function() {
 
         assert.equal(str, result);
         done();
-      }, osjs.CONFIG);
+      }, instance.config);
     });
   });
 
@@ -126,7 +125,7 @@ describe('VFS', function() {
     it('should find file (path and mime) without error', function(done) {
       var tst = 'home:///.mocha/test.txt';
       var found = {};
-      osjsVFS.scandir(['home:///.mocha'], request, function(json) {
+      instance.vfs.scandir(['home:///.mocha'], request, function(json) {
         assert.equal(null, json.error);
 
         try {
@@ -142,7 +141,7 @@ describe('VFS', function() {
         assert.equal(tst, found.path);
         assert.equal('text/plain', found.mime);
         done();
-      }, osjs.CONFIG);
+      }, instance.config);
     });
   });
 
@@ -152,11 +151,11 @@ describe('VFS', function() {
         'home:///.mocha/test.txt',
         'home:///.mocha/test2.txt'
       ];
-      osjsVFS.move(file, request, function(json) {
+      instance.vfs.move(file, request, function(json) {
         assert.equal(null, json.error);
         assert.equal(true, json.result);
         done();
-      }, osjs.CONFIG);
+      }, instance.config);
     });
   });
 
@@ -166,11 +165,11 @@ describe('VFS', function() {
         'home:///.mocha/test2.txt',
         'home:///.mocha/test3.txt'
       ];
-      osjsVFS.copy(file, request, function(json) {
+      instance.vfs.copy(file, request, function(json) {
         assert.equal(null, json.error);
         assert.equal(true, json.result);
         done();
-      }, osjs.CONFIG);
+      }, instance.config);
     });
   });
 
@@ -180,49 +179,49 @@ describe('VFS', function() {
         'home:///.mocha',
         'home:///.mocha-copy'
       ];
-      osjsVFS.copy(file, request, function(json) {
+      instance.vfs.copy(file, request, function(json) {
         assert.equal(null, json.error);
         assert.equal(true, json.result);
         done();
-      }, osjs.CONFIG);
+      }, instance.config);
     });
   });
 
   describe('#fileinfo', function() {
     it('should get file information without error', function(done) {
-      osjsVFS.fileinfo(['home:///.mocha/test2.txt'], request, function(json) {
+      instance.vfs.fileinfo(['home:///.mocha/test2.txt'], request, function(json) {
         assert.equal(null, json.error);
         assert.equal('home:///.mocha/test2.txt', json.result.path);
         assert.equal('test2.txt', json.result.filename);
         assert.equal('text/plain', json.result.mime);
         done();
-      }, osjs.CONFIG);
+      }, instance.config);
     });
   });
 
   describe('#delete', function() {
     it('should delete file without error', function(done) {
-      osjsVFS.delete(['home:///.mocha/test2.txt'], request, function(json) {
+      instance.vfs.delete(['home:///.mocha/test2.txt'], request, function(json) {
         assert.equal(null, json.error);
         assert.equal(true, json.result);
         done();
-      }, osjs.CONFIG);
+      }, instance.config);
     });
 
     it('should delete folder without error', function(done) {
-      osjsVFS.delete(['home:///.mocha'], request, function(json) {
+      instance.vfs.delete(['home:///.mocha'], request, function(json) {
         assert.equal(null, json.error);
         assert.equal(true, json.result);
         done();
-      }, osjs.CONFIG);
+      }, instance.config);
     });
 
     it('should delete copied folder without error', function(done) {
-      osjsVFS.delete(['home:///.mocha-copy'], request, function(json) {
+      instance.vfs.delete(['home:///.mocha-copy'], request, function(json) {
         assert.equal(null, json.error);
         assert.equal(true, json.result);
         done();
-      }, osjs.CONFIG);
+      }, instance.config);
     });
   });
 });
@@ -236,7 +235,7 @@ describe('API', function() {
   describe('Application API', function() {
     describe('#call', function() {
       it('should return dummy data', function(done) {
-        osjsServer.API.application({
+        instance.api.application({
           path: 'default/Settings',
           method: 'test',
           'arguments': {}
@@ -244,29 +243,29 @@ describe('API', function() {
           assert.equal(false, error);
           assert.equal('test', result);
           done();
-        }, request, response);
+        }, request, response, instance.config);
       });
 
       it('should trigger error on invalid method', function(done) {
-        osjsServer.API.application({
+        instance.api.application({
           path: 'default/Settings',
           method: 'xxx',
           'arguments': {}
         }, function(error, result) {
           assert.notEqual(null, error);
           done();
-        }, request, response);
+        }, request, response, instance.config);
       });
 
       it('should trigger error on invalid package', function(done) {
-        osjsServer.API.application({
+        instance.api.application({
           path: 'doesnotexist/PackageName',
           method: 'xxx',
           'arguments': {}
         }, function(error, result) {
           assert.notEqual(null, error);
           done();
-        }, request, response);
+        }, request, response, instance.config);
       });
     });
   });
@@ -274,21 +273,21 @@ describe('API', function() {
   describe('cURL', function() {
     describe('#HEAD', function() {
       it('successfull HEAD request', function(done) {
-        osjsServer.API.curl({
+        instance.api.curl({
           method: 'HEAD',
           url: 'http://os.js.org/test/curl-example.html'
         }, function(error, result) {
           assert.equal(false, error);
           assert.equal(200, result.httpCode);
           done();
-        }, request, response);
+        }, request, response, instance.config);
       });
     });
 
     describe('#GET', function() {
       var testFor = '<!DOCTYPE html><html><head></head><body>OS.js Test</body></html>\n';
       it('successfull GET request', function(done) {
-        osjsServer.API.curl({
+        instance.api.curl({
           method: 'GET',
           url: 'http://os.js.org/test/curl-example.html'
         }, function(error, result) {
@@ -296,11 +295,11 @@ describe('API', function() {
           assert.equal(200, result.httpCode);
           assert.equal(testFor, result.body);
           done();
-        }, request, response);
+        }, request, response, instance.config);
       });
 
       it('successfull GET binary/raw request', function(done) {
-        osjsServer.API.curl({
+        instance.api.curl({
           method: 'GET',
           binary: true,
           url: 'http://os.js.org/test/curl-example.html'
@@ -310,21 +309,21 @@ describe('API', function() {
           assert.equal(200, result.httpCode);
           assert.equal(data, result.body);
           done();
-        }, request, response);
+        }, request, response, instance.config);
       });
     });
 
     describe('#POST', function() {
       var testFor = '<!DOCTYPE html><html><head></head><body>OS.js Test</body></html>';
       it('successfull POST request', function(done) {
-        osjsServer.API.curl({
+        instance.api.curl({
           method: 'POST',
           url: 'http://os.js.org/test/curl-example.html'
         }, function(error, result) {
           assert.equal(false, error);
           assert.equal(405, result.httpCode); // Should be 405 because of github pages
           done();
-        }, request, response);
+        }, request, response, instance.config);
       });
     });
 
@@ -362,7 +361,7 @@ describe('Node HTTP Server', function() {
   }
 
   before(function () {
-    osjsServer.listen(port);
+    osjsServer.listen(rootDir, 'dist', port, false);
   });
 
   describe('#index', function() {

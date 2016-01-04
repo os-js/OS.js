@@ -62,12 +62,17 @@
 
     this.dialogs    = null;
     this.offline    = false;
+    this.nw         = null;
     this.userData   = {
       id      : 0,
       username: 'root',
       name    : 'root user',
       groups  : ['root']
     };
+
+    if ( (API.getConfig('Connection.Type') === 'nw') ) {
+      this.nw = require('osjs').init(process.cwd(), '', true);
+    }
 
     _handlerInstance = this;
   };
@@ -123,6 +128,7 @@
       this.dialogs.destroy();
     }
     this.dialogs = null;
+    this.nw = null;
 
     _handlerInstance = null;
   };
@@ -282,15 +288,6 @@
    * @method  _Handler::callAPI()
    */
   _Handler.prototype.callAPI = function(method, args, cbSuccess, cbError, options) {
-    if ( this.offline ) {
-      cbError('You are currently off-line and cannot perform this operation!');
-      return false;
-    }
-    if ( window.location.href.match(/^file\:\/\//) ) {
-      cbError('You are currently running locally and cannot perform this operation!');
-      return false;
-    }
-
     args      = args      || {};
     cbSuccess = cbSuccess || function() {};
     cbError   = cbError   || function() {};
@@ -299,6 +296,26 @@
     console.log('Method', method);
     console.log('Arguments', args);
     console.groupEnd();
+
+    if ( this.offline ) {
+      cbError('You are currently off-line and cannot perform this operation!');
+      return false;
+    }
+
+    if ( (API.getConfig('Connection.Type') === 'nw') ) {
+      try {
+        this.nw.request(method, args, function(err, res) {
+          cbSuccess({error: err, result: res});
+        });
+      } catch ( e ) {
+        console.warn('callAPI() NW.js Warning', e.stack, e);
+        cbError(e);
+      }
+      return true;
+    } else if ( (API.getConfig('Connection.Type') === 'standalone') ) {
+      cbError('You are currently running locally and cannot perform this operation!');
+      return false;
+    }
 
     var data = {
       url: API.getConfig('Connection.APIURI'),

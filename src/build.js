@@ -49,6 +49,7 @@
     src:          _path.join(ROOT, 'src'),
     conf:         _path.join(ROOT, 'src', 'conf'),
     server:       _path.join(ROOT, 'src', 'server'),
+    server_node:  _path.join(ROOT, 'src', 'server', 'node'),
     templates:    _path.join(ROOT, 'src', 'templates'),
     javascript:   _path.join(ROOT, 'src', 'client', 'javascript'),
     stylesheets:  _path.join(ROOT, 'src', 'client', 'stylesheets'),
@@ -630,13 +631,68 @@
   // CONFIGS
   /////////////////////////////////////////////////////////////////////////////
 
+  function getClientConfig(grunt, dist) {
+    var cfg = generateBuildConfig(grunt);
+    var settings = clone(cfg.client);
+    var themes = readThemeMetadata(grunt);
+    var extensions = getCoreExtensions(grunt);
+    var mime = cfg.mime;
+
+    var preloads = [];
+    var styles = themes.styles;
+    var sounds = {};
+    var icons = {};
+    var fonts = themes.fonts;
+
+    if ( dist === 'dist-dev' ) {
+      preloads.push({
+        type: 'javascript',
+        src: _path.join('/', 'client', 'javascript', 'handlers', cfg.handler, 'handler.js')
+      });
+    }
+
+    if ( settings.Preloads ) {
+      Object.keys(settings.Preloads).forEach(function(k) {
+        preloads.push(settings.Preloads[k]);
+      });
+    }
+
+    themes.sounds.forEach(function(t) {
+      sounds[t.name] = t.title;
+    });
+
+    themes.icons.forEach(function(t) {
+      icons[t.name] = t.title;
+    });
+
+    Object.keys(extensions).forEach(function(p) {
+      var e = extensions[p];
+      if ( e.sources ) {
+        e.sources.forEach(function(ee) {
+          preloads.push({
+            type: ee.type,
+            src: _path.join('/', 'packages', p, ee.src)
+          });
+        });
+      }
+    });
+
+    settings.Styles = styles;
+    settings.Icons = icons;
+    settings.Sounds = sounds;
+    settings.Fonts.list = fonts.concat(settings.Fonts.list);
+    settings.MIME = mime;
+    settings.Preloads = preloads;
+    settings.Connection.Dist = dist;
+
+    return settings;
+  }
+
   /**
    * Generates all configuration files
    */
   function createConfigurationFiles(grunt, arg) {
     var cfg = generateBuildConfig(grunt);
-    var themes = readThemeMetadata(grunt);
-    var mime = cfg.mime;
     var extensions = getCoreExtensions(grunt);
 
     var loadExtensions = [];
@@ -671,56 +727,7 @@
     }
 
     function buildClient(dist) {
-      var settings = clone(cfg.client);
-
-      var preloads = [];
-      var styles = themes.styles;
-      var sounds = {};
-      var icons = {};
-      var fonts = themes.fonts;
-
-      if ( dist === 'dist-dev' ) {
-        preloads.push({
-          type: 'javascript',
-          src: _path.join('/', 'client', 'javascript', 'handlers', cfg.handler, 'handler.js')
-        });
-      }
-
-      if ( settings.Preloads ) {
-        Object.keys(settings.Preloads).forEach(function(k) {
-          preloads.push(settings.Preloads[k]);
-        });
-      }
-
-      themes.sounds.forEach(function(t) {
-        sounds[t.name] = t.title;
-      });
-
-      themes.icons.forEach(function(t) {
-        icons[t.name] = t.title;
-      });
-
-      Object.keys(extensions).forEach(function(p) {
-        var e = extensions[p];
-        if ( e.sources ) {
-          e.sources.forEach(function(ee) {
-            preloads.push({
-              type: ee.type,
-              src: _path.join('/', 'packages', p, ee.src)
-            });
-          });
-        }
-      });
-
-      settings.Styles = styles;
-      settings.Icons = icons;
-      settings.Sounds = sounds;
-      settings.Fonts.list = fonts.concat(settings.Fonts.list);
-      settings.MIME = mime;
-      settings.Preloads = preloads;
-      settings.Connection.Dist = dist;
-
-      // Write
+      var settings = getClientConfig(grunt, dist);
       var tpl = getTemplate('dist/settings.js');
       tpl = tpl.replace('%CONFIG%', JSON.stringify(settings, null, 4));
       if ( dist === 'dist-dev' ) {
@@ -953,15 +960,18 @@
 
     function _cleanup(path, type) {
       var src = readFile(path);
-      src = src.toString().replace(/\/\*\![\s\S]*?\*\//, '');
-      if ( type === 'css' ) {
-        src = src.toString().replace('@charset "UTF-8";', '');
-      } else {
-        src = src.toString().replace(/console\.(log|debug|info|group|groupStart|groupEnd|count)\((.*)\);/g, '');
-      }
 
-      src = src.replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:^\s*\/\/(?:.*)$)/gm, '');
-      src = src.replace(/^\s*[\r\n]/gm, '');
+      if ( arg !== 'nw' ) {
+        src = src.toString().replace(/\/\*\![\s\S]*?\*\//, '');
+        if ( type === 'css' ) {
+          src = src.toString().replace('@charset "UTF-8";', '');
+        } else {
+          src = src.toString().replace(/console\.(log|debug|info|group|groupStart|groupEnd|count)\((.*)\);/g, '');
+        }
+
+        src = src.replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:^\s*\/\/(?:.*)$)/gm, '');
+        src = src.replace(/^\s*[\r\n]/gm, '');
+      }
 
       return src;
     }
@@ -1018,11 +1028,24 @@
   /**
    * Builds standalone files
    */
-  function buildStandalone(grunt, arg) {
+  function buildStandalone(grunt, done, arg) {
     var packages = readPackageMetadata(grunt);
     var tree = {
       '/dialogs.html': readFile(PATHS.dialogs).toString()
     };
+
+    function writeNewConfig(ctype) {
+      var config = getClientConfig(grunt, 'dist');
+      config.Connection.Type = ctype;
+      config.VFS.GoogleDrive.Enabled = false;
+      config.VFS.OneDrive.Enabled = false;
+      config.VFS.Dropbox.Enabled = false;
+      config.VFS.Mountpoints = {};
+
+      var tpl = getTemplate('dist/settings.js');
+      tpl = tpl.replace('%CONFIG%', JSON.stringify(config, null, 4));
+      writeFile(_path.join(PATHS.out_standalone, 'settings.js'), tpl);
+    }
 
     Object.keys(packages).forEach(function(p) {
       var src = _path.join(PATHS.packages, p, 'scheme.html');
@@ -1040,27 +1063,43 @@
     writeFile(PATHS.out_standalone_schemes, tpl);
 
     createIndex(grunt, 'standalone', 'dist');
+    writeNewConfig(arg || 'standalone');
 
     if ( arg === 'nw' ) {
-      var npmdir = _path.join(PATHS.out_standalone, 'node_modules', 'osjs');
-      mkdir(npmdir, true);
+      // Initials
+      mkdir(_path.join(PATHS.out_standalone, 'vfs'));
+      mkdir(_path.join(PATHS.out_standalone, 'vfs', 'home'));
+      mkdir(_path.join(PATHS.out_standalone, 'vfs', 'home', 'demo'));
 
-      var nodeFiles = ['packages.json', 'osjs.js'];
-      nodeFiles.forEach(function(f) {
-        copyFile(
-          _path.join(PATHS.server, 'nw', f),
-          _path.join(npmdir, f)
-        );
+      copyFile(
+        _path.join(ROOT, 'README.md'),
+        _path.join(PATHS.out_standalone, 'vfs', 'home', 'demo', 'README.md')
+      );
+      copyFile(
+        _path.join(PATHS.templates, 'nw', 'package.json'),
+        _path.join(PATHS.out_standalone, 'package.json')
+      );
+      copyFile(
+        _path.join(PATHS.conf, '130-mime.json'),
+        _path.join(PATHS.out_standalone, 'mime.json')
+      );
+
+      // Install dependencies
+      copyFile(
+        _path.join(PATHS.server_node, 'node_modules'),
+        _path.join(PATHS.out_standalone, 'node_modules')
+      );
+
+      var cmd = "(cd .standalone; npm install)"; // FIXME: Windows
+      require("child_process").exec(cmd, function(err, stdout, stderr) {
+        console.log(stderr, stdout);
+        done();
       });
 
-      var apiFiles = ['config.js', 'api.js', 'vfs.js', 'handler.js'];
-      apiFiles.forEach(function(f) {
-        copyFile(
-          _path.join(PATHS.server, 'node', f),
-          _path.join(npmdir, f)
-        );
-      });
+      return;
     }
+
+    done();
   }
 
   /**

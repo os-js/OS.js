@@ -183,7 +183,7 @@
       request.send(args.body);
     }
 
-    if ( window.location.href.match(/^file\:\/\//) ) {
+    if ( (OSjs.API.getConfig('Connection.Type') === 'standalone') ) {
       args.onerror('You are currently running locally and cannot perform this operation!');
       return;
     }

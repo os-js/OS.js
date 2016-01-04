@@ -85,7 +85,7 @@
       _: OSjs.Applications.ApplicationFileManager._
     });
 
-    if ( window.location.protocol.match(/^file/) ) { // FIXME: Translation
+    if ( (API.getConfig('Connection.Type') !== 'nw') && window.location.protocol.match(/^file/) ) { // FIXME: Translation
       this._setWarning('VFS does not work when in standalone mode');
     }
 

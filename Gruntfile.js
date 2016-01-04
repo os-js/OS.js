@@ -238,7 +238,8 @@
      */
     grunt.registerTask('standalone', 'Build dist standalone files', function(arg) {
       grunt.log.writeln('Building standalone dist...');
-      _build.buildStandalone(grunt, arg);
+      var done = this.async();
+      _build.buildStandalone(grunt, done, arg);
     });
 
     /**
@@ -336,6 +337,7 @@
 
     grunt.registerTask('all', ['clean', 'config', 'dist-dev-index', 'dist-index', 'core', 'themes', 'packages', 'manifest']);
     grunt.registerTask('default', ['all']);
+    grunt.registerTask('nw', ['config', 'dist-index', 'core:nw', 'themes', 'packages', 'manifest', 'standalone:nw', 'nwjs']);
     grunt.registerTask('dist', ['config', 'dist-index', 'core', 'themes', 'packages', 'manifest']);
     grunt.registerTask('dist-dev', ['config', 'dist-dev-index', 'themes:fonts', 'themes:styles', 'manifest']);
     grunt.registerTask('test', ['jshint', 'jscs', 'mochaTest'/*, 'mocha'*/]);

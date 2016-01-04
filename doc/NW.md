@@ -3,7 +3,7 @@
 Run:
 
 ```
-grunt dist standalone nwjs
+grunt nw
 ```
 
 Your build will be located in `.nw`

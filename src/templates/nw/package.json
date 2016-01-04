@@ -7,10 +7,13 @@
   "window": {
     "title": "OS.js",
     "icon": "favicon.png",
-    "toolbar": false,
+    "toolbar": true,
     "width": 1024,
     "height": 768,
     "min_width": 640,
     "min_height": 480
+  },
+  "dependencies": {
+    "node-fs-extra":        ">=0.8.1"
   }
 }
