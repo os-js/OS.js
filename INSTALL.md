@@ -22,7 +22,7 @@ I have also made a [simplified installation guide](http://os.js.org/doc/manuals/
     * [Vagrant](#vagrant)
     * [Docker](#docker)
 * [Setting up a server and running](#user-content-setting-up-a-server-and-running)
-  1. [NW.js](#NWjs)
+  1. [NW.js](#nwjs)
   2. [Node](#node)
   3. PHP
     * [Internal Server](#internal-web-server-for-php-54)
