@@ -209,6 +209,11 @@
       instance = _osjs.init(root, dist, false, logging);
       server = _http.createServer(httpCall);
 
+
+      if ( logging !== false ) {
+        console.log(JSON.stringify(instance.config, null, 2));
+      }
+
       if ( instance.handler && instance.handler.onServerStart ) {
         instance.handler.onServerStart(instance.config);
       }

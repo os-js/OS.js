@@ -49,6 +49,5 @@
     _server.close();
   });
 
-  console.log(JSON.stringify(_server.config(), null, 2));
   _server.listen(root, DISTDIR);
 })(require("path"), require("./http.js"));
