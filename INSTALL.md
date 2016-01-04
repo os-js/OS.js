@@ -30,7 +30,7 @@ I have also made a [simplified installation guide](http://os.js.org/doc/manuals/
     * [Lighttpd](#lighttpd)
     * [Nginx](#nginx)
     * [WAMP](#wamp)
-* [Setting up optional features](#setting-up-optional-features)
+* [Running](#running)
 
 # Dependencies
 
@@ -68,6 +68,8 @@ Download and run http://os.js.org/installer.exe.
 
 ### Manual
 
+[Official video instruction on YouTube](https://www.youtube.com/watch?v=Cj3OdxTdGGc)
+
 Run `cmd` as *Administrator* (important)!
 
 ```shell
@@ -83,8 +85,6 @@ $ bin\create-windows-symlinks
 
 $ grunt --force
 ```
-
-[Official video instruction on YouTube](https://www.youtube.com/watch?v=Cj3OdxTdGGc)
 
 ## Containers and Virtual Machines
 
@@ -104,7 +104,9 @@ See [NW.md](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/NW.md).
 
 See [X11.md](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/X11.md).
 
-# Setting up a server and running
+# Running
+
+*If you built OS.js using a container (above) you can skip this.*
 
 Make sure the _VFS_ directories in `vfs/` are given the same permissions as the web-servers running user.
 
@@ -112,7 +114,7 @@ After you have started a server, simply navigate to http://localhost:8000 (port 
 
 ## Node
 
-If you have *node supervisor* intalled the server will automatically make use of it.
+Node is the prefered server for OS.js.
 
 ### Production (dist)
 
