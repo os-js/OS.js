@@ -23,14 +23,14 @@ I have also made a [simplified installation guide](http://os.js.org/doc/manuals/
     * [Docker](#docker)
     * [NW.js](#nwjs)
     * [X11](#x11)
-* [Setting up a server and running](#user-content-setting-up-a-server-and-running)
+* [Running](#running)
   2. [Node](#node)
   3. PHP
     * [Apache](#apache)
     * [Lighttpd](#lighttpd)
     * [Nginx](#nginx)
     * [WAMP](#wamp)
-* [Running](#running)
+* [Setting up optional features](#setting-up-optional-features)
 
 # Dependencies
 
