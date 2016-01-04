@@ -14,7 +14,6 @@
     "min_height": 480
   },
   "dependencies": {
-    "node-fs-extra":        ">=0.8.1",
-    "request":              ">=2.64.0"
+    "node-fs-extra":        ">=0.8.1"
   }
 }
