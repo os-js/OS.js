@@ -190,7 +190,7 @@
     /**
      * Task: Build config
      */
-    grunt.registerTask('config', 'Build config files (or modify `set:path.to.key:value`, `get:path.to.key`, `preload:name:path:type`)', function(fn, key, value, arg) {
+    grunt.registerTask('config', 'Build config files (or modify `set:path.to.key:value`, `get:path.to.key`, `preload:name:path:type`, `(add|remove)-repository:name)', function(fn, key, value, arg) {
       if (fn) {
         var result;
         if (fn === 'get') {
@@ -199,7 +199,6 @@
           result = _build.getConfigPath(grunt, key);
           grunt.log.writeln('Type: ' + typeof result);
           console.log(result);
-          console.log();
         } else if (fn === 'set') {
           grunt.log.writeln('Path: ' + key);
 
@@ -207,6 +206,12 @@
           console.log(result);
         } else if (fn === 'preload') {
           result = _build.addPreload(grunt, key, value, arg);
+          console.log(result);
+        } else if ( fn === 'add-repository' ) {
+          result = _build.addRepository(grunt, key);
+          console.log(result);
+        } else if ( fn === 'remove-repository' ) {
+          result = _build.removeRepository(grunt, key);
           console.log(result);
         } else {
           throw new TypeError('Invalid config operation \'' + fn + '\'');

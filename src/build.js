@@ -370,7 +370,7 @@
       var current = getConfigPath(grunt, 'client.Preloads') || {};
       current[name] = {type: type, src: path};
 
-      setConfigPath(grunt, 'client.Preloads', current, true);
+      setConfigPath(grunt, 'client.Preloads', {client: {Preloads: current}}, true);
 
       return current;
     };
@@ -414,6 +414,32 @@
     grunt.fail.fatal('Package ' + packageName + ' not found!');
 
     console.log(found);
+  }
+
+  /**
+   * Adds repository to config
+   */
+  function addRepository(grunt, name) {
+    var current = getConfigPath(grunt, 'repositories') || [];
+    current.push(name);
+    setConfigPath(grunt, 'repositories', {repositories: current}, true);
+    return current;
+  }
+
+  /**
+   * Removes repository from config
+   */
+  function removeRepository(grunt, name) {
+    var current = getConfigPath(grunt, 'repositories') || [];
+    var found = current.indexOf(name);
+    if ( found >= 0 ) {
+      current.splice(found, 1);
+    }
+    if ( current.length === 1 && current[0] === 'default' ) {
+      current = null;
+    }
+    setConfigPath(grunt, 'repositories', {repositories: current}, true);
+    return current;
   }
 
   /**
@@ -1554,6 +1580,8 @@
     addPreload: addPreload,
 
     togglePackage: togglePackage,
+    addRepository: addRepository,
+    removeRepository: removeRepository,
 
     buildCore:        buildCore,
     buildStandalone:  buildStandalone,
