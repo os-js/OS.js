@@ -49,7 +49,7 @@ Follow the official documentation on how to [install and run OS.js](http://os.js
 * I **strongly** recommend using a separate branch for your changes.
 * I **strongly** recommend [squashing](http://makandracards.com/makandra/527-squash-several-git-commits-into-a-single-commit) your commits if you have spread out a task into several pieces.
 * Make sure you test **all your changes** before commiting so it does not lead to extra commits with corrections.
-* Keep your [commit messages](https://robots.thoughtbot.com/5-useful-tips-for-a-better-commit-message) as short as possible and don't include filesnames. Write a short description of **what was done**, not *where*. Example: "Themes: Corrected colors" or "Locales: Added ru_RU locales"
+* Keep your [commit messages](https://robots.thoughtbot.com/5-useful-tips-for-a-better-commit-message) as short as possible and don't include filenames. Write a short description of **what was done**, not *where*. Example: "Themes: Corrected colors" or "Locales: Added ru_RU locales"
 * Send a [pull-request](https://help.github.com/articles/using-pull-requests/) when you are done
 * Keep your fork [up-to-date](https://robots.thoughtbot.com/keeping-a-github-fork-updated) 
 
