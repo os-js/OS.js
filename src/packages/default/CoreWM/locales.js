@@ -211,7 +211,28 @@
       'System' : 'Система',
       'Utilities' : 'Инструменти',
       'Other' : 'Други'
-    }
+    },
+    sh_SP : {
+      'Killing this process will stop things from working!' : 'Prekidom ovog procesa će doći do prekida rada!',
+      'Open settings' : 'Otvori podešavanja',
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Vaš panel nema stavki. Otiđite u podešavanja i vratite na podrazumevane vrijednosti ili podesite ručno\n(Ova greška se može desiti prilikom ažuriranja OS.js)',
+      'Create shortcut' : 'Napravi prečicu',
+      'Set as wallpaper' : 'Postavi kao pozadinu',
+      'An error occured while creating PanelItem: {0}' : 'Došlo je do greške prilikom kreiranja PanelItem-a: {0}',
+      'Show Icons' : 'Prikaži ikonice',
+      'Hide Icons' : 'Sakrij ikonice',
+
+      'Development' : 'Programiranje',
+      'Education' : 'Obrazovanje',
+      'Games' : 'Igrice',
+      'Graphics' : 'Grafika',
+      'Network' : 'Internet',
+      'Multimedia' : 'Multimedija',
+      'Office' : 'Kancelarija',
+      'System' : 'Sistem',
+      'Utilities' : 'Alati',
+      'Other' : 'Ostalo'
+    },
 
   };
 

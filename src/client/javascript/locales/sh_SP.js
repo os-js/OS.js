@@ -66,8 +66,8 @@
     'ERR_APP_MISSING_ARGUMENT_FMT': 'Nedostaje argument: {0}',
     'ERR_APP_UNKNOWN_ERROR'       : 'Nepoznata greška',
 
-    'ERR_OPERATION_TIMEOUT'       : 'Operation Timeout', //TODO
-    'ERR_OPERATION_TIMEOUT_FMT'   : 'Operation Timeout ({0})', //TODO
+    'ERR_OPERATION_TIMEOUT'       : 'Operacija obustavljena', 
+    'ERR_OPERATION_TIMEOUT_FMT'   : 'Operacija obustavljena ({0})', 
 
     // Window
     'ERR_WIN_DUPLICATE_FMT' : 'Već imate prozor sa nazivom \'{0}\'',
@@ -117,7 +117,7 @@
     'DIALOG_CONFIRM_TITLE' : 'Prozot potvrde',
 
     'DIALOG_ERROR_MESSAGE'   : 'Poruka',
-    'DIALOG_ERROR_SUMMARY'   : 'Summary', //TODO
+    'DIALOG_ERROR_SUMMARY'   : 'Sažetak',
     'DIALOG_ERROR_TRACE'     : 'Trace',
     'DIALOG_ERROR_BUGREPORT' : 'Prijavite grešku',
 
@@ -130,20 +130,20 @@
     'DIALOG_FILE_MNU_LISTVIEW' : 'Prikaz lista',
     'DIALOG_FILE_MNU_TREEVIEW' : 'Prikaz drvo',
     'DIALOG_FILE_MNU_ICONVIEW' : 'Prikaz ikonica',
-    'DIALOG_FILE_ERROR'        : 'FileDialog greška', //TODO
+    'DIALOG_FILE_ERROR'        : 'Greška sa fajlom',
     'DIALOG_FILE_ERROR_SCANDIR': 'Došlo je do greške prilikom izlistavanja \'{0}\'',
     'DIALOG_FILE_MISSING_FILENAME' : 'Morate odabrati fajl ili unijeti novo ime fajla!',
     'DIALOG_FILE_MISSING_SELECTION': 'Morate odabrati fajl!',
 
     'DIALOG_FILEINFO_TITLE'   : 'Informacije o fajlu',
     'DIALOG_FILEINFO_LOADING' : 'Učitavanje informacija za: {0}',
-    'DIALOG_FILEINFO_ERROR'   : 'FileInformationDialog Error', //TODO
+    'DIALOG_FILEINFO_ERROR'   : 'Greška oko informacija fajla',
     'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Došlo je do greške prilikom traženja informacija za **{0}**',
     'DIALOG_FILEINFO_ERROR_LOOKUP_FMT' : 'Došlo je do greške prilikom traženja informacija za: {0}',
 
     'DIALOG_INPUT_TITLE' : 'Prozor za unos',
 
-    'DIALOG_FILEPROGRESS_TITLE'   : 'File Operation Progress', //TODO
+    'DIALOG_FILEPROGRESS_TITLE'   : 'Progres operacije sa fajlovima',
     'DIALOG_FILEPROGRESS_LOADING' : 'Učitavanje...',
 
     'DIALOG_UPLOAD_TITLE'   : 'Prozor za dodavanje fajla', 
@@ -195,16 +195,16 @@
     'ERR_VFS_UNAVAILABLE'     : 'Nije dostupno',
     'ERR_VFS_FILE_ARGS'       : 'Fajl očekuje barem jedan argument',
     'ERR_VFS_NUM_ARGS'        : 'Nedovoljno argumenata',
-    'ERR_VFS_EXPECT_FILE'     : 'Expects a file-object', //TODO
-    'ERR_VFS_EXPECT_SRC_FILE' : 'Expects a source file-object', //TODO
-    'ERR_VFS_EXPECT_DST_FILE' : 'Expects a destination file-object', //TODO
+    'ERR_VFS_EXPECT_FILE'     : 'Očekuje se file-object', 
+    'ERR_VFS_EXPECT_SRC_FILE' : 'Očekuje se izvor file-object', 
+    'ERR_VFS_EXPECT_DST_FILE' : 'Očekuje se destinacija file-object', 
     'ERR_VFS_FILE_EXISTS'     : 'Destinacija već postoji',
     'ERR_VFS_TRANSFER_FMT'    : 'Došlo je do greške prilikom prenosa između skladišta: {0}',
     'ERR_VFS_UPLOAD_NO_DEST'  : 'Nije moguće dodati fajl bez destinacije',
     'ERR_VFS_UPLOAD_NO_FILES' : 'Nije moguće dodati fajl bez ijednog definisanog fajla',
     'ERR_VFS_UPLOAD_FAIL_FMT' : 'Dodavanja fajla nije uspjelo: {0}',
     'ERR_VFS_UPLOAD_CANCELLED': 'Dodavanje fajla otkazano',
-    'ERR_VFS_DOWNLOAD_NO_FILE': 'Cannot download a path without a path', //TODO
+    'ERR_VFS_DOWNLOAD_NO_FILE': 'Nije moguće preuzeti fajl bez putanje',
     'ERR_VFS_DOWNLOAD_FAILED' : 'Došlo je do greške prilikom preuzimanja: {0}',
     'ERR_VFS_REMOTEREAD_EMPTY': 'Prazan odgovor',
     'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Preuzimanje fajla',
@@ -212,8 +212,8 @@
     'ERR_VFSMODULE_XHR_ERROR'      : 'XHR greška',
     'ERR_VFSMODULE_ROOT_ID'        : 'Došlo je do greške prilikom pronalaženja root folder ID-a',
     'ERR_VFSMODULE_NOSUCH'         : 'Fajl ne postoji',
-    'ERR_VFSMODULE_PARENT'         : 'No such parent', //TODO
-    'ERR_VFSMODULE_PARENT_FMT'     : 'Failed to look up parent: {0}', //TODO
+    'ERR_VFSMODULE_PARENT'         : 'Roditelj nije pronađen',
+    'ERR_VFSMODULE_PARENT_FMT'     : 'Greška prilikom pretraživanja roditelja: {0}',
     'ERR_VFSMODULE_SCANDIR'        : 'Greška prilikom skeniranja foldera', 
     'ERR_VFSMODULE_SCANDIR_FMT'    : 'Greška prilikom skeniranja foldera: {0}',
     'ERR_VFSMODULE_READ'           : 'Greška prilikom čitanja fajla',
@@ -355,7 +355,7 @@
     'LBL_ADD_FOLDER'    : 'Dodaj folder',
     'LBL_INFORMATION'   : 'Informacije',
     'LBL_TEXT_COLOR'    : 'Boja texta',
-    'LBL_BACK_COLOR'    : 'Back Color', //TODO
+    'LBL_BACK_COLOR'    : 'Pozadinska boja',
     'LBL_RESET_DEFAULT' : 'Vrati na podrazumjevano',
     'LBL_DOWNLOAD_COMP' : 'Preuzmi u računar',
     'LBL_ORDERED_LIST'  : 'Sortirana lista',
