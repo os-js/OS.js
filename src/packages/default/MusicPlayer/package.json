@@ -1,6 +1,6 @@
 {
-  "className":  "ApplicationMusicPlayer",
-  "name":       "Music Player",
+  "className": "ApplicationMusicPlayer",
+  "name": "Music Player",
   "names": {
     "bg_BG": "Музикален плеър",
     "de_DE": "Musikspieler",
@@ -11,17 +11,28 @@
     "tr_TR": "Muzik Çalar",
     "vi_VN": "Nghe nhạc"
   },
-  "mime":       ["^audio", "osjs\\/playlist"],
-  "category":   "multimedia",
-  "icon":       "status/audio-volume-high.png",
-  "singular":   true,
-  "compability":["audio"],
-  "preload":    [
-    {"src": "locales.js", "type": "javascript"},
-    {"src": "main.js", "type": "javascript"},
-    {"src": "main.css", "type": "stylesheet"}
+  "mime": [
+    "^audio",
+    "osjs\\/playlist"
+  ],
+  "category": "multimedia",
+  "icon": "status/audio-volume-high.png",
+  "singular": true,
+  "compability": [
+    "audio"
+  ],
+  "preload": [
+    {
+      "src": "locales.js",
+      "type": "javascript"
+    },
+    {
+      "src": "main.js",
+      "type": "javascript"
+    },
+    {
+      "src": "main.css",
+      "type": "stylesheet"
+    }
   ]
 }
-
-
-

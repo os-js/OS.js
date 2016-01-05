@@ -1,6 +1,6 @@
 {
-  "className":  "ApplicationSettings",
-  "name":       "Settings",
+  "className": "ApplicationSettings",
+  "name": "Settings",
   "names": {
     "bg_BG": "Настройки",
     "de_DE": "Einstellungen",
@@ -21,16 +21,21 @@
     "tr_TR": "Program Ayarlarını düzenle",
     "vi_VN": "Cài đặt"
   },
-  "mime":       null,
-  "icon":       "categories/applications-system.png",
-  "category":   "system",
-  "singular":   true,
-  "preload":    [
-    {"src": "main.js", "type": "javascript"},
-    {"src": "locale.js", "type": "javascript"},
-    {"src": "main.css", "type": "stylesheet"}
+  "icon": "categories/applications-system.png",
+  "category": "system",
+  "singular": true,
+  "preload": [
+    {
+      "src": "main.js",
+      "type": "javascript"
+    },
+    {
+      "src": "locale.js",
+      "type": "javascript"
+    },
+    {
+      "src": "main.css",
+      "type": "stylesheet"
+    }
   ]
 }
-
-
-

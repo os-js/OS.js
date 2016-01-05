@@ -1,14 +1,14 @@
 {
-  "className":    "ApplicationAbout",
-  "name":         "About OS.js",
-  "description":  "About OS.js",
-  "names":      {
-    "no_NO":      "Om OS.js",
-    "tr_TR":      "hakkında OS.js",
-    "pl_PL":      "o OS.js",
-    "de_DE":      "Über OS.js",
-    "ru_RU":      "Об OS.js",
-    "nl_NL":      "Over OS.js",
+  "className": "ApplicationAbout",
+  "name": "About OS.js",
+  "description": "About OS.js",
+  "names": {
+    "no_NO": "Om OS.js",
+    "tr_TR": "hakkında OS.js",
+    "pl_PL": "o OS.js",
+    "de_DE": "Über OS.js",
+    "ru_RU": "Об OS.js",
+    "nl_NL": "Over OS.js",
     "vi_VN": "Thông tin về OS.js",
     "bg_BG": " За OS.js"
   },
@@ -22,15 +22,17 @@
     "tr_TR": "hakkında OS.js",
     "vi_VN": "Thông tin về OS.js"
   },
-  "singular":   true,
-  "mime":       null,
-  "category":   "system",
-  "icon":       "apps/help-browser.png",
-  "preload":    [
-    {"src": "main.js", "type": "javascript"},
-    {"src": "main.css", "type": "stylesheet"}
+  "singular": true,
+  "category": "system",
+  "icon": "apps/help-browser.png",
+  "preload": [
+    {
+      "src": "main.js",
+      "type": "javascript"
+    },
+    {
+      "src": "main.css",
+      "type": "stylesheet"
+    }
   ]
 }
-
-
-

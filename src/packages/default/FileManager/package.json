@@ -1,7 +1,7 @@
 {
-  "className":  "ApplicationFileManager",
-  "name":       "File Manager",
-  "description":"The default file manager",
+  "className": "ApplicationFileManager",
+  "name": "File Manager",
+  "description": "The default file manager",
   "names": {
     "bg_BG": "Файлов мениджър",
     "de_DE": "Dateimanager",
@@ -22,12 +22,20 @@
     "tr_TR": "Varsayılan dosya yöneticisi",
     "vi_VN": "Trình quản lí file mặc định"
   },
-  "mime":       null,
-  "category":   "utilities",
-  "icon":       "apps/file-manager.png",
-  "preload":    [
-    {"src": "main.js", "type": "javascript"},
-    {"src": "locales.js", "type": "javascript"},
-    {"src": "main.css", "type": "stylesheet"}
+  "category": "utilities",
+  "icon": "apps/file-manager.png",
+  "preload": [
+    {
+      "src": "main.js",
+      "type": "javascript"
+    },
+    {
+      "src": "locales.js",
+      "type": "javascript"
+    },
+    {
+      "src": "main.css",
+      "type": "stylesheet"
+    }
   ]
 }

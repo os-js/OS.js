@@ -2,10 +2,9 @@
   "className": "ExtensionBroadway",
   "type": "extension",
   "enabled": false,
-  "config": {
-  },
+  "config": {},
   "build": {
-    "copy" : [
+    "copy": [
       "package.json",
       "broadway.js",
       "extension.js",
@@ -14,8 +13,17 @@
     ]
   },
   "sources": [
-    {"type": "javascript", "src": "broadway.js"},
-    {"type": "stylesheet", "src": "extension.css"},
-    {"type": "javascript", "src": "extension.js"}
+    {
+      "type": "javascript",
+      "src": "broadway.js"
+    },
+    {
+      "type": "stylesheet",
+      "src": "extension.css"
+    },
+    {
+      "type": "javascript",
+      "src": "extension.js"
+    }
   ]
 }

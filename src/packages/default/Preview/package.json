@@ -1,7 +1,7 @@
 {
-  "className":  "ApplicationPreview",
-  "name":       "Preview",
-  "description":"Preview image files",
+  "className": "ApplicationPreview",
+  "name": "Preview",
+  "description": "Preview image files",
   "names": {
     "bg_BG": "Преглед на изображения",
     "de_DE": "Vorschau",
@@ -22,12 +22,20 @@
     "tr_TR": "resim dosyalarını önizle",
     "vi_VN": "Trình xem ảnh"
   },
-  "mime":       ["^image", "^video"],
-  "category":   "multimedia",
-  "icon":       "mimetypes/image.png",
-  "preload":    [
-    {"src": "main.js", "type": "javascript"},
-    {"src": "main.css", "type": "stylesheet"}
+  "mime": [
+    "^image",
+    "^video"
+  ],
+  "category": "multimedia",
+  "icon": "mimetypes/image.png",
+  "preload": [
+    {
+      "src": "main.js",
+      "type": "javascript"
+    },
+    {
+      "src": "main.css",
+      "type": "stylesheet"
+    }
   ]
 }
-

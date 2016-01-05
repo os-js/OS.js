@@ -1,7 +1,7 @@
 {
-  "className":  "ApplicationProcessViewer",
-  "name":       "Process Viewer",
-  "description":"View running processes",
+  "className": "ApplicationProcessViewer",
+  "name": "Process Viewer",
+  "description": "View running processes",
   "names": {
     "bg_BG": "Процеси",
     "de_DE": "Prozess-Manager",
@@ -22,14 +22,17 @@
     "tr_TR": "çalışan işlemleri görüntüle",
     "vi_VN": "Xem các tiến trình đang chạy"
   },
-  "singular":   true,
-  "mime":       null,
-  "category":   "system",
-  "icon":       "apps/gnome-monitor.png",
-  "preload":    [
-    {"src": "main.js", "type": "javascript"},
-    {"src": "main.css", "type": "stylesheet"}
+  "singular": true,
+  "category": "system",
+  "icon": "apps/gnome-monitor.png",
+  "preload": [
+    {
+      "src": "main.js",
+      "type": "javascript"
+    },
+    {
+      "src": "main.css",
+      "type": "stylesheet"
+    }
   ]
 }
-
-

@@ -1,6 +1,6 @@
 {
-  "className":  "ApplicationCalculator",
-  "name":       "Calculator",
+  "className": "ApplicationCalculator",
+  "name": "Calculator",
   "names": {
     "bg_Bg": "Клакулатор",
     "nl_NL": "Rekenmachine",
@@ -10,14 +10,16 @@
     "tr_TR": "Hesap Makinesi",
     "vi_VN": "Máy tính"
   },
-  "mime":       null,
-  "icon":       "apps/calc.png",
-  "category":   "office",
-  "preload":    [
-    {"src": "main.js", "type": "javascript"},
-    {"src": "main.css", "type": "stylesheet"}
+  "icon": "apps/calc.png",
+  "category": "office",
+  "preload": [
+    {
+      "src": "main.js",
+      "type": "javascript"
+    },
+    {
+      "src": "main.css",
+      "type": "stylesheet"
+    }
   ]
 }
-
-
-
