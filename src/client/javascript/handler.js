@@ -292,54 +292,73 @@
     cbSuccess = cbSuccess || function() {};
     cbError   = cbError   || function() {};
 
+    var self = this;
+
+    function checkState() {
+      if ( self.offline ) {
+        cbError('You are currently off-line and cannot perform this operation!');
+        return false;
+      } else if ( (API.getConfig('Connection.Type') === 'standalone') ) {
+        cbError('You are currently running locally and cannot perform this operation!');
+        return false;
+      }
+      return true;
+    }
+
+    function _call() {
+      if ( (API.getConfig('Connection.Type') === 'nw') ) {
+        try {
+          self.nw.request(method, args, function(err, res) {
+            cbSuccess({error: err, result: res});
+          });
+        } catch ( e ) {
+          console.warn('callAPI() NW.js Warning', e.stack, e);
+          cbError(e);
+        }
+        return true;
+      }
+
+      var data = {
+        url: API.getConfig('Connection.APIURI'),
+        method: 'POST',
+        json: true,
+        body: {
+          'method'    : method,
+          'arguments' : args
+        },
+        onsuccess: function(/*response, request, url*/) {
+          cbSuccess.apply(self, arguments);
+        },
+        onerror: function(/*error, response, request, url*/) {
+          cbError.apply(self, arguments);
+        }
+      };
+
+      if ( options ) {
+        Object.keys(options).forEach(function(key) {
+          data[key] = options[key];
+        });
+      }
+
+      return Utils.ajax(data);
+    }
+
     console.group('Handler::callAPI()');
     console.log('Method', method);
     console.log('Arguments', args);
     console.groupEnd();
 
-    if ( this.offline ) {
-      cbError('You are currently off-line and cannot perform this operation!');
-      return false;
+    if ( checkState() ) {
+      return _call();
     }
 
-    if ( (API.getConfig('Connection.Type') === 'nw') ) {
-      try {
-        this.nw.request(method, args, function(err, res) {
-          cbSuccess({error: err, result: res});
-        });
-      } catch ( e ) {
-        console.warn('callAPI() NW.js Warning', e.stack, e);
-        cbError(e);
-      }
-      return true;
-    } else if ( (API.getConfig('Connection.Type') === 'standalone') ) {
-      cbError('You are currently running locally and cannot perform this operation!');
-      return false;
-    }
+    return false;
+  };
 
-    var data = {
-      url: API.getConfig('Connection.APIURI'),
-      method: 'POST',
-      json: true,
-      body: {
-        'method'    : method,
-        'arguments' : args
-      },
-      onsuccess: function(/*response, request, url*/) {
-        cbSuccess.apply(this, arguments);
-      },
-      onerror: function(/*error, response, request, url*/) {
-        cbError.apply(this, arguments);
-      }
-    };
-
-    if ( options ) {
-      Object.keys(options).forEach(function(key) {
-        data[key] = options[key];
-      });
-    }
-
-    return Utils.ajax(data);
+  /**
+   * Calls NW "backend" method
+   */
+  _Handler.prototype.callNW = function() {
   };
 
   //
