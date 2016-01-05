@@ -219,13 +219,6 @@
     });
 
     /**
-     * Task: View config
-     */
-    grunt.registerTask('view-config', '(Pre)view the generated config file', function(arg) {
-      console.log(JSON.stringify(_build.getConfig(grunt), null, 4));
-    });
-
-    /**
      * Task: Build core
      */
     grunt.registerTask('core', 'Build dist core files', function(arg) {
