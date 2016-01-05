@@ -64,6 +64,9 @@
     },
     bg_BG : {
       'Insert URL' : 'Въведи URL'
+    },
+    sh_SP:  {
+      'Insert URL' :  'Unesite link'
     }
   };
 

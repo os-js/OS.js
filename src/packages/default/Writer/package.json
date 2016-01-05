@@ -10,7 +10,8 @@
     "pl_PL": "Writer",
     "ru_RU": "Текстовый процессор",
     "tr_TR": "Writer",
-    "vi_VN": "Viết"
+    "vi_VN": "Viết",
+    "sh_SP": "Tekst"
   },
   "descriptions": {
     "bg_BG": "Писанене на обогатен текст",
@@ -20,7 +21,8 @@
     "pl_PL": "Twórz dokumenty rich text",
     "ru_RU": "Текстовый процессор",
     "tr_TR": "Gelişmiş dökümanlar oluşturun",
-    "vi_VN": "Xem, chỉnh sửa văn bản"
+    "vi_VN": "Xem, chỉnh sửa văn bản",
+    "sh_SP": "Pisanje obogaćenih tekstova"
   },
   "mime":       ["^text", "osjs\\/document"],
   "category":   "office",

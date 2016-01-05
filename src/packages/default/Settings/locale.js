@@ -253,7 +253,29 @@
       'Enable Hotkeys' : 'Включи горещи клавиши',
       'Enable Icon View' : 'Включи иконен-изглед',
       'General': 'Основен'
-    }
+    },
+    sh_SP : {
+      'Theme' : 'Tema',
+      'Background' : 'Pozadin',
+      'Desktop' : 'Ekran',
+      'Background Type' : 'Tip pozadine',
+      'Image (Repeat)' : 'Slika (Ponovi)',
+      'Image (Centered)' : 'Slika (Centrirana)',
+      'Image (Fill)' : 'Slika (Popuni)',
+      'Image (Streched)' : 'Slika (Razvuci)',
+      'Desktop Margin ({0}px)' : 'Margine ekrana ({0}px)',
+      'Panel' : 'Panel',
+      'Position' : 'Pozicija',
+      'Ontop' : 'Na vrhu',
+      'Items' : 'Stavke',
+      'Enable Animations' : 'Uključi animacije',
+      'Language (requires restart)' : 'Jezik (potreban restart)',
+      'Enable Sounds' : 'Uključi zvuk',
+      'Enable Window Switcher' : 'Uključi izmjenjivač ekrana',
+      'Enable Hotkeys' : 'Uključi prečice',
+      'Enable Icon View' : 'Uključi prikaz ikonica',
+      'General': 'Opšta'
+    }    
   };
 
   function _() {

@@ -10,7 +10,8 @@
     "pl_PL": "Menedżer Plików",
     "ru_RU": "Файловый менеджер",
     "tr_TR": "Dosya Yöneticisi",
-    "vi_VN": "Quản lí file"
+    "vi_VN": "Quản lí file",
+    "sh_SP": "Upravljač fajlovim"
   },
   "descriptions": {
     "bg_BG": "Стандартния файлов мениджър",
@@ -20,7 +21,8 @@
     "pl_PL": "Domyślny Menedżer Plików",
     "ru_RU": "Стандартный файловый менеджер",
     "tr_TR": "Varsayılan dosya yöneticisi",
-    "vi_VN": "Trình quản lí file mặc định"
+    "vi_VN": "Trình quản lí file mặc định",
+    "sh_SP": "Podrazumjevani upravljač fajlovima"
   },
   "mime":       null,
   "category":   "utilities",

@@ -8,7 +8,8 @@
     "pl_PL": "Kalkulator",
     "ru_RU": "Калькулятор",
     "tr_TR": "Hesap Makinesi",
-    "vi_VN": "Máy tính"
+    "vi_VN": "Máy tính",
+    "sh_SP": "Digitron"
   },
   "mime":       null,
   "icon":       "apps/calc.png",

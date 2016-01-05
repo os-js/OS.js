@@ -36,6 +36,53 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var _Locales = {
+     sh_SP : {
+      'Toggle tools toolbar' : 'Traka sa alatim',
+      'Toggle layers toolbar' : 'Traka sa slojevim',
+      'Layer' : 'Sloj',
+      'Effect' : 'Efekt',
+      'Flip Horizontally' : 'Okreni horizontalno',
+      'Flip Vertically' : 'Okretni vertikalno',
+      'Foreground' : 'Преден фон',
+      'Bakgrunn' : 'Pozadina',
+      'Foreground (Fill) Color' : 'Prednja (Unutrašanja) Boja',
+      'Background (Stroke) Color' : 'Pozadina (Linija) Boja',
+      'Line join' : 'Linija se pridružuje',
+      'Line width' : 'Širina linije',
+      'Toggle Stroke' : 'Uključi/isključi stroke',
+      'Enable stroke' : 'Uključi stroke',
+      'Round' : 'Okruglo',
+      'Miter' : 'Mitra',
+      'Bevel' : 'Kosina',
+      'Stroked' : 'Udarena',
+      'No stroke' : 'Bez udara',
+
+      'Pointer' : 'Pokazatelj',
+      'Move active layer' : 'Premjesti aktivni sloj',
+
+      'Picker' : 'Odabirač',
+      'LMB: set fg color, RMB: set gb color' : 'LMB: izaberite za prednju boju, RMB: izaberite za pozadinu',
+
+      'Pencil' : 'Olovka',
+      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: Crtajte sa fg/bg bojom',
+      'Path' : 'Putanja',
+
+      'Square/Rectangle' : 'Kvadrat/Pravougaonik',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: crtajte sa fb/bg bojom, SHIFT: нарисувай pravougaonik',
+
+      'Circle/Ellipse' : 'Krug/Elipa',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: crtajte sa fb/bg bojom, SHIFT: crtajte elipsu',
+
+      'Blur' : 'Zamagljeno',
+      'Noise' : 'Šum',
+      'Invert colors' : 'Zamjeni boje',
+      'Grayscale' : 'Crno-belo',
+      'Sharpen' : 'Oštrina',
+      'Simple Blur' : 'Jednostavna zamagljenost',
+
+      'Radius' : 'Radijus',
+      'Iterations' : 'Iteracija'
+    },
     no_NO : {
       'Toggle tools toolbar' : 'Svitsj verktøylinje',
       'Toggle layers toolbar' : 'Svitsj lag-verktøylinje',
@@ -460,7 +507,6 @@
       'Radius' : 'Радиус',
       'Iterations' : 'Повторения'
     }
-
   };
 
   function _() {

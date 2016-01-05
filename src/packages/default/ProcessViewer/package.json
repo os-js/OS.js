@@ -10,7 +10,8 @@
     "pl_PL": "Procesy",
     "ru_RU": "Менеджер процессов",
     "tr_TR": "İşlemleri Görüntüle",
-    "vi_VN": "Xem tiến trình"
+    "vi_VN": "Xem tiến trình",
+    "sh_SP": "Procesi"
   },
   "descriptions": {
     "bg_BG": "Преглед на процеси",
@@ -20,7 +21,8 @@
     "pl_PL": "Zobacz działające procesy",
     "ru_RU": "Менеджер запущенных процессов",
     "tr_TR": "çalışan işlemleri görüntüle",
-    "vi_VN": "Xem các tiến trình đang chạy"
+    "vi_VN": "Xem các tiến trình đang chạy",
+    "sh_SP": "Pregled procesa"
   },
   "singular":   true,
   "mime":       null,
