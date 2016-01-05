@@ -90,6 +90,18 @@
     return 301;
   }
 
+  function waitForAnimation(cb) {
+    var wm = OSjs.Core.getWindowManager();
+    var anim = wm ? wm.getSetting('animations') : false;
+    if ( anim ) {
+      setTimeout(function() {
+        cb();
+      }, getAnimDuration());
+    } else {
+      cb();
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // WINDOW
   /////////////////////////////////////////////////////////////////////////////
@@ -589,7 +601,10 @@
   Window.prototype.destroy = function() {
     var self = this;
 
-    if ( this._destroyed ) { return false; }
+    if ( this._destroyed ) {
+      return false;
+    }
+
     this._destroyed = true;
 
     var wm = OSjs.Core.getWindowManager();
@@ -860,7 +875,9 @@
    */
   Window.prototype._close = function() {
     console.debug('OSjs::Core::Window::_close()');
-    if ( this._disabled ) { return false; }
+    if ( this._disabled || this._destroyed ) {
+      return false;
+    }
 
     this._blur();
     this.destroy();
@@ -877,36 +894,30 @@
    */
   Window.prototype._minimize = function() {
     var self = this;
-    console.debug(this._name, '>', 'OSjs::Core::Window::_minimize()');
-    if ( !this._properties.allow_minimize || this._destroyed  ) { return false; }
-    //if ( this._disabled ) return false;
+    if ( !this._properties.allow_minimize || this._destroyed  ) {
+      return false;
+    }
+
     if ( this._state.minimized ) {
       this._restore(false, true);
       return true;
     }
+
+    console.debug(this._name, '>', 'OSjs::Core::Window::_minimize()');
 
     this._blur();
 
     this._state.minimized = true;
     this._$element.setAttribute('data-minimized', 'true');
 
-    function _hideDOM() {
+    waitForAnimation(function() {
       self._$element.style.display = 'none';
-    }
-
-    var wm = OSjs.Core.getWindowManager();
-    var anim = wm ? wm.getSetting('animations') : false;
-    if ( anim ) {
-      setTimeout(function() {
-        _hideDOM();
-      }, getAnimDuration());
-    } else {
-      _hideDOM();
-    }
+      self._fireHook('minimize');
+    });
 
     this._onChange('minimize');
-    this._fireHook('minimize');
 
+    var wm = OSjs.Core.getWindowManager();
     var win = wm ? wm.getCurrentWindow() : null;
     if ( win && win._wid === this._wid ) {
       wm.setCurrentWindow(null);
@@ -923,14 +934,19 @@
    * @method    Window::_maximize()
    */
   Window.prototype._maximize = function() {
-    console.debug(this._name, '>', 'OSjs::Core::Window::_maximize()');
-    if ( !this._properties.allow_maximize || this._destroyed  ) { return false; }
-    if ( !this._$element ) { return false; }
-    //if ( this._disabled ) return false;
+    var self = this;
+
+    if ( !this._properties.allow_maximize || this._destroyed || !this._$element  ) {
+      return false;
+    }
+
     if ( this._state.maximized ) {
       this._restore(true, false);
       return true;
     }
+
+    console.debug(this._name, '>', 'OSjs::Core::Window::_maximize()');
+
     this._lastPosition    = {x: this._position.x,  y: this._position.y};
     this._lastDimension   = {w: this._dimension.w, h: this._dimension.h};
     this._state.maximized = true;
@@ -949,19 +965,13 @@
     this._position.x  = s.left;
     this._position.y  = s.top;
 
-    this._onChange('maximize');
     this._focus();
 
-    var wm = OSjs.Core.getWindowManager();
-    var anim = wm ? wm.getSetting('animations') : false;
-    if ( anim ) {
-      var self = this;
-      setTimeout(function() {
-        self._fireHook('maximize');
-      }, getAnimDuration());
-    } else {
-      this._fireHook('maximize');
-    }
+    waitForAnimation(function() {
+      self._fireHook('maximize');
+    });
+
+    this._onChange('maximize');
 
     return true;
   };
@@ -977,41 +987,44 @@
    * @method    Window::_restore()
    */
   Window.prototype._restore = function(max, min) {
-    if ( !this._$element || this._destroyed  ) { return; }
+    var self = this;
+
+    if ( !this._$element || this._destroyed  ) {
+      return;
+    }
+
+    function restoreMaximized() {
+      if ( max && self._state.maximized ) {
+        self._move(self._lastPosition.x, self._lastPosition.y);
+        self._resize(self._lastDimension.w, self._lastDimension.h);
+        self._state.maximized = false;
+        self._$element.setAttribute('data-maximized', 'false');
+      }
+    }
+
+    function restoreMinimized() {
+      if ( min && self._state.minimized ) {
+        self._$element.style.display = 'block';
+        self._$element.setAttribute('data-minimized', 'false');
+        self._state.minimized = false;
+      }
+    }
 
     console.debug(this._name, '>', 'OSjs::Core::Window::_restore()');
-    //if ( this._disabled ) return ;
+
     max = (typeof max === 'undefined') ? true : (max === true);
     min = (typeof min === 'undefined') ? true : (min === true);
 
-    if ( max && this._state.maximized ) {
-      this._move(this._lastPosition.x, this._lastPosition.y);
-      this._resize(this._lastDimension.w, this._lastDimension.h);
-      this._state.maximized = false;
-      this._$element.setAttribute('data-maximized', 'false');
-    }
+    restoreMaximized();
+    restoreMinimized();
 
-    if ( min && this._state.minimized ) {
-      this._$element.style.display = 'block';
-      this._$element.setAttribute('data-minimized', 'false');
-      this._state.minimized = false;
-    }
+    waitForAnimation(function() {
+      self._fireHook('restore');
+    });
 
     this._onChange('restore');
 
-    var wm = OSjs.Core.getWindowManager();
-    var anim = wm ? wm.getSetting('animations') : false;
-    if ( anim ) {
-      var self = this;
-      setTimeout(function() {
-        self._fireHook('restore');
-      }, getAnimDuration());
-    } else {
-      this._fireHook('restore');
-    }
-
     this._focus();
-
   };
 
   /**
@@ -1024,10 +1037,12 @@
    * @method  Window::_focus()
    */
   Window.prototype._focus = function(force) {
-    if ( !this._$element || this._destroyed ) { return false; }
+    if ( !this._$element || this._destroyed ) {
+      return false;
+    }
 
-    //if ( !force && this._state.focused ) { return false; }
-    //console.debug(this._name, '>', 'OSjs::Core::Window::_focus()');
+    console.debug(this._name, '>', 'OSjs::Core::Window::_focus()');
+
     this._toggleAttentionBlink(false);
 
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
@@ -1064,9 +1079,12 @@
    * @method  Window::_blur()
    */
   Window.prototype._blur = function(force) {
-    if ( !this._$element || this._destroyed  ) { return false; }
-    if ( !force && !this._state.focused ) { return false; }
-    //console.debug(this._name, '>', 'OSjs::Core::Window::_blur()');
+    if ( !this._$element || this._destroyed || (!force && !this._state.focused) ) {
+      return false;
+    }
+
+    console.debug(this._name, '>', 'OSjs::Core::Window::_blur()');
+
     this._$element.setAttribute('data-focused', 'false');
     this._state.focused = false;
 
@@ -1193,7 +1211,10 @@
   };
 
   Window.prototype._resize = function(w, h, force) {
-    if ( !this._$element || this._destroyed  ) { return false; }
+    if ( !this._$element || this._destroyed  ) {
+      return false;
+    }
+
     var p = this._properties;
 
     if ( !force ) {
@@ -1243,7 +1264,9 @@
    */
   Window.prototype._moveTo = function(pos) {
     var wm = OSjs.Core.getWindowManager();
-    if ( !wm ) { return; }
+    if ( !wm ) {
+      return;
+    }
 
     var s = wm.getWindowSpace();
     var cx = this._position.x;
@@ -1271,9 +1294,13 @@
    * @method  Window::_move()
    */
   Window.prototype._move = function(x, y) {
-    if ( !this._$element || this._destroyed  ) { return false; }
-    if ( !this._properties.allow_move ) { return false; }
-    if ( typeof x === 'undefined' || typeof y === 'undefined') { return false; }
+    if ( !this._$element || this._destroyed || !this._properties.allow_move  ) {
+      return false;
+    }
+
+    if ( typeof x === 'undefined' || typeof y === 'undefined') {
+      return false;
+    }
 
     this._$element.style.top  = y + 'px';
     this._$element.style.left = x + 'px';
@@ -1476,8 +1503,12 @@
    * @method  Window::_onDndEvent()
    */
   Window.prototype._onDndEvent = function(ev, type) {
+    if ( this._disabled || this._destroyed ) {
+      return false;
+    }
+
     console.debug('OSjs::Core::Window::_onDndEvent()', type);
-    if ( this._disabled || this._destroyed ) { return false; }
+
     return true;
   };
 
@@ -1492,6 +1523,10 @@
    * @method  Window::_onKeyEvent()
    */
   Window.prototype._onKeyEvent = function(ev, type) {
+    if ( this._destroyed ) {
+      return false;
+    }
+
     if ( type === 'keydown' && ev.keyCode === Utils.Keys.TAB ) {
       this._nextTabIndex(ev);
     }
@@ -1519,8 +1554,11 @@
    * @method  Window::_onWindowIconClick()
    */
   Window.prototype._onWindowIconClick = function(ev, el) {
+    if ( !this._properties.allow_iconmenu || this._destroyed  ) {
+      return;
+    }
+
     console.debug(this._name, '>', 'OSjs::Core::Window::_onWindowIconClick()');
-    if ( !this._properties.allow_iconmenu || this._destroyed  ) { return; }
 
     var self = this;
     var list = [];
@@ -1653,7 +1691,10 @@
    */
   Window.prototype._getMaximizedSize = function() {
     var s = getWindowSpace();
-    if ( !this._$element ) { return s; }
+    if ( !this._$element || this._destroyed ) {
+      return s;
+    }
+
     var topMargin = 23;
     var borderSize = 0;
 
@@ -1722,7 +1763,10 @@
    * @method  Window::_setTitle()
    */
   Window.prototype._setTitle = function(t, append, delimiter) {
-    if ( !this._$element ) { return; }
+    if ( !this._$element || this._destroyed ) {
+      return;
+    }
+
     delimiter = delimiter || '-';
 
     var tel = this._$element.getElementsByTagName('application-window-title')[0];
@@ -1767,14 +1811,13 @@
    */
   Window.prototype._setWarning = function(message) {
     var self = this;
-    if ( this._$warning ) {
-      if ( this._$warning.parentNode ) {
-        this._$warning.parentNode.removeChild(this._$warning);
-      }
-      this._$warning = null;
+
+    this._$warning = Utils.$remove(this._$warning);
+
+    if ( this._destroyed || message === null ) {
+      return;
     }
 
-    if ( message === null ) { return; }
     message = message || '';
 
     var container = document.createElement('application-window-warning');
