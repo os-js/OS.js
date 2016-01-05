@@ -245,8 +245,12 @@
     /**
      * Task: Build packages
      */
-    grunt.registerTask('packages', 'Build dist package files (or a single package, ex: grunt packages:default/About)', function(arg) {
+    grunt.registerTask('packages', 'Build dist package files (or a single package, ex: grunt packages:default/About. Also enable/disable)', function(arg, arg2) {
       grunt.log.writeln('Building packages...');
+      if ( arg === 'disable' || arg === 'enable' ) {
+        _build.togglePackage(grunt, arg2, arg === 'enable');
+        return;
+      }
       _build.buildPackages(grunt, arg);
     });
 

@@ -194,6 +194,24 @@
     return mergeJSON(into, from);
   }
 
+  /**
+   * Removes nulls from JSON
+   */
+  function removeNulls(obj) {
+    var isArray = obj instanceof Array;
+    for (var k in obj) {
+      if ( obj[k] === null ) {
+        if ( isArray ) {
+          obj.splice(k, 1);
+        } else {
+          delete obj[k];
+        }
+      } else if ( typeof obj[k] === 'object') {
+        removeNulls(obj[k]);
+      }
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -254,20 +272,6 @@
    * Sets a config variable
    */
   var setConfigPath = (function() {
-    function removeNulls(obj) {
-      var isArray = obj instanceof Array;
-      for (var k in obj) {
-        if ( obj[k] === null ) {
-          if ( isArray ) {
-            obj.splice(k, 1);
-          } else {
-            delete obj[k];
-          }
-        } else if ( typeof obj[k] === 'object') {
-          removeNulls(obj[k]);
-        }
-      }
-    }
 
     function getNewTree(key, value) {
       var queue = key.split(/\./);
@@ -373,6 +377,46 @@
   })();
 
   /**
+   * Enable/Disable given package
+   */
+  function togglePackage(grunt, packageName, enable) {
+    var packages = readPackageMetadata(grunt, PATHS.packages, true);
+    var found;
+
+    Object.keys(packages).forEach(function(iter) {
+      if ( packageName.match(/\//) ) {
+        if ( packageName === iter ) {
+          found = packages[iter];
+        }
+      } else {
+        if ( iter.split('/')[1] === packageName ) {
+          found = packages[iter];
+        }
+      }
+      return !!found;
+    });
+
+    if ( found ) {
+      var src = _path.join(PATHS.packages, found.path, 'package.json');
+      if ( _fs.existsSync(src) ) {
+        console.log(enable ? 'Enabling' : 'Disabling', 'package', found.path);
+
+        var jsn = JSON.parse(_fs.readFileSync(src));
+        jsn.enabled = enable ? null : false;
+        removeNulls(jsn);
+
+        _fs.writeFileSync(src, JSON.stringify(jsn, null, 2));
+
+        return;
+      }
+    }
+
+    grunt.fail.fatal('Package ' + packageName + ' not found!');
+
+    console.log(found);
+  }
+
+  /**
    * Compile `src/conf` into an object
    */
   var generateBuildConfig = (function generateBuildConfig() {
@@ -473,11 +517,11 @@
     PackageException.prototype = Object.create(Error.prototype);
     PackageException.constructor = Error;
 
-    function check(json) {
+    function check(json, all) {
       if ( !json || !Object.keys(json).length ) {
         throw new PackageException('Package manifest is empty');
       }
-      if ( json.enabled === false || json.enabled === 'false' ) {
+      if ( !all && json.enabled === false || json.enabled === 'false' ) {
         throw new PackageException('Package is disabled');
       }
       if ( !json.className ) {
@@ -487,7 +531,7 @@
       return true;
     }
 
-    function read(grunt, srcDir) {
+    function read(grunt, srcDir, all) {
       var list = {};
       var cfg = generateBuildConfig(grunt);
       (cfg.repositories || []).forEach(function(r) {
@@ -502,7 +546,7 @@
             try {
               var json = JSON.parse(raw);
 
-              if ( check(json) ) {
+              if ( check(json, all) ) {
                 list[name] = json;
               }
 
@@ -525,9 +569,9 @@
     }
 
     var _cache = null;
-    return function(grunt, dir) {
+    return function(grunt, dir, all) {
       if ( dir ) {
-        return read(grunt, dir);
+        return read(grunt, dir, all);
       }
       if ( _cache === null ) {
         _cache = read(grunt);
@@ -1508,6 +1552,8 @@
     getConfigPath: getConfigPath,
     setConfigPath: setConfigPath,
     addPreload: addPreload,
+
+    togglePackage: togglePackage,
 
     buildCore:        buildCore,
     buildStandalone:  buildStandalone,
