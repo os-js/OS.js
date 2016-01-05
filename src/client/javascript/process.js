@@ -179,6 +179,8 @@
   // PROCESS
   /////////////////////////////////////////////////////////////////////////////
 
+  var _PID = 0;
+
   /**
    * Process Template Class
    *
@@ -187,37 +189,30 @@
    * @api     OSjs.Core.Process
    * @class
    */
-  var Process = (function() {
-    var _PID = 0;
+  function Process(name, args, metadata) {
+    this.__pid      = _PID;
+    this.__pname    = name;
+    this.__sname    = name; // Used internall only
+    this.__args     = args || {};
+    this.__metadata = metadata || {};
+    this.__state    = 0;
+    this.__started  = new Date();
+    this.__index    = _PROCS.push(this) - 1;
 
-    return function(name, args, metadata) {
-      metadata = metadata || {};
-      args = args || {};
+    this.__label    = this.__metadata.name;
+    this.__path     = this.__metadata.path;
+    this.__scope    = this.__metadata.scope || 'system';
+    this.__iter     = this.__metadata.className;
 
-      this.__pid      = _PID;
-      this.__pname    = name;
-      this.__sname    = name; // Used internall only
-      this.__args     = args;
-      this.__metadata = metadata;
-      this.__state    = 0;
-      this.__started  = new Date();
-      this.__index    = _PROCS.push(this) - 1;
+    console.group('Process::constructor()');
+    console.log('pid',    this.__pid);
+    console.log('pname',  this.__pname);
+    console.log('started',this.__started);
+    console.log('args',   this.__args);
+    console.groupEnd();
 
-      this.__label    = metadata.name;
-      this.__path     = metadata.path;
-      this.__scope    = metadata.scope || 'system';
-      this.__iter     = metadata.className;
-
-      console.group('Process::constructor()');
-      console.log('pid',    this.__pid);
-      console.log('pname',  this.__pname);
-      console.log('started',this.__started);
-      console.log('args',   this.__args);
-      console.groupEnd();
-
-      _PID++;
-    };
-  })();
+    _PID++;
+  }
 
   /**
    * Destroys the process
