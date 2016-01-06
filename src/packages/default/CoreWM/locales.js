@@ -113,7 +113,23 @@
       'Other' : 'Otros'
     },
     fr_FR : {
-      // TODO
+      'Killing this process will stop things from working!' : 'Tuer ce processus peux causer l\'arrêt de certaines choses!',
+      'Open settings': 'Ouvrir les préférences',
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Votre panneau ne comporte aucun item. Allez dans les paramètres pour les réinitialiser par défaut ou pour les modifier manuellement\n(ce genre de chose peut arriver lors de la mise a jour d\'OS.js)',
+      'Create shortcut': 'Créer un raccourci',
+      'Set as wallpaper' : 'Définir en tant que fond d\'écran',
+      'An error occured while creating PanelItem: {0}' : 'Une erreur s\'est produite lors de la création d\'un PanelItem: {0}',
+
+      'Development' : 'Développement',
+      'Education' : 'Éducation',
+      'Games' : 'Jeux',
+      'Graphics' : 'Graphisme',
+      'Network' : 'Réseau',
+      'Multimedia' : 'Multimedia',
+      'Office' : 'Bureautique',
+      'System' : 'Système',
+      'Utilities' : 'Utilitaires',
+      'Other' : 'Autres'
     },
     ru_RU : {
       'Killing this process will stop things from working!' : 'Завершение этого процесса остановит работу системы!',
