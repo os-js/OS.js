@@ -547,7 +547,6 @@
         } else {
           a = new OSjs.Applications[n](arg, result);
         }
-        a.__sname = n;
 
         onConstructed(a, result);
       } catch ( e ) {

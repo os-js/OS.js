@@ -56,8 +56,6 @@
    */
   var Application = function(name, args, metadata, settings) {
     console.group('Application::constructor()');
-    this.__destroyed  = false;
-    this.__running    = true;
     this.__inited     = false;
     this.__mainwindow = null;
     this.__scheme     = null;
@@ -91,27 +89,36 @@
    * @method  Application::init()
    */
   Application.prototype.init = function(settings, metadata) {
-    console.debug('Application::init()', this.__pname);
 
-    this.__settings.set(null, settings);
+    var wm = OSjs.Core.getWindowManager();
+    var self = this;
 
-    if ( this.__windows.length ) {
-      var wm = OSjs.Core.getWindowManager();
+    function focusLastWindow() {
+      var last;
+
       if ( wm ) {
-        var last = null;
-
-        this.__windows.forEach(function(win, i) {
+        self.__windows.forEach(function(win, i) {
           if ( win ) {
             wm.addWindow(win);
             last = win;
           }
         });
+      }
 
-        if ( last ) { last._focus(); }
+      if ( last ) {
+        last._focus();
       }
     }
 
-    this.__inited = true;
+    if ( !this.__inited ) {
+      console.debug('Application::init()', this.__pname);
+
+      this.__settings.set(null, settings);
+
+      focusLastWindow();
+
+      this.__inited = true;
+    }
   };
 
   /**
@@ -122,14 +129,11 @@
    * @method    Application::destroy()
    */
   Application.prototype.destroy = function(kill) {
-    if ( this.__destroyed ) { return true; }
-    this.__destroyed = true;
+    if ( this.__destroyed ) { // From 'process.js'
+      return true;
+    }
 
     console.debug('Application::destroy()', this.__pname);
-
-    if ( this.__scheme ) {
-      this.__scheme.destroy();
-    }
 
     this.__windows.forEach(function(w) {
       if ( w ) {
@@ -140,6 +144,10 @@
     this.__mainwindow = null;
     this.__settings = {};
     this.__windows = [];
+
+    if ( this.__scheme ) {
+      this.__scheme.destroy();
+    }
     this.__scheme = null;
 
     return Process.prototype.destroy.apply(this, arguments);

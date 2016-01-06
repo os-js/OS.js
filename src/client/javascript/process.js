@@ -179,8 +179,6 @@
   // PROCESS
   /////////////////////////////////////////////////////////////////////////////
 
-  var _PID = 0;
-
   /**
    * Process Template Class
    *
@@ -190,14 +188,12 @@
    * @class
    */
   function Process(name, args, metadata) {
-    this.__pid        = _PID;
+    this.__pid        = _PROCS.push(this) - 1;
     this.__pname      = name;
-    this.__sname      = name; // Used internall only
     this.__args       = args || {};
     this.__metadata   = metadata || {};
-    this.__state      = 0;
     this.__started    = new Date();
-    this.__index      = _PROCS.push(this) - 1;
+    this.__destroyed  = false;
 
     this.__label    = this.__metadata.name;
     this.__path     = this.__metadata.path;
@@ -205,13 +201,11 @@
     this.__iter     = this.__metadata.className;
 
     console.group('Process::constructor()');
-    console.log('pid',    this.__pid);
-    console.log('pname',  this.__pname);
-    console.log('started',this.__started);
-    console.log('args',   this.__args);
+    console.log('pid', this.__pid);
+    console.log('pname', this.__pname);
+    console.log('started', this.__started);
+    console.log('args', this.__args);
     console.groupEnd();
-
-    _PID++;
   }
 
   /**
@@ -225,15 +219,18 @@
    */
   Process.prototype.destroy = function(kill) {
     kill = (typeof kill === 'undefined') ? true : (kill === true);
-    if ( this.__state >= 0 ) {
-      this.__state = -1;
+    if ( !this.__destroyed ) {
 
       console.log('OSjs::Core::Process::destroy()', this.__pid, this.__pname);
+
       if ( kill ) {
-        if ( this.__index >= 0 ) {
-          _PROCS[this.__index] = null;
+        if ( this.__pid >= 0 ) {
+          _PROCS[this.__pid] = null;
         }
       }
+
+      this._destroyed = true;
+
       return true;
     }
     return false;
@@ -270,7 +267,7 @@
     var self = this;
 
     function cbSuccess() {
-      if ( self.__state < 0 ) {
+      if ( self._destroyed ) {
         console.warn('Process::_call()', 'INGORED RESPONSE: Process was closed');
         return;
       }
@@ -285,7 +282,7 @@
                        err);
       }
 
-      if ( self.__state < 0 ) {
+      if ( self._destroyed ) {
         console.warn('Process::_call()', 'INGORED RESPONSE: Process was closed');
         return;
       }
