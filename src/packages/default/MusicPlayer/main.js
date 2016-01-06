@@ -95,9 +95,13 @@
     var buttonEnd = scheme.find(this, 'ButtonEnd').set('disabled', true);
 
     seeker.on('change', function(ev) {
-      audio.pause();
-      audio.currentTime = ev.detail;
-      audio.play();
+      if ( audio ) {
+        audio.pause();
+        if ( ev ) {
+          audio.currentTime = ev.detail || 0;
+        }
+        audio.play();
+      }
     });
 
     player.on('play', function(ev) {
