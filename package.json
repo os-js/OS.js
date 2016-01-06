@@ -1,5 +1,6 @@
 {
   "name": "OS.js",
+  "version": "2.0-alpha70",
   "description": "JavaScript Cloud/Web Desktop Platform",
   "url": "http://andersevenrud.github.io/OS.js-v2/",
   "email": "andersevenrud@gmail.com",
