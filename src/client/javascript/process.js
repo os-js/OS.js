@@ -229,7 +229,7 @@
         }
       }
 
-      this._destroyed = true;
+      this.__destroyed = true;
 
       return true;
     }
@@ -267,7 +267,7 @@
     var self = this;
 
     function cbSuccess() {
-      if ( self._destroyed ) {
+      if ( self.__destroyed ) {
         console.warn('Process::_call()', 'INGORED RESPONSE: Process was closed');
         return;
       }
@@ -282,7 +282,7 @@
                        err);
       }
 
-      if ( self._destroyed ) {
+      if ( self.__destroyed ) {
         console.warn('Process::_call()', 'INGORED RESPONSE: Process was closed');
         return;
       }
