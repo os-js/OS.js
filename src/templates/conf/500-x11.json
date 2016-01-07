@@ -1,0 +1,27 @@
+{
+  "handler": "pam",
+
+  "client" : {
+    "Mountpoints": {
+      "shared": {
+        "enabled": false
+      },
+      "root": {
+        "enabled":     true,
+        "description": "Root",
+        "icon":        "places/folder-publicshare.png"
+      }
+    }
+  },
+
+  "server" : {
+    "tmpdir": "/tmp",
+    "vfs": {
+      "homes":  "/home",
+      "mounts": {
+        "root": "/"
+      }
+    }
+  }
+
+}
