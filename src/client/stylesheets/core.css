@@ -108,10 +108,10 @@ body, input, button, textarea, label, select {
 #LoadingScreen {
   position : absolute;
   width : 320px;
-  height : 434px;
+  height : 182px;
   top : 50%;
   left : 50%;
-  margin-top : -217px;
+  margin-top : -91px;
   margin-left : -160px;
   z-index : 999;
 }
