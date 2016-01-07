@@ -3,8 +3,11 @@ With the *mysql* handler you can enable a login prompt for OS.js.
 ## Setup
 
 ```
+# Install node dependency
+$ npm install node-mysql
+
 # Change `handler` to `mysql`.
-$ edit src/conf/000-base.json
+$ grunt config:set:handler:mysql
 
 # Update configurations
 $ grunt config
