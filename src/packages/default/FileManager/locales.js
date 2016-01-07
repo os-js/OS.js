@@ -58,6 +58,17 @@
       "Rename <span>{0}</span>" : "Zmień nazwę <span>{0}</span>",
       "Delete <span>{0}</span> ?" : "Usunąć <span>{0}</span> ?"
     },
+    sk_SK : {
+      'Show Sidebar' : 'Ukáž bočnú lištu',
+      'Copying file...' : 'Kopírujem súbor...',
+      "Copying <span>{0}</span> to <span>{1}</span>" : "Kopírujem <span>{0}</span> do <span>{1}</span>",
+      "Refreshing..." : "Obnovujem...",
+      "Loading..." : "Nahrávam...",
+      "Create a new file in <span>{0}</span>" : "Vytvor nový súbor v <span>{0}</span>",
+      "Create a new directory in <span>{0}</span>" : "Vytvor nový adresár v <span>{0}</span>",
+      "Rename <span>{0}</span>" : "Premenuj <span>{0}</span>",
+      "Delete <span>{0}</span> ?" : "Zmazať <span>{0}</span> ?"
+    },
     de_DE : {
       'Show Sidebar' : 'Seitenleiste anzeigen',
       'Copying file...' : 'Kopiere Datei...',

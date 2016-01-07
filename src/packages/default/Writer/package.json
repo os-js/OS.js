@@ -8,6 +8,7 @@
     "nl_NL": "Tekstverwerker",
     "no_NO": "Writer",
     "pl_PL": "Writer",
+    "sk_SK": "Writer",
     "ru_RU": "Текстовый процессор",
     "tr_TR": "Writer",
     "vi_VN": "Viết"
@@ -18,6 +19,7 @@
     "nl_NL": "Tekst verwerker met opmaak",
     "no_NO": "Skriv riktekst dokumenter",
     "pl_PL": "Twórz dokumenty rich text",
+    "sk_SK": "Editor na tvorbu Rich-Text dokumentov",
     "ru_RU": "Текстовый процессор",
     "tr_TR": "Gelişmiş dökümanlar oluşturun",
     "vi_VN": "Xem, chỉnh sửa văn bản"
