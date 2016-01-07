@@ -17,8 +17,6 @@ $ grunt config
 
 ```
 
-**NOTE:** Instead of editing the provided config file, you should [create your own](http://os.js.org/doc/manuals/man-configuration.html)
-
 ### Configure
 
 Then set up the configuration in these files (you only need to edit the one you use):
