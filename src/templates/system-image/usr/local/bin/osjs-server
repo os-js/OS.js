@@ -9,5 +9,3 @@
 cd /home/osjs/OS.js-v2
 nohup node src/server/node/server.js >/dev/null 2>&1 &
 sleep 3
-exec /usr/local/bin/osjs-x11
-

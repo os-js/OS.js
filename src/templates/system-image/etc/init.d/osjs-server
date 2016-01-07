@@ -1,8 +1,8 @@
 #! /bin/sh
 #
-# OS.js Daemon
+# OS.js Server Daemon
 #
-# Copyright (c) 2013 Anders Evenrud <andersevenrud@gmail.com>
+# Copyright (c) 2011-2016 Anders Evenrud <andersevenrud@gmail.com>
 # Released under the 2-clause BSD license.
 #
 ### BEGIN INIT INFO
@@ -15,15 +15,13 @@
 # Description:       OS.js Daemon
 ### END INIT INFO
 
-# Author: Anders Evenrud <andersevenrud@gmail.com>
-
 # Do NOT "set -e"
 
 # PATH should only include /usr/* if it runs after the mountnfs.sh script
 PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin
-DESC="OS.js Daemon"
-NAME="OSjs"
-DAEMON=/usr/local/bin/osjs-daemon
+DESC="OS.js Server"
+NAME="osjs-server"
+DAEMON=/usr/local/bin/osjs-server
 DAEMON_ARGS="--options args"
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
@@ -44,19 +42,19 @@ SCRIPTNAME=/etc/init.d/$NAME
 
 do_start()
 {
-	start-stop-daemon --chuid osjs --start --quiet --pidfile $PIDFILE --exec $DAEMON --test > /dev/null \
+	start-stop-daemon --start --quiet --pidfile $PIDFILE --exec $DAEMON --test > /dev/null \
 		|| return 1
-	start-stop-daemon --chuid osjs --start --quiet --pidfile $PIDFILE --exec $DAEMON -- \
+	start-stop-daemon --start --quiet --pidfile $PIDFILE --exec $DAEMON -- \
 		$DAEMON_ARGS \
 		|| return 2
 }
 
 do_stop()
 {
-	start-stop-daemon --chuid osjs --stop --quiet --retry=TERM/30/KILL/5 --pidfile $PIDFILE --name $NAME
+	start-stop-daemon --stop --quiet --retry=TERM/30/KILL/5 --pidfile $PIDFILE --name $NAME
 	RETVAL="$?"
 	[ "$RETVAL" = 2 ] && return 2
-	start-stop-daemon --chuid osjs --stop --quiet --oknodo --retry=0/30/KILL/5 --exec $DAEMON
+	start-stop-daemon --stop --quiet --oknodo --retry=0/30/KILL/5 --exec $DAEMON
 	[ "$?" = 2 ] && return 2
 	rm -f $PIDFILE
 	return "$RETVAL"
