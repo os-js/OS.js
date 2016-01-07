@@ -74,6 +74,23 @@
       'Utilities' : 'Dodatki',
       'Other' : 'Inne'
     },
+    sk_SK : {
+      'Open settings' : 'Otvor nastavenia',
+      'Create shortcut' : 'Vytvor linku',
+      'Set as wallpaper' : 'Nastav ako tapetu',
+      'An error occured while creating PanelItem: {0}' : 'Chyba pri vytváraní položky: {0}',
+
+      'Development' : 'Vývoj',
+      'Education' : 'Vzdelávanie',
+      'Games' : 'Hry',
+      'Graphics' : 'Grafika',
+      'Network' : 'Sieť',
+      'Multimedia' : 'Multimédiá',
+      'Office' : 'Kancelária',
+      'System' : 'Systém',
+      'Utilities' : 'Pomôcky',
+      'Other' : 'Ostatné'
+    },
     de_DE : {
       'Killing this process will stop things from working!' : 'Das Beenden dieses Prozesses wird Konsequenzen haben!',
       'Open settings' : 'Einstellungen öffnen',

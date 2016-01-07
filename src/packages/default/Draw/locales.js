@@ -128,6 +128,51 @@
       'Radius' : 'Promień',
       'Iterations' : 'Powtórzenia'
     },
+    sk_SK : {
+      'Toggle tools toolbar' : 'Zobraz panel nástrojov',
+      'Toggle layers toolbar' : 'Zobraz vrstvy',
+      'Layer' : 'Vrstvy',
+      'Effect' : 'Efekty',
+      'Flip Horizontally' : 'Transformuj horizontálne',
+      'Flip Vertically' : 'Transformuj vertikálne',
+      'Foreground' : 'Popredie',
+      'Bakgrunn' : 'Pozadie',
+      'Line join' : 'Typ čiary',
+      'Line width' : 'Šírka čiary',
+      'Toggle Stroke' : 'Zapnúť orámovanie',
+      'Enable stroke' : 'Orámovanie',
+      'Round' : 'Okrúhly',
+      'Miter' : 'Naklonený',
+      'Bevel' : 'Šikmý',
+      'Stroked' : 'Orámovaný',
+      'No stroke' : 'Bez orámovania',
+
+      'Pointer' : 'Ukazovateľ',
+      'Move active layer' : 'Presuň aktívnu vrstvu',
+
+      'Picker' : 'Kurzor',
+      'LMB: set fg color, RMB: set gb color' : 'LMB: nastav farbu pozadia, RMB: nastav farbu popredia',
+
+      'Pencil' : 'Ceruzka',
+      'LMB/RMB: Draw with fg/bg color' : 'Maľuj farbou fg/bg',
+      'Path' : 'Cesta',
+
+      'Square/Rectangle' : 'Štvorec / Obdĺžnik',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Maľuj farbou fb/bg, SHIFT: Obdĺžnik',
+
+      'Circle/Ellipse' : 'Kruh / Elipsa',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Maľuj farbou fb/bg, SHIFT: Elipsa',
+
+      'Blur' : 'Rozmazať',
+      'Noise' : 'Šum',
+      'Invert colors' : 'Invertovať farby',
+      'Grayscale' : 'Odtiene šedej',
+      'Sharpen' : 'Zostriť',
+      'Simple Blur' : 'Jednoduchý Blur',
+
+      'Radius' : 'Rádius',
+      'Iterations' : 'Iterácie'
+    },
     de_DE : {
       'Toggle tools toolbar' : 'Tools Toolbar',
       'Toggle layers toolbar' : 'Ebenen Toolbar',

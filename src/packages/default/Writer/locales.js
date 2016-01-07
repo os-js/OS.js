@@ -42,6 +42,9 @@
     pl_PL : {
       'Insert URL' : 'Wpisz URL'
     },
+    sk_SK : {
+      'Insert URL' : 'Vložiť URL'
+    },
     de_DE : {
       'Insert URL' : 'URL einfügen'
     },

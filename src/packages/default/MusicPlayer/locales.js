@@ -66,6 +66,21 @@
       'seek unavailable in format' : 'Przewijanie nie jest obsługiwane w tym formacie',
       'The audio type is not supported: {0}' : 'Ten typ audio nie jest obsługiwany: {0}'
     },
+    sk_SK : {
+      'Playlist' : 'Zoznam skladieb',
+      'Playback aborted' : 'Prehrávanie prerušené',
+      'Network or communication error' : 'Chyba v sieťovej komunikácii',
+      'Decoding failed. Corruption or unsupported media' : 'Dekódovanie sa nepodarilo alebo médium je nepodporované',
+      'Media source not supported' : 'Zdrojové médium nie je podporované',
+      'Failed to play file' : 'Chyba pri prehrávaní súboru',
+      'Artist' : 'Umelec',
+      'Album' : 'Album',
+      'Track' : 'Skladba',
+      'Time' : 'Čas',
+      'Media information query failed' : 'Chyba pri získavaní informácii o médiu',
+      'seek unavailable in format' : 'Formát média nepodporuje preskakovanie (seek)',
+      'The audio type is not supported: {0}' : 'Nepodporovaný formát: {0}'
+    },
     de_DE : {
       'Playlist' : 'Wiedergabeliste',
       'Playback aborted' : 'Wiedergabe abgebrochen',
