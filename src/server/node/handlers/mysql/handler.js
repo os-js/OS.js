@@ -142,34 +142,32 @@
   };
 
   /////////////////////////////////////////////////////////////////////////////
-  // API EVENTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  exports.onServerStart = function() {
-    if ( !connection ) {
-      connection = mysql.createConnection(MYSQL_CONFIG);
-      connection.connect();
-    }
-  };
-
-  exports.onServerEnd = function() {
-    if ( connection ) {
-      connection.end();
-    }
-  };
-
-  exports.onRequestStart = function(request, response) {
-  };
-
-  exports.onRequestEnd = function(request, response) {
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
   // API EXPORT
   /////////////////////////////////////////////////////////////////////////////
 
   exports.register = function(CONFIG, API, HANDLER) {
     console.info('-->', 'Registering handler API methods');
+
+    HANDLER.onServerStart = function() {
+      if ( !connection ) {
+        connection = mysql.createConnection(MYSQL_CONFIG);
+        connection.connect();
+      }
+    };
+
+    HANDLER.onServerEnd = function() {
+      if ( connection ) {
+        connection.end();
+      }
+    };
+
+    /*
+    HANDLER.onRequestStart = function(request, response) {
+    };
+
+    HANDLER.onRequestEnd = function(request, response) {
+    };
+    */
 
     API.login = function(args, callback, request, response, body) {
       APIUser.login(args, request, response, function(error, result) {
