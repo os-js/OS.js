@@ -14,6 +14,7 @@
     "src/installer/**",
     "src/packages/**",
     "src/locales/**",
+    "src/server/node/handlers",
     "src/server/php",
     "src/conf/**",
     "src/x11/**",
