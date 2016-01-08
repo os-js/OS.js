@@ -1150,10 +1150,6 @@
         _path.join(PATHS.templates, 'nw', 'package.json'),
         _path.join(PATHS.out_standalone, 'package.json')
       );
-      copyFile(
-        _path.join(PATHS.conf, '130-mime.json'),
-        _path.join(PATHS.out_standalone, 'mime.json')
-      );
 
       // Install dependencies
       copyFile(

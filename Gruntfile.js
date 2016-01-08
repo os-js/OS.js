@@ -174,7 +174,9 @@
       nwjs: {
         options: {
           version: '0.12.3',
-          platforms: ['win', 'linux', 'osx'],
+          //version: '0.13.0-beta2',
+          //platforms: ['win', 'linux', 'osx'],
+          platforms: ['win64', 'linux64'],
           buildDir: '.nw'
         },
         src: ['src/templates/nw/package.json', '.standalone/**/*']
