@@ -87,6 +87,8 @@
         all: [
           'Gruntfile.js',
           'src/*.js',
+          'src/server/node/*.js',
+          'src/server/node/node_modules/osjs/*.js',
           'src/client/javascript/*.js',
           'src/client/javascript/**/*.js',
           'src/packages/default/**/*.js',
@@ -143,6 +145,8 @@
         src: [
           'Gruntfile.js',
           'src/*.js',
+          'src/server/node/*.js',
+          'src/server/node/node_modules/osjs/*.js',
           'src/client/javascript/*.js',
           'src/client/javascript/**/*.js',
           'src/packages/default/**/*.js',

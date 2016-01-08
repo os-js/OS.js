@@ -3,17 +3,17 @@
  *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
@@ -38,7 +38,7 @@
   function respond(data, mime, response, headers, code, pipeFile) {
     data    = data    || '';
     headers = headers || [];
-    mime    = mime    || "text/html; charset=utf-8";
+    mime    = mime    || 'text/html; charset=utf-8';
     code    = code    || 200;
 
     function _end() {
@@ -53,7 +53,7 @@
       response.writeHead.apply(response, headers[i]);
     }
 
-    response.writeHead(code, {"Content-Type": mime});
+    response.writeHead(code, {'Content-Type': mime});
 
     if ( pipeFile ) {
       var stream = _fs.createReadStream(pipeFile, {bufferSize: 64 * 1024});
@@ -70,7 +70,7 @@
   function respondJSON(data, response, headers) {
     data = JSON.stringify(data);
     if ( instance.config.logging ) {
-      console.log(">>>", 'application/json');
+      console.log('>>>', 'application/json');
     }
     respond(data, 'application/json', response, headers);
   }
@@ -81,14 +81,14 @@
       if ( exists ) {
         var mime = instance.vfs.getMime(fullPath, instance.config);
         if ( instance.config.logging ) {
-          console.log(">>>", mime, path);
+          console.log('>>>', mime, path);
         }
         respond(null, mime, response, null, null, fullPath);
       } else {
         if ( instance.config.logging ) {
           console.log('!!!', '404', fullPath);
         }
-        respond("404 Not Found", null, response, null, 404);
+        respond('404 Not Found', null, response, null, 404);
       }
     });
   }
@@ -144,10 +144,10 @@
           respondJSON({result: result, error: error}, response);
         }, request, response);
       } catch ( e ) {
-        console.error("!!! Caught exception", e);
+        console.error('!!! Caught exception', e);
         console.warn(e.stack);
 
-        respondJSON({result: null, error: "500 Internal Server Error: " + e}, response);
+        respondJSON({result: null, error: '500 Internal Server Error: ' + e}, response);
       }
       return true;
     }
@@ -161,7 +161,10 @@
 
     request.cookies = cookies;
 
-    if ( path === "/" ) path += "index.html";
+    if ( path === '/' ) {
+      path += 'index.html';
+    }
+
     if ( instance.config.logging ) {
       console.log('<<<', path);
     }
@@ -180,16 +183,16 @@
         });
       } else { // API Calls
         var body = '';
-        request.on('data', function (data) {
+        request.on('data', function(data) {
           body += data;
         });
 
-        request.on('end', function () {
+        request.on('end', function() {
           if ( !coreAPI(url, path, body, request, response) ) {
             if ( instance.config.logging ) {
-              console.log(">>>", '404', path);
+              console.log('>>>', '404', path);
             }
-            respond("404 Not Found", null, response, [[404, {}]]);
+            respond('404 Not Found', null, response, [[404, {}]]);
           }
         });
       }
@@ -238,12 +241,12 @@
     }
   };
 })(
-  require("osjs"),
-  require("http"),
-  require("path"),
-  require("url"),
-  require("node-fs-extra"),
-  require("querystring"),
-  require("formidable"),
-  require("cookies")
+  require('osjs'),
+  require('http'),
+  require('path'),
+  require('url'),
+  require('node-fs-extra'),
+  require('querystring'),
+  require('formidable'),
+  require('cookies')
 );
