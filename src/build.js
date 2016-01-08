@@ -780,6 +780,7 @@
     function buildServer() {
       var jsonSettings = clone(cfg.server);
       jsonSettings.extensions = loadExtensions;
+      jsonSettings.mimes = cfg.mime.mapping;
 
       try {
         jsonSettings.vfs.maxuploadsize = cfg.client.VFS.MaxUploadSize;

@@ -3,8 +3,16 @@ var rootDir = _path.dirname(_path.dirname(__dirname));
 var assert = require('assert');
 var osjs = require(rootDir + '/src/server/node/node_modules/osjs/osjs.js');
 var osjsServer = require(rootDir + '/src/server/node/http.js');
+var serverRoot = _path.join(_path.dirname(_path.dirname(__dirname)), 'src', 'server', 'node');
 
-var instance = osjs.init(rootDir, 'dist', false, false);
+var instance = osjs.init({
+  dirname: serverRoot,
+  root: rootDir,
+  dist: 'dist',
+  logging: false,
+  nw: false
+});
+
 var response = {};
 var request = {
   cookies: {
@@ -38,15 +46,23 @@ describe('Prepare', function() {
     var testPath = instance.vfs.getRealPath('home:///', instance.config, request);
 
     it('read access to demo area', function() {
-      assert.doesNotThrow(function() {
-        fs.accessSync(testPath.root, fs.R_OK);
-      }, Error);
+      if ( fs.accessSync ) {
+        assert.doesNotThrow(function() {
+          fs.accessSync(testPath.root, fs.R_OK);
+        }, Error);
+      } else {
+        assert.equal(true, true);
+      }
     });
 
     it('write access to demo area', function() {
-      assert.doesNotThrow(function() {
-        fs.accessSync(testPath.root, fs.W_OK);
-      }, Error);
+      if ( fs.accessSync ) {
+        assert.doesNotThrow(function() {
+          fs.accessSync(testPath.root, fs.W_OK);
+        }, Error);
+      } else {
+        assert.equal(true, true);
+      }
     });
   });
 
@@ -361,7 +377,14 @@ describe('Node HTTP Server', function() {
   }
 
   before(function () {
-    osjsServer.listen(rootDir, 'dist', port, false);
+    osjsServer.listen({
+      port: port,
+      dirname: serverRoot,
+      root: rootDir,
+      dist: 'dist',
+      logging: false,
+      nw: false
+    });
   });
 
   describe('#index', function() {

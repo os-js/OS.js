@@ -80,6 +80,9 @@
     _fs.exists(fullPath, function(exists) {
       if ( exists ) {
         var mime = instance.vfs.getMime(fullPath, instance.config);
+        if ( instance.config.logging ) {
+          console.log(">>>", mime, path);
+        }
         respond(null, mime, response, null, null, fullPath);
       } else {
         if ( instance.config.logging ) {
@@ -205,12 +208,11 @@
 
   var instance, server;
   module.exports = {
-    listen: function(root, dist, port, logging, exedir) {
-      instance = _osjs.init(root, dist, false, logging, exedir);
+    listen: function(setup) {
+      instance = _osjs.init(setup);
       server = _http.createServer(httpCall);
 
-
-      if ( logging !== false ) {
+      if ( setup.logging !== false ) {
         console.log(JSON.stringify(instance.config, null, 2));
       }
 
@@ -218,7 +220,7 @@
         instance.handler.onServerStart(instance.config);
       }
 
-      server.listen(port || instance.config.port);
+      server.listen(setup.port || instance.config.port);
     },
 
     close: function(cb) {

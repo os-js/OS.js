@@ -10,11 +10,13 @@ twistd.*
 
 .nightly
 .standalone
+.debian
 .nw
 
 vfs/*/*
 
 src/conf/999-*
+src/conf/900-custom.json
 src/server/settings.json
 src/installer/installer.exe
 

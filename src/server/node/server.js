@@ -49,5 +49,12 @@
     _server.close();
   });
 
-  _server.listen(ROOT, DISTDIR, null, true, __dirname);
+  _server.listen({
+    port: null,
+    dirname: __dirname,
+    root: ROOT,
+    dist: DISTDIR,
+    logging: true,
+    nw: false
+  });
 })(require("path"), require("./http.js"));

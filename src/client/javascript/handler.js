@@ -71,7 +71,13 @@
     };
 
     if ( (API.getConfig('Connection.Type') === 'nw') ) {
-      this.nw = require('osjs').init(process.cwd(), '', true);
+      this.nw = require('osjs').init({
+        root: process.cwd(),
+        settings: {
+          mimes: API.getConfig('MIME.mapping')
+        },
+        nw: true
+      });
     }
 
     _handlerInstance = this;
