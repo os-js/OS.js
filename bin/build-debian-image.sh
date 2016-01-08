@@ -43,7 +43,7 @@ cp dist-dev/blank.css $OUTDIR/opt/osjs/dist/
 cp dist-dev/index.html $OUTDIR/opt/osjs/dist/
 cp dist-dev/packages.js $OUTDIR/opt/osjs/dist/
 cp dist-dev/settings.js $OUTDIR/opt/osjs/dist/
-cp dist-dev/faviocon.* $OUTDIR/opt/osjs/dist/
+cp dist-dev/favicon.* $OUTDIR/opt/osjs/dist/
 cp dist-dev/osjs-logo.png $OUTDIR/opt/osjs/dist/
 (cd $OUTDIR/opt/osjs/dist; ln -sf ../packages packages)
 (cd $OUTDIR/opt/osjs/dist; ln -sf ../client client)
