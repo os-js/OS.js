@@ -335,14 +335,6 @@
       _build.createPackage(grunt, arg1, arg2);
     });
 
-    /**
-     * Task: Create a nightly build
-     */
-    grunt.registerTask('create-nightly-build', 'Creates a new OS.js nightly zip distribution', function(arg) {
-      grunt.log.writeln('Building nightly...');
-      _build.buildNightly(grunt, arg);
-    });
-
     grunt.registerTask('all', ['clean', 'config', 'dist-dev-index', 'dist-index', 'core', 'themes', 'packages', 'manifest']);
     grunt.registerTask('default', ['all']);
     grunt.registerTask('nw', ['config', 'dist-index', 'core:nw', 'themes', 'packages', 'manifest', 'standalone:nw', 'nwjs']);

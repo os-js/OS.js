@@ -1475,42 +1475,6 @@
   }
 
   /**
-   * Creates a nightly build
-   */
-  function buildNightly(grunt, arg) {
-    var list = [
-      'packages/default',
-      'themes',
-      'vendor',
-      'blank.css',
-      'favicon.ico',
-      'favicon.png',
-      'index.html',
-      'osjs.css',
-      'osjs.js',
-      'locales.js',
-      'schemes.js',
-      'osjs-logo.png',
-      'packages.js',
-      'settings.js'
-    ];
-
-    var dest = _path.join(ROOT, '.nightly');
-    mkdir(_path.join(dest, 'themes'));
-    mkdir(_path.join(dest, 'vendor'));
-    mkdir(_path.join(dest, 'packages'));
-    mkdir(_path.join(dest, 'packages', 'default'));
-    copyFile(_path.join(ROOT, 'CHANGELOG.md'), _path.join(dest, 'CHANGELOG.md'));
-    copyFile(_path.join(ROOT, 'README.md'), _path.join(dest, 'README.md'));
-    copyFile(_path.join(ROOT, 'LICENSE'), _path.join(dest, 'LICENSE'));
-    copyFile(_path.join(ROOT, 'AUTHORS'), _path.join(dest, 'AUTHORS'));
-
-    list.forEach(function(src) {
-      copyFile(_path.join(PATHS.dist, src), _path.join(dest, src));
-    });
-  }
-
-  /**
    * Creates a compressed build
    */
   function buildCompressed(grunt, arg) {
@@ -1585,7 +1549,6 @@
     buildPackages:    buildPackages,
     buildThemes:      buildThemes,
     buildManifest:    buildManifest,
-    buildNightly:     buildNightly,
     buildCompressed:  buildCompressed
   };
 
