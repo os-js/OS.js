@@ -28,11 +28,16 @@
  * @licence Simplified BSD License
  */
 (function(_path, _server) {
-  var DISTDIR = (process && process.argv.length > 2) ? process.argv[2] : 'dist';
+  var DIST = (process && process.argv.length > 2) ? process.argv[2] : 'dist';
   var ROOT = _path.join(__dirname, '/../../../');
 
-  if ( (process.argv[1] || '').match(/(mocha|grunt)$/) ) {
-    DISTDIR = 'dist-dev';
+  if ( DIST === 'x11' ) {
+    DIST = 'dist';
+    ROOT = _path.dirname(__dirname);
+  } else {
+    if ( (process.argv[1] || '').match(/(mocha|grunt)$/) ) {
+      DIST = 'dist-dev';
+    }
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -53,7 +58,7 @@
     port: null,
     dirname: __dirname,
     root: ROOT,
-    dist: DISTDIR,
+    dist: DIST,
     logging: true,
     nw: false
   });

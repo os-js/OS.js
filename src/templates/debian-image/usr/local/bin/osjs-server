@@ -33,5 +33,5 @@
 # This is the X11 server script (used from init.d) for OS.js
 #
 
-nohup node /opt/osjs/server/server.js >/dev/null 2>&1 &
+nohup node /opt/osjs/server/server.js x11 >/dev/null 2>&1 &
 sleep 1

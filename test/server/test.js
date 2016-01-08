@@ -8,7 +8,7 @@ var serverRoot = _path.join(_path.dirname(_path.dirname(__dirname)), 'src', 'ser
 var instance = osjs.init({
   dirname: serverRoot,
   root: rootDir,
-  dist: 'dist',
+  dist: 'dist-dev',
   logging: false,
   nw: false
 });
@@ -381,7 +381,7 @@ describe('Node HTTP Server', function() {
       port: port,
       dirname: serverRoot,
       root: rootDir,
-      dist: 'dist',
+      dist: 'dist-dev',
       logging: false,
       nw: false
     });
