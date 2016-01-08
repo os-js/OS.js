@@ -70,7 +70,7 @@
   function respondJSON(data, response, headers) {
     data = JSON.stringify(data);
     if ( instance.config.logging ) {
-      console.log(">>>", 'application/json', data.length || 0);
+      console.log(">>>", 'application/json');
     }
     respond(data, 'application/json', response, headers);
   }
@@ -96,7 +96,7 @@
   function fileGET(path, request, response, arg) {
     if ( !arg ) {
       if ( instance.config.logging ) {
-        console.log('---', 'FileGET', path);
+        console.log('===', 'FileGET', path);
       }
       try {
         instance.handler.checkPrivilege(request, response, 'vfs');
@@ -137,7 +137,7 @@
         var args         = data['arguments'] || {}
 
         if ( instance.config.logging ) {
-          console.log('---', 'CoreAPI', method, args);
+          console.log('===', 'CoreAPI', method, args);
         }
 
         instance.request(method, args, function(error, result) {
