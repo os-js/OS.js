@@ -29,11 +29,11 @@
  */
 (function(_path, _server) {
   var DISTDIR = (process && process.argv.length > 2) ? process.argv[2] : 'dist';
+  var ROOT = _path.join(__dirname, '/../../../');
+
   if ( (process.argv[1] || '').match(/(mocha|grunt)$/) ) {
     DISTDIR = 'dist-dev';
   }
-
-  var root = _path.join(__dirname, '/../../../');
 
   /////////////////////////////////////////////////////////////////////////////
   // MAIN
@@ -43,11 +43,11 @@
   console.log('***', 'THIS IS A WORK IN PROGRESS!!!');
   console.log('***');
 
-  process.chdir(root);
+  process.chdir(ROOT);
 
   process.on("exit", function() {
     _server.close();
   });
 
-  _server.listen(root, DISTDIR);
+  _server.listen(ROOT, DISTDIR, null, true, __dirname);
 })(require("path"), require("./http.js"));

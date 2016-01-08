@@ -205,8 +205,8 @@
 
   var instance, server;
   module.exports = {
-    listen: function(root, dist, port, logging) {
-      instance = _osjs.init(root, dist, false, logging);
+    listen: function(root, dist, port, logging, exedir) {
+      instance = _osjs.init(root, dist, false, logging, exedir);
       server = _http.createServer(httpCall);
 
 
