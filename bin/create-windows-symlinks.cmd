@@ -1,6 +1,6 @@
 @ECHO OFF
-for %%B in (%~dp0\.) do set c=%%~dpB
-cd "%c%"
+for %%i in ("%~dp0..") do set "folder=%%~fi"
+cd "%folder%"
 
 cd dist-dev
 
