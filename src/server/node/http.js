@@ -231,57 +231,57 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var instance, server;
-  module.exports = {
-    /**
-     * Create HTTP server and listen
-     *
-     * @param   Object    setup       Configuration (see osjs.js)
-     *
-     * @option  setup     int       port        Listening port (default=null/auto)
-     * @option  setup     String    dirname     Server running dir (ex: /osjs/src/server/node)
-     * @option  setup     String    root        Installation root directory (ex: /osjs)
-     * @option  setup     String    dist        Build root directory (ex: /osjs/dist)
-     * @option  setup     boolean   nw          NW build (default=false)
-     * @option  setup     boolean   logging     Enable logging (default=true)
-     *
-     * @api     http.listen
-     */
-    listen: function(setup) {
-      instance = _osjs.init(setup);
-      server = _http.createServer(httpCall);
 
-      if ( setup.logging !== false ) {
-        console.log(JSON.stringify(instance.config, null, 2));
-      }
+  /**
+   * Create HTTP server and listen
+   *
+   * @param   Object    setup       Configuration (see osjs.js)
+   *
+   * @option  setup     int       port        Listening port (default=null/auto)
+   * @option  setup     String    dirname     Server running dir (ex: /osjs/src/server/node)
+   * @option  setup     String    root        Installation root directory (ex: /osjs)
+   * @option  setup     String    dist        Build root directory (ex: /osjs/dist)
+   * @option  setup     boolean   nw          NW build (default=false)
+   * @option  setup     boolean   logging     Enable logging (default=true)
+   *
+   * @api     http.listen
+   */
+  module.exports.listen = function(setup) {
+    instance = _osjs.init(setup);
+    server = _http.createServer(httpCall);
 
-      if ( instance.handler && instance.handler.onServerStart ) {
-        instance.handler.onServerStart(instance.config);
-      }
+    if ( setup.logging !== false ) {
+      console.log(JSON.stringify(instance.config, null, 2));
+    }
 
-      server.listen(setup.port || instance.config.port);
-    },
+    if ( instance.handler && instance.handler.onServerStart ) {
+      instance.handler.onServerStart(instance.config);
+    }
 
-    /**
-     * Closes the active HTTP server
-     *
-     * @param   Function  cb          Callback function
-     *
-     * @api     http.close
-     */
-    close: function(cb) {
-      cb = cb || function() {};
+    server.listen(setup.port || instance.config.port);
+  };
 
-      if ( instance.handler && instance.handler.onServerEnd ) {
-        instance.handler.onServerEnd(instance.config);
-      }
+  /**
+   * Closes the active HTTP server
+   *
+   * @param   Function  cb          Callback function
+   *
+   * @api     http.close
+   */
+  module.exports.close = function(cb) {
+    cb = cb || function() {};
 
-      if ( server ) {
-        server.close(cb);
-      } else {
-        cb();
-      }
+    if ( instance.handler && instance.handler.onServerEnd ) {
+      instance.handler.onServerEnd(instance.config);
+    }
+
+    if ( server ) {
+      server.close(cb);
+    } else {
+      cb();
     }
   };
+
 })(
   require('osjs'),
   require('http'),
