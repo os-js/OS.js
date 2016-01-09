@@ -27,7 +27,7 @@ RUN npm install
 RUN grunt
 
 ## Start Application and Expose Port ##
-## Note: you can change 'start-node-dev.sh' (Development Version) to 'start-node-dist.sh' (Production Version) ##
+## Note: you can change 'start-dev.sh' (Development Version) to 'start-dist.sh' (Production Version) ##
 
-CMD ./bin/start-node-dev.sh
+CMD ./bin/start-dev.sh
 EXPOSE 8000
