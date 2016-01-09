@@ -36,6 +36,7 @@
 //
 
 (function(qs, pam, userid, fs, path) {
+  'use strict';
 
   function getRootPath(username) {
     return path.join('/home', username, '.osjs');

@@ -31,6 +31,7 @@
  * @licence Simplified BSD License
  */
 (function(qs, mysql) {
+  'use strict';
   var connection;
 
   /////////////////////////////////////////////////////////////////////////////
