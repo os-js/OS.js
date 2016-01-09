@@ -58,7 +58,9 @@
           globals: {
             OSjs: true,
             zip: true,
-            alert: true
+            alert: true,
+            escape: true,
+            unescape: true
           },
           browser: true,
           curly: true,

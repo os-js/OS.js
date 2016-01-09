@@ -32,20 +32,9 @@
  */
 (function() {
 
-  var APIUser = function() {};
-  APIUser.login = function(data, request, response) {
-    //console.log('APIUser::login()');
-    request.cookies.set('username', data.username, {httpOnly:true});
-    request.cookies.set('groups', JSON.stringify(data.groups), {httpOnly:true});
-    return data;
-  };
-
-  APIUser.logout = function(request, response) {
-    //console.log('APIUser::logout()');
-    request.cookies.set('username', null, {httpOnly:true});
-    request.cookies.set('groups', null, {httpOnly:true});
-    return true;
-  };
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
 
   // This simply adds full privileges to all users (remove this to enable default check)
   exports.checkPrivilege = function(request, response, privilege, respond) {
@@ -57,25 +46,31 @@
     return true;
   };
 
+  // Attach API functions
   exports.register = function(CONFIG, API, HANDLER) {
-    //console.info('-->', 'Registering handler API methods');
-
     API.login = function(args, callback, request, response) {
-      var result = APIUser.login({
+      function login(data) {
+        request.cookies.set('username', data.username, {httpOnly:true});
+        request.cookies.set('groups', JSON.stringify(data.groups), {httpOnly:true});
+        return data;
+      }
+
+      callback(false, login({
         id: 0,
         username: 'demo',
         name: 'Demo User',
         groups: ['demo']
-      }, request, response);
-
-      callback(false, result);
+      }, request, response));
     };
 
     API.logout = function(args, callback, request, response) {
-      var result = APIUser.logout(request, response);
-      callback(false, result);
+      function logout() {
+        request.cookies.set('username', null, {httpOnly:true});
+        request.cookies.set('groups', null, {httpOnly:true});
+        return true;
+      }
+      callback(false, logout());
     };
-
   };
 
 })();

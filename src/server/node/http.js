@@ -27,9 +27,10 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(_osjs, _http, _path, _url, _fs, _qs, _multipart, _cookies) {
+(function(_osjs, _http, _path, _url, _fs, _qs, _multipart, Cookies) {
+  'use strict';
 
-  var instance;
+  var instance, server;
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
@@ -152,7 +153,7 @@
       try {
         var data         = JSON.parse(POST);
         var method       = data.method;
-        var args         = data['arguments'] || {}
+        var args         = data['arguments'] || {};
 
         if ( instance.config.logging ) {
           console.log('===', 'CoreAPI', method, args);
@@ -178,7 +179,7 @@
   function httpCall(request, response) {
     var url     = _url.parse(request.url, true),
         path    = decodeURIComponent(url.pathname),
-        cookies = new _cookies(request, response);
+        cookies = new Cookies(request, response);
 
     request.cookies = cookies;
 
@@ -194,13 +195,19 @@
       instance.handler.onRequestStart(request, response);
     }
 
-    if ( request.method == 'POST' ) {
+    if ( request.method === 'POST' ) {
       if ( path.match(/^\/FS$/) ) { // File upload
         var form = new _multipart.IncomingForm({
           uploadDir: instance.config.tmpdir
         });
         form.parse(request, function(err, fields, files) {
-          filePOST(fields, files, request, response);
+          if ( err ) {
+            if ( instance.config.logging ) {
+              console.log('>>>', 'ERR', 'Error on form parse', err);
+            }
+          } else {
+            filePOST(fields, files, request, response);
+          }
         });
       } else { // API Calls
         var body = '';
@@ -229,8 +236,6 @@
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
-
-  var instance, server;
 
   /**
    * Create HTTP server and listen
