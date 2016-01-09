@@ -49,7 +49,7 @@ Vagrant.configure(2) do |config|
     grunt
 
     # configure apache2 to serve OS.js-v2 dist-dev
-    grunt apache-vhost | sed '1d' | sed '$d' > apache-vhost.conf
+    grunt apache-vhost:apache-vhost.conf
     sed -i -e 's/#Require/Require/' apache-vhost.conf
     sudo cp apache-vhost.conf /etc/apache2/sites-available/000-default.conf
     sudo service apache2 restart
