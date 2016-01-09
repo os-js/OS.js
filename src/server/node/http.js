@@ -35,6 +35,9 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Respond to HTTP Call
+   */
   function respond(data, mime, response, headers, code, pipeFile) {
     data    = data    || '';
     headers = headers || [];
@@ -67,6 +70,9 @@
     }
   }
 
+  /**
+   * Respond with JSON data
+   */
   function respondJSON(data, response, headers) {
     data = JSON.stringify(data);
     if ( instance.config.logging ) {
@@ -75,6 +81,9 @@
     respond(data, 'application/json', response, headers);
   }
 
+  /**
+   * Respond with a file
+   */
   function respondFile(path, request, response, jpath) {
     var fullPath = jpath ? path : instance.vfs.getRealPath(path, instance.config, request).root;
     _fs.exists(fullPath, function(exists) {
@@ -93,6 +102,9 @@
     });
   }
 
+  /**
+   * Handles file requests
+   */
   function fileGET(path, request, response, arg) {
     if ( !arg ) {
       if ( instance.config.logging ) {
@@ -108,6 +120,9 @@
     respondFile(unescape(path), request, response, arg);
   }
 
+  /**
+   * Handles file uploads
+   */
   function filePOST(fields, files, request, response) {
     try {
       instance.handler.checkPrivilege(request, response, 'upload');
@@ -129,6 +144,9 @@
     }, instance.config);
   }
 
+  /**
+   * Handles Core API HTTP Request
+   */
   function coreAPI(url, path, POST, request, response) {
     if ( path.match(/^\/API/) ) {
       try {
@@ -154,6 +172,9 @@
     return false;
   }
 
+  /**
+   * Handles a HTTP Request
+   */
   function httpCall(request, response) {
     var url     = _url.parse(request.url, true),
         path    = decodeURIComponent(url.pathname),
@@ -211,6 +232,20 @@
 
   var instance, server;
   module.exports = {
+    /**
+     * Create HTTP server and listen
+     *
+     * @param   Object    setup       Configuration (see osjs.js)
+     *
+     * @option  setup     int       port        Listening port (default=null/auto)
+     * @option  setup     String    dirname     Server running dir (ex: /osjs/src/server/node)
+     * @option  setup     String    root        Installation root directory (ex: /osjs)
+     * @option  setup     String    dist        Build root directory (ex: /osjs/dist)
+     * @option  setup     boolean   nw          NW build (default=false)
+     * @option  setup     boolean   logging     Enable logging (default=true)
+     *
+     * @api     http.listen
+     */
     listen: function(setup) {
       instance = _osjs.init(setup);
       server = _http.createServer(httpCall);
@@ -226,6 +261,13 @@
       server.listen(setup.port || instance.config.port);
     },
 
+    /**
+     * Closes the active HTTP server
+     *
+     * @param   Function  cb          Callback function
+     *
+     * @api     http.close
+     */
     close: function(cb) {
       cb = cb || function() {};
 
