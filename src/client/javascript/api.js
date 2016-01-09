@@ -1083,7 +1083,22 @@
    * @api     OSjs.API.createDialog()
    */
   function doCreateDialog(className, args, callback, parentObj) {
-    var win = new OSjs.Dialogs[className](args, callback);
+    function cb() {
+      if ( parentObj ) {
+        if ( (parentObj instanceof OSjs.Core.Window) && parentObj._destroyed ) {
+          console.warn('API::createDialog()', 'INGORED EVENT: Window was destroyed');
+          return;
+        }
+        if ( (parentObj instanceof OSjs.Core.Process) && parentObj.__destroyed ) {
+          console.warn('API::createDialog()', 'INGORED EVENT: Process was destroyed');
+          return;
+        }
+      }
+
+      callback.apply(null, arguments);
+    }
+
+    var win = new OSjs.Dialogs[className](args, cb);
 
     if ( !parentObj ) {
       var wm = OSjs.Core.getWindowManager();
