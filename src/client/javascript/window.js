@@ -737,15 +737,17 @@
   // Children (Windows)
   //
 
-  Window.prototype._addChild = function(w, wmAdd) {
+  Window.prototype._addChild = function(w, wmAdd, wmFocus) {
     console.debug('OSjs::Core::Window::_addChild()');
     w._parent = this;
 
     var wm = OSjs.Core.getWindowManager();
     if ( wmAdd && wm ) {
-      wm.addWindow(w);
+      wm.addWindow(w, wmFocus);
     }
     this._children.push(w);
+
+    return w;
   };
 
   /**
