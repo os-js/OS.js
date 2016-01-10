@@ -525,12 +525,14 @@
     //attachWindowEvents(w, this);
     createWindowBehaviour(w, this);
 
-    if ( focus === true || (w instanceof OSjs.Core.DialogWindow) ) {
-      w._focus();
-    }
+    this._windows.push(w);
     w._inited();
 
-    this._windows.push(w);
+    if ( focus === true || (w instanceof OSjs.Core.DialogWindow) ) {
+      setTimeout(function() {
+        w._focus();
+      }, 10);
+    }
 
     return w;
   };
