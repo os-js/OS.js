@@ -55,16 +55,9 @@ local _settings = fs.readfile(SETTINGS_FILE)
 if _settings ~= nil then
   _settings = _settings:gsub("%%DROOT%%", ROOTDIR)
   SETTINGS = json.decode(_settings)
+  MIMES = SETTINGS.mimes or {}
 end
 _settings = nil
-
-local _tmp = fs.readfile(ROOTDIR ..  "/mime.json")
-if _tmp ~= nil then
-  _tmp = json.decode(_tmp);
-  MIMES = _tmp.mime.mapping
-
-end
-_tmp = nil
 
 local DEBUGMODE = SETTINGS.debugmode
 local DISTDIR = SETTINGS.distdir or ROOTDIR.."/dist"

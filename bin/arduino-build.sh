@@ -74,7 +74,6 @@ cp -v src/server/lua/osjs.lua $OUTDIR/lib/
 cp -v src/server/lua/osjs-fs $OUTDIR/dist/cgi-bin/
 cp -v src/server/lua/osjs-api $OUTDIR/dist/cgi-bin/
 cp -v src/server/settings.json $OUTDIR/settings.json
-cp -v src/conf/130-mime.json $OUTDIR/mime.json
 
 # Make a minimal copy of icons (only the ones used)
 rm -rf $TMPDIR
