@@ -88,7 +88,7 @@
                 window.location.reload();
               });
             }
-          },
+          }
         ], ev);
 
         return false;
