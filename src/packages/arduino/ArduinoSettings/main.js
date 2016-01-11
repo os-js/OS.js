@@ -82,6 +82,22 @@
       }
     }
 
+    function renderTimezones() {
+      var timezones = API.getConfig('Timezones') || [];
+
+      var options = [];
+      timezones.forEach(function(group) {
+        group.zones.forEach(function(zone) {
+          options.push({
+            label: Utils.format('{0} - {1}', zone.value.replace(/\-/, ' '), zone.name),
+            value: zone.value
+          });
+        });
+      });
+
+      selectTimezone.add(options);
+    }
+
     function renderDeviceInfo(cb) {
       cb = cb || function() {};
 
@@ -286,6 +302,8 @@
         wm.notification({title: 'Arduino', message: 'You will be notified when your wifi settings have been applied', icon: 'arduino.png' });
       });
     });
+
+    renderTimezones();
 
     renderDeviceInfo(function() {
       renderNetworkDevices();
