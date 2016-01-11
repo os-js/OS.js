@@ -15,7 +15,7 @@
   },
 
   "client" : {
-    "Version" : "2.0-alpha69-arduino-yun",
+    "Version" : "2.0-alpha71-arduino-yun",
 
     "Connection": {
       "APIURI": "/cgi-bin/osjs-api",
