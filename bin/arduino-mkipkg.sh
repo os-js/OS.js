@@ -49,7 +49,6 @@ cp -r $SRCDIR/dist $OUTDIR/data/opt/osjs/
 cp -r $SRCDIR/AUTHORS $OUTDIR/data/opt/osjs/
 cp -r $SRCDIR/README.md $OUTDIR/data/opt/osjs/
 cp -r $SRCDIR/CHANGELOG.md $OUTDIR/data/opt/osjs/
-cp -r $SRCDIR/mime.json $OUTDIR/data/opt/osjs/
 cp -r $SRCDIR/settings.json $OUTDIR/data/opt/osjs/
 
 # Create control file
