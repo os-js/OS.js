@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -50,10 +50,10 @@
       statusText: 'LBM: Use foreground-, RMB: Use background color'
     },
     rectangle: {
-     statusText: 'LBM: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode'
+      statusText: 'LBM: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode'
     },
     circle: {
-     statusText: 'LBM: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode'
+      statusText: 'LBM: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode'
     }
   };
   var toolEvents = {
@@ -109,7 +109,7 @@
       },
       mousemove: function(ev, args) {
         args.ctx.beginPath();
-        args.ctx.moveTo(args.pos.x-1, args.pos.y);
+        args.ctx.moveTo(args.pos.x - 1, args.pos.y);
         args.ctx.lineTo(args.pos.x, args.pos.y);
         args.ctx.closePath();
         args.ctx.stroke();
@@ -172,16 +172,16 @@
           args.tmpContext.clearRect(0, 0, args.tmpCanvas.width, args.tmpCanvas.height);
           if ( width > 0 && height > 0 ) {
             args.tmpContext.beginPath();
-            args.tmpContext.moveTo(args.start.x, args.start.y - height*2); // A1
+            args.tmpContext.moveTo(args.start.x, args.start.y - height * 2); // A1
             args.tmpContext.bezierCurveTo(
-              args.start.x + width*2, args.start.y - height*2, // C1
-              args.start.x + width*2, args.start.y + height*2, // C2
-              args.start.x, args.start.y + height*2); // A2
+              args.start.x + width * 2, args.start.y - height * 2, // C1
+              args.start.x + width * 2, args.start.y + height * 2, // C2
+              args.start.x, args.start.y + height * 2); // A2
 
             args.tmpContext.bezierCurveTo(
-              args.start.x - width*2, args.start.y + height*2, // C3
-              args.start.x - width*2, args.start.y - height*2, // C4
-              args.start.x, args.start.y - height*2); // A1
+              args.start.x - width * 2, args.start.y + height * 2, // C3
+              args.start.x - width * 2, args.start.y - height * 2, // C4
+              args.start.x, args.start.y - height * 2); // A1
 
             args.tmpContext.closePath();
             if ( args.win.tool.lineStroke ) {
@@ -197,7 +197,7 @@
           args.tmpContext.clearRect(0, 0, args.tmpCanvas.width, args.tmpCanvas.height);
           if ( r > 0 ) {
             args.tmpContext.beginPath();
-            args.tmpContext.arc(args.start.x, args.start.y, r, 0, Math.PI*2, true);
+            args.tmpContext.arc(args.start.x, args.start.y, r, 0, Math.PI * 2, true);
             args.tmpContext.closePath();
 
             if ( args.win.tool.lineStroke ) {
@@ -396,7 +396,7 @@
     }, function(ev, button, result) {
       if ( button !== 'ok' ) { return; }
       self.setToolProperty(param, result.hex);
-    });
+    }, this);
   };
 
   ApplicationDrawWindow.prototype.setToolProperty = function(param, value) {
@@ -425,7 +425,7 @@
     function open(img) {
       if ( (window.Uint8Array && (img instanceof Uint8Array)) ) {
         var image = ctx.createImageData(canvas.width, ctx.height);
-        for (var i=0; i<img.length; i++) {
+        for (var i = 0; i < img.length; i++) {
           image.data[i] = img[i];
         }
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -438,18 +438,24 @@
       }
     }
 
-    this._toggleLoading(true);
+    if ( result ) {
+      this._toggleLoading(true);
 
-    var tmp = new Image();
-    tmp.onerror = function() {
-      self._toggleLoading(false);
-      alert('Failed to open image');
-    };
-    tmp.onload = function() {
-      self._toggleLoading(false);
-      open(this);
-    };
-    tmp.src = result;
+      var tmp = new Image();
+      tmp.onerror = function() {
+        self._toggleLoading(false);
+        alert('Failed to open image');
+      };
+      tmp.onload = function() {
+        self._toggleLoading(false);
+        open(this);
+      };
+      tmp.src = result;
+    } else {
+      canvas.width = DEFAULT_WIDTH;
+      canvas.height = DEFAULT_HEIGHT;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
   };
 
   ApplicationDrawWindow.prototype.getFileData = function() {

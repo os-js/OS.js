@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function() {
+  // jscs:disable validateQuoteMarks
   'use strict';
 
   OSjs.Locales = OSjs.Locales || {};
@@ -39,7 +40,7 @@
 
     'ERR_FILE_OPEN'             : 'Lỗi khi mở tệp',
     'ERR_WM_NOT_RUNNING'        : 'Trình quản lí cửa sổ không hoạt động',
-    'ERR_FILE_OPEN_FMT'         : 'Tập tin \'<span>{0}</span>\' không mở được',
+    'ERR_FILE_OPEN_FMT'         : 'Tập tin \'**{0}**\' không mở được',
     'ERR_APP_MIME_NOT_FOUND_FMT': 'Không thể tìm thấy bất kỳ ứng dụng hỗ trợ cho \'{0}\' files',
     'ERR_APP_LAUNCH_FAILED'     : 'Không thể khởi động ứng dụng',
     'ERR_APP_LAUNCH_FAILED_FMT' : 'Có lỗi xảy ra trong khi cố gắng khởi động: {0}',
@@ -117,7 +118,7 @@
     'DIALOG_FILE_SAVE'      : 'Lưu',
     'DIALOG_FILE_OPEN'      : 'Mở',
     'DIALOG_FILE_MKDIR'     : 'Thư mục mới',
-    'DIALOG_FILE_MKDIR_MSG' : 'Tạo một thư mục mới trong <span>{0}</span>',
+    'DIALOG_FILE_MKDIR_MSG' : 'Tạo một thư mục mới trong **{0}**',
     'DIALOG_FILE_OVERWRITE' : 'Bạn có chắc muốn ghi đè lên tập tin \'{0}\'?',
     'DIALOG_FILE_MNU_VIEWTYPE' : 'Kiểu xem',
     'DIALOG_FILE_MNU_LISTVIEW' : 'Danh sách',
@@ -131,7 +132,7 @@
     'DIALOG_FILEINFO_TITLE'   : 'Thông tin file',
     'DIALOG_FILEINFO_LOADING' : 'Đang tải thông tin tập tin cho: {0}',
     'DIALOG_FILEINFO_ERROR'   : 'Lỗi FileInformationDialog',
-    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Không thể có được thông tin file cho <span>{0}</span>',
+    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Không thể có được thông tin file cho **{0}**',
     'DIALOG_FILEINFO_ERROR_LOOKUP_FMT' : 'Không thể có được thông tin file cho: {0}',
 
     'DIALOG_INPUT_TITLE' : 'Nhập liệu',
@@ -140,7 +141,7 @@
     'DIALOG_FILEPROGRESS_LOADING' : 'Đang nạp...',
 
     'DIALOG_UPLOAD_TITLE'   : 'Tải lên',
-    'DIALOG_UPLOAD_DESC'    : 'Tải tập tin lên đến <span>{0}</span>.<br />Kích thước tối đa: {1} byte',
+    'DIALOG_UPLOAD_DESC'    : 'Tải tập tin lên đến **{0}**.<br />Kích thước tối đa: {1} byte',
     'DIALOG_UPLOAD_MSG_FMT' : 'Đang tải lên \'{0}\' ({1} {2}) đến {3}',
     'DIALOG_UPLOAD_MSG'     : 'Đang tải lên file...',
     'DIALOG_UPLOAD_FAILED'  : 'Tải lên thất bại',
@@ -178,7 +179,7 @@
     'WLAPI_INIT_FAILED_FMT'   : 'Windows Live API gửi lại {0} status',
 
     // IndexedDB
-    'IDB_MISSING_DBNAME' : 'Không thể tạo IndexedDB mà không có Database Name',
+    'IDB_MISSING_DBNAME' : 'Không thể tạo IndexedDB mà không có Tên cơ sở dữ liệu',
     'IDB_NO_SUCH_ITEM'   : 'Không có item',
 
     //
@@ -236,10 +237,16 @@
 
     // VFS -> Dropbox
     'DROPBOX_NOTIFICATION_TITLE' : 'Bạn đã đăng nhập vào Dropbox API',
-    'DROPBOX_SIGN_OUT'           : 'Đăng xuất khỏi Google API Services',
+    'DROPBOX_SIGN_OUT'           : 'Đăng xuất khỏi dịch vụ Google API',
 
     // VFS -> OneDrive
     'ONEDRIVE_ERR_RESOLVE'      : 'Không thể giải quyết đường dẫn: mục không tìm thấy',
+
+    //
+    // PackageManager
+    //
+
+    'ERR_PACKAGE_EXISTS': 'Thư mục cài đặt gói phần mềm đã tồn tại. Không thể tiếp tục!',
 
     //
     // DefaultApplication
@@ -267,19 +274,19 @@
     'LBL_USER'         : 'Người dùng',
     'LBL_NAME'         : 'Tên',
     'LBL_APPLY'        : 'Áp dụng',
-    'LBL_FILENAME'     : 'Tên file',
+    'LBL_FILENAME'     : 'Tên tệp',
     'LBL_PATH'         : 'Đường dẫn',
     'LBL_SIZE'         : 'Kích cỡ',
     'LBL_TYPE'         : 'Kiểu',
     'LBL_MIME'         : 'MIME',
     'LBL_LOADING'      : 'Đang tải',
     'LBL_SETTINGS'     : 'Cài đặt',
-    'LBL_ADD_FILE'     : 'Thêm file',
+    'LBL_ADD_FILE'     : 'Thêm tệp',
     'LBL_COMMENT'      : 'Chú thích',
     'LBL_ACCOUNT'      : 'Tài khoản',
     'LBL_CONNECT'      : 'Kết nối',
-    'LBL_ONLINE'       : 'Online',
-    'LBL_OFFLINE'      : 'Offline',
+    'LBL_ONLINE'       : 'Trực tuyến',
+    'LBL_OFFLINE'      : 'Ngoại tuyến',
     'LBL_AWAY'         : 'Ở xa',
     'LBL_BUSY'         : 'Bận',
     'LBL_CHAT'         : 'Chat',
@@ -331,7 +338,7 @@
     'LBL_UNDO'         : 'Trở lại',
     'LBL_REDO'         : 'Làm lại',
     'LBL_CUT'          : 'Cắt',
-    'LBL_UNLINK'       : 'Bở link',
+    'LBL_UNLINK'       : 'Bỏ link',
     'LBL_COPY'         : 'Sao chép',
     'LBL_PASTE'        : 'Dán',
     'LBL_INSERT'       : 'Thêm',
@@ -355,7 +362,14 @@
     'LBL_MODIFIED' : 'Sửa lúc',
     'LBL_SHOW_COLUMNS' : 'Hiện các cột',
     'LBL_MOVE' : 'Di chuyển',
-    'LBL_OPTIONS' : 'Cài đặt'
+    'LBL_OPTIONS' : 'Tùy chỉnh',
+    'LBL_OK' : 'OK',
+    'LBL_DIRECTORY' : 'Thư mục',
+    'LBL_CREATE' : 'Tạo',
+    'LBL_BUGREPORT' : 'Báo lỗi',
+    'LBL_INSTALL' : 'Cài đặt',
+    'LBL_UPDATE' : 'Cập nhật',
+    'LBL_REMOVE' : 'Xóa'
   };
 
 })();

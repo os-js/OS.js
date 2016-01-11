@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -51,7 +51,7 @@
     'onLogout':              [],
     'onShutdown':            [],
     'onApplicationLaunch':   [],
-    'onApplicationLaunched': [] 
+    'onApplicationLaunched': []
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -296,28 +296,25 @@
    * @return  void
    * @api     OSjs.API.call()
    */
-  var doAPICall = (function() {
-    var _cidx = 1;
+  var _CALL_INDEX = 1;
+  function doAPICall(m, a, cok, cerror) {
+    var lname = 'APICall_' + _CALL_INDEX;
 
-    return function(m, a, cok, cerror) {
-      var lname = 'APICall_' + _cidx;
+    if ( typeof a.__loading === 'undefined' || a.__loading === true ) {
+      createLoading(lname, {className: 'BusyNotification', tooltip: 'API Call'});
+    }
 
-      if ( typeof a.__loading === 'undefined' || a.__loading === true ) {
-        createLoading(lname, {className: 'BusyNotification', tooltip: 'API Call'});
-      }
+    _CALL_INDEX++;
 
-      _cidx++;
-
-      var handler = OSjs.Core.getHandler();
-      return handler.callAPI(m, a, function() {
-        destroyLoading(lname);
-        cok.apply(this, arguments);
-      }, function() {
-        destroyLoading(lname);
-        cerror.apply(this, arguments);
-      });
-    };
-  })();
+    var handler = OSjs.Core.getHandler();
+    return handler.callAPI(m, a, function() {
+      destroyLoading(lname);
+      cok.apply(this, arguments);
+    }, function() {
+      destroyLoading(lname);
+      cerror.apply(this, arguments);
+    });
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // PROCESS API METHODS
@@ -550,7 +547,6 @@
         } else {
           a = new OSjs.Applications[n](arg, result);
         }
-        a.__sname = n;
 
         onConstructed(a, result);
       } catch ( e ) {
@@ -905,6 +901,8 @@
     name = name || null;
     type = type || null;
 
+    var root = OSjs.API.getConfig('Connection.ThemeURI');
+
     function getName(str, theme) {
       if ( !str.match(/^\//) ) {
         if ( type === 'base' || type === null ) {
@@ -919,7 +917,6 @@
     if ( name ) {
       var wm = OSjs.Core.getWindowManager();
       var theme = (wm ? wm.getSetting('theme') : 'default') || 'default';
-      var root = OSjs.API.getConfig('Connection.ThemeURI');
       name = getName(name, theme);
     }
 
@@ -969,6 +966,10 @@
     size = size || '16x16';
     app  = app  || null;
 
+    var root = OSjs.API.getConfig('Connection.IconURI');
+    var wm = OSjs.Core.getWindowManager();
+    var theme = wm ? wm.getIconTheme() : 'default';
+
     function checkIcon() {
       if ( name.match(/^\.\//) ) {
         name = name.replace(/^\.\//, '');
@@ -988,9 +989,6 @@
     }
 
     if ( name && !name.match(/^(http|\/\/)/) ) {
-      var wm = OSjs.Core.getWindowManager();
-      var theme = wm ? wm.getIconTheme() : 'default';
-      var root = OSjs.API.getConfig('Connection.IconURI');
       var chk = checkIcon();
       if ( chk !== null ) {
         return chk;
@@ -1019,7 +1017,7 @@
       var ns = config;
 
       queue.forEach(function(k, i) {
-        if ( i >= queue.length-1 ) {
+        if ( i >= queue.length - 1 ) {
           result = ns[k];
         } else {
           ns = ns[k];

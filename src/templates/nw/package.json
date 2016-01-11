@@ -1,0 +1,19 @@
+{
+  "main": "index.html",
+  "name": "OS.js",
+  "description": "OS.js Cloud/Web Desktop Platform",
+  "version": "0.0.1",
+  "keywords": ["OS.js"],
+  "window": {
+    "title": "OS.js",
+    "icon": "favicon.png",
+    "toolbar": true,
+    "width": 1024,
+    "height": 768,
+    "min_width": 640,
+    "min_height": 480
+  },
+  "dependencies": {
+    "node-fs-extra":        ">=0.8.1"
+  }
+}

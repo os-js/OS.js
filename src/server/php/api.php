@@ -2,7 +2,7 @@
 /*!
  * OS.js - JavaScript Operating System
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -484,12 +484,12 @@ class CoreAPIHandler
         $error = "Invalid FS operation: {$m}";
       } else {
         if ( !$a ) {
-          $error = "Supply argument for FS operaion: {$m}";
+          $error = "Supply argument for FS operation: {$m}";
         } else {
           try {
             $result = call_user_func_array(Array("FS", $m), $a);
           } catch ( Exception $e ) {
-            $error = "FS operaion error: {$e->getMessage()}";
+            $error = "FS operation error: {$e->getMessage()}";
           }
         }
       }

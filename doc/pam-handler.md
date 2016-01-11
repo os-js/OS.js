@@ -3,7 +3,7 @@ With the *pam* handler you can enable a login prompt for OS.js and connect it to
 ## Setup
 
 ```
-# In OS.js root
+# Install node dependencies (you need PAM development package on your system)
 $ npm install nan@1.1.0
 $ npm install authenticate-pam
 $ npm install userid
@@ -13,7 +13,7 @@ $ mkdir /etc/osjs
 $ edit /etc/osjs/groups.json
 
 # Change `handler` to `pam`
-$ edit src/conf/000-base.json
+$ grunt config:set:handler:pam
 
 # Update configuration and template files
 $ grunt config
@@ -27,8 +27,6 @@ $ grunt config
 **NOTE:** On some systems you might have to install `authenticate-pam` with `npm install -g` or else you might get a *Error in service module* upon request.
 
 **NOTE:** Also, on some systems you might have to run OS.js server as an administrator (`sudo`) depending on the PAM setup.
-
-**NOTE:** Instead of editing the provided config file, you should [create your own](http://os.js.org/doc/manuals/man-configuration.html)
 
 
 ### groups.json

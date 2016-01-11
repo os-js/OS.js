@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -69,14 +69,13 @@
       window.FileList.prototype.forEach = Array.prototype.forEach;
     }
 
-    (function () {
-      function CustomEvent ( event, params ) {
+    (function() {
+      function CustomEvent(event, params) {
         params = params || { bubbles: false, cancelable: false, detail: undefined };
         var evt = document.createEvent( 'CustomEvent' );
         evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
         return evt;
       }
-
 
       if ( window.navigator.userAgent.match(/MSIE|Edge|Trident/) ) {
         CustomEvent.prototype = window.Event.prototype;
@@ -219,7 +218,6 @@
           _timeout = null;
         }
 
-
         var self = this;
         _timeout = setTimeout(function() {
           _resize.call(self, ev);
@@ -260,7 +258,7 @@
     var append = OSjs.API.getConfig('VersionAppend');
 
     var ver = OSjs.API.getConfig('Version', 'unknown version');
-    var cop = 'Copyright © 2011-2015 ';
+    var cop = 'Copyright © 2011-2016 ';
     var lnk = document.createElement('a');
     lnk.href = 'mailto:andersevenrud@gmail.com';
     lnk.appendChild(document.createTextNode('Anders Evenrud'));
@@ -334,7 +332,7 @@
       OSjs.API.error(OSjs.API._('ERR_JAVASCRIPT_EXCEPTION'),
                     OSjs.API._('ERR_JAVACSRIPT_EXCEPTION_DESC'),
                     OSjs.API._('BUGREPORT_MSG'),
-                    exception || {name: 'window::onerror()', fileName: url, lineNumber: linenumber+':'+column, message: message},
+                    exception || {name: 'window::onerror()', fileName: url, lineNumber: linenumber + ':' + column, message: message},
                     true );
 
       return false;
@@ -437,7 +435,6 @@
           events.resize();
         }, 500);
 
-
         callback();
 
         wm.onSessionLoaded();
@@ -538,14 +535,15 @@
 
     console.warn('OS.js was shut down!');
 
-    if ( window.require ) {
+    if ( OSjs.API.getConfig('Connection.Type') === 'nw' ) {
       try {
         var gui = require('nw.gui');
         var win = gui.Window.get();
         setTimeout(function() {
           win.close();
         }, 500);
-      } catch ( e ) {}
+      } catch ( e ) {
+      }
     }
   };
 

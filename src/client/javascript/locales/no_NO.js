@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function() {
+  // jscs:disable validateQuoteMarks
   'use strict';
 
   OSjs.Locales = OSjs.Locales || {};
@@ -35,7 +36,7 @@
   OSjs.Locales.no_NO = {
     'ERR_FILE_OPEN'             : 'Feil ved åpning av fil',
     'ERR_WM_NOT_RUNNING'        : 'Window Manager kjører ikke',
-    'ERR_FILE_OPEN_FMT'         : 'Filen \'<span>{0}</span>\' kunne ikke bli åpnet',
+    'ERR_FILE_OPEN_FMT'         : 'Filen \'**{0}**\' kunne ikke bli åpnet',
     'ERR_APP_MIME_NOT_FOUND_FMT': 'Fant ingen Applikasjoner som støtter \'{0}\' filer',
     'ERR_APP_LAUNCH_FAILED'     : 'Klarte ikke starte Applikasjon',
     'ERR_APP_LAUNCH_FAILED_FMT' : 'En feil oppstod ved oppstart av: {0}',
@@ -101,7 +102,7 @@
     'DIALOG_FILE_SAVE'      : 'Lagre',
     'DIALOG_FILE_OPEN'      : 'Åpne',
     'DIALOG_FILE_MKDIR'     : 'Ny Mappe',
-    'DIALOG_FILE_MKDIR_MSG' : 'Lage ny mappe i <span>{0}</span>',
+    'DIALOG_FILE_MKDIR_MSG' : 'Lage ny mappe i **{0}**',
     'DIALOG_FILE_OVERWRITE' : 'Vil du overskrive filen \'{0}\'?',
     'DIALOG_FILE_MNU_VIEWTYPE' : 'Visningstype',
     'DIALOG_FILE_MNU_LISTVIEW' : 'Liste-visning',
@@ -115,7 +116,7 @@
     'DIALOG_FILEINFO_TITLE'   : 'Fil Informasion',
     'DIALOG_FILEINFO_LOADING' : 'Laste informasjon for filen: {0}',
     'DIALOG_FILEINFO_ERROR'   : 'FileInformationDialog Feil',
-    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Klarte ikke hente informasjon for filen <span>{0}</span>',
+    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Klarte ikke hente informasjon for filen **{0}**',
     'DIALOG_FILEINFO_ERROR_LOOKUP_FMT' : 'Klarte ikke hente informasjon for filen: {0}',
 
     'DIALOG_INPUT_TITLE' : 'Inndata Dialog',
@@ -124,7 +125,7 @@
     'DIALOG_FILEPROGRESS_LOADING' : 'Laster...',
 
     'DIALOG_UPLOAD_TITLE'   : 'Opplasting Dialog',
-    'DIALOG_UPLOAD_DESC'    : 'Opplasting fil til <span>{0}</span>.<br />Maksimum størrelse: {1} bytes',
+    'DIALOG_UPLOAD_DESC'    : 'Opplasting fil til **{0}**.<br />Maksimum størrelse: {1} bytes',
     'DIALOG_UPLOAD_MSG_FMT' : 'Laster opp \'{0}\' ({1} {2}) til {3}',
     'DIALOG_UPLOAD_MSG'     : 'Laster opp fil...',
     'DIALOG_UPLOAD_FAILED'  : 'Opplasting feilet',
@@ -133,7 +134,6 @@
     'DIALOG_UPLOAD_FAILED_CANCELLED': 'Avbrutt av bruker...',
 
     'DIALOG_FONT_TITLE' : 'Tekst Dialog',
-
 
     'DIALOG_APPCHOOSER_TITLE' : 'Velg Applikasjon',
     'DIALOG_APPCHOOSER_MSG'   : 'Velg en applikasjon for åpning',

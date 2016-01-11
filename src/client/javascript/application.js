@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -56,8 +56,6 @@
    */
   var Application = function(name, args, metadata, settings) {
     console.group('Application::constructor()');
-    this.__destroyed  = false;
-    this.__running    = true;
     this.__inited     = false;
     this.__mainwindow = null;
     this.__scheme     = null;
@@ -91,27 +89,36 @@
    * @method  Application::init()
    */
   Application.prototype.init = function(settings, metadata) {
-    console.debug('Application::init()', this.__pname);
 
-    this.__settings.set(null, settings);
+    var wm = OSjs.Core.getWindowManager();
+    var self = this;
 
-    if ( this.__windows.length ) {
-      var wm = OSjs.Core.getWindowManager();
+    function focusLastWindow() {
+      var last;
+
       if ( wm ) {
-        var last = null;
-
-        this.__windows.forEach(function(win, i) {
+        self.__windows.forEach(function(win, i) {
           if ( win ) {
             wm.addWindow(win);
             last = win;
           }
         });
+      }
 
-        if ( last ) { last._focus(); }
+      if ( last ) {
+        last._focus();
       }
     }
 
-    this.__inited = true;
+    if ( !this.__inited ) {
+      console.debug('Application::init()', this.__pname);
+
+      this.__settings.set(null, settings);
+
+      focusLastWindow();
+
+      this.__inited = true;
+    }
   };
 
   /**
@@ -122,14 +129,11 @@
    * @method    Application::destroy()
    */
   Application.prototype.destroy = function(kill) {
-    if ( this.__destroyed ) { return true; }
-    this.__destroyed = true;
+    if ( this.__destroyed ) { // From 'process.js'
+      return true;
+    }
 
     console.debug('Application::destroy()', this.__pname);
-
-    if ( this.__scheme ) {
-      this.__scheme.destroy();
-    }
 
     this.__windows.forEach(function(w) {
       if ( w ) {
@@ -140,6 +144,10 @@
     this.__mainwindow = null;
     this.__settings = {};
     this.__windows = [];
+
+    if ( this.__scheme ) {
+      this.__scheme.destroy();
+    }
     this.__scheme = null;
 
     return Process.prototype.destroy.apply(this, arguments);

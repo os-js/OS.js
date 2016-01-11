@@ -1,21 +1,26 @@
 {
-  "className":  "ApplicationCalculator",
-  "name":       "Calculator",
-  "names":      {
-    "no_NO": "Kalkulator",
-    "ru_RU": "Калькулятор",
-    "pl_PL": "Kalkulator",
+  "className": "ApplicationCalculator",
+  "name": "Calculator",
+  "names": {
+    "bg_Bg": "Клакулатор",
     "nl_NL": "Rekenmachine",
+    "no_NO": "Kalkulator",
+    "pl_PL": "Kalkulator",
+    "sk_SK": "Kalkulačka",
+    "ru_RU": "Калькулятор",
+    "tr_TR": "Hesap Makinesi",
     "vi_VN": "Máy tính"
   },
-  "mime":       null,
-  "icon":       "apps/calc.png",
-  "category":   "office",
-  "preload":    [
-    {"src": "main.js", "type": "javascript"},
-    {"src": "main.css", "type": "stylesheet"}
+  "icon": "apps/calc.png",
+  "category": "office",
+  "preload": [
+    {
+      "src": "main.js",
+      "type": "javascript"
+    },
+    {
+      "src": "main.css",
+      "type": "stylesheet"
+    }
   ]
 }
-
-
-

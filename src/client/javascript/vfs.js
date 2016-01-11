@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -187,7 +187,7 @@
 
     function filterFile(iter) {
       if ( iter.filename !== '..' ) {
-        if ( (options.typeFilter && iter.type !== options.typeFilter) || (!options.showHiddenFiles && iter.filename.match(/^\./)) ) {
+        if ( (options.typeFilter && iter.type !== options.typeFilter) || (!options.showHiddenFiles && iter.filename.match(/^\.\w/)) ) {
           return false;
         }
       }
@@ -295,7 +295,9 @@
   /**
    * Wrapper for internal file uploads
    */
-  function internalUpload(file, dest, callback) {
+  function internalUpload(file, dest, callback, options) {
+    options = options || {};
+
     var fsuri  = API.getConfig('Connection.FSURI', '/');
 
     if ( typeof file.size !== 'undefined' ) {
@@ -313,6 +315,11 @@
     var fd  = new FormData();
     fd.append('upload', 1);
     fd.append('path', dest);
+
+    Object.keys(options).forEach(function(key) {
+      fd.append(key, String(options[key]));
+    });
+
     addFormFile(fd, 'upload', file);
 
     OSjs.Utils.ajax({
@@ -528,6 +535,20 @@
    * This is the Metadata object you have to use when passing files around
    * in the VFS API.
    *
+   * This object has the same properties as in the option list below
+   *
+   * @param   Mixed       arg       Either a 'path' or 'object' (filled with properties)
+   * @param   String      mime      MIME type of File Type (ex: 'application/json' or 'dir')
+   *
+   * @option  opts     String          icon              Window Icon
+   *
+   * @option  arg   String      path      Full path
+   * @option  arg   String      filename  Filename (automatically detected)
+   * @option  arg   String      type      File type (file/dir)
+   * @option  arg   int         size      File size (in bytes)
+   * @option  arg   String      mime      File MIME (ex: application/json)
+   * @option  arg   Mixed       id        Unique identifier (not required)
+   *
    * @api     OSjs.VFS.File
    * @class
    */
@@ -550,8 +571,12 @@
       this.setData();
     }
 
-    if ( mime ) {
-      this.mime = mime;
+    if ( typeof mime === 'string' ) {
+      if ( mime.match(/\//) ) {
+        this.mime = mime;
+      } else {
+        this.type = mime;
+      }
     }
   }
 
@@ -1180,7 +1205,7 @@
           } else if ( type !== 'progress' ) {
             callback(arg);
           }
-        });
+        }, options);
       }
     }
 
@@ -1235,7 +1260,6 @@
             file.id = args.id;
           }
         }
-
 
         OSjs.VFS.Modules[dmodule].request('read', [file], function(error, result) {
           API.destroyLoading(lname);

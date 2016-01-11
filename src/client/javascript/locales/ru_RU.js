@@ -1,7 +1,7 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function() {
+  // jscs:disable validateQuoteMarks
   'use strict';
 
   OSjs.Locales = OSjs.Locales || {};
@@ -35,7 +36,7 @@
   OSjs.Locales.ru_RU = {
     'ERR_FILE_OPEN'             : 'Ошибка открытия файла',
     'ERR_WM_NOT_RUNNING'        : 'Менеджер окон не запущен',
-    'ERR_FILE_OPEN_FMT'         : 'Файл \'<span>{0}</span>\' не может быть открыт',
+    'ERR_FILE_OPEN_FMT'         : 'Файл \'**{0}**\' не может быть открыт',
     'ERR_APP_MIME_NOT_FOUND_FMT': 'Неудалось найти Проиложение, способное открыть файл \'{0}\'',
     'ERR_APP_LAUNCH_FAILED'     : 'Ошибка запуска приложения',
     'ERR_APP_LAUNCH_FAILED_FMT' : 'При попытке запуска, произошла следующая ошибка: {0}',
@@ -101,7 +102,7 @@
     'DIALOG_FILE_SAVE'      : 'Сохранить',
     'DIALOG_FILE_OPEN'      : 'Открыть',
     'DIALOG_FILE_MKDIR'     : 'Новая папка',
-    'DIALOG_FILE_MKDIR_MSG' : 'Создать новый каталог в <span>{0}</span>',
+    'DIALOG_FILE_MKDIR_MSG' : 'Создать новый каталог в **{0}**',
     'DIALOG_FILE_OVERWRITE' : 'Вы уверены, что хотите перезаписать файл \'{0}\'?',
     'DIALOG_FILE_MNU_VIEWTYPE' : 'Режим просмотра',
     'DIALOG_FILE_MNU_LISTVIEW' : 'Список',
@@ -115,7 +116,7 @@
     'DIALOG_FILEINFO_TITLE'   : 'Информация о файле',
     'DIALOG_FILEINFO_LOADING' : 'Загрузка информации о файле: {0}',
     'DIALOG_FILEINFO_ERROR'   : 'FileInformationDialog Ошибка',
-    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Ошибка при получения информации о файле <span>{0}</span>',
+    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Ошибка при получения информации о файле **{0}**',
     'DIALOG_FILEINFO_ERROR_LOOKUP_FMT' : 'Ошибка при получения информации о файле: {0}',
 
     'DIALOG_INPUT_TITLE' : 'Диалог ввода',
@@ -124,7 +125,7 @@
     'DIALOG_FILEPROGRESS_LOADING' : 'Загрузка...',
 
     'DIALOG_UPLOAD_TITLE'   : 'Загрузка',
-    'DIALOG_UPLOAD_DESC'    : 'Загрузка файла <span>{0}</span>.<br />Максимальный размер: {1} байт',
+    'DIALOG_UPLOAD_DESC'    : 'Загрузка файла **{0}**.<br />Максимальный размер: {1} байт',
     'DIALOG_UPLOAD_MSG_FMT' : 'Загрузка \'{0}\' ({1} {2}) to {3}',
     'DIALOG_UPLOAD_MSG'     : 'Загрузка файла...',
     'DIALOG_UPLOAD_FAILED'  : 'Загрузка не удалась',
@@ -133,7 +134,6 @@
     'DIALOG_UPLOAD_FAILED_CANCELLED': 'Отменено пользователем...',
 
     'DIALOG_FONT_TITLE' : 'Шрифт',
-
 
     'DIALOG_APPCHOOSER_TITLE' : 'Выберите приложение',
     'DIALOG_APPCHOOSER_MSG'   : 'Выберите приложение для открытия',

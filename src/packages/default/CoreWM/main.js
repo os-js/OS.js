@@ -1,7 +1,7 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -726,14 +726,14 @@
       menu.push({
         title: OSjs.Applications.CoreWM._('Hide Icons'),
         onClick: function(ev) {
-         self.applySettings({enableIconView: false}, false, true);
+          self.applySettings({enableIconView: false}, false, true);
         }
       });
     } else {
       menu.push({
         title: OSjs.Applications.CoreWM._('Show Icons'),
         onClick: function(ev) {
-         self.applySettings({enableIconView: true}, false, true);
+          self.applySettings({enableIconView: true}, false, true);
         }
       });
     }
@@ -799,10 +799,10 @@
     if ( name && type.match(/^image/) ) {
       back = name;
       switch ( type ) {
-        case     'image' :        className = 'normal';   break;
-        case     'image-center':  className = 'center';   break;
-        case     'image-fill' :   className = 'fill';     break;
-        case     'image-strech':  className = 'strech';   break;
+        case 'image' :        className = 'normal';   break;
+        case 'image-center':  className = 'center';   break;
+        case 'image-fill' :   className = 'fill';     break;
+        case 'image-strech':  className = 'strech';   break;
         default:                  className = 'default';  break;
       }
     }

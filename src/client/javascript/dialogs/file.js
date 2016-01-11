@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -125,7 +125,10 @@
     var mlist = this.scheme.find(this, 'ModuleSelect');
 
     function checkEmptyInput() {
-      var disable = !filename.get('value').length;
+      var disable = false;
+      if ( self.args.select !== 'dir' ) {
+        disable = !filename.get('value').length;
+      }
       self.scheme.find(self, 'ButtonOK').set('disabled', disable);
     }
 
@@ -151,7 +154,7 @@
           if ( self.selected.type !== 'dir' ) {
             filename.set('value', self.selected.filename);
           }
-          self.checkSelection(ev);
+          self.checkSelection(ev, true);
         }
       }
     });
@@ -238,7 +241,6 @@
 
     this._toggleLoading(true);
 
-
     view._call('chdir', {
       path: dir || this.path,
       done: function(error) {
@@ -294,12 +296,15 @@
     };
   };
 
-  FileDialog.prototype.checkSelection = function(ev) {
+  FileDialog.prototype.checkSelection = function(ev, wasActivated) {
     var self = this;
 
     if ( this.selected && this.selected.type === 'dir' ) {
-      this.changePath(this.selected.path);
-      return false;
+      if ( wasActivated ) {
+        // this.args.select !== 'dir' &&
+        this.changePath(this.selected.path);
+        return false;
+      }
     }
 
     if ( this.args.type === 'save' ) {
@@ -316,35 +321,50 @@
       VFS.exists(this.selected, function(error, result) {
         self._toggleDisabled(false);
 
-        if ( error ) {
-          API.error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_MISSING_FILENAME'));
+        if ( self._destroyed ) {
           return;
         }
 
-        if ( result ) {
-          self._toggleDisabled(true);
-          API.createDialog('Confirm', {
-            buttons: ['yes', 'no'],
-            message: API._('DIALOG_FILE_OVERWRITE', self.selected.filename)
-          }, function(ev, button) {
-            self._toggleDisabled(false);
-
-            if ( button === 'yes' || button === 'ok' ) {
-              self.closeCallback(ev, 'ok', self.selected);
-            }
-          }, self);
+        if ( error ) {
+          API.error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_MISSING_FILENAME'));
         } else {
-          self.closeCallback(ev, 'ok', self.selected);
+          if ( result ) {
+            self._toggleDisabled(true);
+
+            if ( self.selected ) {
+              API.createDialog('Confirm', {
+                buttons: ['yes', 'no'],
+                message: API._('DIALOG_FILE_OVERWRITE', self.selected.filename)
+              }, function(ev, button) {
+                self._toggleDisabled(false);
+
+                if ( button === 'yes' || button === 'ok' ) {
+                  self.closeCallback(ev, 'ok', self.selected);
+                }
+              }, self);
+            }
+          } else {
+            self.closeCallback(ev, 'ok', self.selected);
+          }
         }
 
       });
     } else {
-      if ( !this.selected ) {
+      if ( !this.selected && this.args.select !== 'dir' ) {
         API.error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_MISSING_SELECTION'));
         return false;
       }
 
-      this.closeCallback(ev, 'ok', this.selected);
+      var res = this.selected;
+      if ( !res && this.args.select === 'dir' ) {
+        res = new VFS.File({
+          filename: Utils.filename(this.path),
+          path: this.path,
+          type: 'dir'
+        });
+      }
+
+      this.closeCallback(ev, 'ok', res);
     }
 
     return true;

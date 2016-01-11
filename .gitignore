@@ -6,16 +6,18 @@ node_modules
 *-tmp.*
 twistd.*
 .vagrant/*
-.nightly
 *.pyc
 
-doc/generated
+.nightly
+.standalone
+.debian
+.nw
+
 vfs/*/*
 
 src/conf/999-*
-src/server/node/node_modules/
+src/conf/900-custom.json
 src/server/settings.json
-
 src/installer/installer.exe
 
 dist/test*

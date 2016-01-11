@@ -1,14 +1,17 @@
 {
-  "className":  "ApplicationFirefoxMarketplace",
-  "name":       "Firefox Marketplace (Experimental)",
-  "description":"Firefox Marketplace",
-  "mime":       null,
-  "icon":       "./icon.png",
-  "preload":    [
-    {"src": "main.js", "type": "javascript"},
-    {"src": "main.css", "type": "stylesheet"}
-  ]
+  "className": "ApplicationFirefoxMarketplace",
+  "name": "Firefox Marketplace (Experimental)",
+  "description": "Firefox Marketplace",
+  "icon": "./icon.png",
+  "preload": [
+    {
+      "src": "main.js",
+      "type": "javascript"
+    },
+    {
+      "src": "main.css",
+      "type": "stylesheet"
+    }
+  ],
+  "enabled": false
 }
-
-
-

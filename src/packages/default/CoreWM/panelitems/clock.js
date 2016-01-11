@@ -1,7 +1,7 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@
       title: 'Clock Settings',
       icon: 'status/appointment-soon.png',
       width: 400,
-      height: 250
+      height: 280
     }, panelItem._settings, scheme, closeCallback]);
   }
 
@@ -50,14 +50,16 @@
     var root = PanelItemDialog.prototype.init.apply(this, arguments);
     this.scheme.find(this, 'InputUseUTC').set('value', this._settings.get('utc'));
     this.scheme.find(this, 'InputInterval').set('value', String(this._settings.get('interval')));
-    this.scheme.find(this, 'InputFormatString').set('value', this._settings.get('format'));
+    this.scheme.find(this, 'InputTimeFormatString').set('value', this._settings.get('format'));
+    this.scheme.find(this, 'InputTooltipFormatString').set('value', this._settings.get('tooltip'));
     return root;
   };
 
   ClockSettingsDialog.prototype.applySettings = function() {
     this._settings.set('utc', this.scheme.find(this, 'InputUseUTC').get('value'));
     this._settings.set('interval', parseInt(this.scheme.find(this, 'InputInterval').get('value'), 10));
-    this._settings.set('format', this.scheme.find(this, 'InputFormatString').get('value'), true);
+    this._settings.set('format', this.scheme.find(this, 'InputTimeFormatString').get('value'), true);
+    this._settings.set('tooltip', this.scheme.find(this, 'InputTooltipFormatString').get('value'), true);
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -71,7 +73,8 @@
     PanelItem.apply(this, ['PanelItemClock PanelItemFill PanelItemRight', 'Clock', settings, {
       utc: false,
       interval: 1000,
-      format: 'H:i:s'
+      format: 'H:i:s',
+      tooltip: 'l, j F Y'
     }]);
     this.clockInterval  = null;
     this.$clock = null;
@@ -86,14 +89,17 @@
   PanelItemClock.prototype.createInterval = function() {
     var self = this;
     var clock = this.$clock;
-    var fmt = this._settings.get('format');
+    var timeFmt = this._settings.get('format');
+    var tooltipFmt = this._settings.get('tooltip');
 
     function update() {
       if ( clock ) {
-        var t = OSjs.Helpers.Date.format(new Date(), fmt);
+        var now = new Date();
+        var t = OSjs.Helpers.Date.format(now, timeFmt);
+        var d = OSjs.Helpers.Date.format(now, tooltipFmt);
         Utils.$empty(clock);
         clock.appendChild(document.createTextNode(t));
-        clock.title = t;
+        clock.title = d;
       }
     }
 

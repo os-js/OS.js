@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="OS.js Logo" src="https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/doc/logo-horizontal.png" />
+  <img alt="OS.js Logo" src="https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/doc/logo/logo-big.png" />
 </p>
 
 [OS.js](http://os.js.org/) is an [open-source](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/LICENSE) desktop implementation for your browser with a fully-fledged window manager, Application APIs, GUI toolkits and filesystem abstraction.
@@ -23,19 +23,17 @@ Please note that it may be unavailable at times and slightly out-of-date.
 
 ## Installation
 
-Just run the automated installer and you will be ready to go:
-
 NIX: `curl -sS http://os.js.org/installer | sh`
 
 Windows: http://os.js.org/installer.exe
 
-Make sure to read the [installation documentation](https://github.com/andersevenrud/OS.js-v2/blob/master/INSTALL.md) before you begin. There you will also find instructions on how to download and install manually.
+Make sure to read the [installation documentation](https://github.com/andersevenrud/OS.js-v2/blob/master/INSTALL.md) for full instructions and how to run OS.js after installation.
 
 ## How to contribute
 
 Read the official [contribution docs](https://github.com/andersevenrud/OS.js-v2/blob/master/CONTRIBUTING.md) for more information.
 
-My contact information is located on my [Github profile](https://github.com/andersevenrud)
+My contact information is located on my [Github profile](https://github.com/andersevenrud).
 
 [Want to join the testing team?](https://github.com/andersevenrud/OS.js-v2/wiki/Join-the-testing-team)
 

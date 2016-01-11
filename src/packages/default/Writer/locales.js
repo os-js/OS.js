@@ -1,7 +1,7 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(Application, Window, GUI, Dialogs, VFS, Utils) {
+  // jscs:disable validateQuoteMarks
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -40,6 +41,9 @@
     },
     pl_PL : {
       'Insert URL' : 'Wpisz URL'
+    },
+    sk_SK : {
+      'Insert URL' : 'Vložiť URL'
     },
     de_DE : {
       'Insert URL' : 'URL einfügen'
@@ -57,6 +61,12 @@
     },
     vi_VN : {
       'Insert URL' : 'Thêm URL'
+    },
+    tr_TR : {
+      'Insert URL' : 'URL ekle'
+    },
+    bg_BG : {
+      'Insert URL' : 'Въведи URL'
     }
   };
 

@@ -1,3 +1,68 @@
+# 2.0.0-alpha71
+
+OS.js exploded on social media and there was a lot of activity. This is just a digest of all the changes.
+
+Thanks to everyone for helping out :-)
+
+* server-php: Now returns ISO8601 dates
+* server-node: VFS::upload() now respects 'overwrite' flag
+* server-node: Separation of all backend logic
+* zip-archiver: Added add() and list() support and other improvements
+* FileManager: Added read-only symbol in list and other improvements
+* ProcessViewer: Fixed column sizes
+* Draw: Bugfixes
+* Calculator: Bugfixes
+* CoreWM: Clock PanelItem now has configurable tooltip
+* Window: Some improvments to async handling
+* Application: _getMainWindow() now returns actual window
+* GUI: ListView improvements
+* GUI: FileView improvements
+* GUI: General improvements
+* GUI: StatusBar improvements
+* GUI: Richtext improvements
+* Dialogs: File dialog improvements
+* VFS: Dropbox now has proper timeout for requests
+* VFS: upload() now has support for custom parameters
+* Utils: Added Utils::$escape()
+* themes: Added material theme
+* locales: Updated en_EN
+* locales: Updated pl_PL
+* locales: Updated vi_VN
+* locales: Updated nl_NL
+* locales: Updated fr_FR
+* locales: Added tr_TR
+* locales: Added bg_BG
+* locales: Added sk_SK
+* misc: Lots of bugfixes
+* misc: All windows should now get focus back after dialog close
+* misc: You can now run server helper scripts from any cwd
+* misc: Renamed example-handler to mysql-handler
+* misc: linting and style updates to entire codebase
+* misc: General async improvements leading to less triggered errors
+* misc: Updated MIME maps
+* misc: A lot of cleanups
+* misc: New logo!
+* build: You can now set config via `grunt config:set`
+* build: You can now get config via `grunt config:get`
+* build: You can now add preloads with `grunt config:preload`
+* build: You can now write generated configs to a specified file
+* build: jscs now part of testing
+* build: Travis CI
+* build: Standalone improvements
+* build: Added NW support
+* build: Updated X11 support
+* build: Added debian package build support
+* build: Removed deprecated Grunt tasks
+* doc: Updated copyright to 2016
+* doc: Ensure consistency in code license headers
+* doc: Updated codebase docs
+* doc: Updated README
+* doc: Updated INSTALL
+* doc: Updated CONTRIBUTING.md
+* doc: Updated doc/NW.md
+* doc: Updated doc/X11.md
+* doc: Updated doc/*-handler.md
+
 # 2.0.0-alpha70
 
 Tons of improvments to build system, bugfixes and general improvements.

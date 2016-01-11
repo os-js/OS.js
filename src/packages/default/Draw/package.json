@@ -2,21 +2,26 @@
   "className":  "ApplicationDraw",
   "name":       "Draw",
   "description":"Simple drawing application",
-  "names":      {
-    "no_NO":      "Tegne",
-    "pl_PL":      "Rysowanie",
-    "de_DE":      "Zeichnen",
-    "ru_RU":      "Графический редактор",
-    "nl_NL":      "Tekenen",
-    "vi_VN":      "Vẽ"
+  "names": {
+    "bg_BG": "Рисуване",
+    "de_DE": "Zeichnen",
+    "nl_NL": "Tekenen",
+    "no_NO": "Tegne",
+    "pl_PL": "Rysowanie",
+    "sk_SK": "Kreslenie",
+    "ru_RU": "Графический редактор",
+    "tr_TR": "Çiz",
+    "vi_VN": "Vẽ"
   },
-  "descriptions":      {
-    "no_NO":      "Simpelt tegne-program",
-    "pl_PL":      "Prosta aplikacja do rysowania",
-    "de_DE":      "Einfaches Zeichen-Programm",
-    "ru_RU":      "Простой графический редактор",
-    "nl_NL":      "Eenvoudig tekenprogramma",
-    "vi_VN":      "Phần mềm vẽ đơn giản"
+  "descriptions": {
+    "bg_BG": "Приложение за рисуване",
+    "de_DE": "Einfaches Zeichen-Programm",
+    "nl_NL": "Eenvoudig tekenprogramma",
+    "no_NO": "Simpelt tegne-program",
+    "pl_PL": "Prosta aplikacja do rysowania",
+    "sk_SK": "Jednoduchá aplikácia na kreslenie",
+    "ru_RU": "Простой графический редактор",
+    "vi_VN": "Phần mềm vẽ đơn giản"
   },
   "mime":       ["^image"],
   "category":   "graphics",

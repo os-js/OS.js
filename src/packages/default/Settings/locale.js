@@ -1,7 +1,7 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(Application, Window, GUI, Dialogs, Utils, API, VFS) {
+  // jscs:disable validateQuoteMarks
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -80,6 +81,29 @@
       'Enable Icon View' : 'Właczony Widok Ikon',
       'Remove shortcut' : 'Usuwanie skrótu',
       'General' : 'Ogólne'
+    },
+    sk_SK : {
+      'Theme' : 'Téma',
+      'Background' : 'Pozadie',
+      'Desktop' : 'Pracovná plocha',
+      'Background Type' : 'Typ pozadia',
+      'Image (Repeat)' : 'Dlaždice',
+      'Image (Centered)' : 'Na stred',
+      'Image (Fill)' : 'Vyplniť',
+      'Image (Streched)' : 'Roztiahnutý',
+      'Desktop Margin ({0}px)' : 'Hranice pracovnej plochy ({0}px)',
+      'Panel' : 'Panel',
+      'Position' : 'Pozícia',
+      'Ontop' : 'Vždy na vrchu',
+      'Items' : 'Položky',
+      'Enable Animations' : 'Povoliť animácie',
+      'Language (requires restart)' : 'Jazyk (vyžaduje reštart)',
+      'Enable Sounds' : 'Povoliť zvuky',
+      'Enable Window Switcher' : 'Povoliť Prepínač Okien',
+      'Enable Hotkeys' : 'Klávesové skratky',
+      'Enable Icon View' : 'Ikony na ploche',
+      'Remove shortcut' : 'Odstrániť skratku',
+      'General' : 'Všeobecné'
     },
     de_DE : {
       'Theme' : 'Thema',
@@ -197,7 +221,61 @@
       'Enable Window Switcher' : 'Bật chuyển đổi cửa sổ',
       'Enable Hotkeys' : 'Bật phím nóng',
       'Enable Icon View' : 'Bật kiểu xem biểu tượng',
-      'General': 'Tổng quát'
+      'Remove shortcut' : 'Xóa lối tắt',
+      'General': 'Tổng quát',
+      'File View': 'Quản lí tệp',
+      'Show Hidden Files': 'Hiện tập tin ẩn',
+      'Show File Extensions': 'Hiện đuôi tập tin',
+      'File View Options': 'Cài đặt quản lí tệp',
+      'Panels' : 'Khung',
+      'Autohide' : 'Tự động ẩn',
+      'Information' : 'Thông tin',
+      'Icon View' : 'Biểu tượng'
+    },
+    tr_TR : {
+      'Theme' : 'Tema',
+      'Background' : 'arkaplan',
+      'Desktop' : 'masaüstü',
+      'Background Type' : 'arkaplan türü',
+      'Image (Repeat)' : 'resim (tekrarla)',
+      'Image (Centered)' : 'resm(ortala)',
+      'Image (Fill)' : 'resm (kapla/doldur)',
+      'Image (Streched)' : 'resm (uzat)',
+      'Desktop Margin ({0}px)' : 'masaüstü kenar ({0}px)',
+      'Panel' : 'Panel',
+      'Position' : 'pozisyon',
+      'Ontop' : 'en üst',
+      'Items' : 'nesneler',
+      'Enable Animations' : 'animasyonlar etkin',
+      'Language (requires restart)' : 'Dil(yeniden başlatma gerektirir)',
+      'Enable Sounds' : 'Müzik etkin',
+      'Enable Window Switcher' : 'Ekran(pencere) değiştirme etkin',
+      'Enable Hotkeys' : 'kısayol tuşları etkin',
+      'Enable Icon View' : 'icon görünümü etkin',
+      'Remove shortcut' : 'kısayolları kaldır',
+      'General' : 'genel'
+    },
+    bg_BG : {
+      'Theme' : 'Тема',
+      'Background' : 'Фон',
+      'Desktop' : 'Работен плот',
+      'Background Type' : 'Тип на фон',
+      'Image (Repeat)' : 'Изображение (повтарящо се)',
+      'Image (Centered)' : 'Изображение (Центрирано)',
+      'Image (Fill)' : 'Изображение (Запълващо)',
+      'Image (Streched)' : 'Изображение (Разтеглено)',
+      'Desktop Margin ({0}px)' : 'Размер на работен плот ({0}px)',
+      'Panel' : 'Панел',
+      'Position' : 'Позиция',
+      'Ontop' : 'Най-отгоре',
+      'Items' : 'Обекти',
+      'Enable Animations' : 'Разреши анимации',
+      'Language (requires restart)' : 'Език (нуждае се от рестарт)',
+      'Enable Sounds' : 'Включи звуци',
+      'Enable Window Switcher' : 'Включи превключване на прозорци',
+      'Enable Hotkeys' : 'Включи горещи клавиши',
+      'Enable Icon View' : 'Включи иконен-изглед',
+      'General': 'Основен'
     }
   };
 

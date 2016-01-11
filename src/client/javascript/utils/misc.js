@@ -1,7 +1,7 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -128,7 +128,7 @@
           } else {
             obj1[p] = obj2[p];
           }
-        } catch(e) {
+        } catch (e) {
           obj1[p] = obj2[p];
         }
       }
@@ -168,7 +168,7 @@
       if ( response.match(/^\{|\[/) ) {
         try {
           response = JSON.parse(response);
-        } catch ( e  ){
+        } catch ( e  ) {
           console.warn('FAILED TO FORCE JSON MIME TYPE', e);
         }
       }

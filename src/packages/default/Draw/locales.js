@@ -1,7 +1,7 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(Application, Window, GUI, Dialogs, Utils, API, VFS) {
+  // jscs:disable validateQuoteMarks
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -43,7 +44,7 @@
       'Flip Horizontally' : 'Flipp Horisontalt',
       'Flip Vertically' : 'Flipp Vertikalt',
       'Foreground' : 'Forgrunn',
-      'Bakgrunn' : 'Bakgrunn',
+      'Background' : 'Bakgrunn',
       'Foreground (Fill) Color' : 'Forgrunn (Fyll) Farge',
       'Background (Stroke) Color' : 'Bakgrunn (Strøk) Farge',
       'Line join' : 'Linje Knytting',
@@ -126,6 +127,51 @@
 
       'Radius' : 'Promień',
       'Iterations' : 'Powtórzenia'
+    },
+    sk_SK : {
+      'Toggle tools toolbar' : 'Zobraz panel nástrojov',
+      'Toggle layers toolbar' : 'Zobraz vrstvy',
+      'Layer' : 'Vrstvy',
+      'Effect' : 'Efekty',
+      'Flip Horizontally' : 'Transformuj horizontálne',
+      'Flip Vertically' : 'Transformuj vertikálne',
+      'Foreground' : 'Popredie',
+      'Bakgrunn' : 'Pozadie',
+      'Line join' : 'Typ čiary',
+      'Line width' : 'Šírka čiary',
+      'Toggle Stroke' : 'Zapnúť orámovanie',
+      'Enable stroke' : 'Orámovanie',
+      'Round' : 'Okrúhly',
+      'Miter' : 'Naklonený',
+      'Bevel' : 'Šikmý',
+      'Stroked' : 'Orámovaný',
+      'No stroke' : 'Bez orámovania',
+
+      'Pointer' : 'Ukazovateľ',
+      'Move active layer' : 'Presuň aktívnu vrstvu',
+
+      'Picker' : 'Kurzor',
+      'LMB: set fg color, RMB: set gb color' : 'LMB: nastav farbu pozadia, RMB: nastav farbu popredia',
+
+      'Pencil' : 'Ceruzka',
+      'LMB/RMB: Draw with fg/bg color' : 'Maľuj farbou fg/bg',
+      'Path' : 'Cesta',
+
+      'Square/Rectangle' : 'Štvorec / Obdĺžnik',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Maľuj farbou fb/bg, SHIFT: Obdĺžnik',
+
+      'Circle/Ellipse' : 'Kruh / Elipsa',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Maľuj farbou fb/bg, SHIFT: Elipsa',
+
+      'Blur' : 'Rozmazať',
+      'Noise' : 'Šum',
+      'Invert colors' : 'Invertovať farby',
+      'Grayscale' : 'Odtiene šedej',
+      'Sharpen' : 'Zostriť',
+      'Simple Blur' : 'Jednoduchý Blur',
+
+      'Radius' : 'Rádius',
+      'Iterations' : 'Iterácie'
     },
     de_DE : {
       'Toggle tools toolbar' : 'Tools Toolbar',
@@ -363,6 +409,101 @@
 
       'Radius' : 'Bán kính',
       'Iterations' : 'Lặp đi lặp lại'
+    },
+    tr_TR : {
+      'Toggle tools toolbar' : 'araç çubugu değiştirme araçları',  //yanlış olabilir
+      'Toggle layers toolbar' : 'Araç çubugu katmanı değiştirme',
+      'Layer' : 'Katman',
+      'Effect' : 'efekt',
+      'Flip Horizontally' : 'Yatay çevir',
+      'Flip Vertically' : 'Dikey çevir',
+      'Foreground' : 'Önplana al',
+      'Background' : 'Arkaplana al',
+      'Foreground (Fill) Color' : 'Önplan rengi',
+      'Background (Stroke) Color' : 'Arkaplan rengi',
+      'Line join' : 'Çizgi bitişimi',
+      'Line width' : 'Çizgi genişliği',
+      'Toggle Stroke' : 'vuruşu değiştir',  //eklenecek
+      'Enable stroke' : 'vuruş aktif',  //eklenecek
+      'Round' : 'yuvarlamak',
+      'Miter' : 'gönye',
+      'Bevel' : 'eğmek',
+      'Stroked' : 'Stroked',
+      'No stroke' : 'No stroke',
+
+      'Pointer' : 'işaretçi',
+      'Move active layer' : 'hareket eden katman',
+
+      'Picker' : 'toplayıcı',
+      'LMB: set fg color, RMB: set gb color' : 'LMB: fg rengi ayarla, RMB: gb rengi ayarla',
+
+      'Pencil' : 'kalem',
+      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB:fg/bg rengi ile çiz',
+      'Path' : 'yol',
+
+      'Square/Rectangle' : 'kare/üçgen',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: fg/bg renkleri ile çiz , SHIFT: üçgen çiz',
+
+      'Circle/Ellipse' : 'dair/elips',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: fb/bg ile çiz , SHIFT: elips çiz',
+
+      'Blur' : 'Bulanık',
+      'Noise' : 'gürültü',
+      'Invert colors' : 'renkleri tersine çevir',
+      'Grayscale' : 'gri ton',
+      'Sharpen' : 'keskinleştirmek',
+      'Simple Blur' : 'sade Bulanık',
+
+      'Radius' : 'yarıçap',
+      'Iterations' : 'yineleme'
+    },
+
+    bg_BG : {
+      'Toggle tools toolbar' : 'Бар с инструменти',
+      'Toggle layers toolbar' : 'Бар с слоеве',
+      'Layer' : 'Слой',
+      'Effect' : 'Ефект',
+      'Flip Horizontally' : 'Обърни хоризонтално',
+      'Flip Vertically' : 'Обърни вертикално',
+      'Foreground' : 'Преден фон',
+      'Bakgrunn' : 'Заден фон',
+      'Foreground (Fill) Color' : 'Преден фон (Запълни) цвят',
+      'Background (Stroke) Color' : 'Заден фон цвят',
+      'Line join' : 'Съединяване на линии',
+      'Line width' : 'Широчина на линия',
+      'Toggle Stroke' : 'Превключване на удър',
+      'Enable stroke' : 'Включи удър',
+      'Round' : 'Кръгъл',
+      'Miter' : 'Митра',
+      'Bevel' : 'Откос',
+      'Stroked' : 'Ударен',
+      'No stroke' : 'Без удър',
+
+      'Pointer' : 'Стрелка',
+      'Move active layer' : 'Премести активен слой',
+
+      'Picker' : 'берач',
+      'LMB: set fg color, RMB: set gb color' : 'LMB: изберете цвят за преден план, RMB: изберете цвят за фон',
+
+      'Pencil' : 'Молив',
+      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: рисувай с fg/bg цвят',
+      'Path' : 'Път',
+
+      'Square/Rectangle' : 'Квадрат/Правоъгъкник',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: рисувай с fb/bg цвят, SHIFT: нарисувай правоъгълник',
+
+      'Circle/Ellipse' : 'Кръг/Елипса',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: рисувай с fb/bg цвят, SHIFT: нарисувай елипса',
+
+      'Blur' : 'Замъгли',
+      'Noise' : 'Шум',
+      'Invert colors' : 'Инвертирай цветове',
+      'Grayscale' : 'Черно-бяло',
+      'Sharpen' : 'Острота',
+      'Simple Blur' : 'Опростено замъгляване',
+
+      'Radius' : 'Радиус',
+      'Iterations' : 'Повторения'
     }
 
   };

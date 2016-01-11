@@ -1,7 +1,7 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(WindowManager, GUI, Utils, API, VFS) {
+  // jscs:disable validateQuoteMarks
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -59,19 +60,36 @@
     pl_PL : {
       'Open settings' : 'Otwórz ustawienia',
       'Create shortcut' : 'Utwórz skrót',
-      'Set as wallpaper' : 'Ustaw jako tapete',
+      'Set as wallpaper' : 'Ustaw jako tapetę',
       'An error occured while creating PanelItem: {0}' : 'Błąd podczas tworzenia panelu: {0}',
 
       'Development' : 'Development',
       'Education' : 'Edukacja',
       'Games' : 'Gry',
       'Graphics' : 'Grafika',
-      'Network' : 'Internet',
+      'Network' : 'Sieć',
       'Multimedia' : 'Multimedia',
-      'Office' : 'Office',
+      'Office' : 'Biuro',
       'System' : 'System',
       'Utilities' : 'Dodatki',
       'Other' : 'Inne'
+    },
+    sk_SK : {
+      'Open settings' : 'Otvor nastavenia',
+      'Create shortcut' : 'Vytvor linku',
+      'Set as wallpaper' : 'Nastav ako tapetu',
+      'An error occured while creating PanelItem: {0}' : 'Chyba pri vytváraní položky: {0}',
+
+      'Development' : 'Vývoj',
+      'Education' : 'Vzdelávanie',
+      'Games' : 'Hry',
+      'Graphics' : 'Grafika',
+      'Network' : 'Sieť',
+      'Multimedia' : 'Multimédiá',
+      'Office' : 'Kancelária',
+      'System' : 'Systém',
+      'Utilities' : 'Pomôcky',
+      'Other' : 'Ostatné'
     },
     de_DE : {
       'Killing this process will stop things from working!' : 'Das Beenden dieses Prozesses wird Konsequenzen haben!',
@@ -136,29 +154,29 @@
     nl_NL : {
       'Killing this process will stop things from working!' : 'Het stoppen van dit proces zal er voor zorgen dat dingen niet meer werken!',
       'Open settings' : 'Instellingen openen',
-      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Het paneel bevat geen items. Ga naar instellingen om te hertsellen naar de standaard of om handmatig te wijzigen (Deze fout kan het gevolg zijn van een update)',
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Het paneel bevat geen items. Ga naar instellingen om te herstellen naar de standaard of om handmatig te wijzigen\n(Deze fout kan het gevolg zijn van een update)',
       'Create shortcut' : 'Maak een link',
-      'Set as wallpaper' : 'Als achtegrond gebruiken',
+      'Set as wallpaper' : 'Als achtergrond gebruiken',
       'An error occured while creating PanelItem: {0}' : 'Er is een fout opgetreden tijdens het maken van een paneel item: {0}',
 
       'Development' : 'Ontwikkeling',
       'Education' : 'Educatie',
-      'Games' : 'Spellem',
+      'Games' : 'Spellen',
       'Graphics' : 'Grafisch',
       'Network' : 'Netwerk',
       'Multimedia' : 'Multimedia',
       'Office' : 'Kantoor',
       'System' : 'Systeem',
-      'Utilities' : 'Toebehoor',
+      'Utilities' : 'Toebehoren',
       'Other' : 'Overig'
     },
     vi_VN : {
-      'Killing this process will stop things from working!' : 'Đóng quá trình này sẽ làm mọi thứ dừng làm việc!',
+      'Killing this process will stop things from working!' : 'Đóng quá trình này sẽ làm mọi thứ bị tắt!',
       'Open settings' : 'Mở cài đặt',
       'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Bảng điều khiển của bạn không có mục nào. Vào cài đặt để thiết lập lại mặc định hoặc sửa đổi bằng tay\n(Lỗi này có thể xảy ra sau khi nâng cấp OS.js)',
       'Create shortcut' : 'Tạo lối tắt',
       'Set as wallpaper' : 'Đặt làm hình nền',
-      'An error occured while creating PanelItem: {0}' : 'Có lỗi xảy ra trong khi tạo ra PanelItem: {0}',
+      'An error occured while creating PanelItem: {0}' : 'Có lỗi xảy ra trong khi tạo PanelItem: {0}',
       'Show Icons' : 'Hiện các biểu tượng',
       'Hide Icons' : 'Ẩn các biểu tượng',
 
@@ -172,6 +190,44 @@
       'System' : 'Hệ thống',
       'Utilities' : 'Tiện ích',
       'Other' : 'Khác'
+    },
+
+    tr_TR : {
+      'Open settings' : 'Ayarları Aç',
+      'Create shortcut' : 'Kısayol Oluştur',
+      'Set as wallpaper' : 'Arkaplan olarak ayarla',
+      'An error occured while creating PanelItem: {0}' : '{0} oluşturulurken bir hata meydana geldi',
+
+      'Development' : 'Geliştirici',
+      'Education' : 'Eğitim',
+      'Games' : 'Oyunlar',
+      'Graphics' : 'Grafikler',
+      'Network' : 'Ağ',
+      'Multimedia' : 'Multimedia',
+      'Office' : 'Ofis',
+      'System' : 'Sistem',
+      'Utilities' : 'Yan Gereksinimler',
+      'Other' : 'Diğer'
+    },
+
+    bg_BG : {
+      'Killing this process will stop things from working!' : 'Прекратяването на този процес ще спре някой приложения!',
+      'Open settings' : 'Отвори настойки',
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Вашият панел няма обекти. Отидете в настойки за да върнете по подразбиране или да модифицирате ръчно\n(Тази грешка може да се появи след актуализация на OS.js)',
+      'Create shortcut' : 'Създай пряк път',
+      'Set as wallpaper' : 'Направи изображение за фон',
+      'An error occured while creating PanelItem: {0}' : 'Появи се грешка докато се създаваше панелен обект: {0}',
+
+      'Development' : 'Разработка',
+      'Education' : 'Образование',
+      'Games' : 'Игри',
+      'Graphics' : 'Графика',
+      'Network' : 'Мрежа',
+      'Multimedia' : 'Мултимедия',
+      'Office' : 'Офис',
+      'System' : 'Система',
+      'Utilities' : 'Инструменти',
+      'Other' : 'Други'
     }
 
   };

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 19.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 1405 801" style="enable-background:new 0 0 1405 801;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#FFF;}
+	.st1{fill:#EEE;}
+	.st2{fill:#DDD;}
+	.st3{fill:none;stroke:#FFF;stroke-miterlimit:10;}
+</style>
+<g id="XMLID_1_">
+	<g>
+		<polygon class="st0" points="522,540 522,612 360,531 360,459"/>
+		<polygon class="st0" points="1242,540 1242,612 1080,531 1080,459"/>
+		<polygon class="st1" points="522,612 522,540 612,495 612,423 684,387 684,531"/>
+		<polygon class="st1" points="1242,540 1332,495 1332,423 1404,387 1404,531 1242,612"/>
+		<polygon class="st0" points="882,729 882,801 720,720 720,648"/>
+		<polygon class="st1" points="882,801 882,729 972,684 972,216 1044,180 1044,720"/>
+		<polygon class="st2" points="882,729 720,648 792,612 882,657 900,648 972,684"/>
+		<polygon class="st2" points="522,540 360,459 432,423 522,468 540,459 612,495"/>
+		<polygon class="st2" points="1242,540 1080,459 1152,423 1242,468 1260,459 1332,495"/>
+		<polygon class="st0" points="972,684 900,648 900,180 972,216"/>
+		<polygon class="st0" points="612,495 540,459 360,369 360,225 432,261 432,333 612,423"/>
+		<polygon class="st0" points="1332,495 1260,459 1080,369 1080,225 1152,261 1152,333 1332,423"/>
+		<polygon class="st0" points="792,495 792,567 720,531 720,459"/>
+		<polygon class="st2" points="720,459 792,423 864,459 792,495"/>
+		<polygon class="st1" points="1404,225 1404,297 1332,333 1332,261"/>
+		<polygon class="st2" points="1404,225 1332,261 1242,216 1152,261 1080,225 1242,144"/>
+		<polygon class="st2" points="1404,387 1332,423 1152,333 1224,297"/>
+		<polygon class="st0" points="1332,261 1332,333 1242,288 1242,216"/>
+		<polygon class="st1" points="1242,216 1242,288 1224,297 1152,333 1152,261"/>
+		<polygon class="st1" points="1044,36 1044,108 972,144 972,72"/>
+		<polygon class="st2" points="1044,36 972,72 900,36 972,0"/>
+		<polygon class="st2" points="1044,180 972,216 900,180 972,144"/>
+		<polygon class="st0" points="972,72 972,144 900,108 900,36"/>
+		<polygon class="st1" points="864,459 864,531 792,567 792,495"/>
+		<polygon class="st1" points="684,225 684,297 612,333 612,261"/>
+		<polygon class="st2" points="684,225 612,261 522,216 432,261 360,225 522,144"/>
+		<polygon class="st2" points="684,387 612,423 432,333 504,297"/>
+		<polygon class="st0" points="612,261 612,333 522,288 522,216"/>
+		<polygon class="st1" points="522,216 522,288 504,297 432,333 432,261"/>
+		<polygon class="st1" points="324,225 324,531 162,612 162,540 252,495 252,261"/>
+		<polygon class="st2" points="324,225 252,261 162,216 72,261 0,225 162,144"/>
+		<polygon class="st0" points="252,261 252,495 180,459 180,297 162,288 162,216"/>
+		<polygon class="st2" points="252,495 162,540 72,495 144,459 162,468 180,459"/>
+		<polygon class="st0" points="162,540 162,612 0,531 0,225 72,261 72,495"/>
+		<polygon class="st1" points="162,216 162,288 144,297 144,459 72,495 72,261"/>
+	</g>
+	<g>
+		<line class="st3" x1="1242" y1="144" x2="1080" y2="225"/>
+		<line class="st3" x1="1242" y1="144" x2="1404" y2="225"/>
+		<line class="st3" x1="1242" y1="216" x2="1242" y2="288"/>
+		<line class="st3" x1="1242" y1="216" x2="1152" y2="261"/>
+		<line class="st3" x1="1080" y1="225" x2="1152" y2="261"/>
+		<line class="st3" x1="1404" y1="225" x2="1332" y2="261"/>
+		<line class="st3" x1="1242" y1="216" x2="1332" y2="261"/>
+		<polyline class="st3" points="1242,288 1224,297 1152,333"/>
+		<line class="st3" x1="1152" y1="261" x2="1152" y2="333"/>
+		<line class="st3" x1="1404" y1="225" x2="1404" y2="297"/>
+		<line class="st3" x1="1332" y1="261" x2="1332" y2="333"/>
+		<line class="st3" x1="1404" y1="297" x2="1332" y2="333"/>
+		<line class="st3" x1="1242" y1="288" x2="1332" y2="333"/>
+		<line class="st3" x1="1080" y1="225" x2="1080" y2="369"/>
+		<polyline class="st3" points="1080,369 1260,459 1332,495"/>
+		<line class="st3" x1="1152" y1="333" x2="1332" y2="423"/>
+		<line class="st3" x1="1332" y1="423" x2="1332" y2="495"/>
+		<line class="st3" x1="1332" y1="423" x2="1404" y2="387"/>
+		<line class="st3" x1="1404" y1="387" x2="1224" y2="297"/>
+		<line class="st3" x1="1152" y1="423" x2="1080" y2="459"/>
+		<line class="st3" x1="1404" y1="387" x2="1404" y2="531"/>
+		<line class="st3" x1="1080" y1="459" x2="1080" y2="531"/>
+		<line class="st3" x1="1152" y1="423" x2="1242" y2="468"/>
+		<line class="st3" x1="1260" y1="459" x2="1242" y2="468"/>
+		<line class="st3" x1="1242" y1="540" x2="1332" y2="495"/>
+		<line class="st3" x1="1080" y1="459" x2="1242" y2="540"/>
+		<line class="st3" x1="1404" y1="531" x2="1242" y2="612"/>
+		<line class="st3" x1="1080" y1="531" x2="1242" y2="612"/>
+		<line class="st3" x1="1044" y1="36" x2="972" y2="72"/>
+		<line class="st3" x1="1044" y1="36" x2="1044" y2="108"/>
+		<line class="st3" x1="972" y1="72" x2="972" y2="144"/>
+		<line class="st3" x1="1044" y1="108" x2="972" y2="144"/>
+		<line class="st3" x1="792" y1="612" x2="720" y2="648"/>
+		<line class="st3" x1="720" y1="648" x2="720" y2="720"/>
+		<line class="st3" x1="792" y1="612" x2="882" y2="657"/>
+		<line class="st3" x1="900" y1="648" x2="882" y2="657"/>
+		<line class="st3" x1="882" y1="729" x2="972" y2="684"/>
+		<line class="st3" x1="720" y1="648" x2="882" y2="729"/>
+		<line class="st3" x1="1044" y1="720" x2="882" y2="801"/>
+		<line class="st3" x1="720" y1="720" x2="882" y2="801"/>
+		<line class="st3" x1="1044" y1="36" x2="972" y2="0"/>
+		<line class="st3" x1="972" y1="0" x2="900" y2="36"/>
+		<line class="st3" x1="972" y1="72" x2="900" y2="36"/>
+		<line class="st3" x1="900" y1="108" x2="972" y2="144"/>
+		<line class="st3" x1="900" y1="36" x2="900" y2="108"/>
+		<line class="st3" x1="1044" y1="180" x2="972" y2="216"/>
+		<line class="st3" x1="1044" y1="180" x2="972" y2="144"/>
+		<line class="st3" x1="972" y1="144" x2="900" y2="180"/>
+		<line class="st3" x1="972" y1="216" x2="900" y2="180"/>
+		<line class="st3" x1="900" y1="180" x2="900" y2="648"/>
+		<line class="st3" x1="1044" y1="180" x2="1044" y2="720"/>
+		<line class="st3" x1="972" y1="684" x2="972" y2="216"/>
+		<line class="st3" x1="900" y1="648" x2="972" y2="684"/>
+		<line class="st3" x1="864" y1="459" x2="792" y2="495"/>
+		<line class="st3" x1="864" y1="459" x2="864" y2="531"/>
+		<line class="st3" x1="792" y1="495" x2="792" y2="567"/>
+		<line class="st3" x1="864" y1="531" x2="792" y2="567"/>
+		<line class="st3" x1="864" y1="459" x2="792" y2="423"/>
+		<line class="st3" x1="792" y1="423" x2="720" y2="459"/>
+		<line class="st3" x1="792" y1="495" x2="720" y2="459"/>
+		<line class="st3" x1="720" y1="531" x2="792" y2="567"/>
+		<line class="st3" x1="720" y1="459" x2="720" y2="531"/>
+		<line class="st3" x1="522" y1="144" x2="360" y2="225"/>
+		<line class="st3" x1="522" y1="144" x2="684" y2="225"/>
+		<line class="st3" x1="522" y1="216" x2="522" y2="288"/>
+		<line class="st3" x1="522" y1="216" x2="432" y2="261"/>
+		<line class="st3" x1="360" y1="225" x2="432" y2="261"/>
+		<line class="st3" x1="684" y1="225" x2="612" y2="261"/>
+		<line class="st3" x1="522" y1="216" x2="612" y2="261"/>
+		<polyline class="st3" points="522,288 504,297 432,333"/>
+		<line class="st3" x1="432" y1="261" x2="432" y2="333"/>
+		<line class="st3" x1="684" y1="225" x2="684" y2="297"/>
+		<line class="st3" x1="612" y1="261" x2="612" y2="333"/>
+		<line class="st3" x1="684" y1="297" x2="612" y2="333"/>
+		<line class="st3" x1="522" y1="288" x2="612" y2="333"/>
+		<line class="st3" x1="360" y1="225" x2="360" y2="369"/>
+		<polyline class="st3" points="360,369 540,459 612,495"/>
+		<line class="st3" x1="432" y1="333" x2="612" y2="423"/>
+		<line class="st3" x1="612" y1="423" x2="612" y2="495"/>
+		<line class="st3" x1="612" y1="423" x2="684" y2="387"/>
+		<line class="st3" x1="684" y1="387" x2="504" y2="297"/>
+		<line class="st3" x1="432" y1="423" x2="360" y2="459"/>
+		<line class="st3" x1="684" y1="387" x2="684" y2="531"/>
+		<line class="st3" x1="360" y1="459" x2="360" y2="531"/>
+		<line class="st3" x1="432" y1="423" x2="522" y2="468"/>
+		<line class="st3" x1="540" y1="459" x2="522" y2="468"/>
+		<line class="st3" x1="522" y1="540" x2="612" y2="495"/>
+		<line class="st3" x1="360" y1="459" x2="522" y2="540"/>
+		<line class="st3" x1="684" y1="531" x2="522" y2="612"/>
+		<line class="st3" x1="360" y1="531" x2="522" y2="612"/>
+		<line class="st3" x1="162" y1="144" x2="0" y2="225"/>
+		<line class="st3" x1="162" y1="144" x2="324" y2="225"/>
+		<line class="st3" x1="162" y1="216" x2="162" y2="288"/>
+		<line class="st3" x1="162" y1="216" x2="72" y2="261"/>
+		<line class="st3" x1="0" y1="225" x2="72" y2="261"/>
+		<line class="st3" x1="324" y1="225" x2="252" y2="261"/>
+		<line class="st3" x1="162" y1="216" x2="252" y2="261"/>
+		<line class="st3" x1="162" y1="288" x2="180" y2="297"/>
+		<line class="st3" x1="180" y1="459" x2="252" y2="495"/>
+		<line class="st3" x1="252" y1="261" x2="252" y2="495"/>
+		<line class="st3" x1="324" y1="225" x2="324" y2="531"/>
+		<line class="st3" x1="180" y1="459" x2="162" y2="468"/>
+		<line class="st3" x1="162" y1="540" x2="252" y2="495"/>
+		<line class="st3" x1="324" y1="531" x2="162" y2="612"/>
+		<line class="st3" x1="0" y1="531" x2="162" y2="612"/>
+		<line class="st3" x1="180" y1="459" x2="180" y2="297"/>
+		<line class="st3" x1="144" y1="297" x2="162" y2="288"/>
+		<line class="st3" x1="144" y1="297" x2="144" y2="459"/>
+		<line class="st3" x1="144" y1="459" x2="162" y2="468"/>
+		<line class="st3" x1="144" y1="459" x2="72" y2="495"/>
+		<line class="st3" x1="72" y1="495" x2="162" y2="540"/>
+		<line class="st3" x1="162" y1="540" x2="162" y2="612"/>
+		<line class="st3" x1="72" y1="495" x2="72" y2="261"/>
+		<line class="st3" x1="0" y1="531" x2="0" y2="225"/>
+		<line class="st3" x1="522" y1="540" x2="522" y2="612"/>
+		<line class="st3" x1="882" y1="729" x2="882" y2="801"/>
+		<line class="st3" x1="1242" y1="540" x2="1242" y2="612"/>
+	</g>
+</g>
+</svg>

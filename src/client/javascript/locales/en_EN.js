@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function() {
+  // jscs:disable validateQuoteMarks
   'use strict';
 
   OSjs.Locales = OSjs.Locales || {};
@@ -39,7 +40,7 @@
 
     'ERR_FILE_OPEN'             : 'Error opening file',
     'ERR_WM_NOT_RUNNING'        : 'Window manager is not running',
-    'ERR_FILE_OPEN_FMT'         : 'The file \'<span>{0}</span>\' could not be opened',
+    'ERR_FILE_OPEN_FMT'         : 'The file \'**{0}**\' could not be opened',
     'ERR_APP_MIME_NOT_FOUND_FMT': 'Could not find any Applications with support for \'{0}\' files',
     'ERR_APP_LAUNCH_FAILED'     : 'Failed to launch Application',
     'ERR_APP_LAUNCH_FAILED_FMT' : 'An error occured while trying to launch: {0}',
@@ -123,7 +124,7 @@
     'DIALOG_FILE_SAVE'      : 'Save',
     'DIALOG_FILE_OPEN'      : 'Open',
     'DIALOG_FILE_MKDIR'     : 'New Folder',
-    'DIALOG_FILE_MKDIR_MSG' : 'Create a new directory in <span>{0}</span>',
+    'DIALOG_FILE_MKDIR_MSG' : 'Create a new directory in **{0}**',
     'DIALOG_FILE_OVERWRITE' : 'Are you sure you want to overwrite the file \'{0}\'?',
     'DIALOG_FILE_MNU_VIEWTYPE' : 'View type',
     'DIALOG_FILE_MNU_LISTVIEW' : 'List View',
@@ -137,7 +138,7 @@
     'DIALOG_FILEINFO_TITLE'   : 'File Information',
     'DIALOG_FILEINFO_LOADING' : 'Loading file information for: {0}',
     'DIALOG_FILEINFO_ERROR'   : 'FileInformationDialog Error',
-    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Failed to get file information for <span>{0}</span>',
+    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Failed to get file information for **{0}**',
     'DIALOG_FILEINFO_ERROR_LOOKUP_FMT' : 'Failed to get file information for: {0}',
 
     'DIALOG_INPUT_TITLE' : 'Input Dialog',
@@ -146,7 +147,7 @@
     'DIALOG_FILEPROGRESS_LOADING' : 'Loading...',
 
     'DIALOG_UPLOAD_TITLE'   : 'Upload Dialog',
-    'DIALOG_UPLOAD_DESC'    : 'Upload file to <span>{0}</span>.<br />Maximum size: {1} bytes',
+    'DIALOG_UPLOAD_DESC'    : 'Upload file to **{0}**.<br />Maximum size: {1} bytes',
     'DIALOG_UPLOAD_MSG_FMT' : 'Uploading \'{0}\' ({1} {2}) to {3}',
     'DIALOG_UPLOAD_MSG'     : 'Uploading file...',
     'DIALOG_UPLOAD_FAILED'  : 'Upload failed',
@@ -251,7 +252,7 @@
     // PackageManager
     //
 
-    'ERR_PACKAGE_EXISTS': 'Package installation directroy already exists. Cannot continue!',
+    'ERR_PACKAGE_EXISTS': 'Package installation directory already exists. Cannot continue!',
 
     //
     // DefaultApplication

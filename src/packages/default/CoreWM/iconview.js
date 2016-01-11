@@ -1,7 +1,7 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -99,7 +99,6 @@
 
     cel.add(defaults);
 
-
     var icons = wm.getSetting('desktopIcons') || [];
     icons.forEach(function(icon) {
       self.addShortcut(icon, wm);
@@ -156,8 +155,9 @@
     }
 
     var wm = OSjs.Core.getWindowManager();
-    wm.setSetting('desktopIcons', icons);
-    wm.saveSettings();
+    wm.applySettings({
+      desktopIcons: icons
+    }, false, true);
   };
 
   DesktopIconView.prototype.addShortcut = function(data, wm, save) {

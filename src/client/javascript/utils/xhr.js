@@ -1,7 +1,7 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -83,7 +83,7 @@
       if ( args.json && ctype.match(/^application\/json/) ) {
         try {
           response = JSON.parse(response);
-        } catch(ex) {
+        } catch (ex) {
           console.warn('Utils::ajax()', 'handleResponse()', ex);
         }
       }
@@ -183,7 +183,7 @@
       request.send(args.body);
     }
 
-    if ( window.location.href.match(/^file\:\/\//) ) {
+    if ( (OSjs.API.getConfig('Connection.Type') === 'standalone') ) {
       args.onerror('You are currently running locally and cannot perform this operation!');
       return;
     }
@@ -246,7 +246,6 @@
       opts.interval = opts.interval || 50;
       opts.maxTries = opts.maxTries || 10;
 
-
       function _finished(result) {
         _LOADED[src] = result;
         console.info('Stylesheet', src, result);
@@ -279,7 +278,7 @@
       }, opts.interval);
     }
 
-     function createScript(src, callback) {
+    function createScript(src, callback) {
       var _finished = function(result) {
         _LOADED[src] = result;
         console.info('JavaScript', src, result);

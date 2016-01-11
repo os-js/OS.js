@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -47,9 +47,9 @@
 
     return function(ontop) {
       if ( typeof ontop !== 'undefined' && ontop === true ) {
-        return (_ltzindex+=2);
+        return (_ltzindex += 2);
       }
-      return (_lzindex+=2);
+      return (_lzindex += 2);
     };
   })();
 
@@ -90,10 +90,21 @@
     return 301;
   }
 
+  function waitForAnimation(cb) {
+    var wm = OSjs.Core.getWindowManager();
+    var anim = wm ? wm.getSetting('animations') : false;
+    if ( anim ) {
+      setTimeout(function() {
+        cb();
+      }, getAnimDuration());
+    } else {
+      cb();
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // WINDOW
   /////////////////////////////////////////////////////////////////////////////
-
 
   /**
    * Window Class
@@ -469,7 +480,6 @@
       self._maximize();
     });
 
-
     // Append stuff
     var classNames = ['Window'];
     classNames.push(Utils.$safeName(this._name));
@@ -591,7 +601,10 @@
   Window.prototype.destroy = function() {
     var self = this;
 
-    if ( this._destroyed ) { return false; }
+    if ( this._destroyed ) {
+      return false;
+    }
+
     this._destroyed = true;
 
     var wm = OSjs.Core.getWindowManager();
@@ -675,7 +688,6 @@
   //
   // GUI And Event Hooks
   //
-
 
   /**
    * Adds a hook (internal events)
@@ -863,7 +875,9 @@
    */
   Window.prototype._close = function() {
     console.debug('OSjs::Core::Window::_close()');
-    if ( this._disabled ) { return false; }
+    if ( this._disabled || this._destroyed ) {
+      return false;
+    }
 
     this._blur();
     this.destroy();
@@ -880,36 +894,30 @@
    */
   Window.prototype._minimize = function() {
     var self = this;
-    console.debug(this._name, '>' , 'OSjs::Core::Window::_minimize()');
-    if ( !this._properties.allow_minimize ) { return false; }
-    //if ( this._disabled ) return false;
+    if ( !this._properties.allow_minimize || this._destroyed  ) {
+      return false;
+    }
+
     if ( this._state.minimized ) {
       this._restore(false, true);
       return true;
     }
+
+    console.debug(this._name, '>', 'OSjs::Core::Window::_minimize()');
 
     this._blur();
 
     this._state.minimized = true;
     this._$element.setAttribute('data-minimized', 'true');
 
-    function _hideDOM() {
+    waitForAnimation(function() {
       self._$element.style.display = 'none';
-    }
-
-    var wm = OSjs.Core.getWindowManager();
-    var anim = wm ? wm.getSetting('animations') : false;
-    if ( anim ) {
-      setTimeout(function() {
-        _hideDOM();
-      }, getAnimDuration());
-    } else {
-      _hideDOM();
-    }
+      self._fireHook('minimize');
+    });
 
     this._onChange('minimize');
-    this._fireHook('minimize');
 
+    var wm = OSjs.Core.getWindowManager();
     var win = wm ? wm.getCurrentWindow() : null;
     if ( win && win._wid === this._wid ) {
       wm.setCurrentWindow(null);
@@ -926,14 +934,19 @@
    * @method    Window::_maximize()
    */
   Window.prototype._maximize = function() {
-    console.debug(this._name, '>' , 'OSjs::Core::Window::_maximize()');
-    if ( !this._properties.allow_maximize ) { return false; }
-    if ( !this._$element ) { return false; }
-    //if ( this._disabled ) return false;
+    var self = this;
+
+    if ( !this._properties.allow_maximize || this._destroyed || !this._$element  ) {
+      return false;
+    }
+
     if ( this._state.maximized ) {
       this._restore(true, false);
       return true;
     }
+
+    console.debug(this._name, '>', 'OSjs::Core::Window::_maximize()');
+
     this._lastPosition    = {x: this._position.x,  y: this._position.y};
     this._lastDimension   = {w: this._dimension.w, h: this._dimension.h};
     this._state.maximized = true;
@@ -952,19 +965,13 @@
     this._position.x  = s.left;
     this._position.y  = s.top;
 
-    this._onChange('maximize');
     this._focus();
 
-    var wm = OSjs.Core.getWindowManager();
-    var anim = wm ? wm.getSetting('animations') : false;
-    if ( anim ) {
-      var self = this;
-      setTimeout(function() {
-        self._fireHook('maximize');
-      }, getAnimDuration());
-    } else {
-      this._fireHook('maximize');
-    }
+    waitForAnimation(function() {
+      self._fireHook('maximize');
+    });
+
+    this._onChange('maximize');
 
     return true;
   };
@@ -980,41 +987,44 @@
    * @method    Window::_restore()
    */
   Window.prototype._restore = function(max, min) {
-    if ( !this._$element ) { return; }
+    var self = this;
 
-    console.debug(this._name, '>' , 'OSjs::Core::Window::_restore()');
-    //if ( this._disabled ) return ;
+    if ( !this._$element || this._destroyed  ) {
+      return;
+    }
+
+    function restoreMaximized() {
+      if ( max && self._state.maximized ) {
+        self._move(self._lastPosition.x, self._lastPosition.y);
+        self._resize(self._lastDimension.w, self._lastDimension.h);
+        self._state.maximized = false;
+        self._$element.setAttribute('data-maximized', 'false');
+      }
+    }
+
+    function restoreMinimized() {
+      if ( min && self._state.minimized ) {
+        self._$element.style.display = 'block';
+        self._$element.setAttribute('data-minimized', 'false');
+        self._state.minimized = false;
+      }
+    }
+
+    console.debug(this._name, '>', 'OSjs::Core::Window::_restore()');
+
     max = (typeof max === 'undefined') ? true : (max === true);
     min = (typeof min === 'undefined') ? true : (min === true);
 
-    if ( max && this._state.maximized ) {
-      this._move(this._lastPosition.x, this._lastPosition.y);
-      this._resize(this._lastDimension.w, this._lastDimension.h);
-      this._state.maximized = false;
-      this._$element.setAttribute('data-maximized', 'false');
-    }
+    restoreMaximized();
+    restoreMinimized();
 
-    if ( min && this._state.minimized ) {
-      this._$element.style.display = 'block';
-      this._$element.setAttribute('data-minimized', 'false');
-      this._state.minimized = false;
-    }
+    waitForAnimation(function() {
+      self._fireHook('restore');
+    });
 
     this._onChange('restore');
 
-    var wm = OSjs.Core.getWindowManager();
-    var anim = wm ? wm.getSetting('animations') : false;
-    if ( anim ) {
-      var self = this;
-      setTimeout(function() {
-        self._fireHook('restore');
-      }, getAnimDuration());
-    } else {
-      this._fireHook('restore');
-    }
-
     this._focus();
-
   };
 
   /**
@@ -1027,10 +1037,12 @@
    * @method  Window::_focus()
    */
   Window.prototype._focus = function(force) {
-    if ( !this._$element ) { return false; }
+    if ( !this._$element || this._destroyed ) {
+      return false;
+    }
 
-    //if ( !force && this._state.focused ) { return false; }
-    //console.debug(this._name, '>' , 'OSjs::Core::Window::_focus()');
+    console.debug(this._name, '>', 'OSjs::Core::Window::_focus()');
+
     this._toggleAttentionBlink(false);
 
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
@@ -1067,9 +1079,12 @@
    * @method  Window::_blur()
    */
   Window.prototype._blur = function(force) {
-    if ( !this._$element ) { return false; }
-    if ( !force && !this._state.focused ) { return false; }
-    //console.debug(this._name, '>' , 'OSjs::Core::Window::_blur()');
+    if ( !this._$element || this._destroyed || (!force && !this._state.focused) ) {
+      return false;
+    }
+
+    console.debug(this._name, '>', 'OSjs::Core::Window::_blur()');
+
     this._$element.setAttribute('data-focused', 'false');
     this._state.focused = false;
 
@@ -1078,7 +1093,6 @@
 
     // Force all standard HTML input elements to loose focus
     this._blurGUI();
-
 
     var wm = OSjs.Core.getWindowManager();
     var win = wm ? wm.getCurrentWindow() : null;
@@ -1197,7 +1211,10 @@
   };
 
   Window.prototype._resize = function(w, h, force) {
-    if ( !this._$element ) { return false; }
+    if ( !this._$element || this._destroyed  ) {
+      return false;
+    }
+
     var p = this._properties;
 
     if ( !force ) {
@@ -1247,7 +1264,9 @@
    */
   Window.prototype._moveTo = function(pos) {
     var wm = OSjs.Core.getWindowManager();
-    if ( !wm ) { return; }
+    if ( !wm ) {
+      return;
+    }
 
     var s = wm.getWindowSpace();
     var cx = this._position.x;
@@ -1275,9 +1294,13 @@
    * @method  Window::_move()
    */
   Window.prototype._move = function(x, y) {
-    if ( !this._$element ) { return false; }
-    if ( !this._properties.allow_move ) { return false; }
-    if ( typeof x === 'undefined' || typeof y === 'undefined') { return false; }
+    if ( !this._$element || this._destroyed || !this._properties.allow_move  ) {
+      return false;
+    }
+
+    if ( typeof x === 'undefined' || typeof y === 'undefined') {
+      return false;
+    }
 
     this._$element.style.top  = y + 'px';
     this._$element.style.left = x + 'px';
@@ -1297,7 +1320,7 @@
    * @method    Window::_toggleDisabled()
    */
   Window.prototype._toggleDisabled = function(t) {
-    console.debug(this._name, '>' , 'OSjs::Core::Window::_toggleDisabled()', t);
+    console.debug(this._name, '>', 'OSjs::Core::Window::_toggleDisabled()', t);
     if ( this._$disabled ) {
       this._$disabled.style.display = t ? 'block' : 'none';
     }
@@ -1314,7 +1337,7 @@
    * @method    Window::_toggleLoading()
    */
   Window.prototype._toggleLoading = function(t) {
-    console.debug(this._name, '>' , 'OSjs::Core::Window::_toggleLoading()', t);
+    console.debug(this._name, '>', 'OSjs::Core::Window::_toggleLoading()', t);
     if ( this._$loading ) {
       this._$loading.style.display = t ? 'block' : 'none';
     }
@@ -1330,7 +1353,7 @@
    * @method    Window::_toggleAttentionBlink()
    */
   Window.prototype._toggleAttentionBlink = function(t) {
-    if ( !this._$element ) { return false; }
+    if ( !this._$element || this._destroyed  ) { return false; }
     if ( this._state.focused ) { return false; }
 
     var el     = this._$element;
@@ -1350,7 +1373,7 @@
     /*
     if ( t ) {
       if ( !this._blinkTimer ) {
-        console.debug(this._name, '>' , 'OSjs::Core::Window::_toggleAttentionBlink()', t);
+        console.debug(this._name, '>', 'OSjs::Core::Window::_toggleAttentionBlink()', t);
         this._blinkTimer = setInterval(function() {
           s = !s;
 
@@ -1360,7 +1383,7 @@
       }
     } else {
       if ( this._blinkTimer ) {
-        console.debug(this._name, '>' , 'OSjs::Core::Window::_toggleAttentionBlink()', t);
+        console.debug(this._name, '>', 'OSjs::Core::Window::_toggleAttentionBlink()', t);
         clearInterval(this._blinkTimer);
         this._blinkTimer = null;
       }
@@ -1480,8 +1503,12 @@
    * @method  Window::_onDndEvent()
    */
   Window.prototype._onDndEvent = function(ev, type) {
+    if ( this._disabled || this._destroyed ) {
+      return false;
+    }
+
     console.debug('OSjs::Core::Window::_onDndEvent()', type);
-    if ( this._disabled ) { return false; }
+
     return true;
   };
 
@@ -1496,6 +1523,10 @@
    * @method  Window::_onKeyEvent()
    */
   Window.prototype._onKeyEvent = function(ev, type) {
+    if ( this._destroyed ) {
+      return false;
+    }
+
     if ( type === 'keydown' && ev.keyCode === Utils.Keys.TAB ) {
       this._nextTabIndex(ev);
     }
@@ -1523,8 +1554,11 @@
    * @method  Window::_onWindowIconClick()
    */
   Window.prototype._onWindowIconClick = function(ev, el) {
-    console.debug(this._name, '>' , 'OSjs::Core::Window::_onWindowIconClick()');
-    if ( !this._properties.allow_iconmenu ) { return; }
+    if ( !this._properties.allow_iconmenu || this._destroyed  ) {
+      return;
+    }
+
+    console.debug(this._name, '>', 'OSjs::Core::Window::_onWindowIconClick()');
 
     var self = this;
     var list = [];
@@ -1610,7 +1644,7 @@
    * @method  Window::_onWindowButtonClick()
    */
   Window.prototype._onWindowButtonClick = function(ev, el, btn) {
-    console.debug(this._name, '>' , 'OSjs::Core::Window::_onWindowButtonClick()', btn);
+    console.debug(this._name, '>', 'OSjs::Core::Window::_onWindowButtonClick()', btn);
 
     this._blurGUI();
 
@@ -1636,7 +1670,7 @@
   Window.prototype._onChange = function(ev, byUser) {
     ev = ev || '';
     if ( ev ) {
-      console.debug(this._name, '>' , 'OSjs::Core::Window::_onChange()', ev);
+      console.debug(this._name, '>', 'OSjs::Core::Window::_onChange()', ev);
       var wm = OSjs.Core.getWindowManager();
       if ( wm ) {
         wm.eventWindow(ev, this);
@@ -1657,7 +1691,10 @@
    */
   Window.prototype._getMaximizedSize = function() {
     var s = getWindowSpace();
-    if ( !this._$element ) { return s; }
+    if ( !this._$element || this._destroyed ) {
+      return s;
+    }
+
     var topMargin = 23;
     var borderSize = 0;
 
@@ -1672,8 +1709,8 @@
 
     s.left += borderSize;
     s.top += borderSize;
-    s.width -= (borderSize*2);
-    s.height -= topMargin + (borderSize*2);
+    s.width -= (borderSize * 2);
+    s.height -= topMargin + (borderSize * 2);
 
     return s;
   };
@@ -1726,7 +1763,10 @@
    * @method  Window::_setTitle()
    */
   Window.prototype._setTitle = function(t, append, delimiter) {
-    if ( !this._$element ) { return; }
+    if ( !this._$element || this._destroyed ) {
+      return;
+    }
+
     delimiter = delimiter || '-';
 
     var tel = this._$element.getElementsByTagName('application-window-title')[0];
@@ -1771,14 +1811,13 @@
    */
   Window.prototype._setWarning = function(message) {
     var self = this;
-    if ( this._$warning ) {
-      if ( this._$warning.parentNode ) {
-        this._$warning.parentNode.removeChild(this._$warning);
-      }
-      this._$warning = null;
+
+    this._$warning = Utils.$remove(this._$warning);
+
+    if ( this._destroyed || message === null ) {
+      return;
     }
 
-    if ( message === null ) { return; }
     message = message || '';
 
     var container = document.createElement('application-window-warning');

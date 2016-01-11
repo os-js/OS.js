@@ -1,7 +1,7 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -125,7 +125,7 @@
     return OSjs.Core.getSettingsManager().save(this._pool, callback);
   };
 
-  SettingsFragment.prototype.getChained = function () {
+  SettingsFragment.prototype.getChained = function() {
     var nestedSetting = this._settings;
     arguments.every(function(key) {
       if (nestedSetting[key]) {
