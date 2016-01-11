@@ -28,6 +28,8 @@
  * @licence Simplified BSD License
  */
 (function(_path, _server) {
+  'use strict';
+
   var DIST = (process && process.argv.length > 2) ? process.argv[2] : 'dist';
   var ROOT = _path.join(__dirname, '/../../../');
 

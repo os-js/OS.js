@@ -93,7 +93,7 @@
       if ( nodes.length ) {
         nodes.forEach(function(el) {
           var id = el.getAttribute('data-fragment-id');
-          var frag = scheme.getFragment(id, 'application-fragment');
+          var frag = scheme.getFragment(id, 'application-fragment').cloneNode(true);
 
           addChildren(frag, el.parentNode);
           Utils.$remove(el);

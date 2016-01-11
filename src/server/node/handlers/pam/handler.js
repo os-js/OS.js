@@ -36,6 +36,7 @@
 //
 
 (function(qs, pam, userid, fs, path) {
+  'use strict';
 
   function getRootPath(username) {
     return path.join('/home', username, '.osjs');
@@ -94,76 +95,58 @@
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // USER SESSION ABSTRACTION
+  // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  var APIUser = function() {};
-  APIUser.login = function(login, request, response, callback) {
-    console.log('APIUser::login()');
-
-    authenticate(login, function(err, data, settings) {
-      if ( err ) {
-        callback(err);
-        return;
-      }
-
-      request.cookies.set('username', login.username, {httpOnly:true});
-      request.cookies.set('groups', JSON.stringify(data.groups), {httpOnly:true});
-
-      callback(false, {
-        userData : {
-          id:       data.id,
-          username: login.username,
-          name:     data.name,
-          groups:   data.groups
-        },
-        userSettings: settings
-      });
-
-    });
-  };
-
-  APIUser.updateSettings = function(settings, request, response, callback) {
-    var uname = request.cookies.get('username');
-    var data = JSON.stringify(settings);
-
-    // Make sure directory exists before writing
-    fs.mkdir(getRootPath(uname), function() {
-      fs.writeFile(getSettingsPath(uname), data,  function(err) {
-        callback(err || false, !!err);
-      });
-    });
-  };
-
-  APIUser.logout = function(request, response) {
-    console.log('APIUser::logout()');
-    request.cookies.set('username', null, {httpOnly:true});
-    request.cookies.set('groups', null, {httpOnly:true});
-    return true;
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // API EXPORT
-  /////////////////////////////////////////////////////////////////////////////
-
+  // Attach API functions
   exports.register = function(CONFIG, API, HANDLER) {
-    console.info('-->', 'Registering handler API methods');
+    API.login = function(login, callback, request, response, body) {
+      authenticate(login, function(err, data, settings) {
+        if ( err ) {
+          callback(err);
+          return;
+        }
 
-    API.login = function(args, callback, request, response, body) {
-      APIUser.login(args, request, response, function(error, result) {
-        callback(error, result);
+        request.cookies.set('username', login.username, {httpOnly:true});
+        request.cookies.set('groups', JSON.stringify(data.groups), {httpOnly:true});
+
+        callback(false, {
+          userData : {
+            id:       data.id,
+            username: login.username,
+            name:     data.name,
+            groups:   data.groups
+          },
+          userSettings: settings
+        });
+
       });
     };
 
     API.logout = function(args, callback, request, response) {
-      var result = APIUser.logout(request, response);
-      callback(false, result);
+      request.cookies.set('username', null, {httpOnly:true});
+      request.cookies.set('groups', null, {httpOnly:true});
+      callback(false, true);
     };
 
     API.settings = function(args, callback, request, response) {
-      APIUser.updateSettings(args.settings, request, response, callback);
-    };
+      var settings = args.settings;
+      var uname = request.cookies.get('username');
+      var data = JSON.stringify(settings);
 
+      // Make sure directory exists before writing
+      fs.mkdir(getRootPath(uname), function() {
+        fs.writeFile(getSettingsPath(uname), data,  function(err) {
+          callback(err || false, !!err);
+        });
+      });
+    };
   };
 
-})(require('querystring'), require('authenticate-pam'), require('userid'), require('fs'), require('path'));
+})(
+  require('querystring'),
+  require('authenticate-pam'),
+  require('userid'),
+  require('fs'),
+  require('path')
+);

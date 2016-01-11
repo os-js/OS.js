@@ -31,6 +31,7 @@
  * @licence Simplified BSD License
  */
 (function(qs, mysql) {
+  'use strict';
   var connection;
 
   /////////////////////////////////////////////////////////////////////////////
@@ -142,7 +143,7 @@
   };
 
   /////////////////////////////////////////////////////////////////////////////
-  // API EXPORT
+  // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
   exports.register = function(CONFIG, API, HANDLER) {
@@ -160,14 +161,6 @@
         connection.end();
       }
     };
-
-    /*
-    HANDLER.onRequestStart = function(request, response) {
-    };
-
-    HANDLER.onRequestEnd = function(request, response) {
-    };
-    */
 
     API.login = function(args, callback, request, response, body) {
       APIUser.login(args, request, response, function(error, result) {
