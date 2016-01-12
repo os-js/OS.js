@@ -108,6 +108,10 @@
       mode = 'text';
     } else if ( mode === 'html' || mode === 'htm' ) {
       mode = 'xml';
+    } else if ( mode === 'shellscript' ) {
+      mode = 'shell';
+    } else if ( mode === 'c' || mode === 'cplusplus' ) {
+      mode = 'clike';
     }
 
     this.editor.setOption('mode', mode);
@@ -198,6 +202,21 @@
           label: 'Lua',
           mime: 'application/x-lua',
           extension: 'lua'
+        },
+        {
+          label: 'Shellscript',
+          mime: 'application/x-shellscript',
+          extension: 'sh'
+        },
+        {
+          label: 'C',
+          mime: 'text/x-c',
+          extension: 'c'
+        },
+        {
+          label: 'C++',
+          mime: 'text/x-cplusplus',
+          extension: 'cpp'
         }
       ]
     }]);

@@ -6,3 +6,6 @@ vendor/CodeMirror/mode/
 !vendor/CodeMirror/mode/css
 !vendor/CodeMirror/mode/lua
 !vendor/CodeMirror/mode/xml
+!vendor/CodeMirror/mode/clike
+!vendor/CodeMirror/mode/python
+!vendor/CodeMirror/mode/shell
