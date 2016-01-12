@@ -2,7 +2,7 @@
   "className":  "ApplicationCodeMirror",
   "name":       "CodeMirror",
   "mime":       ["^text", "inode\\/x\\-empty", "application\\/x\\-empty", "application\\/x\\-lua", "application\\/x\\-python", "application\\/javascript"],
-  "icon":       "apps/accessories-text-editor.png",
+  "icon":       "arduino-ideino.png",
   "category":   "development",
   "preload":    [
     {"src": "vendor/CodeMirror/lib/codemirror.js", "type": "javascript"},
