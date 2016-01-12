@@ -9,7 +9,7 @@
 
   "themes": {
     "icons": ["default"],
-    "styles": ["default"],
+    "styles": ["material"],
     "sounds": [],
     "fonts": ["Karla"]
   },
@@ -43,7 +43,7 @@
           "icon"            : "arduino-osjs.png",
           "wallpaper"       : "osjs:///themes/wallpapers/arduino.png",
           "backgroundColor" : "#d4e5e1",
-          "theme"           : "default",
+          "theme"           : "material",
           "icons"           : "default",
           "sounds"          : "default",
           "background"      : "image-fill",
