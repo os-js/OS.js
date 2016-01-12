@@ -129,7 +129,7 @@
         view.add(rows);
         selectTimezone.set('value', result.timezone);
         inputHostname.set('value', result.hostname);
-        switchRest.set('value', result.rest === 'true');
+        switchRest.set('value', (result.rest||'').replace(/\s+$/, '') === 'true');
 
         cb();
       });
