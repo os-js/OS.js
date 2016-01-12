@@ -1,0 +1,21 @@
+{
+  "className":  "ApplicationCodeMirror",
+  "name":       "CodeMirror",
+  "mime":       ["^text", "inode\\/x\\-empty", "application\\/x\\-empty", "application\\/x\\-lua", "application\\/x\\-python", "application\\/javascript"],
+  "icon":       "apps/accessories-text-editor.png",
+  "category":   "development",
+  "preload":    [
+    {"src": "vendor/CodeMirror/lib/codemirror.js", "type": "javascript"},
+    {"src": "vendor/CodeMirror/mode/css/css.js", "type": "javascript"},
+    {"src": "vendor/CodeMirror/mode/javascript/javascript.js", "type": "javascript"},
+    {"src": "vendor/CodeMirror/mode/lua/lua.js", "type": "javascript"},
+    {"src": "vendor/CodeMirror/mode/xml/xml.js", "type": "javascript"},
+    {"src": "vendor/CodeMirror/lib/codemirror.css", "type": "stylesheet"},
+    {"src": "vendor/CodeMirror/theme/material.css", "type": "stylesheet"},
+    {"src": "main.js", "type": "javascript"},
+    {"src": "main.css", "type": "stylesheet"}
+  ]
+}
+
+
+

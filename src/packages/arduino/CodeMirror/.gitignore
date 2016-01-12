@@ -1,0 +1,8 @@
+vendor/CodeMirror/*
+vendor/CodeMirror/theme/
+!vendor/CodeMirror/theme/material.css
+vendor/CodeMirror/mode/
+!vendor/CodeMirror/mode/javascript
+!vendor/CodeMirror/mode/css
+!vendor/CodeMirror/mode/lua
+!vendor/CodeMirror/mode/xml
