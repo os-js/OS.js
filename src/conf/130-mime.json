@@ -15,6 +15,10 @@
       "application/json"        : "JSON Document",
       "application/x-python"    : "Python Document",
       "application/x-lua"       : "Lua Document",
+      "application/x-shellscript": "Shell Script",
+
+      "text/x-c"                : "C Document",
+      "text/x-cplusplus"        : "C++ Document",
 
       "application/pdf"         : "PDF Document",
       "application/zip"         : "ZIP Archive",
@@ -49,6 +53,10 @@
       ".js"     : "application/javascript",
       ".json"   : "application/json",
       ".lua"    : "application/x-lua",
+      ".sh"     : "application/x-shellscript",
+      ".c"      : "text/x-c",
+      ".cpp"    : "text/x-cplusplus",
+      ".cc"     : "text/x-cplusplus",
       ".otf"    : "font/opentype",
       ".ttf"    : "font/opentype",
       ".png"    : "image/png",
