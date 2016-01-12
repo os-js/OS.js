@@ -70,7 +70,7 @@
 
     scheme.find(this, 'ButtonInstall').on('click', function() {
       if ( self.currentPackage ) {
-        self.callOpkg('install', {packagename: self.currentPackage}, function() {
+        app.callOpkg('install', {packagename: self.currentPackage}, function() {
           self.selectView();
         });
       }
@@ -82,7 +82,7 @@
 
     scheme.find(this, 'ButtonUpdate').on('click', function() {
       if ( self.currentPackage ) {
-        self.callOpkg('update', {packagename: self.currentPackage}, function() {
+        app.callOpkg('update', {packagename: self.currentPackage}, function() {
           self.selectView();
         });
       }
@@ -90,7 +90,7 @@
 
     scheme.find(this, 'ButtonRemove').on('click', function() {
       if ( self.currentPackage ) {
-        self.callOpkg('remove', {packagename: self.currentPackage}, function() {
+        app.callOpkg('remove', {packagename: self.currentPackage}, function() {
           self.selectView();
         });
       }
