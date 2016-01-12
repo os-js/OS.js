@@ -7,6 +7,7 @@
 
 if [ ! -n "$1" ]; then
   /sbin/uci get arduino.@arduino[0].secure_rest_api
+  exit 0
 fi
 
 /sbin/uci set arduino.@arduino[0].secure_rest_api=$1
