@@ -160,12 +160,12 @@
    * @param   String    msg       Name of message
    * @param   Object    args      Message arguments
    *
-   * @return  void
+   * @return  boolean
    *
    * @method  Application::_onMessage()
    */
   Application.prototype._onMessage = function(obj, msg, args) {
-    if ( !msg ) { return; }
+    if ( !msg ) { return false; }
 
     if ( msg === 'destroyWindow' ) {
       this._removeWindow(obj);
@@ -179,6 +179,8 @@
         this.__windows[0]._focus();
       }
     }
+
+    return true;
   };
 
   /**
