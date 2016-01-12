@@ -3,6 +3,7 @@
   "name":       "Arduino Package Manager",
   "mime":       ["application\\/x\\-ipkg"],
   "icon":       "apps/update-manager.png",
+  "singular":   true,
   "preload":    [
     {"src": "main.js", "type": "javascript"},
     {"src": "main.css", "type": "stylesheet"}

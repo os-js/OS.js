@@ -38,7 +38,7 @@
     Window.apply(this, ['ApplicationArduinoPackageManagerWindow', {
       icon: metadata.icon,
       title: metadata.name,
-      width: 450,
+      width: 500,
       height: 400
     }, app, scheme]);
 
@@ -69,7 +69,11 @@
     });
 
     scheme.find(this, 'ButtonInstall').on('click', function() {
-      self.selectView();
+      if ( self.currentPackage ) {
+        self.callOpkg('install', {packagename: self.currentPackage}, function() {
+          self.selectView();
+        });
+      }
     }).set('disabled', true);
 
     scheme.find(this, 'ButtonImport').on('click', function() {
@@ -77,11 +81,19 @@
     });
 
     scheme.find(this, 'ButtonUpdate').on('click', function() {
-      self.selectView();
+      if ( self.currentPackage ) {
+        self.callOpkg('update', {packagename: self.currentPackage}, function() {
+          self.selectView();
+        });
+      }
     }).set('disabled', true);
 
     scheme.find(this, 'ButtonRemove').on('click', function() {
-      self.selectView();
+      if ( self.currentPackage ) {
+        self.callOpkg('remove', {packagename: self.currentPackage}, function() {
+          self.selectView();
+        });
+      }
     }).set('disabled', true);
 
     scheme.find(this, 'ButtonRefresh').on('click', function() {
@@ -163,6 +175,8 @@
 
   function ApplicationArduinoPackageManager(args, metadata) {
     Application.apply(this, ['ApplicationArduinoPackageManager', args, metadata]);
+
+    this.startupArgs = args;
   }
 
   ApplicationArduinoPackageManager.prototype = Object.create(Application.prototype);
@@ -181,9 +195,32 @@
     scheme.load(function(error, result) {
       self._addWindow(new ApplicationArduinoPackageManagerWindow(self, metadata, scheme));
       onInited();
+      self.checkArguments(self.startupArgs);
     });
 
     this._setScheme(scheme);
+  };
+
+  ApplicationArduinoPackageManager.prototype._onMessage = function(obj, msg, args) {
+    if ( Application.prototype._onMessage.apply(this, arguments) ) {
+      if ( msg === 'attention' && args ) {
+        this.checkArguments(args);
+      }
+      return true;
+    }
+    return false;
+  };
+
+  ApplicationArduinoPackageManager.prototype.checkArguments = function(args) {
+    if ( args ) {
+      if ( args.install ) {
+        this.callOpkg('install', {packagename: args.install}, function() {});
+      } else if ( args.remove ) {
+        this.callOpkg('remove', {packagename: args.install}, function() {});
+      } else if ( args.upgrade ) {
+        this.callOpkg('upgrade', {packagename: args.install}, function() {});
+      }
+    }
   };
 
   ApplicationArduinoPackageManager.prototype.openDialog = function(cb) {

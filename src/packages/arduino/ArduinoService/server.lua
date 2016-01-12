@@ -218,9 +218,17 @@ local function request(m, a, request, response)
       else
         result = console("opkg list-upgradable")
       end
+    elseif a["command"] == "remove" then
+      result = console("opkg remove " .. a["args"]["packagename"])
+    elseif a["command"] == "upgrade" then
+      result = console("opkg upgrade " .. a["args"]["packagename"])
     elseif a["command"] == "install" then
-      local rpath = osjs.get_real_path(request, response, a["args"]["filename"])
-      result = console("opkg install " .. rpath)
+      if a["args"]["packagename"] then
+        result = console("opkg install " .. a["args"]["packagename"])
+      else
+        local rpath = osjs.get_real_path(request, response, a["args"]["filename"])
+        result = console("opkg install " .. rpath)
+      end
     end
   elseif m == "exec" then
     result = console(a["command"])

@@ -149,7 +149,7 @@
           title: 'Update Notification',
           message: Utils.format('An update of {0} ({1}) is available', packageName, latest.latest),
           onClick: function() {
-            alert("TODO"); // TODO
+            API.launch('ApplicationArduinoPackageManager', {upgrade: packageName})
           }
         });
       }
