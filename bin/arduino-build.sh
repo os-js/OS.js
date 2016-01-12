@@ -67,6 +67,7 @@ cp -v AUTHORS $OUTDIR/
 cp -v CHANGELOG.md $OUTDIR/
 cp -v -r dist $OUTDIR/
 cp -v bin/arduino-wifi-*.sh $OUTDIR/bin/
+cp -v bin/arduino-rest-*.sh $OUTDIR/bin/
 chmod +x $OUTDIR/bin/*
 
 # Server files
