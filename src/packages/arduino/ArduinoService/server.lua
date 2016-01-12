@@ -161,7 +161,8 @@ local function request(m, a, request, response)
     result = {
       metrics = metrics,
       hostname = sys.hostname(),
-      timezone = timezone
+      timezone = timezone,
+      rest = console("sh /opt/osjs/bin/arduino-toggle-rest-api.sh")
     }
   elseif m == "setsysinfo" then
     local hostname = a.hostname or sys.hostname()
@@ -190,6 +191,8 @@ local function request(m, a, request, response)
     -- local device = a["device"] or "wlan0"
     -- result = sys.wifi.getiwinfo(device)
     result = console("sh /opt/osjs/bin/arduino-wifi-info.sh")
+  elseif m == "rest" then
+    result = console("sh /opt/osjs/bin/arduino-toggle-rest-api.sh ") .. a["enabled"]
   elseif m == "iwscan" then
     local device = a["device"] or "radio0"
     result = get_wlans(device)

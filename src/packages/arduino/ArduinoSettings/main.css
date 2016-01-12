@@ -31,3 +31,7 @@
 .ApplicationArduinoSettingsWindow application-window-content {
 }
 
+.ApplicationArduinoSettingsWindow application-window-content p {
+  text-align : center;
+}
+

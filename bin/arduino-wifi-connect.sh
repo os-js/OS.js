@@ -15,4 +15,4 @@
 /sbin/uci set wireless.@wifi-iface[0].key=$3
 /sbin/uci commit wireless
 /sbin/wifi
-/etc/init.d/network  reload
+/etc/init.d/network reload

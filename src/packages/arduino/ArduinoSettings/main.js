@@ -68,6 +68,7 @@
     var wifiInput = scheme.find(this, 'InputArduinoWIFISSID');
     var wifiSelectEncrypt = scheme.find(this, 'SelectNetworkWIFISecurity');
     var wifiPassword = scheme.find(this, 'InputArduinoWIFIPassword');
+    var switchRest = scheme.find(this, 'SwitchEnableRest');
     var pass = scheme.find(this, 'InputArduinoPassword');
     var passc = scheme.find(this, 'InputArduinoPasswordConfirm');
 
@@ -128,6 +129,7 @@
         view.add(rows);
         selectTimezone.set('value', result.timezone);
         inputHostname.set('value', result.hostname);
+        switchRest.set('value', result.rest === 'true');
 
         cb();
       });
@@ -302,6 +304,20 @@
       }, function() {
         wm.notification({title: 'Arduino', message: 'You will be notified when your wifi settings have been applied', icon: 'arduino.png' });
       });
+    });
+
+    scheme.find(this, 'ButtonArduinoConfigureRest').on('click', function() {
+      var val = switchRest.get('value');
+
+      self._toggleLoading(true);
+      callAPI('rest', {
+        enabled: val ? 'true' : 'false'
+      }, function(ret) {
+        self._toggleLoading(false);
+      });
+    });
+
+    switchRest.on('change', function(ev, val) {
     });
 
     renderTimezones();

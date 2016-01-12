@@ -15,6 +15,9 @@
         <gui-tab-container data-id="TabArduinoWIFI" data-label="WIFI">
           <gui-fragment data-fragment-id="TabArduinoWIFIFragment"></gui-fragment>
         </gui-tab-container>
+        <gui-tab-container data-id="TabArduinoRest" data-label="Rest API">
+          <gui-fragment data-fragment-id="TabArduinoRestFragment"></gui-fragment>
+        </gui-tab-container>
       </gui-tabs>
     </gui-vbox-container>
 
@@ -187,6 +190,29 @@
 
     <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
       <gui-button data-id="ButtonArduinoConfigureWIFI">Configure</gui-button>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
+
+<application-fragment data-id="TabArduinoRestFragment">
+
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+      <gui-label>Enable Rest API</gui-label>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-switch data-id="SwitchEnableRest" />
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="1" data-shrink="1" data-basis="auto">
+      <p>
+        REST APIs allow you to access your sketch from the web, sending commands or exchanging configuration values.<br>If your board is on a public network, or controlling sensitive equipment, or both, we recommend you leave the REST API password protected.
+      </p>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+      <gui-button data-id="ButtonArduinoConfigureRest">Configure</gui-button>
     </gui-vbox-container>
   </gui-vbox>
 </application-fragment>
