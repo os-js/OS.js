@@ -131,6 +131,30 @@
       onClick: showWIFIContextMenu
     });
 
+    // Create update notification
+    var wm = OSjs.Core.getWindowManager();
+    this.pollUpdate('wget', function(err, latest, packageName) { // FIXME
+      if ( wm ) {
+        if ( err ) {
+          wm.notification({
+            icon: 'actions/stock_new-appointment.png',
+            title: 'Update Notification',
+            message: Utils.format('Failed to check for update of {0}: {1}', packageName, err)
+          });
+          return;
+        }
+
+        wm.notification({
+          icon: 'actions/stock_new-appointment.png',
+          title: 'Update Notification',
+          message: Utils.format('An update of {0} ({1}) is available', packageName, latest.latest),
+          onClick: function() {
+            alert("TODO"); // TODO
+          }
+        });
+      }
+    });
+
     onInited();
   };
 
@@ -166,6 +190,26 @@
       self.busy = false;
 
       cb(list);
+    });
+  };
+
+  ArduinoService.prototype.pollUpdate = function(packageName, cb) {
+    this.externalCall('opkg', {command: 'list', args: {category: 'upgradable'}}, function(err, stdout) {
+      var list = (stdout || '').split('\n');
+      var found = null;
+      list.forEach(function(line) {
+        var data = line.split(' - ');
+        if ( data.length === 3 && data[0] === packageName ) {
+          found = {
+            name: data[0],
+            current: data[1],
+            latest: data[2]
+          };
+        }
+        return !!found;
+      });
+
+      cb(err, found, packageName);
     });
   };
 
