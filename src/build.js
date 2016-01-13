@@ -1478,6 +1478,29 @@
    * Creates a compressed build
    */
   function buildCompressed(grunt, arg) {
+
+    // Compress Core
+    grunt.log.subhead('Writing core javascript');
+    writeFile(PATHS.out_client_js.replace(/\.js$/, '.min.js'), _ugly.minify(PATHS.out_client_js, {comments: true}).code);
+
+    grunt.log.subhead('Writing core stylesheet');
+    writeFile(PATHS.out_client_css.replace(/\.css$/, '.min.css'), new Cleancss().minify(readFile(PATHS.out_client_css)).styles);
+
+    grunt.log.subhead('Writing settings');
+    writeFile(PATHS.out_client_config.replace(/\.js$/, '.min.js'), _ugly.minify(PATHS.out_client_config, {comments: true}).code);
+
+    grunt.log.subhead('Writing locales');
+    writeFile(PATHS.out_client_locale.replace(/\.js$/, '.min.js'), _ugly.minify(PATHS.out_client_locale, {comments: true}).code);
+
+    grunt.log.subhead('Writing index.html');
+    var orig = readFile(_path.join(PATHS.dist, 'index.html')).toString();
+    orig = orig.replace('"osjs.js"', '"osjs.min.js"');
+    orig = orig.replace('"osjs.css"', '"osjs.min.css"');
+    orig = orig.replace('"locales.js"', '"locales.min.js"');
+    orig = orig.replace('"settings.js"', '"settings.min.js"');
+    writeFile(_path.join(PATHS.dist, 'index.html'), orig);
+
+    // Compress Packages
     var packages = readPackageMetadata(grunt, PATHS.out_client_packages);
 
     Object.keys(packages).forEach(function(p) {
@@ -1517,9 +1540,10 @@
     });
 
     grunt.log.subhead('Writing metadata...');
-    var tpl = readFile(_path.join(PATHS.templates, 'packages.js')).toString();
+    var tpl = readFile(_path.join(PATHS.templates, 'dist', 'packages.js')).toString();
     var content = tpl.replace('%PACKAGES%', JSON.stringify(normalizeManifest(packages), null, 2));
     writeFile(PATHS.out_client_manifest, content);
+    writeFile(PATHS.out_client_manifest.replace(/\.js$/, '.min.js'), _ugly.minify(PATHS.out_client_manifest, {comments: true}).code);
   }
 
   /////////////////////////////////////////////////////////////////////////////
