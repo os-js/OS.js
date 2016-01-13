@@ -62,7 +62,7 @@
       API.call(fn, args, function(response) {
         self._toggleLoading(false);
         return cb(response.error, response.result);
-      }
+      });
     }
 
     function kill(selected, signal) {

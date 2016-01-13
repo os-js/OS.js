@@ -63,7 +63,7 @@
           var err = response.error || (response.result ? 'Unknown error' : 'No data recieved');
           input.set('value', 'ERROR: ' + err);
         } else {
-          input.set('value', response);
+          input.set('value', response.result);
         }
       });
     }
