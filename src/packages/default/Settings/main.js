@@ -244,7 +244,7 @@
     this.initDesktopTab(wm, scheme, init);
     this.initPanelTab(wm, scheme, init);
     this.initUserTab(wm, scheme, init);
-    this.initPackagesTab(wm, scheme, init);
+    //this.initPackagesTab(wm, scheme, init);
     this.initFileViewTab(wm, scheme, init);
   };
 
