@@ -261,12 +261,11 @@
   };
 
   ArduinoService.prototype.externalCall = function(fn, args, cb) {
-    this._call(fn, args, function(response) {
-      response = response || {};
-      if ( !response.error ) {
-        cb(false, response.result);
-      } else {
+    API.call(fn, args, function(response) {
+      if ( response.error ) {
         cb(response.error || 'No response from device');
+      } else {
+        cb(false, response.result);
       }
     }, function(err) {
       cb('Failed to get response from device: ' + err);

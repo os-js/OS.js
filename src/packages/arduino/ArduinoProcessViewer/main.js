@@ -58,13 +58,10 @@
     var view = scheme.find(this, 'View');
 
     function callAPI(fn, args, cb) {
-      var proc = API.getProcess('ArduinoService', true);
-      if ( proc ) {
-        self._toggleLoading(true);
-        proc.externalCall(fn, args, function(err, response) {
-          self._toggleLoading(false);
-          return cb(err, response);
-        });
+      self._toggleLoading(true);
+      API.call(fn, args, function(response) {
+        self._toggleLoading(false);
+        return cb(response.error, response.result);
       }
     }
 

@@ -306,7 +306,7 @@ function fs_request(request, response, name, args)
 end
 
 -- ----------------------------------------------------------------------------
---                                     API
+--                                  CORE API
 -- ----------------------------------------------------------------------------
 
 function app_request(request, response, args)
@@ -425,10 +425,168 @@ function settings_update_request(request, response, settings)
   return "Failed to write settings", false
 end
 
+-- ----------------------------------------------------------------------------
+--                                   LUA API
+-- ----------------------------------------------------------------------------
+
+local function iface_status(ifaces)
+  local netm = require "luci.model.network".init()
+  local rv   = { }
+
+  local iface
+  for iface in ifaces:gmatch("[%w%.%-_]+") do
+    local net = netm:get_network(iface)
+    local device = net and net:get_interface()
+    if device then
+      local data = {
+        id         = iface,
+        proto      = net:proto(),
+        uptime     = net:uptime(),
+        gwaddr     = net:gwaddr(),
+        dnsaddrs   = net:dnsaddrs(),
+        name       = device:shortname(),
+        type       = device:type(),
+        ifname     = device:name(),
+        macaddr    = device:mac(),
+        is_up      = device:is_up(),
+        rx_bytes   = device:rx_bytes(),
+        tx_bytes   = device:tx_bytes(),
+        rx_packets = device:rx_packets(),
+        tx_packets = device:tx_packets(),
+
+        ipaddrs    = { },
+        ip6addrs   = { },
+        subdevices = { }
+      }
+
+      local _, a
+      for _, a in ipairs(device:ipaddrs()) do
+        data.ipaddrs[#data.ipaddrs+1] = {
+          addr      = a:host():string(),
+          netmask   = a:mask():string(),
+          prefix    = a:prefix()
+        }
+      end
+      for _, a in ipairs(device:ip6addrs()) do
+        if not a:is6linklocal() then
+          data.ip6addrs[#data.ip6addrs+1] = {
+            addr      = a:host():string(),
+            netmask   = a:mask():string(),
+            prefix    = a:prefix()
+          }
+        end
+      end
+
+      for _, device in ipairs(net:get_interfaces() or {}) do
+        data.subdevices[#data.subdevices+1] = {
+          name       = device:shortname(),
+          type       = device:type(),
+          ifname     = device:name(),
+          macaddr    = device:mac(),
+          macaddr    = device:mac(),
+          is_up      = device:is_up(),
+          rx_bytes   = device:rx_bytes(),
+          tx_bytes   = device:tx_bytes(),
+          rx_packets = device:rx_packets(),
+          tx_packets = device:tx_packets(),
+        }
+      end
+
+      rv[#rv+1] = data
+    end
+  end
+
+  return rv
+end
+
+local function get_wlans(device)
+
+  local iw = sys.wifi.getiwinfo(device)
+
+  local function percent_wifi_signal(info)
+    local qc = info.quality or 0
+    local qm = info.quality_max or 0
+
+    if info.bssid and qc > 0 and qm > 0 then
+      return math.floor((100 / qm) * qc)
+    else
+      return 0
+    end
+  end
+
+  local function format_wifi_encryption(info)
+    if info.wep == true then
+      return "WEP"
+    elseif info.wpa > 0 then
+      if info.wpa == 3 then
+        -- return "WPA/WPA2"
+        return nil
+      elseif info.wpa == 2 then
+        return "WPA2"
+      end
+      return "WPA"
+    elseif info.enabled then
+      return "Unknown"
+    else
+      return "Open"
+    end
+  end
+
+  local function scanlist(times)
+    local i, k, v
+    local l = { }
+    local s = { }
+
+    for i = 1, times do
+      for k, v in ipairs(iw.scanlist or { }) do
+        if not s[v.bssid] then
+          l[#l+1] = v
+          s[v.bssid] = true
+        end
+      end
+    end
+
+    return l
+  end
+
+  local result = {}
+  for i, net in ipairs(scanlist(3)) do
+    net.encryption = net.encryption or { }
+
+    local enc = format_wifi_encryption(net.encryption)
+    if enc ~= nil then
+      result[i] = {
+        mode = net.mode,
+        channel = net.channel,
+        ssid = net.ssid,
+        bssid = net.bssid,
+        signal = percent_wifi_signal(net),
+        encryption = enc
+      }
+    end
+  end
+
+  return result
+end
+
+local function console(cmd)
+  local handle = io.popen(cmd)
+  local result = handle:read("*a")
+  handle:close()
+  return result
+end
+
+-- ----------------------------------------------------------------------------
+--                                     API
+-- ----------------------------------------------------------------------------
+
 function api_request(request, response, meth, iargs)
   local error = false
   local data = false
 
+  --
+  -- CORE API
+  --
   if meth == "login" then
     error, data = login_request(request, response, iargs["username"], iargs["password"])
   elseif meth == "logout" then
@@ -443,6 +601,96 @@ function api_request(request, response, meth, iargs)
     error, data = fs_request(request, response, iargs["method"], iargs["arguments"])
   elseif meth == "reboot" then
     data = os.execute("reboot >/dev/null 2>&1")
+
+  --
+  -- LUA API
+  --
+
+  elseif meth == "sysinfo" then
+    local timezone = fs.readfile("/etc/TZ") or "UTC"
+    timezone = timezone:gsub('%W', '')
+    local metrics = {sys.sysinfo()}
+    metrics[8] = sys.uptime()
+
+    data = {
+      metrics = metrics,
+      hostname = sys.hostname(),
+      timezone = timezone,
+      rest = console("sh " .. ROOTDIR .. "/bin/arduino-toggle-rest-api.sh")
+    }
+  elseif meth == "setsysinfo" then
+    local hostname = iargs.hostname or sys.hostname()
+    local timezone = iargs.timezone or false
+
+    sys.hostname(hostname)
+
+    if timezone then
+      fs.writefile("/etc/TZ", timezone)
+    end
+
+    data = true
+  elseif meth == "reboot" then
+    sys.reboot()
+    data = true
+  elseif meth == "netdevices" then
+    data = sys.net.devices()
+  elseif meth == "netstatus" then
+    data = iface_status(iargs["device"])
+  elseif meth == "netinfo" then
+    data = {
+      deviceinfo = sys.net.deviceinfo(),
+      ifconfig = json.decode(console("sh " .. ROOTDIR .. "/bin/arduino-ifconfig.sh"))
+    }
+  elseif meth == "iwinfo" then
+    -- local device = iargs["device"] or "wlan0"
+    -- data = sys.wifi.getiwinfo(device)
+    data = console("sh " .. ROOTDIR .. "/bin/arduino-wifi-info.sh")
+  elseif meth == "rest" then
+    data = console("sh " .. ROOTDIR .. "/bin/arduino-toggle-rest-api.sh " .. iargs["enabled"])
+  elseif meth == "iwscan" then
+    local device = iargs["device"] or "radio0"
+    data = get_wlans(device)
+  elseif meth == "ps" then
+    data = sys.process.list()
+  elseif meth == "kill" then
+    data = nixio.kill(iargs.pid, iargs.signal)
+  elseif meth == "dmesg" then
+    data = sys.dmesg()
+  elseif meth == "syslog" then
+    data = sys.syslog()
+  elseif meth == "setpasswd" then
+    username = get_username(request, response)
+    data = sys.user.setpasswd(username, iargs["password"]) == 0
+  elseif meth == "wifi" then
+    data = console("sh " .. ROOTDIR .. "/bin/arduino-wifi-connect.sh " .. iargs["ssid"] .. " " ..  iargs["security"] .. " " .. iargs["password"])
+  elseif meth == "opkg" then
+    if iargs["command"] == "list" then
+      if iargs["args"]["category"] == "all" then
+        data = console("opkg list")
+      elseif iargs["args"]["category"] == "installed" then
+        data = console("opkg list-installed")
+      else
+        data = console("opkg list-upgradable")
+      end
+    elseif iargs["command"] == "remove" then
+      data = console("opkg remove " .. iargs["args"]["packagename"])
+    elseif iargs["command"] == "upgrade" then
+      data = console("opkg upgrade " .. iargs["args"]["packagename"])
+    elseif iargs["command"] == "install" then
+      if iargs["args"]["packagename"] then
+        data = console("opkg install " .. iargs["args"]["packagename"])
+      else
+        local rpath = get_real_path(request, response, iargs["args"]["filename"])
+        data = console("opkg install " .. rpath)
+      end
+    end
+  elseif meth == "exec" then
+    data = console(iargs["command"])
+
+  --
+  -- MISC
+  --
+
   else
     error = "Invalid API method"
   end

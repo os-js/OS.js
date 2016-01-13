@@ -53,25 +53,17 @@
     // Load and set up scheme (GUI) here
     scheme.render(this, 'ArduinoSysLogWindow', root);
 
-    function callAPI(fn, args, cb) {
-      var proc = API.getProcess('ArduinoService', true);
-      if ( proc ) {
-        self._toggleLoading(true);
-        proc.externalCall(fn, args, function(err, response) {
-          self._toggleLoading(false);
-          return cb(err, response);
-        });
-      }
-    }
-
     var input = scheme.find(this, 'LogOutput');
     function refresh() {
-      callAPI('syslog', {}, function(err, response) {
-        if (response) {
-          input.set('value', response);
-        } else {
-          err = err || (response ? 'Unknown error' : 'No data recieved');
+      self._toggleLoading(true);
+      API.call('syslog', {}, function(response) {
+        self._toggleLoading(false);
+
+        if (response.error) {
+          var err = response.error || (response.result ? 'Unknown error' : 'No data recieved');
           input.set('value', 'ERROR: ' + err);
+        } else {
+          input.set('value', response);
         }
       });
     }

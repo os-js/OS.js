@@ -243,15 +243,11 @@
 
   ApplicationArduinoPackageManager.prototype.callAPI = function(fn, args, cb) {
     var win = this._getMainWindow();
-    var proc = API.getProcess('ArduinoService', true);
-
-    if ( proc ) {
-      win._toggleLoading(true);
-      proc.externalCall(fn, args, function(err, response) {
-        win._toggleLoading(false);
-        return cb(err, response);
-      });
-    }
+    win._toggleLoading(true);
+    API.call(fn, args, function(response) {
+      win._toggleLoading(false);
+      return cb(response.error, response.result);
+    });
   };
 
   ApplicationArduinoPackageManager.prototype.callOpkg = function(name, args, cb) {
