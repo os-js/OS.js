@@ -48,8 +48,15 @@ mkdir -p $OUTDIR/vfs/tmp
 mkdir -p $OUTDIR/dist/cgi-bin
 mkdir -p $OUTDIR/lib/osjs/app
 
+# Reset changes in dist
+git checkout -- dist
+
 # Packages
-grunt all dist-index compress
+grunt all dist-index
+
+if [ "$1" == "compress" ]; then
+  grunt compress
+fi
 
 #APPS=`(cd src/packages/target; find . -maxdepth 1 -type d)`
 APPS=`(cd src/packages/target; find . -maxdepth 1)`
@@ -113,16 +120,19 @@ rm $OUTDIR/dist/vendor/.gitignore 2>/dev/null
 rm $OUTDIR/dist/themes/.gitignore 2>/dev/null
 rm $OUTDIR/dist/packages/.gitignore 2>/dev/null
 rm $OUTDIR/dist/api.php 2>/dev/null
-rm $OUTDIR/dist/osjs.js 2>/dev/null
-rm $OUTDIR/dist/osjs.css 2>/dev/null
-rm $OUTDIR/dist/locales.js 2>/dev/null
-rm $OUTDIR/dist/settings.js 2>/dev/null
 rm $OUTDIR/dist/packages/*/*/package.json 2>/dev/null
 rm $OUTDIR/dist/packages/*/*/api.js 2>/dev/null
 rm $OUTDIR/dist/packages/*/*/api.php 2>/dev/null
 rm $OUTDIR/dist/packages/*/*/server.lua 2>/dev/null
-rm $OUTDIR/dist/packages/*/*/combined.js 2>/dev/null
-rm $OUTDIR/dist/packages/*/*/combined.css 2>/dev/null
+
+if [ "$1" == "compress" ]; then
+  rm $OUTDIR/dist/osjs.js 2>/dev/null
+  rm $OUTDIR/dist/osjs.css 2>/dev/null
+  rm $OUTDIR/dist/locales.js 2>/dev/null
+  rm $OUTDIR/dist/settings.js 2>/dev/null
+  rm $OUTDIR/dist/packages/*/*/combined.js 2>/dev/null
+  rm $OUTDIR/dist/packages/*/*/combined.css 2>/dev/null
+fi
 
 rm -rf $OUTDIR/dist/packages/default 2>/dev/null
 rm -rf $OUTDIR/dist/packages/arduino 2>/dev/null
