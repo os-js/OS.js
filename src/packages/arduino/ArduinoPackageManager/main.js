@@ -277,7 +277,7 @@
           wm.notification({
             icon: 'apps/update-manager.png',
             title: 'opkg result',
-            message: stdout
+            message: stdout.replace('\n', '\n\n')
           });
         }
       }
