@@ -161,7 +161,7 @@
 
       callAPI('netinfo', {}, function(err, response) {
         var viewi = scheme.find(self, 'ArduinoNetworkDeviceInfo');
-        var viewa = scheme.find(self, 'ArduinoNetworkDeviceArptable');
+        var viewa = scheme.find(self, 'ArduinoNetworkDeviceIfconfig');
 
         viewi.clear();
         viewa.clear();
@@ -173,7 +173,7 @@
 
         var keys, rows;
         var netinfo = response.deviceinfo[device];
-        var arptable = response.arptable;
+        var ifconfig = response.ifconfig;
 
         if ( netinfo ) {
           rows = [];
@@ -191,10 +191,10 @@
           viewi.add(rows);
         }
 
-        if ( arptable ) {
+        if ( ifconfig ) {
           rows = [];
-          arptable.forEach(function(arp) {
-            if ( arp.Device === device ) {
+          ifconfig.forEach(function(arp) {
+            if ( arp.iface === device ) {
               Object.keys(arp).forEach(function(v) {
                 rows.push({
                   columns: [

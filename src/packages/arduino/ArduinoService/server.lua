@@ -4,6 +4,7 @@ local sys = require "luci.sys"
 local osjs = require "osjs"
 local nixio = require "nixio"
 local fs = require "nixio.fs"
+local json = require "luci.json"
 
 local function iface_status(ifaces)
   local netm = require "luci.model.network".init()
@@ -185,7 +186,7 @@ local function request(m, a, request, response)
   elseif m == "netinfo" then
     result = {
       deviceinfo = sys.net.deviceinfo(),
-      arptable = sys.net.arptable()
+      ifconfig = json.decode(console("sh /opt/osjs/bin/arduino-ifconfig.sh"))
     }
   elseif m == "iwinfo" then
     -- local device = a["device"] or "wlan0"

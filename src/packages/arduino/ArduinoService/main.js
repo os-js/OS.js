@@ -221,10 +221,10 @@
     }
     this.busy = true;
 
-    function getArpTable(table, dev) {
+    function getIfconfig(table, dev) {
       var result = null;
       table.forEach(function(iter) {
-        if ( iter.Device === dev ) {
+        if ( iter.iface === dev ) {
           result = iter;
         }
         return !!result;
@@ -242,11 +242,11 @@
 
       var list = {};
       devs.forEach(function(dev) {
-        var arp =  getArpTable(result.arptable, dev) || {};
+        var arp =  getIfconfig(result.ifconfig, dev) || {};
         var details = {
-          'IP': arp['IP address'] || '',
-          'Mask': arp['Mask'] || '',
-          'MAC': arp['HW address'] || ''
+          'IP': arp['ip'] || '',
+          'Mask': arp['netmask'] || '',
+          'MAC': arp['mac'] || ''
         };
         list[dev] = details;
       });
