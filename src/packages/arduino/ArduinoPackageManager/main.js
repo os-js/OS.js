@@ -269,9 +269,10 @@
 
     this.callAPI('opkg', {command: name, args: args}, function(err, stdout) {
       if ( dialog ) {
-        dialog.setProgress(100);
-        dialog._close();
-        dialog = null;
+        try {
+          dialog.setProgress(100);
+          dialog._close();
+        } catch ( e ) {}
 
         if ( wm ) {
           wm.notification({
@@ -281,6 +282,8 @@
           });
         }
       }
+
+      dialog = null;
 
       cb(err, (stdout || '').split('\n'));
     });
