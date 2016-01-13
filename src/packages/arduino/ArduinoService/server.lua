@@ -96,7 +96,8 @@ local function get_wlans(device)
       return "WEP"
     elseif info.wpa > 0 then
       if info.wpa == 3 then
-        return "WPA/WPA2"
+        -- return "WPA/WPA2"
+        return nil
       elseif info.wpa == 2 then
         return "WPA2"
       end
@@ -129,14 +130,17 @@ local function get_wlans(device)
   for i, net in ipairs(scanlist(3)) do
     net.encryption = net.encryption or { }
 
-    result[i] = {
-      mode = net.mode,
-      channel = net.channel,
-      ssid = net.ssid,
-      bssid = net.bssid,
-      signal = percent_wifi_signal(net),
-      encryption = format_wifi_encryption(net.encryption)
-    }
+    local enc = format_wifi_encryption(net.encryption)
+    if enc ~= nil then
+      result[i] = {
+        mode = net.mode,
+        channel = net.channel,
+        ssid = net.ssid,
+        bssid = net.bssid,
+        signal = percent_wifi_signal(net),
+        encryption = enc
+      }
+    end
   end
 
   return result
