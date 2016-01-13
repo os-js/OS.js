@@ -160,8 +160,13 @@ end
 --                                      VFS
 -- ----------------------------------------------------------------------------
 
+function fs_exists(request, response, path)
+  local rpath = get_real_path(request, response, path)
+  return false, fs.stat(rpath, 'type') == 'reg'
+end
+
 function fs_read(request, response, path)
-  -- DEPRECATED
+  -- NOT AVAILABLE OVER HTTP
   return "Not implemented", false
 end
 
@@ -282,7 +287,9 @@ function fs_request(request, response, name, args)
   local error = false
   local data = false
 
-  if name == "read" then
+  if name == "exists" then
+    error, data = fs_exists(request, response, args[1])
+  elseif name == "read" then
     error, data = fs_read(request, response, args[1])
   elseif name == "write" then
     error, data = fs_write(request, response, args[1], args[2])
