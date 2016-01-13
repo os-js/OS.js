@@ -608,7 +608,8 @@ function api_request(request, response, meth, iargs)
 
   elseif meth == "sysinfo" then
     local timezone = fs.readfile("/etc/TZ") or "UTC"
-    timezone = timezone:gsub('%W', '')
+    -- timezone = timezone:gsub('%W', '')
+
     local metrics = {sys.sysinfo()}
     metrics[8] = sys.uptime()
 
