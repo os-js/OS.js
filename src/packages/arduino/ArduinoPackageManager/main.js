@@ -255,7 +255,33 @@
   };
 
   ApplicationArduinoPackageManager.prototype.callOpkg = function(name, args, cb) {
+    var wm = OSjs.Core.getWindowManager();
+    var win = this._getMainWindow();
+    var dialog;
+
+    if ( (['install', 'upgrade', 'remove', 'update']).indexOf(name) >= 0 ) {
+      dialog = API.createDialog('FileProgress', {
+        title: 'Performing opkg ' + name,
+        message: 'Please wait...'
+      }, function(btn) {
+      });
+    }
+
     this.callAPI('opkg', {command: name, args: args}, function(err, stdout) {
+      if ( dialog ) {
+        dialog.setProgress(100);
+        dialog._close();
+        dialog = null;
+
+        if ( wm ) {
+          wm.notification({
+            icon: 'apps/update-manager.png',
+            title: 'opkg result',
+            message: stdout
+          });
+        }
+      }
+
       cb(err, (stdout || '').split('\n'));
     });
   };
