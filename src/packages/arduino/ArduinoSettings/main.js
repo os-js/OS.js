@@ -83,23 +83,6 @@
       }
     }
 
-    function renderTimezones() {
-      var timezones = API.getConfig('Timezones') || [];
-
-      var options = [];
-      timezones.forEach(function(group) {
-        group.zones.forEach(function(zone) {
-          var val = zone.value.replace(/\-/, ' ');
-          options.push({
-            label: Utils.format('{0} - {1}', val, zone.name),
-            value: val
-          });
-        });
-      });
-
-      selectTimezone.add(options);
-    }
-
     function renderDeviceInfo(cb) {
       cb = cb || function() {};
 
@@ -324,7 +307,6 @@
     switchRest.on('change', function(ev, val) {
     });
 
-    renderTimezones();
 
     renderDeviceInfo(function() {
       renderNetworkDevices();
