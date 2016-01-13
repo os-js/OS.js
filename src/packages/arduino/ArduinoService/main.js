@@ -133,7 +133,7 @@
 
     // Create update notification
     var wm = OSjs.Core.getWindowManager();
-    this.pollUpdate('wget', function(err, latest, packageName) { // FIXME
+    this.pollUpdate('arduinoos', function(err, latest, packageName) {
       if ( wm ) {
         if ( err ) {
           wm.notification({
@@ -143,15 +143,16 @@
           });
           return;
         }
-
-        wm.notification({
-          icon: 'actions/stock_new-appointment.png',
-          title: 'Update Notification',
-          message: Utils.format('An update of {0} ({1}) is available', packageName, latest.latest),
-          onClick: function() {
-            API.launch('ApplicationArduinoPackageManager', {upgrade: packageName})
-          }
-        });
+        if ( latest ) {
+          wm.notification({
+            icon: 'actions/stock_new-appointment.png',
+            title: 'Update Notification',
+            message: Utils.format('An update of {0} ({1}) is available', packageName, latest.latest),
+            onClick: function() {
+              API.launch('ApplicationArduinoPackageManager', {upgrade: packageName})
+            }
+          });
+        }
       }
     });
 
@@ -262,7 +263,7 @@
   ArduinoService.prototype.externalCall = function(fn, args, cb) {
     this._call(fn, args, function(response) {
       response = response || {};
-      if ( response.result ) {
+      if ( !response.error ) {
         cb(false, response.result);
       } else {
         cb(response.error || 'No response from device');
