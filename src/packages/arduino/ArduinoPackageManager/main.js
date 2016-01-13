@@ -82,7 +82,7 @@
 
     scheme.find(this, 'ButtonUpdate').on('click', function() {
       if ( self.currentPackage ) {
-        app.callOpkg('update', {packagename: self.currentPackage}, function() {
+        app.callOpkg('upgrade', {packagename: self.currentPackage}, function() {
           self.selectView();
         });
       }
