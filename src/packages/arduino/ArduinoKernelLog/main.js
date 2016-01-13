@@ -59,6 +59,7 @@
     function refresh() {
       self._toggleLoading(true);
       API.call('dmesg', {}, function(response) {
+        self._toggleLoading(false);
         if (response.error) {
           var err = response.error || (response.result ? 'Unknown error' : 'No data recieved');
           input.set('value', 'ERROR: ' + err);
