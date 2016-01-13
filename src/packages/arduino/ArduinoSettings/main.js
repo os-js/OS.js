@@ -252,7 +252,7 @@
           var enc = data.encryption.toLowerCase().replace(/[^A-z0-9]/, '');
           var map = {'wep': 'wep', 'wpa': 'psk', 'wpa2': 'psk2'};
           if ( enc == 'unknown' ) { enc = 'open'; }
-          if ( map[enc] } {
+          if ( map[enc] ) {
             enc = map[enc];
           }
 
