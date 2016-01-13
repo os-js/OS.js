@@ -1517,7 +1517,7 @@
     });
 
     grunt.log.subhead('Writing metadata...');
-    var tpl = readFile(_path.join(PATHS.templates, 'packages.js')).toString();
+    var tpl = readFile(_path.join(PATHS.templates, 'dist', 'packages.js')).toString();
     var content = tpl.replace('%PACKAGES%', JSON.stringify(normalizeManifest(packages), null, 2));
     writeFile(PATHS.out_client_manifest, content);
   }

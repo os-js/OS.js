@@ -49,7 +49,7 @@ mkdir -p $OUTDIR/dist/cgi-bin
 mkdir -p $OUTDIR/lib/osjs/app
 
 # Packages
-grunt all dist-index
+grunt all dist-index compress
 
 #APPS=`(cd src/packages/target; find . -maxdepth 1 -type d)`
 APPS=`(cd src/packages/target; find . -maxdepth 1)`
@@ -117,6 +117,8 @@ rm $OUTDIR/dist/packages/*/*/package.json 2>/dev/null
 rm $OUTDIR/dist/packages/*/*/api.js 2>/dev/null
 rm $OUTDIR/dist/packages/*/*/api.php 2>/dev/null
 rm $OUTDIR/dist/packages/*/*/server.lua 2>/dev/null
+rm $OUTDIR/dist/packages/*/*/combined.js 2>/dev/null
+rm $OUTDIR/dist/packages/*/*/combined.css 2>/dev/null
 
 rm -rf $OUTDIR/dist/packages/default 2>/dev/null
 rm -rf $OUTDIR/dist/packages/arduino 2>/dev/null
