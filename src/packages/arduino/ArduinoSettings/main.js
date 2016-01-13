@@ -306,7 +306,7 @@
         security: wifiSelectEncrypt.get('value'),
         password: wifiPassword.get('value')
       }, function() {
-        wm.notification({title: 'Arduino', message: 'You will be notified when your wifi settings have been applied', icon: 'arduino.png' });
+        wm.notification({title: 'Arduino', message: 'Applying WIFI changes...', icon: 'arduino.png' });
       });
     });
 

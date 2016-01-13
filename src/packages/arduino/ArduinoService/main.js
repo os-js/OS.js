@@ -184,7 +184,9 @@
       };
 
       keys.forEach(function(key, idx) {
-        list[key] = info[idx] || null;
+        if ( key !== 'security' ) { // FIXME
+          list[key] = info[idx] || null;
+        }
       });
 
       self.busy = false;
