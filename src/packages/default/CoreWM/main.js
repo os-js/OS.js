@@ -642,7 +642,13 @@
       if ( opts.message ) {
         var message = document.createElement('div');
         message.className = 'Message';
-        message.appendChild(document.createTextNode(opts.message));
+        var lines = opts.message.split('\n');
+        lines.forEach(function(line, idx) {
+          message.appendChild(document.createTextNode(line));
+          if ( idx < (lines.length - 1) ) {
+            message.appendChild(document.createElement('br'));
+          }
+        });
         classNames.push('HasMessage');
         container.appendChild(message);
       }
