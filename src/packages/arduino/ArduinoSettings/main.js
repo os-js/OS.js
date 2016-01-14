@@ -80,6 +80,12 @@
       }, function(err) {
         err = 'Error while communicating with device: ' + (err || 'Unkown error (no response)');
         wm.notification({title: 'Arduino Settings', message: err, icon: 'status/error.png' });
+      }, {
+        timeout: 5000,
+        ontimeout: function() {
+          self._toggleLoading(false);
+          return cb('Request timed out');
+        }
       });
     }
 
