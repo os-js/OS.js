@@ -291,13 +291,16 @@
    * @param   String    m       Method name
    * @param   Object    a       Method arguments
    * @param   Function  cok     Callback on success
-   * @param   Function  cerror  Callback on HTTP error
+   * @param   Function  cerror  (Optional) Callback on HTTP error
+   * @param   Object    options (Optional) Options to send to the XHR request
+   *
+   * @see     OSjs.Core.Handler.callAPI()
    *
    * @return  void
    * @api     OSjs.API.call()
    */
   var _CALL_INDEX = 1;
-  function doAPICall(m, a, cok, cerror) {
+  function doAPICall(m, a, cok, cerror, options) {
     var lname = 'APICall_' + _CALL_INDEX;
 
     if ( typeof a.__loading === 'undefined' || a.__loading === true ) {
@@ -323,7 +326,7 @@
     }, function() {
       destroyLoading(lname);
       cerror.apply(this, arguments);
-    });
+    }, options);
   }
 
   /////////////////////////////////////////////////////////////////////////////
