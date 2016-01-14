@@ -124,6 +124,8 @@ rm $OUTDIR/dist/packages/*/*/package.json 2>/dev/null
 rm $OUTDIR/dist/packages/*/*/api.js 2>/dev/null
 rm $OUTDIR/dist/packages/*/*/api.php 2>/dev/null
 rm $OUTDIR/dist/packages/*/*/server.lua 2>/dev/null
+rm $OUTDIR/dist/packages/target/CoreWM/panelitems 2>/dev/null
+rm $OUTDIR/dist/packages/target/CodeMirror/vendor 2>/dev/null
 
 if [ "$1" == "compress" ]; then
   rm $OUTDIR/dist/osjs.js 2>/dev/null
