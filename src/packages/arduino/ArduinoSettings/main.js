@@ -39,7 +39,7 @@
       icon: metadata.icon,
       title: metadata.name,
       width: 420,
-      height: 400
+      height: 440
     }, app, scheme]);
   }
 
