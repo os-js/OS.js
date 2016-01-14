@@ -111,7 +111,7 @@ mv -v $TMPDIR/* $OUTDIR/dist/themes/icons/default/
 
 rm -rf $OUTDIR/dist/themes/sounds/*
 rm -rf $OUTDIR/dist/themes/wallpapers/*
-cp -v src/client/themes/wallpapers/arduino.png $OUTDIR/dist/themes/wallpapers/
+cp -v src/client/themes/wallpapers/arduino-infinite-boards.jpg $OUTDIR/dist/themes/wallpapers/
 
 # Cleanup
 rm $OUTDIR/dist/.htaccess 2>/dev/null
