@@ -573,7 +573,12 @@ local function get_wlans(device)
   return result
 end
 
-local function console(cmd)
+local function console(cmd, back)
+  if back then
+    os.execute(cmd .. " &")
+    return ""
+  end
+
   local handle = io.popen(cmd)
   local result = handle:read("*a")
   handle:close()
@@ -667,7 +672,7 @@ function api_request(request, response, meth, iargs)
     username = get_username(request, response)
     data = sys.user.setpasswd(username, iargs["password"]) == 0
   elseif meth == "wifi" then
-    data = console("sh " .. ROOTDIR .. "/bin/arduino-wifi-connect.sh " .. iargs["ssid"] .. " " ..  iargs["security"] .. " " .. iargs["password"])
+    data = console("sh " .. ROOTDIR .. "/bin/arduino-wifi-connect.sh " .. iargs["ssid"] .. " " ..  iargs["security"] .. " " .. iargs["password"], true)
   elseif meth == "opkg" then
     if iargs["command"] == "list" then
       if iargs["args"]["category"] == "all" then
