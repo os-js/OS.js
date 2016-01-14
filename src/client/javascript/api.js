@@ -291,7 +291,7 @@
    * @param   String    m       Method name
    * @param   Object    a       Method arguments
    * @param   Function  cok     Callback on success
-   * @param   Function  cerror  Callback on error
+   * @param   Function  cerror  Callback on HTTP error
    *
    * @return  void
    * @api     OSjs.API.call()
@@ -302,6 +302,16 @@
 
     if ( typeof a.__loading === 'undefined' || a.__loading === true ) {
       createLoading(lname, {className: 'BusyNotification', tooltip: 'API Call'});
+    }
+
+    if ( typeof cok !== 'function' ) {
+      throw new TypeError('call() expects a function as callback');
+    }
+
+    if ( typeof cerror !== 'function' ) {
+      cerror = function() {
+        console.warn('API::call()', 'no error handler assigned', arguments);
+      };
     }
 
     _CALL_INDEX++;
