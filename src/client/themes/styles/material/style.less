@@ -1,7 +1,7 @@
 @import 'src/client/stylesheets/theme.less';
 @import 'src/client/themes/styles/material/materialColors.less';
 
-@base_background_color  : @clr-blue-700;
+@base_background_color  : @clr-teal-700;
 @base_foreground_color  : #242424;
 @base_shadow_unfocused  : 0px 0px 10px 1px rgba(0, 0, 0, .3);
 @base_shadow_focused    : 0px 0px 10px 1px rgba(0, 0, 0, .6);
@@ -62,20 +62,20 @@ gui-progress-bar{
 }
 application-window{
   &:before {
-    background: @clr-blue-700;
+    background: @clr-teal-700;
   }
   application-window-content {
     background: #fff;
     padding-top: 0;
 
     &[data-focused="false"] {
-      border: 1px solid @clr-blue-500;
+      border: 1px solid @clr-teal-500;
     }
     &[data-focused="true"] {
       border: 1px solid #dadada;
     }
     gui-menu-bar {
-      background: @clr-blue-600;
+      background: @clr-teal-600;
       color: #fff;
 
       gui-menu-bar-entry{
@@ -83,15 +83,15 @@ application-window{
       }
       gui-menu-bar-entry:hover,
       .gui-active {
-        background: @clr-blue-700;
+        background: @clr-teal-700;
       }
       gui-menu {
         min-width: 100px;
-        background: @clr-blue-600;
+        background: @clr-teal-600;
 
         gui-menu-entry{
           &:hover {
-            background-color: @clr-blue-700;
+            background-color: @clr-teal-700;
           }
           > * {
             color: #fff;
@@ -178,7 +178,7 @@ application-window{
         &:after {
           width: 11px;
           height: 9px;
-          background: @clr-blue-700;
+          background: @clr-teal-700;
           border: 1px solid @fadedWhite;
           border-top-width: 2px;
           transform: translate(-50%, -50%);
@@ -223,7 +223,7 @@ application-splash{
   }
 }
 gui-menu {
-  background: @clr-blue-500;
+  background: @clr-teal-500;
 
   gui-menu-entry {
     &:after{
@@ -234,7 +234,7 @@ gui-menu {
       color: #fff;
     }
     &:hover {
-      background-color: @clr-blue-700;
+      background-color: @clr-teal-700;
     }
   }
 }
@@ -245,13 +245,13 @@ gui-tabs > ul > li {
   padding: 3px 6px;
 }
 gui-tabs .gui-active:after {
-  border: 1px solid @clr-pink-500 !important;
+  border: 1px solid @clr-amber-500 !important;
 }
 gui-list-view gui-list-view-row.gui-active {
-  background-color: @clr-blue-700 !important;
+  background-color: @clr-teal-700 !important;
 }
 gui-icon-view-entry.gui-active {
-  background-color: @clr-blue-700 !important;
+  background-color: @clr-teal-700 !important;
   > div > span {
     background: rgba(0, 0, 0, 0) !important;
   }
@@ -319,11 +319,11 @@ gui-select:after {
 }
 
 corewm-notification-entry:before {
-  background: @clr-blue-700 !important;
+  background: @clr-teal-700 !important;
 }
 corewm-panel{
   &:before {
-    background: @clr-blue-700 !important;
+    background: @clr-teal-700 !important;
   }
   .PanelItemWindowList .Button {
     opacity: 1 !important;
