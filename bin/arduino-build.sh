@@ -42,9 +42,9 @@ rm -rf dist/themes/*
 rm -rf dist/packages/*
 
 mkdir -p $OUTDIR/bin
-mkdir -p $OUTDIR/vfs/home
-mkdir -p $OUTDIR/vfs/public
-mkdir -p $OUTDIR/vfs/tmp
+#mkdir -p $OUTDIR/vfs/home
+#mkdir -p $OUTDIR/vfs/public
+#mkdir -p $OUTDIR/vfs/tmp
 mkdir -p $OUTDIR/dist/cgi-bin
 mkdir -p $OUTDIR/lib/osjs/app
 
@@ -67,9 +67,8 @@ for AD in $APPS; do
 done
 
 # Misc files
-cp -v README.md $OUTDIR/
+cp -v src/templates/arduino/README $OUTDIR/
 cp -v AUTHORS $OUTDIR/
-cp -v CHANGELOG.md $OUTDIR/
 cp -v -r dist $OUTDIR/
 cp -v bin/arduino-wifi-*.sh $OUTDIR/bin/
 cp -v bin/arduino-toggle-*.sh $OUTDIR/bin/
@@ -135,5 +134,7 @@ rm $OUTDIR/dist/packages/target/CodeMirror/vendor 2>/dev/null
 rm -rf $OUTDIR/dist/packages/default 2>/dev/null
 rm -rf $OUTDIR/dist/packages/arduino 2>/dev/null
 rm -rf $OUTDIR/dist/vendor/* 2>/dev/null
+
+rm -rf $OUTDIR/build/dist/themes/styles/material/*.less 2>/dev/null
 
 rm -rf $TMPDIR
