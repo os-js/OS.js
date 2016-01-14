@@ -300,9 +300,11 @@
   ApplicationWriterWindow.prototype.updateFile = function(file) {
     DefaultApplicationWindow.prototype.updateFile.apply(this, arguments);
 
-    var self = this;
-    var el = this._scheme.find(this, 'Text');
-    el.$element.focus();
+
+    try {
+      var el = this._scheme.find(this, 'Text');
+      el.$element.focus();
+    } catch ( e ) {}
 
     this.checkChangeLength = -1;
   };
