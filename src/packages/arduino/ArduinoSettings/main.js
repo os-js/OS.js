@@ -292,13 +292,17 @@
       renderNetworkInfo(selectNetworkDevice.get('value'));
     });
     scheme.find(this, 'ButtonArduinoConfigureWIFI').on('click', function() {
-      callAPI('wifi', {
-        ssid: wifiInput.get('value'),
-        security: wifiSelectEncrypt.get('value'),
-        password: wifiPassword.get('value')
-      }, function() {
-        wm.notification({title: 'Arduino', message: 'Applying WIFI changes...', icon: 'arduino.png' });
-      });
+      var ssid = wifiInput.get('value');
+      var enc = wifiSelectEncrypt.get('value');
+      if ( ssid && enc ) {
+        callAPI('wifi', {
+          ssid: ssid,
+          security: enc,
+          password: wifiPassword.get('value')
+        }, function() {
+          wm.notification({title: 'Arduino', message: 'Applying WIFI changes...', icon: 'arduino.png' });
+        });
+      }
     });
 
     scheme.find(this, 'ButtonArduinoConfigureRest').on('click', function() {
