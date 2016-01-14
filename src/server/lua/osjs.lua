@@ -525,10 +525,7 @@ local function get_wlans(device)
     if info.wep == true then
       return "WEP"
     elseif info.wpa > 0 then
-      if info.wpa == 3 then
-        -- return "WPA/WPA2"
-        return nil
-      elseif info.wpa == 2 then
+      if info.wpa >= 2 then
         return "WPA2"
       end
       return "WPA"
