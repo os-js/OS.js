@@ -36,7 +36,7 @@ html, body {
 body {
   margin : 0;
   padding : 0;
-  background-color : #2C969D;
+  background-color : #00796B;
 }
 body, input, button, textarea, label, select {
   font-size : 12px;
@@ -107,12 +107,12 @@ body, input, button, textarea, label, select {
 
 #LoadingScreen {
   position : absolute;
-  width : 320px;
-  height : 320px;
+  width : 400px;
+  height : 400px;
   top : 50%;
   left : 50%;
-  margin-top : -160px;
-  margin-left : -160px;
+  margin-top : -200px;
+  margin-left : -200px;
   z-index : 999;
 }
   #LoadingScreen span {
