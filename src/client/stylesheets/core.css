@@ -36,7 +36,7 @@ html, body {
 body {
   margin : 0;
   padding : 0;
-  background-color : #572a79;
+  background-color : #2C969D;
 }
 body, input, button, textarea, label, select {
   font-size : 12px;
@@ -108,10 +108,10 @@ body, input, button, textarea, label, select {
 #LoadingScreen {
   position : absolute;
   width : 320px;
-  height : 182px;
+  height : 320px;
   top : 50%;
   left : 50%;
-  margin-top : -91px;
+  margin-top : -160px;
   margin-left : -160px;
   z-index : 999;
 }
@@ -200,6 +200,8 @@ body[data-attention="true"]:after {
   -moz-user-select : none;
   user-select : none;
   cursor : default;
+
+  display : none;
 }
 
   #DebugNotice a {
