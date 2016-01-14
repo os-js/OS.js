@@ -300,7 +300,6 @@
   ApplicationWriterWindow.prototype.updateFile = function(file) {
     DefaultApplicationWindow.prototype.updateFile.apply(this, arguments);
 
-
     try {
       var el = this._scheme.find(this, 'Text');
       el.$element.focus();
