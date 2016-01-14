@@ -2,7 +2,7 @@
   "handler": "demo",
   "connection": "http",
 
-  "repositories": ["default", "arduino"],
+  "repositories": ["default"],
 
   "client" : {
     "Version" : "2.0-alpha71"
