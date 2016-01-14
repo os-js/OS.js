@@ -33,7 +33,7 @@ local nixio = require "nixio"
 local fs = require "nixio.fs"
 
 local sys = require "luci.sys"
-local init = require "luci.init"
+--local init = require "luci.init"
 
 local curl = nil
 if pcall(require, "curl") then
