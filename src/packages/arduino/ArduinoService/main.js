@@ -38,6 +38,7 @@
     Service.apply(this, ['ArduinoService', args, metadata]);
 
     this.busy = false;
+    this.updateCheckInterval = null;
   }
 
   ArduinoService.prototype = Object.create(Service.prototype);
@@ -45,6 +46,9 @@
 
   ArduinoService.prototype.destroy = function() {
     var wm = OSjs.Core.getWindowManager();
+
+    this.updateCheckInterval = clearInterval(this.updateCheckInterval);
+
     if ( wm ) {
       wm.destroyNotificationIcon('_ArduinoNotification');
       wm.destroyNotificationIcon('_ArduinoNetworkNotification');
@@ -132,29 +136,36 @@
     });
 
     // Create update notification
-    var wm = OSjs.Core.getWindowManager();
-    this.pollUpdate('arduinoos', function(err, latest, packageName) {
-      if ( wm ) {
-        if ( err ) {
-          wm.notification({
-            icon: 'actions/stock_new-appointment.png',
-            title: 'Update Notification',
-            message: Utils.format('Failed to check for update of {0}: {1}', packageName, err)
-          });
-          return;
+    function pollUpdate() {
+      self.pollUpdate('arduinoos', function(err, latest, packageName) {
+        if ( wm ) {
+          if ( err ) {
+            wm.notification({
+              icon: 'actions/stock_new-appointment.png',
+              title: 'Update Notification',
+              message: Utils.format('Failed to check for update of {0}: {1}', packageName, err)
+            });
+            return;
+          }
+          if ( latest ) {
+            wm.notification({
+              icon: 'actions/stock_new-appointment.png',
+              title: 'Update Notification',
+              message: Utils.format('An update of {0} ({1}) is available', packageName, latest.latest),
+              onClick: function() {
+                API.launch('ApplicationArduinoPackageManager', {upgrade: packageName})
+              }
+            });
+          }
         }
-        if ( latest ) {
-          wm.notification({
-            icon: 'actions/stock_new-appointment.png',
-            title: 'Update Notification',
-            message: Utils.format('An update of {0} ({1}) is available', packageName, latest.latest),
-            onClick: function() {
-              API.launch('ApplicationArduinoPackageManager', {upgrade: packageName})
-            }
-          });
-        }
-      }
-    });
+      });
+    }
+
+    this.updateCheckInterval = setInterval(function() {
+      pollUpdate();
+    }, ((60 * 1000) * 60) * 2);
+
+    pollUpdate();
 
     onInited();
   };

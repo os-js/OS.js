@@ -77,6 +77,9 @@
       API.call(fn, args, function(response) {
         self._toggleLoading(false);
         return cb(response.error, response.result);
+      }, function(err) {
+        err = 'Error while communicating with device: ' + (err || 'Unkown error (no response)');
+        wm.notification({title: 'Arduino Settings', message: err, icon: 'status/error.png' });
       });
     }
 
@@ -254,10 +257,12 @@
           }];
 
           (result || []).forEach(function(iter) {
-            list.push({
-              label: Utils.format('{0} ({1}, {2}% signal)', iter.ssid, iter.encryption, iter.signal),
-              value: JSON.stringify(iter)
-            });
+            if ( iter ) {
+              list.push({
+                label: Utils.format('{0} ({1}, {2}% signal)', iter.ssid, iter.encryption, iter.signal),
+                value: JSON.stringify(iter)
+              });
+            }
           });
 
           wifiSelect.add(list);
