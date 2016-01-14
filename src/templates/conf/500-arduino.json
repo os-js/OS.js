@@ -15,7 +15,7 @@
   },
 
   "client" : {
-    "Version" : "2.0-alpha71-arduino-yun",
+    "Version" : "2.0-alpha71-arduino-os",
 
     "Connection": {
       "APIURI": "/cgi-bin/osjs-api",
@@ -41,12 +41,12 @@
       "args": {
         "defaults": {
           "icon"            : "arduino-osjs.png",
-          "wallpaper"       : "osjs:///themes/wallpapers/arduino.png",
-          "backgroundColor" : "#d4e5e1",
+          "wallpaper"       : "osjs:///themes/wallpapers/arduino-infinite-boards.jpg",
+          "backgroundColor" : "#ebebeb",
           "theme"           : "material",
           "icons"           : "default",
           "sounds"          : "default",
-          "background"      : "image-fill",
+          "background"      : "image-center",
           "enableSounds"    : false
         }
       }
