@@ -3,6 +3,7 @@
   "name":       "Arduino Process Viewer",
   "mime":       null,
   "icon":       "apps/gnome-monitor.png",
+  "category":   "arduino",
   "preload":    [
     {"src": "main.js", "type": "javascript"},
     {"src": "main.css", "type": "stylesheet"}

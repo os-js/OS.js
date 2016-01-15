@@ -5,6 +5,7 @@
   "enabled":    true,
   "mime":       null,
   "icon":       "apps/help-browser.png",
+  "category":   "arduino",
   "preload":    [
     {"src": "main.js", "type": "javascript"},
     {"src": "main.css", "type": "stylesheet"}
