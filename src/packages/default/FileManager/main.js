@@ -1,5 +1,5 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
@@ -85,7 +85,7 @@
       _: OSjs.Applications.ApplicationFileManager._
     });
 
-    if ( window.location.protocol.match(/^file/) ) { // FIXME: Translation
+    if ( (API.getConfig('Connection.Type') !== 'nw') && window.location.protocol.match(/^file/) ) { // FIXME: Translation
       this._setWarning('VFS does not work when in standalone mode');
     }
 
@@ -270,6 +270,10 @@
   };
 
   ApplicationFileManagerWindow.prototype.updateSideView = function(updateModule) {
+    if ( this._destroyed || !this._scheme ) {
+      return;
+    }
+
     var found = null;
     var path = this.currentPath || '/';
 
@@ -288,6 +292,10 @@
   };
 
   ApplicationFileManagerWindow.prototype.renderSideView = function() {
+    if ( this._destroyed || !this._scheme ) {
+      return;
+    }
+
     var sideViewItems = [];
     VFS.getModules({special: true}).forEach(function(m, i) {
       var classNames = [m.module.mounted() ? 'mounted' : 'unmounted'];
@@ -356,6 +364,10 @@
   };
 
   ApplicationFileManagerWindow.prototype.changePath = function(dir, selectFile, isNav, isInput) {
+    if ( this._destroyed || !this._scheme ) {
+      return;
+    }
+
     //if ( dir === this.currentPath ) { return; }
     dir = dir || this.currentPath;
 
@@ -398,6 +410,10 @@
     view._call('chdir', {
       path: dir,
       done: function(error, summary) {
+        if ( self._destroyed || !self._scheme ) {
+          return;
+        }
+
         if ( dir && !error ) {
           self.currentPath = dir;
           self.currentSummary = summary;
@@ -422,6 +438,10 @@
   };
 
   ApplicationFileManagerWindow.prototype.changeView = function(viewType, set) {
+    if ( this._destroyed || !this._scheme ) {
+      return;
+    }
+
     var view = this._scheme.find(this, 'FileView');
     view.set('type', viewType, !!set);
 
@@ -431,6 +451,10 @@
   };
 
   ApplicationFileManagerWindow.prototype.toggleSidebar = function(toggle, set) {
+    if ( this._destroyed || !this._scheme ) {
+      return;
+    }
+
     this.viewOptions.ViewSide = toggle;
 
     var container = this._scheme.find(this, 'SideContainer');
@@ -449,6 +473,10 @@
   };
 
   ApplicationFileManagerWindow.prototype.toggleVFSOption = function(opt, key, toggle, set) {
+    if ( this._destroyed || !this._scheme ) {
+      return;
+    }
+
     var self = this;
     var view = this._scheme.find(this, 'FileView');
     var vfsOptions = OSjs.Core.getSettingsManager().instance('VFS');
@@ -468,14 +496,26 @@
   };
 
   ApplicationFileManagerWindow.prototype.toggleHidden = function(toggle, set) {
+    if ( this._destroyed || !this._scheme ) {
+      return;
+    }
+
     return this.toggleVFSOption('showHiddenFiles', 'dotfiles', toggle, set);
   };
 
   ApplicationFileManagerWindow.prototype.toggleExtension = function(toggle, set) {
+    if ( this._destroyed || !this._scheme ) {
+      return;
+    }
+
     return this.toggleVFSOption('showFileExtensions', 'extensions', toggle, set);
   };
 
   ApplicationFileManagerWindow.prototype.toggleNavbar = function(toggle, set) {
+    if ( this._destroyed || !this._scheme ) {
+      return;
+    }
+
     this.viewOptions.ViewNavigation = toggle;
 
     var viewNav  = this._scheme.find(this, 'ToolbarContainer');
@@ -493,6 +533,10 @@
   };
 
   ApplicationFileManagerWindow.prototype.toggleColumn = function(col, set) {
+    if ( this._destroyed || !this._scheme ) {
+      return;
+    }
+
     var vfsOptions     = Utils.cloneObject(OSjs.Core.getSettingsManager().get('VFS') || {});
     var scandirOptions = vfsOptions.scandir || {};
     var viewColumns    = scandirOptions.columns || ['filename', 'mime', 'size'];

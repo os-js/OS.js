@@ -256,6 +256,21 @@ gui-icon-view-entry.gui-active {
     background: rgba(0, 0, 0, 0) !important;
   }
 }
+gui-switch > div {
+  width : 64px;
+}
+gui-switch button.gui-active {
+  margin-left: calc(50% - 1px);
+}
+
+gui-select,
+gui-password,
+gui-text {
+  height: 36px;
+}
+
+gui-input-modal,
+gui-switch,
 gui-button {
   height: 36px;
 
@@ -273,7 +288,7 @@ gui-button {
     cursor: pointer;
     user-select: none;
     transition: background 0.3s;
-    
+
     img{
       pointer-events: none;
     }
@@ -294,6 +309,18 @@ gui-button {
       background: rgba(153, 153, 153, 0.2);
     }
   }
+}
+
+gui-tabs > div {
+  height : ~"calc(100% - 32px)";
+}
+
+gui-select:after {
+  top : 10px;
+}
+
+corewm-notification-entry:before {
+  background: @clr-blue-700 !important;
 }
 corewm-panel{
   &:before {
@@ -338,11 +365,6 @@ corewm-panel{
   100% {
     opacity: 0;
     transform: scale(2.5);
-  }
-}
-.gui-flex{
-  gui-password, gui-text{
-    height: 36px;
   }
 }
 a{

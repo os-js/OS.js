@@ -1,13 +1,14 @@
 {
-  "className":  "ApplicationTextpad",
-  "name":       "Textpad",
-  "description":"Simple text editor",
+  "className": "ApplicationTextpad",
+  "name": "Textpad",
+  "description": "Simple text editor",
   "names": {
     "bg_BG": "Текстов редактор",
     "de_DE": "Texteditor",
     "nl_NL": "Notities",
     "no_NO": "Tekstblokk",
     "pl_PL": "Notatnik",
+    "sk_SK": "Poznámkový blok",
     "ru_RU": "Редактор текста",
     "tr_TR": "Basit Bir Metin Düzenleyicisi",
     "vi_VN": "Trình sửa văn bản"
@@ -18,15 +19,30 @@
     "nl_NL": "Eenvoudige Tekstverwerker",
     "no_NO": "Simpel tekst redigering",
     "pl_PL": "Prosty edytor tekstu",
+    "sk_SK": "Jednoduchý textový editor",
     "ru_RU": "Простой текстовый редактор",
     "tr_TR": "Basit Bir Metin Düzenleyicisi",
     "vi_VN": "Trình sửa văn bản đơn giản"
   },
-  "mime":       ["^text", "inode\\/x\\-empty", "application\\/x\\-empty", "application\\/x\\-lua", "application\\/x\\-python", "application\\/javascript", "application\\/json"],
-  "category":   "utilities",
-  "icon":       "apps/accessories-text-editor.png",
-  "preload":    [
-    {"src": "main.js", "type": "javascript"},
-    {"src": "main.css", "type": "stylesheet"}
+  "mime": [
+    "^text",
+    "inode\\/x\\-empty",
+    "application\\/x\\-empty",
+    "application\\/x\\-lua",
+    "application\\/x\\-python",
+    "application\\/javascript",
+    "application\\/json"
+  ],
+  "category": "utilities",
+  "icon": "apps/accessories-text-editor.png",
+  "preload": [
+    {
+      "src": "main.js",
+      "type": "javascript"
+    },
+    {
+      "src": "main.css",
+      "type": "stylesheet"
+    }
   ]
 }

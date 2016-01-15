@@ -1,5 +1,5 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
@@ -95,9 +95,13 @@
     var buttonEnd = scheme.find(this, 'ButtonEnd').set('disabled', true);
 
     seeker.on('change', function(ev) {
-      audio.pause();
-      audio.currentTime = ev.detail;
-      audio.play();
+      if ( audio ) {
+        audio.pause();
+        if ( ev ) {
+          audio.currentTime = ev.detail || 0;
+        }
+        audio.play();
+      }
     });
 
     player.on('play', function(ev) {

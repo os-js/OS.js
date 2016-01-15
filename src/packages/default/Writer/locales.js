@@ -1,5 +1,5 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
@@ -41,6 +41,9 @@
     },
     pl_PL : {
       'Insert URL' : 'Wpisz URL'
+    },
+    sk_SK : {
+      'Insert URL' : 'Vložiť URL'
     },
     de_DE : {
       'Insert URL' : 'URL einfügen'

@@ -1,5 +1,5 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
@@ -525,12 +525,14 @@
     //attachWindowEvents(w, this);
     createWindowBehaviour(w, this);
 
-    if ( focus === true || (w instanceof OSjs.Core.DialogWindow) ) {
-      w._focus();
-    }
+    this._windows.push(w);
     w._inited();
 
-    this._windows.push(w);
+    if ( focus === true || (w instanceof OSjs.Core.DialogWindow) ) {
+      setTimeout(function() {
+        w._focus();
+      }, 10);
+    }
 
     return w;
   };

@@ -1,5 +1,5 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
@@ -291,17 +291,30 @@
    * @param   String    m       Method name
    * @param   Object    a       Method arguments
    * @param   Function  cok     Callback on success
-   * @param   Function  cerror  Callback on error
+   * @param   Function  cerror  (Optional) Callback on HTTP error
+   * @param   Object    options (Optional) Options to send to the XHR request
+   *
+   * @see     OSjs.Core.Handler.callAPI()
    *
    * @return  void
    * @api     OSjs.API.call()
    */
   var _CALL_INDEX = 1;
-  function doAPICall(m, a, cok, cerror) {
+  function doAPICall(m, a, cok, cerror, options) {
     var lname = 'APICall_' + _CALL_INDEX;
 
     if ( typeof a.__loading === 'undefined' || a.__loading === true ) {
       createLoading(lname, {className: 'BusyNotification', tooltip: 'API Call'});
+    }
+
+    if ( typeof cok !== 'function' ) {
+      throw new TypeError('call() expects a function as callback');
+    }
+
+    if ( typeof cerror !== 'function' ) {
+      cerror = function() {
+        console.warn('API::call()', 'no error handler assigned', arguments);
+      };
     }
 
     _CALL_INDEX++;
@@ -313,7 +326,7 @@
     }, function() {
       destroyLoading(lname);
       cerror.apply(this, arguments);
-    });
+    }, options);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -547,7 +560,6 @@
         } else {
           a = new OSjs.Applications[n](arg, result);
         }
-        a.__sname = n;
 
         onConstructed(a, result);
       } catch ( e ) {
@@ -1084,7 +1096,22 @@
    * @api     OSjs.API.createDialog()
    */
   function doCreateDialog(className, args, callback, parentObj) {
-    var win = new OSjs.Dialogs[className](args, callback);
+    function cb() {
+      if ( parentObj ) {
+        if ( (parentObj instanceof OSjs.Core.Window) && parentObj._destroyed ) {
+          console.warn('API::createDialog()', 'INGORED EVENT: Window was destroyed');
+          return;
+        }
+        if ( (parentObj instanceof OSjs.Core.Process) && parentObj.__destroyed ) {
+          console.warn('API::createDialog()', 'INGORED EVENT: Process was destroyed');
+          return;
+        }
+      }
+
+      callback.apply(null, arguments);
+    }
+
+    var win = new OSjs.Dialogs[className](args, cb);
 
     if ( !parentObj ) {
       var wm = OSjs.Core.getWindowManager();

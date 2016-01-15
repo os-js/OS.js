@@ -5,7 +5,7 @@ src/templates/**
 src/installer/**
 src/packages/**
 src/locales/**
-src/server/**
+src/server/php/
 src/conf/**
 src/x11/**
 vendor/*

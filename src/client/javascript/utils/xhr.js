@@ -1,5 +1,5 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
@@ -46,6 +46,7 @@
    * @option args String     url                  The URL
    * @option args String     method               HTTP Call method: (POST/GET, default = GET)
    * @option args Mixed      body                 Optional body to send (for POST)
+   * @option args integer    timeout              Optional timeout (in milliseconds)
    * @option args String     responseType         HTTP Response type (default = null)
    * @option args Object     requestHeaders       Tuple with headers (default = null)
    * @option args boolean    json                 Handle as a JSON request/response (default = false)
@@ -55,6 +56,7 @@
    * @option args Function   oncreated            oncreated callback
    * @option args Function   onfailed             onfailed callback
    * @option args Function   oncanceled           oncanceled callback
+   * @option args Function   ontimeout            ontimeout callback
    *
    * @return  void
    *
@@ -69,10 +71,12 @@
       oncreated        : function() {},
       onfailed         : function() {},
       oncanceled       : function() {},
+      ontimeout        : function() {},
       method           : 'GET',
       responseType     : null,
       requestHeaders   : {},
       body             : null,
+      timeout          : 0,
       json             : false,
       url              : '',
       jsonp            : false
@@ -134,17 +138,23 @@
       request.onerror = null;
       request.onload = null;
       request.onreadystatechange = null;
+      request.ontimeut = null;
       request = null;
     }
 
     function requestJSON() {
       request = new XMLHttpRequest();
+      request.timeout = args.timeout;
 
       if ( request.upload ) {
         request.upload.addEventListener('progress', args.onprogress, false);
       } else {
         request.addEventListener('progress', args.onprogress, false);
       }
+
+      request.ontimeout = function(evt) {
+        args.ontimeout(evt);
+      };
 
       if ( args.responseType === 'arraybuffer' ) { // Binary
         request.onerror = function(evt) {
@@ -183,7 +193,7 @@
       request.send(args.body);
     }
 
-    if ( window.location.href.match(/^file\:\/\//) ) {
+    if ( (OSjs.API.getConfig('Connection.Type') === 'standalone') ) {
       args.onerror('You are currently running locally and cannot perform this operation!');
       return;
     }

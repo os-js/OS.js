@@ -1,5 +1,5 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
@@ -62,12 +62,23 @@
 
     this.dialogs    = null;
     this.offline    = false;
+    this.nw         = null;
     this.userData   = {
       id      : 0,
       username: 'root',
       name    : 'root user',
       groups  : ['root']
     };
+
+    if ( (API.getConfig('Connection.Type') === 'nw') ) {
+      this.nw = require('osjs').init({
+        root: process.cwd(),
+        settings: {
+          mimes: API.getConfig('MIME.mapping')
+        },
+        nw: true
+      });
+    }
 
     _handlerInstance = this;
   };
@@ -123,6 +134,7 @@
       this.dialogs.destroy();
     }
     this.dialogs = null;
+    this.nw = null;
 
     _handlerInstance = null;
   };
@@ -282,47 +294,77 @@
    * @method  _Handler::callAPI()
    */
   _Handler.prototype.callAPI = function(method, args, cbSuccess, cbError, options) {
-    if ( this.offline ) {
-      cbError('You are currently off-line and cannot perform this operation!');
-      return false;
-    }
-    if ( window.location.href.match(/^file\:\/\//) ) {
-      cbError('You are currently running locally and cannot perform this operation!');
-      return false;
-    }
-
     args      = args      || {};
     cbSuccess = cbSuccess || function() {};
     cbError   = cbError   || function() {};
+
+    var self = this;
+
+    function checkState() {
+      if ( self.offline ) {
+        cbError('You are currently off-line and cannot perform this operation!');
+        return false;
+      } else if ( (API.getConfig('Connection.Type') === 'standalone') ) {
+        cbError('You are currently running locally and cannot perform this operation!');
+        return false;
+      }
+      return true;
+    }
+
+    function _call() {
+      if ( (API.getConfig('Connection.Type') === 'nw') ) {
+        try {
+          self.nw.request(method, args, function(err, res) {
+            cbSuccess({error: err, result: res});
+          });
+        } catch ( e ) {
+          console.warn('callAPI() NW.js Warning', e.stack, e);
+          cbError(e);
+        }
+        return true;
+      }
+
+      var data = {
+        url: API.getConfig('Connection.APIURI'),
+        method: 'POST',
+        json: true,
+        body: {
+          'method'    : method,
+          'arguments' : args
+        },
+        onsuccess: function(/*response, request, url*/) {
+          cbSuccess.apply(self, arguments);
+        },
+        onerror: function(/*error, response, request, url*/) {
+          cbError.apply(self, arguments);
+        }
+      };
+
+      if ( options ) {
+        Object.keys(options).forEach(function(key) {
+          data[key] = options[key];
+        });
+      }
+
+      return Utils.ajax(data);
+    }
 
     console.group('Handler::callAPI()');
     console.log('Method', method);
     console.log('Arguments', args);
     console.groupEnd();
 
-    var data = {
-      url: API.getConfig('Connection.APIURI'),
-      method: 'POST',
-      json: true,
-      body: {
-        'method'    : method,
-        'arguments' : args
-      },
-      onsuccess: function(/*response, request, url*/) {
-        cbSuccess.apply(this, arguments);
-      },
-      onerror: function(/*error, response, request, url*/) {
-        cbError.apply(this, arguments);
-      }
-    };
-
-    if ( options ) {
-      Object.keys(options).forEach(function(key) {
-        data[key] = options[key];
-      });
+    if ( checkState() ) {
+      return _call();
     }
 
-    return Utils.ajax(data);
+    return false;
+  };
+
+  /**
+   * Calls NW "backend" method
+   */
+  _Handler.prototype.callNW = function() {
   };
 
   //
@@ -496,6 +538,8 @@
     };
 
     container.style.display = 'block';
+
+    _restore();
   };
 
   /////////////////////////////////////////////////////////////////////////////

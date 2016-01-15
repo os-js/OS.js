@@ -1,5 +1,5 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
@@ -81,6 +81,29 @@
       'Enable Icon View' : 'Właczony Widok Ikon',
       'Remove shortcut' : 'Usuwanie skrótu',
       'General' : 'Ogólne'
+    },
+    sk_SK : {
+      'Theme' : 'Téma',
+      'Background' : 'Pozadie',
+      'Desktop' : 'Pracovná plocha',
+      'Background Type' : 'Typ pozadia',
+      'Image (Repeat)' : 'Dlaždice',
+      'Image (Centered)' : 'Na stred',
+      'Image (Fill)' : 'Vyplniť',
+      'Image (Streched)' : 'Roztiahnutý',
+      'Desktop Margin ({0}px)' : 'Hranice pracovnej plochy ({0}px)',
+      'Panel' : 'Panel',
+      'Position' : 'Pozícia',
+      'Ontop' : 'Vždy na vrchu',
+      'Items' : 'Položky',
+      'Enable Animations' : 'Povoliť animácie',
+      'Language (requires restart)' : 'Jazyk (vyžaduje reštart)',
+      'Enable Sounds' : 'Povoliť zvuky',
+      'Enable Window Switcher' : 'Povoliť Prepínač Okien',
+      'Enable Hotkeys' : 'Klávesové skratky',
+      'Enable Icon View' : 'Ikony na ploche',
+      'Remove shortcut' : 'Odstrániť skratku',
+      'General' : 'Všeobecné'
     },
     de_DE : {
       'Theme' : 'Thema',

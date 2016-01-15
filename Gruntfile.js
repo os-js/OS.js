@@ -1,5 +1,5 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
@@ -49,6 +49,8 @@
     //grunt.loadNpmTasks('grunt-mocha');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-jscs');
+    //grunt.loadNpmTasks('grunt-html-validation');
+    grunt.loadNpmTasks('grunt-nw-builder');
 
     grunt.initConfig({
       jshint: {
@@ -56,7 +58,9 @@
           globals: {
             OSjs: true,
             zip: true,
-            alert: true
+            alert: true,
+            escape: true,
+            unescape: true
           },
           browser: true,
           curly: true,
@@ -85,9 +89,10 @@
         all: [
           'Gruntfile.js',
           'src/*.js',
+          'src/server/node/*.js',
+          'src/server/node/node_modules/osjs/*.js',
           'src/client/javascript/*.js',
           'src/client/javascript/**/*.js',
-          '!src/client/javascript/locales/bg_BG.js',
           'src/packages/default/**/*.js',
           '!src/packages/default/Broadway/**',
           '!src/packages/default/**/locales.js',
@@ -142,6 +147,8 @@
         src: [
           'Gruntfile.js',
           'src/*.js',
+          'src/server/node/*.js',
+          'src/server/node/node_modules/osjs/*.js',
           'src/client/javascript/*.js',
           'src/client/javascript/**/*.js',
           'src/packages/default/**/*.js',
@@ -154,6 +161,31 @@
           fix: false,
           requireCurlyBraces: ['if']
         }
+      },/*
+      validation: {
+        options: {
+          wrapfile: 'src/templates/validation.html',
+          stoponerror: false,
+          relaxerror: [
+          ]
+        },
+        files: {
+          src: [
+            'src/packages/default/ ** /scheme.html',
+            'src/client/dialogs.html'
+          ]
+        }
+      }
+      */
+      nwjs: {
+        options: {
+          version: '0.12.3',
+          //version: '0.13.0-beta2',
+          //platforms: ['win', 'linux', 'osx'],
+          platforms: ['win64', 'linux64'],
+          buildDir: '.nw'
+        },
+        src: ['src/templates/nw/package.json', '.standalone/**/*']
       }
     });
 
@@ -166,7 +198,7 @@
     /**
      * Task: Build config
      */
-    grunt.registerTask('config', 'Build config files (or modify `set:path.to.key:value`, `get:path.to.key`, `preload:name:path:type`)', function(fn, key, value, arg) {
+    grunt.registerTask('config', 'Build config files (or modify `set:path.to.key:value`, `get:path.to.key`, `preload:name:path:type`, `(add|remove)-repository:name)', function(fn, key, value, arg) {
       if (fn) {
         var result;
         if (fn === 'get') {
@@ -175,7 +207,6 @@
           result = _build.getConfigPath(grunt, key);
           grunt.log.writeln('Type: ' + typeof result);
           console.log(result);
-          console.log();
         } else if (fn === 'set') {
           grunt.log.writeln('Path: ' + key);
 
@@ -183,6 +214,12 @@
           console.log(result);
         } else if (fn === 'preload') {
           result = _build.addPreload(grunt, key, value, arg);
+          console.log(result);
+        } else if ( fn === 'add-repository' ) {
+          result = _build.addRepository(grunt, key);
+          console.log(result);
+        } else if ( fn === 'remove-repository' ) {
+          result = _build.removeRepository(grunt, key);
           console.log(result);
         } else {
           throw new TypeError('Invalid config operation \'' + fn + '\'');
@@ -192,13 +229,6 @@
 
       grunt.log.writeln('Writing configuration files...');
       _build.createConfigurationFiles(grunt, fn);
-    });
-
-    /**
-     * Task: View config
-     */
-    grunt.registerTask('view-config', '(Pre)view the generated config file', function(arg) {
-      console.log(JSON.stringify(_build.getConfig(grunt), null, 4));
     });
 
     /**
@@ -214,14 +244,19 @@
      */
     grunt.registerTask('standalone', 'Build dist standalone files', function(arg) {
       grunt.log.writeln('Building standalone dist...');
-      _build.buildStandalone(grunt, arg);
+      var done = this.async();
+      _build.buildStandalone(grunt, done, arg);
     });
 
     /**
      * Task: Build packages
      */
-    grunt.registerTask('packages', 'Build dist package files (or a single package, ex: grunt packages:default/About)', function(arg) {
+    grunt.registerTask('packages', 'Build dist package files (or a single package, ex: grunt packages:default/About. Also enable/disable)', function(arg, arg2) {
       grunt.log.writeln('Building packages...');
+      if ( arg === 'disable' || arg === 'enable' ) {
+        _build.togglePackage(grunt, arg2, arg === 'enable');
+        return;
+      }
       _build.buildPackages(grunt, arg);
     });
 
@@ -302,16 +337,9 @@
       _build.createPackage(grunt, arg1, arg2);
     });
 
-    /**
-     * Task: Create a nightly build
-     */
-    grunt.registerTask('create-nightly-build', 'Creates a new OS.js nightly zip distribution', function(arg) {
-      grunt.log.writeln('Building nightly...');
-      _build.buildNightly(grunt, arg);
-    });
-
     grunt.registerTask('all', ['clean', 'config', 'dist-dev-index', 'dist-index', 'core', 'themes', 'packages', 'manifest']);
     grunt.registerTask('default', ['all']);
+    grunt.registerTask('nw', ['config', 'dist-index', 'core:nw', 'themes', 'packages', 'manifest', 'standalone:nw', 'nwjs']);
     grunt.registerTask('dist', ['config', 'dist-index', 'core', 'themes', 'packages', 'manifest']);
     grunt.registerTask('dist-dev', ['config', 'dist-dev-index', 'themes:fonts', 'themes:styles', 'manifest']);
     grunt.registerTask('test', ['jshint', 'jscs', 'mochaTest'/*, 'mocha'*/]);

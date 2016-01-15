@@ -1,5 +1,5 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
  * Mysql Handler: Login screen and session/settings handling via database
  * PLEASE NOTE THAT THIS AN EXAMPLE ONLY, AND SHOUD BE MODIFIED BEFORE USAGE
@@ -31,6 +31,7 @@
  * @licence Simplified BSD License
  */
 (function(qs, mysql) {
+  'use strict';
   var connection;
 
   /////////////////////////////////////////////////////////////////////////////
@@ -142,34 +143,24 @@
   };
 
   /////////////////////////////////////////////////////////////////////////////
-  // API EVENTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  exports.onServerStart = function() {
-    if ( !connection ) {
-      connection = mysql.createConnection(MYSQL_CONFIG);
-      connection.connect();
-    }
-  };
-
-  exports.onServerEnd = function() {
-    if ( connection ) {
-      connection.end();
-    }
-  };
-
-  exports.onRequestStart = function(request, response) {
-  };
-
-  exports.onRequestEnd = function(request, response) {
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // API EXPORT
+  // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
   exports.register = function(CONFIG, API, HANDLER) {
     console.info('-->', 'Registering handler API methods');
+
+    HANDLER.onServerStart = function() {
+      if ( !connection ) {
+        connection = mysql.createConnection(MYSQL_CONFIG);
+        connection.connect();
+      }
+    };
+
+    HANDLER.onServerEnd = function() {
+      if ( connection ) {
+        connection.end();
+      }
+    };
 
     API.login = function(args, callback, request, response, body) {
       APIUser.login(args, request, response, function(error, result) {

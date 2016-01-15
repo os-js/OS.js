@@ -1,5 +1,5 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
@@ -93,7 +93,7 @@
       if ( nodes.length ) {
         nodes.forEach(function(el) {
           var id = el.getAttribute('data-fragment-id');
-          var frag = scheme.getFragment(id, 'application-fragment');
+          var frag = scheme.getFragment(id, 'application-fragment').cloneNode(true);
 
           addChildren(frag, el.parentNode);
           Utils.$remove(el);

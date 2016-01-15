@@ -1,13 +1,14 @@
 {
-  "className":  "ApplicationWriter",
-  "name":       "Writer",
-  "description":"Write rich text documents",
+  "className": "ApplicationWriter",
+  "name": "Writer",
+  "description": "Write rich text documents",
   "names": {
     "bg_BG": "Текст",
     "de_DE": "Writer",
     "nl_NL": "Tekstverwerker",
     "no_NO": "Writer",
     "pl_PL": "Writer",
+    "sk_SK": "Writer",
     "ru_RU": "Текстовый процессор",
     "tr_TR": "Writer",
     "vi_VN": "Viết"
@@ -18,20 +19,32 @@
     "nl_NL": "Tekst verwerker met opmaak",
     "no_NO": "Skriv riktekst dokumenter",
     "pl_PL": "Twórz dokumenty rich text",
+    "sk_SK": "Editor na tvorbu Rich-Text dokumentov",
     "ru_RU": "Текстовый процессор",
     "tr_TR": "Gelişmiş dökümanlar oluşturun",
     "vi_VN": "Xem, chỉnh sửa văn bản"
   },
-  "mime":       ["^text", "osjs\\/document"],
-  "category":   "office",
-  "icon":       "apps/libreoffice34-writer.png",
-  "compability":["richtext"],
-  "preload":    [
-    {"src": "locales.js", "type": "javascript"},
-    {"src": "main.js", "type": "javascript"},
-    {"src": "main.css", "type": "stylesheet"}
+  "mime": [
+    "^text",
+    "osjs\\/document"
+  ],
+  "category": "office",
+  "icon": "apps/libreoffice34-writer.png",
+  "compability": [
+    "richtext"
+  ],
+  "preload": [
+    {
+      "src": "locales.js",
+      "type": "javascript"
+    },
+    {
+      "src": "main.js",
+      "type": "javascript"
+    },
+    {
+      "src": "main.css",
+      "type": "stylesheet"
+    }
   ]
 }
-
-
-

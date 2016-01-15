@@ -1,41 +1,93 @@
 {
-  "className":  "CoreWM",
-  "name":       "OS.js Window Manager",
+  "className": "CoreWM",
+  "name": "OS.js Window Manager",
   "names": {
     "bg_BG": "Мениджър на прозорци на OS.js",
     "de_DE": "OS.js Fenster-Manager",
     "nl_NL": "OS.js venster beheer",
     "no_NO": "OS.js Vinduhåndterer",
     "pl_PL": "Menedżer Okien OS.js",
+    "sk_SK": "Správca Okien OS.js",
     "ru_RU": "OS.js Оконный менеджер",
     "tr_TR": "OS.js Pencere Yöneticisi",
     "vi_VN": "Quản lí cửa sổ OS.js"
   },
-  "singular":   true,
-  "type":       "windowmanager",
-  "mime":       null,
-  "icon":       "apps/gnome-window-manager.png",
-  "splash":     false,
-  "preload":    [
-    {"src": "menu.js", "type": "javascript"},
-    {"src": "settings.js", "type": "javascript"},
-    {"src": "iconview.js", "type": "javascript"},
-    {"src": "windowswitcher.js", "type": "javascript"},
-    {"src": "panel.js", "type": "javascript"},
-    {"src": "panelitems/buttons.js", "type": "javascript"},
-    {"src": "panelitems/clock.js", "type": "javascript"},
-    {"src": "panelitems/notificationarea.js", "type": "javascript"},
-    {"src": "panelitems/windowlist.js", "type": "javascript"},
-    {"src": "panelitems/weather.js", "type": "javascript"},
-    {"src": "panelitems/appmenu.js", "type": "javascript"},
-    {"src": "main.js", "type": "javascript"},
-    {"src": "locales.js", "type": "javascript"},
-
-    {"src": "panelitems/clock.css", "type": "stylesheet"},
-    {"src": "panelitems/buttons.css", "type": "stylesheet"},
-    {"src": "panelitems/notificationarea.css", "type": "stylesheet"},
-    {"src": "panelitems/windowlist.css", "type": "stylesheet"},
-    {"src": "main.css", "type": "stylesheet"}
+  "singular": true,
+  "type": "windowmanager",
+  "icon": "apps/gnome-window-manager.png",
+  "splash": false,
+  "preload": [
+    {
+      "src": "menu.js",
+      "type": "javascript"
+    },
+    {
+      "src": "settings.js",
+      "type": "javascript"
+    },
+    {
+      "src": "iconview.js",
+      "type": "javascript"
+    },
+    {
+      "src": "windowswitcher.js",
+      "type": "javascript"
+    },
+    {
+      "src": "panel.js",
+      "type": "javascript"
+    },
+    {
+      "src": "panelitems/buttons.js",
+      "type": "javascript"
+    },
+    {
+      "src": "panelitems/clock.js",
+      "type": "javascript"
+    },
+    {
+      "src": "panelitems/notificationarea.js",
+      "type": "javascript"
+    },
+    {
+      "src": "panelitems/windowlist.js",
+      "type": "javascript"
+    },
+    {
+      "src": "panelitems/weather.js",
+      "type": "javascript"
+    },
+    {
+      "src": "panelitems/appmenu.js",
+      "type": "javascript"
+    },
+    {
+      "src": "main.js",
+      "type": "javascript"
+    },
+    {
+      "src": "locales.js",
+      "type": "javascript"
+    },
+    {
+      "src": "panelitems/clock.css",
+      "type": "stylesheet"
+    },
+    {
+      "src": "panelitems/buttons.css",
+      "type": "stylesheet"
+    },
+    {
+      "src": "panelitems/notificationarea.css",
+      "type": "stylesheet"
+    },
+    {
+      "src": "panelitems/windowlist.css",
+      "type": "stylesheet"
+    },
+    {
+      "src": "main.css",
+      "type": "stylesheet"
+    }
   ]
 }
-

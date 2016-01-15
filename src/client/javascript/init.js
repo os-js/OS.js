@@ -1,5 +1,5 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
@@ -535,14 +535,15 @@
 
     console.warn('OS.js was shut down!');
 
-    if ( window.require ) {
+    if ( OSjs.API.getConfig('Connection.Type') === 'nw' ) {
       try {
         var gui = require('nw.gui');
         var win = gui.Window.get();
         setTimeout(function() {
           win.close();
         }, 500);
-      } catch ( e ) {}
+      } catch ( e ) {
+      }
     }
   };
 

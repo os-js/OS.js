@@ -1,5 +1,5 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
@@ -187,37 +187,26 @@
    * @api     OSjs.Core.Process
    * @class
    */
-  var Process = (function() {
-    var _PID = 0;
+  function Process(name, args, metadata) {
+    this.__pid        = _PROCS.push(this) - 1;
+    this.__pname      = name;
+    this.__args       = args || {};
+    this.__metadata   = metadata || {};
+    this.__started    = new Date();
+    this.__destroyed  = false;
 
-    return function(name, args, metadata) {
-      metadata = metadata || {};
-      args = args || {};
+    this.__label    = this.__metadata.name;
+    this.__path     = this.__metadata.path;
+    this.__scope    = this.__metadata.scope || 'system';
+    this.__iter     = this.__metadata.className;
 
-      this.__pid      = _PID;
-      this.__pname    = name;
-      this.__sname    = name; // Used internall only
-      this.__args     = args;
-      this.__metadata = metadata;
-      this.__state    = 0;
-      this.__started  = new Date();
-      this.__index    = _PROCS.push(this) - 1;
-
-      this.__label    = metadata.name;
-      this.__path     = metadata.path;
-      this.__scope    = metadata.scope || 'system';
-      this.__iter     = metadata.className;
-
-      console.group('Process::constructor()');
-      console.log('pid',    this.__pid);
-      console.log('pname',  this.__pname);
-      console.log('started',this.__started);
-      console.log('args',   this.__args);
-      console.groupEnd();
-
-      _PID++;
-    };
-  })();
+    console.group('Process::constructor()');
+    console.log('pid', this.__pid);
+    console.log('pname', this.__pname);
+    console.log('started', this.__started);
+    console.log('args', this.__args);
+    console.groupEnd();
+  }
 
   /**
    * Destroys the process
@@ -230,14 +219,21 @@
    */
   Process.prototype.destroy = function(kill) {
     kill = (typeof kill === 'undefined') ? true : (kill === true);
-    this.__state = -1;
-    console.log('OSjs::Core::Process::destroy()', this.__pid, this.__pname);
-    if ( kill ) {
-      if ( this.__index >= 0 ) {
-        _PROCS[this.__index] = null;
+    if ( !this.__destroyed ) {
+
+      console.log('OSjs::Core::Process::destroy()', this.__pid, this.__pname);
+
+      if ( kill ) {
+        if ( this.__pid >= 0 ) {
+          _PROCS[this.__pid] = null;
+        }
       }
+
+      this.__destroyed = true;
+
+      return true;
     }
-    return true;
+    return false;
   };
 
   /**
@@ -269,14 +265,36 @@
    */
   Process.prototype._call = function(method, args, onSuccess, onError, showLoading) {
     var self = this;
-    onSuccess = onSuccess || function() {};
-    onError = onError || function(err) {
-      err = err || 'Unknown error';
-      OSjs.API.error(OSjs.API._('ERR_APP_API_ERROR'),
-                     OSjs.API._('ERR_APP_API_ERROR_DESC_FMT', self.__pname, method),
-                     err);
-    };
-    return OSjs.API.call('application', {'application': this.__iter, 'path': this.__path, 'method': method, 'arguments': args, __loading: showLoading}, onSuccess, onError);
+
+    function cbSuccess() {
+      if ( self.__destroyed ) {
+        console.warn('Process::_call()', 'INGORED RESPONSE: Process was closed');
+        return;
+      }
+      (onSuccess || function() {}).apply(null, arguments);
+    }
+
+    function cbError() {
+      function _defaultError(err) {
+        err = err || 'Unknown error';
+        OSjs.API.error(OSjs.API._('ERR_APP_API_ERROR'),
+                       OSjs.API._('ERR_APP_API_ERROR_DESC_FMT', self.__pname, method),
+                       err);
+      }
+
+      if ( self.__destroyed ) {
+        console.warn('Process::_call()', 'INGORED RESPONSE: Process was closed');
+        return;
+      }
+      (onError || _defaultError).apply(null, arguments);
+    }
+
+    return OSjs.API.call('application', {
+      application: this.__iter,
+      path: this.__path,
+      method: method,
+      'arguments': args, __loading: showLoading
+    }, cbSuccess, cbError);
   };
 
   /////////////////////////////////////////////////////////////////////////////
