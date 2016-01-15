@@ -17,6 +17,10 @@
   "client" : {
     "Version" : "2.0-alpha71-arduino-os",
 
+    "Languages": {
+      "en_EN": "English"
+    },
+
     "Connection": {
       "APIURI": "/cgi-bin/osjs-api",
       "FSURI":  "/cgi-bin/osjs-fs?path="
@@ -61,5 +65,9 @@
         "root": "/"
       }
     }
-  }
+  },
+
+  "locales": [
+    "src/client/javascript/locales/en_EN.js"
+  ]
 }
