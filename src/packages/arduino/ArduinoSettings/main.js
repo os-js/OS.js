@@ -302,7 +302,7 @@
           password: wifiPassword.get('value')
         }, function() {
           var url = "http://" + inputHostname.get("value") + ".local";
-          var msg = Utils.format("Please connect your computer to the wireless network called {0} and go to http://{1}.local. Click this message to redirect.", ssid, url);
+          var msg = Utils.format("Please connect your computer to the wireless network called {0} and go to {1}. Click this message to redirect.", ssid, url);
           wm.notification({title: 'Arduino', message: msg, icon: 'arduino.png', timeout : 60000, onClick: function(ev){ window.location = url; } });
         });
       }
