@@ -216,9 +216,9 @@
       if ( args.install ) {
         this.callOpkg('install', {packagename: args.install}, function() {});
       } else if ( args.remove ) {
-        this.callOpkg('remove', {packagename: args.install}, function() {});
+        this.callOpkg('remove', {packagename: args.remove}, function() {});
       } else if ( args.upgrade ) {
-        this.callOpkg('upgrade', {packagename: args.install}, function() {});
+        this.callOpkg('upgrade', {packagename: args.upgrade}, function() {});
       }
     }
   };
