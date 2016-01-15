@@ -43,15 +43,18 @@
   var CoreWM = function(args, metadata) {
     var ds = OSjs.Applications.CoreWM.DefaultSettings;
 
-    WindowManager.apply(this, ['CoreWM', this, args, metadata, ds(args.defaults || {})]);
+    var importSettings = args.defaults || {};
 
-    this.scheme         = null;
-    this.panels         = [];
-    this.switcher       = null;
-    this.iconView       = null;
-    this.$themeLink     = null;
-    this.$themeScript   = null;
-    this.$animationLink = null;
+    WindowManager.apply(this, ['CoreWM', this, args, metadata, ds(importSettings)]);
+
+    this.scheme           = null;
+    this.panels           = [];
+    this.switcher         = null;
+    this.iconView         = null;
+    this.$themeLink       = null;
+    this.$themeScript     = null;
+    this.$animationLink   = null;
+    this.importedSettings = importSettings;
 
     this._$notifications    = document.createElement('corewm-notifications');
     document.body.appendChild(this._$notifications);
@@ -164,9 +167,12 @@
     }
 
     // Reset
-    var ds = OSjs.Applications.CoreWM.DefaultSettings;
     this.destroyPanels();
-    this.applySettings(ds(this._defaults), true);
+    var settings = this.importedSettings
+    try {
+      settings.background = 'color';
+    } catch ( e ) {}
+    this.applySettings(OSjs.Applications.CoreWM.DefaultSettings(settings), true);
 
     // Clear DOM
     this._$notifications = Utils.$remove(this._$notifications);
@@ -979,14 +985,14 @@
     var val = WindowManager.prototype.getSetting.apply(this, arguments);
     if ( typeof val === 'undefined' || val === null ) {
       var ds = OSjs.Applications.CoreWM.DefaultSettings;
-      return ds(this._defaults)[k];
+      return ds(this.importedSettings)[k];
     }
     return val;
   };
 
   CoreWM.prototype.getDefaultSetting = function(k) {
     var ds = OSjs.Applications.CoreWM.DefaultSettings;
-    var settings = ds(this._defaults);
+    var settings = ds(this.importedSettings);
     if ( typeof k !== 'undefined' ) {
       return settings[k];
     }
