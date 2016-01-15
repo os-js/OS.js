@@ -151,6 +151,25 @@
       'Utilities' : 'Утилиты',
       'Other' : 'Другое'
     },
+    pt_BR : {
+      'Killing this process will stop things from working!' : 'Forçar o término desde programa fará com que outras coisas deixem de funcioanr!',
+      'Open settings': 'Abrir configurações',
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Seu painél não tem nenhum item. Vá em configurações e recarregue os valores padrões ou modifique-os manualmente.\n(Isso pode ocorrer em atualizações do OS.js)',
+      'Create shortcut': 'Criar atalho',
+      'Set as wallpaper' : 'Definir como fundo de tela',
+      'An error occured while creating PanelItem: {0}' : 'Ocorreu um erro ao criar um PanelItem: {0}',
+
+      'Development' : 'Desenvolvimento',
+      'Education' : 'Educação',
+      'Games' : 'Jogos',
+      'Graphics' : 'Gráficos',
+      'Network' : 'Rede',
+      'Multimedia' : 'Multimídia',
+      'Office' : 'Escritório',
+      'System' : 'Sistema',
+      'Utilities' : 'Utilitários',
+      'Other' : 'Outro'
+    },
     nl_NL : {
       'Killing this process will stop things from working!' : 'Het stoppen van dit proces zal er voor zorgen dat dingen niet meer werken!',
       'Open settings' : 'Instellingen openen',
