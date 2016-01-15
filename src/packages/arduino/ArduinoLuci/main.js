@@ -32,7 +32,7 @@
 
   var ApplicationArduinoLuci = function(args, metadata) {
     Application.apply(this, ['ApplicationArduinoLuci', args, metadata, {
-      src: '/luci/index.html',
+      src: '/cgi-bin/luci',
       title: metadata.name,
       icon: metadata.icon,
       width: 1200,
