@@ -5,6 +5,7 @@
   "name":       "Terminal",
   "mime":       null,
   "icon":       "apps/terminal.png",
+  "category":   "utilities",
   "preload":    [
     {"src": "main.js", "type": "javascript"},
     {"src": "main.css", "type": "stylesheet"}
