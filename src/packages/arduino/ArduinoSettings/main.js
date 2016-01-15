@@ -81,7 +81,7 @@
         err = 'Error while communicating with device: ' + (err || 'Unkown error (no response)');
         wm.notification({title: 'Arduino Settings', message: err, icon: 'status/error.png' });
       }, {
-        timeout: 5000,
+        timeout: 20000,
         ontimeout: function() {
           self._toggleLoading(false);
           return cb('Request timed out');
@@ -294,13 +294,16 @@
     scheme.find(this, 'ButtonArduinoConfigureWIFI').on('click', function() {
       var ssid = wifiInput.get('value');
       var enc = wifiSelectEncrypt.get('value');
+
       if ( ssid && enc ) {
         callAPI('wifi', {
           ssid: ssid,
           security: enc,
           password: wifiPassword.get('value')
         }, function() {
-          wm.notification({title: 'Arduino', message: 'Applying WIFI changes...', icon: 'arduino.png' });
+          var url = "http://" + inputHostname.get("value") + ".local";
+          var msg = Utils.format("Please connect your computer to the wireless network called {0} and go to http://{1}.local. Click this message to redirect.", ssid, url);
+          wm.notification({title: 'Arduino', message: msg, icon: 'arduino.png', timeout : 60000, onClick: function(ev){ window.location = url; } });
         });
       }
     });
