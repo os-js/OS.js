@@ -15,16 +15,14 @@
 # Description:       OS.js Daemon
 ### END INIT INFO
 
-# Author: Anders Evenrud <andersevenrud@gmail.com>
-
 # Do NOT "set -e"
 
 # PATH should only include /usr/* if it runs after the mountnfs.sh script
 PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin
-DESC="OS.js Daemon"
-NAME="OSjs"
-DAEMON=/usr/local/bin/osjs-daemon
-DAEMON_ARGS="--options args"
+DESC="OS.js Client"
+NAME="osjs-client"
+DAEMON=/usr/bin/xinit
+DAEMON_ARGS="/usr/local/lib/osjs.xinitrc"
 PIDFILE=/var/run/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 
