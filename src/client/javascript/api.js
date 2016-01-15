@@ -1096,6 +1096,8 @@
    * @api     OSjs.API.createDialog()
    */
   function doCreateDialog(className, args, callback, parentObj) {
+    callback = callback || function() {};
+
     function cb() {
       if ( parentObj ) {
         if ( (parentObj instanceof OSjs.Core.Window) && parentObj._destroyed ) {
