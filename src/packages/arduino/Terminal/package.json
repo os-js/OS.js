@@ -1,0 +1,15 @@
+{
+  "className":  "ApplicationTerminal",
+  "enabled":    true,
+  "description": "System Terminal",
+  "name":       "Terminal",
+  "mime":       null,
+  "icon":       "apps/terminal.png",
+  "preload":    [
+    {"src": "main.js", "type": "javascript"},
+    {"src": "main.css", "type": "stylesheet"}
+  ]
+}
+
+
+
