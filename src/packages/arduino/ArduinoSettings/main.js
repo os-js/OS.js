@@ -101,7 +101,7 @@
         }
 
         var rows = [];
-        var keys = ['system', 'model', 'memtotal', 'memcached', 'membuffers', 'memfree', 'bogomips', 'uptime','swapused','swaptotal'];
+        var keys = ['system', 'model', 'memtotal', 'memcached', 'membuffers', 'memfree', 'bogomips', 'uptime','swapused','swapfree'];
         result.metrics.forEach(function(val, idx) {
           var key = keys[idx];
           rows.push({

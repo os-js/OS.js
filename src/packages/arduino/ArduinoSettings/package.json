@@ -4,6 +4,7 @@
   "mime":       null,
   "icon":       "arduino-settings.png",
   "singular":   true,
+  "category":   "arduino",
   "preload":    [
     {"src": "main.js", "type": "javascript"},
     {"src": "main.css", "type": "stylesheet"}
