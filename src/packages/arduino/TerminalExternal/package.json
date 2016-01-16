@@ -1,0 +1,12 @@
+{
+  "className":  "ApplicationTerminalExternal",
+  "name":       "Terminal (External Window)",
+  "category":   "utilities",
+  "icon":       "apps/terminal.png",
+  "preload":    [
+    {"src": "main.js", "type": "javascript"}
+  ]
+}
+
+
+
