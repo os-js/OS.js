@@ -13,6 +13,7 @@
 /sbin/uci set wireless.@wifi-iface[0].ssid=$1
 /sbin/uci set wireless.@wifi-iface[0].encryption=$2
 /sbin/uci set wireless.@wifi-iface[0].key=$3
+/sbin/uci commit network
 /sbin/uci commit wireless
 /sbin/wifi
 /etc/init.d/network reload
