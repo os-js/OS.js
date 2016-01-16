@@ -46,7 +46,7 @@ require "base64"
 --                                    CONFIG
 -- ----------------------------------------------------------------------------
 
-local ROOTDIR = "/opt/osjs"
+local ROOTDIR = "/osjs"
 local SETTINGS_FILE = ROOTDIR.."/settings.json"
 local SETTINGS = {}
 local MIMES = {}
