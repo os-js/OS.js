@@ -65,9 +65,7 @@
         netinfo.forEach(function(cur, index, result){
           if ( cur.ip !== '' && cur.iface !== 'lo' ) {
             win._frame.src = window.location.protocol + '//' + cur.ip + ':4200/' ;
-            return false;
           }
-          return true;
         })
       }
     });
