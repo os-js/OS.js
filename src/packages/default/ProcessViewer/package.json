@@ -10,6 +10,7 @@
     "pl_PL": "Procesy",
     "sk_SK": "Správca procesov",
     "ru_RU": "Менеджер процессов",
+    "ko_KR": "프로세스 관리자",
     "tr_TR": "İşlemleri Görüntüle",
     "vi_VN": "Xem tiến trình"
   },
@@ -21,6 +22,7 @@
     "pl_PL": "Zobacz działające procesy",
     "sk_SK": "Spravovanie bežiacich procesov",
     "ru_RU": "Менеджер запущенных процессов",
+    "ko_KR": "실행 중인 프로세스를 관리합니다",
     "tr_TR": "çalışan işlemleri görüntüle",
     "vi_VN": "Xem các tiến trình đang chạy"
   },

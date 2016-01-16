@@ -316,6 +316,53 @@
       'Radius' : 'Радиус',
       'Iterations' : 'Итерации'
     },
+    ko_KR : {
+      'Toggle tools toolbar' : '도구 툴바 켜기/끄기',
+      'Toggle layers toolbar' : '레이어 툴바 켜기/끄기',
+      'Layer' : '레이어',
+      'Effect' : '효과',
+      'Flip Horizontally' : '수평으로 뒤집기',
+      'Flip Vertically' : '수직으로 뒤집기',
+      'Foreground' : '전경',
+      'Background' : '배경',
+      'Foreground (Fill) Color' : '전경색(채우기)',
+      'Background (Stroke) Color' : '배경색(칠하기)',
+      'Line join' : '선 종류',
+      'Line width' : '선 굵기',
+      'Toggle Stroke' : '선 활성화',
+      'Enable stroke' : '선 그리기',
+      'Round' : '둥글게',
+      'Miter' : '기울이기',
+      'Bevel' : '비스듬히',
+      'Stroked' : '선 보이기',
+      'No stroke' : '선없음',
+
+      'Pointer' : '포인터',
+      'Move active layer' : '활성 레이어 옮기기',
+
+      'Picker' : '색상 추출',
+      'LMB: set fg color, RMB: set gb color' : '왼쪽 마우스 버튼: 전경색, 오른쪽 마우스 버튼 ',
+
+      'Pencil' : '연필',
+      'LMB/RMB: Draw with fg/bg color' : '왼쪽 마우스/오른쪽 마우스 버튼 전경/배경색 그리기',
+      'Path' : '경로',
+
+      'Square/Rectangle' : '정사각형/직사각형',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : '왼쪽/오른쪽 마우스 버튼 전경/배경색 그리기, SHIFT: 직사각형 그리기',
+
+      'Circle/Ellipse' : '원/타원',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : '왼쪽/오른쪽 마우스 버튼 전경/배경색 그리기, SHIFT: 타원 그리기',
+
+      'Blur' : '블러',
+      'Noise' : '노이즈',
+      'Invert colors' : '반전',
+      'Grayscale' : '흑백',
+      'Sharpen' : '샤픈',
+      'Simple Blur' : '약한 블러',
+
+      'Radius' : '반경',
+      'Iterations' : '반복'
+    },
     nl_NL : {
       'Toggle tools toolbar' : 'Toolbar gereedschappen',
       'Toggle layers toolbar' : 'Toolbar lagen',

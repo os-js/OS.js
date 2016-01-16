@@ -10,6 +10,7 @@
     "pl_PL": "Podgląd",
     "sk_SK": "Prehliadač obrázkov",
     "ru_RU": "Просмотрщик",
+    "ko_KR": "미리보기",
     "tr_TR": "Önizle",
     "vi_VN": "Trình xem ảnh"
   },
@@ -21,6 +22,7 @@
     "pl_PL": "Podgląd zdjęć",
     "sk_SK": "Prehliadač obrázkov",
     "ru_RU": "Просмотрщик изображений",
+    "ko_KR": "이미지 파일을 미리 봅니다",
     "tr_TR": "resim dosyalarını önizle",
     "vi_VN": "Trình xem ảnh"
   },

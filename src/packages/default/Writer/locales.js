@@ -56,6 +56,9 @@
     ru_RU : {
       'Insert URL' : 'Вставить ссылку'
     },
+    ko_KR : {
+      'Insert URL' : '링크 삽입'
+    },
     nl_NL : {
       'Insert URL' : 'URL invoegen'
     },

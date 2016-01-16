@@ -9,6 +9,7 @@
     "no_NO": "Tegne",
     "pl_PL": "Rysowanie",
     "sk_SK": "Kreslenie",
+    "ko_KR": "그림판",
     "ru_RU": "Графический редактор",
     "tr_TR": "Çiz",
     "vi_VN": "Vẽ"
@@ -20,6 +21,7 @@
     "no_NO": "Simpelt tegne-program",
     "pl_PL": "Prosta aplikacja do rysowania",
     "sk_SK": "Jednoduchá aplikácia na kreslenie",
+    "ko_KR": "간단한 그리기 응용 프로그램",
     "ru_RU": "Простой графический редактор",
     "vi_VN": "Phần mềm vẽ đơn giản"
   },

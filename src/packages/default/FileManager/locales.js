@@ -91,6 +91,16 @@
       "Rename <span>{0}</span>" : "Переименовать <span>{0}</span>",
       "Delete <span>{0}</span> ?" : "Удалить <span>{0}</span> ?"
     },
+    ko_KR : {
+      'Show Sidebar' : '사이드바 보여주기',
+      'Copying file...' : '파일 복사...',
+      "Copying <span>{0}</span> to <span>{1}</span>" : "Копирование <span>{0}</span> в <span>{1}</span>",
+      "Refreshing..." : "새로고치는 중...",
+      "Loading..." : "기다려주세요...",
+      "Create a new directory in <span>{0}</span>" : "<span>{0}</span>에 새 폴더 만들기",
+      "Rename <span>{0}</span>" : "<span>{0}</span>의 이름 바꾸기",
+      "Delete <span>{0}</span> ?" : "<span>{0}</span>을 삭제하시겠습니까?"
+    },
     nl_NL : {
       'Show Sidebar' : 'Zijbar tonen',
       'Copying file...' : 'Bestand kopieren...',
