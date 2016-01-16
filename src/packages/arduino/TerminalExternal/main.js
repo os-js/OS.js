@@ -35,25 +35,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   function ApplicationTerminalExternal() {
-    var netinfo,
-        ip = undefined;
-
-    OSjs.API.call("netinfo", {}, function(result, xhr){
-      if(result.error)
-        netinfo = null;
-      else
-      {
-        netinfo = result.result.ifconfig;
-
-        netinfo.forEach(function(cur, index, result){
-          if(cur.ip !== "" && cur.iface !== "lo"){
-            ip = cur.ip;
-            window.open( window.location.protocol + '//' + ip + ':4200/' );
-          }
-        })
-
-      }
-    });
+    window.open( window.location.protocol + '//' + window.location.hostname + ':4200/' );
   }
 
 
