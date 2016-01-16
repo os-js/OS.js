@@ -55,9 +55,9 @@
   ApplicationTerminal.prototype.init = function(settings, metadata, onInited) {
     Application.prototype.init.apply(this, arguments);
     onInited();
+
     var win = this._getMainWindow();
     win._frame.src = window.location.protocol + '//' + window.location.hostname + ':4200/' ;
-
   };
 
   /////////////////////////////////////////////////////////////////////////////
