@@ -151,6 +151,25 @@
       'Utilities' : 'Утилиты',
       'Other' : 'Другое'
     },
+    ko_KR : {
+      'Killing this process will stop things from working!' : '이 프로세스를 종료 할 시 작업 중인 것들이 종료됩니다!',
+      'Open settings' : '환경설정 열기',
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : '패널에 항목이 없습니다. 환경설정에서 초기화하거나 직접 수정하여 주십시오.\n(이 오류는 OS.js의 업그레이드 후 발생하는 문제일 수도 있습니다)',
+      'Create shortcut' : '단축키 생성',
+      'Set as wallpaper' : '바탕화면으로 지정',
+      'An error occured while creating PanelItem: {0}' : '해당 패널 항목 생성 중 오류가 발생 하였습니다: {0}',
+
+      'Development' : '개발',
+      'Education' : '교육',
+      'Games' : '게임',
+      'Graphics' : '그래픽',
+      'Network' : '네트워크',
+      'Multimedia' : '멀티미디어',
+      'Office' : '오피스',
+      'System' : '시스템',
+      'Utilities' : '유틸리티',
+      'Other' : '기타'
+    },
     nl_NL : {
       'Killing this process will stop things from working!' : 'Het stoppen van dit proces zal er voor zorgen dat dingen niet meer werken!',
       'Open settings' : 'Instellingen openen',
