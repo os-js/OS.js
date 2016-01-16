@@ -976,6 +976,10 @@
         src: 'iframe-application',
         cpy: ['main.js', 'package.json']
       },
+      dummy: {
+        src: 'dummy',
+        cpy: ['main.js', 'package.json']
+      },
       application: {
         src: 'application',
         cpy: ['main.js', 'main.css', 'package.json', 'scheme.html']
