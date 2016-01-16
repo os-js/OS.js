@@ -58,7 +58,7 @@ awk '{gsub("ARCH", "'"$ARCH"'", $0); print }' $OUTDIR/ipkg/control_tmpl | awk '{
 tar -C $OUTDIR/ipkg -czf $OUTDIR/control.tar.gz ./control
 
 # Create data image
-tar -C $OUTDIR/data -czf $OUTDIR/data.tar.gz ./opt ./usr
+tar -C $OUTDIR/data -czf $OUTDIR/data.tar.gz ./osjs ./usr
 
 # Create debian binary file
 echo "2.0" > $OUTDIR/debian-binary
