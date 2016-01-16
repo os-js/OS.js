@@ -39,7 +39,7 @@
 
   var ApplicationTerminal = function(args, metadata) {
     Application.apply(this, ['ApplicationTerminal', args, metadata, {
-      src: 'about:blank',
+      src: '//:0',
       title: metadata.name,
       icon: metadata.icon,
       width: 800,
