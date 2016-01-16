@@ -4,16 +4,16 @@
 #
 # Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met: 
-# 
+# modification, are permitted provided that the following conditions are met:
+#
 # 1. Redistributions of source code must retain the above copyright notice, this
-#    list of conditions and the following disclaimer. 
+#    list of conditions and the following disclaimer.
 # 2. Redistributions in binary form must reproduce the above copyright notice,
 #    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution. 
-# 
+#    and/or other materials provided with the distribution.
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 # ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -29,6 +29,7 @@
 # @licence Simplified BSD License
 #
 
+CURDIR=$PWD
 BUILDIR=".arduino"
 OUTDIR=".arduino/build"
 TMPDIR=".arduino/tmp"
@@ -136,5 +137,38 @@ rm -rf $OUTDIR/dist/packages/arduino 2>/dev/null
 rm -rf $OUTDIR/dist/vendor/* 2>/dev/null
 
 rm -rf $OUTDIR/build/dist/themes/styles/material/*.less 2>/dev/null
+
+# Packaging
+
+if [ "$1" == "package" ]; then
+
+    gitcommit=`git rev-parse --short HEAD`
+
+    mkdir $OUTDIR/lua
+    mkdir $OUTDIR/release
+    mkdir $OUTDIR/release/osjs
+
+    # cp -r $OUTDIR/lib/osjs.lua $OUTDIR/lua
+    # cp -r $OUTDIR/lib/osjs $OUTDIR/lua
+    cp -r $OUTDIR/lib/osjs.lua $OUTDIR/lua
+
+    # copying the server files
+    cp -r $OUTDIR/dist $OUTDIR/release/osjs
+    cp -r $OUTDIR/lua $OUTDIR/release/
+    cp -r $OUTDIR/bin $OUTDIR/release/osjs/
+    cp -r $OUTDIR/AUTHORS $OUTDIR/release/osjs/
+    # cp -r $OUTDIR/README.md $OUTDIR/release/osjs/
+    # cp -r $OUTDIR/CHANGELOG.md $OUTDIR/release/osjs/
+    cp $OUTDIR/settings.json $OUTDIR/release/osjs
+
+
+    echo ""
+    echo "packing the release...."
+    echo ""
+
+    cd $OUTDIR
+    mv release arduinos-$gitcommit
+    tar zcf arduinos-"$gitcommit".tar.gz arduinos-$gitcommit
+fi
 
 rm -rf $TMPDIR
