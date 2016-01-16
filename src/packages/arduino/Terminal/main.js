@@ -35,49 +35,44 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var netinfo,
-      ip = "undefined";
-        
-var ApplicationTerminal = function(args, metadata) {
+      ip = 'undefined';
+
+  var ApplicationTerminal = function(args, metadata) {
     Application.apply(this, ['ApplicationTerminal', args, metadata, {
-                  src: '//:0',
-                  title: metadata.name,
-                  icon: metadata.icon,
-                  width: 800,
-                  height: 600,
-                  allow_resize: true,
-                  allow_restore: false,
-                  allow_maximize: false
-                }]);
-    
-    OSjs.API.call("netinfo",{},function(result, xhr){
-    if(result.error)
-        netinfo = null;
-    else
-        {
-            netinfo = result.result.ifconfig;
-
-            netinfo.forEach(function(cur, index, result){
-                if(cur.ip !== "" && cur.iface !== "lo"){
-                    ip = cur.ip;
-                    var iframes = document.getElementsByTagName("iframe");
-                    iframes[iframes.length-1].src = window.location.protocol + '//' +ip + ':4200/' ;
-                }
-            })
-        }
-
-    });
+      src: 'about:blank',
+      title: metadata.name,
+      icon: metadata.icon,
+      width: 800,
+      height: 600,
+      allow_resize: true,
+      allow_restore: false,
+      allow_maximize: false
+    }]);
   }
 
-ApplicationTerminal.prototype = Object.create(Application.prototype);
+  ApplicationTerminal.prototype = Object.create(Application.prototype);
 
-ApplicationTerminal.prototype.init = function(settings, metadata, onInited) {
-    
+  ApplicationTerminal.prototype.init = function(settings, metadata, onInited) {
     Application.prototype.init.apply(this, arguments);
-
     onInited();
-  };    
-    
-    
+
+    var win = this._getMainWindow();
+    OSjs.API.call('netinfo', {}, function(result, xhr) {
+      if ( result.error ) {
+        netinfo = null;
+      } else {
+        netinfo = result.result.ifconfig;
+        netinfo.forEach(function(cur, index, result){
+          if ( cur.ip !== '' && cur.iface !== 'lo' ) {
+            win._frame.src = window.location.protocol + '//' + cur.ip + ':4200/' ;
+            return false;
+          }
+          return true;
+        })
+      }
+    });
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////

@@ -40,15 +40,15 @@ OUTDIR=".arduino"
 
 # Create package files
 mkdir -p $OUTDIR/data/usr/lib/lua/osjs
-mkdir -p $OUTDIR/data/opt/osjs
+mkdir -p $OUTDIR/data/osjs
 mkdir -p $OUTDIR/ipkg
 
 cp -r $SRCDIR/lib/* $OUTDIR/data/usr/lib/lua/
-cp -r $SRCDIR/bin $OUTDIR/data/opt/osjs/
-cp -r $SRCDIR/dist $OUTDIR/data/opt/osjs/
-cp -r $SRCDIR/AUTHORS $OUTDIR/data/opt/osjs/
-cp -r $SRCDIR/README $OUTDIR/data/opt/osjs/
-cp -r $SRCDIR/settings.json $OUTDIR/data/opt/osjs/
+cp -r $SRCDIR/bin $OUTDIR/data/osjs/
+cp -r $SRCDIR/dist $OUTDIR/data/osjs/
+cp -r $SRCDIR/AUTHORS $OUTDIR/data/osjs/
+cp -r $SRCDIR/README $OUTDIR/data/osjs/
+cp -r $SRCDIR/settings.json $OUTDIR/data/osjs/
 
 # Create control file
 cp src/templates/arduino/ipkg-control $OUTDIR/ipkg/control_tmpl
@@ -58,7 +58,7 @@ awk '{gsub("ARCH", "'"$ARCH"'", $0); print }' $OUTDIR/ipkg/control_tmpl | awk '{
 tar -C $OUTDIR/ipkg -czf $OUTDIR/control.tar.gz ./control
 
 # Create data image
-tar -C $OUTDIR/data -czf $OUTDIR/data.tar.gz ./opt ./usr
+tar -C $OUTDIR/data -czf $OUTDIR/data.tar.gz ./osjs ./usr
 
 # Create debian binary file
 echo "2.0" > $OUTDIR/debian-binary
