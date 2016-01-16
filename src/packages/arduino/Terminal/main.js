@@ -57,18 +57,7 @@
     onInited();
 
     var win = this._getMainWindow();
-    OSjs.API.call('netinfo', {}, function(result, xhr) {
-      if ( result.error ) {
-        netinfo = null;
-      } else {
-        netinfo = result.result.ifconfig;
-        netinfo.forEach(function(cur, index, result){
-          if ( cur.ip !== '' && cur.iface !== 'lo' ) {
-            win._frame.src = window.location.protocol + '//' + cur.ip + ':4200/' ;
-          }
-        })
-      }
-    });
+    win._frame.src = window.location.protocol + '//' + window.location.hostname + ':4200/' ;
   };
 
   /////////////////////////////////////////////////////////////////////////////
