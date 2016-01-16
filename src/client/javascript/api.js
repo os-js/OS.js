@@ -586,6 +586,12 @@
         return;
       }
 
+      if ( typeof OSjs.Applications[n] === 'function' ) {
+        OSjs.Applications[n]();
+        _done();
+        return;
+      }
+
       // Only allow one instance if specified
       if ( _checkSingular(result) ) {
         _done();
