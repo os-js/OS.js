@@ -60,7 +60,7 @@ var ApplicationTerminal = function(args, metadata) {
                     if(cur.ip !== "" && cur.iface !== "lo"){
                         ip = cur.ip;
                         var iframes = document.getElementsByTagName("iframe");
-                        iframes[iframes.length-1].src = 'http://'+ip+':4200/' ;
+                        iframes[iframes.length-1].src = 'https://'+ip+':4200/' ;
                     }
                 })
             }
