@@ -56,7 +56,7 @@ $ sudo npm install -g grunt-cli
 # You can also download and extarct the latest zip
 $ git clone https://github.com/andersevenrud/OS.js-v2.git
 $ cd OS.js-v2
-$ npm install
+$ npm install --production
 $ grunt
 ```
 
