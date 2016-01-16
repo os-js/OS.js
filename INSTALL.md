@@ -54,7 +54,7 @@ Run `curl -sS http://os.js.org/installer | sh`.
 $ sudo npm install -g grunt-cli
 
 # You can also download and extarct the latest zip
-$ git clone https://github.com/andersevenrud/OS.js-v2.git
+$ git clone https://github.com/os-js/OS.js.git
 $ cd OS.js-v2
 $ npm install --production
 $ grunt
@@ -76,7 +76,7 @@ Run `cmd` as *Administrator* (important)!
 $ npm install -g grunt-cli
 
 # You can also download and extarct the latest zip
-$ git clone https://github.com/andersevenrud/OS.js-v2.git
+$ git clone https://github.com/os-js/OS.js.git
 $ cd OS.js-v2
 $ npm install
 
@@ -90,19 +90,19 @@ $ grunt --force
 
 ### Vagrant
 
-See [Vagrant.md](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/Vagrant.md).
+See [Vagrant.md](https://github.com/os-js/OS.js/blob/master/doc/Vagrant.md).
 
 ### Docker
 
-See [Docker.md](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/Docker.md).
+See [Docker.md](https://github.com/os-js/OS.js/blob/master/doc/Docker.md).
 
 ### NW.js
 
-See [NW.md](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/NW.md).
+See [NW.md](https://github.com/os-js/OS.js/blob/master/doc/NW.md).
 
 ### X11
 
-See [X11.md](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/X11.md).
+See [X11.md](https://github.com/os-js/OS.js/blob/master/doc/X11.md).
 
 # Running
 
