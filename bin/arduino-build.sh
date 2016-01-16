@@ -111,6 +111,33 @@ rm -rf $OUTDIR/dist/themes/sounds/*
 rm -rf $OUTDIR/dist/themes/wallpapers/*
 cp -v src/client/themes/wallpapers/arduino-infinite-boards.jpg $OUTDIR/dist/themes/wallpapers/
 
+# Cleanup
+rm $OUTDIR/dist/.htaccess 2>/dev/null
+rm $OUTDIR/dist/.gitignore 2>/dev/null
+rm $OUTDIR/dist/vendor/.gitignore 2>/dev/null
+rm $OUTDIR/dist/themes/.gitignore 2>/dev/null
+rm $OUTDIR/dist/packages/.gitignore 2>/dev/null
+rm $OUTDIR/dist/api.php 2>/dev/null
+rm $OUTDIR/dist/packages/*/*/package.json 2>/dev/null
+rm $OUTDIR/dist/packages/*/*/api.js 2>/dev/null
+rm $OUTDIR/dist/packages/*/*/api.php 2>/dev/null
+rm $OUTDIR/dist/packages/*/*/server.lua 2>/dev/null
+rm $OUTDIR/dist/packages/target/CoreWM/panelitems 2>/dev/null
+rm $OUTDIR/dist/packages/target/CodeMirror/vendor 2>/dev/null
+
+#  rm $OUTDIR/dist/osjs.js 2>/dev/null
+#  rm $OUTDIR/dist/osjs.css 2>/dev/null
+#  rm $OUTDIR/dist/locales.js 2>/dev/null
+#  rm $OUTDIR/dist/settings.js 2>/dev/null
+#  rm $OUTDIR/dist/packages/*/*/combined.js 2>/dev/null
+#  rm $OUTDIR/dist/packages/*/*/combined.css 2>/dev/null
+
+rm -rf $OUTDIR/dist/packages/default 2>/dev/null
+rm -rf $OUTDIR/dist/packages/arduino 2>/dev/null
+rm -rf $OUTDIR/dist/vendor/* 2>/dev/null
+
+rm -rf $OUTDIR/build/dist/themes/styles/material/*.less 2>/dev/null
+
 # Packaging
 
 if [ "$1" == "package" ]; then
@@ -143,32 +170,5 @@ if [ "$1" == "package" ]; then
     mv release arduinos-$gitcommit
     tar zcf arduinos-"$gitcommit".tar.gz arduinos-$gitcommit
 fi
-
-# Cleanup
-rm $OUTDIR/dist/.htaccess 2>/dev/null
-rm $OUTDIR/dist/.gitignore 2>/dev/null
-rm $OUTDIR/dist/vendor/.gitignore 2>/dev/null
-rm $OUTDIR/dist/themes/.gitignore 2>/dev/null
-rm $OUTDIR/dist/packages/.gitignore 2>/dev/null
-rm $OUTDIR/dist/api.php 2>/dev/null
-rm $OUTDIR/dist/packages/*/*/package.json 2>/dev/null
-rm $OUTDIR/dist/packages/*/*/api.js 2>/dev/null
-rm $OUTDIR/dist/packages/*/*/api.php 2>/dev/null
-rm $OUTDIR/dist/packages/*/*/server.lua 2>/dev/null
-rm $OUTDIR/dist/packages/target/CoreWM/panelitems 2>/dev/null
-rm $OUTDIR/dist/packages/target/CodeMirror/vendor 2>/dev/null
-
-#  rm $OUTDIR/dist/osjs.js 2>/dev/null
-#  rm $OUTDIR/dist/osjs.css 2>/dev/null
-#  rm $OUTDIR/dist/locales.js 2>/dev/null
-#  rm $OUTDIR/dist/settings.js 2>/dev/null
-#  rm $OUTDIR/dist/packages/*/*/combined.js 2>/dev/null
-#  rm $OUTDIR/dist/packages/*/*/combined.css 2>/dev/null
-
-rm -rf $OUTDIR/dist/packages/default 2>/dev/null
-rm -rf $OUTDIR/dist/packages/arduino 2>/dev/null
-rm -rf $OUTDIR/dist/vendor/* 2>/dev/null
-
-rm -rf $OUTDIR/build/dist/themes/styles/material/*.less 2>/dev/null
 
 rm -rf $TMPDIR
