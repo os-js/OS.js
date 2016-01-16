@@ -56,7 +56,7 @@
     Application.prototype.init.apply(this, arguments);
     onInited();
 
-    var self =  this;
+    var win = this._getMainWindow();
     OSjs.API.call('netinfo', {}, function(result, xhr) {
       if ( result.error ) {
         netinfo = null;
@@ -64,7 +64,7 @@
         netinfo = result.result.ifconfig;
         netinfo.forEach(function(cur, index, result){
           if ( cur.ip !== '' && cur.iface !== 'lo' ) {
-            self._frame.src = window.location.protocol + '//' + cur.ip + ':4200/' ;
+            win._frame.src = window.location.protocol + '//' + cur.ip + ':4200/' ;
             return false;
           }
           return true;
