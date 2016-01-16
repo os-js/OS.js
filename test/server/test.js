@@ -36,11 +36,13 @@ process.chdir(rootDir);
 describe('Prepare', function() {
   var fs = require('fs');
 
+  /*
   describe('#handler', function() {
     it('handler should be set to demo', function() {
       assert.equal('demo', instance.config.handler);
     });
   });
+  */
 
   describe('#vfs', function() {
     var testPath = instance.vfs.getRealPath('home:///', instance.config, request);
