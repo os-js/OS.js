@@ -33,7 +33,7 @@
   var categories = ['theme', 'desktop', 'panel', 'user', 'fileview', 'packages'];
 
   function fetchJSON(cb) {
-    var url = 'http://andersevenrud.github.io/OS.js-v2/store/packages.json';
+    var url = 'http://os-js.github.io/OS.js/store/packages.json';
     API.curl({
       body: {
         url: url,
