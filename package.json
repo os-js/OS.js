@@ -2,7 +2,7 @@
   "name": "OS.js",
   "version": "2.0.0-alpha.71",
   "description": "JavaScript Cloud/Web Desktop Platform",
-  "url": "http://andersevenrud.github.io/OS.js-v2/",
+  "url": "http://os.js.org",
   "email": "andersevenrud@gmail.com",
   "license": "BSD-2-Clause",
   "contributors": [
@@ -13,11 +13,11 @@
   ],
   "keywords": ["os.js", "web desktop", "cloud desktop"],
   "bugs": {
-    "url": "https://github.com/andersevenrud/OS.js-v2/issues"
+    "url": "https://github.com/os-js/OS.js/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/andersevenrud/OS.js-v2.git"
+    "url": "https://github.com/os-js/OS.js.git"
   },
   "scripts": {
     "test": "grunt test"

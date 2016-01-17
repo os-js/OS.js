@@ -55,7 +55,7 @@ $ sudo npm install -g grunt-cli
 
 # You can also download and extarct the latest zip
 $ git clone https://github.com/os-js/OS.js.git
-$ cd OS.js-v2
+$ cd OS.js
 $ npm install --production
 $ grunt
 ```
@@ -77,7 +77,7 @@ $ npm install -g grunt-cli
 
 # You can also download and extarct the latest zip
 $ git clone https://github.com/os-js/OS.js.git
-$ cd OS.js-v2
+$ cd OS.js
 $ npm install
 
 # This is required to make the Development Environment work, but is optional.
@@ -134,7 +134,7 @@ You can install [node supervisor](https://github.com/petruisfan/node-supervisor)
 
 You can start a server manually with `(cd dist; php -S 0.0.0.0:8000 ../src/server/php/server.php)` or look below for webserver alternatives.
 
-If you have a "webhost" (or "webhotel") with ex. cPanel without shell access (or no node support), you can run OS.js, but has to be built on another computer, then transfered over to the target machine. The only downside here is that you'd have to run from /OS.js-v2/dist/ without doing modifications to the setup (if you don't have access to mod_rewrite to create proxy rules).
+If you have a "webhost" (or "webhotel") with ex. cPanel without shell access (or no node support), you can run OS.js, but has to be built on another computer, then transfered over to the target machine. The only downside here is that you'd have to run from /OS.js/dist/ without doing modifications to the setup (if you don't have access to mod_rewrite to create proxy rules).
 
 *By default PHP uses 'dist' as the default root*
 
