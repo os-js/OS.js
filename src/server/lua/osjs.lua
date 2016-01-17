@@ -639,6 +639,7 @@ function api_request(request, response, meth, iargs)
     end
 
     console("/sbin/uci set system.@system[0].hostname=" .. hostname)
+    console("/sbin/uci set system.@system[0].timezone=" .. timezone)
     console("/sbin/uci commit system")
     data = true
   elseif meth == "reboot" then
