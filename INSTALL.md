@@ -78,7 +78,7 @@ $ npm install -g grunt-cli
 # You can also download and extarct the latest zip
 $ git clone https://github.com/os-js/OS.js.git
 $ cd OS.js
-$ npm install
+$ npm install --production
 
 # This is required to make the Development Environment work, but is optional.
 $ bin\create-windows-symlinks
