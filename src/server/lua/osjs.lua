@@ -554,7 +554,7 @@ local function get_wlans(device)
   end
 
   local result = {}
-  for i, net in ipairs(scanlist(3)) do
+  for i, net in ipairs(scanlist(1)) do
     net.encryption = net.encryption or { }
 
     local enc = format_wifi_encryption(net.encryption)
