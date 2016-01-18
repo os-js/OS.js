@@ -675,7 +675,7 @@ function api_request(request, response, meth, iargs)
     username = get_username(request, response)
     data = sys.user.setpasswd(username, iargs["password"]) == 0
   elseif meth == "wifi" then
-    data = console("sh " .. ROOTDIR .. "/bin/arduino-wifi-connect.sh " .. iargs["ssid"] .. " " ..  iargs["security"] .. " " .. iargs["password"], true)
+    data = console("sh " .. ROOTDIR .. '/bin/arduino-wifi-connect.sh "' .. iargs["ssid"] .. '" ' ..  iargs["security"] .. ' "' .. iargs["password"] .. '"', true)
   elseif meth == "opkg" then
     if iargs["command"] == "list" then
       if iargs["args"]["category"] == "all" then
