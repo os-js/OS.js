@@ -1,10 +1,10 @@
-Package: osjs
+Package: arduinos
 Architecture: ARCH
 Priority: optional
 Section: base
 Version: VER
 Maintainer: Anders Evenrud <andersevenrud@gmail.com>
 Description: OS.js Cloud/Web Desktop http://os.js.org
-Depends: lua wsapi luci luci-lib-nixio luci-lib-sys lua-base64
+Depends: luci luci-lib-json uhttpd-mod-lua lua-coxpcall lua-wsapi-base lua-wsapi-xavante lua-base64 lua-xavante luafilesystem iw shellinabox
 Suggests:
 Conflicts:
