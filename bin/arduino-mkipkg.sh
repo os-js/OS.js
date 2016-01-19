@@ -30,9 +30,15 @@
 #
 
 #REV=`git log --pretty=format:'%h' -n 1`
-REV=`git rev-list HEAD --count`
-ARCH="ar71xx"
-VERSION="2.0.0-build$REV"
+#REV=`git rev-list HEAD --count`
+REV=`git rev-parse --short HEAD`
+
+if [ -z $ARCH ]
+then
+	ARCH="ar71xx"
+fi
+
+VERSION="2.0.0-$REV"
 
 PKGNAME="arduinoos_${VERSION}_${ARCH}.ipk"
 SRCDIR=".arduino/build"
