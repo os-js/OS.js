@@ -34,7 +34,7 @@ REV=`git rev-list HEAD --count`
 ARCH="ar71xx"
 VERSION="2.0.0-build$REV"
 
-PKGNAME="arduinos_${VERSION}_${ARCH}.ipk"
+PKGNAME="arduinoos_${VERSION}_${ARCH}.ipk"
 SRCDIR=".arduino/build"
 OUTDIR=".arduino"
 

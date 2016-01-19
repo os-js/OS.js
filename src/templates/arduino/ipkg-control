@@ -1,10 +1,11 @@
-Package: arduinos
-Architecture: ARCH
-Priority: optional
-Section: base
+Package: arduinoos
 Version: VER
+Depends: libc, luci, luci-lib-json, uhttpd-mod-lua, lua-coxpcall, lua-wsapi-base, lua-wsapi-xavante, lua-base64, lua-xavante, luafilesystem, iw, shellinabox
+Priority: optional
+Source: package/linino/arduinos
+Section: luci
+Architecture: ARCH
 Maintainer: Anders Evenrud <andersevenrud@gmail.com>
 Description: OS.js Cloud/Web Desktop http://os.js.org
-Depends: luci luci-lib-json uhttpd-mod-lua lua-coxpcall lua-wsapi-base lua-wsapi-xavante lua-base64 lua-xavante luafilesystem iw shellinabox
 Suggests:
 Conflicts:
