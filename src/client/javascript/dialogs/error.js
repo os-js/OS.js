@@ -106,7 +106,7 @@
         if ( self.traceMessage ) {
           body.push('\n```\n' + self.traceMessage + '\n```');
         }
-        window.open('//github.com/andersevenrud/OS.js-v2/issues/new?title=' + title + '&body=' + encodeURIComponent(body.join('\n')));
+        window.open('//github.com/os-js/OS.js/issues/new?title=' + title + '&body=' + encodeURIComponent(body.join('\n')));
       });
     } else {
       this.scheme.find(this, 'ButtonBugReport').hide();

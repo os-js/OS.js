@@ -10,6 +10,7 @@
     "pl_PL": "Notatnik",
     "sk_SK": "Poznámkový blok",
     "ru_RU": "Редактор текста",
+    "ko_KR": "텍스트패드",
     "tr_TR": "Basit Bir Metin Düzenleyicisi",
     "vi_VN": "Trình sửa văn bản"
   },
@@ -21,6 +22,7 @@
     "pl_PL": "Prosty edytor tekstu",
     "sk_SK": "Jednoduchý textový editor",
     "ru_RU": "Простой текстовый редактор",
+    "ko_KR": "간단한 텍스트 편집기",
     "tr_TR": "Basit Bir Metin Düzenleyicisi",
     "vi_VN": "Trình sửa văn bản đơn giản"
   },

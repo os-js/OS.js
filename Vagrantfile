@@ -41,14 +41,14 @@ Vagrant.configure(2) do |config|
     aptitude -y install make git npm
     ln -s /usr/bin/nodejs /usr/bin/node
 
-    # build OS.js-v2
+    # build OS.js
     sudo npm install -g grunt-cli
-    git clone https://github.com/andersevenrud/OS.js-v2.git
-    pushd OS.js-v2
+    git clone https://github.com/os-js/OS.js.git
+    pushd OS.js
     npm install
     grunt
 
-    # configure apache2 to serve OS.js-v2 dist-dev
+    # configure apache2 to serve OS.js dist-dev
     grunt apache-vhost:dist-dev:apache-vhost.conf
     sed -i -e 's/#Require/Require/' apache-vhost.conf
     sudo cp apache-vhost.conf /etc/apache2/sites-available/000-default.conf
@@ -56,7 +56,7 @@ Vagrant.configure(2) do |config|
 
     # update permissions
     popd
-    sudo chown -R vagrant:vagrant OS.js-v2
-    sudo chown -R www-data:www-data OS.js-v2/vfs
+    sudo chown -R vagrant:vagrant OS.js
+    sudo chown -R www-data:www-data OS.js/vfs
   SHELL
 end

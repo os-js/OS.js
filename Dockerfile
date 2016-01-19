@@ -1,5 +1,5 @@
 ############################################
-## Docker Image for the  OS.js-v2 Project ##
+## Docker Image for the  OS.js Project ##
 ## Dockerfile created by junland (Github) ##
 ############################################
 
@@ -17,12 +17,12 @@ RUN apt-get install -y npm
 RUN apt-get install -y nodejs-legacy
 
 ## Clone the Repo and install grunt ##
-RUN git clone https://github.com/andersevenrud/OS.js-v2.git
+RUN git clone https://github.com/os-js/OS.js.git
 RUN npm install -g grunt-cli
-RUN cd OS.js-v2/
+RUN cd OS.js/
 
 ## Install and Compile OS.js ##
-WORKDIR OS.js-v2/
+WORKDIR OS.js/
 RUN npm install
 RUN grunt
 

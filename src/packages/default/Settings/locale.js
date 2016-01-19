@@ -179,6 +179,28 @@
       'General' : 'Основные',
       'Debug' : 'Отладка'
     },
+    ko_KR : {
+      'Theme' : '테마',
+      'Background' : '바탕화면',
+      'Desktop' : '데스크탑',
+      'Background Type' : '바탕화면 타입',
+      'Image (Repeat)' : '이미지 (반복)',
+      'Image (Centered)' : '이미지 (가운데)',
+      'Image (Fill)' : '이미지 (채우기)',
+      'Image (Streched)' : '이미지 (늘이기)',
+      'Desktop Margin ({0}px)' : '데스크탑 여백 ({0}px)',
+      'Panel' : '패널',
+      'Position' : '위치',
+      'Ontop' : '상단바 자리 차지',
+      'Items' : '항목',
+      'Enable Animations' : '애니메이션 효과 켜기',
+      'Language (requires restart)' : '언어 (재시작 필요)',
+      'Enable Sounds' : '사운드 켜기',
+      'Enable Window Switcher' : '윈도우 전환 활성',
+      'Enable Hotkeys' : '단축키 활성',
+      'Enable Icon View' : '아이콘 보이기',
+      'General': '일반'
+    },
     nl_NL : {
       'Theme' : 'Thema',
       'Background' : 'Achtergrond',

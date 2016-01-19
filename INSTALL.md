@@ -54,9 +54,9 @@ Run `curl -sS http://os.js.org/installer | sh`.
 $ sudo npm install -g grunt-cli
 
 # You can also download and extarct the latest zip
-$ git clone https://github.com/andersevenrud/OS.js-v2.git
-$ cd OS.js-v2
-$ npm install
+$ git clone https://github.com/os-js/OS.js.git
+$ cd OS.js
+$ npm install --production
 $ grunt
 ```
 
@@ -76,9 +76,9 @@ Run `cmd` as *Administrator* (important)!
 $ npm install -g grunt-cli
 
 # You can also download and extarct the latest zip
-$ git clone https://github.com/andersevenrud/OS.js-v2.git
-$ cd OS.js-v2
-$ npm install
+$ git clone https://github.com/os-js/OS.js.git
+$ cd OS.js
+$ npm install --production
 
 # This is required to make the Development Environment work, but is optional.
 $ bin\create-windows-symlinks
@@ -90,19 +90,19 @@ $ grunt --force
 
 ### Vagrant
 
-See [Vagrant.md](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/Vagrant.md).
+See [Vagrant.md](https://github.com/os-js/OS.js/blob/master/doc/Vagrant.md).
 
 ### Docker
 
-See [Docker.md](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/Docker.md).
+See [Docker.md](https://github.com/os-js/OS.js/blob/master/doc/Docker.md).
 
 ### NW.js
 
-See [NW.md](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/NW.md).
+See [NW.md](https://github.com/os-js/OS.js/blob/master/doc/NW.md).
 
 ### X11
 
-See [X11.md](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/X11.md).
+See [X11.md](https://github.com/os-js/OS.js/blob/master/doc/X11.md).
 
 # Running
 
@@ -134,7 +134,7 @@ You can install [node supervisor](https://github.com/petruisfan/node-supervisor)
 
 You can start a server manually with `(cd dist; php -S 0.0.0.0:8000 ../src/server/php/server.php)` or look below for webserver alternatives.
 
-If you have a "webhost" (or "webhotel") with ex. cPanel without shell access (or no node support), you can run OS.js, but has to be built on another computer, then transfered over to the target machine. The only downside here is that you'd have to run from /OS.js-v2/dist/ without doing modifications to the setup (if you don't have access to mod_rewrite to create proxy rules).
+If you have a "webhost" (or "webhotel") with ex. cPanel without shell access (or no node support), you can run OS.js, but has to be built on another computer, then transfered over to the target machine. The only downside here is that you'd have to run from /OS.js/dist/ without doing modifications to the setup (if you don't have access to mod_rewrite to create proxy rules).
 
 *By default PHP uses 'dist' as the default root*
 
