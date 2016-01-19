@@ -301,7 +301,7 @@ function fs_request(request, response, name, args)
     error, data = fs_rename(request, response, args[1], args[2])
   elseif name == "copy" then
     error, data = fs_copy(request, response, args[1], args[2])
-  elseif name == "remove" then
+  elseif name == "remove" or name == "delete" then
     error, data = fs_remove(request, response, args[1])
   elseif name == "mkdir" then
     error, data = fs_mkdir(request, response, args[1])
