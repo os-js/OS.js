@@ -144,7 +144,9 @@
 
     function requestJSON() {
       request = new XMLHttpRequest();
-      request.timeout = args.timeout;
+      try {
+        request.timeout = args.timeout;
+      } catch ( e ) {}
 
       if ( request.upload ) {
         request.upload.addEventListener('progress', args.onprogress, false);
