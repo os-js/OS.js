@@ -1,0 +1,12 @@
+Package: arduinoos
+Version: VER
+Depends: libc, luci, luci-lib-json, uhttpd-mod-lua, lua-coxpcall, lua-wsapi-base, lua-wsapi-xavante, lua-base64, lua-xavante, luafilesystem, iw, shellinabox
+Provides:
+Source: package/linino/arduinos
+Section: luci
+Status: unknown ok not-installed
+Essential: no
+Priority: optional
+Maintainer: Anders Evenrud <anderseevenrud@gmail.com>
+Architecture: ARCH
+Description:  The new Linino configuration panel based on Os.js

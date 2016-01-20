@@ -57,14 +57,30 @@ cp -r $SRCDIR/README $OUTDIR/data/osjs/
 cp -r $SRCDIR/settings.json $OUTDIR/data/osjs/
 
 # Create control file
-cp src/templates/arduino/ipkg-control $OUTDIR/ipkg/control_tmpl
+if [ "$1" == "1209" ]
+then
+	cp src/templates/1209/ipkg-control $OUTDIR/ipkg/control_tmpl
+else
+	cp src/templates/arduino/ipkg-control $OUTDIR/ipkg/control_tmpl
+fi
+
 # adding custom scripts
-cp src/templates/arduino/post* $OUTDIR/ipkg
-cp src/templates/arduino/prerm $OUTDIR/ipkg
+if [ "$1" == "1209" ]
+then
+	cp src/templates/1209/* $OUTDIR/ipkg
+else
+	cp src/templates/arduino/post* $OUTDIR/ipkg
+ 	cp src/templates/arduino/prerm $OUTDIR/ipkg
+fi
 awk '{gsub("ARCH", "'"$ARCH"'", $0); print }' $OUTDIR/ipkg/control_tmpl | awk '{gsub("VER", "'"${VERSION}"'", $0); print }' > $OUTDIR/ipkg/control
 
 # Create control file
-tar -C $OUTDIR/ipkg -czf $OUTDIR/control.tar.gz ./control ./prerm ./postinst ./postinst-pkg ./postrm
+if [ "$1" == "1209" ]
+then
+	tar -C $OUTDIR/ipkg -czf $OUTDIR/control.tar.gz ./control ./postinst ./postrm
+else
+	tar -C $OUTDIR/ipkg -czf $OUTDIR/control.tar.gz ./control ./prerm ./postinst ./postinst-pkg ./postrm
+fi
 
 # Create data image
 tar -C $OUTDIR/data -czf $OUTDIR/data.tar.gz ./osjs ./usr
@@ -76,7 +92,7 @@ echo "2.0" > $OUTDIR/debian-binary
 tar -C $OUTDIR -cz ./debian-binary ./data.tar.gz ./control.tar.gz > $OUTDIR/$PKGNAME
 
 # Clean up
-rm -rf $OUTDIR/ipkg
+# rm -rf $OUTDIR/ipkg
 rm -rf $OUTDIR/data
 rm $OUTDIR/debian-binary
 rm $OUTDIR/data.tar.gz
