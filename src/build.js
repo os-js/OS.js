@@ -27,8 +27,17 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(_path, _fs, _less, _ugly, Cleancss) {
+(function(_path, _fs, _less) {
   'use strict';
+  var _ugly;
+  var Cleancss;
+
+  try {
+    _ugly = require('uglify-js');
+  } catch ( e ) {}
+  try {
+    Cleancss = require('clean-css');
+  } catch ( e ) {}
 
   // TODO: Find a better way to handle windows paths
 
@@ -1583,7 +1592,5 @@
 })(
   require('path'),
   require('node-fs-extra'),
-  require('less'),
-  require('uglify-js'),
-  require('clean-css')
+  require('less')
 );

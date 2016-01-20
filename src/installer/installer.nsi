@@ -19,7 +19,7 @@ Section ""
   CreateDirectory $INSTDIR\temp
   
   ; Download
-  inetc::get https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/src/installer/installer.ps1 "$INSTDIR\temp\installer.ps1"
+  inetc::get https://raw.githubusercontent.com/os-js/OS.js/master/src/installer/installer.ps1 "$INSTDIR\temp\installer.ps1"
   Pop $R0 ;Get the return value
     StrCmp $R0 "OK" +3
       MessageBox MB_OK "Download failed: $R0"

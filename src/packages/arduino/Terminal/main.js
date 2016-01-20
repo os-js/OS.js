@@ -39,7 +39,7 @@
 
   var ApplicationTerminal = function(args, metadata) {
     Application.apply(this, ['ApplicationTerminal', args, metadata, {
-      src: '//:0',
+      src: '',
       title: metadata.name,
       icon: metadata.icon,
       width: 800,
@@ -57,7 +57,7 @@
     onInited();
 
     var win = this._getMainWindow();
-    win._frame.src = window.location.protocol + '//' + window.location.hostname + ':4200/' ;
+    win.setLocation(window.location.protocol + '//' + window.location.hostname + ':4200/');
   };
 
   /////////////////////////////////////////////////////////////////////////////

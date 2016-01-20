@@ -555,12 +555,7 @@
     function _createInstance(result) {
       var a = null;
       try {
-        if ( typeof OSjs.Applications[n].Class !== 'undefined' ) {
-          a = new OSjs.Applications[n].Class(arg, result);
-        } else {
-          a = new OSjs.Applications[n](arg, result);
-        }
-
+        a = new OSjs.Applications[n].Class(arg, result);
         onConstructed(a, result);
       } catch ( e ) {
         console.warn('Error on constructing application', e, e.stack);

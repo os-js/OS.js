@@ -128,6 +128,21 @@
       'seek unavailable in format' : 'Перемотка недоступна в этом формате',
       'The audio type is not supported: {0}' : 'Тип аудио не поддерживается: {0}'
     },
+    ko_KR : {
+      'Playlist' : '재생목록',
+      'Playback aborted' : '일시중지',
+      'Network or communication error' : '네트워크 등 통신 문제가 발생했습니다',
+      'Decoding failed. Corruption or unsupported media' : '디코딩에 실패했습니다. 손상되었거나 지원하지 않는 형식입니다',
+      'Media source not supported' : '지원하지 않는 미디어 소스입니다',
+      'Failed to play file' : '파일을 재생하는데 실패했습니다',
+      'Artist' : '아티스트',
+      'Album' : '앨범',
+      'Track' : '트랙',
+      'Time' : '시간',
+      'Media information query failed' : '미디어 정보 조회에 실패했습니다',
+      'seek unavailable in format' : '탐색을 지원하지 않는 형식입니다',
+      'The audio type is not supported: {0}' : '이 오디오 형식은 지원하지 않습니다: {0}'
+    },
     nl_NL : {
       'Playlist' : 'Afspeel lijst',
       'Playback aborted' : 'Spelen onderbroken',

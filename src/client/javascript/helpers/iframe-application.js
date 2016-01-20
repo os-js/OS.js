@@ -57,6 +57,8 @@
    * @extends Window
    * @class
    */
+  var IFRAME_COUNT = 0;
+
   var IFrameApplicationWindow = function(name, opts, app) {
     opts = Utils.argumentDefaults(opts, {
       src: 'about:blank',
@@ -89,21 +91,33 @@
     var root = Window.prototype.init.apply(this, arguments);
     root.style.overflow = 'visible';
 
+    var id = 'IframeApplicationWindow' + IFRAME_COUNT.toString();
     var iframe = document.createElement('iframe');
     iframe.setAttribute('border', 0);
+    iframe.id = id;
     iframe.className = 'IframeApplicationFrame';
     iframe.addEventListener('load', function() {
+      self._iwin = iframe.contentWindow;
       self.postMessage('Window::init');
     });
-    iframe.src = this._opts.src;
+
+    this.setLocation(this._opts.src, iframe);
     root.appendChild(iframe);
 
     this._frame = iframe;
-    this._iwin = iframe.contentWindow;
 
-    this._iwin.focus();
+    try {
+      this._iwin = iframe.contentWindow;
+    } catch ( e ) {}
+
+    if ( this._iwin ) {
+      this._iwin.focus();
+    }
+
     this._frame.focus();
     this._opts.focus(this._frame, this._iwin);
+
+    IFRAME_COUNT++;
 
     return root;
   };
@@ -167,6 +181,23 @@
    */
   IFrameApplicationWindow.prototype.onPostMessage = function(message, ev) {
     console.debug('IFrameApplicationWindow::onPostMessage()', message);
+  };
+
+  /**
+   * Set Iframe source
+   *
+   * @param   String      src       Source
+   * @return  void
+   *
+   * @method IFrameApplicationWindow::onPostMessage()
+   */
+  IFrameApplicationWindow.prototype.setLocation = function(src, iframe) {
+    iframe = iframe || this._frame;
+
+    var oldbefore = window.onbeforeunload;
+    window.onbeforeunload = null;
+    iframe.src = src;
+    window.onbeforeunload = oldbefore;
   };
 
   /////////////////////////////////////////////////////////////////////////////

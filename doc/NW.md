@@ -2,7 +2,11 @@
 
 Run:
 
-```
+```shell
+# Install all dev dependencies
+npm install
+
+# Make NW build
 grunt nw
 ```
 
