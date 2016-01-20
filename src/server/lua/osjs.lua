@@ -680,6 +680,7 @@ function api_request(request, response, meth, iargs)
     data = console("sh " .. ROOTDIR .. '/bin/arduino-wifi-connect.sh "' .. cssid .. '" ' ..  iargs["security"] .. ' "' .. cpass .. '"', true)
   elseif meth == "opkg" then
     if iargs["command"] == "list" then
+      data = console("opkg update")
       if iargs["args"]["category"] == "all" then
         data = console("opkg list")
       elseif iargs["args"]["category"] == "installed" then
