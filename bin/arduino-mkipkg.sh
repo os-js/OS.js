@@ -92,7 +92,7 @@ echo "2.0" > $OUTDIR/debian-binary
 tar -C $OUTDIR -cz ./debian-binary ./data.tar.gz ./control.tar.gz > $OUTDIR/$PKGNAME
 
 # Clean up
-# rm -rf $OUTDIR/ipkg
+rm -rf $OUTDIR/ipkg
 rm -rf $OUTDIR/data
 rm $OUTDIR/debian-binary
 rm $OUTDIR/data.tar.gz
