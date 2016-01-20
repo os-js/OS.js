@@ -3,6 +3,7 @@
   "name":       "Draw",
   "description":"Simple drawing application",
   "names": {
+    "it_IT": "Disegna!",
     "bg_BG": "Рисуване",
     "de_DE": "Zeichnen",
     "nl_NL": "Tekenen",
@@ -15,6 +16,7 @@
     "vi_VN": "Vẽ"
   },
   "descriptions": {
+    "it_IT": "Semplice applicazione per creazione/modifica immagini",
     "bg_BG": "Приложение за рисуване",
     "de_DE": "Einfaches Zeichen-Programm",
     "nl_NL": "Eenvoudig tekenprogramma",

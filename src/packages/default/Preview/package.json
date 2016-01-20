@@ -3,6 +3,7 @@
   "name": "Preview",
   "description": "Preview image files",
   "names": {
+    "it_IT": "Anteprima Immagini",
     "bg_BG": "Преглед на изображения",
     "de_DE": "Vorschau",
     "nl_NL": "Foto viewer",
@@ -15,6 +16,7 @@
     "vi_VN": "Trình xem ảnh"
   },
   "descriptions": {
+    "it_IT": "Anteprima Immagini",
     "bg_BG": "Преглед на изображения",
     "de_DE": "Bildervorschau",
     "nl_NL": "Foto viewer",

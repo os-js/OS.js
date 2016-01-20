@@ -36,6 +36,29 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var _Locales = {
+    it_IT : {
+      'Theme' : 'Tema',
+      'Background' : 'Sfondo',
+      'Desktop' : 'Scrivania',
+      'Background Type' : 'Tipo di sfondo',
+      'Image (Repeat)' : 'Immagine (Ripeti)',
+      'Image (Centered)' : 'Immagine (Centrata)',
+      'Image (Fill)' : 'Immagine (Riempi)',
+      'Image (Streched)' : 'Immagine (Distorci)',
+      'Desktop Margin ({0}px)' : 'Margini Scrivania ({0}px)',
+      'Panel' : 'Panello',
+      'Position' : 'Posizione',
+      'Ontop' : 'In primo piano',
+      'Items' : 'Elementi',
+      'Enable Animations' : 'Abilità animazioni',
+      'Language (requires restart)' : 'Lingua (necessità riavvio)',
+      'Enable Sounds' : 'Abilita Suoni',
+      'Enable Window Switcher' : 'Abilita Cambia-Finestre',
+      'Enable Hotkeys' : 'Abilita Scorciatoie da tastiera',
+      'Enable Icon View' : 'Abilita Visualizzazione ad icona',
+      'Remove shortcut' : 'Rimuovi scorciatoia',
+      'General' : 'Generale'
+    },
     no_NO : {
       'Theme' : 'Tema',
       'Background' : 'Bakgrunn',

@@ -3,6 +3,7 @@
   "name": "About OS.js",
   "description": "About OS.js",
   "names": {
+    "it_IT": "Informazioni su OS.js",
     "no_NO": "Om OS.js",
     "tr_TR": "hakkında OS.js",
     "pl_PL": "o OS.js",
@@ -15,6 +16,7 @@
     "bg_BG": " За OS.js"
   },
   "descriptions": {
+    "it_IT": "Informazioni su OS.js",
     "bg_BG": "За OS.js",
     "de_DE": "Über OS.js",
     "nl_NL": "Over OS.js",

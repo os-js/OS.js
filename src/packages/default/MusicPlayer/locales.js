@@ -36,6 +36,21 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var _Locales = {
+    it_IT : {
+      'Playlist' : 'Playlist',
+      'Playback aborted' : 'Riproduzione terminata',
+      'Network or communication error' : 'Errore di rete o di comunicazione',
+      'Decoding failed. Corruption or unsupported media' : 'Decodifica fallita. Supporto corroto o non supportato.',
+      'Media source not supported' : 'Sorgente multimediale non supportata',
+      'Failed to play file' : 'Riproduzione file fallita',
+      'Artist' : 'Artista',
+      'Album' : 'Album',
+      'Track' : 'Traccia',
+      'Time' : 'Tempo',
+      'Media information query failed' : 'Recupero informazioni media fallita',
+      'seek unavailable in format' : 'ricerca non disponibile nel formato',
+      'The audio type is not supported: {0}' : 'Tipo di audio non supportato: {0}'
+    },
     no_NO : {
       'Playlist' : 'Spilleliste',
       'Playback aborted' : 'Avspilling avbrutt',

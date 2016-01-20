@@ -3,6 +3,7 @@
   "name": "Process Viewer",
   "description": "View running processes",
   "names": {
+    "it_IT": "Gestore Attività",
     "bg_BG": "Процеси",
     "de_DE": "Prozess-Manager",
     "nl_NL": "Proces manager",
@@ -15,6 +16,7 @@
     "vi_VN": "Xem tiến trình"
   },
   "descriptions": {
+    "it_IT": "Mostri processi attivi",
     "bg_BG": "Преглед на процеси",
     "de_DE": "Laufende Prozesse verwalten",
     "nl_NL": "Bekijk de lopende processen",
