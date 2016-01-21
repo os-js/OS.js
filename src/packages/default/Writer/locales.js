@@ -36,6 +36,9 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var _Locales = {
+    it_IT : {
+      'Insert URL' : 'Inserisci URL'
+    },
     no_NO : {
       'Insert URL' : 'Sett inn URL'
     },

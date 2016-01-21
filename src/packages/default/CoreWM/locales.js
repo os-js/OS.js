@@ -36,6 +36,27 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var _Locales = {
+    it_IT : {
+      'Killing this process will stop things from working!' : 'Terminare questo processo bloccherà altre funzionalità!',
+      'Open settings' : 'Apri settaggi',
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Il tuo pannello non ha elementi. Vai nei settaggi per resettare ai valori predefiniti o modificarli manualmente\n(Questo errore può accadere dopo un aggiornamento di OS.js)',
+      'Create shortcut' : 'Crea colelgamento',
+      'Set as wallpaper' : 'Imposta come sfondo desktop',
+      'An error occured while creating PanelItem: {0}' : 'Si è verificato un errore nella creazione del PanelItem: {0}',
+      'Show Icons' : 'Mostra icone',
+      'Hide Icons' : 'Nascondi icone',
+
+      'Development' : 'Sviluppo',
+      'Education' : 'Educazione',
+      'Games' : 'Giochi',
+      'Graphics' : 'Grafica',
+      'Network' : 'Reti',
+      'Multimedia' : 'Multimedia',
+      'Office' : 'Ufficio',
+      'System' : 'Sistema',
+      'Utilities' : 'Utilità',
+      'Other' : 'Altro'
+    },
     no_NO : {
       'Killing this process will stop things from working!' : 'Dreping av denne prosessen vil få konsekvenser!',
       'Open settings' : 'Åpne instillinger',

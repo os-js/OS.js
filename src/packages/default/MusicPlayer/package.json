@@ -2,6 +2,7 @@
   "className": "ApplicationMusicPlayer",
   "name": "Music Player",
   "names": {
+    "it_IT": "Lettore Musicale",
     "bg_BG": "Музикален плеър",
     "de_DE": "Musikspieler",
     "nl_NL": "Audio speler",

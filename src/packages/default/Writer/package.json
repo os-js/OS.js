@@ -3,6 +3,7 @@
   "name": "Writer",
   "description": "Write rich text documents",
   "names": {
+    "it_IT": "Writer",
     "bg_BG": "Текст",
     "de_DE": "Writer",
     "nl_NL": "Tekstverwerker",
@@ -15,6 +16,7 @@
     "vi_VN": "Viết"
   },
   "descriptions": {
+    "it_IT": "Scrivi documenti di testo formattati",
     "bg_BG": "Писанене на обогатен текст",
     "de_DE": "Verfassen Sie Rich-Text-Dokumente",
     "nl_NL": "Tekst verwerker met opmaak",

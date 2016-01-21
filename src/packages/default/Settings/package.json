@@ -2,6 +2,7 @@
   "className": "ApplicationSettings",
   "name": "Settings",
   "names": {
+    "it_IT": "Settaggi",
     "bg_BG": "Настройки",
     "de_DE": "Einstellungen",
     "nl_NL": "Instellingen",
@@ -14,6 +15,7 @@
     "vi_VN": "Cài đặt"
   },
   "descriptions": {
+    "it_IT": "Settaggi",
     "bg_BG": "Настройки",
     "de_DE": "Einstellungen",
     "nl_NL": "Instellingen",

@@ -36,6 +36,53 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var _Locales = {
+    it_IT : {
+      'Toggle tools toolbar' : 'Mostra la barra strumenti',
+      'Toggle layers toolbar' : 'Mostra la barra dei livelli',
+      'Layer' : 'Livello',
+      'Effect' : 'Effetto',
+      'Flip Horizontally' : 'Specchia orizzontalmente',
+      'Flip Vertically' : 'Specchia verticalmente',
+      'Foreground' : 'Primopiano',
+      'Background' : 'Sfondo',
+      'Foreground (Fill) Color' : 'Colore in primopiano (Riempimento)',
+      'Background (Stroke) Color' : 'Colore di sfondo (Tracciato)',
+      'Line join' : 'Congiungi linea',
+      'Line width' : 'Lunghezza linea',
+      'Toggle Stroke' : 'Mostra tracciato',
+      'Enable stroke' : 'Abilita tracciato',
+      'Round' : 'Arrotonda',
+      'Miter' : 'Miter',
+      'Bevel' : 'Smussatura',
+      'Stroked' : 'Tracciato',
+      'No stroke' : 'Nessun tracciato',
+
+      'Pointer' : 'Puntatore',
+      'Move active layer' : 'Sposta livello attivo',
+
+      'Picker' : 'Selettore',
+      'LMB: set fg color, RMB: set gb color' : 'LMB: Imposta colore primopiano, RMB: Imposta colore di sfondo',
+
+      'Pencil' : 'Matita',
+      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: Disegna con colori fg/bg',
+      'Path' : 'Percorso',
+
+      'Square/Rectangle' : 'Quadrato/Rettangolo',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Disegna con colori di fg/bg, SHIFT: Disegna rettangolo',
+
+      'Circle/Ellipse' : 'Cerchio/Ellisse',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Disegna con colori di fg/bg, SHIFT: Disegna ellisse',
+
+      'Blur' : 'Sfoca',
+      'Noise' : 'Disturbo',
+      'Invert colors' : 'Inverti colori',
+      'Grayscale' : 'Scala di grigi',
+      'Sharpen' : 'Intensifica',
+      'Simple Blur' : 'Sfocatura leggera',
+
+      'Radius' : 'Raggio',
+      'Iterations' : 'Ripetizioni'
+    },
     no_NO : {
       'Toggle tools toolbar' : 'Svitsj verktøylinje',
       'Toggle layers toolbar' : 'Svitsj lag-verktøylinje',

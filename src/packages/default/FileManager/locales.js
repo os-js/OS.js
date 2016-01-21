@@ -36,6 +36,17 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var _Locales = {
+    it_IT : {
+      'Show Sidebar' : 'Mostra barra laterale',
+      'Copying file...' : 'Copiamento file...',
+      "Copying <span>{0}</span> to <span>{1}</span>" : "Copia <span>{0}</span> in <span>{1}</span>",
+      "Refreshing..." : "Ricarica...",
+      "Loading..." : "Caricamento...",
+      "Create a new file in <span>{0}</span>" : "Creazione nuovo file in <span>{0}</span>",
+      "Create a new directory in <span>{0}</span>" : "Creazione nuova cartella in <span>{0}</span>",
+      "Rename <span>{0}</span>" : "Rinomina <span>{0}</span>",
+      "Delete <span>{0}</span> ?" : "Cancella <span>{0}</span> ?"
+    },
     no_NO : {
       'Show Sidebar' : 'Vis Sidebar',
       'Copying file...' : 'Kopierer fil...',
