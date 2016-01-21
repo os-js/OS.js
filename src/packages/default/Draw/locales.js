@@ -644,8 +644,6 @@
       'Radius' : 'Bán kính',
       'Iterations' : 'Lặp đi lặp lại'
     }
-
-
   };
 
   function _() {
