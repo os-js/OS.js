@@ -277,7 +277,7 @@
 
       tmpContext = tmpCanvas.getContext('2d');
       tmpContext.strokeStyle = t ? ctx.fillStyle : ctx.strokeStyle;
-      tmpContext.fillStyle = t ? ctx.strokeSyle : ctx.fillStyle;
+      tmpContext.fillStyle = t ? ctx.strokeStyle : ctx.fillStyle;
       tmpContext.lineWidth = ctx.lineWidth;
       tmpContext.lineJoin = ctx.lineJoin;
     }
