@@ -1,4 +1,4 @@
-# 2.0.0-alpha71
+# 2.0.0
 
 OS.js exploded on social media and there was a lot of activity. This is just a digest of all the changes.
 
