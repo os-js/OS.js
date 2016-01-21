@@ -86,7 +86,9 @@
       "Loading..." : "기다려주세요...",
       "Create a new directory in <span>{0}</span>" : "<span>{0}</span>에 새 폴더 만들기",
       "Rename <span>{0}</span>" : "<span>{0}</span>의 이름 바꾸기",
-      "Delete <span>{0}</span> ?" : "<span>{0}</span>을 삭제하시겠습니까?"
+      "Delete <span>{0}</span> ?" : "<span>{0}</span>을 삭제하시겠습니까?",
+      'Selected {0} files, {1} dirs, {2}' : '{0} 개의 파일, {1} 개의 디렉토리가 선택됨, {2}',
+      'Showing {0} files ({1} hidden), {2} dirs, {3}' : '{0} 개의 파일({1} 개의 숨긴 파일), {2} 개의 디렉토리가 존재, {3}'
     },
     nl_NL : {
       'Show Sidebar' : 'Zijbar tonen',
