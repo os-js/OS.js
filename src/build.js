@@ -28,7 +28,10 @@
  * @licence Simplified BSD License
  */
 (function(_path, _fs, _less) {
+  /*jshint latedef: false */
+
   'use strict';
+
   var _ugly;
   var Cleancss;
 
