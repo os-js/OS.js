@@ -4,12 +4,15 @@
   "names": {
     "bg_BG": "Мениджър на прозорци на OS.js",
     "de_DE": "OS.js Fenster-Manager",
+    "es_ES": "OS.js Window Manager",
+    "fr_FR": "Gestionnaire de fenêtre OS.js",
+    "it_IT": "OS.js Gestore Finestre",
+    "ko_KR": "OS.js 윈도우 관리자",
     "nl_NL": "OS.js venster beheer",
     "no_NO": "OS.js Vinduhåndterer",
     "pl_PL": "Menedżer Okien OS.js",
-    "sk_SK": "Správca Okien OS.js",
     "ru_RU": "OS.js Оконный менеджер",
-    "ko_KR": "OS.js 윈도우 관리자",
+    "sk_SK": "Správca Okien OS.js",
     "tr_TR": "OS.js Pencere Yöneticisi",
     "vi_VN": "Quản lí cửa sổ OS.js"
   },

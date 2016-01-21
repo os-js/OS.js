@@ -36,14 +36,8 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var _Locales = {
-    no_NO : {
-      'Insert URL' : 'Sett inn URL'
-    },
-    pl_PL : {
-      'Insert URL' : 'Wpisz URL'
-    },
-    sk_SK : {
-      'Insert URL' : 'Vložiť URL'
+    bg_BG : {
+      'Insert URL' : 'Въведи URL'
     },
     de_DE : {
       'Insert URL' : 'URL einfügen'
@@ -52,9 +46,10 @@
       'Insert URL' : 'Insertar URL'
     },
     fr_FR : {
+      'Insert URL' : 'Insérer une URL'
     },
-    ru_RU : {
-      'Insert URL' : 'Вставить ссылку'
+    it_IT : {
+      'Insert URL' : 'Inserisci URL'
     },
     ko_KR : {
       'Insert URL' : '링크 삽입'
@@ -62,14 +57,23 @@
     nl_NL : {
       'Insert URL' : 'URL invoegen'
     },
-    vi_VN : {
-      'Insert URL' : 'Thêm URL'
+    no_NO : {
+      'Insert URL' : 'Sett inn URL'
+    },
+    pl_PL : {
+      'Insert URL' : 'Wpisz URL'
+    },
+    ru_RU : {
+      'Insert URL' : 'Вставить ссылку'
+    },
+    sk_SK : {
+      'Insert URL' : 'Vložiť URL'
     },
     tr_TR : {
       'Insert URL' : 'URL ekle'
     },
-    bg_BG : {
-      'Insert URL' : 'Въведи URL'
+    vi_VN : {
+      'Insert URL' : 'Thêm URL'
     }
   };
 
