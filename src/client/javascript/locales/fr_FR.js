@@ -304,7 +304,7 @@
     'LBL_THEME'        : 'Thème',
     'LBL_COLOR'        : 'Couleur',
     'LBL_PID'          : 'PID',
-    'LBL_KILL'         : 'Tuer',
+    'LBL_KILL'         : 'Fin de tâche',
     'LBL_ALIVE'        : 'Vivant',
     'LBL_INDEX'        : 'Index',
     'LBL_ADD'          : 'Ajouter',

@@ -5,6 +5,8 @@
   "names": {
     "bg_BG": "Файлов мениджър",
     "de_DE": "Dateimanager",
+    "fr_FR": "Explorateur de fichier",
+    "it_IT": "Gestore File",
     "nl_NL": "bestands beheer",
     "no_NO": "Fil-håndtering",
     "pl_PL": "Menedżer Plików",
@@ -17,6 +19,8 @@
   "descriptions": {
     "bg_BG": "Стандартния файлов мениджър",
     "de_DE": "Standardmäßiger Dateimanager",
+    "fr_FR": "Gestionnaire de fichier par défaut",
+    "it_IT": "Il gestore file predefinito",
     "nl_NL": "Standaard bestands beheerder",
     "no_NO": "Standard Fil-håndtering program",
     "pl_PL": "Domyślny Menedżer Plików",
