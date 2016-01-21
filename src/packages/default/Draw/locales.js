@@ -61,7 +61,7 @@
       'Move active layer' : 'Премести активен слой',
 
       'Picker' : 'берач',
-      'LMB: set fg color, RMB: set bg color' : 'LMB: изберете цвят за преден план, RMB: изберете цвят за фон',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'LMB: изберете цвят за преден план, RMB: изберете цвят за фон',
 
       'Pencil' : 'Молив',
       'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: рисувай с fg/bg цвят',
@@ -108,7 +108,7 @@
       'Move active layer' : 'Bewege aktive Ebene',
 
       'Picker' : 'Wähler',
-      'LMB: set fg color, RMB: set bg color' : 'LMB: wähle Vordergrundfarbe, RMB: wähle Hintergrundfarbe',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'LMB: wähle Vordergrundfarbe, RMB: wähle Hintergrundfarbe',
 
       'Pencil' : 'Stift',
       'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: Zeichnen mit fg/bg Farbe',
@@ -155,7 +155,7 @@
       'Move active layer' : 'Mover la capa activa',
 
       'Picker' : 'Selector',
-      'LMB: set fg color, RMB: set bg color' : 'LMB: Establecer el color de primer plano, RMB: Establecer el color de fondo',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'LMB: Establecer el color de primer plano, RMB: Establecer el color de fondo',
 
       'Pencil' : 'Lápiz',
       'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: Dibujar con el color de fondo/de primer plano',
@@ -202,7 +202,7 @@
       'Move active layer' : 'Déplacer le calque actif',
 
       'Picker' : 'Plukker',
-      'LMB: set fg color, RMB: set bg color' : 'LMB: Définir la couleur du première plan, RMB: Définir la couleur de l\'arrière plan',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'LMB: Définir la couleur du première plan, RMB: Définir la couleur de l\'arrière plan',
       //Set BG color plutot non?
 
       'Pencil' : 'Pinceau',
@@ -213,7 +213,7 @@
       'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Dessiner avec la couleur d\'avant/arrière plan, SHIFT: Dessiner rectangle',
 
       'Circle/Ellipse' : 'Cercle/Ellipse',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Dessiner avec la couleur d\'avant/arrière plan, SHIFT: Dessiner ellipse',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Dessiner avec la couleur d\'avant/arrière plan, SHIFT: Dessiner ellipse',
 
       'Blur' : 'Flou (Blur)',
       'Noise' : 'Bruit',
@@ -250,7 +250,7 @@
       'Move active layer' : 'Sposta livello attivo',
 
       'Picker' : 'Selettore',
-      'LMB: set fg color, RMB: set bg color' : 'LMB: Imposta colore primopiano, RMB: Imposta colore di sfondo',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'LMB: Imposta colore primopiano, RMB: Imposta colore di sfondo',
 
       'Pencil' : 'Matita',
       'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: Disegna con colori fg/bg',
@@ -297,17 +297,17 @@
       'Move active layer' : '활성 레이어 옮기기',
 
       'Picker' : '색상 추출',
-      'LMB: set fg color, RMB: set bg color' : '왼쪽 마우스 버튼: 전경색, 오른쪽 마우스 버튼 ',
+      'LMB: Pick foreground-, RMB: Pick background color' : '왼쪽 마우스 버튼: 전경색, 오른쪽 마우스 버튼 : 배경색',
 
       'Pencil' : '연필',
-      'LMB/RMB: Draw with fg/bg color' : '왼쪽 마우스/오른쪽 마우스 버튼 전경/배경색 그리기',
+      'LMB: Use foreground-, RMB: Use background color' : '왼쪽 마우스/오른쪽 마우스 버튼 전경/배경색 그리기',
       'Path' : '경로',
 
       'Square/Rectangle' : '정사각형/직사각형',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : '왼쪽/오른쪽 마우스 버튼 전경/배경색 그리기, SHIFT: 직사각형 그리기',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode' : '왼쪽/오른쪽 마우스 버튼 전경/배경색 그리기, SHIFT: 직사각형 그리기',
 
       'Circle/Ellipse' : '원/타원',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : '왼쪽/오른쪽 마우스 버튼 전경/배경색 그리기, SHIFT: 타원 그리기',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode' : '왼쪽/오른쪽 마우스 버튼 전경/배경색 그리기, SHIFT: 타원 그리기',
 
       'Blur' : '블러',
       'Noise' : '노이즈',
@@ -317,7 +317,10 @@
       'Simple Blur' : '약한 블러',
 
       'Radius' : '반경',
-      'Iterations' : '반복'
+      'Iterations' : '반복',
+
+      'LMB: Fill with foreground-, RMB: Fill with background color': '왼쪽 마우스/오른쪽 마우스 버튼 전경/배경색 칠하기',
+      'Set {0} color': '{0}색을 선택'
     },
     nl_NL : {
       'Toggle tools toolbar' : 'Toolbar gereedschappen',
@@ -344,17 +347,17 @@
       'Move active layer' : 'Verplaats de aktieve laag',
 
       'Picker' : 'Kiezer',
-      'LMB: set fg color, RMB: set bg color' : 'LMB: Kies voorgrond-kleur, RMB: Kies achtergrondkleur',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'LMB: Kies voorgrond-kleur, RMB: Kies achtergrondkleur',
 
       'Pencil' : 'Penseel',
-      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: Teken met voor- en achtergrondkleur',
+      'LMB: Use foreground-, RMB: Use background color' : 'LMB/RMB: Teken met voor- en achtergrondkleur',
       'Path' : 'Pfad',
 
       'Square/Rectangle' : 'Vierkant/rechthoek',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Teken met voor- en achtergrondkleur, SHIFT: Rechnthoek tekenen',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode' : 'LMB/RMB: Teken met voor- en achtergrondkleur, SHIFT: Rechnthoek tekenen',
 
       'Circle/Ellipse' : 'Cirkel/elipse',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Teken met voor- en achtergrondkleur, SHIFT: Elipse tekenen',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode' : 'LMB/RMB: Teken met voor- en achtergrondkleur, SHIFT: Elipse tekenen',
 
       'Blur' : 'Vager maken (Blur)',
       'Noise' : 'Ruis',
@@ -391,17 +394,17 @@
       'Move active layer' : 'Flytt aktivt lag',
 
       'Picker' : 'Plukker',
-      'LMB: set fg color, RMB: set bg color' : 'LMB: sett bg farge, RMB: sett fg farge',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'LMB: sett bg farge, RMB: sett fg farge',
 
       'Pencil' : 'Penn',
-      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: Tegn med fg/bg farge',
+      'LMB: Use foreground-, RMB: Use background color' : 'LMB/RMB: Tegn med fg/bg farge',
       'Path' : 'Sti',
 
       'Square/Rectangle' : 'Firkant/Rektangel',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Tegn med fg/bg farge, SHIFT: Tegn rektangel',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode' : 'LMB/RMB: Tegn med fg/bg farge, SHIFT: Tegn rektangel',
 
       'Circle/Ellipse' : 'Sirkel/Ellipse',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Tegn med fg/bg farge, SHIFT: Tegn ellipse',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode' : 'LMB/RMB: Tegn med fg/bg farge, SHIFT: Tegn ellipse',
 
       'Blur' : 'Klatte (Blur)',
       'Noise' : 'Støy',
@@ -436,17 +439,17 @@
       'Move active layer' : 'Przenieś aktywne warstwy',
 
       'Picker' : 'Wybór',
-      'LMB: set fg color, RMB: set bg color' : 'LMB: Wstaw kolor bg, RMB: ustaw kolor fg',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'LMB: Wstaw kolor bg, RMB: ustaw kolor fg',
 
       'Pencil' : 'Ołówek',
-      'LMB/RMB: Draw with fg/bg color' : 'Maluj w kolorze fg/bg',
+      'LMB: Use foreground-, RMB: Use background color' : 'Maluj w kolorze fg/bg',
       'Path' : 'Ścieżka',
 
       'Square/Rectangle' : 'Kwadratowe / prostokątne',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Maluj w kolorze fb/bg, SHIFT: Narysuj prostokąt',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode' : 'LMB/RMB: Maluj w kolorze fb/bg, SHIFT: Narysuj prostokąt',
 
       'Circle/Ellipse' : 'Koło / Elipsa',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Maluj w kolorze fb/bg, SHIFT: Narysuj elipse',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode' : 'LMB/RMB: Maluj w kolorze fb/bg, SHIFT: Narysuj elipse',
 
       'Blur' : 'Blur',
       'Noise' : 'Szum',
@@ -483,17 +486,17 @@
       'Move active layer' : 'Перемещает активный слой',
 
       'Picker' : 'Пипетка',
-      'LMB: set fg color, RMB: set bg color' : 'ЛКМ: устананавливает первичный цвет, ПКМ: устанавливает вторичный(фоновый) цвет',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'ЛКМ: устананавливает первичный цвет, ПКМ: устанавливает вторичный(фоновый) цвет',
 
       'Pencil' : 'Карандаш',
-      'LMB/RMB: Draw with fg/bg color' : 'ЛКМ/ПКМ: Рисует первичным/вторичным цветом',
+      'LMB: Use foreground-, RMB: Use background color' : 'ЛКМ/ПКМ: Рисует первичным/вторичным цветом',
       'Path' : 'Прямая',
 
       'Square/Rectangle' : 'Квадрат/Прямоугольник',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'ЛКМ/ПКМ: рисует первичным/вторичным цветом квадрат, SHIFT: нарисовать прямоуголник',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode' : 'ЛКМ/ПКМ: рисует первичным/вторичным цветом квадрат, SHIFT: нарисовать прямоуголник',
 
       'Circle/Ellipse' : 'Круг/Эллипс',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'ЛКМ/ПКМ: рисует первичным/вторичным цветом круг, SHIFT: нарисовать эллипс',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode' : 'ЛКМ/ПКМ: рисует первичным/вторичным цветом круг, SHIFT: нарисовать эллипс',
 
       'Blur' : 'Размытие (Blur)',
       'Noise' : 'Шум',
@@ -528,17 +531,17 @@
       'Move active layer' : 'Presuň aktívnu vrstvu',
 
       'Picker' : 'Kurzor',
-      'LMB: set fg color, RMB: set bg color' : 'LMB: nastav farbu pozadia, RMB: nastav farbu popredia',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'LMB: nastav farbu pozadia, RMB: nastav farbu popredia',
 
       'Pencil' : 'Ceruzka',
-      'LMB/RMB: Draw with fg/bg color' : 'Maľuj farbou fg/bg',
+      'LMB: Use foreground-, RMB: Use background color' : 'Maľuj farbou fg/bg',
       'Path' : 'Cesta',
 
       'Square/Rectangle' : 'Štvorec / Obdĺžnik',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Maľuj farbou fb/bg, SHIFT: Obdĺžnik',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode' : 'LMB/RMB: Maľuj farbou fb/bg, SHIFT: Obdĺžnik',
 
       'Circle/Ellipse' : 'Kruh / Elipsa',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Maľuj farbou fb/bg, SHIFT: Elipsa',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode' : 'LMB/RMB: Maľuj farbou fb/bg, SHIFT: Elipsa',
 
       'Blur' : 'Rozmazať',
       'Noise' : 'Šum',
@@ -575,17 +578,17 @@
       'Move active layer' : 'hareket eden katman',
 
       'Picker' : 'toplayıcı',
-      'LMB: set fg color, RMB: set bg color' : 'LMB: fg rengi ayarla, RMB: gb rengi ayarla',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'LMB: fg rengi ayarla, RMB: gb rengi ayarla',
 
       'Pencil' : 'kalem',
-      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB:fg/bg rengi ile çiz',
+      'LMB: Use foreground-, RMB: Use background color' : 'LMB/RMB:fg/bg rengi ile çiz',
       'Path' : 'yol',
 
       'Square/Rectangle' : 'kare/üçgen',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: fg/bg renkleri ile çiz , SHIFT: üçgen çiz',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode' : 'LMB/RMB: fg/bg renkleri ile çiz , SHIFT: üçgen çiz',
 
       'Circle/Ellipse' : 'dair/elips',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: fb/bg ile çiz , SHIFT: elips çiz',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode' : 'LMB/RMB: fb/bg ile çiz , SHIFT: elips çiz',
 
       'Blur' : 'Bulanık',
       'Noise' : 'gürültü',
@@ -622,17 +625,17 @@
       'Move active layer' : 'Di chuyển layer đang chọn',
 
       'Picker' : 'Bảng chọn',
-      'LMB: set fg color, RMB: set bg color' : 'LMB: chọn màu fg, RMB: chọn màu gb',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'LMB: chọn màu fg, RMB: chọn màu gb',
 
       'Pencil' : 'Bút chì',
-      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: vẽ với màu fg/bg',
+      'LMB: Use foreground-, RMB: Use background color' : 'LMB/RMB: vẽ với màu fg/bg',
       'Path' : 'Đường',
 
       'Square/Rectangle' : 'Firkant/Rektangel',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Tegn med fg/bg farge, SHIFT: Tegn rektangel',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode' : 'LMB/RMB: Tegn med fg/bg farge, SHIFT: Tegn rektangel',
 
       'Circle/Ellipse' : 'Vuông / chữ nhật',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: vẽ với màu fg/bg, SHIFT: Vẽ ê-líp',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode' : 'LMB/RMB: vẽ với màu fg/bg, SHIFT: Vẽ ê-líp',
 
       'Blur' : 'Làm mờ',
       'Noise' : 'Làm nhiễu',

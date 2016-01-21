@@ -214,6 +214,8 @@
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
 
+  var doTranslate = OSjs.Applications.ApplicationDraw._;
+
   function ApplicationDrawWindow(app, metadata, scheme, file) {
     DefaultApplicationWindow.apply(this, ['ApplicationDrawWindow', {
       icon: metadata.icon,
@@ -244,7 +246,7 @@
 
     // Load and set up scheme (GUI) here
     scheme.render(this, 'DrawWindow', root, null, null, {
-      _: OSjs.Applications.ApplicationDraw._
+      _: doTranslate
     });
 
     var statusbar = scheme.find(this, 'Statusbar');
@@ -354,7 +356,7 @@
     ts.forEach(function(t) {
       scheme.find(self, 'tool-' + t).on('click', function() {
         var stats = tools[t].statusText || '';
-        statusbar.set('value', stats);
+        statusbar.set('value', doTranslate(stats));
 
         self.setToolProperty('name', t);
       });
@@ -391,7 +393,7 @@
     var self = this;
 
     API.createDialog('Color', {
-      title: 'Set ' + param + ' color', // FIXME: Locale
+      title: doTranslate('Set {0} color', param),
       color: self.tool[param]
     }, function(ev, button, result) {
       if ( button !== 'ok' ) { return; }

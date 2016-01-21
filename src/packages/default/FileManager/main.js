@@ -208,7 +208,6 @@
   };
 
   ApplicationFileManagerWindow.prototype.checkSelection = function(files) {
-    // FIXME: Locales
     var scheme = this._scheme;
 
     if ( !scheme ) {
@@ -218,6 +217,7 @@
     var self = this;
     var content = '';
     var statusbar = scheme.find(this, 'Statusbar');
+    var doTranslate = OSjs.Applications.ApplicationFileManager._;
 
     var sum, label;
 
@@ -239,14 +239,14 @@
       });
 
       label = 'Selected {0} files, {1} dirs, {2}';
-      content = Utils.format(label, sum.files, sum.directories, Utils.humanFileSize(sum.size));
+      content = doTranslate(label, sum.files, sum.directories, Utils.humanFileSize(sum.size));
 
       toggleMenuItems(sum.files && !sum.directories);
     } else {
       sum = this.currentSummary;
       if ( sum ) {
         label = 'Showing {0} files ({1} hidden), {2} dirs, {3}';
-        content = Utils.format(label, sum.files, sum.hidden, sum.directories, Utils.humanFileSize(sum.size));
+        content = doTranslate(label, sum.files, sum.hidden, sum.directories, Utils.humanFileSize(sum.size));
       }
 
       toggleMenuItems(false);
