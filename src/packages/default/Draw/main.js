@@ -41,19 +41,19 @@
       statusText: 'LMB: Pick foreground-, RMB: Pick background color'
     },
     bucket: {
-      statusText: 'LBM: Fill with foreground-, RMB: Fill with background color'
+      statusText: 'LMB: Fill with foreground-, RMB: Fill with background color'
     },
     pencil: {
-      statusText: 'LBM: Use foreground-, RMB: Use background color'
+      statusText: 'LMB: Use foreground-, RMB: Use background color'
     },
     path: {
-      statusText: 'LBM: Use foreground-, RMB: Use background color'
+      statusText: 'LMB: Use foreground-, RMB: Use background color'
     },
     rectangle: {
-      statusText: 'LBM: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode'
+      statusText: 'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode'
     },
     circle: {
-      statusText: 'LBM: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode'
+      statusText: 'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode'
     }
   };
   var toolEvents = {
