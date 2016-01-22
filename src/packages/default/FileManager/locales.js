@@ -121,6 +121,8 @@
       "Create a new directory in <span>{0}</span>" : "Utwórz nowy folder w <span>{0}</span>",
       "Rename <span>{0}</span>" : "Zmień nazwę <span>{0}</span>",
       "Delete <span>{0}</span> ?" : "Usunąć <span>{0}</span> ?"
+      'Selected {0} files, {1} dirs, {2}' : 'Wybrane pliki: {0}, foldery: {1}, {2}',
+      'Showing {0} files ({1} hidden), {2} dirs, {3}' : 'Pokazywane pliki: {0} /(ukryte: {1}, foldery: {2}, {3}'
     },
     ru_RU : {
       'Show sidebar' : 'Отобразить боковую панель',

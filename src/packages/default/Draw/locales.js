@@ -425,6 +425,8 @@
       'Flip Vertically' : 'Przerzuć w pionie',
       'Foreground' : 'Pierwszy plan',
       'Bakgrunn' : 'Tło',
+      'Foreground (Fill) Color' : 'Kolor pierwszoplanowy (Wypełnienie)',
+      'Background (Stroke) Color' : 'Kolor tła (Wycinanie)',
       'Line join' : 'Rodzaj lini',
       'Line width' : 'Grubość',
       'Toggle Stroke' : 'Włącz/wyłącz obramowanie',
