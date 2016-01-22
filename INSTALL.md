@@ -42,6 +42,8 @@ You just need **node** and **npm**. Install them with your package manager or do
 
 To easily apply updates and other changes, I recommend using **git** to download instead of using a zip-file/automated installer.
 
+If you install npm packages without `--production` parameter, you need to install mocha `sudo npm install -g mocha`
+
 ## NIX
 
 ### Automated
