@@ -65,7 +65,9 @@
       "Create a new file in <span>{0}</span>" : "Créer un nouveau fichier dans <span>{0}</span>",
       "Create a new directory in <span>{0}</span>" : "Créer un nouveau dossier dans <span>{0}</span>",
       "Rename <span>{0}</span>" : "Renommer <span>{0}</span>",
-      "Delete <span>{0}</span> ?" : "Supprimer <span>{0}</span> ?"
+      "Delete <span>{0}</span> ?" : "Supprimer <span>{0}</span> ?",
+      'Selected {0} files, {1} dirs, {2}' : '{0} fichier(s) selectionné(s), {1} dossier(s), {2}',
+      'Showing {0} files ({1} hidden), {2} dirs, {3}' : '{0} fichier(s) affiché(s) ({1} caché(s)), {2} dossier(s), {3}'
     },
     it_IT : {
       'Show Sidebar' : 'Mostra barra laterale',
