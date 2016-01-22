@@ -252,7 +252,7 @@
     // PackageManager
     //
 
-    'ERR_PACKAGE_EXISTS': 'Folder instalacyjny pakietów juz istnieje. Nie można kontynuować!',
+    'ERR_PACKAGE_EXISTS': 'Folder instalacyjny pakietów już istnieje. Nie można kontynuować!',
 
     //
     // DefaultApplication

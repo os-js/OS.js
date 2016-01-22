@@ -195,20 +195,24 @@
       'Other' : 'Andre'
     },
     pl_PL : {
+      'Killing this process will stop things from working!' : 'Zabicie tego procesu zatrzyma wykonywanie działań!',
       'Open settings' : 'Otwórz ustawienia',
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Twój panel nie ma elementów. Idź do ustawień aby przywrócić domyślne lub zmień ręcznie\n(Ten błąd może wystąpić po aktualizacji OS.js)',
       'Create shortcut' : 'Utwórz skrót',
       'Set as wallpaper' : 'Ustaw jako tapetę',
-      'An error occured while creating PanelItem: {0}' : 'Błąd podczas tworzenia panelu: {0}',
+      'An error occured while creating PanelItem: {0}' : 'Wystąpił błąd podczas tworzenia PanelItem: {0}',
+      'Show Icons' : 'Pokaż Ikony',
+      'Hide Icons' : 'Ukryj Ikony',
 
       'Development' : 'Development',
       'Education' : 'Edukacja',
       'Games' : 'Gry',
-      'Graphics' : 'Grafika',
+      'Graphics' : 'Graficzne',
       'Network' : 'Sieć',
       'Multimedia' : 'Multimedia',
       'Office' : 'Biuro',
       'System' : 'System',
-      'Utilities' : 'Dodatki',
+      'Utilities' : 'Użytkowe',
       'Other' : 'Inne'
     },
     ru_RU : {
