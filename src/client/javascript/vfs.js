@@ -35,7 +35,7 @@
    *  This is a wrapper for handling all VFS functions
    *  read() write() scandir() and so on.
    *
-   *  See 'src/javascript/vfs/' for the specific modules.
+   *  See 'src/client/javascript/vfs/' for the specific modules.
    *
    *  You should read the information below!
    *
@@ -87,19 +87,19 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
-   * Will transform the argument to a FileMetadata instance
+   * Will transform the argument to a OSjs.VFS.File instance
    * or throw an error depending on input
    */
   function checkMetadataArgument(item, err) {
     if ( typeof item === 'string' ) {
-      item = new FileMetadata(item);
+      item = new OSjs.VFS.File(item);
     } else if ( typeof item === 'object' ) {
       if ( item.path ) {
-        item = new FileMetadata(item);
+        item = new OSjs.VFS.File(item);
       }
     }
 
-    if ( !(item instanceof FileMetadata) ) {
+    if ( !(item instanceof OSjs.VFS.File) ) {
       throw new TypeError(err || API._('ERR_VFS_EXPECT_FILE'));
     }
 
@@ -508,105 +508,6 @@
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // FILE ABSTRACTION
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * This is a object you can pass around in VFS when
-   * handling DataURL()s (strings). Normally you would
-   * use a File, Blob or ArrayBuffer, but this is an alternative.
-   *
-   * Useful for canvas data etc.
-   *
-   * @api     OSjs.VFS.FileDataURL
-   * @class
-   */
-  function FileDataURL(dataURL) {
-    this.dataURL = dataURL;
-  }
-  FileDataURL.prototype.toBase64 = function() {
-    return this.data.split(',')[1];
-  };
-  FileDataURL.prototype.toString = function() {
-    return this.dataURL;
-  };
-
-  /**
-   * This is the Metadata object you have to use when passing files around
-   * in the VFS API.
-   *
-   * This object has the same properties as in the option list below
-   *
-   * @param   Mixed       arg       Either a 'path' or 'object' (filled with properties)
-   * @param   String      mime      MIME type of File Type (ex: 'application/json' or 'dir')
-   *
-   * @option  opts     String          icon              Window Icon
-   *
-   * @option  arg   String      path      Full path
-   * @option  arg   String      filename  Filename (automatically detected)
-   * @option  arg   String      type      File type (file/dir)
-   * @option  arg   int         size      File size (in bytes)
-   * @option  arg   String      mime      File MIME (ex: application/json)
-   * @option  arg   Mixed       id        Unique identifier (not required)
-   *
-   * @api     OSjs.VFS.File
-   * @class
-   */
-  function FileMetadata(arg, mime) {
-    if ( !arg ) {
-      throw new Error(API._('ERR_VFS_FILE_ARGS'));
-    }
-
-    this.path     = null;
-    this.filename = null;
-    this.type     = null;
-    this.size     = null;
-    this.mime     = null;
-    this.id       = null;
-
-    if ( typeof arg === 'object' ) {
-      this.setData(arg);
-    } else if ( typeof arg === 'string' ) {
-      this.path = arg;
-      this.setData();
-    }
-
-    if ( typeof mime === 'string' ) {
-      if ( mime.match(/\//) ) {
-        this.mime = mime;
-      } else {
-        this.type = mime;
-      }
-    }
-  }
-
-  FileMetadata.prototype.setData = function(o) {
-    var self = this;
-    if ( o ) {
-      Object.keys(o).forEach(function(k) {
-        if ( k !== '_element' ) {
-          self[k] = o[k];
-        }
-      });
-    }
-
-    if ( !this.filename ) {
-      this.filename = Utils.filename(this.path);
-    }
-  };
-
-  FileMetadata.prototype.getData = function() {
-    return {
-      path: this.path,
-      filename: this.filename,
-      type: this.type,
-      size: this.size,
-      mime: this.mime,
-      id: this.id
-    };
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
   // VFS METHODS
   /////////////////////////////////////////////////////////////////////////////
 
@@ -711,7 +612,7 @@
   OSjs.VFS.scandir = function(item, callback, options) {
     console.info('VFS::scandir()', item, options);
     if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    if ( !(item instanceof FileMetadata) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
+    if ( !(item instanceof OSjs.VFS.File) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
     request(item.path, 'scandir', [item], function(error, response) {
       if ( error ) {
         error = API._('ERR_VFSMODULE_SCANDIR_FMT', error);
@@ -1211,7 +1112,7 @@
 
     args.files.forEach(function(f, i) {
       var filename = (f instanceof window.File) ? f.name : f.filename;
-      var dest = new FileMetadata(args.destination + '/' + filename);
+      var dest = new OSjs.VFS.File(args.destination + '/' + filename);
 
       existsWrapper(dest, function(error) {
         if ( error ) {
@@ -1445,7 +1346,5 @@
   OSjs.VFS.abToText              = abToText;
   OSjs.VFS.textToAb              = textToAb;
   OSjs.VFS.dataSourceToAb        = dataSourceToAb;
-  OSjs.VFS.FileDataURL           = FileDataURL;
-  OSjs.VFS.File                  = FileMetadata;
 
 })(OSjs.Utils, OSjs.API);
