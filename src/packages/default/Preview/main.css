@@ -28,10 +28,6 @@
  * @licence Simplified BSD License
  */
 
-.ApplicationPreviewWindow {
-}
-
-
 .ApplicationPreviewWindow gui-container {
   overflow : hidden;
 }

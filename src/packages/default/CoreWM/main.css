@@ -41,7 +41,6 @@ body[data-background-style="strech"] {
  * Desktop Notification
  */
 corewm-notifications {
-  position : block;
   position : absolute;
   top : 0px;
   right : 0px;
@@ -193,8 +192,8 @@ corewm-panel-container > li ul {
   display : inline-block;
 }
 
-corewm-panel .PanelItemStatic {
-}
+/*corewm-panel .PanelItemStatic {
+}*/
 corewm-panel .PanelItemFill {
   -webkit-flex: 0 0 auto;
      -moz-flex: 0 0 auto;
@@ -243,8 +242,8 @@ corewm-window-switcher > div > img {
   margin-right : 5px;
   margin-left : 5px;
 }
-corewm-window-switcher > div > span {
-}
+/*corewm-window-switcher > div > span {
+}*/
 corewm-window-switcher > div.Active {
 }
 

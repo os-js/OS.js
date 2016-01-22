@@ -28,9 +28,8 @@
  * @licence Simplified BSD License
  */
 
-.ApplicationSettingsWindow application-window-content {
-}
-
+/*.ApplicationSettingsWindow application-window-content {
+}*/
 
 .ApplicationSettingsWindow gui-label[data-id="Header"] {
   padding-top : 10px;
