@@ -272,7 +272,7 @@
       'Install from zip' : 'Zainstaluj z pliku zip',
       'Refresh' : 'Odśwież',
       'Install selected' : 'Zainstaluj wybrane'
-   },
+    },
     ru_RU : {
       'Theme' : 'Тема',
       'Background' : 'Фон',
