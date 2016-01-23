@@ -343,6 +343,8 @@
     } else {
       if ( args.file && this.currentPath === Utils.dirname(args.file.path) ) {
         this.changePath(null);
+      } else if ( args.dir && this.currentPath === args.dir ) {
+        this.changePath(null);
       }
     }
   };
