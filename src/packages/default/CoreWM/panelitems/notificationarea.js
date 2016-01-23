@@ -83,6 +83,8 @@
       this.$image.src   = (this.opts.image || this.opts.icon || 'about:blank');
       this.$container.appendChild(this.$image);
     }
+
+    this.$container.appendChild(document.createElement('div'));
   };
 
   NotificationAreaItem.prototype.init = function(root) {

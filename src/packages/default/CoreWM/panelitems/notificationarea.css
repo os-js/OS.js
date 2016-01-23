@@ -39,6 +39,11 @@ corewm-panel .PanelItemNotificationArea > div.StartupNotification > div {
   border-radius: 100%;
   margin-left : -10px;
   margin-top : -10px;
+  position : absolute;
+  top : 50%;
+  left : 50%;
+  width : 16px;
+  height : 16px;
 }
 corewm-panel .PanelItemNotificationArea > div.StartupNotification > div:before {
   display: block;
