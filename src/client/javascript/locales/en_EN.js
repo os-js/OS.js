@@ -375,7 +375,11 @@
     'LBL_BUGREPORT' : 'Bugreport',
     'LBL_INSTALL' : 'Install',
     'LBL_UPDATE' : 'Update',
-    'LBL_REMOVE' : 'Remove'
+    'LBL_REMOVE' : 'Remove',
+    'LBL_SHOW_SIDEBAR' : 'Show sidebar',
+    'LBL_SHOW_NAVIGATION' : 'Show navigation',
+    'LBL_SHOW_HIDDENFILES' : 'Show hidden files',
+    'LBL_SHOW_FILEEXTENSIONS' : 'Show file extensions'
   };
 
 })();

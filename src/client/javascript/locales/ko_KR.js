@@ -375,7 +375,11 @@
     'LBL_BUGREPORT' : '버그 리포트',
     'LBL_INSTALL' : '설치',
     'LBL_UPDATE' : '수정',
-    'LBL_REMOVE' : '제거'
+    'LBL_REMOVE' : '제거',
+    'LBL_SHOW_SIDEBAR' : '사이드바 보이기',
+    'LBL_SHOW_NAVIGATION' : '네비게이션 보이기',
+    'LBL_SHOW_HIDDENFILES' : '숨긴 파일 보이기',
+    'LBL_SHOW_FILEEXTENSIONS' : '파일 확장자 보이기'
   };
 
 })();

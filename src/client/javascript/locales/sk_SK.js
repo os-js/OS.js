@@ -375,7 +375,8 @@
     'LBL_BUGREPORT' : 'Bugreport',
     'LBL_INSTALL' : 'Inštalovať',
     'LBL_UPDATE' : 'Aktualizovať',
-    'LBL_REMOVE' : 'Odstrániť'
+    'LBL_REMOVE' : 'Odstrániť',
+    'LBL_SHOW_SIDEBAR' : 'Ukáž bočnú lištu'
   };
 
 })();

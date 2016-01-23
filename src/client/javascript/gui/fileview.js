@@ -115,7 +115,7 @@
         }
       },
       mtime: {
-        label: 'Modified',
+        label: 'LBL_MODIFIED',
         basis: '160px',
         icon: function() {
           return null;
@@ -125,7 +125,7 @@
         }
       },
       ctime: {
-        label: 'Created',
+        label: 'LBL_CREATED',
         basis: '160px',
         icon: function() {
           return null;
