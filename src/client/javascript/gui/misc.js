@@ -226,13 +226,20 @@
   GUI.Elements['gui-statusbar'] = {
     set: function(el, param, value) {
       if ( param === 'label' || param === 'value' ) {
-        Utils.$empty(el);
-        el.innerHTML = value;
+        var span = el.getElementsByTagName('gui-statusbar-label')[0];
+        if ( span ) {
+          Utils.$empty(span);
+          span.innerHTML = value;
+        }
         return true;
       }
       return false;
     },
     build: function(el) {
+      var lbl = el.getAttribute('data-label') || el.getAttribute('data-value') || el.innerHTML || '';
+      var span = document.createElement('gui-statusbar-label');
+      span.innerHTML = lbl;
+      el.appendChild(span);
     }
   };
 
