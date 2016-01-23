@@ -1271,12 +1271,15 @@ gui-progress-bar {
     z-index : -1;
   }
   gui-progress-bar > span {
-    display : block;
+    display : inline-block;
+    vertical-align : middle;
     position : absolute;
-    top : 0;
+    top : 50%;
     left : 0;
     right : 0;
     bottom : 0;
+    height : 16px;
+    margin-top : -8px;
   }
 
 /* Statusbar */
@@ -1293,6 +1296,10 @@ gui-statusbar {
        -o-text-overflow: ellipsis;
           text-overflow: ellipsis;
 }
+  gui-statusbar-label {
+    display : inline-block;
+    vertical-align : middle;
+  }
 
 /**
  * ===========================================================================
