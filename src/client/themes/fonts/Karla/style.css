@@ -42,7 +42,7 @@
        url('/themes/fonts/Karla/BoldItalic.woff') format('woff'),
        url('/themes/fonts/Karla/BoldItalic.ttf') format('truetype'),
        url('/themes/fonts/Karla/BoldItalic.svg#karla_bolditalic') format('svg');
-  font-style:italic;
+  font-weight:bold;
   font-style:italic;
 }
 @font-face {
@@ -52,6 +52,6 @@
        url('/themes/fonts/Karla/BoldItalic.woff') format('woff'),
        url('/themes/fonts/Karla/BoldItalic.ttf') format('truetype'),
        url('/themes/fonts/Karla/BoldItalic.svg#karla_bolditalic') format('svg');
-  font-style:italic;
+  font-weight:bold;
   font-style:oblique;
 }

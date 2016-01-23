@@ -1,7 +1,7 @@
 application-window-top .WindowFrost {
   position : absolute;
-  top : 0px;
-  left : 0px;
+  top : 0;
+  left : 0;
   width : 100%;
   height : 100%;
   -webkit-filter : blur(4px);
@@ -42,8 +42,8 @@ body[data-background-style="strech"] {
  */
 corewm-notifications {
   position : absolute;
-  top : 0px;
-  right : 0px;
+  top : 0;
+  right : 0;
   z-index : 10000000;
   width : 400px;
 }
@@ -76,10 +76,10 @@ corewm-notification-entry.HasIcon .Message {
 corewm-notification-entry:before {
   content : '';
   position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
+  top : 0;
+  left : 0;
+  right : 0;
+  bottom : 0;
   z-index : -1;
 }
 
@@ -89,9 +89,9 @@ corewm-notification-entry:before {
 corewm-panel {
   display : block;
   position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
+  top : 0;
+  left : 0;
+  right : 0;
   overflow : visible;
   z-index : 2;
   margin : 0;
@@ -106,10 +106,10 @@ corewm-panel:before {
   content : '';
   display : block;
   position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
+  top : 0;
+  left : 0;
+  right : 0;
+  bottom : 0;
   z-index : 1;
 }
 corewm-panel-item {
@@ -126,10 +126,10 @@ corewm-panel[data-ontop="true"] {
 }
 corewm-panel[data-position="bottom"] {
   top : auto;
-  bottom : 0px;
+  bottom : 0;
 }
 corewm-panel[data-autohide="true"] {
-  height : 0px;
+  height : 0;
 }
 corewm-panel[data-autohide="true"] > * {
   visibility : hidden;
@@ -142,7 +142,6 @@ corewm-panel ul {
   z-index : 10;
 }
 corewm-panel-container {
-  display : block;
   height : 26px;
   position : relative;
   z-index : 10;
@@ -243,9 +242,9 @@ corewm-window-switcher > div > img {
   margin-left : 5px;
 }
 /*corewm-window-switcher > div > span {
-}*/
-corewm-window-switcher > div.Active {
 }
+corewm-window-switcher > div.Active {
+}*/
 
 #CoreWMDesktopIconView {
   background : transparent !important;
@@ -288,6 +287,7 @@ corewm-window-switcher > div.Active {
   text-align : center;
   line-height : 16px;
   position : relative;
+  box-sizing : border-box;
 }
 
 #CoreWMApplicationMenu gui-menu-entry img {

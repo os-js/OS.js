@@ -34,7 +34,7 @@
 .ApplicationPreviewWindow gui-video {
   text-align : center;
   vertical-align : middle;
-  display : block;
+  display : inline-block;
   background : #000;
   height : 100%;
 }

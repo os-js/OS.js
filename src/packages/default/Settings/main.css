@@ -49,6 +49,6 @@
 .ApplicationSettingsWindow gui-vbox-container[data-id="TabsContainer"] > gui-tabs {
   display : none;
 }
-.ApplicationSettingsWindow gui-vbox-container[data-id="TabsContainer"] > gui-tabs.active {
+.ApplicationSettingsWindow gui-vbox-container[data-id="TabsContainer"] > .active {
   display : block;
 }
