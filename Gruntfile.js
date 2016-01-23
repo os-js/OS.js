@@ -38,6 +38,9 @@
 
   module.exports = function(grunt) {
 
+    //
+    // Load plugins
+    //
     try {
       require('time-grunt')(grunt);
     } catch (e) { }
@@ -49,43 +52,16 @@
     //grunt.loadNpmTasks('grunt-mocha');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-jscs');
-    //grunt.loadNpmTasks('grunt-html-validation');
     grunt.loadNpmTasks('grunt-contrib-csslint');
     grunt.loadNpmTasks('grunt-nw-builder');
 
+    //
+    // Load tasks
+    //
     grunt.initConfig({
       jshint: {
         options: {
-          globals: {
-            OSjs: true,
-            zip: true,
-            alert: true,
-            escape: true,
-            unescape: true
-          },
-          browser: true,
-          curly: true,
-          bitwise: false,
-          eqeqeq: true,
-          newcap: true,
-          noarg: true,
-          noempty: true,
-          nonew: true,
-          sub: true,
-          undef: true,
-          unused: false,
-          nonbsp: true,
-          trailing: true,
-          boss: true,
-          eqnull: true,
-          strict: true,
-          immed: true,
-          expr: true,
-          latedef: 'nofunc',
-          quotmark: 'single',
-          indent: 2,
-          node: true,
-          maxerr: 9999
+          jshintrc: true
         },
         all: [
           'Gruntfile.js',
@@ -186,22 +162,7 @@
           fix: false,
           requireCurlyBraces: ['if']
         }
-      },/*
-      validation: {
-        options: {
-          wrapfile: 'src/templates/validation.html',
-          stoponerror: false,
-          relaxerror: [
-          ]
-        },
-        files: {
-          src: [
-            'src/packages/default/ ** /scheme.html',
-            'src/client/dialogs.html'
-          ]
-        }
-      }
-      */
+      },
       nwjs: {
         options: {
           version: '0.12.3',
@@ -214,15 +175,9 @@
       }
     });
 
-    /**
-     * Task: Clean
-     */
     grunt.registerTask('clean', 'Clean up all build files', function(arg) {
     });
 
-    /**
-     * Task: Build config
-     */
     grunt.registerTask('config', 'Build config files (or modify `set:path.to.key:value`, `get:path.to.key`, `preload:name:path:type`, `(add|remove)-repository:name)', function(fn, key, value, arg) {
       if (fn) {
         var result;
@@ -256,26 +211,17 @@
       _build.createConfigurationFiles(grunt, fn);
     });
 
-    /**
-     * Task: Build core
-     */
     grunt.registerTask('core', 'Build dist core files', function(arg) {
       grunt.log.writeln('Building dist...');
       _build.buildCore(grunt, arg);
     });
 
-    /**
-     * Task: Build Standalone
-     */
     grunt.registerTask('standalone', 'Build dist standalone files', function(arg) {
       grunt.log.writeln('Building standalone dist...');
       var done = this.async();
       _build.buildStandalone(grunt, done, arg);
     });
 
-    /**
-     * Task: Build packages
-     */
     grunt.registerTask('packages', 'Build dist package files (or a single package, ex: grunt packages:default/About. Also enable/disable)', function(arg, arg2) {
       grunt.log.writeln('Building packages...');
       if ( arg === 'disable' || arg === 'enable' ) {
@@ -285,34 +231,22 @@
       _build.buildPackages(grunt, arg);
     });
 
-    /**
-     * Task: Build themes
-     */
     grunt.registerTask('themes', 'Build theme files (arguments: resources, fonts. Or a single theme, ex: grunt themes:MyThemename)', function(arg) {
       grunt.log.writeln('Building themes...');
       var done = this.async();
       _build.buildThemes(grunt, arg, done);
     });
 
-    /**
-     * Task: Build manifests
-     */
     grunt.registerTask('manifest', 'Generate package manifest file', function(arg) {
       grunt.log.writeln('Building package manifest...');
       _build.buildManifest(grunt, arg);
     });
 
-    /**
-     * Task: Compress build
-     */
     grunt.registerTask('compress', 'Compress dist files (arguments: all, core, packages, ex: grunt compress:core)', function(arg) {
       grunt.log.writeln('Compressing dist...');
       _build.buildCompressed(grunt, arg);
     });
 
-    /**
-     * Task: Generate dist files
-     */
     grunt.registerTask('dist-files', 'Generate dist files from template', function(arg) {
       if ( arg ) {
         if ( arg === 'dist' || arg === 'dist-dev' ) {
@@ -324,43 +258,31 @@
       }
     });
 
-    /**
-     * Task: Generate Apache vhost
-     */
     grunt.registerTask('apache-vhost', 'Generate Apache vhost configuration file (arguments: [:dist/dist-dev][:output-to-file])', function(dist, outfile) {
       _build.createApacheVhost(grunt, dist, outfile);
     });
 
-    /**
-     * Task: Generate Apache htaccess
-     */
     grunt.registerTask('apache-htaccess', 'Generate Apache htaccess file (arguments: [:dist/dist-dev])', function(dist, outfile) {
       _build.createApacheHtaccess(grunt, dist, outfile);
     });
 
-    /**
-     * Task: Generate Lighttpd config
-     */
     grunt.registerTask('lighttpd-config', 'Generate Lighttpd configuration file (arguments: [:dist/dist-dev][:output-to-file])', function(dist, outfile) {
       _build.createLighttpdConfig(grunt, dist, outfile);
     });
 
-    /**
-     * Task: Generate Nginx config
-     */
     grunt.registerTask('nginx-config', 'Generate Nginx configuration file (arguments: [:dist/dist-dev][:output-to-file])', function(dist, outfile) {
       _build.createNginxConfig(grunt, dist, outfile);
     });
 
-    /**
-     * Task: Create a new package
-     */
     grunt.registerTask('create-package', 'Create a new package/application: [repo/]PackageName[:type] (types: application, iframe, service, extension)', function(arg1, arg2) {
       grunt.log.writeln('Creating package...');
       _build.createPackage(grunt, arg1, arg2);
     });
 
-    // DEPRECATED
+    //
+    // Register aliases
+    //
+
     grunt.registerTask('all', ['clean', 'config', 'dist-files', 'core', 'themes', 'packages', 'manifest']);
     grunt.registerTask('default', ['all']);
     grunt.registerTask('nw', ['config', 'core:nw', 'themes', 'packages', 'manifest', 'standalone:nw', 'nwjs']);
