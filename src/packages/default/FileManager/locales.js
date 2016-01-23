@@ -78,10 +78,11 @@
     },
     ko_KR : {
       'Copying file...' : '파일 복사...',
-      "Copying <span>{0}</span> to <span>{1}</span>" : "Копирование <span>{0}</span> в <span>{1}</span>",
+      "Copying <span>{0}</span> to <span>{1}</span>" : "<span>{0}</span>를 <span>{1}</span>으로 복사",
       "Refreshing..." : "새로고치는 중...",
       "Loading..." : "기다려주세요...",
-      "Create a new directory in <span>{0}</span>" : "<span>{0}</span>에 새 폴더 만들기",
+      "Create a new file in <span>{0}</span>" : "<span>{0}</span>에 새 파일 만들기",
+      "Create a new directory in <span>{0}</span>" : "<span>{0}</span>에 새 디렉토리 만들기",
       "Rename <span>{0}</span>" : "<span>{0}</span>의 이름 바꾸기",
       "Delete <span>{0}</span> ?" : "<span>{0}</span>을 삭제하시겠습니까?",
       'Selected {0} files, {1} dirs, {2}' : '{0} 개의 파일, {1} 개의 디렉토리가 선택됨, {2}',
