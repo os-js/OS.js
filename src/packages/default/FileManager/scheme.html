@@ -7,13 +7,6 @@
 
         <gui-menu-bar-entry data-label="LBL_FILE">
           <gui-menu data-id="SubmenuFile">
-            <gui-menu-entry data-id="MenuUpload" data-label="Upload file"></gui-menu-entry>
-            <gui-menu-entry data-id="MenuClose" data-label="LBL_CLOSE"></gui-menu-entry>
-          </gui-menu>
-        </gui-menu-bar-entry>
-
-        <gui-menu-bar-entry data-label="LBL_EDIT">
-          <gui-menu data-id="SubmenuEdit">
             <gui-menu-entry data-id="MenuCreate" data-label="LBL_CREATE">
               <gui-menu data-id="SubmenuCreate">
                 <gui-menu-entry data-id="MenuCreateDirectory" data-label="LBL_DIRECTORY"></gui-menu-entry>
@@ -21,6 +14,13 @@
               </gui-menu>
             </gui-menu-entry>
 
+            <gui-menu-entry data-id="MenuUpload" data-label="LBL_UPLOAD"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuClose" data-label="LBL_CLOSE"></gui-menu-entry>
+          </gui-menu>
+        </gui-menu-bar-entry>
+
+        <gui-menu-bar-entry data-label="LBL_EDIT">
+          <gui-menu data-id="SubmenuEdit">
             <gui-menu-entry data-id="MenuRename" data-label="LBL_RENAME"></gui-menu-entry>
             <gui-menu-entry data-id="MenuDelete" data-label="LBL_DELETE"></gui-menu-entry>
             <gui-menu-entry data-id="MenuInfo" data-label="LBL_INFORMATION"></gui-menu-entry>
