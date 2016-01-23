@@ -221,10 +221,21 @@
 
     var sum, label;
 
-    function toggleMenuItems(isFile) {
-      scheme.find(self, 'MenuInfo').set('disabled', !isFile);
-      scheme.find(self, 'MenuDownload').set('disabled', !isFile);
-      scheme.find(self, 'MenuOpen').set('disabled', !isFile);
+    function toggleMenuItems(isFile, isDirectory) {
+      /*
+       * Toggling MenuItems with the bit MODE_F or MODE_FD set by type of selected items
+       * MODE_F : Selected items consist of ONLY files
+       * MODE_FD : One or many items are selected (type doesn't matter)
+       */
+
+      var MODE_F = !isFile || !!isDirectory;
+      var MODE_FD = !(isFile || isDirectory);
+
+      scheme.find(self, 'MenuRename').set('disabled', MODE_FD);
+      scheme.find(self, 'MenuDelete').set('disabled', MODE_FD);
+      scheme.find(self, 'MenuInfo').set('disabled', MODE_FD);  // TODO: Directory info must be supported
+      scheme.find(self, 'MenuDownload').set('disabled', MODE_F);
+      scheme.find(self, 'MenuOpen').set('disabled', MODE_F);
     }
 
     if ( files && files.length ) {
@@ -241,7 +252,7 @@
       label = 'Selected {0} files, {1} dirs, {2}';
       content = doTranslate(label, sum.files, sum.directories, Utils.humanFileSize(sum.size));
 
-      toggleMenuItems(sum.files && !sum.directories);
+      toggleMenuItems(sum.files, sum.directories);
     } else {
       sum = this.currentSummary;
       if ( sum ) {
@@ -249,7 +260,7 @@
         content = doTranslate(label, sum.files, sum.hidden, sum.directories, Utils.humanFileSize(sum.size));
       }
 
-      toggleMenuItems(false);
+      toggleMenuItems(false, false);
     }
 
     statusbar.set('value', content);
