@@ -62,7 +62,7 @@
             type: 'application',
             path: 'applications:///' + m,
             mime: 'osjs/application'
-          }));
+          }, 'osjs/application'));
         }
       });
 

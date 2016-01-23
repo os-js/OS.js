@@ -167,13 +167,13 @@
     // TODO: Check for duplicates
 
     try {
-      if ( data.mime === 'osjs/application' ) {
-        var appname = Utils.filename(data.path);
+      if ( data.mime === 'osjs/application' || data.launch ) {
+        var appname = data.launch || Utils.filename(data.path);
         var apps = OSjs.Core.getPackageManager().getPackages();
         var meta = apps[appname];
 
         iter = {
-          icon: API.getIcon(meta.icon, '32x32', data.launch),
+          icon: API.getIcon(meta.icon, '32x32', appname),
           id: appname,
           label: meta.name,
           value: {
