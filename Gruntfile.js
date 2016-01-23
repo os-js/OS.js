@@ -112,7 +112,7 @@
             'src/client/themes/fonts/*/*.css',
             'src/client/themes/styles/*/*.css',
             'src/packages/default/*/*.css',
-            '!src/packages/default/CoreWM/animations.css',
+            '!src/packages/default/CoreWM/animations.css'
           ]
         },
         lax: {
