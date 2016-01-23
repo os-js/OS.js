@@ -881,8 +881,6 @@
     tpl = replaceAll(tpl, '%HANDLER%', cfg.handler);
 
     writeFile(_path.join(outdir, 'index.html'), tpl);
-    copyFile(_path.join(tpldir, 'favicon.png'), _path.join(outdir, 'favicon.png'));
-    copyFile(_path.join(tpldir, 'favicon.ico'), _path.join(outdir, 'favicon.ico'));
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1099,17 +1097,32 @@
 
     grunt.log.subhead('CSS');
     writeFile(PATHS.out_client_css, buildCSS());
+  }
 
-    grunt.log.subhead('Static files');
-    writeFile(PATHS.out_client_css, buildCSS());
-
+  /**
+   * Create static files in dist/
+   */
+  function createDistFiles(grunt, dist) {
+    var cfg = generateBuildConfig(grunt);
+    var tpldir = _path.join(PATHS.templates, 'dist', cfg.dist.template);
+    var outdir = _path.join(ROOT, dist || 'dist-dev');
     var stats = cfg.statics;
+
     Object.keys(stats).forEach(function(f) {
       var src = _path.join(ROOT, f);
       var dst = _path.join(ROOT, stats[f]);
       copyFile(src, dst);
     });
 
+    var splashFile = _path.join(tpldir, 'splash.png');
+    if ( _fs.existsSync(splashFile) ) {
+      copyFile(splashFile, _path.join(outdir, 'splash.png'));
+    }
+
+    copyFile(_path.join(tpldir, 'favicon.png'), _path.join(outdir, 'favicon.png'));
+    copyFile(_path.join(tpldir, 'favicon.ico'), _path.join(outdir, 'favicon.ico'));
+
+    createIndex(grunt, null, dist);
   }
 
   /**
@@ -1568,7 +1581,7 @@
 
   module.exports = {
     createConfigurationFiles: createConfigurationFiles,
-    createIndex:              createIndex,
+    createDistFiles:          createDistFiles,
     createApacheVhost:        createApacheVhost,
     createApacheHtaccess:     createApacheHtaccess,
     createLighttpdConfig:     createLighttpdConfig,

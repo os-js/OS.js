@@ -311,19 +311,17 @@
     });
 
     /**
-     * Task: Generate index.html
+     * Task: Generate dist files
      */
-    grunt.registerTask('dist-index', 'Generate dist index.html', function(arg) {
-      grunt.log.writeln('Generating dist/index.html...');
-      _build.createIndex(grunt, arg, 'dist');
-    });
-
-    /**
-     * Task: Generate index.html
-     */
-    grunt.registerTask('dist-dev-index', 'Generate dist-dev index.html', function(arg) {
-      grunt.log.writeln('Generating dist-dev/index.html...');
-      _build.createIndex(grunt, arg, 'dist-dev');
+    grunt.registerTask('dist-files', 'Generate dist files from template', function(arg) {
+      if ( arg ) {
+        if ( arg === 'dist' || arg === 'dist-dev' ) {
+          _build.createDistFiles(grunt, arg);
+        }
+      } else {
+        _build.createDistFiles(grunt, 'dist');
+        _build.createDistFiles(grunt, 'dist-dev');
+      }
     });
 
     /**
@@ -362,11 +360,12 @@
       _build.createPackage(grunt, arg1, arg2);
     });
 
-    grunt.registerTask('all', ['clean', 'config', 'dist-dev-index', 'dist-index', 'core', 'themes', 'packages', 'manifest']);
+    // DEPRECATED
+    grunt.registerTask('all', ['clean', 'config', 'dist-files', 'core', 'themes', 'packages', 'manifest']);
     grunt.registerTask('default', ['all']);
-    grunt.registerTask('nw', ['config', 'dist-index', 'core:nw', 'themes', 'packages', 'manifest', 'standalone:nw', 'nwjs']);
-    grunt.registerTask('dist', ['config', 'dist-index', 'core', 'themes', 'packages', 'manifest']);
-    grunt.registerTask('dist-dev', ['config', 'dist-dev-index', 'themes:fonts', 'themes:styles', 'manifest']);
+    grunt.registerTask('nw', ['config', 'core:nw', 'themes', 'packages', 'manifest', 'standalone:nw', 'nwjs']);
+    grunt.registerTask('dist', ['config', 'dist-files:dist', 'core', 'themes', 'packages', 'manifest']);
+    grunt.registerTask('dist-dev', ['config', 'dist-files:dist-dev', 'themes:fonts', 'themes:styles', 'manifest']);
     grunt.registerTask('test', ['jshint', 'jscs', 'csslint', 'mochaTest'/*, 'mocha'*/]);
   };
 
