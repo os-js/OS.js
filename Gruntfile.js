@@ -50,6 +50,7 @@
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-jscs');
     //grunt.loadNpmTasks('grunt-html-validation');
+    grunt.loadNpmTasks('grunt-contrib-csslint');
     grunt.loadNpmTasks('grunt-nw-builder');
 
     grunt.initConfig({
@@ -99,6 +100,30 @@
           '!src/packages/default/**/locale.js',
           '!src/packages/default/Calculator/main.js'
         ]
+      },
+      csslint: {
+        options: {
+          csslintrc: '.csslintrc'
+        },
+        strict: {
+          src: [
+            'src/client/stylesheets/*.css',
+            '!src/client/stylesheets/gui.css',
+            'src/client/themes/fonts/*/*.css',
+            'src/client/themes/styles/*/*.css',
+            'src/packages/default/*/*.css',
+            '!src/packages/default/CoreWM/animations.css',
+          ]
+        },
+        lax: {
+          options: {
+            'known-properties': false,
+            'compatible-vendor-prefixes': false
+          },
+          src: [
+            'src/client/stylesheets/gui.css'
+          ]
+        }
       },
       mochaTest: {
         test: {
@@ -342,7 +367,7 @@
     grunt.registerTask('nw', ['config', 'dist-index', 'core:nw', 'themes', 'packages', 'manifest', 'standalone:nw', 'nwjs']);
     grunt.registerTask('dist', ['config', 'dist-index', 'core', 'themes', 'packages', 'manifest']);
     grunt.registerTask('dist-dev', ['config', 'dist-dev-index', 'themes:fonts', 'themes:styles', 'manifest']);
-    grunt.registerTask('test', ['jshint', 'jscs', 'mochaTest'/*, 'mocha'*/]);
+    grunt.registerTask('test', ['jshint', 'jscs', 'csslint', 'mochaTest'/*, 'mocha'*/]);
   };
 
 })(require('node-fs-extra'), require('path'), require('./src/build.js'), require('grunt'), require('less'));
