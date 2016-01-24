@@ -45,7 +45,7 @@
    *
    * Used for communication, resources, settings and session handling
    *
-   * You can implement your own, see documentation on Wiki.
+   * You can implement your own.
    *
    * NEVER CONSTRUCT YOUR OWN INTANCE! To get one use:
    * OSjs.Core.getHandler();
@@ -173,8 +173,8 @@
   /**
    * Default login method
    *
-   * NOTE: This is just a placeholder.
-   *       To implement your own login handler, see the Wiki :)
+   * NOTE: This is just a placeholder. The actual method
+   *       is in the currently assigned (ex: handlers/demo/handler.js)
    *
    * @param   String    username      Login username
    * @param   String    password      Login password
