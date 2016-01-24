@@ -10,8 +10,8 @@ Basically follow the official instructions
 ```
 sudo npm install -g grunt-cli
 
-git clone https://github.com/andersevenrud/OS.js-v2.git
-cd OS.js-v2
+git clone https://github.com/os-js/OS.js.git
+cd OS.js
 npm install --production
 cp src/templates/conf/500-cpanel.json src/conf/500-cpanel.json
 grunt
@@ -19,9 +19,9 @@ grunt
 
 ## 3: Transfer files
 
-Now copy the entire `OS.js-v2` directory to your host
+Now copy the entire `OS.js` directory to your host
 
 ## 3: Run
 
-Open up http://yourhost.com/OS.js-v2/dist/
+Open up http://yourhost.com/OS.js/dist/
 
