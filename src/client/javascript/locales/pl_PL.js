@@ -375,7 +375,8 @@
     'LBL_BUGREPORT' : 'Raport błędu',
     'LBL_INSTALL' : 'Instaluj',
     'LBL_UPDATE' : 'Aktualizuj',
-    'LBL_REMOVE' : 'Usuń'
+    'LBL_REMOVE' : 'Usuń',
+    'LBL_SHOW_SIDEBAR' : 'Pokaż pasek'
   };
 
 })();

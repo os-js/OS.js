@@ -375,7 +375,8 @@
     'LBL_BUGREPORT' : 'Áúã-ðåïîðò',
     'LBL_INSTALL' : 'Èíñòàëèðàé',
     'LBL_UPDATE' : 'Àêòóàëèçèðàé',
-    'LBL_REMOVE' : 'Ïðåìàõíè'
+    'LBL_REMOVE' : 'Ïðåìàõíè',
+    'LBL_SHOW_SIDEBAR' : 'покажи страничен бар'
   };
 
 })();

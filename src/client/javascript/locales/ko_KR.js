@@ -364,8 +364,8 @@
     'LBL_UNORDERED_LIST'   : '정렬 되지 않은 리스트',
     'LBL_STATUS'   : '상태',
     'LBL_READONLY' : '읽기 전용',
-    'LBL_CREATED' : '생성 됨',
-    'LBL_MODIFIED' : '수정 됨',
+    'LBL_CREATED' : '생성됨',
+    'LBL_MODIFIED' : '수정됨',
     'LBL_SHOW_COLUMNS' : '열 보기',
     'LBL_MOVE' : '이동',
     'LBL_OPTIONS' : '옵션',
@@ -375,7 +375,11 @@
     'LBL_BUGREPORT' : '버그 리포트',
     'LBL_INSTALL' : '설치',
     'LBL_UPDATE' : '수정',
-    'LBL_REMOVE' : '제거'
+    'LBL_REMOVE' : '제거',
+    'LBL_SHOW_SIDEBAR' : '사이드바 보이기',
+    'LBL_SHOW_NAVIGATION' : '네비게이션 보이기',
+    'LBL_SHOW_HIDDENFILES' : '숨긴 파일 보이기',
+    'LBL_SHOW_FILEEXTENSIONS' : '파일 확장자 보이기'
   };
 
 })();

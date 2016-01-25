@@ -37,7 +37,6 @@
 
   var _Locales = {
     bg_BG : {
-      'Show sidebar' : 'покажи страничен бар',
       'Copying file...' : 'Копиране на файл...',
       "Copying <span>{0}</span> to <span>{1}</span>" : "Копиране <span>{0}</span> към <span>{1}</span>",
       "Refreshing..." : "Опресняване...",
@@ -47,7 +46,6 @@
       "Delete <span>{0}</span> ?" : "Изтриване на <span>{0}</span>?"
     },
     de_DE : {
-      'Show sidebar' : 'Seitenleiste anzeigen',
       'Copying file...' : 'Kopiere Datei...',
       "Copying <span>{0}</span> to <span>{1}</span>" : "Kopiere <span>{0}</span> nach <span>{1}</span>",
       "Refreshing..." : "Aktualisiere...",
@@ -57,7 +55,6 @@
       "Delete <span>{0}</span> ?" : "<span>{0}</span> löschen?"
     },
     fr_FR : {
-      'Show sidebar' : 'Afficher la barre de côté',
       'Copying file...' : 'Copie de fichier...',
       "Copying <span>{0}</span> to <span>{1}</span>" : "Copie de <span>{0}</span> à <span>{1}</span>",
       "Refreshing..." : "Rafraichissement...",
@@ -70,7 +67,6 @@
       'Showing {0} files ({1} hidden), {2} dirs, {3}' : '{0} fichier(s) affiché(s) ({1} caché(s)), {2} dossier(s), {3}'
     },
     it_IT : {
-      'Show sidebar' : 'Mostra barra laterale',
       'Copying file...' : 'Copiamento file...',
       "Copying <span>{0}</span> to <span>{1}</span>" : "Copia <span>{0}</span> in <span>{1}</span>",
       "Refreshing..." : "Ricarica...",
@@ -81,19 +77,18 @@
       "Delete <span>{0}</span> ?" : "Cancella <span>{0}</span> ?"
     },
     ko_KR : {
-      'Show sidebar' : '사이드바 보여주기',
       'Copying file...' : '파일 복사...',
-      "Copying <span>{0}</span> to <span>{1}</span>" : "Копирование <span>{0}</span> в <span>{1}</span>",
+      "Copying <span>{0}</span> to <span>{1}</span>" : "<span>{0}</span>를 <span>{1}</span>으로 복사",
       "Refreshing..." : "새로고치는 중...",
       "Loading..." : "기다려주세요...",
-      "Create a new directory in <span>{0}</span>" : "<span>{0}</span>에 새 폴더 만들기",
+      "Create a new file in <span>{0}</span>" : "<span>{0}</span>에 새 파일 만들기",
+      "Create a new directory in <span>{0}</span>" : "<span>{0}</span>에 새 디렉토리 만들기",
       "Rename <span>{0}</span>" : "<span>{0}</span>의 이름 바꾸기",
       "Delete <span>{0}</span> ?" : "<span>{0}</span>을 삭제하시겠습니까?",
       'Selected {0} files, {1} dirs, {2}' : '{0} 개의 파일, {1} 개의 디렉토리가 선택됨, {2}',
       'Showing {0} files ({1} hidden), {2} dirs, {3}' : '{0} 개의 파일({1} 개의 숨긴 파일), {2} 개의 디렉토리가 존재, {3}'
     },
     nl_NL : {
-      'Show sidebar' : 'Zijbar tonen',
       'Copying file...' : 'Bestand kopieren...',
       "Copying <span>{0}</span> to <span>{1}</span>" : "Kopieer <span>{0}</span> naar <span>{1}</span>",
       "Refreshing..." : "Aktualiseren...",
@@ -103,7 +98,6 @@
       "Delete <span>{0}</span> ?" : "<span>{0}</span> verwijderen?"
     },
     no_NO : {
-      'Show sidebar' : 'Vis Sidebar',
       'Copying file...' : 'Kopierer fil...',
       "Copying <span>{0}</span> to <span>{1}</span>" : "Kopierer <span>{0}</span> to <span>{1}</span>",
       "Refreshing..." : "Gjenoppfrisker...",
@@ -114,7 +108,6 @@
       "Delete <span>{0}</span> ?" : "Slette <span>{0}</span> ?"
     },
     pl_PL : {
-      'Show sidebar' : 'Pokaż pasek',
       'Copying file...' : 'Kopiowanie pliku...',
       "Copying <span>{0}</span> to <span>{1}</span>" : "Kopiowanie <span>{0}</span> do <span>{1}</span>",
       "Refreshing..." : "Odświeżanie...",
@@ -127,7 +120,6 @@
       'Showing {0} files ({1} hidden), {2} dirs, {3}' : 'Pokazywane pliki: {0} /(ukryte: {1}, foldery: {2}, {3}'
     },
     ru_RU : {
-      'Show sidebar' : 'Отобразить боковую панель',
       'Copying file...' : 'Копирование файла...',
       "Copying <span>{0}</span> to <span>{1}</span>" : "Копирование <span>{0}</span> в <span>{1}</span>",
       "Refreshing..." : "Обновление...",
@@ -137,7 +129,6 @@
       "Delete <span>{0}</span> ?" : "Удалить <span>{0}</span> ?"
     },
     sk_SK : {
-      'Show sidebar' : 'Ukáž bočnú lištu',
       'Copying file...' : 'Kopírujem súbor...',
       "Copying <span>{0}</span> to <span>{1}</span>" : "Kopírujem <span>{0}</span> do <span>{1}</span>",
       "Refreshing..." : "Obnovujem...",
@@ -148,7 +139,6 @@
       "Delete <span>{0}</span> ?" : "Zmazať <span>{0}</span> ?"
     },
     tr_TR : {
-      'Show sidebar' : 'Kenar çubuğunu göster',
       'Copying file...' : 'kopyalanıyor...',
       "Copying <span>{0}</span> to <span>{1}</span>" : "<span>{0}</span> dosyası  <span>{1}</span>e kopyalanıyor",
       "Refreshing..." : "yenileniyor...",
@@ -158,7 +148,6 @@
       "Delete <span>{0}</span> ?" : "sil <span>{0}</span>?"
     },
     vi_VN : {
-      'Show sidebar' : 'Hiện Sidebar',
       'Copying file...' : 'Đang sao chép...',
       "Copying <span>{0}</span> to <span>{1}</span>" : "Đang chép <span>{0}</span> tới <span>{1}</span>",
       "Refreshing..." : "Đang làm mới...",
