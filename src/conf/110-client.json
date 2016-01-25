@@ -18,6 +18,7 @@
     "BugReporting":     true,
     "VersionAppend":    "",
     "ShowQuitWarning":  false,
+    "ReloadOnShutdown": false,
 
     "Preloads":  {},
     "AutoStart": [],
