@@ -471,6 +471,14 @@ gui-paned-view[data-orientation='vertical'] {
          -o-flex: 0 1 auto;
             flex: 0 1 auto;
   }
+  gui-paned-view > gui-paned-view-container {
+    min-width : 16px;
+    min-height : auto;
+  }
+  gui-paned-view[data-orientation='vertical'] > gui-paned-view-container {
+    min-width : auto;
+    min-height : 16px;
+  }
 
 /* IFrame */
 gui-iframe {
