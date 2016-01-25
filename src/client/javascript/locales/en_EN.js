@@ -248,6 +248,12 @@
     // VFS -> OneDrive
     'ONEDRIVE_ERR_RESOLVE'      : 'Failed to resolve path: item not found',
 
+    // ZIP
+    'ZIP_PRELOAD_FAIL'  : 'Failed to load zip.js',
+    'ZIP_VENDOR_FAIL'   : 'zip.js library was not found. Did it load properly?',
+    'ZIP_NO_RESOURCE'   : 'No zip resource was given',
+    'ZIP_NO_PATH'       : 'No path given',
+
     //
     // PackageManager
     //

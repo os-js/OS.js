@@ -40,10 +40,10 @@
   function getEntries(file, callback) {
     zip.createReader(new zip.BlobReader(file), function(zipReader) {
       zipReader.getEntries(function(entries) {
-        callback(entries);
+        callback(false, entries);
       });
     }, function(message) {
-      alert(message); // FIXME
+      callback(message);
     });
   }
 
@@ -66,8 +66,8 @@
       }
 
       var blob = new Blob([data], {type: file.mime});
-      getEntries(blob, function(result) {
-        done(false, result || []);
+      getEntries(blob, function(error, result) {
+        done(error, result || []);
       });
     });
   }
@@ -176,7 +176,7 @@
     var self = this;
     Utils.preload(this.preloads, function(total, failed) {
       if ( failed.length ) {
-        cb('Failed to load zip.js', failed); // FIXME: Translation
+        cb(API._('ZIP_PRELOAD_FAIL'), failed);
         return;
       }
 
@@ -209,8 +209,8 @@
       }
 
       var blob = new Blob([result], {type: 'application/zip'});
-      getEntries(blob, function(entries) {
-        cb(false, entries);
+      getEntries(blob, function(error, entries) {
+        cb(error, entries);
       });
     });
   };
@@ -395,7 +395,7 @@
     function finished(err, res, writer) {
       if ( err || !writer ) {
         console.groupEnd();
-        cb(err || 'No zip resource was given'); // FIXME: Translation
+        cb(err || API._('ZIP_NO_RESOURCE'));
         return;
       }
 
@@ -406,7 +406,7 @@
     }
 
     if ( !path ) {
-      finished('No path given'); // FIXME: Translation
+      finished(API._('ZIP_NO_PATH'));
       return;
     }
 
@@ -569,7 +569,12 @@
           return;
         }
 
-        getEntries(blob, function(entries) {
+        getEntries(blob, function(error, entries) {
+          if ( error ) {
+            finished(error, warnings, false);
+            return;
+          }
+
           _extractList(entries, destination);
         });
       });
@@ -614,7 +619,7 @@
     SingletonInstance.init(function(error) {
       if ( !error ) {
         if ( !window.zip ) {
-          error = 'zip.js library was not found. Did it load properly?'; // FIXME: Translation
+          error = API._('ZIP_VENDOR_FAIL');
         }
       }
       callback(error, error ? false : SingletonInstance);
