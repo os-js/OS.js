@@ -15,7 +15,7 @@
   },
 
   "client" : {
-    "Version" : "2.0-alpha71-arduino-os",
+    "Version" : "2.0.0-arduino-os",
 
     "Languages": {
       "en_EN": "English"
