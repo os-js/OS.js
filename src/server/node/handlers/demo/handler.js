@@ -41,7 +41,7 @@
   exports.checkPrivilege = function(request, response, privilege, respond) {
     var uname = request.cookies.get('username');
     if ( !uname ) {
-      respond('You have no OS.js Session, please log in!', "text/plain", response, null, 500);
+      respond('You have no OS.js Session, please log in!', 'text/plain', response, null, 500);
       return false;
     }
     return true;
