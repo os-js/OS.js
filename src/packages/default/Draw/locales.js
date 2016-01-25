@@ -184,10 +184,10 @@
       'Effect' : 'Effet',
       'Flip Horizontally' : 'Pivoter horizontalement',
       'Flip Vertically' : 'Pivoter verticalement',
-      'Foreground' : 'Premier plan',
+      'Foreground' : 'Avant-plan',
       'Background' : 'Arrière-plan',
-      'Foreground (Fill) Color' : 'Couleur (remplissage) du premier plan',
-      'Background (Stroke) Color' : 'Couleur (remplissage) de l\'arrière-plan',
+      'Foreground (Fill) Color' : 'Couleur de l\'avant-plan (remplissage)',
+      'Background (Stroke) Color' : 'Couleur de l\'arrière-plan (trait)',
       'Line join' : 'Jointure',
       'Line width' : 'Taille de la ligne',
       'Toggle Stroke' : 'Afficher les traits',
@@ -201,21 +201,24 @@
       'Pointer' : 'Pointeur',
       'Move active layer' : 'Déplacer le calque actif',
 
-      'Picker' : 'Plukker',
-      'LMB: Pick foreground-, RMB: Pick background color' : 'LMB: Définir la couleur du première plan, RMB: Définir la couleur de l\'arrière plan',
-      //Set BG color plutot non?
+      'Picker' : 'Sélecteur',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'Clic gauche: sélectionne la couleur de l\'avant-plan, clic droit: sélectionne la couleur de l\'arrière-plan',
 
       'Pencil' : 'Pinceau',
-      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: Dessiner avec la couleur d\'avant/arrière plan',
+      'LMB: Use foreground-, RMB: Use background color' : 'Clic gauche: utilise la couleur d\'avant-plan, clic droit : utilise la couleur d\'arrière-plan',
       'Path' : 'Chemin',
 
       'Square/Rectangle' : 'Carré/Rectangle',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Dessiner avec la couleur d\'avant/arrière plan, SHIFT: Dessiner rectangle',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode' : 'Clic gauche: utilise la couleur d\'avant-plan, clic droit: utilise la couleur d\'arrière-plan, SHIFT: affiche le mode rectangle',
 
       'Circle/Ellipse' : 'Cercle/Ellipse',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Dessiner avec la couleur d\'avant/arrière plan, SHIFT: Dessiner ellipse',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode' : 'Clic gauche: utilise la couleur d\'avant-plan, clic droit: utilise la couleur d\'arrière-plan, SHIFT: affiche le mode ellipse',
 
-      'Blur' : 'Flou (Blur)',
+      'LMB: Fill with foreground-, RMB: Fill with background color': 'Clic gauche: remplir avec la couleur d\'avant-plan, clic droit: remplir avec la couleur d\'arrière-plan',
+      'Set foreground color': 'Définir la couleur d\'avant-plan',
+      'Set background color': 'Définir la couleur d\'arrière-plan',
+
+      'Blur' : 'Flou',
       'Noise' : 'Bruit',
       'Invert colors' : 'Inverser les couleurs',
       'Grayscale' : 'Niveau de gris',

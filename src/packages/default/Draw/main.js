@@ -392,8 +392,16 @@
   ApplicationDrawWindow.prototype.openColorDialog = function(param) {
     var self = this;
 
+    var colorParam = null;
+    if (param === 'background') {
+      colorParam = doTranslate('Set background color');
+    }
+    else if (param === 'foreground') {
+      colorParam = doTranslate('Set foreground color');
+    }
+
     API.createDialog('Color', {
-      title: doTranslate('Set {0} color', param),
+      title: colorParam,
       color: self.tool[param]
     }, function(ev, button, result) {
       if ( button !== 'ok' ) { return; }
