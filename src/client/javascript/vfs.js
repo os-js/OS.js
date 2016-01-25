@@ -44,14 +44,18 @@
    *  Functions that take 'metadata' (File Metadata) as an argument (like all of them)
    *  it expects you to use an instance of OSjs.VFS.File()
    *
-   *     VFS::read(new OSjs.VFS.File('/path/to/file', 'text/plain'), callback);
+   *     VFS.read(new VFS.File('/path/to/file', 'text/plain'), callback);
+   *
+   *  or anonymous file paths:
+   *     VFS.read('/path/to/file', callback)
    *
    *  ---------------------------------------------------------------------------
    *
    *  By default all functions that read data will return ArrayBuffer, but you can also return:
    *     String
    *     dataSource
-   *     TODO: Blob ?
+   *     ArrayBuffer
+   *     Blob
    *
    *  ---------------------------------------------------------------------------
    *
@@ -507,6 +511,51 @@
     }
   }
 
+  /**
+   * Convert ArrayBuffer to Blob
+   *
+   * @param   ArrayBuffer   arrayBuffer The ArrayBuffer
+   * @param   String        mime        The mime type
+   * @param   Function      callback    Callback function => fn(error, result)
+   *
+   * @return  void
+   *
+   * @api     OSjs.VFS.abToBlob()
+   */
+  function abToBlob(arrayBuffer, mime, callback) {
+    mime = mime || 'application/octet-stream';
+
+    try {
+      var blob = new Blob([arrayBuffer], {type: mime});
+      callback(false, blob);
+    } catch ( e ) {
+      console.warn(e, e.stack);
+      callback(e);
+    }
+  }
+
+  /**
+   * Convert Blob to ArrayBuffer
+   *
+   * @param   Blob          data        The blob
+   * @param   Function      callback    Callback function => fn(error, result)
+   *
+   * @return  void
+   *
+   * @api     OSjs.VFS.blobToAb()
+   */
+  function blobToAb(data, callback) {
+    try {
+      var r       = new FileReader();
+      r.onerror   = function(e) { callback(e);               };
+      r.onloadend = function()  { callback(false, r.result); };
+      r.readAsArrayBuffer(data);
+    } catch ( e ) {
+      console.warn(e, e.stack);
+      callback(e);
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // VFS METHODS
   /////////////////////////////////////////////////////////////////////////////
@@ -677,6 +726,11 @@
           _converted(error, response);
         });
         return;
+      } else if ( window.Blob && data instanceof window.Blob ) {
+        OSjs.VFS.blobToAb(data, function(error, response) {
+          _converted(error, response);
+        });
+        return;
       }
       _write(data);
     }
@@ -711,15 +765,27 @@
       }
 
       if ( options.type ) {
-        if ( options.type.toLowerCase() === 'datasource' ) {
-          OSjs.VFS.abToDataSource(response, item.mime, function(error, dataSource) {
-            callback(error, error ? null : dataSource);
-          });
-          return;
-        } else if ( options.type.toLowerCase() === 'text' ) {
-          OSjs.VFS.abToText(response, item.mime, function(error, text) {
-            callback(error, error ? null : text);
-          });
+        var types = {
+          datasource: function() {
+            OSjs.VFS.abToDataSource(response, item.mime, function(error, dataSource) {
+              callback(error, error ? null : dataSource);
+            });
+          },
+          text: function() {
+            OSjs.VFS.abToText(response, item.mime, function(error, text) {
+              callback(error, error ? null : text);
+            });
+          },
+          blob: function() {
+            OSjs.VFS.abToBlob(response, item.mime, function(error, blob) {
+              callback(error, error ? null : blob);
+            });
+          }
+        };
+
+        var type = options.type.toLowerCase();
+        if ( types[type] ) {
+          types[type]();
           return;
         }
       }
@@ -1341,10 +1407,14 @@
   OSjs.VFS.getRelativeURL        = getRelativeURL;
   OSjs.VFS.getRootFromPath       = getRootFromPath;
   OSjs.VFS.addFormFile           = addFormFile;
+
   OSjs.VFS.abToBinaryString      = abToBinaryString;
   OSjs.VFS.abToDataSource        = abToDataSource;
   OSjs.VFS.abToText              = abToText;
   OSjs.VFS.textToAb              = textToAb;
+  OSjs.VFS.abToBlob              = abToBlob;
+  OSjs.VFS.blobToAb              = blobToAb;
+
   OSjs.VFS.dataSourceToAb        = dataSourceToAb;
 
 })(OSjs.Utils, OSjs.API);
