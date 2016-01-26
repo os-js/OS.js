@@ -69,6 +69,7 @@
     "src/client/javascript/vfs.js",
     "src/client/javascript/vfs/_file.js",
     "src/client/javascript/vfs/_null.js",
+    "src/client/javascript/vfs/_dav.js",
     "src/client/javascript/vfs/apps.js",
     "src/client/javascript/vfs/osjs.js",
     "src/client/javascript/vfs/user.js",
