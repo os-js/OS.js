@@ -207,6 +207,20 @@
     'ERR_VFS_DOWNLOAD_NO_FILE': 'Cannot download a path without a path',
     'ERR_VFS_DOWNLOAD_FAILED' : 'An error occured while downloading: {0}',
     'ERR_VFS_REMOTEREAD_EMPTY': 'Response was empty',
+
+    'ERR_VFSMODULE_INVALID'            : 'Invalid VFS Module',
+    'ERR_VFSMODULE_INVALID_FMT'        : 'Invalid VFS Module: {0}',
+    'ERR_VFSMODULE_INVALID_METHOD'     : 'Invalid VFS Method',
+    'ERR_VFSMODULE_INVALID_METHOD_FMT' : 'Invalid VFS Method: {0}',
+    'ERR_VFSMODULE_INVALID_TYPE'       : 'Invalid VFS Module type',
+    'ERR_VFSMODULE_INVALID_TYPE_FMT'   : 'Invalid VFS Module type: {0}',
+    'ERR_VFSMODULE_INVALID_CONFIG'     : 'Invalid VFS Module configuration',
+    'ERR_VFSMODULE_INVALID_CONFIG_FMT' : 'Invalid VFS Module configuration: {0}',
+    'ERR_VFSMODULE_ALREADY_MOUNTED'    : 'VFS Module already mounted',
+    'ERR_VFSMODULE_ALREADY_MOUNTED_FMT': 'VFS Module \'{0}\' already mounted',
+    'ERR_VFSMODULE_NOT_MOUNTED'        : 'VFS Module not mounted',
+    'ERR_VFSMODULE_NOT_MOUNTED_FMT'    : 'VFS Module \'{0}\' not mounted',
+
     'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Downloading file',
 
     'ERR_VFSMODULE_XHR_ERROR'      : 'XHR Error',

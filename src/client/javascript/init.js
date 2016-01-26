@@ -383,8 +383,8 @@
    */
   function initVFS(config, callback) {
     console.debug('initVFS()');
-    if ( OSjs.VFS.registerMounts ) {
-      OSjs.VFS.registerMounts();
+    if ( OSjs.VFS.registerMountpoints ) {
+      OSjs.VFS.registerMountpoints();
     }
 
     callback();

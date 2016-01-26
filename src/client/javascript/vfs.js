@@ -134,6 +134,40 @@
   }
 
   /**
+   * Returns a list of all enabled VFS modules
+   *
+   * @param   Object    opts          Options
+   *
+   * @option  opts      boolean       visible       All visible modules only (default=true)
+   *
+   * @return  Array                   List of all Modules found
+   * @api     OSjs.VFS.getModules()
+   */
+  function getModules(opts) {
+    opts = Utils.argumentDefaults(opts, {
+      visible: true,
+      special: false
+    });
+
+    var m = OSjs.VFS.Modules;
+    var a = [];
+    Object.keys(m).forEach(function(name) {
+      var iter = m[name];
+      if ( !iter.enabled() || (!opts.special && iter.special) ) {
+        return;
+      }
+
+      if ( opts.visible && iter.visible === opts.visible ) {
+        a.push({
+          name: name,
+          module: iter
+        });
+      }
+    });
+    return a;
+  }
+
+  /**
    * Get module name from path
    */
   function getModuleFromPath(test) {
@@ -343,6 +377,10 @@
         callback('canceled', evt);
       }
     });
+  }
+
+  function createMatch(name) {
+    return new RegExp('^' + name.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&'));
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -561,94 +599,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
-   * Returns a list of all enabled VFS modules
-   *
-   * @param   Object    opts          Options
-   *
-   * @option  opts      boolean       visible       All visible modules only (default=true)
-   *
-   * @return  Array                   List of all Modules found
-   * @api     OSjs.VFS.getModules()
-   */
-  OSjs.VFS.getModules = function(opts) {
-    opts = Utils.argumentDefaults(opts, {
-      visible: true,
-      special: false
-    });
-
-    var m = OSjs.VFS.Modules;
-    var a = [];
-    Object.keys(m).forEach(function(name) {
-      var iter = m[name];
-      if ( !iter.enabled() || (!opts.special && iter.special) ) {
-        return;
-      }
-
-      if ( opts.visible && iter.visible === opts.visible ) {
-        a.push({
-          name: name,
-          module: iter
-        });
-      }
-    });
-    return a;
-  };
-
-  /**
-   * Registeres all configured mount points
-   *
-   * @return  void
-   *
-   * @api     OSjs.VFS.registerMounts()
-   */
-  OSjs.VFS.registerMounts = function() {
-    if ( MountsRegistered ) { return; }
-    MountsRegistered = true;
-
-    var config = null;
-
-    try {
-      config = API.getConfig('VFS.Mountpoints');
-    } catch ( e ) {
-      console.warn('mountpoints.js initialization error', e, e.stack);
-    }
-
-    console.debug('Registering mountpoints...', config);
-
-    if ( config ) {
-      var points = Object.keys(config);
-      points.forEach(function(key) {
-        var iter = config[key];
-        console.info('VFS', 'Registering mountpoint', key, iter);
-
-        var re = new RegExp('^' + key + '\\:\\/\\/');
-        OSjs.VFS.Modules[key] = {
-          readOnly: (typeof iter.readOnly === 'undefined') ? false : (iter.readOnly === true),
-          description: iter.description || key,
-          icon: iter.icon || 'devices/harddrive.png',
-          root: key + ':///',
-          visible: true,
-          internal: true,
-          match: re,
-          unmount: function(cb) {
-            OSjs.VFS._NullModule.unmount(cb);
-          },
-          mounted: function() {
-            return true;
-          },
-          enabled: function() {
-            return (typeof iter.enabled === 'undefined') || iter.enabled === true;
-          },
-          request: function() {
-            // This module uses the same API as public
-            OSjs.VFS._NullModule.request.apply(null, arguments);
-          }
-        };
-      });
-    }
-  };
-
-  /**
    * Scandir
    *
    * @param   OSjs.VFS.File   item      File Metadata
@@ -661,7 +611,8 @@
   OSjs.VFS.scandir = function(item, callback, options) {
     console.info('VFS::scandir()', item, options);
     if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    if ( !(item instanceof OSjs.VFS.File) ) { throw new Error(API._('ERR_VFS_EXPECT_FILE')); }
+    item = checkMetadataArgument(item);
+
     request(item.path, 'scandir', [item], function(error, response) {
       if ( error ) {
         error = API._('ERR_VFSMODULE_SCANDIR_FMT', error);
@@ -1396,12 +1347,194 @@
   };
 
   /////////////////////////////////////////////////////////////////////////////
+  // MOUNTPOINTS
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Mounts given mountpoint
+   *
+   * Currently supports: Custom internal methods, webdav/owncloud
+   *
+   * If you want to configure default mountpoints, look at the manual linked below.
+   *
+   * @param Object        opts        Mountpoint options
+   * @param Function      cb          Callback function => fn(err, result)
+   *
+   * @option  opts    String      name            Mountpoint Name (unique)
+   * @option  opts    String      description     General description
+   * @option  opts    String      icon            Icon
+   * @option  opts    String      type            Connection type (internal/webdav)
+   * @option  opts    Object      options         Connection options (for external services like webdav)
+   *
+   * @option  options String      host            (Optional) Host (full URL)
+   * @option  options String      username        (Optional) Username
+   * @option  options String      password        (Optional) Password
+   *
+   * @return  void
+   *
+   * @link  http://os.js.org/doc/manuals/man-mountpoints.html
+   *
+   * @api   OSjs.VFS.createMountpoint()
+   */
+  function createMountpoint(opts, cb) {
+    opts = Utils.argumentDefaults(opts, {
+      description: 'My VFS Module',
+      type: 'internal',
+      name: 'MyModule',
+      icon: 'places/server.png'
+    });
+
+    if ( OSjs.VFS.Modules[opts.name] ) {
+      throw new Error(API._('ERR_VFSMODULE_ALREADY_MOUNTED_FMT', opts.name));
+    }
+
+    if ( opts.type === 'owndrive' ) {
+      opts.type = 'webdav';
+    }
+
+    var modulePath = opts.name.replace(/\s/g, '-').toLowerCase() + '://';
+    var moduleRoot = modulePath + '/';
+    var moduleMatch = createMatch(modulePath);
+    var moduleOptions = opts.options || {};
+
+    var module = (function() {
+      var isMounted = true;
+
+      return {
+        readOnly: false,
+        description: opts.description,
+        visible: true,
+        dynamic: true,
+        unmount: function(cb) {
+          isMounted = false;
+
+          API.message('vfs', {type: 'unmount', module: opts.name, source: null});
+          (cb || function() {})(false, true);
+
+          delete OSjs.VFS.Modules[opts.name];
+        },
+        mounted: function() {
+          return isMounted;
+        },
+        enabled: function() {
+          return true;
+        },
+        root: moduleRoot,
+        icon: opts.icon,
+        match: moduleMatch,
+        options: moduleOptions,
+        request: function(name, args, callback, options) {
+          if ( opts.type === 'internal' ) {
+            OSjs.VFS._NullModule.request.apply(null, arguments);
+          } else if ( opts.type === 'webdav' ) {
+            OSjs.VFS._DAVModule.request.apply(null, arguments);
+          } else {
+            callback(API._('ERR_VFSMODULE_INVALID_TYPE_FMT', opts.type));
+          }
+        }
+      };
+    })();
+
+    var validModule = (function() {
+      if ( (['internal', 'webdav']).indexOf(opts.type) < 0 ) {
+        return 'No such type \'' + opts.type + '\'';
+      }
+      if ( opts.type === 'webdav' && !moduleOptions.username ) {
+        return 'Connection requires username (authorization)';
+      }
+      return true;
+    })();
+
+    if ( validModule !== true ) {
+      throw new Error('ERR_VFSMODULE_INVALID_CONFIG_FMT', validModule);
+    }
+
+    OSjs.VFS.Modules[opts.name] = module;
+    API.message('vfs', {type: 'mount', module: opts.name, source: null});
+
+    (cb || function() {})(false, true);
+  }
+
+  /**
+   * Unmounts given mountpoint
+   *
+   * Only mountpoints mounted via `createMountpoint` is supported
+   *
+   * @param   String      moduleName        Name of registered module
+   * @param   Function    cb                Callback function => fn(err, result)
+   *
+   * @return  void
+   *
+   * @api OSjs.VFS.removeMountpoints()
+   */
+  function removeMountpoint(moduleName, cb) {
+    if ( !OSjs.VFS.Modules[moduleName] || !OSjs.VFS.Modules[moduleName].dynamic ) {
+      throw new Error(API._('ERR_VFSMODULE_NOT_MOUNTED_FMT', moduleName));
+    }
+    OSjs.VFS.Modules[moduleName].unmount(cb);
+  }
+
+  /**
+   * Registeres all configured mount points
+   *
+   * @return  void
+   *
+   * @api     OSjs.VFS.registerMountpoints()
+   */
+  function registerMountpoints() {
+    if ( MountsRegistered ) { return; }
+    MountsRegistered = true;
+
+    var config = null;
+
+    try {
+      config = API.getConfig('VFS.Mountpoints');
+    } catch ( e ) {
+      console.warn('mountpoints.js initialization error', e, e.stack);
+    }
+
+    console.debug('Registering mountpoints...', config);
+
+    if ( config ) {
+      var points = Object.keys(config);
+      points.forEach(function(key) {
+        var iter = config[key];
+        console.info('VFS', 'Registering mountpoint', key, iter);
+
+        OSjs.VFS.Modules[key] = {
+          readOnly: (typeof iter.readOnly === 'undefined') ? false : (iter.readOnly === true),
+          description: iter.description || key,
+          icon: iter.icon || 'devices/harddrive.png',
+          root: key + ':///',
+          visible: true,
+          internal: true,
+          match: createMatch(key + '://'),
+          unmount: function(cb) {
+            OSjs.VFS._NullModule.unmount(cb);
+          },
+          mounted: function() {
+            return true;
+          },
+          enabled: function() {
+            return (typeof iter.enabled === 'undefined') || iter.enabled === true;
+          },
+          request: function() {
+            // This module uses the same API as public
+            OSjs.VFS._NullModule.request.apply(null, arguments);
+          }
+        };
+      });
+    }
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.VFS.internalCall          = internalCall;
   OSjs.VFS.internalUpload        = internalUpload;
   OSjs.VFS.filterScandir         = filterScandir;
+  OSjs.VFS.getModules            = getModules;
   OSjs.VFS.getModuleFromPath     = getModuleFromPath;
   OSjs.VFS.isInternalModule      = isInternalModule;
   OSjs.VFS.getRelativeURL        = getRelativeURL;
@@ -1414,7 +1547,10 @@
   OSjs.VFS.textToAb              = textToAb;
   OSjs.VFS.abToBlob              = abToBlob;
   OSjs.VFS.blobToAb              = blobToAb;
-
   OSjs.VFS.dataSourceToAb        = dataSourceToAb;
+
+  OSjs.VFS.createMountpoint      = createMountpoint;
+  OSjs.VFS.removeMountpoint      = removeMountpoint;
+  OSjs.VFS.registerMountpoints   = registerMountpoints;
 
 })(OSjs.Utils, OSjs.API);
