@@ -324,6 +324,7 @@ class API
     $error    = false;
     $headers  = Array();
     $code     = 0;
+    $settings = Settings::get();
 
     $url = preg_replace('/\/(([^\/]+\/)+)?(FS)/', "", urldecode($req->data));
 
@@ -331,18 +332,27 @@ class API
 
     try {
       if ( $url ) {
-        list($dirname, $req->uri, $protocol, $file) = getRealPath($url);
-        if ( file_exists($file) ) {
-          session_write_close();
-          if ( FS::read($url, Array("raw" => true)) ) {
-            exit;
-          } else {
+        if ( preg_match('/^(ftp|https?)\:\/\//', $url) ) {
+          if ( empty($settings['vfs']['proxy']) || $settings['vfs']['proxy'] == false ) {
+            $error = "VFS Proxy is disabled";
             $code = 500;
-            $error = "File read error";
+          } else {
+            $result = file_get_contents($url);
           }
         } else {
-          $code = 404;
-          $error = "File not found";
+          list($dirname, $req->uri, $protocol, $file) = getRealPath($url);
+          if ( file_exists($file) ) {
+            session_write_close();
+            if ( FS::read($url, Array("raw" => true)) ) {
+              exit;
+            } else {
+              $code = 500;
+              $error = "File read error";
+            }
+          } else {
+            $code = 404;
+            $error = "File not found";
+          }
         }
       }
     } catch ( Exception $e ) {
