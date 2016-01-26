@@ -1369,6 +1369,7 @@
    * @option  options String      host            (Optional) Host (full URL)
    * @option  options String      username        (Optional) Username
    * @option  options String      password        (Optional) Password
+   * @option  options boolean     cors            (Optional) If CORS is enabled (default=false)
    *
    * @return  void
    *
