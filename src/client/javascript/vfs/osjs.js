@@ -73,6 +73,12 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * This is a virtual module for showing 'dist' files in OS.js
+   *
+   * @see OSjs.VFS.Modules._NullModule
+   * @api OSjs.VFS.Modules.OSjs
+   */
   OSjs.VFS.Modules.OSjs = OSjs.VFS.Modules.OSjs || {
     readOnly: true,
     description: 'OS.js',

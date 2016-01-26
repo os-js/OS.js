@@ -630,6 +630,11 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * This is the Microsoft OneDrive VFS Abstraction for OS.js
+   *
+   * @api OSjs.VFS.Modules.OneDrive
+   */
   OSjs.VFS.Modules.OneDrive = OSjs.VFS.Modules.OneDrive || {
     readOnly: false,
     description: 'OneDrive',

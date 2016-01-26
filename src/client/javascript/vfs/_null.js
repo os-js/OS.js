@@ -201,6 +201,11 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * This is the internal HTTP VFS Module wrapper
+   *
+   * @api OSjs.VFS.Modules._NullModule
+   */
   OSjs.VFS._NullModule = {
     unmount: function(cb) {
       cb = cb || function() {};

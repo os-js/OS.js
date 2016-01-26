@@ -33,6 +33,17 @@
   window.OSjs           = window.OSjs       || {};
   OSjs.VFS              = OSjs.VFS          || {};
   OSjs.VFS.Modules      = OSjs.VFS.Modules  || {};
+
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * This is a virtual module for showing 'dist' files in OS.js
+   *
+   * @see OSjs.VFS.Modules._NullModule
+   * @api OSjs.VFS.Modules.User
+   */
   OSjs.VFS.Modules.User = OSjs.VFS.Modules.User || {
     readOnly: false,
     description: 'Home',

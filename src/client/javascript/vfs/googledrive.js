@@ -890,6 +890,11 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * This is the Google Drive VFS Abstraction for OS.js
+   *
+   * @api OSjs.VFS.Modules.GoogleDrive
+   */
   OSjs.VFS.Modules.GoogleDrive = OSjs.VFS.Modules.GoogleDrive || {
     readOnly: false,
     description: 'Google Drive',
