@@ -86,6 +86,22 @@
    * Respond with a file
    */
   function respondFile(path, request, response, jpath) {
+    if ( !jpath && path.match(/^(ftp|https?)\:\/\//) ) {
+      console.warn("XXX", instance.config);
+      if ( instance.config.vfs.proxy ) {
+        try {
+          require('request')(path).pipe(response);
+        } catch ( e ) {
+          console.error('!!! Caught exception', e);
+          console.warn(e.stack);
+          respond(e, 'text/plain', response, null, 500);
+        }
+      } else {
+        respond('VFS Proxy is disabled', 'text/plain', response, null, 500);
+      }
+      return;
+    }
+
     var fullPath = jpath ? path : instance.vfs.getRealPath(path, instance.config, request).root;
     _fs.exists(fullPath, function(exists) {
       if ( exists ) {

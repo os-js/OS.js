@@ -2,6 +2,7 @@
   "server" : {
     "tmpdir": "/tmp",
     "vfs": {
+      "proxy": false,
       "homes":  "%DROOT%/vfs/home",
       "mounts": {
         "shared": "%DROOT%/vfs/public"
