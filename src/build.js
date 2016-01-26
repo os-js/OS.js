@@ -799,9 +799,7 @@
       } catch ( e ) {}
 
       Object.keys(jsonSettings.vfs).forEach(function(key) {
-        if ( typeof jsonSettings.vfs[key] === 'string' ) {
-          jsonSettings.vfs[key] = fixWinPath(jsonSettings.vfs[key]);
-        }
+        jsonSettings.vfs[key] = fixWinPath(jsonSettings.vfs[key]);
       });
 
       // Write
