@@ -309,6 +309,10 @@
 
     var sideViewItems = [];
     VFS.getModules({special: true}).forEach(function(m, i) {
+      if ( m.module.dynamic && !m.module.mounted() ) {
+        return;
+      }
+
       var classNames = [m.module.mounted() ? 'mounted' : 'unmounted'];
       if ( m.module.readOnly ) {
         classNames.push('readonly gui-has-emblem');
@@ -347,7 +351,6 @@
               this.changePath(path);
             }
           }
-
           this.updateSideView(m);
         }
       }
