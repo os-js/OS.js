@@ -87,7 +87,6 @@
    */
   function respondFile(path, request, response, jpath) {
     if ( !jpath && path.match(/^(ftp|https?)\:\/\//) ) {
-      console.warn("XXX", instance.config);
       if ( instance.config.vfs.proxy ) {
         try {
           require('request')(path).pipe(response);
