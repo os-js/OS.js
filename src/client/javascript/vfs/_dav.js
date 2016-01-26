@@ -84,46 +84,70 @@
     }
 
     var url = getURL(args[0]);
-    if ( args[0] ) {
-      var reqpath = resolvePath(args[0]);
-      url += reqpath.replace(/^\//, '');
+    var file = args[0];
+    url += resolvePath(file).replace(/^\//, '');
+
+    function internalCall() {
+      Utils.ajax({
+        url: url,
+        method: method,
+        contentType: 'arraybuffer',
+        onsuccess: function(result) {
+          if ( !result ) {
+            callback(API._('ERR_VFS_REMOTEREAD_EMPTY'));
+            return;
+          }
+          callback(false, result);
+        },
+        onerror: function(err) {
+          callback(err);
+        }
+      });
     }
 
-    var opts = {url: url, method: method};
-    if ( arguments.length > 3 ) {
-      opts.binary = true;
-      opts.mime = args[0].mime || 'application/octet-stream';
+    function externalCall() {
+      var opts = {url: url, method: method};
+      if ( arguments.length > 3 ) {
+        opts.binary = true;
+        opts.mime = args[0].mime || 'application/octet-stream';
+      }
+
+      if ( method === 'PUT' && typeof args[1] !== 'undefined' ) {
+        opts.query = args[1];
+      }
+
+      API.call('curl', opts, function(response) {
+        if ( response.error ) {
+          callback(response.error);
+          return;
+        }
+
+        if ( !response.result ) {
+          callback(API._('ERR_VFS_REMOTEREAD_EMPTY'));
+          return;
+        }
+
+        if ( ([200, 203, 207]).indexOf(response.result.httpCode) < 0 ) {
+          callback(API._('ERR_VFSMODULE_XHR_ERROR') + ': ' + response.result.httpCode);
+          return;
+        }
+
+        if ( opts.binary ) {
+          OSjs.VFS.dataSourceToAb(response.result.body, opts.mime, callback);
+        } else {
+          var doc = parseDocument(response.result.body);
+          callback(false, doc);
+        }
+      }, function(err) {
+        callback(err);
+      });
     }
 
-    if ( method === 'PUT' && typeof args[1] !== 'undefined' ) {
-      opts.query = args[1];
+    if ( getCORSAllowed(file) ) {
+      internalCall();
+    } else {
+      externalCall();
     }
-
-    OSjs.API.call('curl', opts, function(response) {
-      if ( response.error ) {
-        callback(response.error);
-        return;
-      }
-
-      if ( !response.result ) {
-        callback(API._('ERR_VFS_REMOTEREAD_EMPTY'));
-        return;
-      }
-
-      if ( ([200, 203, 207]).indexOf(response.result.httpCode) < 0 ) {
-        callback(API._('ERR_VFSMODULE_XHR_ERROR') + ': ' + response.result.httpCode);
-        return;
-      }
-
-      if ( opts.binary ) {
-        OSjs.VFS.dataSourceToAb(response.result.body, opts.mime, callback);
-      } else {
-        var doc = parseDocument(response.result.body);
-        callback(false, doc);
-      }
-    }, function(err) {
-      callback(err);
-    });
   }
 
   /////////////////////////////////////////////////////////////////////////////
