@@ -502,7 +502,9 @@
 
     if ( set ) {
       vfsOptions.save(function() {
-        self.changePath(null);
+        setTimeout(function() {
+          self.changePath(null);
+        }, 10);
       });
     }
     return toggle;
