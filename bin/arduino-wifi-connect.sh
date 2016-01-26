@@ -16,4 +16,4 @@
 /sbin/uci commit network
 /sbin/uci commit wireless
 /sbin/wifi
-/etc/init.d/network reload
+/etc/init.d/network restart
