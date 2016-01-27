@@ -58,7 +58,7 @@
     options.onprogress = options.onprogress || function() {};
 
     function _write(dataSource) {
-      var wopts = {path: item.path, data: dataSource, options: options};
+      var wopts = {path: item.path, data: dataSource};
 
       /*
       if ( API.getConfig('Connection.Type') === 'nw' ) {
@@ -69,7 +69,7 @@
       }
       */
 
-      OSjs.VFS.internalCall('write', wopts, callback);
+      OSjs.VFS.internalCall('write', wopts, callback, options);
     }
 
     if ( typeof data === 'string' && !data.length ) {
@@ -104,7 +104,7 @@
         callback(error);
         return;
       }
-      OSjs.VFS.internalCall('xhr', {url: url, onprogress: options.onprogress}, callback);
+      OSjs.VFS.internalCall('xhr', {url: url}, callback, options);
     });
   };
 
@@ -181,7 +181,7 @@
       var base = API.getConfig('Connection.FSURI', '/');
       if ( input ) {
         var path = typeof input === 'string' ? input : input.path;
-        return base + '/get' + path;
+        return base + '/get' + encodeURIComponent(path);
       }
       return base + '/upload';
     }

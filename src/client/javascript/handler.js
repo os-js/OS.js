@@ -315,8 +315,6 @@
     }
 
     function _call() {
-      options = options || {};
-
       if ( (API.getConfig('Connection.Type') === 'nw') ) {
         return self._callNW(method, args, options, cbSuccess, cbError);
       }

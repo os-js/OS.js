@@ -164,6 +164,7 @@ class FS
       $dcontent = array_pop($tmp);
       $dtype    = array_pop($tmp);
 
+      // TODO: Better method without string matching
       if ( preg_match("/^data\:image/", $dtype) ) {
         $dcontent = str_replace(' ', '+', $dcontent);
       }

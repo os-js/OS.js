@@ -167,7 +167,7 @@
     try {
       var args = JSON.parse(POST);
       if ( instance.config.logging ) {
-        console.log('===', 'CoreAPI', method, args);
+        console.log('===', 'CoreAPI', method);
       }
 
       instance.request(isVfs, method, args, function(error, result) {
