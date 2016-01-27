@@ -181,7 +181,7 @@
       var base = API.getConfig('Connection.FSURI', '/');
       if ( input ) {
         var path = typeof input === 'string' ? input : input.path;
-        return base + '/get' + encodeURIComponent(path);
+        return base + '/get' + path;
       }
       return base + '/upload';
     }
