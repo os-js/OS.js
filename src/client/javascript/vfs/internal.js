@@ -41,7 +41,7 @@
   var internalTransport = {};
 
   internalTransport.scandir = function(item, callback, options) {
-    OSjs.VFS.internalCall('scandir', [item.path], function(error, result) {
+    OSjs.VFS.internalCall('scandir', {path: item.path}, function(error, result) {
       var list = [];
       if ( result ) {
         result = OSjs.VFS.filterScandir(result, options);
@@ -58,7 +58,7 @@
     options.onprogress = options.onprogress || function() {};
 
     function _write(dataSource) {
-      var wopts = [item.path, dataSource, options];
+      var wopts = {path: item.path, data: dataSource, options: options};
 
       /*
       if ( API.getConfig('Connection.Type') === 'nw' ) {
@@ -97,10 +97,10 @@
     if ( API.getConfig('Connection.Type') === 'nw' ) {
       OSjs.Core.getHandler().nw.request('fs', {
         'method': 'read',
-        'arguments': [
-          item.path,
-          {raw: true}
-        ]
+        'arguments': {
+          path: item.path,
+          options: {raw: true}
+        }
       }, function(err, res) {
         callback(err, res);
       });
@@ -138,27 +138,27 @@
   };
 
   internalTransport.copy = function(src, dest, callback) {
-    OSjs.VFS.internalCall('copy', [src.path, dest.path], callback);
+    OSjs.VFS.internalCall('copy', {src: src.path, dest: dest.path}, callback);
   };
 
   internalTransport.move = function(src, dest, callback) {
-    OSjs.VFS.internalCall('move', [src.path, dest.path], callback);
+    OSjs.VFS.internalCall('move', {src: src.path, dest: dest.path}, callback);
   };
 
   internalTransport.unlink = function(item, callback) {
-    OSjs.VFS.internalCall('delete', [item.path], callback);
+    OSjs.VFS.internalCall('delete', {path: item.path}, callback);
   };
 
   internalTransport.mkdir = function(item, callback) {
-    OSjs.VFS.internalCall('mkdir', [item.path], callback);
+    OSjs.VFS.internalCall('mkdir', {path: item.path}, callback);
   };
 
   internalTransport.exists = function(item, callback) {
-    OSjs.VFS.internalCall('exists', [item.path], callback);
+    OSjs.VFS.internalCall('exists', {path: item.path}, callback);
   };
 
   internalTransport.fileinfo = function(item, callback) {
-    OSjs.VFS.internalCall('fileinfo', [item.path], callback);
+    OSjs.VFS.internalCall('fileinfo', {path: item.path}, callback);
   };
 
   internalTransport.url = function(item, callback) {

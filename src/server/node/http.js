@@ -146,12 +146,12 @@
       respond(e, 'text/plain', response, null, 500);
     }
 
-    instance.vfs.upload([
-      files.upload.path,
-      files.upload.name,
-      fields.path,
-      String(fields.overwrite) === 'true'
-    ], request, function(err, result) {
+    instance.vfs.upload({
+      src: files.upload.path,
+      name: files.upload.name,
+      path: fields.path,
+      overwrite: String(fields.overwrite) === 'true'
+    }, request, function(err, result) {
       if ( err ) {
         respond(err, 'text/plain', response, null, 500);
       } else {
@@ -207,8 +207,6 @@
     var isVfsCall = path.match(/^\/FS/) !== null;
     var relPath   = path.replace(/^\/(FS|API)\/?/, '');
     var getPath   = path.replace(/^\/(FS|API)(\/get)?/, '');
-
-    console.warn("XXX", isVfsCall, relPath, getPath);
 
     function handleApiCall(isVfs) {
       var body = '';
