@@ -291,7 +291,7 @@
    *
    * @see OSjs.API.call()
    *
-   * @see _Handler::_callNW()
+   * @see _Handler::__callNW()
    * @see _Handler::_callAPI()
    * @see _Handler::_callVFS()
    * @method  _Handler::callAPI()
@@ -317,7 +317,7 @@
 
     function _call() {
       if ( (API.getConfig('Connection.Type') === 'nw') ) {
-        return self._callNW(method, args, options, cbSuccess, cbError);
+        return self.__callNW(method, args, options, cbSuccess, cbError);
       }
 
       if ( method.match(/^FS/) ) {
@@ -339,10 +339,10 @@
    * Calls NW "backend"
    *
    * @return boolean
-   * @method _Handler::_callNW()
+   * @method _Handler::__callNW()
    * @see  _Handler::callAPI()
    */
-  _Handler.prototype._callNW = function(method, args, options, cbSuccess, cbError) {
+  _Handler.prototype.__callNW = function(method, args, options, cbSuccess, cbError) {
     try {
       this.nw.request(method, args, function(err, res) {
         cbSuccess({error: err, result: res});
