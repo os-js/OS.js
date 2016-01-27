@@ -387,7 +387,7 @@
 
     Utils.ajax({
       url: args.url,
-      method: 'GET',
+      method: args.method || 'GET',
       responseType: 'arraybuffer',
       onprogress: function(ev) {
         if ( ev.lengthComputable ) {
