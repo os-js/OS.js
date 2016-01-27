@@ -291,6 +291,9 @@
    *
    * @see OSjs.API.call()
    *
+   * @see _Handler::_callNW()
+   * @see _Handler::_callAPI()
+   * @see _Handler::_callGET()
    * @method  _Handler::callAPI()
    */
   _Handler.prototype.callAPI = function(method, args, cbSuccess, cbError, options) {
@@ -317,7 +320,7 @@
       }
 
       if ( method === 'FS:xhr' ) {
-        return self._callXHR(args, cbSuccess, cbError);
+        return self._callGET(args, cbSuccess, cbError);
       }
 
       return self._callAPI(method, args, options, cbSuccess, cbError);
@@ -336,7 +339,11 @@
   };
 
   /**
-   * Calls NW "backend" method
+   * Calls NW "backend"
+   *
+   * @return boolean
+   * @method _Handler::_callNW()
+   * @see  _Handler::callAPI()
    */
   _Handler.prototype._callNW = function(method, args, cbSuccess, cbError) {
     try {
@@ -350,6 +357,13 @@
     return true;
   };
 
+  /**
+   * Calls Normal "backend"
+   *
+   * @return boolean
+   * @method _Handler::_callAPI()
+   * @see  _Handler::callAPI()
+   */
   _Handler.prototype._callAPI = function(method, args, options, cbSuccess, cbError) {
     var self = this;
     var url = API.getConfig('Connection.APIURI') + '/' + method;
@@ -381,7 +395,14 @@
     return true;
   };
 
-  _Handler.prototype._callXHR = function(args, cbSuccess, cbError) {
+  /**
+   * Does a HTTP GET via XHR
+   *
+   * @return boolean
+   * @method _Handler::_callGET()
+   * @see  _Handler::callAPI()
+   */
+  _Handler.prototype._callGET = function(args, cbSuccess, cbError) {
     var self = this;
     var onprogress = args.onprogress || function() {};
 
