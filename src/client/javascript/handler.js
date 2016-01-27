@@ -344,7 +344,7 @@
    */
   _Handler.prototype.__callNW = function(method, args, options, cbSuccess, cbError) {
     try {
-      this.nw.request(method, args, function(err, res) {
+      this.nw.request(method.match(/^FS\:/) !== null, method.replace(/^FS\:/), args, function(err, res) {
         cbSuccess({error: err, result: res});
       });
     } catch ( e ) {
