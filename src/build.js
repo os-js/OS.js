@@ -1160,12 +1160,20 @@
     deleteFile(PATHS.out_standalone);
     copyFile(PATHS.dist, PATHS.out_standalone);
 
+    // Create static schemes file for internals
     var tpl = readFile(_path.join(PATHS.templates, 'dist', 'schemes.js')).toString();
     tpl = tpl.replace('%JSON%', JSON.stringify(tree, null, 4));
     writeFile(PATHS.out_standalone_schemes, tpl);
 
+    // Rewrite config
     createIndex(grunt, 'standalone', 'dist');
     writeNewConfig(arg || 'standalone');
+
+    // Rewrite fonts css
+    var cfg = generateBuildConfig(grunt);
+    var srcPath = _path.join(PATHS.out_standalone, 'themes', 'fonts.css');
+    var srcFonts = readFile(srcPath).toString();
+    writeFile(srcPath, srcFonts.replace(new RegExp(cfg.client.Connection.FontURI, 'g'), 'fonts'));
 
     if ( arg === 'nw' ) {
       // Initials
@@ -1318,8 +1326,12 @@
                  _path.join(PATHS.dist, 'themes', 'fonts', i));
 
         var path = _path.join(PATHS.fonts, i, 'style.css');
-        styles.push(readFile(path).toString());
+        var rout = readFile(path).toString();
+        var rep = cfg.client.Connection.FontURI;
+        rout = rout.replace(/\%FONTURI\%/g, rep);
+        styles.push(rout);
       });
+
       writeFile(PATHS.out_client_fontcss, styles.join('\n'));
     }
 
