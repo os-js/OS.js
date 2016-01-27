@@ -162,7 +162,7 @@ class APIRequest
     $fsPrefix = preg_quote($settings["uri"]["fs"], '/');
     $apiPrefix = preg_quote($settings["uri"]["api"], '/');
 
-    if ( $request->method == "POST" && preg_match("/^$fsPrefix$/", $request->uri) ) {
+    if ( $request->method == "POST" && preg_match("/^$fsPrefix\/upload$/", $request->uri) ) {
       $response = API::FilePOST($request);
     } else if ( $request->method === "POST" && preg_match("/^(($fsPrefix)|($apiPrefix))/", $request->uri) ) {
       $response = API::CoreAPI($request);

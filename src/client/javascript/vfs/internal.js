@@ -183,7 +183,7 @@
         var path = typeof input === 'string' ? input : input.path;
         return base + '/get' + path;
       }
-      return base;
+      return base + '/upload';
     }
   };
 

@@ -315,12 +315,16 @@
     }
 
     function _call() {
+      options = options || {};
+
       if ( (API.getConfig('Connection.Type') === 'nw') ) {
-        return self._callNW(method, args, cbSuccess, cbError);
+        return self._callNW(method, args, options, cbSuccess, cbError);
       }
 
       if ( method === 'FS:xhr' ) {
-        return self._callGET(args, cbSuccess, cbError);
+        return self._callGET(args, options, cbSuccess, cbError);
+      } else if ( method === 'FS:upload' ) {
+        return self._callPOST(args, options, cbSuccess, cbError);
       }
 
       return self._callAPI(method, args, options, cbSuccess, cbError);
@@ -329,13 +333,10 @@
     console.group('Handler::callAPI()');
     console.log('Method', method);
     console.log('Arguments', args);
+    console.log('Options', options);
     console.groupEnd();
 
-    if ( checkState() ) {
-      return _call();
-    }
-
-    return false;
+    return checkState() ? _call() : false;
   };
 
   /**
@@ -345,7 +346,7 @@
    * @method _Handler::_callNW()
    * @see  _Handler::callAPI()
    */
-  _Handler.prototype._callNW = function(method, args, cbSuccess, cbError) {
+  _Handler.prototype._callNW = function(method, args, options, cbSuccess, cbError) {
     try {
       this.nw.request(method, args, function(err, res) {
         cbSuccess({error: err, result: res});
@@ -396,13 +397,44 @@
   };
 
   /**
-   * Does a HTTP GET via XHR
+   * Does a HTTP POST via XHR (For file uploading)
+   *
+   * @return boolean
+   * @method _Handler::_callPOST()
+   * @see  _Handler::callAPI()
+   */
+  _Handler.prototype._callPOST = function(form, options, cbSuccess, cbError) {
+    var onprogress = options.onprogress || function() {};
+
+    OSjs.Utils.ajax({
+      url: OSjs.VFS.Transports.Internal.path(),
+      method: 'POST',
+      body: form,
+      onsuccess: function(result) {
+        cbSuccess(false, result);
+      },
+      onerror: function(result) {
+        cbError('error', null, result);
+      },
+      onprogress: function(evt) {
+        onprogress(evt);
+      },
+      oncanceled: function(evt) {
+        cbError('canceled', null, evt);
+      }
+    });
+
+    return true;
+  };
+
+  /**
+   * Does a HTTP GET via XHR (For file downloading);
    *
    * @return boolean
    * @method _Handler::_callGET()
    * @see  _Handler::callAPI()
    */
-  _Handler.prototype._callGET = function(args, cbSuccess, cbError) {
+  _Handler.prototype._callGET = function(args, options, cbSuccess, cbError) {
     var self = this;
     var onprogress = args.onprogress || function() {};
 

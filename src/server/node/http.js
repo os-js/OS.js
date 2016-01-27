@@ -241,10 +241,10 @@
 
     if ( request.method === 'POST' ) {
       if ( isVfsCall ) {
-        if ( relPath ) {
-          handleApiCall(true);
-        } else {
+        if ( relPath === 'upload') {
           handleUpload();
+        } else {
+          handleApiCall(true);
         }
       } else {
         handleApiCall(false);
