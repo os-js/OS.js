@@ -313,42 +313,14 @@
 
     function _call() {
       if ( (API.getConfig('Connection.Type') === 'nw') ) {
-        try {
-          self.nw.request(method, args, function(err, res) {
-            cbSuccess({error: err, result: res});
-          });
-        } catch ( e ) {
-          console.warn('callAPI() NW.js Warning', e.stack, e);
-          cbError(e);
-        }
-        return true;
+        return self._callNW(method, args, cbSuccess, cbError);
       }
 
-      var url = API.getConfig('Connection.APIURI') + '/' + method;
-      if ( method.match(/^FS\:/) ) {
-        url = API.getConfig('Connection.FSURI') + '/' + method.replace(/^FS\:/, '');
+      if ( method === 'FS:xhr' ) {
+        return self._callXHR(args, cbSuccess, cbError);
       }
 
-      var data = {
-        url: url,
-        method: 'POST',
-        json: true,
-        body: args,
-        onsuccess: function(/*response, request, url*/) {
-          cbSuccess.apply(self, arguments);
-        },
-        onerror: function(/*error, response, request, url*/) {
-          cbError.apply(self, arguments);
-        }
-      };
-
-      if ( options ) {
-        Object.keys(options).forEach(function(key) {
-          data[key] = options[key];
-        });
-      }
-
-      return Utils.ajax(data);
+      return self._callAPI(method, args, options, cbSuccess, cbError);
     }
 
     console.group('Handler::callAPI()');
@@ -366,7 +338,77 @@
   /**
    * Calls NW "backend" method
    */
-  _Handler.prototype.callNW = function() {
+  _Handler.prototype._callNW = function(method, args, cbSuccess, cbError) {
+    try {
+      this.nw.request(method, args, function(err, res) {
+        cbSuccess({error: err, result: res});
+      });
+    } catch ( e ) {
+      console.warn('callAPI() NW.js Warning', e.stack, e);
+      cbError(e);
+    }
+    return true;
+  };
+
+  _Handler.prototype._callAPI = function(method, args, options, cbSuccess, cbError) {
+    var self = this;
+    var url = API.getConfig('Connection.APIURI') + '/' + method;
+    if ( method.match(/^FS\:/) ) {
+      url = API.getConfig('Connection.FSURI') + '/' + method.replace(/^FS\:/, '');
+    }
+
+    var data = {
+      url: url,
+      method: 'POST',
+      json: true,
+      body: args,
+      onsuccess: function(/*response, request, url*/) {
+        cbSuccess.apply(self, arguments);
+      },
+      onerror: function(/*error, response, request, url*/) {
+        cbError.apply(self, arguments);
+      }
+    };
+
+    if ( options ) {
+      Object.keys(options).forEach(function(key) {
+        data[key] = options[key];
+      });
+    }
+
+    Utils.ajax(data);
+
+    return true;
+  };
+
+  _Handler.prototype._callXHR = function(args, cbSuccess, cbError) {
+    var self = this;
+    var onprogress = args.onprogress || function() {};
+
+    Utils.ajax({
+      url: args.url,
+      method: 'GET',
+      responseType: 'arraybuffer',
+      onprogress: function(ev) {
+        if ( ev.lengthComputable ) {
+          onprogress(ev, ev.loaded / ev.total);
+        } else {
+          onprogress(ev, -1);
+        }
+      },
+      onsuccess: function(response, xhr) {
+        if ( !xhr || xhr.status === 404 || xhr.status === 500 ) {
+          cbSuccess({error: xhr.statusText || response, result: null});
+          return;
+        }
+        cbSuccess({error: false, result: response});
+      },
+      onerror: function(error) {
+        cbError.apply(self, arguments);
+      }
+    });
+
+    return true;
   };
 
   //

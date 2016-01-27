@@ -62,10 +62,7 @@
 
       /*
       if ( API.getConfig('Connection.Type') === 'nw' ) {
-        OSjs.Core.getHandler().nw.request('fs', {
-          'method': 'write',
-          'arguments': wopts
-        }, function(err, res) {
+        OSjs.Core.getHandler().nw.request(true, 'write', wopt, function(err, res) {
           callback(err, res);
         });
         return;
@@ -91,16 +88,11 @@
   };
 
   internalTransport.read = function(item, callback, options) {
-    options = options || {};
-    options.onprogress = options.onprogress || function() {};
 
     if ( API.getConfig('Connection.Type') === 'nw' ) {
-      OSjs.Core.getHandler().nw.request('fs', {
-        'method': 'read',
-        'arguments': {
-          path: item.path,
-          options: {raw: true}
-        }
+      OSjs.Core.getHandler().nw.request(true, 'read', {
+        path: item.path,
+        options: {raw: true}
       }, function(err, res) {
         callback(err, res);
       });
@@ -109,31 +101,10 @@
 
     this.url(item, function(error, url) {
       if ( error ) {
-        return callback(error);
+        callback(error);
+        return;
       }
-
-      Utils.ajax({
-        url: url,
-        method: 'GET',
-        responseType: 'arraybuffer',
-        onprogress: function(ev) {
-          if ( ev.lengthComputable ) {
-            options.onprogress(ev, ev.loaded / ev.total);
-          } else {
-            options.onprogress(ev, -1);
-          }
-        },
-        onsuccess: function(response, xhr) {
-          if ( !xhr || xhr.status === 404 || xhr.status === 500 ) {
-            callback(xhr.statusText || response);
-            return;
-          }
-          callback(false, response);
-        },
-        onerror: function(error) {
-          callback(error);
-        }
-      });
+      OSjs.VFS.internalCall('xhr', {url: url, onprogress: options.onprogress}, callback);
     });
   };
 
