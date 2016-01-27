@@ -91,7 +91,7 @@
       var opts = {url: url, method: method};
       if ( raw ) {
         opts.binary = true;
-        opts.mime = file.mime
+        opts.mime = file.mime;
       }
 
       if ( method === 'PUT' && typeof args.data !== 'undefined' ) {
