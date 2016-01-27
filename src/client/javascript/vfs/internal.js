@@ -173,7 +173,9 @@
   /**
    * This is the WebDAV VFS Module wrapper
    *
-   * @api OSjs.VFS.Transports.WebDAV
+   * Used for osjs:// home:// and any other internal modules
+   *
+   * @api OSjs.VFS.Transports.Internal
    */
   OSjs.VFS.Transports.Internal = {
     request: makeRequest,
