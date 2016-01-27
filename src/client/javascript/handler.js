@@ -318,13 +318,9 @@
       if ( (API.getConfig('Connection.Type') === 'nw') ) {
         return self._callNW(method, args, options, cbSuccess, cbError);
       }
-
-      if ( method === 'FS:xhr' ) {
-        return self._callGET(args, options, cbSuccess, cbError);
-      } else if ( method === 'FS:upload' ) {
-        return self._callPOST(args, options, cbSuccess, cbError);
+      if ( method.match(/^FS/) ) {
+        return self._callVFS(method, args, options, cbSuccess, cbError);
       }
-
       return self._callAPI(method, args, options, cbSuccess, cbError);
     }
 
@@ -357,19 +353,14 @@
   };
 
   /**
-   * Calls Normal "backend"
+   * Calls Normal "Backend"
    *
-   * @return boolean
    * @method _Handler::_callAPI()
-   * @see  _Handler::callAPI()
+   * @method _Handler::_callVFS()
+   * @see  _Handler::_callXHR()
    */
-  _Handler.prototype._callAPI = function(method, args, options, cbSuccess, cbError) {
+  _Handler.prototype._callXHR = function(url, args, options, cbSuccess, cbError) {
     var self = this;
-    var url = API.getConfig('Connection.APIURI') + '/' + method;
-    if ( method.match(/^FS\:/) ) {
-      url = API.getConfig('Connection.FSURI') + '/' + method.replace(/^FS\:/, '');
-    }
-
     var data = {
       url: url,
       method: 'POST',
@@ -392,6 +383,36 @@
     Utils.ajax(data);
 
     return true;
+  };
+
+  /**
+   * Wrapper for server API XHR calls
+   *
+   * @return boolean
+   * @method _Handler::_callAPI()
+   * @see  _Handler::callAPI()
+   */
+  _Handler.prototype._callAPI = function(method, args, options, cbSuccess, cbError) {
+    var url = API.getConfig('Connection.APIURI') + '/' + method;
+    return this._callXHR(url, args, options, cbSuccess, cbError);
+  };
+
+  /**
+   * Wrapper for server VFS XHR calls
+   *
+   * @return boolean
+   * @method _Handler::_callVFS()
+   * @see  _Handler::callAPI()
+   */
+  _Handler.prototype._callVFS = function(method, args, options, cbSuccess, cbError) {
+    if ( method === 'FS:xhr' ) {
+      return this._callGET(args, options, cbSuccess, cbError);
+    } else if ( method === 'FS:upload' ) {
+      return this._callPOST(args, options, cbSuccess, cbError);
+    }
+
+    var url = API.getConfig('Connection.FSURI') + '/' + method.replace(/^FS\:/, '');
+    return this._callXHR(url, args, options, cbSuccess, cbError);
   };
 
   /**
