@@ -178,9 +178,12 @@
   OSjs.VFS.Transports.Internal = {
     request: makeRequest,
     path: function(input) {
-      var path = typeof input === 'string' ? input : input.path;
-      var base  = API.getConfig('Connection.FSURI', '/') + '/get';
-      return path ? (base + path) : path;
+      var base = API.getConfig('Connection.FSURI', '/');
+      if ( input ) {
+        var path = typeof input === 'string' ? input : input.path;
+        return base + '/get' + path;
+      }
+      return base;
     }
   };
 
