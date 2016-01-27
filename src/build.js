@@ -248,7 +248,7 @@
    * Fixes Windows paths (for JSON)
    */
   function fixWinPath(str) {
-    if ( ISWIN ) {
+    if ( typeof str === 'string' && ISWIN ) {
       return str.replace(/(["\s'$`\\])/g,'\\$1').replace(/\\+/g, '/');
     }
     return str;
