@@ -357,11 +357,11 @@
   /**
    * Calls Normal "Backend"
    *
-   * @method _Handler::_callAPI()
-   * @method _Handler::_callVFS()
-   * @see  _Handler::_callXHR()
+   * @see _Handler::_callAPI()
+   * @see _Handler::_callVFS()
+   * @method  _Handler::__callXHR()
    */
-  _Handler.prototype._callXHR = function(url, args, options, cbSuccess, cbError) {
+  _Handler.prototype.__callXHR = function(url, args, options, cbSuccess, cbError) {
     var self = this;
     var data = {
       url: url,
@@ -393,10 +393,11 @@
    * @return boolean
    * @method _Handler::_callAPI()
    * @see  _Handler::callAPI()
+   * @see  _Handler::__callXHR()
    */
   _Handler.prototype._callAPI = function(method, args, options, cbSuccess, cbError) {
     var url = API.getConfig('Connection.APIURI') + '/' + method;
-    return this._callXHR(url, args, options, cbSuccess, cbError);
+    return this.__callXHR(url, args, options, cbSuccess, cbError);
   };
 
   /**
@@ -407,6 +408,7 @@
    * @see  _Handler::callAPI()
    * @see _Handler::__callGET()
    * @see _Handler::__callPOST()
+   * @see  _Handler::__callXHR()
    */
   _Handler.prototype._callVFS = function(method, args, options, cbSuccess, cbError) {
     if ( method === 'FS:xhr' ) {
@@ -416,7 +418,7 @@
     }
 
     var url = API.getConfig('Connection.FSURI') + '/' + method.replace(/^FS\:/, '');
-    return this._callXHR(url, args, options, cbSuccess, cbError);
+    return this.__callXHR(url, args, options, cbSuccess, cbError);
   };
 
   /**
