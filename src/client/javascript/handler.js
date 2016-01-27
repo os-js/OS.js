@@ -293,11 +293,12 @@
    *
    * @see _Handler::_callNW()
    * @see _Handler::_callAPI()
-   * @see _Handler::_callGET()
+   * @see _Handler::_callVFS()
    * @method  _Handler::callAPI()
    */
   _Handler.prototype.callAPI = function(method, args, cbSuccess, cbError, options) {
     args      = args      || {};
+    options   = options   || {};
     cbSuccess = cbSuccess || function() {};
     cbError   = cbError   || function() {};
 
@@ -318,6 +319,7 @@
       if ( (API.getConfig('Connection.Type') === 'nw') ) {
         return self._callNW(method, args, options, cbSuccess, cbError);
       }
+
       if ( method.match(/^FS/) ) {
         return self._callVFS(method, args, options, cbSuccess, cbError);
       }
@@ -403,12 +405,14 @@
    * @return boolean
    * @method _Handler::_callVFS()
    * @see  _Handler::callAPI()
+   * @see _Handler::__callGET()
+   * @see _Handler::__callPOST()
    */
   _Handler.prototype._callVFS = function(method, args, options, cbSuccess, cbError) {
     if ( method === 'FS:xhr' ) {
-      return this._callGET(args, options, cbSuccess, cbError);
+      return this.__callGET(args, options, cbSuccess, cbError);
     } else if ( method === 'FS:upload' ) {
-      return this._callPOST(args, options, cbSuccess, cbError);
+      return this.__callPOST(args, options, cbSuccess, cbError);
     }
 
     var url = API.getConfig('Connection.FSURI') + '/' + method.replace(/^FS\:/, '');
@@ -419,10 +423,10 @@
    * Does a HTTP POST via XHR (For file uploading)
    *
    * @return boolean
-   * @method _Handler::_callPOST()
+   * @method _Handler::__callPOST()
    * @see  _Handler::callAPI()
    */
-  _Handler.prototype._callPOST = function(form, options, cbSuccess, cbError) {
+  _Handler.prototype.__callPOST = function(form, options, cbSuccess, cbError) {
     var onprogress = options.onprogress || function() {};
 
     OSjs.Utils.ajax({
@@ -450,10 +454,10 @@
    * Does a HTTP GET via XHR (For file downloading);
    *
    * @return boolean
-   * @method _Handler::_callGET()
+   * @method _Handler::__callGET()
    * @see  _Handler::callAPI()
    */
-  _Handler.prototype._callGET = function(args, options, cbSuccess, cbError) {
+  _Handler.prototype.__callGET = function(args, options, cbSuccess, cbError) {
     var self = this;
     var onprogress = args.onprogress || function() {};
 
