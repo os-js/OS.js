@@ -83,37 +83,19 @@
       return doc.firstChild;
     }
 
-    var url = getURL(args[0]);
-    var file = args[0];
+    var url = getURL(args.path);
+    var file = new OSjs.VFS.File(args.path, args.mime || 'application/octet-stream');
     url += resolvePath(file).replace(/^\//, '');
-
-    function internalCall() {
-      Utils.ajax({
-        url: url,
-        method: method,
-        contentType: 'arraybuffer',
-        onsuccess: function(result) {
-          if ( !result ) {
-            callback(API._('ERR_VFS_REMOTEREAD_EMPTY'));
-            return;
-          }
-          callback(false, result);
-        },
-        onerror: function(err) {
-          callback(err);
-        }
-      });
-    }
 
     function externalCall() {
       var opts = {url: url, method: method};
-      if ( arguments.length > 3 ) {
+      if ( raw ) {
         opts.binary = true;
-        opts.mime = args[0].mime || 'application/octet-stream';
+        opts.mime = file.mime;
       }
 
-      if ( method === 'PUT' && typeof args[1] !== 'undefined' ) {
-        opts.query = args[1];
+      if ( method === 'PUT' && typeof args.data !== 'undefined' ) {
+        opts.query = args.data;
       }
 
       API.call('curl', opts, function(response) {
@@ -133,7 +115,7 @@
         }
 
         if ( opts.binary ) {
-          OSjs.VFS.dataSourceToAb(response.result.body, opts.mime, callback);
+          OSjs.VFS.dataSourceToAb(response.result.body, file.mime, callback);
         } else {
           var doc = parseDocument(response.result.body);
           callback(false, doc);
@@ -144,7 +126,7 @@
     }
 
     if ( getCORSAllowed(file) ) {
-      internalCall();
+      OSjs.VFS.internalCall('xhr', {url: url, method: method}, callback);
     } else {
       externalCall();
     }
@@ -222,7 +204,7 @@
       return OSjs.VFS.filterScandir(list, options);
     }
 
-    davCall('PROPFIND', [item], function(error, doc) {
+    davCall('PROPFIND', {path: item.path}, function(error, doc) {
       var list = [];
       if ( !error && doc ) {
         var result = parse(doc);
@@ -235,11 +217,11 @@
   };
 
   davTransport.write = function(item, data, callback, options) {
-    davCall('PUT', [item, data], callback);
+    davCall('PUT', {path: item.path, mime: item.mime, data: data}, callback);
   };
 
   davTransport.read = function(item, callback, options) {
-    davCall('GET', [item], callback, true);
+    davCall('GET', {path: item.path, mime: item.mime}, callback, true);
   };
 
   davTransport.copy = function(src, dest, callback) {
@@ -267,19 +249,7 @@
   };
 
   davTransport.url = function(item, callback, options) {
-    if ( typeof item === 'string' ) {
-      item = new OSjs.VFS.File(item);
-    }
-
-    var fsuri    = getURL(item);
-    var reqpath  = resolvePath(item).replace(/^\//, '');
-    var fullpath = fsuri + reqpath;
-
-    if ( !getCORSAllowed(item) ) {
-      fullpath = API.getConfig('Connection.FSURI') + fullpath;
-    }
-
-    callback(false, fullpath);
+    callback(false, OSjs.VFS.Transports.WebDAV.path(item));
   };
 
   davTransport.trash = function(item, callback) {
@@ -322,7 +292,21 @@
    * @api OSjs.VFS.Transports.WebDAV
    */
   OSjs.VFS.Transports.WebDAV = {
-    request: makeRequest
+    request: makeRequest,
+    path: function(item) {
+      if ( typeof item === 'string' ) {
+        item = new OSjs.VFS.File(item);
+      }
+      var url      = getURL(item);
+      var reqpath  = resolvePath(item).replace(/^\//, '');
+      var fullpath = url + reqpath;
+
+      if ( !getCORSAllowed(item) ) {
+        fullpath = API.getConfig('Connection.FSURI') + '/get' + fullpath;
+      }
+
+      return fullpath;
+    }
   };
 
 })(OSjs.Utils, OSjs.API);

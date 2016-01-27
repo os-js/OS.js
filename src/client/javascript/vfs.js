@@ -297,7 +297,7 @@
    * Perform default VFS call via backend
    */
   function internalCall(name, args, callback) {
-    API.call('fs', {'method': name, 'arguments': args}, function(res) {
+    API.call('FS:' + name, args, function(res) {
       if ( !res || (typeof res.result === 'undefined') || res.error ) {
         callback((res ? res.error : null) || API._('ERR_VFS_FATAL'));
       } else {
@@ -333,11 +333,12 @@
 
   /**
    * Wrapper for internal file uploads
+   *
+   * @see _Handler.callPOST()
+   * @api OSjs.VFS.internalUpload()
    */
   function internalUpload(file, dest, callback, options) {
     options = options || {};
-
-    var fsuri  = API.getConfig('Connection.FSURI', '/');
 
     if ( typeof file.size !== 'undefined' ) {
       var maxSize = API.getConfig('VFS.MaxUploadSize');
@@ -355,31 +356,20 @@
     fd.append('upload', 1);
     fd.append('path', dest);
 
-    Object.keys(options).forEach(function(key) {
-      fd.append(key, String(options[key]));
-    });
+    if ( options ) {
+      Object.keys(options).forEach(function(key) {
+        fd.append(key, String(options[key]));
+      });
+    }
 
     addFormFile(fd, 'upload', file);
 
-    OSjs.Utils.ajax({
-      url: fsuri,
-      method: 'POST',
-      body: fd,
-      onsuccess: function(result) {
-        callback('success', result);
-      },
-      onerror: function(result) {
-        callback('error', result);
-      },
-      onprogress: function(evt) {
-        callback('progress', evt);
-      },
-      oncanceled: function(evt) {
-        callback('canceled', evt);
-      }
-    });
+    OSjs.Core.getHandler().callAPI('FS:upload', fd, callback, options);
   }
 
+  /**
+   * Creates a regexp matcher for a VFS module (from string)
+   */
   function createMatch(name) {
     return new RegExp('^' + name.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&'));
   }

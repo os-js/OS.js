@@ -291,10 +291,14 @@
    *
    * @see OSjs.API.call()
    *
+   * @see _Handler::__callNW()
+   * @see _Handler::_callAPI()
+   * @see _Handler::_callVFS()
    * @method  _Handler::callAPI()
    */
   _Handler.prototype.callAPI = function(method, args, cbSuccess, cbError, options) {
     args      = args      || {};
+    options   = options   || {};
     cbSuccess = cbSuccess || function() {};
     cbError   = cbError   || function() {};
 
@@ -313,58 +317,176 @@
 
     function _call() {
       if ( (API.getConfig('Connection.Type') === 'nw') ) {
-        try {
-          self.nw.request(method, args, function(err, res) {
-            cbSuccess({error: err, result: res});
-          });
-        } catch ( e ) {
-          console.warn('callAPI() NW.js Warning', e.stack, e);
-          cbError(e);
-        }
-        return true;
+        return self.__callNW(method, args, options, cbSuccess, cbError);
       }
 
-      var data = {
-        url: API.getConfig('Connection.APIURI'),
-        method: 'POST',
-        json: true,
-        body: {
-          'method'    : method,
-          'arguments' : args
-        },
-        onsuccess: function(/*response, request, url*/) {
-          cbSuccess.apply(self, arguments);
-        },
-        onerror: function(/*error, response, request, url*/) {
-          cbError.apply(self, arguments);
-        }
-      };
-
-      if ( options ) {
-        Object.keys(options).forEach(function(key) {
-          data[key] = options[key];
-        });
+      if ( method.match(/^FS/) ) {
+        return self._callVFS(method, args, options, cbSuccess, cbError);
       }
-
-      return Utils.ajax(data);
+      return self._callAPI(method, args, options, cbSuccess, cbError);
     }
 
     console.group('Handler::callAPI()');
     console.log('Method', method);
     console.log('Arguments', args);
+    console.log('Options', options);
     console.groupEnd();
 
-    if ( checkState() ) {
-      return _call();
-    }
-
-    return false;
+    return checkState() ? _call() : false;
   };
 
   /**
-   * Calls NW "backend" method
+   * Calls NW "backend"
+   *
+   * @return boolean
+   * @method _Handler::__callNW()
+   * @see  _Handler::callAPI()
    */
-  _Handler.prototype.callNW = function() {
+  _Handler.prototype.__callNW = function(method, args, options, cbSuccess, cbError) {
+    try {
+      this.nw.request(method, args, function(err, res) {
+        cbSuccess({error: err, result: res});
+      });
+    } catch ( e ) {
+      console.warn('callAPI() NW.js Warning', e.stack, e);
+      cbError(e);
+    }
+    return true;
+  };
+
+  /**
+   * Calls Normal "Backend"
+   *
+   * @see _Handler::_callAPI()
+   * @see _Handler::_callVFS()
+   * @method  _Handler::__callXHR()
+   */
+  _Handler.prototype.__callXHR = function(url, args, options, cbSuccess, cbError) {
+    var self = this;
+    var data = {
+      url: url,
+      method: 'POST',
+      json: true,
+      body: args,
+      onsuccess: function(/*response, request, url*/) {
+        cbSuccess.apply(self, arguments);
+      },
+      onerror: function(/*error, response, request, url*/) {
+        cbError.apply(self, arguments);
+      }
+    };
+
+    if ( options ) {
+      Object.keys(options).forEach(function(key) {
+        data[key] = options[key];
+      });
+    }
+
+    Utils.ajax(data);
+
+    return true;
+  };
+
+  /**
+   * Wrapper for server API XHR calls
+   *
+   * @return boolean
+   * @method _Handler::_callAPI()
+   * @see  _Handler::callAPI()
+   * @see  _Handler::__callXHR()
+   */
+  _Handler.prototype._callAPI = function(method, args, options, cbSuccess, cbError) {
+    var url = API.getConfig('Connection.APIURI') + '/' + method;
+    return this.__callXHR(url, args, options, cbSuccess, cbError);
+  };
+
+  /**
+   * Wrapper for server VFS XHR calls
+   *
+   * @return boolean
+   * @method _Handler::_callVFS()
+   * @see  _Handler::callAPI()
+   * @see _Handler::__callGET()
+   * @see _Handler::__callPOST()
+   * @see  _Handler::__callXHR()
+   */
+  _Handler.prototype._callVFS = function(method, args, options, cbSuccess, cbError) {
+    if ( method === 'FS:xhr' ) {
+      return this.__callGET(args, options, cbSuccess, cbError);
+    } else if ( method === 'FS:upload' ) {
+      return this.__callPOST(args, options, cbSuccess, cbError);
+    }
+
+    var url = API.getConfig('Connection.FSURI') + '/' + method.replace(/^FS\:/, '');
+    return this.__callXHR(url, args, options, cbSuccess, cbError);
+  };
+
+  /**
+   * Does a HTTP POST via XHR (For file uploading)
+   *
+   * @return boolean
+   * @method _Handler::__callPOST()
+   * @see  _Handler::callAPI()
+   */
+  _Handler.prototype.__callPOST = function(form, options, cbSuccess, cbError) {
+    var onprogress = options.onprogress || function() {};
+
+    OSjs.Utils.ajax({
+      url: OSjs.VFS.Transports.Internal.path(),
+      method: 'POST',
+      body: form,
+      onsuccess: function(result) {
+        cbSuccess(false, result);
+      },
+      onerror: function(result) {
+        cbError('error', null, result);
+      },
+      onprogress: function(evt) {
+        onprogress(evt);
+      },
+      oncanceled: function(evt) {
+        cbError('canceled', null, evt);
+      }
+    });
+
+    return true;
+  };
+
+  /**
+   * Does a HTTP GET via XHR (For file downloading);
+   *
+   * @return boolean
+   * @method _Handler::__callGET()
+   * @see  _Handler::callAPI()
+   */
+  _Handler.prototype.__callGET = function(args, options, cbSuccess, cbError) {
+    var self = this;
+    var onprogress = args.onprogress || function() {};
+
+    Utils.ajax({
+      url: args.url,
+      method: args.method || 'GET',
+      responseType: 'arraybuffer',
+      onprogress: function(ev) {
+        if ( ev.lengthComputable ) {
+          onprogress(ev, ev.loaded / ev.total);
+        } else {
+          onprogress(ev, -1);
+        }
+      },
+      onsuccess: function(response, xhr) {
+        if ( !xhr || xhr.status === 404 || xhr.status === 500 ) {
+          cbSuccess({error: xhr.statusText || response, result: null});
+          return;
+        }
+        cbSuccess({error: false, result: response});
+      },
+      onerror: function(error) {
+        cbError.apply(self, arguments);
+      }
+    });
+
+    return true;
   };
 
   //

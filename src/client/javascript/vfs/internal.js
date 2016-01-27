@@ -41,7 +41,7 @@
   var internalTransport = {};
 
   internalTransport.scandir = function(item, callback, options) {
-    OSjs.VFS.internalCall('scandir', [item.path], function(error, result) {
+    OSjs.VFS.internalCall('scandir', {path: item.path}, function(error, result) {
       var list = [];
       if ( result ) {
         result = OSjs.VFS.filterScandir(result, options);
@@ -58,21 +58,18 @@
     options.onprogress = options.onprogress || function() {};
 
     function _write(dataSource) {
-      var wopts = [item.path, dataSource, options];
+      var wopts = {path: item.path, data: dataSource};
 
       /*
       if ( API.getConfig('Connection.Type') === 'nw' ) {
-        OSjs.Core.getHandler().nw.request('fs', {
-          'method': 'write',
-          'arguments': wopts
-        }, function(err, res) {
+        OSjs.Core.getHandler().nw.request(true, 'write', wopt, function(err, res) {
           callback(err, res);
         });
         return;
       }
       */
 
-      OSjs.VFS.internalCall('write', wopts, callback);
+      OSjs.VFS.internalCall('write', wopts, callback, options);
     }
 
     if ( typeof data === 'string' && !data.length ) {
@@ -91,16 +88,11 @@
   };
 
   internalTransport.read = function(item, callback, options) {
-    options = options || {};
-    options.onprogress = options.onprogress || function() {};
 
     if ( API.getConfig('Connection.Type') === 'nw' ) {
-      OSjs.Core.getHandler().nw.request('fs', {
-        'method': 'read',
-        'arguments': [
-          item.path,
-          {raw: true}
-        ]
+      OSjs.Core.getHandler().nw.request(true, 'read', {
+        path: item.path,
+        options: {raw: true}
       }, function(err, res) {
         callback(err, res);
       });
@@ -109,62 +101,39 @@
 
     this.url(item, function(error, url) {
       if ( error ) {
-        return callback(error);
+        callback(error);
+        return;
       }
-
-      Utils.ajax({
-        url: url,
-        method: 'GET',
-        responseType: 'arraybuffer',
-        onprogress: function(ev) {
-          if ( ev.lengthComputable ) {
-            options.onprogress(ev, ev.loaded / ev.total);
-          } else {
-            options.onprogress(ev, -1);
-          }
-        },
-        onsuccess: function(response, xhr) {
-          if ( !xhr || xhr.status === 404 || xhr.status === 500 ) {
-            callback(xhr.statusText || response);
-            return;
-          }
-          callback(false, response);
-        },
-        onerror: function(error) {
-          callback(error);
-        }
-      });
+      OSjs.VFS.internalCall('xhr', {url: url}, callback, options);
     });
   };
 
   internalTransport.copy = function(src, dest, callback) {
-    OSjs.VFS.internalCall('copy', [src.path, dest.path], callback);
+    OSjs.VFS.internalCall('copy', {src: src.path, dest: dest.path}, callback);
   };
 
   internalTransport.move = function(src, dest, callback) {
-    OSjs.VFS.internalCall('move', [src.path, dest.path], callback);
+    OSjs.VFS.internalCall('move', {src: src.path, dest: dest.path}, callback);
   };
 
   internalTransport.unlink = function(item, callback) {
-    OSjs.VFS.internalCall('delete', [item.path], callback);
+    OSjs.VFS.internalCall('delete', {path: item.path}, callback);
   };
 
   internalTransport.mkdir = function(item, callback) {
-    OSjs.VFS.internalCall('mkdir', [item.path], callback);
+    OSjs.VFS.internalCall('mkdir', {path: item.path}, callback);
   };
 
   internalTransport.exists = function(item, callback) {
-    OSjs.VFS.internalCall('exists', [item.path], callback);
+    OSjs.VFS.internalCall('exists', {path: item.path}, callback);
   };
 
   internalTransport.fileinfo = function(item, callback) {
-    OSjs.VFS.internalCall('fileinfo', [item.path], callback);
+    OSjs.VFS.internalCall('fileinfo', {path: item.path}, callback);
   };
 
   internalTransport.url = function(item, callback) {
-    var path    = typeof item === 'string' ? item : item.path;
-    var fsuri   = API.getConfig('Connection.FSURI');
-    callback(false, path ? (fsuri + path) : fsuri);
+    callback(false, OSjs.VFS.Transports.Internal.path(item));
   };
 
   internalTransport.trash = function(item, callback) {
@@ -207,7 +176,15 @@
    * @api OSjs.VFS.Transports.WebDAV
    */
   OSjs.VFS.Transports.Internal = {
-    request: makeRequest
+    request: makeRequest,
+    path: function(input) {
+      var base = API.getConfig('Connection.FSURI', '/');
+      if ( input ) {
+        var path = typeof input === 'string' ? input : input.path;
+        return base + '/get' + encodeURIComponent(path);
+      }
+      return base + '/upload';
+    }
   };
 
 })(OSjs.Utils, OSjs.API);

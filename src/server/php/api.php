@@ -157,12 +157,16 @@ class APIRequest
    */
   public static function call() {
     $request = new APIRequest();
+    $settings = Settings::get();
 
-    if ( preg_match('/API$/', $request->uri) ) {
-      $response = API::CoreAPI($request);
-    } else if ( preg_match('/FS$/', $request->uri) ) {
+    $fsPrefix = preg_quote($settings["uri"]["fs"], '/');
+    $apiPrefix = preg_quote($settings["uri"]["api"], '/');
+
+    if ( $request->method == "POST" && preg_match("/^$fsPrefix\/upload$/", $request->uri) ) {
       $response = API::FilePOST($request);
-    } else if ( preg_match('/\/(([^\/]+\/)+)?(FS)(.*)/', $request->uri) ) {
+    } else if ( $request->method === "POST" && preg_match("/^(($fsPrefix)|($apiPrefix))/", $request->uri) ) {
+      $response = API::CoreAPI($request);
+    } else if ( preg_match("/^$fsPrefix(.*)/", $request->uri) ) {
       $response = API::FileGET($request);
     } else {
       $response = null;
@@ -326,7 +330,8 @@ class API
     $code     = 0;
     $settings = Settings::get();
 
-    $url = preg_replace('/\/(([^\/]+\/)+)?(FS)/', "", urldecode($req->data));
+    $fsPrefix = preg_quote($settings["uri"]["fs"], '/');
+    $url = preg_replace("/^$fsPrefix(\/get)?/", "", urldecode($req->data));
 
     call_user_func_array(Array(API::$Handler, 'checkPrivilege'), Array(APIUser::GROUP_VFS));
 
@@ -391,26 +396,45 @@ class API
    * Core API Requests
    */
   public static function CoreAPI(APIRequest $req) {
-    $data = json_decode($req->data, true);
+    $arguments = json_decode($req->data, true);
+    $isVfsCall = preg_match("/^\/(([^\/]+\/)+)?FS/", $req->uri);
+    $method = preg_replace("/^\/(([^\/]+\/)+)?(FS|API)\/?/", "", $req->uri);
     $error = false;
     $result = false;
 
-    if ( empty($data) ) {
-      $error = "No call given";
+    if ( !$method ) {
+      $error = "No call data given";
     } else {
-      if ( empty($data['method']) ) {
-        $error = "No call data given";
-      } else {
-        $method = $data['method'];
-        $arguments = empty($data['arguments']) ? Array() : $data['arguments'];
+      if ( $isVfsCall ) {
+        $method = preg_replace("/^\/(([^\/]+\/)+)?FS\:/", "", $method);
 
         try {
+          call_user_func_array(Array(API::$Handler, 'checkPrivilege'), Array(APIUser::GROUP_VFS));
+        } catch ( Exception $e ) {
+          $error = $e->getMessage();
+        }
 
+        if ( !$error ) {
+          if ( !method_exists('FS', $method) ) {
+            $error = "Invalid FS operation: {$method}";
+          } else {
+            if ( !$arguments ) {
+              $error = "Supply argument for FS operation: {$method}";
+            } else {
+              try {
+                $result = call_user_func_array(Array("FS", $method), $arguments);
+              } catch ( Exception $e ) {
+                $error = "FS operation error: {$e->getMessage()}";
+              }
+            }
+          }
+        }
+      } else {
+        try {
           if ( isset(self::$Methods[$method]["method"]) ) {
             if ( !empty(self::$Methods[$method]["privileges"]) && ($p = self::$Methods[$method]["privileges"]) ) {
               call_user_func_array(Array(API::$Handler, 'checkPrivilege'), Array($p));
             }
-
             list($error, $result) = call_user_func_array(self::$Methods[$method]["method"], Array($arguments));
           } else {
             $error = "No such API method: {$method}";
@@ -473,37 +497,6 @@ class CoreAPIHandler
       }
     }
 
-    return Array($error, $result);
-  }
-
-  public static function fs(Array $arguments) {
-    $error = null;
-    $result = null;
-
-    try {
-      call_user_func_array(Array(API::$Handler, 'checkPrivilege'), Array(APIUser::GROUP_VFS));
-    } catch ( Exception $e ) {
-      $error = $e->getMessage();
-    }
-
-    if ( !$error ) {
-      $m = $arguments['method'];
-      $a = empty($arguments['arguments']) ? Array() : $arguments['arguments'];
-
-      if ( !method_exists('FS', $m) ) {
-        $error = "Invalid FS operation: {$m}";
-      } else {
-        if ( !$a ) {
-          $error = "Supply argument for FS operation: {$m}";
-        } else {
-          try {
-            $result = call_user_func_array(Array("FS", $m), $a);
-          } catch ( Exception $e ) {
-            $error = "FS operation error: {$e->getMessage()}";
-          }
-        }
-      }
-    }
     return Array($error, $result);
   }
 
@@ -580,7 +573,6 @@ class CoreAPIHandler
 }
 
 API::AddHandler('application', Array('CoreAPIHandler', 'application'));
-API::AddHandler('fs', Array('CoreAPIHandler', 'fs'));
 API::AddHandler('curl', Array('CoreAPIHandler', 'curl'));
 
 ?>
