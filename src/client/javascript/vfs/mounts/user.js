@@ -41,7 +41,7 @@
   /**
    * This is a virtual module for showing 'dist' files in OS.js
    *
-   * @see OSjs.VFS.Modules._NullModule
+   * @see OSjs.VFS.Transports.Internal
    * @api OSjs.VFS.Modules.User
    */
   OSjs.VFS.Modules.User = OSjs.VFS.Modules.User || {
@@ -53,7 +53,8 @@
     visible: true,
     internal: true,
     unmount: function(cb) {
-      OSjs.VFS._NullModule.unmount(cb);
+      cb = cb || function() {};
+      cb(API._('ERR_VFS_UNAVAILABLE'), false);
     },
     mounted: function() {
       return true;
@@ -61,10 +62,7 @@
     enabled: function() {
       return true;
     },
-    request: function() {
-      // This module uses the same API as public
-      OSjs.VFS._NullModule.request.apply(null, arguments);
-    }
+    request: OSjs.VFS.Transports.Internal.request
   };
 
 })(OSjs.Utils, OSjs.API);

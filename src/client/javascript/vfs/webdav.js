@@ -30,9 +30,9 @@
 (function(Utils, API) {
   'use strict';
 
-  window.OSjs       = window.OSjs       || {};
-  OSjs.VFS          = OSjs.VFS          || {};
-  OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
+  window.OSjs          = window.OSjs          || {};
+  OSjs.VFS             = OSjs.VFS             || {};
+  OSjs.VFS.Transports  = OSjs.VFS.Transports  || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
@@ -154,9 +154,9 @@
   // API
   /////////////////////////////////////////////////////////////////////////////
 
-  var _DAVModule = {};
+  var davTransport = {};
 
-  _DAVModule.scandir = function(item, callback, options) {
+  davTransport.scandir = function(item, callback, options) {
     function parse(doc) {
       var ns = getNamespace(item);
       var list = [];
@@ -234,39 +234,39 @@
     });
   };
 
-  _DAVModule.write = function(item, data, callback, options) {
+  davTransport.write = function(item, data, callback, options) {
     davCall('PUT', [item, data], callback);
   };
 
-  _DAVModule.read = function(item, callback, options) {
+  davTransport.read = function(item, callback, options) {
     davCall('GET', [item], callback, true);
   };
 
-  _DAVModule.copy = function(src, dest, callback) {
+  davTransport.copy = function(src, dest, callback) {
     callback(API._('ERR_VFS_UNAVAILABLE'));
   };
 
-  _DAVModule.move = function(src, dest, callback) {
+  davTransport.move = function(src, dest, callback) {
     callback(API._('ERR_VFS_UNAVAILABLE'));
   };
 
-  _DAVModule.unlink = function(item, callback) {
+  davTransport.unlink = function(item, callback) {
     callback(API._('ERR_VFS_UNAVAILABLE'));
   };
 
-  _DAVModule.mkdir = function(item, callback) {
+  davTransport.mkdir = function(item, callback) {
     callback(API._('ERR_VFS_UNAVAILABLE'));
   };
 
-  _DAVModule.exists = function(item, callback) {
+  davTransport.exists = function(item, callback) {
     callback(API._('ERR_VFS_UNAVAILABLE'));
   };
 
-  _DAVModule.fileinfo = function(item, callback, options) {
+  davTransport.fileinfo = function(item, callback, options) {
     callback(API._('ERR_VFS_UNAVAILABLE'));
   };
 
-  _DAVModule.url = function(item, callback, options) {
+  davTransport.url = function(item, callback, options) {
     if ( typeof item === 'string' ) {
       item = new OSjs.VFS.File(item);
     }
@@ -282,15 +282,15 @@
     callback(false, fullpath);
   };
 
-  _DAVModule.trash = function(item, callback) {
+  davTransport.trash = function(item, callback) {
     callback(API._('ERR_VFS_UNAVAILABLE'));
   };
 
-  _DAVModule.untrash = function(item, callback) {
+  davTransport.untrash = function(item, callback) {
     callback(API._('ERR_VFS_UNAVAILABLE'));
   };
 
-  _DAVModule.emptyTrash = function(item, callback) {
+  davTransport.emptyTrash = function(item, callback) {
     callback(API._('ERR_VFS_UNAVAILABLE'));
   };
 
@@ -302,14 +302,14 @@
     args = args || [];
     callback = callback || {};
 
-    if ( !_DAVModule[name] ) {
+    if ( !davTransport[name] ) {
       throw new Error(API._('ERR_VFSMODULE_INVALID_METHOD_FMT', name));
     }
 
     var fargs = args;
     fargs.push(callback);
     fargs.push(options);
-    _DAVModule[name].apply(_DAVModule, fargs);
+    davTransport[name].apply(davTransport, fargs);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -319,19 +319,9 @@
   /**
    * This is the WebDAV VFS Module wrapper
    *
-   * @api OSjs.VFS.Modules._DAVModule
+   * @api OSjs.VFS.Transports.WebDAV
    */
-  OSjs.VFS._DAVModule = {
-    unmount: function(cb) {
-      cb = cb || function() {};
-      cb(API._('ERR_VFS_UNAVAILABLE'), false);
-    },
-    mounted: function() {
-      return true;
-    },
-    enabled: function() {
-      return true;
-    },
+  OSjs.VFS.Transports.WebDAV = {
     request: makeRequest
   };
 

@@ -30,17 +30,17 @@
 (function(Utils, API) {
   'use strict';
 
-  window.OSjs       = window.OSjs       || {};
-  OSjs.VFS          = OSjs.VFS          || {};
-  OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
+  window.OSjs          = window.OSjs          || {};
+  OSjs.VFS             = OSjs.VFS             || {};
+  OSjs.VFS.Transports  = OSjs.VFS.Transports  || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // API
   /////////////////////////////////////////////////////////////////////////////
 
-  var _NullModule = {};
+  var internalTransport = {};
 
-  _NullModule.scandir = function(item, callback, options) {
+  internalTransport.scandir = function(item, callback, options) {
     OSjs.VFS.internalCall('scandir', [item.path], function(error, result) {
       var list = [];
       if ( result ) {
@@ -53,7 +53,7 @@
     });
   };
 
-  _NullModule.write = function(item, data, callback, options) {
+  internalTransport.write = function(item, data, callback, options) {
     options = options || {};
     options.onprogress = options.onprogress || function() {};
 
@@ -90,7 +90,7 @@
     });
   };
 
-  _NullModule.read = function(item, callback, options) {
+  internalTransport.read = function(item, callback, options) {
     options = options || {};
     options.onprogress = options.onprogress || function() {};
 
@@ -137,45 +137,45 @@
     });
   };
 
-  _NullModule.copy = function(src, dest, callback) {
+  internalTransport.copy = function(src, dest, callback) {
     OSjs.VFS.internalCall('copy', [src.path, dest.path], callback);
   };
 
-  _NullModule.move = function(src, dest, callback) {
+  internalTransport.move = function(src, dest, callback) {
     OSjs.VFS.internalCall('move', [src.path, dest.path], callback);
   };
 
-  _NullModule.unlink = function(item, callback) {
+  internalTransport.unlink = function(item, callback) {
     OSjs.VFS.internalCall('delete', [item.path], callback);
   };
 
-  _NullModule.mkdir = function(item, callback) {
+  internalTransport.mkdir = function(item, callback) {
     OSjs.VFS.internalCall('mkdir', [item.path], callback);
   };
 
-  _NullModule.exists = function(item, callback) {
+  internalTransport.exists = function(item, callback) {
     OSjs.VFS.internalCall('exists', [item.path], callback);
   };
 
-  _NullModule.fileinfo = function(item, callback) {
+  internalTransport.fileinfo = function(item, callback) {
     OSjs.VFS.internalCall('fileinfo', [item.path], callback);
   };
 
-  _NullModule.url = function(item, callback) {
+  internalTransport.url = function(item, callback) {
     var path    = typeof item === 'string' ? item : item.path;
     var fsuri   = API.getConfig('Connection.FSURI');
     callback(false, path ? (fsuri + path) : fsuri);
   };
 
-  _NullModule.trash = function(item, callback) {
+  internalTransport.trash = function(item, callback) {
     callback(API._('ERR_VFS_UNAVAILABLE'));
   };
 
-  _NullModule.untrash = function(item, callback) {
+  internalTransport.untrash = function(item, callback) {
     callback(API._('ERR_VFS_UNAVAILABLE'));
   };
 
-  _NullModule.emptyTrash = function(item, callback) {
+  internalTransport.emptyTrash = function(item, callback) {
     callback(API._('ERR_VFS_UNAVAILABLE'));
   };
 
@@ -187,14 +187,14 @@
     args = args || [];
     callback = callback || {};
 
-    if ( !_NullModule[name] ) {
-      throw new Error('Invalid _NullModule API call name');
+    if ( !internalTransport[name] ) {
+      throw new Error('Invalid internalTransport API call name');
     }
 
     var fargs = args;
     fargs.push(callback);
     fargs.push(options);
-    _NullModule[name].apply(_NullModule, fargs);
+    internalTransport[name].apply(internalTransport, fargs);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -202,21 +202,11 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
-   * This is the internal HTTP VFS Module wrapper
+   * This is the WebDAV VFS Module wrapper
    *
-   * @api OSjs.VFS.Modules._NullModule
+   * @api OSjs.VFS.Transports.WebDAV
    */
-  OSjs.VFS._NullModule = {
-    unmount: function(cb) {
-      cb = cb || function() {};
-      cb(API._('ERR_VFS_UNAVAILABLE'), false);
-    },
-    mounted: function() {
-      return true;
-    },
-    enabled: function() {
-      return true;
-    },
+  OSjs.VFS.Transports.Internal = {
     request: makeRequest
   };
 

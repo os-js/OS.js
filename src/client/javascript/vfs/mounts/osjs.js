@@ -66,7 +66,7 @@
     } else if ( restricted.indexOf(name) !== -1 ) {
       return callback(API._('ERR_VFS_UNAVAILABLE'));
     }
-    OSjs.VFS._NullModule.request.apply(null, arguments);
+    OSjs.VFS.Transports.Internal.request.apply(null, arguments);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -76,7 +76,7 @@
   /**
    * This is a virtual module for showing 'dist' files in OS.js
    *
-   * @see OSjs.VFS.Modules._NullModule
+   * @see OSjs.VFS.Transports.Internal
    * @api OSjs.VFS.Modules.OSjs
    */
   OSjs.VFS.Modules.OSjs = OSjs.VFS.Modules.OSjs || {
@@ -88,7 +88,8 @@
     visible: true,
     internal: true,
     unmount: function(cb) {
-      OSjs.VFS._NullModule.unmount(cb);
+      cb = cb || function() {};
+      cb(API._('ERR_VFS_UNAVAILABLE'), false);
     },
     mounted: function() {
       return true;

@@ -80,8 +80,9 @@
    *
    */
 
-  OSjs.VFS          = OSjs.VFS          || {};
-  OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
+  OSjs.VFS             = OSjs.VFS            || {};
+  OSjs.VFS.Modules     = OSjs.VFS.Modules    || {};
+  OSjs.VFS.Transports  = OSjs.VFS.Transports || {};
 
   var DefaultModule = 'User';
   var MountsRegistered = false;
@@ -1426,9 +1427,9 @@
         options: moduleOptions,
         request: function(name, args, callback, options) {
           if ( opts.type === 'internal' ) {
-            OSjs.VFS._NullModule.request.apply(null, arguments);
+            OSjs.VFS.Transports.Internal.request.apply(null, arguments);
           } else if ( opts.type === 'webdav' ) {
-            OSjs.VFS._DAVModule.request.apply(null, arguments);
+            OSjs.VFS.Transports.WebDAV.request.apply(null, arguments);
           } else {
             callback(API._('ERR_VFSMODULE_INVALID_TYPE_FMT', opts.type));
           }
@@ -1511,7 +1512,8 @@
           internal: true,
           match: createMatch(key + '://'),
           unmount: function(cb) {
-            OSjs.VFS._NullModule.unmount(cb);
+            cb = cb || function() {};
+            cb(API._('ERR_VFS_UNAVAILABLE'), false);
           },
           mounted: function() {
             return true;
@@ -1521,7 +1523,7 @@
           },
           request: function() {
             // This module uses the same API as public
-            OSjs.VFS._NullModule.request.apply(null, arguments);
+            OSjs.VFS.Transports.Internal.request.apply(null, arguments);
           }
         };
       });
