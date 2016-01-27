@@ -297,7 +297,7 @@
    * Perform default VFS call via backend
    */
   function internalCall(name, args, callback) {
-    API.call('fs', {'method': name, 'arguments': args}, function(res) {
+    API.call('FS:' + name, args, function(res) {
       if ( !res || (typeof res.result === 'undefined') || res.error ) {
         callback((res ? res.error : null) || API._('ERR_VFS_FATAL'));
       } else {
@@ -337,8 +337,6 @@
   function internalUpload(file, dest, callback, options) {
     options = options || {};
 
-    var fsuri  = API.getConfig('Connection.FSURI', '/');
-
     if ( typeof file.size !== 'undefined' ) {
       var maxSize = API.getConfig('VFS.MaxUploadSize');
       if ( maxSize > 0 ) {
@@ -362,7 +360,7 @@
     addFormFile(fd, 'upload', file);
 
     OSjs.Utils.ajax({
-      url: fsuri,
+      url: OSjs.VFS.Transports.Internal.path(),
       method: 'POST',
       body: fd,
       onsuccess: function(result) {

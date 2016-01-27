@@ -267,19 +267,7 @@
   };
 
   davTransport.url = function(item, callback, options) {
-    if ( typeof item === 'string' ) {
-      item = new OSjs.VFS.File(item);
-    }
-
-    var fsuri    = getURL(item);
-    var reqpath  = resolvePath(item).replace(/^\//, '');
-    var fullpath = fsuri + reqpath;
-
-    if ( !getCORSAllowed(item) ) {
-      fullpath = API.getConfig('Connection.FSURI') + fullpath;
-    }
-
-    callback(false, fullpath);
+    callback(false, OSjs.VFS.Transports.WebDAV.path(item));
   };
 
   davTransport.trash = function(item, callback) {
@@ -322,7 +310,21 @@
    * @api OSjs.VFS.Transports.WebDAV
    */
   OSjs.VFS.Transports.WebDAV = {
-    request: makeRequest
+    request: makeRequest,
+    path: function(item) {
+      if ( typeof item === 'string' ) {
+        item = new OSjs.VFS.File(item);
+      }
+      var url      = getURL(item);
+      var reqpath  = resolvePath(item).replace(/^\//, '');
+      var fullpath = url + reqpath;
+
+      if ( !getCORSAllowed(item) ) {
+        fullpath = API.getConfig('Connection.FSURI') + '/get' + fullpath;
+      }
+
+      return fullpath;
+    }
   };
 
 })(OSjs.Utils, OSjs.API);

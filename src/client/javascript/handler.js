@@ -324,14 +324,16 @@
         return true;
       }
 
+      var url = API.getConfig('Connection.APIURI') + '/' + method;
+      if ( method.match(/^FS\:/) ) {
+        url = API.getConfig('Connection.FSURI') + '/' + method.replace(/^FS\:/, '');
+      }
+
       var data = {
-        url: API.getConfig('Connection.APIURI'),
+        url: url,
         method: 'POST',
         json: true,
-        body: {
-          'method'    : method,
-          'arguments' : args
-        },
+        body: args,
         onsuccess: function(/*response, request, url*/) {
           cbSuccess.apply(self, arguments);
         },

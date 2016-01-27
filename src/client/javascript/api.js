@@ -290,6 +290,8 @@
   /**
    * Global function for calling API (backend)
    *
+   * You can call VFS functions by prefixing your method name with "FS:"
+   *
    * Response is in form of: {error, result}
    *
    * @param   String    m       Method name

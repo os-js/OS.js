@@ -162,9 +162,7 @@
   };
 
   internalTransport.url = function(item, callback) {
-    var path    = typeof item === 'string' ? item : item.path;
-    var fsuri   = API.getConfig('Connection.FSURI');
-    callback(false, path ? (fsuri + path) : fsuri);
+    callback(false, OSjs.VFS.Transports.Internal.path(item));
   };
 
   internalTransport.trash = function(item, callback) {
@@ -207,7 +205,12 @@
    * @api OSjs.VFS.Transports.WebDAV
    */
   OSjs.VFS.Transports.Internal = {
-    request: makeRequest
+    request: makeRequest,
+    path: function(input) {
+      var path = typeof input === 'string' ? input : input.path;
+      var base  = API.getConfig('Connection.FSURI', '/') + '/get';
+      return path ? (base + path) : path;
+    }
   };
 
 })(OSjs.Utils, OSjs.API);
