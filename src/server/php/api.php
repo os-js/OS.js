@@ -34,6 +34,10 @@
  */
 abstract class APIHandler
 {
+  public static function checkVFSPrivilege($method, $arguments) {
+    return true;
+  }
+
   /**
    * This function will check for privileges
    */
@@ -410,17 +414,15 @@ class API
 
         try {
           call_user_func_array(Array(API::$Handler, 'checkPrivilege'), Array(APIUser::GROUP_VFS));
-        } catch ( Exception $e ) {
-          $error = $e->getMessage();
-        }
 
-        if ( !$error ) {
           if ( !method_exists('FS', $method) ) {
             $error = "Invalid FS operation: {$method}";
           } else {
             if ( !$arguments ) {
               $error = "Supply argument for FS operation: {$method}";
             } else {
+              call_user_func_array(Array(API::$Handler, 'checkVFSPrivilege'), Array($method, $arguments));
+
               try {
                 $result = call_user_func_array(Array("FS", $method), $arguments);
               } catch ( Exception $e ) {
@@ -428,6 +430,8 @@ class API
               }
             }
           }
+        } catch ( Exception $e ) {
+          $error = $e->getMessage();
         }
       } else {
         try {
