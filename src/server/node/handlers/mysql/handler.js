@@ -147,7 +147,7 @@
             });
             return;
           } else {
-            if ( row.password == login.password ) {
+            if ( row.password === login.password ) {
               getUserInfo();
             } else {
               invalid();
