@@ -192,7 +192,7 @@
       if ( typeof item === 'string' ) {
         item = new OSjs.VFS.File(item);
       }
-      return base + '/get' + item.path;
+      return base + '/get/' + item.path;
     }
     return base + '/upload';
   }
