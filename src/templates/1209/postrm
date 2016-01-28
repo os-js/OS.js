@@ -1,0 +1,14 @@
+#!/bin/sh
+if [ -e /etc/config/uhttpd ] && [ -d /osjs ]
+then
+	# restoring orinal entry to /www
+    sed -i -e 's/osjs\/dist/www/g' /etc/config/uhttpd /etc/config/uhttpd
+
+	# cleaning ArduinoOs files
+	# rm -rf /usr/lib/lua/osjs
+	rm -rf /osjs
+
+	# Restarting uHttp server
+	/etc/init.d/uhttpd restart
+fi
+exit 0

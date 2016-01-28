@@ -4,16 +4,16 @@
 #
 # Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met: 
-# 
+# modification, are permitted provided that the following conditions are met:
+#
 # 1. Redistributions of source code must retain the above copyright notice, this
-#    list of conditions and the following disclaimer. 
+#    list of conditions and the following disclaimer.
 # 2. Redistributions in binary form must reproduce the above copyright notice,
 #    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution. 
-# 
+#    and/or other materials provided with the distribution.
+#
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 # ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -30,11 +30,17 @@
 #
 
 #REV=`git log --pretty=format:'%h' -n 1`
-REV=`git rev-list HEAD --count`
-ARCH="ar71xx"
-VERSION="2.0.0-build$REV"
+#REV=`git rev-list HEAD --count`
+REV=`git rev-parse --short HEAD`
 
-PKGNAME="osjs_${VERSION}_${ARCH}.ipk"
+if [ -z $ARCH ]
+then
+	ARCH="ar71xx"
+fi
+
+VERSION="2.0.0-$REV"
+
+PKGNAME="arduinoos_${VERSION}_${ARCH}.ipk"
 SRCDIR=".arduino/build"
 OUTDIR=".arduino"
 
@@ -51,11 +57,30 @@ cp -r $SRCDIR/README $OUTDIR/data/osjs/
 cp -r $SRCDIR/settings.json $OUTDIR/data/osjs/
 
 # Create control file
-cp src/templates/arduino/ipkg-control $OUTDIR/ipkg/control_tmpl
+if [ "$1" == "1209" ]
+then
+	cp src/templates/1209/ipkg-control $OUTDIR/ipkg/control_tmpl
+else
+	cp src/templates/arduino/ipkg-control $OUTDIR/ipkg/control_tmpl
+fi
+
+# adding custom scripts
+if [ "$1" == "1209" ]
+then
+	cp src/templates/1209/* $OUTDIR/ipkg
+else
+	cp src/templates/arduino/post* $OUTDIR/ipkg
+ 	cp src/templates/arduino/prerm $OUTDIR/ipkg
+fi
 awk '{gsub("ARCH", "'"$ARCH"'", $0); print }' $OUTDIR/ipkg/control_tmpl | awk '{gsub("VER", "'"${VERSION}"'", $0); print }' > $OUTDIR/ipkg/control
 
 # Create control file
-tar -C $OUTDIR/ipkg -czf $OUTDIR/control.tar.gz ./control
+if [ "$1" == "1209" ]
+then
+	tar -C $OUTDIR/ipkg -czf $OUTDIR/control.tar.gz ./control ./postinst ./postrm
+else
+	tar -C $OUTDIR/ipkg -czf $OUTDIR/control.tar.gz ./control ./prerm ./postinst ./postinst-pkg ./postrm
+fi
 
 # Create data image
 tar -C $OUTDIR/data -czf $OUTDIR/data.tar.gz ./osjs ./usr

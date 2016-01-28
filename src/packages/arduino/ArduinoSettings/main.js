@@ -142,7 +142,6 @@
       });
     }
 
-
     function renderNetworkInfo(device) {
       if ( !device ) {
         return;
@@ -197,6 +196,25 @@
           viewa.add(rows);
         }
 
+      });
+    }
+
+    function renderCurrentWiFi(){
+      callAPI('iwinfo', {}, function(err, result) {
+        var info = (result || '').split(' ');
+        var keys = ['ap', 'ssid', 'security', 'signal'];
+        var list = {};
+
+        keys.forEach(function(key, idx) {
+          if ( key !== 'security' ) { // FIXME
+            list[key] = info[idx] || null;
+          }
+        });
+
+        var ssid = list['ssid'] !== '<none>' ? list['ssid'] : '';
+        var secu = list['security'] !== '<none>' ? list['security'] : '';
+        wifiInput.set("value", ssid );
+        wifiSelectEncrypt.set("value", secu); //FIXME at the moment the security is always <none>
       });
     }
 
@@ -279,10 +297,12 @@
 
     scheme.find(this, 'ButtonArduinoConfigureSettings').on('click', function() {
       callAPI('setsysinfo', {hostname: inputHostname.get('value'), timezone: selectTimezone.get('value')}, function() {
+        wm.notification({title: 'Arduino', message: "Reboot the board to apply the hostname change.", icon: 'arduino.png', timeout : 30000});
       });
     });
     scheme.find(this, 'ButtonArduinoRestart').on('click', function() {
       callAPI('reboot', {}, function() {
+        wm.notification({title: 'Arduino', message: "Board is rebooting...", icon: 'arduino.png', timeout : 60000});
       });
     });
     scheme.find(this, 'ArduinoNetworkDevicePoll').on('click', function() {
@@ -325,6 +345,7 @@
 
     renderDeviceInfo(function() {
       renderNetworkDevices();
+      renderCurrentWiFi();
     });
 
   };

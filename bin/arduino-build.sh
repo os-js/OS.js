@@ -167,8 +167,8 @@ if [ "$1" == "package" ]; then
     echo ""
 
     cd $OUTDIR
-    mv release arduinos-$gitcommit
-    tar zcf arduinos-"$gitcommit".tar.gz arduinos-$gitcommit
+    mv release arduinoos-2.0.0-$gitcommit
+    tar zcf arduinoos-2.0.0-"$gitcommit".tar.gz arduinoos-2.0.0-$gitcommit
 fi
 
 rm -rf $TMPDIR

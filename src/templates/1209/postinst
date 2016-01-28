@@ -1,0 +1,16 @@
+#!/bin/sh
+if [ -e /etc/config/uhttpd ]
+then
+	# make the webserver ponting to /osjs instead of /www
+	sed -i -e 's/www/osjs\/dist/g' /etc/config/uhttpd /etc/config/uhttpd
+
+	# Linking LUci
+	mkdir -p /osjs/dist/luci
+	ln -sf /www/index.html /osjs/dist/luci/index.html
+	ln -sf /www/luci-static /osjs/dist/luci-static
+	ln -sf /www/cgi-bin/luci /osjs/dist/cgi-bin/luci
+
+	# Restarting uHttp server
+	/etc/init.d/uhttpd restart
+fi
+exit 0
