@@ -125,6 +125,9 @@
     }
 
     function renderNetworkDevices() {
+      scheme.find(self, 'ArduinoNetworkDeviceInfo').clear();
+      scheme.find(self, 'ArduinoNetworkDeviceIfconfig').clear();
+
       callAPI('netdevices', {}, function(err, result) {
         var rows = [{label: '--- SELECT NETWORK DEVICE ---', value: null}];
 
