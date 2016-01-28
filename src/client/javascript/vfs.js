@@ -1076,22 +1076,24 @@
       throw new Error(API._('ERR_VFS_UPLOAD_NO_DEST'));
     }
 
+    function _createFile(filename, mime, size) {
+      var npath = (args.destination + '/' + filename).replace(/\/\/\/\/+/, '///');
+      return new OSjs.VFS.File({
+        filename: filename,
+        path: npath,
+        mime: mime || 'application/octet-stream',
+        size: size
+      });
+    }
+
     function _dialogClose(btn, filename, mime, size) {
       if ( btn !== 'ok' && btn !== 'complete' ) {
         callback(false, false);
         return;
       }
 
-      var npath = (args.destination + '/' + filename).replace(/\/\/\/\/+/, '///');
-      var file = new OSjs.VFS.File({
-        filename: filename,
-        path: npath,
-        mime: mime,
-        size: size
-      });
-
+      var file = _createFile(filename, mime, size);
       API.message('vfs', {type: 'upload', file: file, source: args.app.__pid});
-
       callback(false, file);
     }
 
@@ -1119,7 +1121,8 @@
               callback(msg, null, ev);
             }
           } else {
-            callback(false, result, ev);
+            var file = _createFile(f.name, f.type, f.size);
+            callback(false, file, ev);
           }
         }, options);
       }
