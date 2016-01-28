@@ -224,13 +224,28 @@ function fs_scandir(request, response, path)
   local error = false
   local data = {}
 
+  local function splitpath(P)
+    local i = #P
+    local ch = string.sub(P,i,i)
+    while i > 0 and ch ~= "/" do
+        i = i - 1
+        ch = string.sub(P,i,i)
+    end
+    if i == 0 then
+        return '',P
+    else
+        return string.sub(P,1,i-1), string.sub(P,i+1)
+    end
+  end
+
   local realpath = get_real_path(request, response, path)
   local tmppath = string.gsub(path, "^((%a+)://)", "")
   tmppath = string.gsub(tmppath, "^\/+", "")
 
   if tmppath ~= "" then
+    local p1,p2 = splitpath(P)
     table.insert(data, {
-      path = string.gsub(path, "\/%a+$", "") .. "/",
+      path = p1,
       filename = "..",
       size = 0,
       type = "dir",
