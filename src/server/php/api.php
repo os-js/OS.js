@@ -331,7 +331,7 @@ class API
     $settings = Settings::get();
 
     $fsPrefix = preg_quote($settings["uri"]["fs"], '/');
-    $url = preg_replace("/^$fsPrefix(\/get)?/", "", urldecode($req->data));
+    $url = preg_replace("/^$fsPrefix(\/get\/)?/", "", urldecode($req->data));
 
     call_user_func_array(Array(API::$Handler, 'checkPrivilege'), Array(APIUser::GROUP_VFS));
 

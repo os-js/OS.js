@@ -206,7 +206,7 @@
 
     var isVfsCall = path.match(/^\/FS/) !== null;
     var relPath   = path.replace(/^\/(FS|API)\/?/, '');
-    var getPath   = path.replace(/^\/(FS|API)(\/get)?/, '');
+    var getPath   = path.replace(/^\/(FS|API)(\/get\/)?/, '');
 
     function handleApiCall(isVfs) {
       var body = '';
