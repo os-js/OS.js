@@ -207,6 +207,20 @@
     'ERR_VFS_DOWNLOAD_NO_FILE': '경로 없이 경로를 다운로드할 수 없습니다',
     'ERR_VFS_DOWNLOAD_FAILED' : '다운로드 중 오류가 발생하였습니다: {0}',
     'ERR_VFS_REMOTEREAD_EMPTY': '응답이 비어있습니다',
+
+    'ERR_VFSMODULE_INVALID'            : '유효하지 않은 VFS 모듈',
+    'ERR_VFSMODULE_INVALID_FMT'        : '유효하지 않은 VFS 모듈: {0}',
+    'ERR_VFSMODULE_INVALID_METHOD'     : '유효하지 않은 VFS 메소드',
+    'ERR_VFSMODULE_INVALID_METHOD_FMT' : '유효하지 않은 VFS 메소드: {0}',
+    'ERR_VFSMODULE_INVALID_TYPE'       : '유효하지 않은 VFS 모듈 타입',
+    'ERR_VFSMODULE_INVALID_TYPE_FMT'   : '유효하지 않은 VFS 모듈 타입: {0}',
+    'ERR_VFSMODULE_INVALID_CONFIG'     : '유효하지 않은 VFS 모듈 설정',
+    'ERR_VFSMODULE_INVALID_CONFIG_FMT' : '유효하지 않은 VFS 모듈 설정: {0}',
+    'ERR_VFSMODULE_ALREADY_MOUNTED'    : 'VFS 모듈이 이미 마운트 되었습니다',
+    'ERR_VFSMODULE_ALREADY_MOUNTED_FMT': 'VFS 모듈 \'{0}\' 이(가) 이미 마운트 되었습니다',
+    'ERR_VFSMODULE_NOT_MOUNTED'        : 'VFS 모듈이 마운트 되지 않았습니다',
+    'ERR_VFSMODULE_NOT_MOUNTED_FMT'    : 'VFS 모듈 \'{0}\' 이(가) 마운트 되지 않았습니다',
+
     'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': '파일 다운로드',
 
     'ERR_VFSMODULE_XHR_ERROR'      : 'XHR 오류',
@@ -247,6 +261,12 @@
 
     // VFS -> OneDrive
     'ONEDRIVE_ERR_RESOLVE'      : '경로 탐색 실패: 항목을 찾을 수 없습니다',
+
+    // ZIP
+    'ZIP_PRELOAD_FAIL'  : 'zip.js를 불러오는 데 실패하였습니다',
+    'ZIP_VENDOR_FAIL'   : 'zip.js 라이브러리를 찾을 수 없습니다. 올바른 방법으로 불러왔는지 확인해주십시오',
+    'ZIP_NO_RESOURCE'   : 'zip 리소스가 주어지지 않았습니다',
+    'ZIP_NO_PATH'       : '경로가 주어지지 않았습니다',
 
     //
     // PackageManager
