@@ -168,7 +168,7 @@
 
     // Reset
     this.destroyPanels();
-    var settings = this.importedSettings
+    var settings = this.importedSettings;
     try {
       settings.background = 'color';
     } catch ( e ) {}
