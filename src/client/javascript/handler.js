@@ -464,7 +464,7 @@
     var onprogress = args.onprogress || function() {};
 
     Utils.ajax({
-      url: args.url,
+      url: args.url || OSjs.VFS.Transports.Internal.path(args.path),
       method: args.method || 'GET',
       responseType: 'arraybuffer',
       onprogress: function(ev) {

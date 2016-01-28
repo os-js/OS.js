@@ -99,13 +99,7 @@
       return;
     }
 
-    this.url(item, function(error, url) {
-      if ( error ) {
-        callback(error);
-        return;
-      }
-      OSjs.VFS.internalCall('xhr', {url: url}, callback, options);
-    });
+    OSjs.VFS.internalCall('xhr', {path: item.path}, callback, options);
   };
 
   internalTransport.copy = function(src, dest, callback) {

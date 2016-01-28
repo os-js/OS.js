@@ -312,7 +312,7 @@
     var fullpath = url + reqpath;
 
     if ( !getCORSAllowed(item) ) {
-      fullpath = API.getConfig('Connection.FSURI') + '/get' + fullpath;
+      fullpath = API.getConfig('Connection.FSURI') + '/get/' + fullpath;
     }
 
     return fullpath;
