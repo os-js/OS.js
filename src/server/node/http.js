@@ -172,7 +172,7 @@
 
       instance.request(isVfs, method, args, function(error, result) {
         respondJSON({result: result, error: error}, response);
-      }, request, response);
+      }, request, response, instance.handler);
     } catch ( e ) {
       console.error('!!! Caught exception', e);
       console.warn(e.stack);
