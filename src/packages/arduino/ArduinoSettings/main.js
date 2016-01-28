@@ -207,18 +207,8 @@
 
     function renderCurrentWiFi(){
       callAPI('iwinfo', {}, function(err, result) {
-        var info = (result || '').split(' ');
-        var keys = ['ap', 'ssid', 'security', 'signal'];
-        var list = {};
-
-        keys.forEach(function(key, idx) {
-          if ( key !== 'security' ) { // FIXME
-            list[key] = info[idx] || null;
-          }
-        });
-
-        var ssid = list['ssid'] !== '<none>' ? list['ssid'] : '';
-        var secu = list['security'] !== '<none>' ? list['security'] : '';
+        var ssid = result.ssid !== '<none>' ? result.ssid : '';
+        var secu = result.security !== '<none>' ? result.security : '';
         wifiInput.set("value", ssid );
         wifiSelectEncrypt.set("value", secu); //FIXME at the moment the security is always <none>
       });

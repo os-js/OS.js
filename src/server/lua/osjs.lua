@@ -660,7 +660,7 @@ function api_request(request, response, meth, iargs)
   elseif meth == "iwinfo" then
     -- local device = iargs["device"] or "wlan0"
     -- data = sys.wifi.getiwinfo(device)
-    data = console("sh " .. ROOTDIR .. "/bin/arduino-wifi-info.sh")
+    data = json.decode(console("sh " .. ROOTDIR .. "/bin/arduino-wifi-info.sh"))
   elseif meth == "rest" then
     data = console("sh " .. ROOTDIR .. "/bin/arduino-toggle-rest-api.sh " .. iargs["enabled"])
   elseif meth == "iwscan" then

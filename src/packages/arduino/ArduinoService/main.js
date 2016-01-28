@@ -189,21 +189,8 @@
     }
 
     this.externalCall('iwinfo', {}, function(err, result) {
-      var info = (result || '').split(' ');
-      var keys = ['ap', 'ssid', 'security', 'signal'];
-      var list = {
-        'status': isConnected(info[0])
-      };
-
-      keys.forEach(function(key, idx) {
-        if ( key !== 'security' ) { // FIXME
-          list[key] = info[idx] || null;
-        }
-      });
-
       self.busy = false;
-
-      cb(list);
+      cb(result);
     });
   };
 
