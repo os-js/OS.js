@@ -268,6 +268,17 @@
   // WRAPPERS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Make a WebDAV HTTP request for VFS
+   *
+   * @param   String      name      Method name
+   * @param   Object      args      Method arguments
+   * @param   Function    callback  Callback => fn(error, result)
+   * @param   Object      option    (Optional) request options
+   *
+   * @return  void
+   * @api OSjs.VFS.Transports.WebDAV.request()
+   */
   function makeRequest(name, args, callback, options) {
     args = args || [];
     callback = callback || {};
@@ -282,31 +293,38 @@
     davTransport[name].apply(davTransport, fargs);
   }
 
+  /**
+   * Make a WebDAV HTTP URL for VFS
+   *
+   * @param   Mixed       item        (Optional) Path of VFS.File object
+   *
+   * @retun   String                  URL based on input
+   *
+   * @api OSjs.VFS.Transports.WebDAV.path()
+   */
+  function makePath(item) {
+    if ( typeof item === 'string' ) {
+      item = new OSjs.VFS.File(item);
+    }
+
+    var url      = getURL(item);
+    var reqpath  = resolvePath(item).replace(/^\//, '');
+    var fullpath = url + reqpath;
+
+    if ( !getCORSAllowed(item) ) {
+      fullpath = API.getConfig('Connection.FSURI') + '/get' + fullpath;
+    }
+
+    return fullpath;
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * This is the WebDAV VFS Module wrapper
-   *
-   * @api OSjs.VFS.Transports.WebDAV
-   */
   OSjs.VFS.Transports.WebDAV = {
     request: makeRequest,
-    path: function(item) {
-      if ( typeof item === 'string' ) {
-        item = new OSjs.VFS.File(item);
-      }
-      var url      = getURL(item);
-      var reqpath  = resolvePath(item).replace(/^\//, '');
-      var fullpath = url + reqpath;
-
-      if ( !getCORSAllowed(item) ) {
-        fullpath = API.getConfig('Connection.FSURI') + '/get' + fullpath;
-      }
-
-      return fullpath;
-    }
+    path: makePath
   };
 
 })(OSjs.Utils, OSjs.API);

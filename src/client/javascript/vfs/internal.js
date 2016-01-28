@@ -152,12 +152,23 @@
   // WRAPPERS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Make a OS.js Server HTTP request for VFS
+   *
+   * @param   String      name      Method name
+   * @param   Object      args      Method arguments
+   * @param   Function    callback  Callback => fn(error, result)
+   * @param   Object      option    (Optional) request options
+   *
+   * @return  void
+   * @api OSjs.VFS.Transports.Internal.request()
+   */
   function makeRequest(name, args, callback, options) {
     args = args || [];
     callback = callback || {};
 
     if ( !internalTransport[name] ) {
-      throw new Error('Invalid internalTransport API call name');
+      throw new Error('Invalid Internal API call name');
     }
 
     var fargs = args;
@@ -166,27 +177,33 @@
     internalTransport[name].apply(internalTransport, fargs);
   }
 
+  /**
+   * Make a OS.js Server HTTP URL for VFS
+   *
+   * @param   Mixed       item        (Optional) Path of VFS.File object
+   *
+   * @retun   String                  URL based on input
+   *
+   * @api OSjs.VFS.Transports.Internal.path()
+   */
+  function makePath(item) {
+    var base = API.getConfig('Connection.FSURI', '/');
+    if ( item ) {
+      if ( typeof item === 'string' ) {
+        item = new OSjs.VFS.File(item);
+      }
+      return base + '/get' + item.path;
+    }
+    return base + '/upload';
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * This is the WebDAV VFS Module wrapper
-   *
-   * Used for osjs:// home:// and any other internal modules
-   *
-   * @api OSjs.VFS.Transports.Internal
-   */
   OSjs.VFS.Transports.Internal = {
     request: makeRequest,
-    path: function(input) {
-      var base = API.getConfig('Connection.FSURI', '/');
-      if ( input ) {
-        var path = typeof input === 'string' ? input : input.path;
-        return base + '/get' + path;
-      }
-      return base + '/upload';
-    }
+    path: makePath
   };
 
 })(OSjs.Utils, OSjs.API);
