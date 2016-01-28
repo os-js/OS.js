@@ -281,6 +281,11 @@
         resizeMap[current.direction]();
       }
 
+      if ( newTop < current.rectWorkspace.top && newTop !== null ) {
+        newTop = current.rectWorkspace.top;
+        newHeight -= current.rectWorkspace.top - mousePosition.y;
+      }
+
       return {left: newLeft, top: newTop, width: newWidth, height: newHeight};
     }
 

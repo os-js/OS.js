@@ -159,22 +159,8 @@ class FS
       if ( !is_writable(dirname($fname)) ) throw new Exception("Write permission denied in folder");
     }
 
-    $tmp = explode(",", $content, 2);
-    if ( sizeof($tmp) > 1 ) {
-      $dcontent = array_pop($tmp);
-      $dtype    = array_pop($tmp);
-
-      if ( preg_match("/^data\:image/", $dtype) ) {
-        $dcontent = str_replace(' ', '+', $dcontent);
-      }
-
-      if ( $dcontent === false ) {
-        $dcontent = '';
-      } else {
-        $dcontent = base64_decode($dcontent);
-      }
-
-      $content = $dcontent;
+    if ( empty($opts["raw"]) || $opts["raw"] === false ) {
+      $content = base64_decode(substr($content, strpos($content, ",") + 1));
     }
 
     return file_put_contents($fname, $content) !== false;

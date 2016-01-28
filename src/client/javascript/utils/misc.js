@@ -75,6 +75,55 @@
                .replace(/\>[\t ]+$/g, '>');
   };
 
+  /**
+   * Parses url into a dictionary (supports modification)
+   *
+   * @param     String        url       Input URL
+   * @param     Object        modify    (Optional) Modify URL with these options
+   *
+   * @return    Object                  Object with {protocol, host, path}
+   *
+   * @api       OSjs.Utils.parseurl()
+   */
+  OSjs.Utils.parseurl = function(url, modify) {
+    modify = modify || {};
+
+    if ( !url.match(/^(\w+\:)\/\//) ) {
+      url = '//' + url;
+    }
+
+    var protocol = url.split(/^(\w+\:)?\/\//);
+
+    var splitted = (function() {
+      var tmp = protocol[2].replace(/^\/\//, '').split('/');
+      return {
+        proto: (modify.protocol || protocol[1] || window.location.protocol || '').replace(/\:$/, ''),
+        host: modify.host || tmp.shift(),
+        path: modify.path || '/' + tmp.join('/')
+      };
+    })();
+
+    function _parts() {
+      var parts = [splitted.proto, '://'];
+
+      if ( modify.username ) {
+        var authstr = String(modify.username) + ':' + String(modify.password);
+        parts.push(authstr);
+        parts.push('@');
+      }
+
+      parts.push(splitted.host);
+      parts.push(splitted.path);
+      return parts.join('');
+    }
+
+    return {
+      protocol: splitted.proto,
+      host: splitted.host,
+      path: splitted.path,
+      url: _parts()
+    };
+  };
   /////////////////////////////////////////////////////////////////////////////
   // OBJECT HELPERS
   /////////////////////////////////////////////////////////////////////////////

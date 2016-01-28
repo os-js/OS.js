@@ -349,6 +349,8 @@
         }
 
       });
+
+      return false;
     } else {
       if ( !this.selected && this.args.select !== 'dir' ) {
         API.error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_MISSING_SELECTION'));

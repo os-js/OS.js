@@ -86,6 +86,21 @@
    * Respond with a file
    */
   function respondFile(path, request, response, jpath) {
+    if ( !jpath && path.match(/^(ftp|https?)\:\/\//) ) {
+      if ( instance.config.vfs.proxy ) {
+        try {
+          require('request')(path).pipe(response);
+        } catch ( e ) {
+          console.error('!!! Caught exception', e);
+          console.warn(e.stack);
+          respond(e, 'text/plain', response, null, 500);
+        }
+      } else {
+        respond('VFS Proxy is disabled', 'text/plain', response, null, 500);
+      }
+      return;
+    }
+
     var fullPath = jpath ? path : instance.vfs.getRealPath(path, instance.config, request).root;
     _fs.exists(fullPath, function(exists) {
       if ( exists ) {
@@ -131,12 +146,12 @@
       respond(e, 'text/plain', response, null, 500);
     }
 
-    instance.vfs.upload([
-      files.upload.path,
-      files.upload.name,
-      fields.path,
-      String(fields.overwrite) === 'true'
-    ], request, function(err, result) {
+    instance.vfs.upload({
+      src: files.upload.path,
+      name: files.upload.name,
+      path: fields.path,
+      overwrite: String(fields.overwrite) === 'true'
+    }, request, function(err, result) {
       if ( err ) {
         respond(err, 'text/plain', response, null, 500);
       } else {
@@ -148,29 +163,23 @@
   /**
    * Handles Core API HTTP Request
    */
-  function coreAPI(url, path, POST, request, response) {
-    if ( path.match(/^\/API/) ) {
-      try {
-        var data         = JSON.parse(POST);
-        var method       = data.method;
-        var args         = data['arguments'] || {};
-
-        if ( instance.config.logging ) {
-          console.log('===', 'CoreAPI', method, args);
-        }
-
-        instance.request(method, args, function(error, result) {
-          respondJSON({result: result, error: error}, response);
-        }, request, response);
-      } catch ( e ) {
-        console.error('!!! Caught exception', e);
-        console.warn(e.stack);
-
-        respondJSON({result: null, error: '500 Internal Server Error: ' + e}, response);
+  function coreAPI(isVfs, method, POST, request, response) {
+    try {
+      var args = JSON.parse(POST);
+      if ( instance.config.logging ) {
+        console.log('===', 'CoreAPI', method);
       }
-      return true;
+
+      instance.request(isVfs, method, args, function(error, result) {
+        respondJSON({result: result, error: error}, response);
+      }, request, response, instance.handler);
+    } catch ( e ) {
+      console.error('!!! Caught exception', e);
+      console.warn(e.stack);
+
+      respondJSON({result: null, error: '500 Internal Server Error: ' + e}, response);
     }
-    return false;
+    return true;
   }
 
   /**
@@ -195,39 +204,55 @@
       instance.handler.onRequestStart(request, response);
     }
 
-    if ( request.method === 'POST' ) {
-      if ( path.match(/^\/FS$/) ) { // File upload
-        var form = new _multipart.IncomingForm({
-          uploadDir: instance.config.tmpdir
-        });
-        form.parse(request, function(err, fields, files) {
-          if ( err ) {
-            if ( instance.config.logging ) {
-              console.log('>>>', 'ERR', 'Error on form parse', err);
-            }
-          } else {
-            filePOST(fields, files, request, response);
-          }
-        });
-      } else { // API Calls
-        var body = '';
-        request.on('data', function(data) {
-          body += data;
-        });
+    var isVfsCall = path.match(/^\/FS/) !== null;
+    var relPath   = path.replace(/^\/(FS|API)\/?/, '');
+    var getPath   = path.replace(/^\/(FS|API)(\/get\/)?/, '');
 
-        request.on('end', function() {
-          if ( !coreAPI(url, path, body, request, response) ) {
-            if ( instance.config.logging ) {
-              console.log('>>>', '404', path);
-            }
-            respond('404 Not Found', null, response, [[404, {}]]);
+    function handleApiCall(isVfs) {
+      var body = '';
+      request.on('data', function(data) {
+        body += data;
+      });
+
+      request.on('end', function() {
+        if ( !coreAPI(isVfs, relPath, body, request, response) ) {
+          if ( instance.config.logging ) {
+            console.log('>>>', '404', path);
           }
-        });
-      }
-    } else { // File reads
-      if ( path.match(/^\/FS/) ) {
-        fileGET(path.replace(/^\/FS/, ''), request, response, false);
+          respond('404 Not Found', null, response, [[404, {}]]);
+        }
+      });
+    }
+
+    function handleUpload() {
+      var form = new _multipart.IncomingForm({
+        uploadDir: instance.config.tmpdir
+      });
+      form.parse(request, function(err, fields, files) {
+        if ( err ) {
+          if ( instance.config.logging ) {
+            console.log('>>>', 'ERR', 'Error on form parse', err);
+          }
+        } else {
+          filePOST(fields, files, request, response);
+        }
+      });
+    }
+
+    if ( request.method === 'POST' ) {
+      if ( isVfsCall ) {
+        if ( relPath === 'upload') {
+          handleUpload();
+        } else {
+          handleApiCall(true);
+        }
       } else {
+        handleApiCall(false);
+      }
+    } else {
+      if ( isVfsCall ) {
+        fileGET(getPath, request, response, false);
+      } else { // dist files
         fileGET(_path.join(instance.config.distdir, path.replace(/^\//, '')), request, response, true);
       }
     }

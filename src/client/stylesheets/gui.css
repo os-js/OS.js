@@ -46,18 +46,13 @@ application-window-content * {
 
   -webkit-touch-callout: none;
     -webkit-user-select: none;
-     -khtml-user-select: none;
        -moz-user-select: none;
         -ms-user-select: none;
             user-select: none;
 }
 
-.gui-element {
-/**
-  min-width : 24px;
-  min-height : 24px;
- */
-}
+/*.gui-element {
+}*/
 
 .gui-bold > label,
 .gui-bold {
@@ -111,14 +106,15 @@ application-window-content * {
   position : absolute;
   margin : 0;
   padding : 0;
-  left : 0px;
-  bottom : 0px;
-  top : 0px;
-  right : 0px;
+  left : 0;
+  bottom : 0;
+  top : 0;
+  right : 0;
   width : 100%;
   height : 100%;
   z-index : 1;
   overflow : hidden;
+  box-sizing : border-box;
 }
 
 .gui-flex-align-start {
@@ -154,11 +150,11 @@ application-window-content * {
          -o-box-align: center;
             box-align: center;
 
-    -webkit-align-self: flex-center;
-       -moz-align-self: flex-center;
-        -ms-align-self: flex-center;
-         -o-align-self: flex-center;
-            align-self: flex-center;
+    -webkit-align-self: center;
+       -moz-align-self: center;
+        -ms-align-self: center;
+         -o-align-self: center;
+            align-self: center;
 }
 
 .gui-flex {
@@ -187,6 +183,8 @@ application-window-content * {
 .gui-flex-normal {
   -webkit-box-flex: 0 0 auto;
      -moz-box-flex: 0 0 auto;
+      -ms-box-flex: 0 0 auto;
+       -o-box-flex: 0 0 auto;
 
   -webkit-flex: 0 0 auto;
      -moz-flex: 0 0 auto;
@@ -198,6 +196,8 @@ application-window-content * {
 .gui-flex-grow-shrink {
   -webkit-box-flex: 1 1 auto;
      -moz-box-flex: 1 1 auto;
+      -ms-box-flex: 1 1 auto;
+       -o-box-flex: 1 1 auto;
 
   -webkit-flex: 1 1 auto;
      -moz-flex: 1 1 auto;
@@ -209,6 +209,8 @@ application-window-content * {
 .gui-flex-grow {
   -webkit-box-flex: 1 0 auto;
      -moz-box-flex: 1 0 auto;
+      -ms-box-flex: 1 0 auto;
+       -o-box-flex: 1 0 auto;
 
   -webkit-flex: 1 0 auto;
      -moz-flex: 1 0 auto;
@@ -220,6 +222,8 @@ application-window-content * {
 .gui-flex-shrink {
   -webkit-box-flex: 0 1 auto;
      -moz-box-flex: 0 1 auto;
+      -ms-box-flex: 0 1 auto;
+       -o-box-flex: 0 1 auto;
 
   -webkit-flex: 0 1 auto;
      -moz-flex: 0 1 auto;
@@ -316,6 +320,8 @@ gui-vbox {
 
     -webkit-box-flex: 0 0 auto;
        -moz-box-flex: 0 0 auto;
+        -ms-box-flex: 0 0 auto;
+         -o-box-flex: 0 0 auto;
 
     -webkit-flex: 0 0 auto;
        -moz-flex: 0 0 auto;
@@ -323,9 +329,9 @@ gui-vbox {
          -o-flex: 0 0 auto;
             flex: 0 0 auto;
   }
-  gui-hbox-container > .gui-element,
+  /*gui-hbox-container > .gui-element,
   gui-vbox-container > .gui-element {
-  }
+  }*/
 
   gui-hbox-container[data-fill='true'],
   gui-vbox-container[data-fill='true'] {
@@ -350,10 +356,10 @@ gui-vbox {
     gui-hbox-container[data-fill='true'] > *,
     gui-vbox-container[data-fill='true'] > * {
       position : absolute;
-      top : 0px;
-      left : 0px;
-      bottom : 0px;
-      right : 0px;
+      top : 0;
+      left : 0;
+      bottom : 0;
+      right : 0;
     }
     gui-hbox-container[data-fill='true'] > gui-hbox,
     gui-hbox-container[data-fill='true'] > gui-vbox,
@@ -367,10 +373,10 @@ gui-vbox {
     gui-hbox-container[data-fill='true'] > gui-hbox,
     gui-vbox-container[data-fill='true'] > gui-vbox,
     gui-vbox-container[data-fill='true'] > gui-hbox {
-      top : 0px;
-      left : 0px;
-      right : 0px;
-      bottom : 0px;
+      top : 0;
+      left : 0;
+      right : 0;
+      bottom : 0;
     }
 
 /* Scroll View */
@@ -384,7 +390,6 @@ gui-scroll-view {
 
 /* Paned View */
 gui-paned-view {
-  display : block;
   position : relative;
   overflow : hidden;
   width : 100%;
@@ -425,10 +430,11 @@ gui-paned-view[data-orientation='vertical'] {
   gui-paned-view > * {
     display : block;
     position : relative;
-    vertical-align : middle;
 
     -webkit-box-flex: 1 1 auto;
        -moz-box-flex: 1 1 auto;
+        -ms-box-flex: 1 1 auto;
+         -o-box-flex: 1 1 auto;
 
     -webkit-flex: 1 1 auto;
        -moz-flex: 1 1 auto;
@@ -446,22 +452,32 @@ gui-paned-view[data-orientation='vertical'] {
     }
     gui-paned-view > gui-paned-view-container[data-fill='true'] > * {
       position : absolute;
-      top : 0px;
-      left : 0px;
-      bottom : 0px;
-      right : 0px;
+      top : 0;
+      left : 0;
+      bottom : 0;
+      right : 0;
     }
   gui-paned-view > gui-paned-view-handle {
     height : 100%;
 
     -webkit-box-flex: 0 1 auto;
        -moz-box-flex: 0 1 auto;
+        -ms-box-flex: 0 1 auto;
+         -o-box-flex: 0 1 auto;
 
     -webkit-flex: 0 1 auto;
        -moz-flex: 0 1 auto;
         -ms-flex: 0 1 auto;
          -o-flex: 0 1 auto;
             flex: 0 1 auto;
+  }
+  gui-paned-view > gui-paned-view-container {
+    min-width : 16px;
+    min-height : auto;
+  }
+  gui-paned-view[data-orientation='vertical'] > gui-paned-view-container {
+    min-width : auto;
+    min-height : 16px;
   }
 
 /* IFrame */
@@ -476,6 +492,7 @@ gui-iframe {
     margin : 0;
     padding : 0;
     border : 0 none;
+    box-sizing : border-box;
   }
 
 /* Button Bar */
@@ -533,14 +550,14 @@ gui-tabs {
       padding : 0;
       height : 100%;
     }
-    gui-tabs > ul > li.gui-active {
-    }
+    /*gui-tabs > ul > li.gui-active {
+    }*/
       gui-tabs > ul > li.gui-active:after {
         content : '';
         position : absolute;
-        left : 0px;
-        right : 0px;
-        bottom : 0px;
+        left : 0;
+        right : 0;
+        bottom : 0;
       }
   gui-tabs > div {
     overflow : hidden;
@@ -586,6 +603,8 @@ gui-grid {
 
       -webkit-box-flex: 1 0 auto;
          -moz-box-flex: 1 0 auto;
+          -ms-box-flex: 1 0 auto;
+           -o-box-flex: 1 0 auto;
 
       -webkit-flex: 1 0 auto;
          -moz-flex: 1 0 auto;
@@ -598,10 +617,10 @@ gui-grid {
     }
       gui-grid > gui-grid-row > gui-grid-entry > * {
         position : absolute;
-        top : 0px;
-        left : 0px;
-        right : 0px;
-        bottom : 0px;
+        top : 0;
+        left : 0;
+        right : 0;
+        bottom : 0;
         width : 100%;
         height : 100%;
         margin : 0;
@@ -646,7 +665,6 @@ gui-button {
     padding : 0;
     outline : 0 none;
     white-space: nowrap;
-    min-height : 24px;
     min-width : 16px;
     min-height : 16px;
     width : 100%;
@@ -686,6 +704,7 @@ gui-checkbox {
     -webkit-appearance: none;
        -moz-appearance: none;
         -ms-appearance: none;
+         -o-appearance: none;
             appearance: none;
 
     display: inline-block;
@@ -699,8 +718,8 @@ gui-checkbox {
     outline : none;
   }
 
-  gui-radio input {
-  }
+  /*gui-radio input {
+  }*/
 
   gui-radio input:checked:after {
     display : inline;
@@ -712,13 +731,13 @@ gui-checkbox {
     vertical-align: middle;
   }
 
-  gui-radio[data-disabled="true"] label,
+  /*gui-radio[data-disabled="true"] label,
   gui-checkbox[data-disabled="true"] label {
-  }
+  }*/
 
-  gui-radio input:disabled,
+  /*gui-radio input:disabled,
   gui-checkbox input:disabled {
-  }
+  }*/
 
   gui-radio > label > span,
   gui-checkbox > label > span {
@@ -739,12 +758,14 @@ gui-select {
     -webkit-appearance: none;
        -moz-appearance: none;
         -ms-appearance: none;
+         -o-appearance: none;
             appearance: none;
 
-    -webkit-border-radius: 0px;
-       -moz-border-radius: 0px;
-        -ms-border-radius: 0px;
-            border-radius: 0px;
+    -webkit-border-radius: 0;
+       -moz-border-radius: 0;
+        -ms-border-radius: 0;
+         -o-border-radius: 0;
+            border-radius: 0;
 
     display : block;
     padding : 0;
@@ -752,9 +773,10 @@ gui-select {
     width : 100%;
     height : 100%;
     outline : none;
+    box-sizing : border-box;
   }
-  gui-select select:disabled {
-  }
+  /*gui-select select:disabled {
+  }*/
 
   gui-select:before {
     content: '';
@@ -779,12 +801,14 @@ gui-select-list {
     -webkit-appearance: none;
        -moz-appearance: none;
         -ms-appearance: none;
+         -o-appearance: none;
             appearance: none;
 
-    -webkit-border-radius: 0px;
-       -moz-border-radius: 0px;
-        -ms-border-radius: 0px;
-            border-radius: 0px;
+    -webkit-border-radius: 0;
+       -moz-border-radius: 0;
+        -ms-border-radius: 0;
+         -o-border-radius: 0;
+            border-radius: 0;
 
     display : block;
     padding : 0;
@@ -792,9 +816,10 @@ gui-select-list {
     width : 100%;
     height : 100%;
     outline : none;
+    box-sizing : border-box;
   }
-  gui-select-list select:disabled {
-  }
+  /*gui-select-list select:disabled {
+  }*/
 
 /* Slider */
 gui-slider {
@@ -802,17 +827,19 @@ gui-slider {
   position : relative;
 }
   gui-slider input {
-    display : inline;
+    display : inline-block;
     position : relative;
     width : 100%;
     padding : 0;
     margin : 0;
     vertical-align : middle;
     outline : 0 none;
+    box-sizing : border-box;
 
     -webkit-appearance: none;
        -moz-appearance: none;
         -ms-appearance: none;
+         -o-appearance: none;
             appearance: none;
   }
 
@@ -822,15 +849,20 @@ gui-slider {
 
   gui-slider input::-moz-range-track {
     -moz-appearance: none;
+     -ms-appearance: none;
+      -o-appearance: none;
+         appearance: none;
 
     background : transparent;
     border : 0 none;
     width : 100%;
+    box-sizing : border-box;
   }
 
   gui-slider input::-webkit-slider-runnable-track {
     width : 100%;
     border : 0 none;
+    box-sizing : border-box;
   }
 
   gui-slider input::-ms-track {
@@ -840,35 +872,35 @@ gui-slider {
     background: transparent;
     border-color: transparent;
     color: transparent;
+    box-sizing : border-box;
   }
 
   /*
    * RANGE THUMB
    */
-
   gui-slider input::-moz-range-thumb {
     -moz-appearance: none;
     -moz-border-radius : 0;
     border-radius : 0;
   }
-  gui-slider input:disabled::-moz-range-thumb {
-  }
+  /*gui-slider input:disabled::-moz-range-thumb {
+  }*/
 
   gui-slider input::-webkit-slider-thumb {
     -webkit-appearance: none !important;
     -webkit-border-radius : 0;
     border-radius : 0;
   }
-  gui-slider input:disabled::-webkit-range-thumb {
-  }
+  /*gui-slider input:disabled::-webkit-range-thumb {
+  }*/
 
   gui-slider input::-ms-thumb {
     -ms-appearance : none !important;
     -ms-border-radius : 0;
     border-radius : 0;
   }
-  gui-slider input:disabled::-ms-thumb {
-  }
+  /*gui-slider input:disabled::-ms-thumb {
+  }*/
 
   /**
    * MISC
@@ -905,6 +937,7 @@ gui-switch {
     outline : 0 none;
     margin : 0;
     width : 50%;
+    box-sizing : border-box;
   }
   gui-switch button.gui-active {
     margin-left : 50%;
@@ -915,7 +948,7 @@ gui-switch {
     pointer-events : none;
   }
 
-  gui-switch > label > div {
+  /*gui-switch > label > div {
   }
 
   gui-switch[data-disabled="true"] button {
@@ -923,7 +956,7 @@ gui-switch {
 
   gui-switch[data-disabled="true"] button,
   gui-switch[data-disabled="true"] label {
-  }
+  }*/
 
 /* Text Field */
 /* Password Field */
@@ -942,12 +975,13 @@ gui-text {
     background : transparent;
     border : 0 none;
     outline : none;
+    box-sizing : border-box;
 
     -webkit-touch-callout: text;
       -webkit-user-select: text;
-       -khtml-user-select: text;
          -moz-user-select: text;
           -ms-user-select: text;
+           -o-user-select: text;
               user-select: text;
   }
 
@@ -957,13 +991,13 @@ gui-text {
     width : auto;
   }
 
-  gui-password input:disabled,
+  /*gui-password input:disabled,
   gui-text input:disabled {
   }
 
   gui-password[data-disabled="true"] label,
   gui-text[data-disabled="true"] label {
-  }
+  }*/
 
 
 /* Text Area */
@@ -980,19 +1014,21 @@ gui-textarea {
     border : 0 none;
     resize : none;
     outline : none;
+    box-sizing : border-box;
 
     -webkit-touch-callout: text;
       -webkit-user-select: text;
-       -khtml-user-select: text;
          -moz-user-select: text;
           -ms-user-select: text;
+           -o-user-select: text;
               user-select: text;
   }
-  gui-textarea textarea:disabled {
+
+  /*gui-textarea textarea:disabled {
   }
 
   gui-textarea[data-disabled="true"] label {
-  }
+  }*/
 
 /* Rich Text */
 gui-richtext {
@@ -1007,6 +1043,7 @@ gui-richtext {
     margin : 0;
     padding : 0;
     border : 0 none;
+    box-sizing : border-box;
   }
 
 /* File Upload */
@@ -1037,6 +1074,8 @@ gui-input-modal {
 
       -webkit-box-flex: 1 0 auto;
          -moz-box-flex: 1 0 auto;
+          -ms-box-flex: 1 0 auto;
+           -o-box-flex: 1 0 auto;
 
       -webkit-flex: 1 0 auto;
          -moz-flex: 1 0 auto;
@@ -1049,6 +1088,8 @@ gui-input-modal {
 
       -webkit-box-flex: 0 1 auto;
          -moz-box-flex: 0 1 auto;
+          -ms-box-flex: 0 1 auto;
+           -o-box-flex: 0 1 auto;
 
       -webkit-flex: 0 1 auto;
          -moz-flex: 0 1 auto;
@@ -1074,8 +1115,8 @@ gui-video {
   display : inline-block;
   position : relative;
 }
-  gui-video > video {
-  }
+  /*gui-video > video {
+  }*/
 
 /* Image */
 gui-image {
@@ -1140,17 +1181,17 @@ gui-menu.gui-root-menu {
     pointer-events: none;
   }
 
-  gui-menu > gui-menu-entry.gui-menu-expand {
-  }
-  gui-menu > gui-menu-entry.gui-menu-expand:after {
+  /*gui-menu > gui-menu-entry.gui-menu-expand {
+  }*/
+  gui-menu > .gui-menu-expand:after {
     position : absolute;
-    right : 0px;
-    top : 0px;
-    bottom : 0px;
+    right : 0;
+    top : 0;
+    bottom : 0;
   }
 
-  gui-menu > gui-menu-entry:hover {
-  }
+  /*gui-menu > gui-menu-entry:hover {
+  }*/
     gui-menu > gui-menu-entry {
       background-repeat : no-repeat;
       background-position : left center;
@@ -1158,7 +1199,7 @@ gui-menu.gui-root-menu {
     }
     gui-menu > gui-menu-entry > label {
       vertical-align : middle;
-      display : block;
+      display : inline-block;
       pointer-events : none;
     }
     gui-menu > gui-menu-entry > label > input {
@@ -1169,8 +1210,8 @@ gui-menu.gui-root-menu {
       padding-right : 2px;
       pointer-events : none;
     }
-    gui-menu > gui-menu-entry > label.gui-has-image {
-    }
+    /*gui-menu > gui-menu-entry > label.gui-has-image {
+    }*/
 
   gui-menu > gui-menu-entry > gui-menu {
     display : none;
@@ -1181,7 +1222,7 @@ gui-menu.gui-root-menu {
   gui-menu > gui-menu-entry:hover > gui-menu {
     display : inline-block;
     left : 100%;
-    top : 0%;
+    top : 0;
   }
   gui-menu.gui-root-menu > gui-menu-entry:hover > gui-menu {
     display : block;
@@ -1199,8 +1240,8 @@ gui-menu-bar {
     position : relative;
     display : inline-block;
   }
-  gui-menu-bar-entry:hover {
-  }
+  /*gui-menu-bar-entry:hover {
+  }*/
 
   gui-menu-bar-entry > gui-menu {
     display : none;
@@ -1210,7 +1251,7 @@ gui-menu-bar {
   gui-menu-bar-entry.gui-active > gui-menu {
     display : inline-block;
     top : 100%;
-    left : 0%;
+    left : 0;
   }
 
 
@@ -1224,10 +1265,10 @@ gui-progress-bar {
   gui-progress-bar:before {
     content : '';
     position : absolute;
-    left : 0px;
-    bottom : 0px;
-    right : 0px;
-    top : 0px;
+    left : 0;
+    bottom : 0;
+    right : 0;
+    top : 0;
     z-index : -1;
   }
   gui-progress-bar > div {
@@ -1238,12 +1279,15 @@ gui-progress-bar {
     z-index : -1;
   }
   gui-progress-bar > span {
-    display : block;
+    display : inline-block;
+    vertical-align : middle;
     position : absolute;
-    top : 0px;
-    left : 0px;
-    right : 0px;
-    bottom : 0px;
+    top : 50%;
+    left : 0;
+    right : 0;
+    bottom : 0;
+    height : 16px;
+    margin-top : -8px;
   }
 
 /* Statusbar */
@@ -1260,6 +1304,10 @@ gui-statusbar {
        -o-text-overflow: ellipsis;
           text-overflow: ellipsis;
 }
+  gui-statusbar-label {
+    display : inline-block;
+    vertical-align : middle;
+  }
 
 /**
  * ===========================================================================
@@ -1286,10 +1334,10 @@ gui-icon-view {
 }
   gui-icon-view-body {
     position : absolute;
-    top : 0px;
-    left : 0px;
-    right : 0px;
-    bottom : 0px;
+    top : 0;
+    left : 0;
+    right : 0;
+    bottom : 0;
     z-index : 2;
   }
   gui-icon-view-entry {
@@ -1312,7 +1360,7 @@ gui-icon-view {
       display : block;
       left : -2px;
       right : -2px;
-      top : 0px;
+      top : 0;
       padding : 2px;
       z-index : 9999;
 
@@ -1326,8 +1374,8 @@ gui-icon-view {
               text-overflow: ellipsis;
     }
 
-    gui-icon-view-entry.gui-active {
-    }
+    /*gui-icon-view-entry.gui-active {
+    }*/
     gui-icon-view-entry.gui-active > div > span {
       overflow: visible;
       white-space : pre-wrap;
@@ -1351,9 +1399,9 @@ gui-list-view {
   gui-list-view-head {
     z-index : 20;
     position : absolute;
-    top : 0px;
-    left : 0px;
-    right : 0px;
+    top : 0;
+    left : 0;
+    right : 0;
   }
 
   gui-list-view-head,
@@ -1424,6 +1472,8 @@ gui-list-view {
 
       -webkit-box-flex: 1 0 auto;
          -moz-box-flex: 1 0 auto;
+          -ms-box-flex: 1 0 auto;
+           -o-box-flex: 1 0 auto;
 
       -webkit-flex: 1 0 auto;
          -moz-flex: 1 0 auto;
@@ -1448,30 +1498,30 @@ gui-list-view {
         white-space: nowrap;
       }
 
-    gui-list-view-column.gui-has-image {
+    /*gui-list-view-column.gui-has-image {
     }
     gui-list-view[data-icon-size="32"] gui-list-view-column.gui-has-image {
     }
 
     gui-list-view-row.gui-active {
-    }
+    }*/
 
     gui-list-view-column-resizer {
       width : 1px;
       position : absolute;
-      top : 0px;
-      bottom : 0px;
-      left : 0px;
+      top : 0;
+      bottom : 0;
+      left : 0;
       z-index : 999999999;
     }
       gui-list-view-column-resizer:after {
         content : '';
         background : #b2b2b2;
         position : absolute;
-        top : 0px;
+        top : 0;
         left : 1px;
         width : 1px;
-        bottom : 0px;
+        bottom : 0;
       }
 
 
@@ -1483,10 +1533,10 @@ gui-tree-view {
 }
   gui-tree-view-body {
     position : absolute;
-    top : 0px;
-    left : 0px;
-    right : 0px;
-    bottom : 0px;
+    top : 0;
+    left : 0;
+    right : 0;
+    bottom : 0;
     z-index : 2;
   }
   gui-tree-view-entry {
@@ -1494,8 +1544,8 @@ gui-tree-view {
     position : relative;
 
   }
-    gui-tree-view-entry > div {
-    }
+    /*gui-tree-view-entry > div {
+    }*/
     gui-tree-view-entry > div > span {
       background-repeat : no-repeat;
       background-position : left center;
@@ -1508,12 +1558,12 @@ gui-tree-view {
            -o-text-overflow: ellipsis;
               text-overflow: ellipsis;
     }
-    gui-tree-view-entry > div > span.gui-has-image {
+    /*gui-tree-view-entry > div > span.gui-has-image {
     }
     gui-tree-view-entry > gui-tree-view-entry {
     }
     gui-tree-view-entry.gui-active > div {
-    }
+    }*/
 
   gui-tree-view-entry.gui-expandable {
     padding-left : 16px;
@@ -1521,16 +1571,16 @@ gui-tree-view {
   gui-tree-view-entry.gui-expandable gui-tree-view-expander {
     display : block;
     position : absolute;
-    left : 0px;
-    top : 0px;
+    left : 0;
+    top : 0;
     width : 16px;
     height : 16px;
     overflow : visible;
   }
-  gui-tree-view-entry.gui-expandable gui-tree-view-expander:before {
+  /*gui-tree-view-entry.gui-expandable gui-tree-view-expander:before {
   }
   gui-tree-view-entry.gui-expandable.gui-expanded > gui-tree-view-expander:before {
-  }
+  }*/
 
 
 gui-toolbar > .gui-element {

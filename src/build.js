@@ -28,7 +28,10 @@
  * @licence Simplified BSD License
  */
 (function(_path, _fs, _less) {
+  /*jshint latedef: false */
+
   'use strict';
+
   var _ugly;
   var Cleancss;
 
@@ -245,7 +248,7 @@
    * Fixes Windows paths (for JSON)
    */
   function fixWinPath(str) {
-    if ( ISWIN ) {
+    if ( typeof str === 'string' && ISWIN ) {
       return str.replace(/(["\s'$`\\])/g,'\\$1').replace(/\\+/g, '/');
     }
     return str;
@@ -790,15 +793,17 @@
       var jsonSettings = clone(cfg.server);
       jsonSettings.extensions = loadExtensions;
       jsonSettings.mimes = cfg.mime.mapping;
+      jsonSettings.uri = {
+        api: cfg.client.Connection.APIURI,
+        fs: cfg.client.Connection.FSURI
+      };
 
       try {
         jsonSettings.vfs.maxuploadsize = cfg.client.VFS.MaxUploadSize;
       } catch ( e ) {}
 
       Object.keys(jsonSettings.vfs).forEach(function(key) {
-        if ( typeof jsonSettings.vfs[key] === 'string' ) {
-          jsonSettings.vfs[key] = fixWinPath(jsonSettings.vfs[key]);
-        }
+        jsonSettings.vfs[key] = fixWinPath(jsonSettings.vfs[key]);
       });
 
       // Write
@@ -878,8 +883,6 @@
     tpl = replaceAll(tpl, '%HANDLER%', cfg.handler);
 
     writeFile(_path.join(outdir, 'index.html'), tpl);
-    copyFile(_path.join(tpldir, 'favicon.png'), _path.join(outdir, 'favicon.png'));
-    copyFile(_path.join(tpldir, 'favicon.ico'), _path.join(outdir, 'favicon.ico'));
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1096,17 +1099,32 @@
 
     grunt.log.subhead('CSS');
     writeFile(PATHS.out_client_css, buildCSS());
+  }
 
-    grunt.log.subhead('Static files');
-    writeFile(PATHS.out_client_css, buildCSS());
-
+  /**
+   * Create static files in dist/
+   */
+  function createDistFiles(grunt, dist) {
+    var cfg = generateBuildConfig(grunt);
+    var tpldir = _path.join(PATHS.templates, 'dist', cfg.dist.template);
+    var outdir = _path.join(ROOT, dist || 'dist-dev');
     var stats = cfg.statics;
+
     Object.keys(stats).forEach(function(f) {
       var src = _path.join(ROOT, f);
       var dst = _path.join(ROOT, stats[f]);
       copyFile(src, dst);
     });
 
+    var splashFile = _path.join(tpldir, 'splash.png');
+    if ( _fs.existsSync(splashFile) ) {
+      copyFile(splashFile, _path.join(outdir, 'splash.png'));
+    }
+
+    copyFile(_path.join(tpldir, 'favicon.png'), _path.join(outdir, 'favicon.png'));
+    copyFile(_path.join(tpldir, 'favicon.ico'), _path.join(outdir, 'favicon.ico'));
+
+    createIndex(grunt, null, dist);
   }
 
   /**
@@ -1142,12 +1160,20 @@
     deleteFile(PATHS.out_standalone);
     copyFile(PATHS.dist, PATHS.out_standalone);
 
+    // Create static schemes file for internals
     var tpl = readFile(_path.join(PATHS.templates, 'dist', 'schemes.js')).toString();
     tpl = tpl.replace('%JSON%', JSON.stringify(tree, null, 4));
     writeFile(PATHS.out_standalone_schemes, tpl);
 
+    // Rewrite config
     createIndex(grunt, 'standalone', 'dist');
     writeNewConfig(arg || 'standalone');
+
+    // Rewrite fonts css
+    var cfg = generateBuildConfig(grunt);
+    var srcPath = _path.join(PATHS.out_standalone, 'themes', 'fonts.css');
+    var srcFonts = readFile(srcPath).toString();
+    writeFile(srcPath, srcFonts.replace(new RegExp(cfg.client.Connection.FontURI, 'g'), 'fonts'));
 
     if ( arg === 'nw' ) {
       // Initials
@@ -1300,8 +1326,12 @@
                  _path.join(PATHS.dist, 'themes', 'fonts', i));
 
         var path = _path.join(PATHS.fonts, i, 'style.css');
-        styles.push(readFile(path).toString());
+        var rout = readFile(path).toString();
+        var rep = cfg.client.Connection.FontURI;
+        rout = rout.replace(/\%FONTURI\%/g, rep);
+        styles.push(rout);
       });
+
       writeFile(PATHS.out_client_fontcss, styles.join('\n'));
     }
 
@@ -1565,7 +1595,7 @@
 
   module.exports = {
     createConfigurationFiles: createConfigurationFiles,
-    createIndex:              createIndex,
+    createDistFiles:          createDistFiles,
     createApacheVhost:        createApacheVhost,
     createApacheHtaccess:     createApacheHtaccess,
     createLighttpdConfig:     createLighttpdConfig,

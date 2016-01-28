@@ -252,7 +252,7 @@
     // PackageManager
     //
 
-    'ERR_PACKAGE_EXISTS': 'Folder instalacyjny pakietów juz istnieje. Nie można kontynuować!',
+    'ERR_PACKAGE_EXISTS': 'Folder instalacyjny pakietów już istnieje. Nie można kontynuować!',
 
     //
     // DefaultApplication
@@ -375,7 +375,8 @@
     'LBL_BUGREPORT' : 'Raport błędu',
     'LBL_INSTALL' : 'Instaluj',
     'LBL_UPDATE' : 'Aktualizuj',
-    'LBL_REMOVE' : 'Usuń'
+    'LBL_REMOVE' : 'Usuń',
+    'LBL_SHOW_SIDEBAR' : 'Pokaż pasek'
   };
 
 })();

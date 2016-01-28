@@ -77,9 +77,8 @@ describe('VFS', function() {
 
   describe('#exists', function() {
     it('should not find folder', function(done) {
-      var file = [
-        'home:///.mocha'
-      ];
+      var file = {path: 'home:///.mocha'};
+
       instance.vfs.exists(file, request, function(json) {
         assert.equal(null, json.error);
         assert.equal(false, json.result);
@@ -90,7 +89,7 @@ describe('VFS', function() {
 
   describe('#exists', function() {
     it('should not find file', function(done) {
-      instance.vfs.exists(['home:///.mocha/test.txt'], request, function(json) {
+      instance.vfs.exists({path: 'home:///.mocha/test.txt'}, request, function(json) {
         assert.equal(null, json.error);
         assert.equal(false, json.result);
         done();
@@ -100,7 +99,7 @@ describe('VFS', function() {
 
   describe('#mkdir', function() {
     it('should create folder without error', function(done) {
-      instance.vfs.mkdir(['home:///.mocha'], request, function(json) {
+      instance.vfs.mkdir({path: 'home:///.mocha'}, request, function(json) {
         assert.equal(null, json.error);
         assert.equal(true, json.result);
         done();
@@ -111,10 +110,10 @@ describe('VFS', function() {
   describe('#write', function() {
     it('should write file without error', function(done) {
       var data = (new Buffer(str).toString('base64'));
-      var file = [
-        'home:///.mocha/test.txt',
-        'data:text/plain;base64,' + data
-      ];
+      var file = {
+        path: 'home:///.mocha/test.txt',
+        data: 'data:text/plain;base64,' + data
+      };
       instance.vfs.write(file, request, function(json) {
         assert.equal(null, json.error);
         assert.equal(true, json.result);
@@ -125,7 +124,7 @@ describe('VFS', function() {
 
   describe('#read', function() {
     it('should read file without error', function(done) {
-      instance.vfs.read(['home:///.mocha/test.txt'], request, function(json) {
+      instance.vfs.read({path: 'home:///.mocha/test.txt'}, request, function(json) {
         assert.equal(null, json.error);
 
         var result = json.result.replace(/^data\:(.*);base64\,/, '') || '';
@@ -141,7 +140,7 @@ describe('VFS', function() {
     it('should find file (path and mime) without error', function(done) {
       var tst = 'home:///.mocha/test.txt';
       var found = {};
-      instance.vfs.scandir(['home:///.mocha'], request, function(json) {
+      instance.vfs.scandir({path: 'home:///.mocha'}, request, function(json) {
         assert.equal(null, json.error);
 
         try {
@@ -163,10 +162,10 @@ describe('VFS', function() {
 
   describe('#move', function() {
     it('should rename/move file without error', function(done) {
-      var file = [
-        'home:///.mocha/test.txt',
-        'home:///.mocha/test2.txt'
-      ];
+      var file = {
+        src: 'home:///.mocha/test.txt',
+        dest: 'home:///.mocha/test2.txt'
+      };
       instance.vfs.move(file, request, function(json) {
         assert.equal(null, json.error);
         assert.equal(true, json.result);
@@ -177,10 +176,10 @@ describe('VFS', function() {
 
   describe('#copy', function() {
     it('should copy file without error', function(done) {
-      var file = [
-        'home:///.mocha/test2.txt',
-        'home:///.mocha/test3.txt'
-      ];
+      var file = {
+        src: 'home:///.mocha/test2.txt',
+        dest: 'home:///.mocha/test3.txt'
+      };
       instance.vfs.copy(file, request, function(json) {
         assert.equal(null, json.error);
         assert.equal(true, json.result);
@@ -191,10 +190,10 @@ describe('VFS', function() {
 
   describe('#copy', function() {
     it('should copy folder without error', function(done) {
-      var file = [
-        'home:///.mocha',
-        'home:///.mocha-copy'
-      ];
+      var file = {
+        src: 'home:///.mocha',
+        dest: 'home:///.mocha-copy'
+      };
       instance.vfs.copy(file, request, function(json) {
         assert.equal(null, json.error);
         assert.equal(true, json.result);
@@ -205,7 +204,7 @@ describe('VFS', function() {
 
   describe('#fileinfo', function() {
     it('should get file information without error', function(done) {
-      instance.vfs.fileinfo(['home:///.mocha/test2.txt'], request, function(json) {
+      instance.vfs.fileinfo({path: 'home:///.mocha/test2.txt'}, request, function(json) {
         assert.equal(null, json.error);
         assert.equal('home:///.mocha/test2.txt', json.result.path);
         assert.equal('test2.txt', json.result.filename);
@@ -217,7 +216,7 @@ describe('VFS', function() {
 
   describe('#delete', function() {
     it('should delete file without error', function(done) {
-      instance.vfs.delete(['home:///.mocha/test2.txt'], request, function(json) {
+      instance.vfs.delete({path: 'home:///.mocha/test2.txt'}, request, function(json) {
         assert.equal(null, json.error);
         assert.equal(true, json.result);
         done();
@@ -225,7 +224,7 @@ describe('VFS', function() {
     });
 
     it('should delete folder without error', function(done) {
-      instance.vfs.delete(['home:///.mocha'], request, function(json) {
+      instance.vfs.delete({path: 'home:///.mocha'}, request, function(json) {
         assert.equal(null, json.error);
         assert.equal(true, json.result);
         done();
@@ -233,7 +232,7 @@ describe('VFS', function() {
     });
 
     it('should delete copied folder without error', function(done) {
-      instance.vfs.delete(['home:///.mocha-copy'], request, function(json) {
+      instance.vfs.delete({path: 'home:///.mocha-copy'}, request, function(json) {
         assert.equal(null, json.error);
         assert.equal(true, json.result);
         done();
@@ -402,11 +401,8 @@ describe('Node HTTP Server', function() {
   describe('#login', function() {
     it('should return 200 with proper json result', function(done) {
       var data = {
-        'method': 'login',
-        'arguments': {
-          username: 'demo',
-          password: 'demo'
-        }
+        username: 'demo',
+        password: 'demo'
       };
 
       var exp = {
@@ -416,7 +412,7 @@ describe('Node HTTP Server', function() {
         groups: [ 'demo' ]
       };
 
-      post(url + '/API', data, function(err, res, body) {
+      post(url + '/API/login', data, function(err, res, body) {
         assert.equal(false, err);
         assert.equal(200, res.statusCode);
         assert.equal(false, body.error);
@@ -429,14 +425,11 @@ describe('Node HTTP Server', function() {
   describe('#api', function() {
     it('w/session - should return 200 with proper response', function(done) {
       var data = {
-        'method': 'application',
-        'arguments': {
-          'path': 'default/Settings',
-          'method': 'test'
-        }
+        path: 'default/Settings',
+        method: 'test'
       };
 
-      post(url + '/API', data, function(err, res, body) {
+      post(url + '/API/application', data, function(err, res, body) {
         assert.equal(false, err);
         assert.equal(200, res.statusCode);
         assert.equal(false, body.error);

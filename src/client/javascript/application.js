@@ -379,42 +379,6 @@
     this.__scheme = s;
   };
 
-  /**
-   * Get a launch/session argument
-   *
-   * @return  Mixed     Argument value or null
-   *
-   * @method  Application::_getArgument()
-   */
-  Application.prototype._getArgument = function(k) {
-    return typeof this.__args[k] === 'undefined' ? null : this.__args[k];
-  };
-
-  /**
-   * Get all launch/session argument
-   *
-   * @return  Array
-   *
-   * @method  Application::_getArguments()
-   */
-  Application.prototype._getArguments = function() {
-    return this.__args;
-  };
-
-  /**
-   * Set a launch/session argument
-   *
-   * @param   String    k             Key
-   * @param   String    v             Value
-   *
-   * @return  void
-   *
-   * @method  Application::_setArgument()
-   */
-  Application.prototype._setArgument = function(k, v) {
-    this.__args[k] = v;
-  };
-
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////

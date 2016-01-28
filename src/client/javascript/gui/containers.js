@@ -43,8 +43,6 @@
    *
    * A view with resizable content boxes
    *
-   * TODO: Minimum size of resize containers
-   *
    * @api OSjs.GUI.Elements.gui-paned-view
    * @class
    */

@@ -383,8 +383,8 @@
    */
   function initVFS(config, callback) {
     console.debug('initVFS()');
-    if ( OSjs.VFS.registerMounts ) {
-      OSjs.VFS.registerMounts();
+    if ( OSjs.VFS.registerMountpoints ) {
+      OSjs.VFS.registerMountpoints();
     }
 
     callback();
@@ -543,6 +543,10 @@
           win.close();
         }, 500);
       } catch ( e ) {
+      }
+    } else {
+      if ( OSjs.API.getConfig('ReloadOnShutdown') === true ) {
+        window.location.reload();
       }
     }
   };

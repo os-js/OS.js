@@ -352,7 +352,8 @@
     'LBL_BACKGROUND_COLOR' : 'Achtergrond kleur',
     'LBL_UNORDERED_LIST'   : 'Ongesorteerde lijst',
     'LBL_STATUS'   : 'Status',
-    'LBL_READONLY' : 'Alleen lezen'
+    'LBL_READONLY' : 'Alleen lezen',
+    'LBL_SHOW_SIDEBAR' : 'Zijbar tonen'
   };
 
 })();
