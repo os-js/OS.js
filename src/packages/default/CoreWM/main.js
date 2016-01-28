@@ -473,12 +473,11 @@
     var self = this;
 
     VFS.upload({
-      app: self,
       destination: API.getDefaultPath(),
       files: files
     }, function(error, file) {
       if ( !error && file && self.iconView ) {
-        self.iconView.addShortcut(file, self);
+        self.iconView.addShortcut(file, self, true);
       }
     });
   };
