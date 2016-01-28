@@ -8,7 +8,7 @@ Works in any modern browser and can be deployed on any platform using Node or PH
 
 [![bitHound Score](https://www.bithound.io/github/os-js/OS.js/badges/score.svg)](https://www.bithound.io/github/os-js/OS.js)
 [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/os-js/OS.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-[![Travis CI Build Status](https://img.shields.io/travis/os-js/OS.js.svg)](https://travis-ci.org/os-js/OS.js)
+[![Travis CI Build Status](https://travis-ci.org/os-js/OS.js.svg?branch=master)](https://travis-ci.org/os-js/OS.js)
 [![Codacy Badge](https://api.codacy.com/project/badge/grade/61677f92d80d446ca37f7b6ab2fae032)](https://www.codacy.com/app/os-js/OS.js)
 [![Tips](https://img.shields.io/gratipay/os-js.svg)](https://gratipay.com/os-js/)
 [![Donate](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=andersevenrud%40gmail%2ecom&lc=NO&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted)
