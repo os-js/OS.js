@@ -41,19 +41,19 @@
       statusText: 'LMB: Pick foreground-, RMB: Pick background color'
     },
     bucket: {
-      statusText: 'LBM: Fill with foreground-, RMB: Fill with background color'
+      statusText: 'LMB: Fill with foreground-, RMB: Fill with background color'
     },
     pencil: {
-      statusText: 'LBM: Use foreground-, RMB: Use background color'
+      statusText: 'LMB: Use foreground-, RMB: Use background color'
     },
     path: {
-      statusText: 'LBM: Use foreground-, RMB: Use background color'
+      statusText: 'LMB: Use foreground-, RMB: Use background color'
     },
     rectangle: {
-      statusText: 'LBM: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode'
+      statusText: 'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode'
     },
     circle: {
-      statusText: 'LBM: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode'
+      statusText: 'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode'
     }
   };
   var toolEvents = {
@@ -214,6 +214,8 @@
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
 
+  var doTranslate = OSjs.Applications.ApplicationDraw._;
+
   function ApplicationDrawWindow(app, metadata, scheme, file) {
     DefaultApplicationWindow.apply(this, ['ApplicationDrawWindow', {
       icon: metadata.icon,
@@ -244,7 +246,7 @@
 
     // Load and set up scheme (GUI) here
     scheme.render(this, 'DrawWindow', root, null, null, {
-      _: OSjs.Applications.ApplicationDraw._
+      _: doTranslate
     });
 
     var statusbar = scheme.find(this, 'Statusbar');
@@ -277,7 +279,7 @@
 
       tmpContext = tmpCanvas.getContext('2d');
       tmpContext.strokeStyle = t ? ctx.fillStyle : ctx.strokeStyle;
-      tmpContext.fillStyle = t ? ctx.strokeSyle : ctx.fillStyle;
+      tmpContext.fillStyle = t ? ctx.strokeStyle : ctx.fillStyle;
       tmpContext.lineWidth = ctx.lineWidth;
       tmpContext.lineJoin = ctx.lineJoin;
     }
@@ -354,7 +356,7 @@
     ts.forEach(function(t) {
       scheme.find(self, 'tool-' + t).on('click', function() {
         var stats = tools[t].statusText || '';
-        statusbar.set('value', stats);
+        statusbar.set('value', doTranslate(stats));
 
         self.setToolProperty('name', t);
       });
@@ -390,8 +392,16 @@
   ApplicationDrawWindow.prototype.openColorDialog = function(param) {
     var self = this;
 
+    var colorParam = null;
+    if (param === 'background') {
+      colorParam = doTranslate('Set background color');
+    }
+    else if (param === 'foreground') {
+      colorParam = doTranslate('Set foreground color');
+    }
+
     API.createDialog('Color', {
-      title: 'Set ' + param + ' color', // FIXME: Locale
+      title: colorParam,
       color: self.tool[param]
     }, function(ev, button, result) {
       if ( button !== 'ok' ) { return; }

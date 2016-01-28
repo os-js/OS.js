@@ -127,21 +127,19 @@
         this._wmref.createNotificationIcon(this.notificationId, {className: 'BusyNotification', tooltip: desc, image: false});
       }
 
-      OSjs.VFS.internalUpload(file, this.args.dest, function(type, ev) {
-        if ( type === 'success' ) {
-          progressDialog._close();
-          self.onClose(ev, 'ok', file);
-        } else if ( type === 'failed' ) {
-          error(ev.toString(), ev);
-        } else if ( type === 'canceled' ) {
-          error(OSjs.API._('DIALOG_UPLOAD_FAILED_CANCELLED'), ev);
-        } else if ( type === 'progress' ) {
+      OSjs.VFS.upload({files: [file], destination: this.args.dest}, function(err, result, ev) {
+        if ( err ) {
+          error(err, ev);
+          return;
+        }
+        progressDialog._close();
+        self.onClose(ev, 'ok', file);
+      }, {
+        onprogress: function(ev) {
           if ( ev.lengthComputable ) {
             var p = Math.round(ev.loaded * 100 / ev.total);
             progressDialog.setProgress(p);
           }
-        } else {
-          error(ev.toString(), ev);
         }
       });
 

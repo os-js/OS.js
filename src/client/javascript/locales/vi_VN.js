@@ -369,7 +369,8 @@
     'LBL_BUGREPORT' : 'Báo lỗi',
     'LBL_INSTALL' : 'Cài đặt',
     'LBL_UPDATE' : 'Cập nhật',
-    'LBL_REMOVE' : 'Xóa'
+    'LBL_REMOVE' : 'Xóa',
+    'LBL_SHOW_SIDEBAR' : 'Hiện Sidebar'
   };
 
 })();

@@ -26,6 +26,7 @@
  *
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @author  Emersion <contact@emersion.fr>
+ * @author  Emilien Raffaëlli <emilienraffaelli@hotmail.com>
  * @licence Simplified BSD License
  */
 (function() {
@@ -249,6 +250,12 @@
     // VFS -> OneDrive
     'ONEDRIVE_ERR_RESOLVE'      : 'Impossible de résoudre le chemin: objet non trouvé',
 
+    // ZIP
+    'ZIP_PRELOAD_FAIL'  : 'LE chargement de zip.js a échoué',
+    'ZIP_VENDOR_FAIL'   : 'La bibliothèque zip.js n\'a pas été trouvée. A-t-elle été chargée correctement?',
+    'ZIP_NO_RESOURCE'   : 'Aucune archive zip n\'a été fournie',
+    'ZIP_NO_PATH'       : 'Aucun chemin fourni',
+
     //
     // PackageManager
     //
@@ -304,7 +311,7 @@
     'LBL_THEME'        : 'Thème',
     'LBL_COLOR'        : 'Couleur',
     'LBL_PID'          : 'PID',
-    'LBL_KILL'         : 'Tuer',
+    'LBL_KILL'         : 'Fin de tâche',
     'LBL_ALIVE'        : 'Vivant',
     'LBL_INDEX'        : 'Index',
     'LBL_ADD'          : 'Ajouter',
@@ -376,7 +383,11 @@
     'LBL_BUGREPORT' : 'Report de bug',
     'LBL_INSTALL' : 'Installer',
     'LBL_UPDATE' : 'Mettre à jour',
-    'LBL_REMOVE' : 'Enlever'
+    'LBL_REMOVE' : 'Enlever',
+    'LBL_SHOW_SIDEBAR' : 'Afficher la barre de côté',
+    'LBL_SHOW_NAVIGATION' : 'Afficher la navigation',
+    'LBL_SHOW_HIDDENFILES' : 'Afficher les fichiers cachés',
+    'LBL_SHOW_FILEEXTENSIONS' : 'Afficher les extensions de fichier'
   };
 
 })();

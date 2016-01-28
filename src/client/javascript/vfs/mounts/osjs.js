@@ -27,68 +27,77 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Application, Window, GUI, Dialogs, VFS, Utils) {
-  // jscs:disable validateQuoteMarks
+(function(Utils, API) {
   'use strict';
 
+  window.OSjs       = window.OSjs       || {};
+  OSjs.VFS          = OSjs.VFS          || {};
+  OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
+
   /////////////////////////////////////////////////////////////////////////////
-  // LOCALES
+  // API
   /////////////////////////////////////////////////////////////////////////////
 
-  var _Locales = {
-    bg_BG : {
-      'Insert URL' : 'Въведи URL'
-    },
-    de_DE : {
-      'Insert URL' : 'URL einfügen'
-    },
-    es_ES : {
-      'Insert URL' : 'Insertar URL'
-    },
-    fr_FR : {
-      'Insert URL' : 'Insérer une URL'
-    },
-    it_IT : {
-      'Insert URL' : 'Inserisci URL'
-    },
-    ko_KR : {
-      'Insert URL' : '링크 삽입'
-    },
-    nl_NL : {
-      'Insert URL' : 'URL invoegen'
-    },
-    no_NO : {
-      'Insert URL' : 'Sett inn URL'
-    },
-    pl_PL : {
-      'Insert URL' : 'Wpisz URL'
-    },
-    ru_RU : {
-      'Insert URL' : 'Вставить ссылку'
-    },
-    sk_SK : {
-      'Insert URL' : 'Vložiť URL'
-    },
-    tr_TR : {
-      'Insert URL' : 'URL ekle'
-    },
-    vi_VN : {
-      'Insert URL' : 'Thêm URL'
+  var OSjsStorage = {};
+  OSjsStorage.url = function(item, callback) {
+    var root = window.location.pathname || '/';
+    if ( root === '/' || window.location.protocol === 'file:' ) {
+      root = '';
     }
+
+    var url = item.path.replace(OSjs.VFS.Modules.OSjs.match, root);
+    callback(false, url);
   };
 
-  function _() {
-    var args = Array.prototype.slice.call(arguments, 0);
-    args.unshift(_Locales);
-    return OSjs.API.__.apply(this, args);
+  /////////////////////////////////////////////////////////////////////////////
+  // WRAPPERS
+  /////////////////////////////////////////////////////////////////////////////
+
+  function makeRequest(name, args, callback, options) {
+    args = args || [];
+    callback = callback || {};
+
+    var restricted = ['write', 'copy', 'move', 'unlink', 'mkdir', 'exists', 'fileinfo', 'trash', 'untrash', 'emptyTrash'];
+    if ( OSjsStorage[name] ) {
+      var fargs = args;
+      fargs.push(callback);
+      fargs.push(options);
+      return OSjsStorage[name].apply(OSjsStorage, fargs);
+    } else if ( restricted.indexOf(name) !== -1 ) {
+      return callback(API._('ERR_VFS_UNAVAILABLE'));
+    }
+    OSjs.VFS.Transports.Internal.request.apply(null, arguments);
   }
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationWriter = OSjs.Applications.ApplicationWriter || {};
-  OSjs.Applications.ApplicationWriter._ = _;
+  /**
+   * This is a virtual module for showing 'dist' files in OS.js
+   *
+   * @see OSjs.VFS.Transports.Internal
+   * @api OSjs.VFS.Modules.OSjs
+   */
+  OSjs.VFS.Modules.OSjs = OSjs.VFS.Modules.OSjs || {
+    readOnly: true,
+    description: 'OS.js',
+    root: 'osjs:///',
+    match: /^osjs\:\/\//,
+    icon: 'devices/harddrive.png',
+    visible: true,
+    internal: true,
+    unmount: function(cb) {
+      cb = cb || function() {};
+      cb(API._('ERR_VFS_UNAVAILABLE'), false);
+    },
+    mounted: function() {
+      return true;
+    },
+    enabled: function() {
+      return true;
+    },
+    request: makeRequest
+  };
 
-})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.GUI, OSjs.Dialogs, OSjs.VFS, OSjs.Utils);
+})(OSjs.Utils, OSjs.API);

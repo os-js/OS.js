@@ -1,0 +1,11 @@
+{
+  "ids": false,
+  "important": false,
+  "box-sizing": false,
+  "fallback-colors": false,
+  "universal-selector": false,
+  "adjoining-classes": false,
+  "qualified-headings": false,
+  "font-faces": false,
+  "outline-none": false
+}

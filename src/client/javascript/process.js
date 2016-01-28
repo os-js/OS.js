@@ -297,6 +297,42 @@
     }, cbSuccess, cbError);
   };
 
+  /**
+   * Get a launch/session argument
+   *
+   * @return  Mixed     Argument value or null
+   *
+   * @method  Process::_getArgument()
+   */
+  Process.prototype._getArgument = function(k) {
+    return typeof this.__args[k] === 'undefined' ? null : this.__args[k];
+  };
+
+  /**
+   * Get all launch/session argument
+   *
+   * @return  Array
+   *
+   * @method  Process::_getArguments()
+   */
+  Process.prototype._getArguments = function() {
+    return this.__args;
+  };
+
+  /**
+   * Set a launch/session argument
+   *
+   * @param   String    k             Key
+   * @param   String    v             Value
+   *
+   * @return  void
+   *
+   * @method  Process::_setArgument()
+   */
+  Process.prototype._setArgument = function(k, v) {
+    this.__args[k] = v;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////

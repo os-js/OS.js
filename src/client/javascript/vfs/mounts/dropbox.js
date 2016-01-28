@@ -352,6 +352,11 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * This is the Dropbox VFS Abstraction for OS.js
+   *
+   * @api OSjs.VFS.Modules.Dropbox
+   */
   OSjs.VFS.Modules.Dropbox = OSjs.VFS.Modules.Dropbox || {
     readOnly: false,
     description: 'Dropbox',

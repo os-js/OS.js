@@ -7,13 +7,6 @@
 
         <gui-menu-bar-entry data-label="LBL_FILE">
           <gui-menu data-id="SubmenuFile">
-            <gui-menu-entry data-id="MenuUpload" data-label="Upload file"></gui-menu-entry>
-            <gui-menu-entry data-id="MenuClose" data-label="LBL_CLOSE"></gui-menu-entry>
-          </gui-menu>
-        </gui-menu-bar-entry>
-
-        <gui-menu-bar-entry data-label="LBL_EDIT">
-          <gui-menu data-id="SubmenuEdit">
             <gui-menu-entry data-id="MenuCreate" data-label="LBL_CREATE">
               <gui-menu data-id="SubmenuCreate">
                 <gui-menu-entry data-id="MenuCreateDirectory" data-label="LBL_DIRECTORY"></gui-menu-entry>
@@ -21,6 +14,13 @@
               </gui-menu>
             </gui-menu-entry>
 
+            <gui-menu-entry data-id="MenuUpload" data-label="LBL_UPLOAD"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuClose" data-label="LBL_CLOSE"></gui-menu-entry>
+          </gui-menu>
+        </gui-menu-bar-entry>
+
+        <gui-menu-bar-entry data-label="LBL_EDIT">
+          <gui-menu data-id="SubmenuEdit">
             <gui-menu-entry data-id="MenuRename" data-label="LBL_RENAME"></gui-menu-entry>
             <gui-menu-entry data-id="MenuDelete" data-label="LBL_DELETE"></gui-menu-entry>
             <gui-menu-entry data-id="MenuInfo" data-label="LBL_INFORMATION"></gui-menu-entry>
@@ -32,10 +32,10 @@
         <gui-menu-bar-entry data-label="LBL_VIEW">
           <gui-menu data-id="SubmenuView">
             <gui-menu-entry data-id="MenuRefresh" data-label="LBL_REFRESH"></gui-menu-entry>
-            <gui-menu-entry data-id="MenuShowSidebar" data-label="Show sidebar" data-type="checkbox"></gui-menu-entry>
-            <gui-menu-entry data-id="MenuShowNavigation" data-label="Show navigation" data-type="checkbox"></gui-menu-entry>
-            <gui-menu-entry data-id="MenuShowHidden" data-label="Show hidden files" data-type="checkbox"></gui-menu-entry>
-            <gui-menu-entry data-id="MenuShowExtension" data-label="Show file extensions" data-type="checkbox"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuShowSidebar" data-label="LBL_SHOW_SIDEBAR" data-type="checkbox"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuShowNavigation" data-label="LBL_SHOW_NAVIGATION" data-type="checkbox"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuShowHidden" data-label="LBL_SHOW_HIDDENFILES" data-type="checkbox"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuShowExtension" data-label="LBL_SHOW_FILEEXTENSIONS" data-type="checkbox"></gui-menu-entry>
             <gui-menu-entry data-id="" data-label="LBL_VIEWTYPE">
               <gui-menu>
                 <gui-menu-entry data-id="MenuViewList" data-label="LBL_LISTVIEW" data-type="radio" data-group="ViewType"></gui-menu-entry>
@@ -43,7 +43,7 @@
                 <gui-menu-entry data-id="MenuViewTree" data-label="LBL_TREEVIEW" data-type="radio" data-group="ViewType"></gui-menu-entry>
               </gui-menu>
             </gui-menu-entry>
-            <gui-menu-entry data-id="" data-label="Show columns">
+            <gui-menu-entry data-id="" data-label="LBL_SHOW_COLUMNS">
               <gui-menu>
                 <gui-menu-entry data-id="MenuColumnFilename" data-label="LBL_FILENAME" data-type="checkbox"></gui-menu-entry>
                 <gui-menu-entry data-id="MenuColumnMIME" data-label="LBL_MIME" data-type="checkbox"></gui-menu-entry>
