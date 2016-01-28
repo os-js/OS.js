@@ -127,17 +127,13 @@
         this._wmref.createNotificationIcon(this.notificationId, {className: 'BusyNotification', tooltip: desc, image: false});
       }
 
-      OSjs.VFS.internalUpload(file, this.args.dest, function(err, result, ev) {
+      OSjs.VFS.upload({files: [file], destination: this.args.dest}, function(err, result, ev) {
         if ( err ) {
-          if ( err === 'canceled' ) {
-            error(OSjs.API._('DIALOG_UPLOAD_FAILED_CANCELLED'), ev);
-          } else {
-            error(ev.toString(), ev);
-          }
-        } else {
-          progressDialog._close();
-          self.onClose(ev, 'ok', file);
+          error(err, ev);
+          return;
         }
+        progressDialog._close();
+        self.onClose(ev, 'ok', file);
       }, {
         onprogress: function(ev) {
           if ( ev.lengthComputable ) {

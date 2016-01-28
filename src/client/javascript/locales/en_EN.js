@@ -220,6 +220,8 @@
     'ERR_VFSMODULE_ALREADY_MOUNTED_FMT': 'VFS Module \'{0}\' already mounted',
     'ERR_VFSMODULE_NOT_MOUNTED'        : 'VFS Module not mounted',
     'ERR_VFSMODULE_NOT_MOUNTED_FMT'    : 'VFS Module \'{0}\' not mounted',
+    'ERR_VFSMODULE_EXCEPTION'          : 'VFS Module Exception',
+    'ERR_VFSMODULE_EXCEPTION_FMT'      : 'VFS Module Exception: {0}',
 
     'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Downloading file',
 
