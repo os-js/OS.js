@@ -240,6 +240,22 @@
     'ERR_VFSMODULE_UNTRASH_FMT'    : 'ゴミ箱からファイルを取り出せませんでした: {0}',
     'ERR_VFSMODULE_EMPTYTRASH'     : 'ゴミ箱を空にできませんでした',
     'ERR_VFSMODULE_EMPTYTRASH_FMT' : 'ゴミ箱を空にできませんでした: {0}',
+    'ERR_VFSMODULE_MOVE'           : 'ファイルの移動に失敗しました',
+    'ERR_VFSMODULE_MOVE_FMT'       : 'ファイルの移動に失敗しました: {0}',
+    'ERR_VFSMODULE_EXIST'          : 'ファイルの存在確認に失敗しました',
+    'ERR_VFSMODULE_EXIST_FMT'      : 'ファイルの存在確認に失敗しました: {0}',
+    'ERR_VFSMODULE_FILEINFO'       : 'ファイル情報の取得に失敗しました',
+    'ERR_VFSMODULE_FILEINFO_FMT'   : 'ファイル情報の取得に失敗しました: {0}',
+    'ERR_VFSMODULE_MKDIR'          : 'ディレクトリの作成に失敗しました',
+    'ERR_VFSMODULE_MKDIR_FMT'      : 'ディレクトリの作成に失敗しました: {0}',
+    'ERR_VFSMODULE_URL'            : 'ファイルのURLを取得できませんでした',
+    'ERR_VFSMODULE_URL_FMT'        : 'ファイルのURLを取得できませんでした: {0}',
+    'ERR_VFSMODULE_TRASH'          : 'ファイルをゴミ箱に移動できませんでした',
+    'ERR_VFSMODULE_TRASH_FMT'      : 'ファイルをゴミ箱に移動できませんでした: {0}',
+    'ERR_VFSMODULE_UNTRASH'        : 'ゴミ箱からファイルを取り出せませんでした',
+    'ERR_VFSMODULE_UNTRASH_FMT'    : 'ゴミ箱からファイルを取り出せませんでした: {0}',
+    'ERR_VFSMODULE_EMPTYTRASH'     : 'ゴミ箱を空にできませんでした',
+    'ERR_VFSMODULE_EMPTYTRASH_FMT' : 'ゴミ箱を空にできませんでした: {0}',
 
     // VFS -> Dropbox
     'DROPBOX_NOTIFICATION_TITLE' : 'DropboxAPIにサインインしています',
@@ -247,6 +263,12 @@
 
     // VFS -> OneDrive
     'ONEDRIVE_ERR_RESOLVE'      : 'パス解決に失敗しました: アイテムが見つかりません',
+
+    // ZIP
+    'ZIP_PRELOAD_FAIL'  : 'zip.jsのロードに失敗しました',
+    'ZIP_VENDOR_FAIL'   : 'ライブラリ zip.js が見つかりませんでした. 適切にロードしましたか?'
+    'ZIP_NO_RESOURCE'   : 'zipリソースが与えられていません',
+    'ZIP_NO_PATH'       : 'パスが与えられていません',
 
     //
     // PackageManager
@@ -376,6 +398,10 @@
     'LBL_INSTALL' : 'インストール',
     'LBL_UPDATE' : 'アップデート',
     'LBL_REMOVE' : '削除'
+    'LBL_SHOW_SIDEBAR' : 'サイドバーを表示',
+    'LBL_SHOW_NAVIGATION' : 'ナビゲーションを表示',
+    'LBL_SHOW_HIDDENFILES' : '隠しファイルを表示',
+    'LBL_SHOW_FILEEXTENSIONS' : '拡張子を表示'
   };
 
 })();
