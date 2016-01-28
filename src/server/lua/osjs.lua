@@ -648,7 +648,7 @@ function api_request(request, response, meth, iargs)
   elseif meth == "netdevices" then
     data = {
       devices = sys.net.devices(),
-      platform = console("/sbin/uci get wireless.radio0.path | sed 's/platform\///'")
+      platform = console("/sbin/uci get wireless.radio0.path | sed 's/platform\.//'")
     }
   elseif meth == "netstatus" then
     data = iface_status(iargs["device"])
