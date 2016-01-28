@@ -131,7 +131,10 @@
         if ( err ) {
           alert(err);
         } else {
-          result.forEach(function(iter) {
+          result.devices.forEach(function(iter) {
+            if ( result.platform.match(/^ar933/) && iter === 'eth0' ) {
+              return;
+            }
             rows.push({label: iter, value: iter});
           });
         }
