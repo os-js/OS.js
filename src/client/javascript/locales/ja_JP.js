@@ -266,7 +266,7 @@
 
     // ZIP
     'ZIP_PRELOAD_FAIL'  : 'zip.jsのロードに失敗しました',
-    'ZIP_VENDOR_FAIL'   : 'ライブラリ zip.js が見つかりませんでした. 適切にロードしましたか?'
+    'ZIP_VENDOR_FAIL'   : 'ライブラリ zip.js が見つかりませんでした. 適切にロードしましたか?',
     'ZIP_NO_RESOURCE'   : 'zipリソースが与えられていません',
     'ZIP_NO_PATH'       : 'パスが与えられていません',
 
@@ -397,7 +397,7 @@
     'LBL_BUGREPORT' : 'バグの報告',
     'LBL_INSTALL' : 'インストール',
     'LBL_UPDATE' : 'アップデート',
-    'LBL_REMOVE' : '削除'
+    'LBL_REMOVE' : '削除',
     'LBL_SHOW_SIDEBAR' : 'サイドバーを表示',
     'LBL_SHOW_NAVIGATION' : 'ナビゲーションを表示',
     'LBL_SHOW_HIDDENFILES' : '隠しファイルを表示',
