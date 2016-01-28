@@ -46,7 +46,7 @@
   };
 
   var PASSWORD_CONFIG = {
-    bcrypt    : true,
+    bcrypt    : false,
     signature : '\$2a$1'
   };
 
