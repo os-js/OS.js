@@ -74,7 +74,9 @@
       "Create a new file in <span>{0}</span>" : "Creazione nuovo file in <span>{0}</span>",
       "Create a new directory in <span>{0}</span>" : "Creazione nuova cartella in <span>{0}</span>",
       "Rename <span>{0}</span>" : "Rinomina <span>{0}</span>",
-      "Delete <span>{0}</span> ?" : "Cancella <span>{0}</span> ?"
+      "Delete <span>{0}</span> ?" : "Cancellare <span>{0}</span> ?",
+      'Selected {0} files, {1} dirs, {2}' : '{0} file selezionati, {1} cartelle, {2}',
+      'Showing {0} files ({1} hidden), {2} dirs, {3}' : 'Mostrando {0} file(s) ({1} nascosti), {2} cartelle, {3}'
     },
     ko_KR : {
       'Copying file...' : '파일 복사...',
