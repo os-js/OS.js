@@ -180,7 +180,7 @@
 
       var style = {
         fontName: ((_call('fontName') || '').split(',')[0]).replace(/^'/, '').replace(/'$/, ''),
-        fontSize: parseInt(_call('fontSize'), 10),
+        fontSize: parseInt(_call('fontSize'), 10) || self.font.size,
         foreColor: _call('foreColor'),
         hiliteColor: _call('hiliteColor')
       };
