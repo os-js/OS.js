@@ -270,6 +270,9 @@
     'MSG_FILE_CHANGED'          : 'The file has changed. Reload?',
     'MSG_APPLICATION_WARNING'   : 'Application Warning',
     'MSG_MIME_OVERRIDE'         : 'The filetype "{0}" is not supported, using "{1}" instead.',
+    'MSG_BOARD_RESTART'         : 'Board is restarting...',
+    'MSG_NEW_WIFI'              : 'Please connect your computer to the wireless network called {0}.',
+    'MSG_REDIRECT_TO'           : 'Click here to redirect to {0}',
 
     //
     // General

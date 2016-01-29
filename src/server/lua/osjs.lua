@@ -677,7 +677,7 @@ function api_request(request, response, meth, iargs)
   elseif meth == "wifi" then
     local cssid = iargs["ssid"]:gsub("%$", "\\$")
     local cpass = iargs["password"]:gsub("%$", "\\$")
-    data = console("sh " .. ROOTDIR .. '/bin/arduino-wifi-connect.sh "' .. cssid .. '" ' ..  iargs["security"] .. ' "' .. cpass .. '"', true)
+    data = console("sh " .. ROOTDIR .. '/bin/arduino-wifi-connect.sh "' .. cssid .. '" ' ..  iargs["security"] .. ' "' .. cpass .. '" ' .. iargs['netrestart'], true)
   elseif meth == "opkg" then
     if iargs["command"] == "list" then
       data = console("opkg update")

@@ -1,0 +1,688 @@
+<application-window data-id="ArduinoWizardSettingsWindow">
+
+    <gui-vbox>
+        <gui-vbox-container data-grow="1" data-fill="true">
+            <gui-fragment data-fragment-id="WizardStep1Welcome"></gui-fragment>
+            <gui-fragment data-fragment-id="WizardStep2BoardSettings"></gui-fragment>
+            <gui-fragment data-fragment-id="WizardStep3WifiSettings"></gui-fragment>
+            <gui-fragment data-fragment-id="WizardStep4RestApiSettings"></gui-fragment>
+            <gui-fragment data-fragment-id="WizardStep5SaveRestart"></gui-fragment>
+        </gui-vbox-container>
+
+        <gui-vbox-container data-shrink="1" data-align="end">
+            <gui-button-bar>
+<!--                <gui-button data-id="ButtonPrev" data-label="LBL_BACK"></gui-button>
+                <gui-button data-id="ButtonNext" data-label="LBL_NEXT"></gui-button>-->
+                <gui-button data-id="ID_BTN_PREV"/>
+                <gui-button data-id="ID_BTN_NEXT"/>
+            </gui-button-bar>
+        </gui-vbox-container>
+    </gui-vbox>
+
+
+    <!--WINDOW #1 - WELCOME-->
+    <!--<gui-vbox data-id="wizard-win1-welcome">
+        <gui-vbox-container data-grow="1" data-fill="true">
+
+            <gui-label data-align="center">
+                Welcome to Arduino OS
+            </gui-label>
+
+        </gui-vbox-container>
+
+        <gui-vbox-container data-shrink="1" data-align="end">
+            <gui-button-bar>
+                &lt;!&ndash;<gui-button data-id="ButtonBackWin2">Back</gui-button>&ndash;&gt;
+                <gui-button data-id="ButtonNextWin1">Next</gui-button>
+            </gui-button-bar>
+        </gui-vbox-container>
+
+    </gui-vbox>-->
+
+    <!--WINDOW #2 - BOARD SETTINGS-->
+    <!--<gui-vbox data-id="wizard-win2-board-settings">
+        <gui-vbox-container data-grow="1" data-fill="true">
+            <gui-label data-align="center">
+                Board Settings
+            </gui-label>
+        </gui-vbox-container>
+
+        <gui-vbox-container data-shrink="1" data-align="end">
+            <gui-button-bar>
+                <gui-button data-id="ButtonBackWin2">Back</gui-button>
+                <gui-button data-id="ButtonNextWin2">Next</gui-button>
+            </gui-button-bar>
+        </gui-vbox-container>
+    </gui-vbox>-->
+
+    <!--WINDOWS #3 WIFI SETTINGS-->
+    <!--<gui-vbox data-id="wizard-win3-wifi-settings">
+        <gui-vbox-container data-grow="1" data-fill="true">
+            <gui-label data-align="center">
+                WiFi Settings
+            </gui-label>
+        </gui-vbox-container>
+
+        <gui-vbox-container data-shrink="1" data-align="end">
+            <gui-button-bar>
+                <gui-button data-id="ButtonBackWin3">Back</gui-button>
+                <gui-button data-id="ButtonNextWin3">Next</gui-button>
+            </gui-button-bar>
+        </gui-vbox-container>
+    </gui-vbox>-->
+
+    <!--WINDOWS #4 REST API-->
+    <!--<gui-vbox data-id="wizard-win4-rest-api">
+        <gui-vbox-container data-grow="1" data-fill="true">
+            <gui-label data-align="center">
+                Rest API
+            </gui-label>
+        </gui-vbox-container>
+
+        <gui-vbox-container data-shrink="1" data-align="end">
+            <gui-button-bar>
+                <gui-button data-id="ButtonBackWin4">Back</gui-button>
+                <gui-button data-id="ButtonNextWin4">Next</gui-button>
+            </gui-button-bar>
+        </gui-vbox-container>
+    </gui-vbox>-->
+
+
+    <!--WINDWOS #5 SAVE OR DISCARD-->
+<!--    <gui-vbox data-id="wizard-win5-save-discard">
+        <gui-vbox-container data-grow="1" data-fill="true">
+            <gui-label data-align="center">
+                Board Settings
+            </gui-label>
+        </gui-vbox-container>
+
+        <gui-vbox-container data-shrink="1" data-align="end">
+            <gui-button-bar>
+                <gui-button data-id="ButtonBackWin5">Back</gui-button>
+                <gui-button data-id="ButtonSaveRestartWin5">Save and Restart</gui-button>
+            </gui-button-bar>
+        </gui-vbox-container>
+    </gui-vbox>-->
+
+
+</application-window>
+
+
+<!--STEP #1 - WELCOME-->
+<application-fragment data-id="WizardStep1Welcome">
+    <gui-vbox data-id="WizardStep1Container">
+        <gui-vbox-container data-grow="1" data-fill="true">
+            <gui-label data-align="top" data-id="ID_LBL_WS1_LN1"/>
+        </gui-vbox-container>
+
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <gui-label>&nbsp;</gui-label>
+        </gui-vbox-container>
+
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <gui-label data-align="top" data-id="ID_LBL_WS1_LN2"/>
+        </gui-vbox-container>
+
+    </gui-vbox>
+</application-fragment>
+
+<!--STEP #2 - BOARD SETTINGS-->
+<application-fragment data-id="WizardStep2BoardSettings">
+    <gui-vbox data-id="WizardStep2Container" class="block-label">
+
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <gui-label data-id="ID_LBL_WS2_LN1"/>
+        </gui-vbox-container>
+
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <gui-label>&nbsp;</gui-label>
+        </gui-vbox-container>
+
+        <!--BOARD NAME-->
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <gui-label data-id="ID_LBL_WS2_BOARDNAME"/>
+        </gui-vbox-container>
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <gui-text data-id="ID_TXT_BOARDNAME" />
+        </gui-vbox-container>
+
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <gui-label>&nbsp;</gui-label>
+        </gui-vbox-container>
+
+        <!--TIMEZONE-->
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <gui-label data-id="ID_LBL_WS2_TIMEZONE"/>
+        </gui-vbox-container>
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <gui-select data-id="ID_DDL_TIMEZONE">
+                <gui-select-option data-value="UTC">UTC</gui-select-option>
+                <gui-select-option data-value="Africa/Abidjan">Africa/Abidjan</gui-select-option>
+                <gui-select-option data-value="Africa/Accra">Africa/Accra</gui-select-option>
+                <gui-select-option data-value="Africa/Addis Ababa">Africa/Addis Ababa</gui-select-option>
+                <gui-select-option data-value="Africa/Algiers">Africa/Algiers</gui-select-option>
+                <gui-select-option data-value="Africa/Asmara">Africa/Asmara</gui-select-option>
+                <gui-select-option data-value="Africa/Bamako">Africa/Bamako</gui-select-option>
+                <gui-select-option data-value="Africa/Bangui">Africa/Bangui</gui-select-option>
+                <gui-select-option data-value="Africa/Banjul">Africa/Banjul</gui-select-option>
+                <gui-select-option data-value="Africa/Bissau">Africa/Bissau</gui-select-option>
+                <gui-select-option data-value="Africa/Blantyre">Africa/Blantyre</gui-select-option>
+                <gui-select-option data-value="Africa/Brazzaville">Africa/Brazzaville</gui-select-option>
+                <gui-select-option data-value="Africa/Bujumbura">Africa/Bujumbura</gui-select-option>
+                <gui-select-option data-value="Africa/Casablanca">Africa/Casablanca</gui-select-option>
+                <gui-select-option data-value="Africa/Ceuta">Africa/Ceuta</gui-select-option>
+                <gui-select-option data-value="Africa/Conakry">Africa/Conakry</gui-select-option>
+                <gui-select-option data-value="Africa/Dakar">Africa/Dakar</gui-select-option>
+                <gui-select-option data-value="Africa/Dar es Salaam">Africa/Dar es Salaam</gui-select-option>
+                <gui-select-option data-value="Africa/Djibouti">Africa/Djibouti</gui-select-option>
+                <gui-select-option data-value="Africa/Douala">Africa/Douala</gui-select-option>
+                <gui-select-option data-value="Africa/El Aaiun">Africa/El Aaiun</gui-select-option>
+                <gui-select-option data-value="Africa/Freetown">Africa/Freetown</gui-select-option>
+                <gui-select-option data-value="Africa/Gaborone">Africa/Gaborone</gui-select-option>
+                <gui-select-option data-value="Africa/Harare">Africa/Harare</gui-select-option>
+                <gui-select-option data-value="Africa/Johannesburg">Africa/Johannesburg</gui-select-option>
+                <gui-select-option data-value="Africa/Juba">Africa/Juba</gui-select-option>
+                <gui-select-option data-value="Africa/Kampala">Africa/Kampala</gui-select-option>
+                <gui-select-option data-value="Africa/Khartoum">Africa/Khartoum</gui-select-option>
+                <gui-select-option data-value="Africa/Kigali">Africa/Kigali</gui-select-option>
+                <gui-select-option data-value="Africa/Kinshasa">Africa/Kinshasa</gui-select-option>
+                <gui-select-option data-value="Africa/Lagos">Africa/Lagos</gui-select-option>
+                <gui-select-option data-value="Africa/Libreville">Africa/Libreville</gui-select-option>
+                <gui-select-option data-value="Africa/Lome">Africa/Lome</gui-select-option>
+                <gui-select-option data-value="Africa/Luanda">Africa/Luanda</gui-select-option>
+                <gui-select-option data-value="Africa/Lubumbashi">Africa/Lubumbashi</gui-select-option>
+                <gui-select-option data-value="Africa/Lusaka">Africa/Lusaka</gui-select-option>
+                <gui-select-option data-value="Africa/Malabo">Africa/Malabo</gui-select-option>
+                <gui-select-option data-value="Africa/Maputo">Africa/Maputo</gui-select-option>
+                <gui-select-option data-value="Africa/Maseru">Africa/Maseru</gui-select-option>
+                <gui-select-option data-value="Africa/Mbabane">Africa/Mbabane</gui-select-option>
+                <gui-select-option data-value="Africa/Mogadishu">Africa/Mogadishu</gui-select-option>
+                <gui-select-option data-value="Africa/Monrovia">Africa/Monrovia</gui-select-option>
+                <gui-select-option data-value="Africa/Nairobi">Africa/Nairobi</gui-select-option>
+                <gui-select-option data-value="Africa/Ndjamena">Africa/Ndjamena</gui-select-option>
+                <gui-select-option data-value="Africa/Niamey">Africa/Niamey</gui-select-option>
+                <gui-select-option data-value="Africa/Nouakchott">Africa/Nouakchott</gui-select-option>
+                <gui-select-option data-value="Africa/Ouagadougou">Africa/Ouagadougou</gui-select-option>
+                <gui-select-option data-value="Africa/Porto-Novo">Africa/Porto-Novo</gui-select-option>
+                <gui-select-option data-value="Africa/Sao Tome">Africa/Sao Tome</gui-select-option>
+                <gui-select-option data-value="Africa/Tripoli">Africa/Tripoli</gui-select-option>
+                <gui-select-option data-value="Africa/Tunis">Africa/Tunis</gui-select-option>
+                <gui-select-option data-value="Africa/Windhoek">Africa/Windhoek</gui-select-option>
+                <gui-select-option data-value="America/Adak">America/Adak</gui-select-option>
+                <gui-select-option data-value="America/Anchorage">America/Anchorage</gui-select-option>
+                <gui-select-option data-value="America/Anguilla">America/Anguilla</gui-select-option>
+                <gui-select-option data-value="America/Antigua">America/Antigua</gui-select-option>
+                <gui-select-option data-value="America/Araguaina">America/Araguaina</gui-select-option>
+                <gui-select-option data-value="America/Argentina/Buenos Aires">America/Argentina/Buenos Aires</gui-select-option>
+                <gui-select-option data-value="America/Argentina/Catamarca">America/Argentina/Catamarca</gui-select-option>
+                <gui-select-option data-value="America/Argentina/Cordoba">America/Argentina/Cordoba</gui-select-option>
+                <gui-select-option data-value="America/Argentina/Jujuy">America/Argentina/Jujuy</gui-select-option>
+                <gui-select-option data-value="America/Argentina/La Rioja">America/Argentina/La Rioja</gui-select-option>
+                <gui-select-option data-value="America/Argentina/Mendoza">America/Argentina/Mendoza</gui-select-option>
+                <gui-select-option data-value="America/Argentina/Rio Gallegos">America/Argentina/Rio Gallegos</gui-select-option>
+                <gui-select-option data-value="America/Argentina/Salta">America/Argentina/Salta</gui-select-option>
+                <gui-select-option data-value="America/Argentina/San Juan">America/Argentina/San Juan</gui-select-option>
+                <gui-select-option data-value="America/Argentina/Tucuman">America/Argentina/Tucuman</gui-select-option>
+                <gui-select-option data-value="America/Argentina/Ushuaia">America/Argentina/Ushuaia</gui-select-option>
+                <gui-select-option data-value="America/Aruba">America/Aruba</gui-select-option>
+                <gui-select-option data-value="America/Asuncion">America/Asuncion</gui-select-option>
+                <gui-select-option data-value="America/Atikokan">America/Atikokan</gui-select-option>
+                <gui-select-option data-value="America/Bahia">America/Bahia</gui-select-option>
+                <gui-select-option data-value="America/Bahia Banderas">America/Bahia Banderas</gui-select-option>
+                <gui-select-option data-value="America/Barbados">America/Barbados</gui-select-option>
+                <gui-select-option data-value="America/Belem">America/Belem</gui-select-option>
+                <gui-select-option data-value="America/Belize">America/Belize</gui-select-option>
+                <gui-select-option data-value="America/Blanc-Sablon">America/Blanc-Sablon</gui-select-option>
+                <gui-select-option data-value="America/Boa Vista">America/Boa Vista</gui-select-option>
+                <gui-select-option data-value="America/Bogota">America/Bogota</gui-select-option>
+                <gui-select-option data-value="America/Boise">America/Boise</gui-select-option>
+                <gui-select-option data-value="America/Cambridge Bay">America/Cambridge Bay</gui-select-option>
+                <gui-select-option data-value="America/Campo Grande">America/Campo Grande</gui-select-option>
+                <gui-select-option data-value="America/Cancun">America/Cancun</gui-select-option>
+                <gui-select-option data-value="America/Caracas">America/Caracas</gui-select-option>
+                <gui-select-option data-value="America/Cayenne">America/Cayenne</gui-select-option>
+                <gui-select-option data-value="America/Cayman">America/Cayman</gui-select-option>
+                <gui-select-option data-value="America/Chicago">America/Chicago</gui-select-option>
+                <gui-select-option data-value="America/Chihuahua">America/Chihuahua</gui-select-option>
+                <gui-select-option data-value="America/Costa Rica">America/Costa Rica</gui-select-option>
+                <gui-select-option data-value="America/Cuiaba">America/Cuiaba</gui-select-option>
+                <gui-select-option data-value="America/Curacao">America/Curacao</gui-select-option>
+                <gui-select-option data-value="America/Danmarkshavn">America/Danmarkshavn</gui-select-option>
+                <gui-select-option data-value="America/Dawson">America/Dawson</gui-select-option>
+                <gui-select-option data-value="America/Dawson Creek">America/Dawson Creek</gui-select-option>
+                <gui-select-option data-value="America/Denver">America/Denver</gui-select-option>
+                <gui-select-option data-value="America/Detroit">America/Detroit</gui-select-option>
+                <gui-select-option data-value="America/Dominica">America/Dominica</gui-select-option>
+                <gui-select-option data-value="America/Edmonton">America/Edmonton</gui-select-option>
+                <gui-select-option data-value="America/Eirunepe">America/Eirunepe</gui-select-option>
+                <gui-select-option data-value="America/El Salvador">America/El Salvador</gui-select-option>
+                <gui-select-option data-value="America/Fortaleza">America/Fortaleza</gui-select-option>
+                <gui-select-option data-value="America/Glace Bay">America/Glace Bay</gui-select-option>
+                <gui-select-option data-value="America/Goose Bay">America/Goose Bay</gui-select-option>
+                <gui-select-option data-value="America/Grand Turk">America/Grand Turk</gui-select-option>
+                <gui-select-option data-value="America/Grenada">America/Grenada</gui-select-option>
+                <gui-select-option data-value="America/Guadeloupe">America/Guadeloupe</gui-select-option>
+                <gui-select-option data-value="America/Guatemala">America/Guatemala</gui-select-option>
+                <gui-select-option data-value="America/Guayaquil">America/Guayaquil</gui-select-option>
+                <gui-select-option data-value="America/Guyana">America/Guyana</gui-select-option>
+                <gui-select-option data-value="America/Halifax">America/Halifax</gui-select-option>
+                <gui-select-option data-value="America/Havana">America/Havana</gui-select-option>
+                <gui-select-option data-value="America/Hermosillo">America/Hermosillo</gui-select-option>
+                <gui-select-option data-value="America/Indiana/Indianapolis">America/Indiana/Indianapolis</gui-select-option>
+                <gui-select-option data-value="America/Indiana/Knox">America/Indiana/Knox</gui-select-option>
+                <gui-select-option data-value="America/Indiana/Marengo">America/Indiana/Marengo</gui-select-option>
+                <gui-select-option data-value="America/Indiana/Petersburg">America/Indiana/Petersburg</gui-select-option>
+                <gui-select-option data-value="America/Indiana/Tell City">America/Indiana/Tell City</gui-select-option>
+                <gui-select-option data-value="America/Indiana/Vevay">America/Indiana/Vevay</gui-select-option>
+                <gui-select-option data-value="America/Indiana/Vincennes">America/Indiana/Vincennes</gui-select-option>
+                <gui-select-option data-value="America/Indiana/Winamac">America/Indiana/Winamac</gui-select-option>
+                <gui-select-option data-value="America/Inuvik">America/Inuvik</gui-select-option>
+                <gui-select-option data-value="America/Iqaluit">America/Iqaluit</gui-select-option>
+                <gui-select-option data-value="America/Jamaica">America/Jamaica</gui-select-option>
+                <gui-select-option data-value="America/Juneau">America/Juneau</gui-select-option>
+                <gui-select-option data-value="America/Kentucky/Louisville">America/Kentucky/Louisville</gui-select-option>
+                <gui-select-option data-value="America/Kentucky/Monticello">America/Kentucky/Monticello</gui-select-option>
+                <gui-select-option data-value="America/Kralendijk">America/Kralendijk</gui-select-option>
+                <gui-select-option data-value="America/La Paz">America/La Paz</gui-select-option>
+                <gui-select-option data-value="America/Lima">America/Lima</gui-select-option>
+                <gui-select-option data-value="America/Los Angeles">America/Los Angeles</gui-select-option>
+                <gui-select-option data-value="America/Lower Princes">America/Lower Princes</gui-select-option>
+                <gui-select-option data-value="America/Maceio">America/Maceio</gui-select-option>
+                <gui-select-option data-value="America/Managua">America/Managua</gui-select-option>
+                <gui-select-option data-value="America/Manaus">America/Manaus</gui-select-option>
+                <gui-select-option data-value="America/Marigot">America/Marigot</gui-select-option>
+                <gui-select-option data-value="America/Martinique">America/Martinique</gui-select-option>
+                <gui-select-option data-value="America/Matamoros">America/Matamoros</gui-select-option>
+                <gui-select-option data-value="America/Mazatlan">America/Mazatlan</gui-select-option>
+                <gui-select-option data-value="America/Menominee">America/Menominee</gui-select-option>
+                <gui-select-option data-value="America/Merida">America/Merida</gui-select-option>
+                <gui-select-option data-value="America/Metlakatla">America/Metlakatla</gui-select-option>
+                <gui-select-option data-value="America/Mexico City">America/Mexico City</gui-select-option>
+                <gui-select-option data-value="America/Miquelon">America/Miquelon</gui-select-option>
+                <gui-select-option data-value="America/Moncton">America/Moncton</gui-select-option>
+                <gui-select-option data-value="America/Monterrey">America/Monterrey</gui-select-option>
+                <gui-select-option data-value="America/Montevideo">America/Montevideo</gui-select-option>
+                <gui-select-option data-value="America/Montreal">America/Montreal</gui-select-option>
+                <gui-select-option data-value="America/Montserrat">America/Montserrat</gui-select-option>
+                <gui-select-option data-value="America/Nassau">America/Nassau</gui-select-option>
+                <gui-select-option data-value="America/New York">America/New York</gui-select-option>
+                <gui-select-option data-value="America/Nipigon">America/Nipigon</gui-select-option>
+                <gui-select-option data-value="America/Nome">America/Nome</gui-select-option>
+                <gui-select-option data-value="America/Noronha">America/Noronha</gui-select-option>
+                <gui-select-option data-value="America/North Dakota/Beulah">America/North Dakota/Beulah</gui-select-option>
+                <gui-select-option data-value="America/North Dakota/Center">America/North Dakota/Center</gui-select-option>
+                <gui-select-option data-value="America/North Dakota/New Salem">America/North Dakota/New Salem</gui-select-option>
+                <gui-select-option data-value="America/Ojinaga">America/Ojinaga</gui-select-option>
+                <gui-select-option data-value="America/Panama">America/Panama</gui-select-option>
+                <gui-select-option data-value="America/Pangnirtung">America/Pangnirtung</gui-select-option>
+                <gui-select-option data-value="America/Paramaribo">America/Paramaribo</gui-select-option>
+                <gui-select-option data-value="America/Phoenix">America/Phoenix</gui-select-option>
+                <gui-select-option data-value="America/Port of Spain">America/Port of Spain</gui-select-option>
+                <gui-select-option data-value="America/Port-au-Prince">America/Port-au-Prince</gui-select-option>
+                <gui-select-option data-value="America/Porto Velho">America/Porto Velho</gui-select-option>
+                <gui-select-option data-value="America/Puerto Rico">America/Puerto Rico</gui-select-option>
+                <gui-select-option data-value="America/Rainy River">America/Rainy River</gui-select-option>
+                <gui-select-option data-value="America/Rankin Inlet">America/Rankin Inlet</gui-select-option>
+                <gui-select-option data-value="America/Recife">America/Recife</gui-select-option>
+                <gui-select-option data-value="America/Regina">America/Regina</gui-select-option>
+                <gui-select-option data-value="America/Resolute">America/Resolute</gui-select-option>
+                <gui-select-option data-value="America/Rio Branco">America/Rio Branco</gui-select-option>
+                <gui-select-option data-value="America/Santa Isabel">America/Santa Isabel</gui-select-option>
+                <gui-select-option data-value="America/Santarem">America/Santarem</gui-select-option>
+                <gui-select-option data-value="America/Santo Domingo">America/Santo Domingo</gui-select-option>
+                <gui-select-option data-value="America/Sao Paulo">America/Sao Paulo</gui-select-option>
+                <gui-select-option data-value="America/Scoresbysund">America/Scoresbysund</gui-select-option>
+                <gui-select-option data-value="America/Shiprock">America/Shiprock</gui-select-option>
+                <gui-select-option data-value="America/Sitka">America/Sitka</gui-select-option>
+                <gui-select-option data-value="America/St Barthelemy">America/St Barthelemy</gui-select-option>
+                <gui-select-option data-value="America/St Johns">America/St Johns</gui-select-option>
+                <gui-select-option data-value="America/St Kitts">America/St Kitts</gui-select-option>
+                <gui-select-option data-value="America/St Lucia">America/St Lucia</gui-select-option>
+                <gui-select-option data-value="America/St Thomas">America/St Thomas</gui-select-option>
+                <gui-select-option data-value="America/St Vincent">America/St Vincent</gui-select-option>
+                <gui-select-option data-value="America/Swift Current">America/Swift Current</gui-select-option>
+                <gui-select-option data-value="America/Tegucigalpa">America/Tegucigalpa</gui-select-option>
+                <gui-select-option data-value="America/Thule">America/Thule</gui-select-option>
+                <gui-select-option data-value="America/Thunder Bay">America/Thunder Bay</gui-select-option>
+                <gui-select-option data-value="America/Tijuana">America/Tijuana</gui-select-option>
+                <gui-select-option data-value="America/Toronto">America/Toronto</gui-select-option>
+                <gui-select-option data-value="America/Tortola">America/Tortola</gui-select-option>
+                <gui-select-option data-value="America/Vancouver">America/Vancouver</gui-select-option>
+                <gui-select-option data-value="America/Whitehorse">America/Whitehorse</gui-select-option>
+                <gui-select-option data-value="America/Winnipeg">America/Winnipeg</gui-select-option>
+                <gui-select-option data-value="America/Yakutat">America/Yakutat</gui-select-option>
+                <gui-select-option data-value="America/Yellowknife">America/Yellowknife</gui-select-option>
+                <gui-select-option data-value="Antarctica/Casey">Antarctica/Casey</gui-select-option>
+                <gui-select-option data-value="Antarctica/Davis">Antarctica/Davis</gui-select-option>
+                <gui-select-option data-value="Antarctica/DumontDUrville">Antarctica/DumontDUrville</gui-select-option>
+                <gui-select-option data-value="Antarctica/Macquarie">Antarctica/Macquarie</gui-select-option>
+                <gui-select-option data-value="Antarctica/Mawson">Antarctica/Mawson</gui-select-option>
+                <gui-select-option data-value="Antarctica/McMurdo">Antarctica/McMurdo</gui-select-option>
+                <gui-select-option data-value="Antarctica/Rothera">Antarctica/Rothera</gui-select-option>
+                <gui-select-option data-value="Antarctica/South Pole">Antarctica/South Pole</gui-select-option>
+                <gui-select-option data-value="Antarctica/Syowa">Antarctica/Syowa</gui-select-option>
+                <gui-select-option data-value="Antarctica/Vostok">Antarctica/Vostok</gui-select-option>
+                <gui-select-option data-value="Arctic/Longyearbyen">Arctic/Longyearbyen</gui-select-option>
+                <gui-select-option data-value="Asia/Aden">Asia/Aden</gui-select-option>
+                <gui-select-option data-value="Asia/Almaty">Asia/Almaty</gui-select-option>
+                <gui-select-option data-value="Asia/Anadyr">Asia/Anadyr</gui-select-option>
+                <gui-select-option data-value="Asia/Aqtau">Asia/Aqtau</gui-select-option>
+                <gui-select-option data-value="Asia/Aqtobe">Asia/Aqtobe</gui-select-option>
+                <gui-select-option data-value="Asia/Ashgabat">Asia/Ashgabat</gui-select-option>
+                <gui-select-option data-value="Asia/Baghdad">Asia/Baghdad</gui-select-option>
+                <gui-select-option data-value="Asia/Bahrain">Asia/Bahrain</gui-select-option>
+                <gui-select-option data-value="Asia/Baku">Asia/Baku</gui-select-option>
+                <gui-select-option data-value="Asia/Bangkok">Asia/Bangkok</gui-select-option>
+                <gui-select-option data-value="Asia/Beirut">Asia/Beirut</gui-select-option>
+                <gui-select-option data-value="Asia/Bishkek">Asia/Bishkek</gui-select-option>
+                <gui-select-option data-value="Asia/Brunei">Asia/Brunei</gui-select-option>
+                <gui-select-option data-value="Asia/Choibalsan">Asia/Choibalsan</gui-select-option>
+                <gui-select-option data-value="Asia/Chongqing">Asia/Chongqing</gui-select-option>
+                <gui-select-option data-value="Asia/Colombo">Asia/Colombo</gui-select-option>
+                <gui-select-option data-value="Asia/Damascus">Asia/Damascus</gui-select-option>
+                <gui-select-option data-value="Asia/Dhaka">Asia/Dhaka</gui-select-option>
+                <gui-select-option data-value="Asia/Dili">Asia/Dili</gui-select-option>
+                <gui-select-option data-value="Asia/Dubai">Asia/Dubai</gui-select-option>
+                <gui-select-option data-value="Asia/Dushanbe">Asia/Dushanbe</gui-select-option>
+                <gui-select-option data-value="Asia/Gaza">Asia/Gaza</gui-select-option>
+                <gui-select-option data-value="Asia/Harbin">Asia/Harbin</gui-select-option>
+                <gui-select-option data-value="Asia/Hebron">Asia/Hebron</gui-select-option>
+                <gui-select-option data-value="Asia/Ho Chi Minh">Asia/Ho Chi Minh</gui-select-option>
+                <gui-select-option data-value="Asia/Hong Kong">Asia/Hong Kong</gui-select-option>
+                <gui-select-option data-value="Asia/Hovd">Asia/Hovd</gui-select-option>
+                <gui-select-option data-value="Asia/Irkutsk">Asia/Irkutsk</gui-select-option>
+                <gui-select-option data-value="Asia/Jakarta">Asia/Jakarta</gui-select-option>
+                <gui-select-option data-value="Asia/Jayapura">Asia/Jayapura</gui-select-option>
+                <gui-select-option data-value="Asia/Kabul">Asia/Kabul</gui-select-option>
+                <gui-select-option data-value="Asia/Kamchatka">Asia/Kamchatka</gui-select-option>
+                <gui-select-option data-value="Asia/Karachi">Asia/Karachi</gui-select-option>
+                <gui-select-option data-value="Asia/Kashgar">Asia/Kashgar</gui-select-option>
+                <gui-select-option data-value="Asia/Kathmandu">Asia/Kathmandu</gui-select-option>
+                <gui-select-option data-value="Asia/Kolkata">Asia/Kolkata</gui-select-option>
+                <gui-select-option data-value="Asia/Krasnoyarsk">Asia/Krasnoyarsk</gui-select-option>
+                <gui-select-option data-value="Asia/Kuala Lumpur">Asia/Kuala Lumpur</gui-select-option>
+                <gui-select-option data-value="Asia/Kuching">Asia/Kuching</gui-select-option>
+                <gui-select-option data-value="Asia/Kuwait">Asia/Kuwait</gui-select-option>
+                <gui-select-option data-value="Asia/Macau">Asia/Macau</gui-select-option>
+                <gui-select-option data-value="Asia/Magadan">Asia/Magadan</gui-select-option>
+                <gui-select-option data-value="Asia/Makassar">Asia/Makassar</gui-select-option>
+                <gui-select-option data-value="Asia/Manila">Asia/Manila</gui-select-option>
+                <gui-select-option data-value="Asia/Muscat">Asia/Muscat</gui-select-option>
+                <gui-select-option data-value="Asia/Nicosia">Asia/Nicosia</gui-select-option>
+                <gui-select-option data-value="Asia/Novokuznetsk">Asia/Novokuznetsk</gui-select-option>
+                <gui-select-option data-value="Asia/Novosibirsk">Asia/Novosibirsk</gui-select-option>
+                <gui-select-option data-value="Asia/Omsk">Asia/Omsk</gui-select-option>
+                <gui-select-option data-value="Asia/Oral">Asia/Oral</gui-select-option>
+                <gui-select-option data-value="Asia/Phnom Penh">Asia/Phnom Penh</gui-select-option>
+                <gui-select-option data-value="Asia/Pontianak">Asia/Pontianak</gui-select-option>
+                <gui-select-option data-value="Asia/Pyongyang">Asia/Pyongyang</gui-select-option>
+                <gui-select-option data-value="Asia/Qatar">Asia/Qatar</gui-select-option>
+                <gui-select-option data-value="Asia/Qyzylorda">Asia/Qyzylorda</gui-select-option>
+                <gui-select-option data-value="Asia/Rangoon">Asia/Rangoon</gui-select-option>
+                <gui-select-option data-value="Asia/Riyadh">Asia/Riyadh</gui-select-option>
+                <gui-select-option data-value="Asia/Sakhalin">Asia/Sakhalin</gui-select-option>
+                <gui-select-option data-value="Asia/Samarkand">Asia/Samarkand</gui-select-option>
+                <gui-select-option data-value="Asia/Seoul">Asia/Seoul</gui-select-option>
+                <gui-select-option data-value="Asia/Shanghai">Asia/Shanghai</gui-select-option>
+                <gui-select-option data-value="Asia/Singapore">Asia/Singapore</gui-select-option>
+                <gui-select-option data-value="Asia/Taipei">Asia/Taipei</gui-select-option>
+                <gui-select-option data-value="Asia/Tashkent">Asia/Tashkent</gui-select-option>
+                <gui-select-option data-value="Asia/Tbilisi">Asia/Tbilisi</gui-select-option>
+                <gui-select-option data-value="Asia/Thimphu">Asia/Thimphu</gui-select-option>
+                <gui-select-option data-value="Asia/Tokyo">Asia/Tokyo</gui-select-option>
+                <gui-select-option data-value="Asia/Ulaanbaatar">Asia/Ulaanbaatar</gui-select-option>
+                <gui-select-option data-value="Asia/Urumqi">Asia/Urumqi</gui-select-option>
+                <gui-select-option data-value="Asia/Vientiane">Asia/Vientiane</gui-select-option>
+                <gui-select-option data-value="Asia/Vladivostok">Asia/Vladivostok</gui-select-option>
+                <gui-select-option data-value="Asia/Yakutsk">Asia/Yakutsk</gui-select-option>
+                <gui-select-option data-value="Asia/Yekaterinburg">Asia/Yekaterinburg</gui-select-option>
+                <gui-select-option data-value="Asia/Yerevan">Asia/Yerevan</gui-select-option>
+                <gui-select-option data-value="Atlantic/Azores">Atlantic/Azores</gui-select-option>
+                <gui-select-option data-value="Atlantic/Bermuda">Atlantic/Bermuda</gui-select-option>
+                <gui-select-option data-value="Atlantic/Canary">Atlantic/Canary</gui-select-option>
+                <gui-select-option data-value="Atlantic/Cape Verde">Atlantic/Cape Verde</gui-select-option>
+                <gui-select-option data-value="Atlantic/Faroe">Atlantic/Faroe</gui-select-option>
+                <gui-select-option data-value="Atlantic/Madeira">Atlantic/Madeira</gui-select-option>
+                <gui-select-option data-value="Atlantic/Reykjavik">Atlantic/Reykjavik</gui-select-option>
+                <gui-select-option data-value="Atlantic/South Georgia">Atlantic/South Georgia</gui-select-option>
+                <gui-select-option data-value="Atlantic/St Helena">Atlantic/St Helena</gui-select-option>
+                <gui-select-option data-value="Atlantic/Stanley">Atlantic/Stanley</gui-select-option>
+                <gui-select-option data-value="Australia/Adelaide">Australia/Adelaide</gui-select-option>
+                <gui-select-option data-value="Australia/Brisbane">Australia/Brisbane</gui-select-option>
+                <gui-select-option data-value="Australia/Broken Hill">Australia/Broken Hill</gui-select-option>
+                <gui-select-option data-value="Australia/Currie">Australia/Currie</gui-select-option>
+                <gui-select-option data-value="Australia/Darwin">Australia/Darwin</gui-select-option>
+                <gui-select-option data-value="Australia/Eucla">Australia/Eucla</gui-select-option>
+                <gui-select-option data-value="Australia/Hobart">Australia/Hobart</gui-select-option>
+                <gui-select-option data-value="Australia/Lindeman">Australia/Lindeman</gui-select-option>
+                <gui-select-option data-value="Australia/Lord Howe">Australia/Lord Howe</gui-select-option>
+                <gui-select-option data-value="Australia/Melbourne">Australia/Melbourne</gui-select-option>
+                <gui-select-option data-value="Australia/Perth">Australia/Perth</gui-select-option>
+                <gui-select-option data-value="Australia/Sydney">Australia/Sydney</gui-select-option>
+                <gui-select-option data-value="Europe/Amsterdam">Europe/Amsterdam</gui-select-option>
+                <gui-select-option data-value="Europe/Andorra">Europe/Andorra</gui-select-option>
+                <gui-select-option data-value="Europe/Athens">Europe/Athens</gui-select-option>
+                <gui-select-option data-value="Europe/Belgrade">Europe/Belgrade</gui-select-option>
+                <gui-select-option data-value="Europe/Berlin">Europe/Berlin</gui-select-option>
+                <gui-select-option data-value="Europe/Bratislava">Europe/Bratislava</gui-select-option>
+                <gui-select-option data-value="Europe/Brussels">Europe/Brussels</gui-select-option>
+                <gui-select-option data-value="Europe/Bucharest">Europe/Bucharest</gui-select-option>
+                <gui-select-option data-value="Europe/Budapest">Europe/Budapest</gui-select-option>
+                <gui-select-option data-value="Europe/Chisinau">Europe/Chisinau</gui-select-option>
+                <gui-select-option data-value="Europe/Copenhagen">Europe/Copenhagen</gui-select-option>
+                <gui-select-option data-value="Europe/Dublin">Europe/Dublin</gui-select-option>
+                <gui-select-option data-value="Europe/Gibraltar">Europe/Gibraltar</gui-select-option>
+                <gui-select-option data-value="Europe/Guernsey">Europe/Guernsey</gui-select-option>
+                <gui-select-option data-value="Europe/Helsinki">Europe/Helsinki</gui-select-option>
+                <gui-select-option data-value="Europe/Isle of Man">Europe/Isle of Man</gui-select-option>
+                <gui-select-option data-value="Europe/Istanbul">Europe/Istanbul</gui-select-option>
+                <gui-select-option data-value="Europe/Jersey">Europe/Jersey</gui-select-option>
+                <gui-select-option data-value="Europe/Kaliningrad">Europe/Kaliningrad</gui-select-option>
+                <gui-select-option data-value="Europe/Kiev">Europe/Kiev</gui-select-option>
+                <gui-select-option data-value="Europe/Lisbon">Europe/Lisbon</gui-select-option>
+                <gui-select-option data-value="Europe/Ljubljana">Europe/Ljubljana</gui-select-option>
+                <gui-select-option data-value="Europe/London">Europe/London</gui-select-option>
+                <gui-select-option data-value="Europe/Luxembourg">Europe/Luxembourg</gui-select-option>
+                <gui-select-option data-value="Europe/Madrid">Europe/Madrid</gui-select-option>
+                <gui-select-option data-value="Europe/Malta">Europe/Malta</gui-select-option>
+                <gui-select-option data-value="Europe/Mariehamn">Europe/Mariehamn</gui-select-option>
+                <gui-select-option data-value="Europe/Minsk">Europe/Minsk</gui-select-option>
+                <gui-select-option data-value="Europe/Monaco">Europe/Monaco</gui-select-option>
+                <gui-select-option data-value="Europe/Moscow">Europe/Moscow</gui-select-option>
+                <gui-select-option data-value="Europe/Oslo">Europe/Oslo</gui-select-option>
+                <gui-select-option data-value="Europe/Paris">Europe/Paris</gui-select-option>
+                <gui-select-option data-value="Europe/Podgorica">Europe/Podgorica</gui-select-option>
+                <gui-select-option data-value="Europe/Prague">Europe/Prague</gui-select-option>
+                <gui-select-option data-value="Europe/Riga">Europe/Riga</gui-select-option>
+                <gui-select-option data-value="Europe/Rome">Europe/Rome</gui-select-option>
+                <gui-select-option data-value="Europe/Samara">Europe/Samara</gui-select-option>
+                <gui-select-option data-value="Europe/San Marino">Europe/San Marino</gui-select-option>
+                <gui-select-option data-value="Europe/Sarajevo">Europe/Sarajevo</gui-select-option>
+                <gui-select-option data-value="Europe/Simferopol">Europe/Simferopol</gui-select-option>
+                <gui-select-option data-value="Europe/Skopje">Europe/Skopje</gui-select-option>
+                <gui-select-option data-value="Europe/Sofia">Europe/Sofia</gui-select-option>
+                <gui-select-option data-value="Europe/Stockholm">Europe/Stockholm</gui-select-option>
+                <gui-select-option data-value="Europe/Tallinn">Europe/Tallinn</gui-select-option>
+                <gui-select-option data-value="Europe/Tirane">Europe/Tirane</gui-select-option>
+                <gui-select-option data-value="Europe/Uzhgorod">Europe/Uzhgorod</gui-select-option>
+                <gui-select-option data-value="Europe/Vaduz">Europe/Vaduz</gui-select-option>
+                <gui-select-option data-value="Europe/Vatican">Europe/Vatican</gui-select-option>
+                <gui-select-option data-value="Europe/Vienna">Europe/Vienna</gui-select-option>
+                <gui-select-option data-value="Europe/Vilnius">Europe/Vilnius</gui-select-option>
+                <gui-select-option data-value="Europe/Volgograd">Europe/Volgograd</gui-select-option>
+                <gui-select-option data-value="Europe/Warsaw">Europe/Warsaw</gui-select-option>
+                <gui-select-option data-value="Europe/Zagreb">Europe/Zagreb</gui-select-option>
+                <gui-select-option data-value="Europe/Zaporozhye">Europe/Zaporozhye</gui-select-option>
+                <gui-select-option data-value="Europe/Zurich">Europe/Zurich</gui-select-option>
+                <gui-select-option data-value="Indian/Antananarivo">Indian/Antananarivo</gui-select-option>
+                <gui-select-option data-value="Indian/Chagos">Indian/Chagos</gui-select-option>
+                <gui-select-option data-value="Indian/Christmas">Indian/Christmas</gui-select-option>
+                <gui-select-option data-value="Indian/Cocos">Indian/Cocos</gui-select-option>
+                <gui-select-option data-value="Indian/Comoro">Indian/Comoro</gui-select-option>
+                <gui-select-option data-value="Indian/Kerguelen">Indian/Kerguelen</gui-select-option>
+                <gui-select-option data-value="Indian/Mahe">Indian/Mahe</gui-select-option>
+                <gui-select-option data-value="Indian/Maldives">Indian/Maldives</gui-select-option>
+                <gui-select-option data-value="Indian/Mauritius">Indian/Mauritius</gui-select-option>
+                <gui-select-option data-value="Indian/Mayotte">Indian/Mayotte</gui-select-option>
+                <gui-select-option data-value="Indian/Reunion">Indian/Reunion</gui-select-option>
+                <gui-select-option data-value="Pacific/Apia">Pacific/Apia</gui-select-option>
+                <gui-select-option data-value="Pacific/Auckland">Pacific/Auckland</gui-select-option>
+                <gui-select-option data-value="Pacific/Chatham">Pacific/Chatham</gui-select-option>
+                <gui-select-option data-value="Pacific/Chuuk">Pacific/Chuuk</gui-select-option>
+                <gui-select-option data-value="Pacific/Efate">Pacific/Efate</gui-select-option>
+                <gui-select-option data-value="Pacific/Enderbury">Pacific/Enderbury</gui-select-option>
+                <gui-select-option data-value="Pacific/Fakaofo">Pacific/Fakaofo</gui-select-option>
+                <gui-select-option data-value="Pacific/Fiji">Pacific/Fiji</gui-select-option>
+                <gui-select-option data-value="Pacific/Funafuti">Pacific/Funafuti</gui-select-option>
+                <gui-select-option data-value="Pacific/Galapagos">Pacific/Galapagos</gui-select-option>
+                <gui-select-option data-value="Pacific/Gambier">Pacific/Gambier</gui-select-option>
+                <gui-select-option data-value="Pacific/Guadalcanal">Pacific/Guadalcanal</gui-select-option>
+                <gui-select-option data-value="Pacific/Guam">Pacific/Guam</gui-select-option>
+                <gui-select-option data-value="Pacific/Honolulu">Pacific/Honolulu</gui-select-option>
+                <gui-select-option data-value="Pacific/Johnston">Pacific/Johnston</gui-select-option>
+                <gui-select-option data-value="Pacific/Kiritimati">Pacific/Kiritimati</gui-select-option>
+                <gui-select-option data-value="Pacific/Kosrae">Pacific/Kosrae</gui-select-option>
+                <gui-select-option data-value="Pacific/Kwajalein">Pacific/Kwajalein</gui-select-option>
+                <gui-select-option data-value="Pacific/Majuro">Pacific/Majuro</gui-select-option>
+                <gui-select-option data-value="Pacific/Marquesas">Pacific/Marquesas</gui-select-option>
+                <gui-select-option data-value="Pacific/Midway">Pacific/Midway</gui-select-option>
+                <gui-select-option data-value="Pacific/Nauru">Pacific/Nauru</gui-select-option>
+                <gui-select-option data-value="Pacific/Niue">Pacific/Niue</gui-select-option>
+                <gui-select-option data-value="Pacific/Norfolk">Pacific/Norfolk</gui-select-option>
+                <gui-select-option data-value="Pacific/Noumea">Pacific/Noumea</gui-select-option>
+                <gui-select-option data-value="Pacific/Pago Pago">Pacific/Pago Pago</gui-select-option>
+                <gui-select-option data-value="Pacific/Palau">Pacific/Palau</gui-select-option>
+                <gui-select-option data-value="Pacific/Pitcairn">Pacific/Pitcairn</gui-select-option>
+                <gui-select-option data-value="Pacific/Pohnpei">Pacific/Pohnpei</gui-select-option>
+                <gui-select-option data-value="Pacific/Port Moresby">Pacific/Port Moresby</gui-select-option>
+                <gui-select-option data-value="Pacific/Rarotonga">Pacific/Rarotonga</gui-select-option>
+                <gui-select-option data-value="Pacific/Saipan">Pacific/Saipan</gui-select-option>
+                <gui-select-option data-value="Pacific/Tahiti">Pacific/Tahiti</gui-select-option>
+                <gui-select-option data-value="Pacific/Tarawa">Pacific/Tarawa</gui-select-option>
+                <gui-select-option data-value="Pacific/Tongatapu">Pacific/Tongatapu</gui-select-option>
+                <gui-select-option data-value="Pacific/Wake">Pacific/Wake</gui-select-option>
+                <gui-select-option data-value="Pacific/Wallis">Pacific/Wallis</gui-select-option>
+            </gui-select>
+        </gui-vbox-container>
+
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <gui-label>&nbsp;</gui-label>
+        </gui-vbox-container>
+
+        <!--PASSWORD-->
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <gui-label data-id="ID_LBL_WS2_PASSWORD"/>
+        </gui-vbox-container>
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <gui-password data-id="ID_TXT_PASSWORD" />
+        </gui-vbox-container>
+
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <gui-password data-id="ID_TXT_CONF_PASSWORD" />
+        </gui-vbox-container>
+    </gui-vbox>
+</application-fragment>
+
+<!--STEP #3 - WIFI SETTINGS-->
+<application-fragment data-id="WizardStep3WifiSettings">
+    <gui-vbox data-id="WizardStep3Container">
+
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <gui-label data-id="ID_LBL_WS3_LN1"/>
+        </gui-vbox-container>
+
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <gui-label>&nbsp;</gui-label>
+        </gui-vbox-container>
+
+        <!--WIFI SSID-->
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <gui-label data-id="ID_LBL_WIFI_SSID"/>
+        </gui-vbox-container>
+        <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+            <gui-hbox>
+                <gui-hbox-container data-grow="1" data-expand="true" data-basis="auto">
+                    <gui-select data-id="ID_DDL_WIFI_SSID">
+                    </gui-select>
+                </gui-hbox-container>
+                <gui-hbox-container data-grow="0" data-shrink="1" data-basis="auto">
+                    <gui-button data-id="ID_BTN_WIFI_SCAN" />
+                </gui-hbox-container>
+            </gui-hbox>
+        </gui-vbox-container>
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <gui-text data-id="ID_TXT_WIFI_SSID" />
+        </gui-vbox-container>
+
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <gui-label>&nbsp;</gui-label>
+        </gui-vbox-container>
+
+        <!--SECURITY / ENCRYPTION-->
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <gui-label data-id="ID_LBL_WIFI_ENCRYPTION"/>
+        </gui-vbox-container>
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <gui-select data-id="ID_DDL_WIFI_ENCRYPTION">
+                <gui-select-option data-value="open">None</gui-select-option>
+                <gui-select-option data-value="wep">WEP</gui-select-option>
+                <gui-select-option data-value="psk">WPA</gui-select-option>
+                <gui-select-option data-value="psk2">WPA2</gui-select-option>
+            </gui-select>
+        </gui-vbox-container>
+
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <gui-label>&nbsp;</gui-label>
+        </gui-vbox-container>
+
+        <!--PASSWORD-->
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <gui-label data-id="ID_LBL_WIFI_PASSWORD"/>
+        </gui-vbox-container>
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <gui-password data-id="ID_TXT_WIFI_PASSWORD"/>
+        </gui-vbox-container>
+
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <gui-label>&nbsp;</gui-label>
+        </gui-vbox-container>
+
+    </gui-vbox>
+</application-fragment>
+
+<!--STEP #4 - REST API-->
+<application-fragment data-id="WizardStep4RestApiSettings">
+    <gui-vbox data-id="WizardStep4Container">
+
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="false">
+            <gui-label data-id="ID_LBL_WS4_LN1"/>
+        </gui-vbox-container>
+
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <gui-label>&nbsp;</gui-label>
+        </gui-vbox-container>
+
+        <gui-vbox-container data-grow="1" data-shrink="1" data-basis="auto">
+            <gui-label data-id="ID_LBL_WS4_LN2"/>
+        </gui-vbox-container>
+
+        <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+            <gui-switch data-id="ID_CHK_REST_API" />
+        </gui-vbox-container>
+
+    </gui-vbox>
+</application-fragment>
+
+<!--STEP #5 - BOARD SETTINGS-->
+<application-fragment data-id="WizardStep5SaveRestart">
+    <gui-vbox data-id="WizardStep5Container">
+        <gui-vbox-container data-grow="1" data-fill="true">
+
+            <gui-label data-align="center">
+                Save and Restart
+            </gui-label>
+
+        </gui-vbox-container>
+
+    </gui-vbox>
+</application-fragment>

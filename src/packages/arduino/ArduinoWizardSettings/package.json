@@ -1,0 +1,12 @@
+{
+  "className":  "ApplicationArduinoWizardSettings",
+  "name":       "Arduino Configuration Wizard",
+  "mime":       null,
+  "icon":       "categories/applications-system.png",
+  "category":   "utilities",
+  "preload":    [
+    {"src": "main.js", "type": "javascript"},
+    {"src": "locales.js", "type": "javascript"},
+    {"src": "main.css", "type": "stylesheet"}
+  ]
+}
