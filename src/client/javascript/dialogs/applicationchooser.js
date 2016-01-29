@@ -89,7 +89,7 @@
     var file = '<unknown file>';
     var label = '<unknown mime>';
     if ( this.args.file ) {
-      file = Utils.format('{0} ({1}', this.args.file.filename, this.args.file.mime);
+      file = Utils.format('{0} ({1})', this.args.file.filename, this.args.file.mime);
       label = API._('DIALOG_APPCHOOSER_SET_DEFAULT', this.args.file.mime);
     }
 
