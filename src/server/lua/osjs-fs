@@ -66,12 +66,10 @@ function run(wsapi_env)
       response.status = 500
     end
   else
-    local path = request.POST["path"]
+    local path = request.POST["path"] .. "/"
     local contents = request.POST.upload.contents
     local filename = request.POST.upload.name
     local realpath = osjs.get_real_path(request, response, path)
-
-    response:write(filename)
 
     if realpath and filename then
       realpath = realpath .. filename
@@ -84,6 +82,8 @@ function run(wsapi_env)
       response.status = 500
       response:write("No filename or path given to upload")
     end
+
+    response:write(1)
 
   end
 

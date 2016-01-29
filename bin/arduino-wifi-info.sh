@@ -15,5 +15,10 @@ else
         signal=`iw dev wlan0 link | grep "signal: " | cut -d ":" -f2` | sed 's/ //g'
 fi
 
-echo $ap $ssid $security $signal
+echo "{"
+echo "  \"ap\": \"$ap\","
+echo "  \"ssid\": \"$ssid\","
+echo "  \"security\": \"$security\","
+echo "  \"signal\": \"$signal\""
+echo -n "}"
 

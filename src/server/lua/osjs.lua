@@ -229,8 +229,14 @@ function fs_scandir(request, response, path)
   tmppath = string.gsub(tmppath, "^\/+", "")
 
   if tmppath ~= "" then
+    local pmatch = string.match(path, "^((%a+)://)")
+    local protocol = string.gsub(pmatch, "://", "")
+    local tmpsplit = tmppath:split("/")
+    table.remove(tmpsplit, 1)
+    local parpath = protocol .. ":///" .. (table.concat(tmpsplit, "/"))
+
     table.insert(data, {
-      path = string.gsub(path, "\/%a+$", "") .. "/",
+      path = parpath,
       filename = "..",
       size = 0,
       type = "dir",
@@ -646,7 +652,10 @@ function api_request(request, response, meth, iargs)
     sys.reboot()
     data = true
   elseif meth == "netdevices" then
-    data = sys.net.devices()
+    data = {
+      devices = sys.net.devices(),
+      platform = console("/sbin/uci get wireless.radio0.path | sed 's/platform\.//'")
+    }
   elseif meth == "netstatus" then
     data = iface_status(iargs["device"])
   elseif meth == "netinfo" then
@@ -657,7 +666,7 @@ function api_request(request, response, meth, iargs)
   elseif meth == "iwinfo" then
     -- local device = iargs["device"] or "wlan0"
     -- data = sys.wifi.getiwinfo(device)
-    data = console("sh " .. ROOTDIR .. "/bin/arduino-wifi-info.sh")
+    data = json.decode(console("sh " .. ROOTDIR .. "/bin/arduino-wifi-info.sh"))
   elseif meth == "rest" then
     data = console("sh " .. ROOTDIR .. "/bin/arduino-toggle-rest-api.sh " .. iargs["enabled"])
   elseif meth == "iwscan" then

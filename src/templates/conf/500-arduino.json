@@ -50,7 +50,7 @@
     "WM" : {
       "args": {
         "defaults": {
-          "icon"            : "arduino-osjs.png",
+          "icon"            : "arduino.png",
           "wallpaper"       : "osjs:///themes/wallpapers/arduino-infinite-boards.jpg",
           "backgroundColor" : "#ebebeb",
           "theme"           : "material",
