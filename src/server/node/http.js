@@ -126,15 +126,15 @@
       if ( instance.config.logging ) {
         console.log('===', 'FileGET', path);
       }
-      try {
-        instance.handler.checkAPIPrivilege(request, response, 'vfs');
-      } catch ( e ) {
-        console.error('!!! Caught exception', e);
-        console.warn(e.stack);
-        respond(e.toString(), 'text/plain', response, null, 500);
-      }
+      instance.handler.checkAPIPrivilege(request, response, 'fs', function(err) {
+        if ( err ) {
+          respond(err, 'text/plain', response, null, 500);
+          return;
+        }
+        respondFile(unescape(path), request, response, arg);
+      });
+      return;
     }
-
     respondFile(unescape(path), request, response, arg);
   }
 
@@ -142,26 +142,24 @@
    * Handles file uploads
    */
   function filePOST(fields, files, request, response) {
-    try {
-      instance.handler.checkAPIPrivilege(request, response, 'upload');
-    } catch ( e ) {
-      console.error('!!! Caught exception', e);
-      console.warn(e.stack);
-      respond(e, 'text/plain', response, null, 500);
-    }
-
-    instance.vfs.upload({
-      src: files.upload.path,
-      name: files.upload.name,
-      path: fields.path,
-      overwrite: String(fields.overwrite) === 'true'
-    }, request, function(err, result) {
+    instance.handler.checkAPIPrivilege(request, response, 'upload', function(err) {
       if ( err ) {
         respond(err, 'text/plain', response, null, 500);
-      } else {
-        respond(result, 'text/plain', response);
+        return;
       }
-    }, instance.config);
+      instance.vfs.upload({
+        src: files.upload.path,
+        name: files.upload.name,
+        path: fields.path,
+        overwrite: String(fields.overwrite) === 'true'
+      }, function(err, result) {
+        if ( err ) {
+          respond(err, 'text/plain', response, null, 500);
+        } else {
+          respond(result, 'text/plain', response);
+        }
+      }, request, response);
+    });
   }
 
   /**
@@ -173,7 +171,6 @@
       if ( instance.config.logging ) {
         console.log('===', 'CoreAPI', method);
       }
-
       instance.request(isVfs, method, args, function(error, result) {
         respondJSON({result: result, error: error}, response);
       }, request, response, instance.handler);
@@ -287,9 +284,11 @@
     instance.handler.onServerStart();
 
     var port = setup.port || instance.config.port;
-    console.log('***');
-    console.log('***', 'OS.js is listening on http://localhost:' + port);
-    console.log('***');
+    if ( instance.config.logging ) {
+      console.log('***');
+      console.log('***', 'OS.js is listening on http://localhost:' + port);
+      console.log('***');
+    }
 
     server.listen(port);
   };

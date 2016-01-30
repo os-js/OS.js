@@ -72,7 +72,7 @@ abstract class APIHandler
  */
 class APIUser
 {
-  const GROUP_VFS = 'vfs';
+  const GROUP_VFS = 'fs';
   const GROUP_API = 'api';
   const GROUP_APPLICATION = 'application';
   const GROUP_CURL = 'curl';

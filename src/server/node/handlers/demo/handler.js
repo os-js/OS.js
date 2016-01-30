@@ -38,28 +38,26 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var API = {
-    login: function(args, callback, request, response) {
-      function login(data) {
-        request.cookies.set('username', data.username, {httpOnly:true});
-        request.cookies.set('groups', JSON.stringify(data.groups), {httpOnly:true});
-        return data;
-      }
-
-      callback(false, login({
+    login: function(args, callback, request, response, config, handler) {
+      var data = {
         id: 0,
         username: 'demo',
         name: 'Demo User',
-        groups: ['demo']
-      }, request, response));
+        groups: ['admin']
+      };
+
+      handler.setUserData(request, response, data, function() {
+        callback(false, {
+          userData: data,
+          userSettings: {}
+        });
+      });
     },
 
-    logout: function(args, callback, request, response) {
-      function logout() {
-        request.cookies.set('username', null, {httpOnly:true});
-        request.cookies.set('groups', null, {httpOnly:true});
-        return true;
-      }
-      callback(false, logout());
+    logout: function(args, callback, request, response, config, handler) {
+      handler.setUserData(request, response, null, function() {
+        callback(false, true);
+      });
     }
   };
 
@@ -67,23 +65,28 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * @api handler.DemoHandler
+   * @see handler.Handler
+   * @class
+   */
   exports.register = function(instance, DefaultHandler) {
-    function Handler() {
+    function DemoHandler() {
       DefaultHandler.call(this, instance, API);
     }
 
-    Handler.prototype = Object.create(DefaultHandler.prototype);
-    Handler.constructor = DefaultHandler;
+    DemoHandler.prototype = Object.create(DefaultHandler.prototype);
+    DemoHandler.constructor = DefaultHandler;
 
-    Handler.prototype.checkAPIPrivilege = function(request, response, privilege) {
-      return this._checkDefaultPrivilege(request, response);
+    DemoHandler.prototype.checkAPIPrivilege = function(request, response, privilege, callback) {
+      this._checkDefaultPrivilege(request, response, callback);
     };
 
-    Handler.prototype.checkVFSPrivilege = function(request, response, path, args) {
-      return this._checkDefaultPrivilege(request, response);
+    DemoHandler.prototype.checkVFSPrivilege = function(request, response, path, args, callback) {
+      this._checkDefaultPrivilege(request, response, callback);
     };
 
-    return new Handler();
+    return new DemoHandler();
   };
 
 })();

@@ -99,38 +99,38 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var API = {
-    login: function(login, callback, request, response, body) {
+    login: function(login, callback, request, response, config, handler) {
       authenticate(login, function(err, data, settings) {
         if ( err ) {
           callback(err);
           return;
         }
 
-        request.cookies.set('username', login.username, {httpOnly:true});
-        request.cookies.set('groups', JSON.stringify(data.groups), {httpOnly:true});
+        var d = {
+          id:       data.id,
+          username: login.username,
+          name:     data.name,
+          groups:   data.groups
+        };
 
-        callback(false, {
-          userData : {
-            id:       data.id,
-            username: login.username,
-            name:     data.name,
-            groups:   data.groups
-          },
-          userSettings: settings
+        handler.setUserData(request, response, d, function() {
+          callback(false, {
+            userData: d,
+            userSetings: settings
+          });
         });
-
       });
     },
 
-    logout: function(args, callback, request, response) {
-      request.cookies.set('username', null, {httpOnly:true});
-      request.cookies.set('groups', null, {httpOnly:true});
-      callback(false, true);
+    logout: function(args, callback, request, response, config, handler) {
+      handler.setUserData(request, response, null, function() {
+        callback(false, true);
+      });
     },
 
-    settings: function(args, callback, request, response) {
+    settings: function(args, callback, request, response, config, handler) {
       var settings = args.settings;
-      var uname = request.cookies.get('username');
+      var uname = handler.getUserName(request, response);
       var data = JSON.stringify(settings);
 
       // Make sure directory exists before writing
@@ -146,23 +146,24 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * @api handler.PAMHandler
+   * @see handler.Handler
+   * @class
+   */
   exports.register = function(instance, DefaultHandler) {
-    function Handler() {
+    function PAMHandler() {
       DefaultHandler.call(this, instance, API);
     }
 
-    Handler.prototype = Object.create(DefaultHandler.prototype);
-    Handler.constructor = DefaultHandler;
+    PAMHandler.prototype = Object.create(DefaultHandler.prototype);
+    PAMHandler.constructor = DefaultHandler;
 
-    Handler.prototype.checkAPIPrivilege = function(request, response, privilege) {
-      return this._checkDefaultPrivilege(request, response);
+    PAMHandler.prototype.checkVFSPrivilege = function(request, response, path, args, callback) {
+      this._checkDefaultPrivilege(request, response, callback);
     };
 
-    Handler.prototype.checkVFSPrivilege = function(request, response, path, args) {
-      return this._checkDefaultPrivilege(request, response);
-    };
-
-    return new Handler();
+    return new PAMHandler();
   };
 
 })(

@@ -50,13 +50,10 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var APIUser = function() {};
-  APIUser.login = function(login, request, response, callback) {
+  APIUser.login = function(login, request, response, callback, config, handler) {
     console.log('APIUser::login()');
 
     function complete(data) {
-      request.cookies.set('username', data.username, {httpOnly:true});
-      request.cookies.set('groups', JSON.stringify(data.groups), {httpOnly:true});
-
       callback(false, {
         userData : {
           id : data.id,
@@ -135,30 +132,31 @@
     });
   };
 
-  APIUser.logout = function(request, response) {
-    console.log('APIUser::logout()');
-    request.cookies.set('username', null, {httpOnly:true});
-    request.cookies.set('groups', null, {httpOnly:true});
-    return true;
-  };
-
   /////////////////////////////////////////////////////////////////////////////
   // API
   /////////////////////////////////////////////////////////////////////////////
 
   var API = {
-    login: function(args, callback, request, response) {
+    login: function(args, callback, request, response, config, handler) {
       APIUser.login(args, request, response, function(error, result) {
-        callback(error, result);
+        if ( error ) {
+          callback(error);
+          return;
+        }
+
+        handler.setUserData(request, response, result.userData, function() {
+          callback(false, result);
+        });
+      }, config, handler);
+    },
+
+    logout: function(args, callback, request, response, config, handler) {
+      handler.setUserData(request, response, null, function() {
+        callback(false, true);
       });
     },
 
-    logout: function(args, callback, request, response) {
-      var result = APIUser.logout(request, response);
-      callback(false, result);
-    },
-
-    settings: function(args, callback, request, response) {
+    settings: function(args, callback, request, response, config, handler) {
       APIUser.updateSettings(args.settings, request, response, callback);
     }
   };
@@ -167,36 +165,43 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * @api handler.MysqlHandler
+   * @see handler.Handler
+   * @class
+   */
   exports.register = function(instance, DefaultHandler) {
-    function Handler() {
+    function MysqlHandler() {
       DefaultHandler.call(this, instance, API);
     }
 
-    Handler.prototype = Object.create(DefaultHandler.prototype);
-    Handler.constructor = DefaultHandler;
+    MysqlHandler.prototype = Object.create(DefaultHandler.prototype);
+    MysqlHandler.constructor = DefaultHandler;
 
-    Handler.prototype.onServerStart = function() {
+    MysqlHandler.prototype.onServerStart = function() {
       if ( !connection ) {
         connection = mysql.createConnection(MYSQL_CONFIG);
         connection.connect();
       }
     };
 
-    Handler.prototype.onServerEnd = function() {
+    MysqlHandler.prototype.onServerEnd = function() {
       if ( connection ) {
         connection.end();
       }
     };
 
-    Handler.prototype.checkAPIPrivilege = function(request, response, privilege) {
-      return this._checkDefaultPrivilege(request, response);
+    MysqlHandler.prototype.checkAPIPrivilege = function(request, response, privilege, callback) {
+      // This has no prilege checks
+      this._checkDefaultPrivilege(request, response, callback);
     };
 
-    Handler.prototype.checkVFSPrivilege = function(request, response, path, args) {
-      return this._checkDefaultPrivilege(request, response);
+    MysqlHandler.prototype.checkVFSPrivilege = function(request, response, path, args, callback) {
+      // This has no prilege checks
+      this._checkDefaultPrivilege(request, response, callback);
     };
 
-    return new Handler();
+    return new MysqlHandler();
   };
 
 })(require('querystring'), require('mysql'));
