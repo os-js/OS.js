@@ -79,31 +79,31 @@ describe('VFS', function() {
     it('should not find folder', function(done) {
       var file = {path: 'home:///.mocha'};
 
-      instance.vfs.exists(file, request, function(json) {
-        assert.equal(null, json.error);
-        assert.equal(false, json.result);
+      instance.vfs.exists(file, function(error, result) {
+        assert.equal(false, error);
+        assert.equal(false, result);
         done();
-      }, instance.config);
+      }, request, instance.config);
     });
   });
 
   describe('#exists', function() {
     it('should not find file', function(done) {
-      instance.vfs.exists({path: 'home:///.mocha/test.txt'}, request, function(json) {
-        assert.equal(null, json.error);
-        assert.equal(false, json.result);
+      instance.vfs.exists({path: 'home:///.mocha/test.txt'}, function(error, result) {
+        assert.equal(false, error);
+        assert.equal(false, result);
         done();
-      }, instance.config);
+      }, request, instance.config);
     });
   });
 
   describe('#mkdir', function() {
     it('should create folder without error', function(done) {
-      instance.vfs.mkdir({path: 'home:///.mocha'}, request, function(json) {
-        assert.equal(null, json.error);
-        assert.equal(true, json.result);
+      instance.vfs.mkdir({path: 'home:///.mocha'}, function(error, result) {
+        assert.equal(false, error);
+        assert.equal(true, result);
         done();
-      }, instance.config);
+      }, request, instance.config);
     });
   });
 
@@ -114,25 +114,25 @@ describe('VFS', function() {
         path: 'home:///.mocha/test.txt',
         data: 'data:text/plain;base64,' + data
       };
-      instance.vfs.write(file, request, function(json) {
-        assert.equal(null, json.error);
-        assert.equal(true, json.result);
+      instance.vfs.write(file, function(error, result) {
+        assert.equal(false, error);
+        assert.equal(true, result);
         done();
-      }, instance.config);
+      }, request, instance.config);
     });
   });
 
   describe('#read', function() {
     it('should read file without error', function(done) {
-      instance.vfs.read({path: 'home:///.mocha/test.txt'}, request, function(json) {
-        assert.equal(null, json.error);
+      instance.vfs.read({path: 'home:///.mocha/test.txt'}, function(error, result) {
+        assert.equal(false, error);
 
-        var result = json.result.replace(/^data\:(.*);base64\,/, '') || '';
+        var result = result.replace(/^data\:(.*);base64\,/, '') || '';
         result = new Buffer(result, 'base64').toString('utf8');
 
         assert.equal(str, result);
         done();
-      }, instance.config);
+      }, request, instance.config);
     });
   });
 
@@ -140,11 +140,11 @@ describe('VFS', function() {
     it('should find file (path and mime) without error', function(done) {
       var tst = 'home:///.mocha/test.txt';
       var found = {};
-      instance.vfs.scandir({path: 'home:///.mocha'}, request, function(json) {
-        assert.equal(null, json.error);
+      instance.vfs.scandir({path: 'home:///.mocha'}, function(error, result) {
+        assert.equal(false, error);
 
         try {
-          json.result.forEach(function(f) {
+          result.forEach(function(f) {
             if ( f.filename === 'test.txt' ) {
               found = {
                 path: f.path,
@@ -156,7 +156,7 @@ describe('VFS', function() {
         assert.equal(tst, found.path);
         assert.equal('text/plain', found.mime);
         done();
-      }, instance.config);
+      }, request, instance.config);
     });
   });
 
@@ -166,11 +166,11 @@ describe('VFS', function() {
         src: 'home:///.mocha/test.txt',
         dest: 'home:///.mocha/test2.txt'
       };
-      instance.vfs.move(file, request, function(json) {
-        assert.equal(null, json.error);
-        assert.equal(true, json.result);
+      instance.vfs.move(file, function(error, result) {
+        assert.equal(false, error);
+        assert.equal(true, result);
         done();
-      }, instance.config);
+      }, request, instance.config);
     });
   });
 
@@ -180,11 +180,11 @@ describe('VFS', function() {
         src: 'home:///.mocha/test2.txt',
         dest: 'home:///.mocha/test3.txt'
       };
-      instance.vfs.copy(file, request, function(json) {
-        assert.equal(null, json.error);
-        assert.equal(true, json.result);
+      instance.vfs.copy(file, function(error, result) {
+        assert.equal(false, error);
+        assert.equal(true, result);
         done();
-      }, instance.config);
+      }, request, instance.config);
     });
   });
 
@@ -194,49 +194,49 @@ describe('VFS', function() {
         src: 'home:///.mocha',
         dest: 'home:///.mocha-copy'
       };
-      instance.vfs.copy(file, request, function(json) {
-        assert.equal(null, json.error);
-        assert.equal(true, json.result);
+      instance.vfs.copy(file, function(error, result) {
+        assert.equal(false, error);
+        assert.equal(true, result);
         done();
-      }, instance.config);
+      }, request, instance.config);
     });
   });
 
   describe('#fileinfo', function() {
     it('should get file information without error', function(done) {
-      instance.vfs.fileinfo({path: 'home:///.mocha/test2.txt'}, request, function(json) {
-        assert.equal(null, json.error);
-        assert.equal('home:///.mocha/test2.txt', json.result.path);
-        assert.equal('test2.txt', json.result.filename);
-        assert.equal('text/plain', json.result.mime);
+      instance.vfs.fileinfo({path: 'home:///.mocha/test2.txt'}, function(error, result) {
+        assert.equal(false, error);
+        assert.equal('home:///.mocha/test2.txt', result.path);
+        assert.equal('test2.txt', result.filename);
+        assert.equal('text/plain', result.mime);
         done();
-      }, instance.config);
+      }, request, instance.config);
     });
   });
 
   describe('#delete', function() {
     it('should delete file without error', function(done) {
-      instance.vfs.delete({path: 'home:///.mocha/test2.txt'}, request, function(json) {
-        assert.equal(null, json.error);
-        assert.equal(true, json.result);
+      instance.vfs.delete({path: 'home:///.mocha/test2.txt'}, function(error, result) {
+        assert.equal(false, error);
+        assert.equal(true, result);
         done();
-      }, instance.config);
+      }, request, instance.config);
     });
 
     it('should delete folder without error', function(done) {
-      instance.vfs.delete({path: 'home:///.mocha'}, request, function(json) {
-        assert.equal(null, json.error);
-        assert.equal(true, json.result);
+      instance.vfs.delete({path: 'home:///.mocha'}, function(error, result) {
+        assert.equal(false, error);
+        assert.equal(true, result);
         done();
-      }, instance.config);
+      }, request, instance.config);
     });
 
     it('should delete copied folder without error', function(done) {
-      instance.vfs.delete({path: 'home:///.mocha-copy'}, request, function(json) {
-        assert.equal(null, json.error);
-        assert.equal(true, json.result);
+      instance.vfs.delete({path: 'home:///.mocha-copy'}, function(error, result) {
+        assert.equal(false, error);
+        assert.equal(true, result);
         done();
-      }, instance.config);
+      }, request, instance.config);
     });
   });
 });
@@ -406,10 +406,13 @@ describe('Node HTTP Server', function() {
       };
 
       var exp = {
-        id: 0,
-        username: 'demo',
-        name: 'Demo User',
-        groups: [ 'demo' ]
+        userData: {
+          id: 0,
+          username: 'demo',
+          name: 'Demo User',
+          groups: [ 'admin' ]
+        },
+        userSettings: {}
       };
 
       post(url + '/API/login', data, function(err, res, body) {

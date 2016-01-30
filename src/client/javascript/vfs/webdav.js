@@ -126,7 +126,7 @@
     }
 
     if ( getCORSAllowed(file) ) {
-      OSjs.VFS.internalCall('xhr', {url: url, method: method}, callback);
+      OSjs.VFS.internalCall('get', {url: url, method: method}, callback);
     } else {
       externalCall();
     }

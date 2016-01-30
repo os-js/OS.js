@@ -34,44 +34,67 @@
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
+  // API
   /////////////////////////////////////////////////////////////////////////////
 
-  // This simply adds full privileges to all users (remove this to enable default check)
-  exports.checkPrivilege = function(request, response, privilege, respond) {
-    var uname = request.cookies.get('username');
-    if ( !uname ) {
-      respond('You have no OS.js Session, please log in!', 'text/plain', response, null, 500);
-      return false;
-    }
-    return true;
-  };
-
-  // Attach API functions
-  exports.register = function(CONFIG, API, HANDLER) {
-    API.login = function(args, callback, request, response) {
-      function login(data) {
-        request.cookies.set('username', data.username, {httpOnly:true});
-        request.cookies.set('groups', JSON.stringify(data.groups), {httpOnly:true});
-        return data;
-      }
-
-      callback(false, login({
+  var API = {
+    login: function(args, callback, request, response, config, handler) {
+      var data = {
         id: 0,
         username: 'demo',
         name: 'Demo User',
-        groups: ['demo']
-      }, request, response));
+        groups: ['admin']
+      };
+
+      handler.setUserData(request, response, data, function() {
+        callback(false, {
+          userData: data,
+          userSettings: {}
+        });
+      });
+    },
+
+    logout: function(args, callback, request, response, config, handler) {
+      handler.setUserData(request, response, null, function() {
+        callback(false, true);
+      });
+    }
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * @api handler.DemoHandler
+   * @see handler.Handler
+   * @class
+   */
+  exports.register = function(instance, DefaultHandler) {
+    function DemoHandler() {
+      DefaultHandler.call(this, instance, API);
+    }
+
+    DemoHandler.prototype = Object.create(DefaultHandler.prototype);
+    DemoHandler.constructor = DefaultHandler;
+
+    /**
+     * By default OS.js will check src/conf for group permissions.
+     * This overrides and leaves no checks (full access)
+     */
+    DemoHandler.prototype.checkAPIPrivilege = function(request, response, privilege, callback) {
+      this._checkDefaultPrivilege(request, response, callback);
     };
 
-    API.logout = function(args, callback, request, response) {
-      function logout() {
-        request.cookies.set('username', null, {httpOnly:true});
-        request.cookies.set('groups', null, {httpOnly:true});
-        return true;
-      }
-      callback(false, logout());
+    /**
+     * By default OS.js will check src/conf for group permissions.
+     * This overrides and leaves no checks (full access)
+     */
+    DemoHandler.prototype.checkVFSPrivilege = function(request, response, path, args, callback) {
+      this._checkDefaultPrivilege(request, response, callback);
     };
+
+    return new DemoHandler();
   };
 
 })();

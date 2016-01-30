@@ -99,7 +99,7 @@
       return;
     }
 
-    OSjs.VFS.internalCall('xhr', {path: item.path}, callback, options);
+    OSjs.VFS.internalCall('get', {path: item.path}, callback, options);
   };
 
   internalTransport.copy = function(src, dest, callback) {
@@ -181,14 +181,10 @@
    * @api OSjs.VFS.Transports.Internal.path()
    */
   function makePath(item) {
-    var base = API.getConfig('Connection.FSURI', '/');
-    if ( item ) {
-      if ( typeof item === 'string' ) {
-        item = new OSjs.VFS.File(item);
-      }
-      return base + '/get/' + item.path;
+    if ( typeof item === 'string' ) {
+      item = new OSjs.VFS.File(item);
     }
-    return base + '/upload';
+    return OSjs.Core.getHandler().getVFSPath(item);
   }
 
   /////////////////////////////////////////////////////////////////////////////

@@ -6,6 +6,16 @@
       "homes":  "%DROOT%/vfs/home",
       "mounts": {
         "shared": "%DROOT%/vfs/public"
+      },
+      "groups": {
+        "shared": []
+      }
+    },
+    "api": {
+      "groups": {
+        "curl": "curl",
+        "application": "application",
+        "fs": "fs"
       }
     },
     "handler" : "%HANDLER%",

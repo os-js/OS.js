@@ -284,6 +284,24 @@
   };
 
   /**
+   * Default method to perform a resolve on a VFS File object.
+   *
+   * This should return the URL for given resource.
+   *
+   * @param   OSjs.VFS.File       item      The File Object
+   *
+   * @return  String
+   * @method  _Handler::getVFSPath()
+   */
+  _Handler.prototype.getVFSPath = function(item) {
+    var base = API.getConfig('Connection.FSURI', '/');
+    if ( item ) {
+      return base + '/get/' + item.path;
+    }
+    return base + '/upload';
+  };
+
+  /**
    * Default method to perform a call to the backend (API)
    *
    * Please note that this function is internal, and if you want to make
@@ -411,7 +429,7 @@
    * @see  _Handler::__callXHR()
    */
   _Handler.prototype._callVFS = function(method, args, options, cbSuccess, cbError) {
-    if ( method === 'FS:xhr' ) {
+    if ( method === 'FS:get' ) {
       return this.__callGET(args, options, cbSuccess, cbError);
     } else if ( method === 'FS:upload' ) {
       return this.__callPOST(args, options, cbSuccess, cbError);
