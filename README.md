@@ -44,5 +44,5 @@ Read the official [contribution docs](https://github.com/os-js/OS.js/blob/master
 
 Information: [Homepage](http://os.js.org/), [Documentation](http://os.js.org/doc/), [Author](http://andersevenrud.github.io/)
 
-Social: [YouTube](https://www.youtube.com/playlist?list=PLzC5Z5D-YLyEoYXWrxplUIek5uRyF92iG), [Twitter](https://twitter.com/andersevenrud), [Google+](https://plus.google.com/b/113399210633478618934/113399210633478618934), [Facebook](https://www.facebook.com/pages/OSjs/226644300734574), [Reddit](http://www.reddit.com/r/osjs), [OpenHub](https://www.openhub.net/p/OS_js), [Google Groups](https://groups.google.com/forum/#!forum/osjsplatform)¨
+Social: [YouTube](https://www.youtube.com/playlist?list=PLzC5Z5D-YLyEoYXWrxplUIek5uRyF92iG), [Twitter](https://twitter.com/andersevenrud), [Google+](https://plus.google.com/b/113399210633478618934/113399210633478618934), [Facebook](https://www.facebook.com/pages/OSjs/226644300734574), [Reddit](http://www.reddit.com/r/osjs), [OpenHub](https://www.openhub.net/p/OS_js), [Google Groups](https://groups.google.com/forum/#!forum/osjsplatform)
 
