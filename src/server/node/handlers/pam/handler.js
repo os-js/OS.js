@@ -95,12 +95,11 @@
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
+  // API
   /////////////////////////////////////////////////////////////////////////////
 
-  // Attach API functions
-  exports.register = function(CONFIG, API, HANDLER) {
-    API.login = function(login, callback, request, response, body) {
+  var API = {
+    login: function(login, callback, request, response, body) {
       authenticate(login, function(err, data, settings) {
         if ( err ) {
           callback(err);
@@ -121,15 +120,15 @@
         });
 
       });
-    };
+    },
 
-    API.logout = function(args, callback, request, response) {
+    logout: function(args, callback, request, response) {
       request.cookies.set('username', null, {httpOnly:true});
       request.cookies.set('groups', null, {httpOnly:true});
       callback(false, true);
-    };
+    },
 
-    API.settings = function(args, callback, request, response) {
+    settings: function(args, callback, request, response) {
       var settings = args.settings;
       var uname = request.cookies.get('username');
       var data = JSON.stringify(settings);
@@ -140,7 +139,30 @@
           callback(err || false, !!err);
         });
       });
+    }
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
+  exports.register = function(instance, DefaultHandler) {
+    function Handler() {
+      DefaultHandler.call(this, instance, API);
+    }
+
+    Handler.prototype = Object.create(DefaultHandler.prototype);
+    Handler.constructor = DefaultHandler;
+
+    Handler.prototype.checkAPIPrivilege = function(request, response, privilege) {
+      return this._checkDefaultPrivilege(request, response);
     };
+
+    Handler.prototype.checkVFSPrivilege = function(request, response, path, args) {
+      return this._checkDefaultPrivilege(request, response);
+    };
+
+    return new Handler();
   };
 
 })(

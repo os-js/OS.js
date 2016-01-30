@@ -143,40 +143,60 @@
   };
 
   /////////////////////////////////////////////////////////////////////////////
+  // API
+  /////////////////////////////////////////////////////////////////////////////
+
+  var API = {
+    login: function(args, callback, request, response) {
+      APIUser.login(args, request, response, function(error, result) {
+        callback(error, result);
+      });
+    },
+
+    logout: function(args, callback, request, response) {
+      var result = APIUser.logout(request, response);
+      callback(false, result);
+    },
+
+    settings: function(args, callback, request, response) {
+      APIUser.updateSettings(args.settings, request, response, callback);
+    }
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  exports.register = function(CONFIG, API, HANDLER) {
-    console.info('-->', 'Registering handler API methods');
+  exports.register = function(instance, DefaultHandler) {
+    function Handler() {
+      DefaultHandler.call(this, instance, API);
+    }
 
-    HANDLER.onServerStart = function() {
+    Handler.prototype = Object.create(DefaultHandler.prototype);
+    Handler.constructor = DefaultHandler;
+
+    Handler.prototype.onServerStart = function() {
       if ( !connection ) {
         connection = mysql.createConnection(MYSQL_CONFIG);
         connection.connect();
       }
     };
 
-    HANDLER.onServerEnd = function() {
+    Handler.prototype.onServerEnd = function() {
       if ( connection ) {
         connection.end();
       }
     };
 
-    API.login = function(args, callback, request, response, body) {
-      APIUser.login(args, request, response, function(error, result) {
-        callback(error, result);
-      });
+    Handler.prototype.checkAPIPrivilege = function(request, response, privilege) {
+      return this._checkDefaultPrivilege(request, response);
     };
 
-    API.logout = function(args, callback, request, response) {
-      var result = APIUser.logout(request, response);
-      callback(false, result);
+    Handler.prototype.checkVFSPrivilege = function(request, response, path, args) {
+      return this._checkDefaultPrivilege(request, response);
     };
 
-    API.settings = function(args, callback, request, response) {
-      APIUser.updateSettings(args.settings, request, response, callback);
-    };
-
+    return new Handler();
   };
 
 })(require('querystring'), require('mysql'));

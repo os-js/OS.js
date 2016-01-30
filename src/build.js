@@ -802,8 +802,9 @@
         jsonSettings.vfs.maxuploadsize = cfg.client.VFS.MaxUploadSize;
       } catch ( e ) {}
 
-      Object.keys(jsonSettings.vfs).forEach(function(key) {
-        jsonSettings.vfs[key] = fixWinPath(jsonSettings.vfs[key]);
+      jsonSettings.vfs.homes = fixWinPath(jsonSettings.vfs.homes);
+      Object.keys(jsonSettings.vfs.mounts).forEach(function(key) {
+        jsonSettings.vfs.mounts[key] = fixWinPath(jsonSettings.vfs.mounts[key]);
       });
 
       // Write

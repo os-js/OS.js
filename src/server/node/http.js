@@ -127,9 +127,11 @@
         console.log('===', 'FileGET', path);
       }
       try {
-        instance.handler.checkPrivilege(request, response, 'vfs');
+        instance.handler.checkAPIPrivilege(request, response, 'vfs');
       } catch ( e ) {
-        respond(e, 'text/plain', response, null, 500);
+        console.error('!!! Caught exception', e);
+        console.warn(e.stack);
+        respond(e.toString(), 'text/plain', response, null, 500);
       }
     }
 
@@ -141,8 +143,10 @@
    */
   function filePOST(fields, files, request, response) {
     try {
-      instance.handler.checkPrivilege(request, response, 'upload');
+      instance.handler.checkAPIPrivilege(request, response, 'upload');
     } catch ( e ) {
+      console.error('!!! Caught exception', e);
+      console.warn(e.stack);
       respond(e, 'text/plain', response, null, 500);
     }
 
@@ -280,15 +284,14 @@
     instance = _osjs.init(setup);
     server = _http.createServer(httpCall);
 
-    if ( setup.logging !== false ) {
-      console.log(JSON.stringify(instance.config, null, 2));
-    }
+    instance.handler.onServerStart();
 
-    if ( instance.handler && instance.handler.onServerStart ) {
-      instance.handler.onServerStart(instance.config);
-    }
+    var port = setup.port || instance.config.port;
+    console.log('***');
+    console.log('***', 'OS.js is listening on http://localhost:' + port);
+    console.log('***');
 
-    server.listen(setup.port || instance.config.port);
+    server.listen(port);
   };
 
   /**
@@ -301,9 +304,7 @@
   module.exports.close = function(cb) {
     cb = cb || function() {};
 
-    if ( instance.handler && instance.handler.onServerEnd ) {
-      instance.handler.onServerEnd(instance.config);
-    }
+    instance.handler.onServerEnd();
 
     if ( server ) {
       server.close(cb);
