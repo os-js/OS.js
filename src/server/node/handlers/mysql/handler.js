@@ -30,7 +30,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(qs, mysql) {
+(function(mysql) {
   'use strict';
   var connection;
 
@@ -194,4 +194,4 @@
     return new MysqlHandler();
   };
 
-})(require('querystring'), require('mysql'));
+})(require('mysql'));

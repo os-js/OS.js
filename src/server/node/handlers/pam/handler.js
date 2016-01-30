@@ -35,7 +35,7 @@
 // See doc/pam-handler.txt
 //
 
-(function(qs, pam, userid, fs, path) {
+(function(pam, userid, fs, path) {
   'use strict';
 
   function getRootPath(username) {
@@ -163,7 +163,6 @@
   };
 
 })(
-  require('querystring'),
   require('authenticate-pam'),
   require('userid'),
   require('fs'),
