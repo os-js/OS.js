@@ -30,7 +30,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(mysql) {
+(function(qs, mysql, bcrypt) {
   'use strict';
   var connection;
 
@@ -43,6 +43,11 @@
     user     : 'osjs',
     password : 'osjs',
     database : 'osjs'
+  };
+
+  var PASSWORD_CONFIG = {
+    bcrypt    : true,
+    signature : '\$2a$1'
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -74,8 +79,50 @@
       return;
     }
 
-    var q = 'SELECT `id`, `username`, `name`, `groups`, `settings` FROM `users` WHERE `username` = ? AND `password` = ? LIMIT 1;';
-    var a = [login.username, login.password];
+    function getUserInfo() {
+      var q = 'SELECT `id`, `username`, `name`, `groups`, `settings` FROM `osjs_users` WHERE `username` = ? LIMIT 1;';
+      var a = [login.username];
+
+      connection.query(q, a, function(err, rows, fields) {
+        if ( err ) {
+          console.error(err);
+          callback(err.Error);
+          return;
+        } else {
+          if ( rows[0] ) {
+            var row = rows[0];
+            var settings = {};
+            var groups = [];
+
+            try {
+              settings = JSON.parse(row.settings);
+            } catch ( e ) {
+              console.log('failed to parse settings', e);
+            }
+
+            try {
+              groups = JSON.parse(row.groups);
+            } catch ( e ) {
+              console.log('failed to parse groups', e);
+            }
+
+            complete({
+              id: parseInt(row.id, 10),
+              username: row.username,
+              name: row.name,
+              groups: groups,
+              settings: settings
+            });
+            return;
+          }
+        }
+
+        invalid();
+      });
+    }
+
+    var q = 'SELECT `password` FROM `osjs_users` WHERE `username` = ? LIMIT 1;';
+    var a = [login.username];
 
     connection.query(q, a, function(err, rows, fields) {
       if ( err ) {
@@ -85,32 +132,27 @@
       } else {
         if ( rows[0] ) {
           var row = rows[0];
-          var settings = {};
-          var groups = [];
 
-          try {
-            settings = JSON.parse(row.settings);
-          } catch ( e ) {
-            console.log('failed to parse settings', e);
+          if ( PASSWORD_CONFIG.bcrypt === true ) {
+            var hash = row.password.replace(/^\$2y(.+)$/i, PASSWORD_CONFIG.signature);
+            bcrypt.compare(login.password, hash, function(err, res) {
+              if ( res === true ) {
+                getUserInfo();
+              } else {
+                invalid();
+              }
+            });
+            return;
+          } else {
+            if ( row.password === login.password ) {
+              getUserInfo();
+            } else {
+              invalid();
+            }
           }
-
-          try {
-            groups = JSON.parse(row.groups);
-          } catch ( e ) {
-            console.log('failed to parse groups', e);
-          }
-
-          complete({
-            id: parseInt(row.id, 10),
-            username: row.username,
-            name: row.name,
-            groups: groups,
-            settings: settings
-          });
           return;
         }
       }
-
       invalid();
     });
   };
@@ -194,4 +236,4 @@
     return new MysqlHandler();
   };
 
-})(require('mysql'));
+})(require('querystring'), require('mysql'), require('bcryptjs'));
