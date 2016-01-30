@@ -80,7 +80,7 @@ describe('VFS', function() {
       var file = {path: 'home:///.mocha'};
 
       instance.vfs.exists(file, function(error, result) {
-        assert.equal(null, error);
+        assert.equal(false, error);
         assert.equal(false, result);
         done();
       }, request, instance.config);
@@ -90,7 +90,7 @@ describe('VFS', function() {
   describe('#exists', function() {
     it('should not find file', function(done) {
       instance.vfs.exists({path: 'home:///.mocha/test.txt'}, function(error, result) {
-        assert.equal(null, error);
+        assert.equal(false, error);
         assert.equal(false, result);
         done();
       }, request, instance.config);
@@ -100,7 +100,7 @@ describe('VFS', function() {
   describe('#mkdir', function() {
     it('should create folder without error', function(done) {
       instance.vfs.mkdir({path: 'home:///.mocha'}, function(error, result) {
-        assert.equal(null, error);
+        assert.equal(false, error);
         assert.equal(true, result);
         done();
       }, request, instance.config);
@@ -115,7 +115,7 @@ describe('VFS', function() {
         data: 'data:text/plain;base64,' + data
       };
       instance.vfs.write(file, function(error, result) {
-        assert.equal(null, error);
+        assert.equal(false, error);
         assert.equal(true, result);
         done();
       }, request, instance.config);
@@ -125,7 +125,7 @@ describe('VFS', function() {
   describe('#read', function() {
     it('should read file without error', function(done) {
       instance.vfs.read({path: 'home:///.mocha/test.txt'}, function(error, result) {
-        assert.equal(null, error);
+        assert.equal(false, error);
 
         var result = result.replace(/^data\:(.*);base64\,/, '') || '';
         result = new Buffer(result, 'base64').toString('utf8');
@@ -141,7 +141,7 @@ describe('VFS', function() {
       var tst = 'home:///.mocha/test.txt';
       var found = {};
       instance.vfs.scandir({path: 'home:///.mocha'}, function(error, result) {
-        assert.equal(null, error);
+        assert.equal(false, error);
 
         try {
           result.forEach(function(f) {
@@ -167,7 +167,7 @@ describe('VFS', function() {
         dest: 'home:///.mocha/test2.txt'
       };
       instance.vfs.move(file, function(error, result) {
-        assert.equal(null, error);
+        assert.equal(false, error);
         assert.equal(true, result);
         done();
       }, request, instance.config);
@@ -181,7 +181,7 @@ describe('VFS', function() {
         dest: 'home:///.mocha/test3.txt'
       };
       instance.vfs.copy(file, function(error, result) {
-        assert.equal(null, error);
+        assert.equal(false, error);
         assert.equal(true, result);
         done();
       }, request, instance.config);
@@ -195,7 +195,7 @@ describe('VFS', function() {
         dest: 'home:///.mocha-copy'
       };
       instance.vfs.copy(file, function(error, result) {
-        assert.equal(null, error);
+        assert.equal(false, error);
         assert.equal(true, result);
         done();
       }, request, instance.config);
@@ -205,7 +205,7 @@ describe('VFS', function() {
   describe('#fileinfo', function() {
     it('should get file information without error', function(done) {
       instance.vfs.fileinfo({path: 'home:///.mocha/test2.txt'}, function(error, result) {
-        assert.equal(null, error);
+        assert.equal(false, error);
         assert.equal('home:///.mocha/test2.txt', result.path);
         assert.equal('test2.txt', result.filename);
         assert.equal('text/plain', result.mime);
@@ -217,7 +217,7 @@ describe('VFS', function() {
   describe('#delete', function() {
     it('should delete file without error', function(done) {
       instance.vfs.delete({path: 'home:///.mocha/test2.txt'}, function(error, result) {
-        assert.equal(null, error);
+        assert.equal(false, error);
         assert.equal(true, result);
         done();
       }, request, instance.config);
@@ -225,7 +225,7 @@ describe('VFS', function() {
 
     it('should delete folder without error', function(done) {
       instance.vfs.delete({path: 'home:///.mocha'}, function(error, result) {
-        assert.equal(null, error);
+        assert.equal(false, error);
         assert.equal(true, result);
         done();
       }, request, instance.config);
@@ -233,7 +233,7 @@ describe('VFS', function() {
 
     it('should delete copied folder without error', function(done) {
       instance.vfs.delete({path: 'home:///.mocha-copy'}, function(error, result) {
-        assert.equal(null, error);
+        assert.equal(false, error);
         assert.equal(true, result);
         done();
       }, request, instance.config);
