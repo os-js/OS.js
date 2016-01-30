@@ -52,14 +52,14 @@ body, input, button, textarea, label, select {
 #Login {
   background : #fff;
   width : 400px;
-  height : 200px;
+  height : 230px;
   padding : 20px;
   position : absolute;
   left : 50%;
   top : 50%;
   z-index : 9999;
   margin-left : -200px;
-  margin-top : -100px;
+  margin-top : -115px;
   border : 4px solid rgba(0, 0, 0, .1);
   -webkit-box-shadow: 0 0 5px 4px rgba(0,0,0,0.15);
   -moz-box-shadow: 0 0 5px 4px rgba(0,0,0,0.15);
