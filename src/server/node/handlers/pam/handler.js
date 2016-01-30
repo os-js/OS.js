@@ -159,10 +159,6 @@
     PAMHandler.prototype = Object.create(DefaultHandler.prototype);
     PAMHandler.constructor = DefaultHandler;
 
-    PAMHandler.prototype.checkVFSPrivilege = function(request, response, path, args, callback) {
-      this._checkDefaultPrivilege(request, response, callback);
-    };
-
     return new PAMHandler();
   };
 

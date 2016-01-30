@@ -191,16 +191,6 @@
       }
     };
 
-    MysqlHandler.prototype.checkAPIPrivilege = function(request, response, privilege, callback) {
-      // This has no prilege checks
-      this._checkDefaultPrivilege(request, response, callback);
-    };
-
-    MysqlHandler.prototype.checkVFSPrivilege = function(request, response, path, args, callback) {
-      // This has no prilege checks
-      this._checkDefaultPrivilege(request, response, callback);
-    };
-
     return new MysqlHandler();
   };
 

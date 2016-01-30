@@ -78,10 +78,18 @@
     DemoHandler.prototype = Object.create(DefaultHandler.prototype);
     DemoHandler.constructor = DefaultHandler;
 
+    /**
+     * By default OS.js will check src/conf for group permissions.
+     * This overrides and leaves no checks (full access)
+     */
     DemoHandler.prototype.checkAPIPrivilege = function(request, response, privilege, callback) {
       this._checkDefaultPrivilege(request, response, callback);
     };
 
+    /**
+     * By default OS.js will check src/conf for group permissions.
+     * This overrides and leaves no checks (full access)
+     */
     DemoHandler.prototype.checkVFSPrivilege = function(request, response, path, args, callback) {
       this._checkDefaultPrivilege(request, response, callback);
     };
