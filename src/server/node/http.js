@@ -40,38 +40,32 @@
    * Respond to HTTP Call
    */
   function respond(data, mime, response, headers, code, pipeFile) {
-    data    = data    || '';
-    headers = headers || [];
-    mime    = mime    || 'text/html; charset=utf-8';
-    code    = code    || 200;
-
     if ( instance.config.logging ) {
       log(timestamp(), '>>>', code, mime, pipeFile || typeof data);
     }
 
-    function _end() {
+    function done() {
       if ( instance.handler && instance.handler.onRequestEnd ) {
         instance.handler.onRequestEnd(null, response);
       }
-
       response.end();
     }
 
-    for ( var i = 0; i < headers.length; i++ ) {
-      response.writeHead.apply(response, headers[i]);
-    }
+    headers.forEach(function(h) {
+      response.writeHead.apply(response, h);
+    });
 
-    response.writeHead(code, {'Content-Type': mime});
+    response.writeHead(code, {
+      'Content-Type': mime
+    });
 
     if ( pipeFile ) {
       var stream = _fs.createReadStream(pipeFile, {bufferSize: 64 * 1024});
-      stream.on('end', function() {
-        _end();
-      });
+      stream.on('end', done);
       stream.pipe(response);
     } else {
       response.write(data);
-      _end();
+      done();
     }
   }
 
@@ -98,7 +92,7 @@
     _fs.exists(fullPath, function(exists) {
       if ( exists ) {
         var mime = instance.vfs.getMime(fullPath, instance.config);
-        respond(null, mime, response, null, null, fullPath);
+        respond(null, mime, response, [], 200, fullPath);
       } else {
         respondNotFound(null, response, fullPath);
       }
@@ -109,7 +103,7 @@
    * Respond with JSON data
    */
   function respondJSON(data, response, headers) {
-    respond(JSON.stringify(data), 'application/json', response, headers);
+    respond(JSON.stringify(data), 'application/json', response, headers || [], 200);
   }
 
   /**
@@ -120,7 +114,7 @@
       message = 'Internal Server Error (HTTP 500): ' + message.toString();
       respondJSON({result: null, error: message}, response);
     } else {
-      respond(message.toString(), 'text/plain', response, null, 500);
+      respond(message.toString(), 'text/plain', response, [], 500);
     }
   }
 
@@ -128,7 +122,7 @@
    * Respond with text
    */
   function respondText(response, message) {
-    respond(message, 'text/plain', response);
+    respond(message, 'text/plain', response, [], 200);
   }
 
   /**
@@ -136,7 +130,7 @@
    */
   function respondNotFound(message, response, fullPath) {
     message = message || '404 Not Found';
-    respond(message, null, response, null, 404, false);
+    respond(message, null, response, [], 404, false);
   }
 
   /**
