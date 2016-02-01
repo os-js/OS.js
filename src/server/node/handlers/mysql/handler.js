@@ -45,11 +45,6 @@
     database : 'osjs'
   };
 
-  var PASSWORD_CONFIG = {
-    bcrypt    : false,
-    signature : '\$2a$1'
-  };
-
   /////////////////////////////////////////////////////////////////////////////
   // USER SESSION ABSTRACTION
   /////////////////////////////////////////////////////////////////////////////
@@ -132,24 +127,14 @@
       } else {
         if ( rows[0] ) {
           var row = rows[0];
-
-          if ( PASSWORD_CONFIG.bcrypt === true ) {
-            var hash = row.password.replace(/^\$2y(.+)$/i, PASSWORD_CONFIG.signature);
-            bcrypt.compare(login.password, hash, function(err, res) {
-              if ( res === true ) {
-                getUserInfo();
-              } else {
-                invalid();
-              }
-            });
-            return;
-          } else {
-            if ( row.password === login.password ) {
+          var hash = row.password.replace(/^\$2y(.+)$/i, '\$2a$1');
+          bcrypt.compare(login.password, hash, function(err, res) {
+            if ( res === true ) {
               getUserInfo();
             } else {
               invalid();
             }
-          }
+          });
           return;
         }
       }
