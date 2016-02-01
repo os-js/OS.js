@@ -281,16 +281,17 @@
     instance = _osjs.init(setup);
     server = _http.createServer(httpCall);
 
-    instance.handler.onServerStart();
+    instance.handler.onServerStart(function() {
+      var port = setup.port || instance.config.port;
+      if ( instance.config.logging ) {
+        console.log('***');
+        console.log('***', 'OS.js is listening on http://localhost:' + port);
+        console.log('***');
+      }
 
-    var port = setup.port || instance.config.port;
-    if ( instance.config.logging ) {
-      console.log('***');
-      console.log('***', 'OS.js is listening on http://localhost:' + port);
-      console.log('***');
-    }
+      server.listen(port);
+    });
 
-    server.listen(port);
   };
 
   /**
@@ -303,13 +304,14 @@
   module.exports.close = function(cb) {
     cb = cb || function() {};
 
-    instance.handler.onServerEnd();
+    instance.handler.onServerEnd(function() {
+      if ( server ) {
+        server.close(cb);
+      } else {
+        cb();
+      }
+    });
 
-    if ( server ) {
-      server.close(cb);
-    } else {
-      cb();
-    }
   };
 
 })(

@@ -178,17 +178,22 @@
     MysqlHandler.prototype = Object.create(DefaultHandler.prototype);
     MysqlHandler.constructor = DefaultHandler;
 
-    MysqlHandler.prototype.onServerStart = function() {
+    MysqlHandler.prototype.onServerStart = function(cb) {
       if ( !connection ) {
         connection = mysql.createConnection(MYSQL_CONFIG);
-        connection.connect();
+        connection.connect(function() {
+          cb();
+        });
+      } else {
+        cb();
       }
     };
 
-    MysqlHandler.prototype.onServerEnd = function() {
+    MysqlHandler.prototype.onServerEnd = function(cb) {
       if ( connection ) {
         connection.end();
       }
+      cb();
     };
 
     return new MysqlHandler();
