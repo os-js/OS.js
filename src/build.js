@@ -808,6 +808,12 @@
         jsonSettings.vfs.mounts[key] = fixWinPath(jsonSettings.vfs.mounts[key]);
       });
 
+      Object.keys(cfg.server).forEach(function(k) {
+        if ( typeof jsonSettings[k] === 'undefined' ) {
+          jsonSettings[k] = cfg.server[k];
+        }
+      });
+
       // Write
       var tpl = JSON.stringify(jsonSettings, null, 4);
       writeFile(PATHS.out_server_config, tpl);
