@@ -69,6 +69,12 @@
       callback('Invalid login credentials');
     }
 
+    function onerror(err) {
+      console.error(err.toString());
+      callback(err.toString());
+      return;
+    }
+
     if ( !login ) {
       invalid();
       return;
@@ -80,38 +86,36 @@
 
       connection.query(q, a, function(err, rows, fields) {
         if ( err ) {
-          console.error(err.toString());
-          callback(err.toString());
+          onerror(err);
           return;
-        } else {
-          if ( rows[0] ) {
-            var row = rows[0];
-            var settings = {};
-            var groups = [];
-
-            try {
-              settings = JSON.parse(row.settings);
-            } catch ( e ) {
-              console.log('failed to parse settings', e);
-            }
-
-            try {
-              groups = JSON.parse(row.groups);
-            } catch ( e ) {
-              console.log('failed to parse groups', e);
-            }
-
-            complete({
-              id: parseInt(row.id, 10),
-              username: row.username,
-              name: row.name,
-              groups: groups,
-              settings: settings
-            });
-            return;
-          }
         }
 
+        if ( rows[0] ) {
+          var row = rows[0];
+          var settings = {};
+          var groups = [];
+
+          try {
+            settings = JSON.parse(row.settings);
+          } catch ( e ) {
+            console.log('failed to parse settings', e);
+          }
+
+          try {
+            groups = JSON.parse(row.groups);
+          } catch ( e ) {
+            console.log('failed to parse groups', e);
+          }
+
+          complete({
+            id: parseInt(row.id, 10),
+            username: row.username,
+            name: row.name,
+            groups: groups,
+            settings: settings
+          });
+          return;
+        }
         invalid();
       });
     }
@@ -121,23 +125,23 @@
 
     connection.query(q, a, function(err, rows, fields) {
       if ( err ) {
-        console.error(err);
-        callback(err.Error);
+        onerror(err);
         return;
-      } else {
-        if ( rows[0] ) {
-          var row = rows[0];
-          var hash = row.password.replace(/^\$2y(.+)$/i, '\$2a$1');
-          bcrypt.compare(login.password, hash, function(err, res) {
-            if ( res === true ) {
-              getUserInfo();
-            } else {
-              invalid();
-            }
-          });
-          return;
-        }
       }
+
+      if ( rows[0] ) {
+        var row = rows[0];
+        var hash = row.password.replace(/^\$2y(.+)$/i, '\$2a$1');
+        bcrypt.compare(login.password, hash, function(err, res) {
+          if ( res === true ) {
+            getUserInfo();
+          } else {
+            invalid();
+          }
+        });
+        return;
+      }
+
       invalid();
     });
   };
@@ -150,8 +154,7 @@
 
     connection.query(q, a, function(err, rows, fields) {
       if ( err ) {
-        console.error(err);
-        callback(err.Error);
+        onerror(err);
         return;
       }
 
