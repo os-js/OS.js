@@ -116,7 +116,7 @@
         handler.setUserData(request, response, d, function() {
           callback(false, {
             userData: d,
-            userSetings: settings
+            userSettings: settings
           });
         });
       });

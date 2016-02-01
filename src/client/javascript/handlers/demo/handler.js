@@ -58,7 +58,7 @@
   /**
    * Demo handler - Uses localStorage for sessions, for testing purposes
    */
-  var DemoHandler = function() {
+  function DemoHandler() {
     OSjs.Core._Handler.apply(this, arguments);
 
     var curr = API.getConfig('Version');
@@ -68,9 +68,10 @@
       localStorage.clear();
     }
     localStorage.setItem('__version__', String(curr));
+  }
 
-  };
   DemoHandler.prototype = Object.create(OSjs.Core._Handler.prototype);
+  DemoHandler.constructor = OSjs.Core._Handler;
 
   /**
    * Demo initialization
@@ -97,23 +98,8 @@
   };
 
   /**
-   * Demo login. Just an example
+   * Demo settings api call
    */
-  DemoHandler.prototype.login = function(username, password, callback) {
-    console.info('DemoHandler::login()', username);
-    var opts = {username: username, password: password};
-    this.callAPI('login', opts, function(response) {
-      if ( response.result ) { // This contains an object with user data
-        callback(response.result);
-      } else {
-        callback(false, response.error ? ('Error while logging in: ' + response.error) : 'Invalid login');
-      }
-
-    }, function(error) {
-      callback(false, 'Login error: ' + error);
-    });
-  };
-
   DemoHandler.prototype.saveSettings = function(pool, storage, callback) {
     Object.keys(storage).forEach(function(key) {
       if ( pool && key !== pool ) {

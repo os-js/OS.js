@@ -60,6 +60,8 @@
       throw Error('Cannot create another Handler Instance');
     }
 
+    this._saveTimeout = null;
+
     this.dialogs    = null;
     this.offline    = false;
     this.nw         = null;
@@ -173,9 +175,6 @@
   /**
    * Default login method
    *
-   * NOTE: This is just a placeholder. The actual method
-   *       is in the currently assigned (ex: handlers/demo/handler.js)
-   *
    * @param   String    username      Login username
    * @param   String    password      Login password
    * @param   Function  callback      Callback function
@@ -186,16 +185,22 @@
    */
   _Handler.prototype.login = function(username, password, callback) {
     console.info('Handler::login()', username);
-    this.onLogin({}, function() {
-      callback(true);
+
+    var opts = {username: username, password: password};
+    this.callAPI('login', opts, function(response) {
+      if ( response.result ) { // This contains an object with user data
+        callback(response.result);
+      } else {
+        callback(false, response.error ? ('Error while logging in: ' + response.error) : 'Invalid login');
+      }
+
+    }, function(error) {
+      callback(false, 'Login error: ' + error);
     });
   };
 
   /**
    * Default logout method
-   *
-   * NOTE: You should call this in your implemented handler
-   *       or else your data will not be stored
    *
    * @param   boolean   save          Save session?
    * @param   Function  callback      Callback function
@@ -206,6 +211,21 @@
    */
   _Handler.prototype.logout = function(save, callback) {
     console.info('Handler::logout()');
+
+    var self = this;
+
+    function _finished() {
+      var opts = {};
+      self.callAPI('logout', opts, function(response) {
+        if ( response.result ) {
+          callback(true);
+        } else {
+          callback(false, 'An error occured: ' + (response.error || 'Unknown error'));
+        }
+      }, function(error) {
+        callback(false, 'Logout error: ' + error);
+      });
+    }
 
     function saveSession(cb) {
       function getSession() {
@@ -249,11 +269,11 @@
 
     if ( save ) {
       saveSession(function() {
-        callback(true);
+        _finished(true);
       });
       return;
     }
-    callback(true);
+    _finished(true);
   };
 
   /**
@@ -281,6 +301,37 @@
     });
 
     API.launchList(list, null, null, callback);
+  };
+
+  /**
+   * Default method to save given settings pool
+   *
+   * @param   String    pool          (optional) Pool Name
+   * @param   Mixed     storage       Storage data
+   * @param   Function  callback      Callback function
+   *
+   * @return  void
+   *
+   * @method  _Handler::loadSession()
+   */
+  _Handler.prototype.saveSettings = function(pool, storage, callback) {
+    var self = this;
+    var opts = {settings: storage};
+
+    function _save() {
+      self.callAPI('settings', opts, function(response) {
+        callback.call(self, !!response.result);
+      }, function(error) {
+        callback.call(self, false);
+      });
+    }
+
+    if ( this._saveTimeout ) {
+      clearTimeout(this._saveTimeout);
+      this._saveTimeout = null;
+    }
+
+    setTimeout(_save, 250);
   };
 
   /**
@@ -597,19 +648,6 @@
     if ( wm ) {
       wm.notification({title: 'Warning!', message: 'You are Off-line!'});
     }
-  };
-
-  /**
-   * Method for saving your settings
-   *
-   * @param   String      pool        (Optional) Which pool to store
-   * @param   Object      storage     Storage tree
-   * @param   Function    callback    Callback function
-   *
-   * @method _Handler::saveSettings()
-   */
-  _Handler.prototype.saveSettings = function(pool, storage, callback) {
-    callback();
   };
 
   /**
