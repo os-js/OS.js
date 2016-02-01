@@ -70,7 +70,7 @@
   /**
    * PAM login api call
    */
-  PAMHandler.prototype.login = function(save, callback) {
+  PAMHandler.prototype.login = function(username, password, callback) {
     return OSjs.Core._Handler.prototype.login.apply(this, arguments);
   };
 

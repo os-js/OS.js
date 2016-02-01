@@ -70,7 +70,7 @@ See doc/mysql-handler.txt
   /**
    * Mysql login api call
    */
-  MysqlHandler.prototype.login = function(save, callback) {
+  MysqlHandler.prototype.login = function(username, password, callback) {
     return OSjs.Core._Handler.prototype.login.apply(this, arguments);
   };
 
