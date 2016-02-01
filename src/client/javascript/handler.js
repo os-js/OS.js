@@ -67,7 +67,7 @@
       id      : 0,
       username: 'root',
       name    : 'root user',
-      groups  : ['root']
+      groups  : ['admin']
     };
 
     if ( (API.getConfig('Connection.Type') === 'nw') ) {

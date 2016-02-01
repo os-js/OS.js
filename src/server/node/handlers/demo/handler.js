@@ -94,6 +94,14 @@
       this._checkDefaultPrivilege(request, response, callback);
     };
 
+    /**
+     * By default OS.js will check src/conf for group permissions.
+     * This overrides and leaves no checks (full access)
+     */
+    DemoHandler.prototype.checkPackagePrivilege = function(request, response, packageName, callback) {
+      this._checkDefaultPrivilege(request, response, callback);
+    };
+
     return new DemoHandler();
   };
 

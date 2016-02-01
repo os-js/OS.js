@@ -83,14 +83,14 @@
         id: 0,
         username: 'demo',
         name: 'Local Server',
-        groups: ['demo']
+        groups: ['admin']
       });
     }
 
     // Use the 'demo' user
     var self = this;
-    this.login('demo', 'demo', function(userData) {
-      self.onLogin(userData, getSettings(), function() {
+    this.login('demo', 'demo', function(result) {
+      self.onLogin(result.userData, getSettings(), function() {
         callback();
       });
     });

@@ -1371,12 +1371,14 @@
     }
 
     var result = true;
-    group.forEach(function(g) {
-      if ( userGroups.indexOf(g) < 0 ) {
-        result = false;
-      }
-      return result;
-    });
+    if ( userGroups.indexOf('admin') < 0 ) {
+      group.forEach(function(g) {
+        if ( userGroups.indexOf(g) < 0 ) {
+          result = false;
+        }
+        return result;
+      });
+    }
     return result;
   }
 
