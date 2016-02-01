@@ -308,7 +308,7 @@
    *
    * @param   String    pool          (optional) Pool Name
    * @param   Mixed     storage       Storage data
-   * @param   Function  callback      Callback function
+   * @param   Function  callback      Callback function => fn(error, result)
    *
    * @return  void
    *
@@ -320,9 +320,9 @@
 
     function _save() {
       self.callAPI('settings', opts, function(response) {
-        callback.call(self, !!response.result);
+        callback.call(self, false, response.result);
       }, function(error) {
-        callback.call(self, false);
+        callback.call(self, response.error, false);
       });
     }
 
@@ -550,7 +550,7 @@
         }
         cbSuccess({error: false, result: response});
       },
-      onerror: function(error) {
+      onerror: function() {
         cbError.apply(self, arguments);
       }
     });
