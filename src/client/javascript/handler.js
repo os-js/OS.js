@@ -322,7 +322,7 @@
       self.callAPI('settings', opts, function(response) {
         callback.call(self, false, response.result);
       }, function(error) {
-        callback.call(self, response.error, false);
+        callback.call(self, error, false);
       });
     }
 
