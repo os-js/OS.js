@@ -80,8 +80,8 @@
 
       connection.query(q, a, function(err, rows, fields) {
         if ( err ) {
-          console.error(err);
-          callback(err.Error);
+          console.error(err.toString());
+          callback(err.toString());
           return;
         } else {
           if ( rows[0] ) {
