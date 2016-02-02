@@ -22,5 +22,5 @@
 
 if [ -n $4 ] && [ $4 = 1 ]; then
     /sbin/wifi
-    /etc/init.d/network restart
+    /etc/init.d/network reload
 fi
