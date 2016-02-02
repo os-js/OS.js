@@ -74,6 +74,7 @@ cp -v -r dist $OUTDIR/
 cp -v bin/arduino-wifi-*.sh $OUTDIR/bin/
 cp -v bin/arduino-toggle-*.sh $OUTDIR/bin/
 cp -v bin/arduino-ifconfig*.sh $OUTDIR/bin/
+cp -v bin/arduino-wizard*.sh $OUTDIR/bin/
 chmod +x $OUTDIR/bin/*
 
 # Server files

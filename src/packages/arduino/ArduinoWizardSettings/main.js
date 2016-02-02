@@ -42,7 +42,6 @@
             height: 400,
             maximized :true
         }, app, scheme]);
-re
 
         this.currentSettings = {
             encryption: '',
@@ -56,6 +55,7 @@ re
 
 
     ApplicationArduinoWizardSettingsWindow.prototype = Object.create(Window.prototype);
+
     ApplicationArduinoWizardSettingsWindow.constructor = Window.prototype;
 
     ApplicationArduinoWizardSettingsWindow.prototype.init = function (wmRef, app, scheme) {
@@ -73,11 +73,6 @@ re
 
     ApplicationArduinoWizardSettingsWindow.prototype.initUI = function (wm, scheme) {
         var self = this;
-        /*var step1 = scheme.find(this, "WizardStep1Container"),
-            step2 = scheme.find(this, "WizardStep2Container"),
-            step3 = scheme.find(this, "WizardStep3Container"),
-            step4 = scheme.find(this, "WizardStep4Container"),
-            step5 = scheme.find(this, "WizardStep5Container");*/
 
         var toBeSaved = {
             hostname : false,
@@ -117,7 +112,6 @@ re
         scheme.find(this, "ID_LBL_WS1_LN2").set("value", OSjs.Applications.ApplicationArduinoWizardSettings._('LBL_WELCOME_2LN'));
 
         /* Step 2 - Board Setting */
-
         scheme.find(this, "ID_LBL_WS2_LN1").set("value", OSjs.Applications.ApplicationArduinoWizardSettings._('LBL_BOARD_1LN'));
         scheme.find(this, "ID_LBL_WS2_BOARDNAME").set("value", OSjs.Applications.ApplicationArduinoWizardSettings._('LBL_BOARDNAME'));
         scheme.find(this, "ID_LBL_WS2_TIMEZONE").set("value", OSjs.Applications.ApplicationArduinoWizardSettings._('LBL_TIMEZONE'));
@@ -185,28 +179,7 @@ re
             toggleVisibility();
         });
         btnScan.on('click', function(ev) {
-            callAPI('iwscan', {device: 'radio0'}, function(err, result) {
-                ddlWifiSSID.clear();
-
-                if ( !err && result ) {
-                    var list = [{
-                        label: '--- SELECT FROM LIST ---',
-                        value: null
-                    }];
-
-                    (result || []).forEach(function(iter) {
-                        if ( iter ) {
-                            list.push({
-                                label: Utils.format('{0} ({1}, {2}% signal)', iter.ssid, iter.encryption, iter.signal),
-                                value: JSON.stringify(iter)
-                            });
-                        }
-                    });
-
-                    ddlWifiSSID.add(list);
-                }
-            });
-
+            scanNetworks();
         });
         ddlWifiSSID.on('change', function(ev) {
             if ( ev.detail ) {
@@ -235,10 +208,11 @@ re
 
         getCurrentBoardSettings();
         getCurrentWifiSettings();
+        scanNetworks();
 
         function getCurrentWifiSettings() {
             callAPI('iwinfo', {}, function (err, result) {
-                var info = (result || '').split(' ');
+                /*var info = (result || '').split(' ');
                 var keys = ['ap', 'ssid', 'security', 'signal'];
                 var list = {};
 
@@ -250,6 +224,11 @@ re
 
                 var ssid = list['ssid'] !== '<none>' ? list['ssid'] : '';
                 var secu = list['security'] !== '<none>' ? list['security'] : '';
+                 */
+
+                var ssid = result['ssid'] !== '<none>' ? result['ssid'].trim() : '';
+                var secu = result['security'] !== '<none>' ? result['security'].trim() : '';
+
 
                 txtWifiSSID.set("value", ssid);
                 ddlWifiEncryption.set("value", secu); //FIXME at the moment the security is always <none>
@@ -369,7 +348,7 @@ re
                 var pass = txtWifiPassword.get('value'),
                     enc = ddlWifiEncryption.get('value');
 
-                if (txtWifiSSID.get('value').trim() === self.currentSettings.ssid) { // when the ssid is the same as before
+                if (txtWifiSSID.get('value').trim() === self.currentSettings.ssid.trim()) { // when the ssid is the same as before
 
                     if(!!pass){ // but the password changed
                         toBeSaved.wifisetting = true;
@@ -400,59 +379,112 @@ re
             }
         }
 
-        function saveAndRestart(){
-            var rebootMessage =  OSjs.Applications.ApplicationArduinoWizardSettings._('MSG_BOARD_RESTART');
-            var newNetworkMessage = Utils.format( OSjs.Applications.ApplicationArduinoWizardSettings._('MSG_NEW_WIFI') , txtWifiSSID.get('value'));
-            var redirectMessage = Utils.format( OSjs.Applications.ApplicationArduinoWizardSettings._('MSG_REDIRECT_TO') , window.location.protocol+ '//' + txtBoardName.get('value') + '.local/');
+        function saveAndRestart() {
 
+            //var rebootMessage =  OSjs.Applications.ApplicationArduinoWizardSettings._('MSG_BOARD_RESTART');
+            //var newNetworkMessage = Utils.format( OSjs.Applications.ApplicationArduinoWizardSettings._('MSG_NEW_WIFI') , txtWifiSSID.get('value'));
+            //var redirectMessage = Utils.format( OSjs.Applications.ApplicationArduinoWizardSettings._('MSG_REDIRECT_TO') , window.location.protocol+ '//' + txtBoardName.get('value') + '.local/');
 
-           /* var dialog = API.createDialog('FileProgress', {
-                title: 'Update Arduino Board Settings',
-                message: 'Please wait...'
+            self.destroy();
+            var dialog = API.createDialog('FileProgress', {
+                    title: 'Arduino Configuration Wizard ', //TODO localize
+                    message: 'Applying settings...' //TODO localize
                 }, function(btn) {
-            });*/
+            });
 
-/*
 
-            setSysInfo(txtBoardName.get('value'), ddlTimezone.get('value') );
-            setRestApi(chkRestApi.get('value') );
-            if (toBeSaved.syspassword ){
-                setPassword(txtSystemPassword.get('value'));
-            }
-            if(toBeSaved.wifisetting){
-                setWifi(txtWifiSSID.get('value'), ddlWifiEncryption.get('value'), txtWifiPassword.get('value'), function(){
-                    wm.notification({title: 'Arduino', message: newNetworkMessage, icon: 'arduino.png', timeout : 60000});
-                });
-            }
-            setTimeout(function(){
-                callAPI('reboot', {}, function() {
-                    wm.notification({title: 'Arduino', message: rebootMessage, icon: 'arduino.png', timeout : 60000});
-                });
-            },10 * 1000);
+            dialog.setProgress(10);
+            var rebootMessage =  OSjs.Applications.ApplicationArduinoWizardSettings._('MSG_BOARD_RESTART');
+            var info = {};
 
-            function setSysInfo(boardname, timezone){
-                callAPI('setsysinfo', { hostname: boardname, timezone: timezone});
-            }
+            // This is a map of all "toBesaved"
+            // These are called to set "info" variable above
+            var map = {
+                hostname: function() {
+                    info.hostname = txtBoardName.get('value');
+                },
+                timezone: function() {
+                    info.timezone = ddlTimezone.get('value');
+                },
+                syspassword: function() {
+                    info.password = txtSystemPassword.get('value');
+                },
+                wifisetting: function() {
+                    info.wifi = {
+                        ssid: txtWifiSSID.get('value'),
+                        encryption: ddlWifiEncryption.get('value'),
+                        password: txtWifiPassword.get('value')
+                    };
+                },
+                restapi: function() {
+                    info.restapi = chkRestApi.get('value') ? 'true' : 'false';
+                }
 
-            function setRestApi(enabled){
-                callAPI('rest', { enabled: enabled ? 'true' : 'false' });
-            }
+            };
 
-            function setWifi(ssid, enc, password, callback){
-                callAPI('wifi', { ssid: ssid, security: enc, password: password, netrestart: 0}, callback);
-            }
+            // Put all to be saved elements into our api call argument list
+            Object.keys(map).forEach(function(key) {
+                if ( toBeSaved[key] ) {
+                    map[key]();
+                }
+            });
 
-            function setPassword(password){
-                callAPI('setpasswd', {password: password}, function(){});
-            }
+            // One call to rule them all. In lua server script, just check what "keys" were sent over
+            callAPI('wizardboardconfig', info, function() {
+                var  step = 3,
+                    redirectURL = window.location.protocol+ '//' + txtBoardName.get('value') + '.local/' ;
+                dialog.setProgress(20);
+                dialog.setMessage("Restarting..."); //TODO localize
 
-            function disableWizard(){
-                var pool = OSjs.Core.getSettingsManager().instance('Wizard');
-                pool.set('completed', true, true);
-            }
-*/
+                var intervalReboot = setInterval(function(){
+                    dialog.setProgress(step * 10);
+                    if(step === 5 ){
+                        dialog.setMessage("Restarting... Connect your computer to the wireless network called " + txtWifiSSID.get('value') ); //TODO localize
+                    }
+                    if(step === 8 ){
+                        dialog.setMessage("Redirecting to " + redirectURL); //TODO localize
+                    }
+                    if(step++ === 10){
+                        disableWizard();
+                        clearInterval(intervalReboot);
+                        window.location.href = redirectURL ;
+                    }
+                }, 10 * 1000);
 
+
+
+            });
         }
+
+        function scanNetworks(){
+            callAPI('iwscan', {device: 'radio0'}, function(err, result) {
+                ddlWifiSSID.clear();
+
+                if ( !err && result ) {
+                    var list = [{
+                        label: '--- SELECT FROM LIST ---', //TODO Localize
+                        value: null
+                    }];
+
+                    (result || []).forEach(function(iter) {
+                        if ( iter ) {
+                            list.push({
+                                label: Utils.format('{0} ({1}, {2}% signal)', iter.ssid, iter.encryption, iter.signal),
+                                value: JSON.stringify(iter)
+                            });
+                        }
+                    });
+
+                    ddlWifiSSID.add(list);
+                }
+            });
+        }
+
+        function disableWizard(){
+            var pool = OSjs.Core.getSettingsManager().instance('Wizard');
+            pool.set('completed', true, true);
+        }
+
 
         function callAPI(fn, args, cb) {
             cb = cb || function(){};

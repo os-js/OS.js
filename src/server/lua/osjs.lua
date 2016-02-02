@@ -591,6 +591,40 @@ local function console(cmd, back)
   return result
 end
 
+
+local function get_wizard_board_config_command(info)
+  local tbl = {}
+
+  if info["hostname"] ~= nil then
+    table.insert(tbl, "-hostname \"" .. info["hostname"] .. "\"")
+  end
+
+  if info["timezone"] ~= nil then
+    table.insert(tbl, "-timezone \"" .. info["timezone"] .. "\"")
+  end
+
+  if info["password"] ~= nil then
+    table.insert(tbl, "-password \"" .. info["password"] .. "\"")
+  end
+
+  if info["wifi"] ~= nil then
+    table.insert(tbl, "-wifipassword \"" .. info["wifi"]["password"] .. "\"")
+    table.insert(tbl, "-wifiencryption \"" .. info["wifi"]["encryption"] .. "\"")
+    table.insert(tbl, "-wifissid \"" .. info["wifi"]["ssid"] .. "\"")
+  end
+
+  if info["restapi"] ~= nil then
+    table.insert(tbl, "-restapi \"" .. info["restapi"] .. "\"")
+  end
+
+  -- ... and so on
+  local commandline = table.concat(tbl, " ")
+
+  return "sh " .. ROOTDIR .. "/bin/arduino-wizard-board-config.sh " .. commandline
+end
+
+
+
 -- ----------------------------------------------------------------------------
 --                                     API
 -- ----------------------------------------------------------------------------
@@ -681,7 +715,7 @@ function api_request(request, response, meth, iargs)
   elseif meth == "syslog" then
     data = sys.syslog()
   elseif meth == "setpasswd" then
-    username = get_username(request, response)
+    local username = get_username(request, response)
     data = sys.user.setpasswd(username, iargs["password"]) == 0
   elseif meth == "wifi" then
     local cssid = iargs["ssid"]:gsub("%$", "\\$")
@@ -711,6 +745,13 @@ function api_request(request, response, meth, iargs)
     end
   elseif meth == "exec" then
     data = console(iargs["command"])
+  elseif meth == "wizardboardconfig" then
+    if iargs["password"] ~= nil then
+      local username = get_username(request, response)
+      data = sys.user.setpasswd(username, iargs["password"]) == 0
+    end
+    console("echo " .. get_wizard_board_config_command(iargs) .. " >> /tmp/os.log")
+    data = console(get_wizard_board_config_command(iargs))
 
   --
   -- MISC
