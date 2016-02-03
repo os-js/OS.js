@@ -257,6 +257,7 @@
           }
           respondFile(unescape(dpath), request, response, true);
         });
+        return;
       }
 
       // Everything else
