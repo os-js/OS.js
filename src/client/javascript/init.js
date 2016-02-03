@@ -171,7 +171,7 @@
           } else {
             return 'save';
           }
-        } else if ( ev.keyCode === 79 || ev.keyCode === 83 ) {
+        } else if ( (ev.keyCode === 79 || ev.keyCode === 83) && ev.ctrlKey ) {
           return 'open';
         }
         return false;
