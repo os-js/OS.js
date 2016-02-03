@@ -38,9 +38,9 @@
         Window.apply(this, ['ApplicationArduinoWizardSettingsWindow', {
             icon: metadata.icon,
             title: metadata.name,
-            width: 500,
+            width: 600,
             height: 400,
-            maximized :true
+            maximized: true
         }, app, scheme]);
 
         this.currentSettings = {
@@ -50,9 +50,7 @@
             hostname: '',
             restapi: false
         }
-
     }
-
 
     ApplicationArduinoWizardSettingsWindow.prototype = Object.create(Window.prototype);
 
@@ -66,7 +64,6 @@
         scheme.render(this, 'ArduinoWizardSettingsWindow', root);
 
         this.initUI(wmRef, scheme);
-        //this.setUIEvents(wmRef, scheme);
 
         return root;
     };
@@ -205,7 +202,6 @@
             }
         });
 
-
         getCurrentBoardSettings();
         getCurrentWifiSettings();
         scanNetworks();
@@ -281,14 +277,23 @@
 
         function checkSystemPasswordFields(){
             if ( txtSystemPassword.get('value') !== txtSystemPasswordConfirm.get('value') ) {
-                alert('Passwords do not match'); //TODO localize
+                API.createDialog('Error',
+                    {   title: 'Password Check', //TODO localize
+                        message: 'Password check fails', //TODO localize
+                        error: 'Passwords do not match. Please insert passwords again.'}, //TODO localize
+                    function(ev, btn, res){});
+
                 toBeSaved.syspassword = false;
                 return false;
             } else {
                 if(!!txtSystemPassword.get('value')){ //password changed
 
                     if(txtSystemPassword.get('value').length < 8 ){
-                        alert('Password must be at least 8 characters'); //TODO localize
+                        API.createDialog('Error',
+                            {   title: 'Password Check', //TODO localize
+                                message: 'Password check fails', //TODO localize
+                                error: 'Password must be at least 8 characters. Please insert password again.'}, //TODO localize
+                            function(ev, btn, res){});
                         toBeSaved.syspassword = false;
                         return false;
                     }
@@ -326,7 +331,11 @@
             var boardname = txtBoardName.get('value').replace(/ /g,'');
             txtBoardName.set('value', boardname);
             if ( !boardname ) {
-                alert('Please insert a valid name'); //TODO localize
+                API.createDialog('Error',
+                    {   title: 'Board Name Check', //TODO localize
+                        message: 'Board Name check fails', //TODO localize
+                        error: 'Please insert a valid name.'}, //TODO localize
+                    function(ev, btn, res){});
                 toBeSaved.hostname = false;
                 return false;
             } else {
@@ -341,7 +350,11 @@
 
         function checkWiFiField(){
             if( !txtWifiSSID.get('value').trim() ) { //
-                alert('Please insert a valid wireless network name'); //TODO localize
+                API.createDialog('Error',
+                    {   title: 'Wireless Network Check', //TODO localize
+                        message: 'Wireless Network check fails', //TODO localize
+                        error: 'Please insert a valid wireless network name. Try to scan the networks and select a valid SSID.'}, //TODO localize
+                    function(ev, btn, res){});
                 toBeSaved.wifisetting = false;
                 return false;
             } else {
@@ -369,7 +382,12 @@
                                 return true;
                             } else {
                                 toBeSaved.wifisetting = false;
-                                alert('Please set a valid password and encryption'); //TODO localize
+                                //alert('Please set a valid password and encryption'); //TODO localize
+                                API.createDialog('Error',
+                                    {   title: 'Wireless Network Check', //TODO localize
+                                        message: 'Wireless Network check fails', //TODO localize
+                                        error: 'Please set a valid password and encryption.'}, //TODO localize
+                                    function(ev, btn, res){});
                                 return false;
                             }
                         }
@@ -381,20 +399,31 @@
 
         function saveAndRestart() {
 
-            //var rebootMessage =  OSjs.Applications.ApplicationArduinoWizardSettings._('MSG_BOARD_RESTART');
-            //var newNetworkMessage = Utils.format( OSjs.Applications.ApplicationArduinoWizardSettings._('MSG_NEW_WIFI') , txtWifiSSID.get('value'));
-            //var redirectMessage = Utils.format( OSjs.Applications.ApplicationArduinoWizardSettings._('MSG_REDIRECT_TO') , window.location.protocol+ '//' + txtBoardName.get('value') + '.local/');
+            var blackout = document.createElement('div');
+            blackout.style.position = 'absolute';
+            blackout.style.top = '0';
+            blackout.style.left = '0';
+            blackout.style.right = '0';
+            blackout.style.bottom = '0';
+            blackout.style.zIndex = 10000;
+            blackout.style.backgroundColor = 'rgba(0, 0, 0, .5)';
+            document.body.appendChild(blackout);
 
-            self.destroy();
+            //self._toggleDisabled(true);
             var dialog = API.createDialog('FileProgress', {
                     title: 'Arduino Configuration Wizard ', //TODO localize
                     message: 'Applying settings...' //TODO localize
                 }, function(btn) {
+                //self._toggleDisabled(false);
+                //self._close();
             });
-
+            dialog.busy = true;
 
             dialog.setProgress(10);
-            var rebootMessage =  OSjs.Applications.ApplicationArduinoWizardSettings._('MSG_BOARD_RESTART');
+            //var rebootMessage =  OSjs.Applications.ApplicationArduinoWizardSettings._('MSG_BOARD_RESTART');
+            //var newNetworkMessage = Utils.format( OSjs.Applications.ApplicationArduinoWizardSettings._('MSG_NEW_WIFI') , txtWifiSSID.get('value'));
+            //var redirectMessage = Utils.format( OSjs.Applications.ApplicationArduinoWizardSettings._('MSG_REDIRECT_TO') , window.location.protocol+ '//' + txtBoardName.get('value') + '.local/');
+
             var info = {};
 
             // This is a map of all "toBesaved"
@@ -485,7 +514,6 @@
             pool.set('completed', true, true);
         }
 
-
         function callAPI(fn, args, cb) {
             cb = cb || function(){};
             self._toggleLoading(true);
@@ -512,7 +540,7 @@
 
     /////////////////////////////////////////////////////////////////////////////
     // APPLICATION
-/////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////
 
     function ApplicationArduinoWizardSettings(args, metadata) {
         Application.apply(this, ['ApplicationArduinoWizardSettings', args, metadata]);
