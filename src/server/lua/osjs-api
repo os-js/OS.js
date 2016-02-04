@@ -41,14 +41,13 @@ local osjs = require "osjs"
 
 function run(wsapi_env)
 
-  local request  = wrequest.new(wsapi_env)
-  local response = wresponse.new()
-
-  local method = wsapi_env.PATH_INFO:match("^/(%a+)")
-
   local len = tonumber(wsapi_env.CONTENT_LENGTH) or 0
   local input = wsapi_env.input:read(len) or ""
   local idata = json.decode(input) or {}
+
+  local request  = wrequest.new(wsapi_env)
+  local response = wresponse.new()
+  local method = wsapi_env.PATH_INFO:match("^/(%a+)")
 
   response:content_type("application/json")
 
