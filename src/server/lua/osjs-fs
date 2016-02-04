@@ -53,6 +53,7 @@ function run(wsapi_env)
 
   if request.method == "GET" then
     local path = request.GET["path"]
+    local path = wsapi_env.PATH_INFO:gsub("^/get/", "")
     local realpath = osjs.get_real_path(request, response, path)
 
     if realpath ~= nil then
