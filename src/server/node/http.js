@@ -225,7 +225,7 @@
                 respondError(err, response);
                 return;
               }
-              respondText('1', message);
+              respondText(response, '1');
             }, request, response);
           });
         }

@@ -545,7 +545,6 @@
     var self = this;
     var onprogress = args.onprogress || function() {};
 
-
     cbError = cbError || function() {
       console.warn('Handler::__callGET()', 'error', arguments);
     };
