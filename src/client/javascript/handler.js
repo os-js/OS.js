@@ -412,6 +412,10 @@
    * @see  _Handler::callAPI()
    */
   _Handler.prototype.__callNW = function(method, args, options, cbSuccess, cbError) {
+    cbError = cbError || function() {
+      console.warn('Handler::__callNW()', 'error', arguments);
+    };
+
     try {
       this.nw.request(method.match(/^FS\:/) !== null, method.replace(/^FS\:/, ''), args, function(err, res) {
         cbSuccess({error: err, result: res});
@@ -432,6 +436,11 @@
    */
   _Handler.prototype.__callXHR = function(url, args, options, cbSuccess, cbError) {
     var self = this;
+
+    cbError = cbError || function() {
+      console.warn('Handler::__callXHR()', 'error', arguments);
+    };
+
     var data = {
       url: url,
       method: 'POST',
@@ -500,6 +509,10 @@
   _Handler.prototype.__callPOST = function(form, options, cbSuccess, cbError) {
     var onprogress = options.onprogress || function() {};
 
+    cbError = cbError || function() {
+      console.warn('Handler::__callPOST()', 'error', arguments);
+    };
+
     OSjs.Utils.ajax({
       url: OSjs.VFS.Transports.Internal.path(),
       method: 'POST',
@@ -531,6 +544,11 @@
   _Handler.prototype.__callGET = function(args, options, cbSuccess, cbError) {
     var self = this;
     var onprogress = args.onprogress || function() {};
+
+
+    cbError = cbError || function() {
+      console.warn('Handler::__callGET()', 'error', arguments);
+    };
 
     Utils.ajax({
       url: args.url || OSjs.VFS.Transports.Internal.path(args.path),
