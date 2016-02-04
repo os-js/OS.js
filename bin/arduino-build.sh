@@ -53,7 +53,7 @@ mkdir -p $OUTDIR/lib/osjs/app
 git checkout -- dist
 
 # Packages
-grunt all dist-index
+grunt all dist-files
 
 #  grunt compress
 
