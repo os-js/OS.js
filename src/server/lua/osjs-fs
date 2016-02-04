@@ -97,6 +97,7 @@ function run(wsapi_env)
     else
       local error, data = osjs.vfs_request(request, response, method, idata)
       local result = {error = error, result = data}
+      response:content_type("application/json")
       response:write(json.encode(result))
     end
 
