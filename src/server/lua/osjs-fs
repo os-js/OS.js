@@ -43,6 +43,8 @@ function run(wsapi_env)
   local request  = wrequest.new(wsapi_env, {overwrite = true})
   local response = wresponse.new()
 
+  local method = request.script_name:gsub("^/cgi-bin/osjs-fs/", "")
+
   if not osjs.DEBUGMODE then
     if request.cookies["osjsuser"] == nil then
       response.status = 403
@@ -66,24 +68,30 @@ function run(wsapi_env)
       response.status = 500
     end
   else
-    local path = request.POST["path"] .. "/"
-    local contents = request.POST.upload.contents
-    local filename = request.POST.upload.name
-    local realpath = osjs.get_real_path(request, response, path)
+    if method == "upload" then
+      local path = request.POST["path"] .. "/"
+      local contents = request.POST.upload.contents
+      local filename = request.POST.upload.name
+      local realpath = osjs.get_real_path(request, response, path)
 
-    if realpath and filename then
-      realpath = realpath .. filename
+      if realpath and filename then
+        realpath = realpath .. filename
 
-      if not fs.writefile(realpath, contents) then
+        if not fs.writefile(realpath, contents) then
+          response.status = 500
+          response:write("Failed to upload file")
+        end
+      else
         response.status = 500
-        response:write("Failed to upload file")
+        response:write("No filename or path given to upload")
       end
-    else
-      response.status = 500
-      response:write("No filename or path given to upload")
-    end
 
-    response:write(1)
+      response:write(1)
+    else
+      local error, data = osjs.vfs_request(request, response, method, idata)
+      local result = {error = error, result = data}
+      response:write(json.encode(result))
+    end
 
   end
 

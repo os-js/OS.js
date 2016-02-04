@@ -629,6 +629,11 @@ end
 --                                     API
 -- ----------------------------------------------------------------------------
 
+function vfs_request(request, response, meth, iargs)
+  error, data = fs_request(request, response, meth, iargs)
+  return error, data
+end
+
 function api_request(request, response, meth, iargs)
   local error = false
   local data = false
@@ -646,8 +651,6 @@ function api_request(request, response, meth, iargs)
     error, data = curl_request(request, response, iargs)
   elseif meth == "application" then
     error, data = app_request(request, response, iargs)
-  elseif meth == "fs" then
-    error, data = fs_request(request, response, iargs["method"], iargs["arguments"])
   elseif meth == "reboot" then
     data = os.execute("reboot >/dev/null 2>&1")
 
@@ -774,6 +777,8 @@ return {
   SETTINGS = SETTINGS,
 
   api_request = api_request,
+  vfs_request = vfs_request,
+
   get_session = get_session,
   get_real_path = get_real_path,
   get_file_mime = get_file_mime,

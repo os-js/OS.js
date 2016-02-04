@@ -54,11 +54,25 @@
   // Attach API functions
   exports.register = function(CONFIG, API, HANDLER) {
 
+    API.settings = function(args, callback, request, response) {
+      require('fs').writeFileSync('/tmp/osjs-settings.json', JSON.stringify(args.settings, null, 4));
+      callback(false, true);
+    };
+
     API.login = function(args, callback, request, response) {
       function login(data) {
         request.cookies.set('username', data.username, {httpOnly:true});
         request.cookies.set('groups', JSON.stringify(data.groups), {httpOnly:true});
-        return data;
+        var settings = {};
+        try {
+          settings = JSON.parse(require('fs').readFileSync('/tmp/osjs-settings.json'));
+        } catch ( e ) {
+        }
+
+        return {
+          userData: data,
+          userSettings: settings
+        };
       }
 
       callback(false, login({
