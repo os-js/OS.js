@@ -41,6 +41,14 @@ local wresponse = require "wsapi.response"
 -- ----------------------------------------------------------------------------
 
 function run(wsapi_env)
+  local method = wsapi_env.PATH_INFO:match("^/(%a+)")
+  local idata = {}
+  if wsapi_env.REQUEST_METHOD == "POST" and method ~= "upload" then
+    local len = tonumber(wsapi_env.CONTENT_LENGTH) or 0
+    local input = wsapi_env.input:read(len) or ""
+    idata = json.decode(input) or {}
+  end
+
   local request  = wrequest.new(wsapi_env, {overwrite = true})
   local response = wresponse.new()
 
@@ -53,7 +61,6 @@ function run(wsapi_env)
   end
 
   if request.method == "GET" then
-    local path = request.GET["path"]
     local path = wsapi_env.PATH_INFO:gsub("^/get/", "")
     local realpath = osjs.get_real_path(request, response, path)
 
@@ -68,7 +75,6 @@ function run(wsapi_env)
       response.status = 500
     end
   else
-    local method = wsapi_env.PATH_INFO:match("^/(%a+)")
     if method == "upload" then
       local path = request.POST["path"] .. "/"
       local contents = request.POST.upload.contents
