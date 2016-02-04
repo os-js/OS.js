@@ -28,9 +28,8 @@
  * @licence Simplified BSD License
  */
 
-.ApplicationDrawWindow {
-}
-
+/*.ApplicationDrawWindow {
+}*/
 
 .ApplicationDrawWindow gui-canvas {
   background : url('checkerboard.png');

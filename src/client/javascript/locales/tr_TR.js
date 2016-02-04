@@ -374,7 +374,8 @@
     'LBL_BUGREPORT' : 'Hata Bildir',
     'LBL_INSTALL' : 'Yükle',
     'LBL_UPDATE' : 'Güncelle',
-    'LBL_REMOVE' : 'Kaldır'
+    'LBL_REMOVE' : 'Kaldır',
+    'LBL_SHOW_SIDEBAR' : 'Kenar çubuğunu göster'
   };
 
 })();

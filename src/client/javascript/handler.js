@@ -45,7 +45,7 @@
    *
    * Used for communication, resources, settings and session handling
    *
-   * You can implement your own, see documentation on Wiki.
+   * You can implement your own.
    *
    * NEVER CONSTRUCT YOUR OWN INTANCE! To get one use:
    * OSjs.Core.getHandler();
@@ -60,6 +60,8 @@
       throw Error('Cannot create another Handler Instance');
     }
 
+    this._saveTimeout = null;
+
     this.dialogs    = null;
     this.offline    = false;
     this.nw         = null;
@@ -67,7 +69,7 @@
       id      : 0,
       username: 'root',
       name    : 'root user',
-      groups  : ['root']
+      groups  : ['admin']
     };
 
     if ( (API.getConfig('Connection.Type') === 'nw') ) {
@@ -173,9 +175,6 @@
   /**
    * Default login method
    *
-   * NOTE: This is just a placeholder.
-   *       To implement your own login handler, see the Wiki :)
-   *
    * @param   String    username      Login username
    * @param   String    password      Login password
    * @param   Function  callback      Callback function
@@ -186,16 +185,22 @@
    */
   _Handler.prototype.login = function(username, password, callback) {
     console.info('Handler::login()', username);
-    this.onLogin({}, function() {
-      callback(true);
+
+    var opts = {username: username, password: password};
+    this.callAPI('login', opts, function(response) {
+      if ( response.result ) { // This contains an object with user data
+        callback(response.result);
+      } else {
+        callback(false, response.error ? ('Error while logging in: ' + response.error) : 'Invalid login');
+      }
+
+    }, function(error) {
+      callback(false, 'Login error: ' + error);
     });
   };
 
   /**
    * Default logout method
-   *
-   * NOTE: You should call this in your implemented handler
-   *       or else your data will not be stored
    *
    * @param   boolean   save          Save session?
    * @param   Function  callback      Callback function
@@ -206,6 +211,21 @@
    */
   _Handler.prototype.logout = function(save, callback) {
     console.info('Handler::logout()');
+
+    var self = this;
+
+    function _finished() {
+      var opts = {};
+      self.callAPI('logout', opts, function(response) {
+        if ( response.result ) {
+          callback(true);
+        } else {
+          callback(false, 'An error occured: ' + (response.error || 'Unknown error'));
+        }
+      }, function(error) {
+        callback(false, 'Logout error: ' + error);
+      });
+    }
 
     function saveSession(cb) {
       function getSession() {
@@ -249,11 +269,11 @@
 
     if ( save ) {
       saveSession(function() {
-        callback(true);
+        _finished(true);
       });
       return;
     }
-    callback(true);
+    _finished(true);
   };
 
   /**
@@ -284,6 +304,55 @@
   };
 
   /**
+   * Default method to save given settings pool
+   *
+   * @param   String    pool          (optional) Pool Name
+   * @param   Mixed     storage       Storage data
+   * @param   Function  callback      Callback function => fn(error, result)
+   *
+   * @return  void
+   *
+   * @method  _Handler::loadSession()
+   */
+  _Handler.prototype.saveSettings = function(pool, storage, callback) {
+    var self = this;
+    var opts = {settings: storage};
+
+    function _save() {
+      self.callAPI('settings', opts, function(response) {
+        callback.call(self, false, response.result);
+      }, function(error) {
+        callback.call(self, error, false);
+      });
+    }
+
+    if ( this._saveTimeout ) {
+      clearTimeout(this._saveTimeout);
+      this._saveTimeout = null;
+    }
+
+    setTimeout(_save, 250);
+  };
+
+  /**
+   * Default method to perform a resolve on a VFS File object.
+   *
+   * This should return the URL for given resource.
+   *
+   * @param   OSjs.VFS.File       item      The File Object
+   *
+   * @return  String
+   * @method  _Handler::getVFSPath()
+   */
+  _Handler.prototype.getVFSPath = function(item) {
+    var base = API.getConfig('Connection.FSURI', '/');
+    if ( item ) {
+      return base + '/get/' + item.path;
+    }
+    return base + '/upload';
+  };
+
+  /**
    * Default method to perform a call to the backend (API)
    *
    * Please note that this function is internal, and if you want to make
@@ -291,10 +360,14 @@
    *
    * @see OSjs.API.call()
    *
+   * @see _Handler::__callNW()
+   * @see _Handler::_callAPI()
+   * @see _Handler::_callVFS()
    * @method  _Handler::callAPI()
    */
   _Handler.prototype.callAPI = function(method, args, cbSuccess, cbError, options) {
     args      = args      || {};
+    options   = options   || {};
     cbSuccess = cbSuccess || function() {};
     cbError   = cbError   || function() {};
 
@@ -313,58 +386,176 @@
 
     function _call() {
       if ( (API.getConfig('Connection.Type') === 'nw') ) {
-        try {
-          self.nw.request(method, args, function(err, res) {
-            cbSuccess({error: err, result: res});
-          });
-        } catch ( e ) {
-          console.warn('callAPI() NW.js Warning', e.stack, e);
-          cbError(e);
-        }
-        return true;
+        return self.__callNW(method, args, options, cbSuccess, cbError);
       }
 
-      var data = {
-        url: API.getConfig('Connection.APIURI'),
-        method: 'POST',
-        json: true,
-        body: {
-          'method'    : method,
-          'arguments' : args
-        },
-        onsuccess: function(/*response, request, url*/) {
-          cbSuccess.apply(self, arguments);
-        },
-        onerror: function(/*error, response, request, url*/) {
-          cbError.apply(self, arguments);
-        }
-      };
-
-      if ( options ) {
-        Object.keys(options).forEach(function(key) {
-          data[key] = options[key];
-        });
+      if ( method.match(/^FS/) ) {
+        return self._callVFS(method, args, options, cbSuccess, cbError);
       }
-
-      return Utils.ajax(data);
+      return self._callAPI(method, args, options, cbSuccess, cbError);
     }
 
     console.group('Handler::callAPI()');
     console.log('Method', method);
     console.log('Arguments', args);
+    console.log('Options', options);
     console.groupEnd();
 
-    if ( checkState() ) {
-      return _call();
-    }
-
-    return false;
+    return checkState() ? _call() : false;
   };
 
   /**
-   * Calls NW "backend" method
+   * Calls NW "backend"
+   *
+   * @return boolean
+   * @method _Handler::__callNW()
+   * @see  _Handler::callAPI()
    */
-  _Handler.prototype.callNW = function() {
+  _Handler.prototype.__callNW = function(method, args, options, cbSuccess, cbError) {
+    try {
+      this.nw.request(method.match(/^FS\:/) !== null, method.replace(/^FS\:/, ''), args, function(err, res) {
+        cbSuccess({error: err, result: res});
+      });
+    } catch ( e ) {
+      console.warn('callAPI() NW.js Warning', e.stack, e);
+      cbError(e);
+    }
+    return true;
+  };
+
+  /**
+   * Calls Normal "Backend"
+   *
+   * @see _Handler::_callAPI()
+   * @see _Handler::_callVFS()
+   * @method  _Handler::__callXHR()
+   */
+  _Handler.prototype.__callXHR = function(url, args, options, cbSuccess, cbError) {
+    var self = this;
+    var data = {
+      url: url,
+      method: 'POST',
+      json: true,
+      body: args,
+      onsuccess: function(/*response, request, url*/) {
+        cbSuccess.apply(self, arguments);
+      },
+      onerror: function(/*error, response, request, url*/) {
+        cbError.apply(self, arguments);
+      }
+    };
+
+    if ( options ) {
+      Object.keys(options).forEach(function(key) {
+        data[key] = options[key];
+      });
+    }
+
+    Utils.ajax(data);
+
+    return true;
+  };
+
+  /**
+   * Wrapper for server API XHR calls
+   *
+   * @return boolean
+   * @method _Handler::_callAPI()
+   * @see  _Handler::callAPI()
+   * @see  _Handler::__callXHR()
+   */
+  _Handler.prototype._callAPI = function(method, args, options, cbSuccess, cbError) {
+    var url = API.getConfig('Connection.APIURI') + '/' + method;
+    return this.__callXHR(url, args, options, cbSuccess, cbError);
+  };
+
+  /**
+   * Wrapper for server VFS XHR calls
+   *
+   * @return boolean
+   * @method _Handler::_callVFS()
+   * @see  _Handler::callAPI()
+   * @see _Handler::__callGET()
+   * @see _Handler::__callPOST()
+   * @see  _Handler::__callXHR()
+   */
+  _Handler.prototype._callVFS = function(method, args, options, cbSuccess, cbError) {
+    if ( method === 'FS:get' ) {
+      return this.__callGET(args, options, cbSuccess, cbError);
+    } else if ( method === 'FS:upload' ) {
+      return this.__callPOST(args, options, cbSuccess, cbError);
+    }
+
+    var url = API.getConfig('Connection.FSURI') + '/' + method.replace(/^FS\:/, '');
+    return this.__callXHR(url, args, options, cbSuccess, cbError);
+  };
+
+  /**
+   * Does a HTTP POST via XHR (For file uploading)
+   *
+   * @return boolean
+   * @method _Handler::__callPOST()
+   * @see  _Handler::callAPI()
+   */
+  _Handler.prototype.__callPOST = function(form, options, cbSuccess, cbError) {
+    var onprogress = options.onprogress || function() {};
+
+    OSjs.Utils.ajax({
+      url: OSjs.VFS.Transports.Internal.path(),
+      method: 'POST',
+      body: form,
+      onsuccess: function(result) {
+        cbSuccess(false, result);
+      },
+      onerror: function(result) {
+        cbError('error', null, result);
+      },
+      onprogress: function(evt) {
+        onprogress(evt);
+      },
+      oncanceled: function(evt) {
+        cbError('canceled', null, evt);
+      }
+    });
+
+    return true;
+  };
+
+  /**
+   * Does a HTTP GET via XHR (For file downloading);
+   *
+   * @return boolean
+   * @method _Handler::__callGET()
+   * @see  _Handler::callAPI()
+   */
+  _Handler.prototype.__callGET = function(args, options, cbSuccess, cbError) {
+    var self = this;
+    var onprogress = args.onprogress || function() {};
+
+    Utils.ajax({
+      url: args.url || OSjs.VFS.Transports.Internal.path(args.path),
+      method: args.method || 'GET',
+      responseType: 'arraybuffer',
+      onprogress: function(ev) {
+        if ( ev.lengthComputable ) {
+          onprogress(ev, ev.loaded / ev.total);
+        } else {
+          onprogress(ev, -1);
+        }
+      },
+      onsuccess: function(response, xhr) {
+        if ( !xhr || xhr.status === 404 || xhr.status === 500 ) {
+          cbSuccess({error: xhr.statusText || response, result: null});
+          return;
+        }
+        cbSuccess({error: false, result: response});
+      },
+      onerror: function() {
+        cbError.apply(self, arguments);
+      }
+    });
+
+    return true;
   };
 
   //
@@ -457,19 +648,6 @@
     if ( wm ) {
       wm.notification({title: 'Warning!', message: 'You are Off-line!'});
     }
-  };
-
-  /**
-   * Method for saving your settings
-   *
-   * @param   String      pool        (Optional) Which pool to store
-   * @param   Object      storage     Storage tree
-   * @param   Function    callback    Callback function
-   *
-   * @method _Handler::saveSettings()
-   */
-  _Handler.prototype.saveSettings = function(pool, storage, callback) {
-    callback();
   };
 
   /**

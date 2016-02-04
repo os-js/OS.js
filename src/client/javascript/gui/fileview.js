@@ -115,7 +115,7 @@
         }
       },
       mtime: {
-        label: 'Modified',
+        label: 'LBL_MODIFIED',
         basis: '160px',
         icon: function() {
           return null;
@@ -125,7 +125,7 @@
         }
       },
       ctime: {
-        label: 'Created',
+        label: 'LBL_CREATED',
         basis: '160px',
         icon: function() {
           return null;
@@ -454,21 +454,19 @@
 
       API.createMenu([
         {
-          title: 'Show Hidden Files', // FIXME: Locale
+          title: API._('LBL_SHOW_HIDDENFILES'),
           type: 'checkbox',
           checked: scandirOptions.showHiddenFiles === true,
           onClick: function() {
             setOption('showHiddenFiles', !scandirOptions.showHiddenFiles);
-            API.blurMenu(); // FIXME: This should not be needed!
           }
         },
         {
-          title: 'Show File Extensions', // FIXME: Locale
+          title: API._('LBL_SHOW_FILEEXTENSIONS'),
           type: 'checkbox',
           checked: scandirOptions.showFileExtensions === true,
           onClick: function() {
             setOption('showFileExtensions', !scandirOptions.showFileExtensions);
-            API.blurMenu(); // FIXME: This should not be needed!
           }
         }
       ], ev);

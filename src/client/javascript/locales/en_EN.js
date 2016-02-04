@@ -207,6 +207,22 @@
     'ERR_VFS_DOWNLOAD_NO_FILE': 'Cannot download a path without a path',
     'ERR_VFS_DOWNLOAD_FAILED' : 'An error occured while downloading: {0}',
     'ERR_VFS_REMOTEREAD_EMPTY': 'Response was empty',
+
+    'ERR_VFSMODULE_INVALID'            : 'Invalid VFS Module',
+    'ERR_VFSMODULE_INVALID_FMT'        : 'Invalid VFS Module: {0}',
+    'ERR_VFSMODULE_INVALID_METHOD'     : 'Invalid VFS Method',
+    'ERR_VFSMODULE_INVALID_METHOD_FMT' : 'Invalid VFS Method: {0}',
+    'ERR_VFSMODULE_INVALID_TYPE'       : 'Invalid VFS Module type',
+    'ERR_VFSMODULE_INVALID_TYPE_FMT'   : 'Invalid VFS Module type: {0}',
+    'ERR_VFSMODULE_INVALID_CONFIG'     : 'Invalid VFS Module configuration',
+    'ERR_VFSMODULE_INVALID_CONFIG_FMT' : 'Invalid VFS Module configuration: {0}',
+    'ERR_VFSMODULE_ALREADY_MOUNTED'    : 'VFS Module already mounted',
+    'ERR_VFSMODULE_ALREADY_MOUNTED_FMT': 'VFS Module \'{0}\' already mounted',
+    'ERR_VFSMODULE_NOT_MOUNTED'        : 'VFS Module not mounted',
+    'ERR_VFSMODULE_NOT_MOUNTED_FMT'    : 'VFS Module \'{0}\' not mounted',
+    'ERR_VFSMODULE_EXCEPTION'          : 'VFS Module Exception',
+    'ERR_VFSMODULE_EXCEPTION_FMT'      : 'VFS Module Exception: {0}',
+
     'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Downloading file',
 
     'ERR_VFSMODULE_XHR_ERROR'      : 'XHR Error',
@@ -247,6 +263,12 @@
 
     // VFS -> OneDrive
     'ONEDRIVE_ERR_RESOLVE'      : 'Failed to resolve path: item not found',
+
+    // ZIP
+    'ZIP_PRELOAD_FAIL'  : 'Failed to load zip.js',
+    'ZIP_VENDOR_FAIL'   : 'zip.js library was not found. Did it load properly?',
+    'ZIP_NO_RESOURCE'   : 'No zip resource was given',
+    'ZIP_NO_PATH'       : 'No path given',
 
     //
     // PackageManager
@@ -378,7 +400,11 @@
     'LBL_BUGREPORT' : 'Bugreport',
     'LBL_INSTALL' : 'Install',
     'LBL_UPDATE' : 'Update',
-    'LBL_REMOVE' : 'Remove'
+    'LBL_REMOVE' : 'Remove',
+    'LBL_SHOW_SIDEBAR' : 'Show sidebar',
+    'LBL_SHOW_NAVIGATION' : 'Show navigation',
+    'LBL_SHOW_HIDDENFILES' : 'Show hidden files',
+    'LBL_SHOW_FILEEXTENSIONS' : 'Show file extensions'
   };
 
 })();

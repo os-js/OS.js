@@ -35,10 +35,6 @@
   OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
 
   /////////////////////////////////////////////////////////////////////////////
-  // API
-  /////////////////////////////////////////////////////////////////////////////
-
-  /////////////////////////////////////////////////////////////////////////////
   // WRAPPERS
   /////////////////////////////////////////////////////////////////////////////
 
@@ -62,7 +58,7 @@
             type: 'application',
             path: 'applications:///' + m,
             mime: 'osjs/application'
-          }));
+          }, 'osjs/application'));
         }
       });
 
@@ -82,6 +78,11 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * This is a virtual module for showing 'applications' in OS.js
+   *
+   * @api OSjs.VFS.Modules.Apps
+   */
   OSjs.VFS.Modules.Apps = OSjs.VFS.Modules.Apps || {
     readOnly: true,
     description: 'Applications',
@@ -92,7 +93,8 @@
     visible: true,
     internal: true,
     unmount: function(cb) {
-      OSjs.VFS._NullModule.unmount(cb);
+      cb = cb || function() {};
+      cb(API._('ERR_VFS_UNAVAILABLE'), false);
     },
     mounted: function() {
       return true;

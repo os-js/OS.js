@@ -182,7 +182,7 @@
           var src = path.replace(/package\.json$/, p.src);
           var file = new OSjs.VFS.File(src);
 
-          OSjs.VFS.url(file, function(err, resp) { // NOTE: This only works for internal FIXME
+          OSjs.VFS.url(file, function(err, resp) {
             if ( err || !resp ) { return; }
 
             newpreloads.push({

@@ -11,6 +11,7 @@
       "ThemeURI":     "/themes/styles",
       "SoundURI":     "/themes/sounds",
       "IconURI":      "/themes/icons",
+      "FontURI":      "/themes/fonts",
       "PackageURI":   "/packages"
     },
 
@@ -18,6 +19,7 @@
     "BugReporting":     true,
     "VersionAppend":    "",
     "ShowQuitWarning":  false,
+    "ReloadOnShutdown": false,
 
     "Preloads":  {},
     "AutoStart": [],

@@ -204,6 +204,10 @@
   };
 
   ApplicationSettingsWindow.prototype.setContainer = function(idx, save) {
+    if ( !this._scheme ) {
+      return;
+    }
+
     var found;
     var indexes = ['TabsTheme', 'TabsDesktop', 'TabsPanel', 'TabsUser', 'TabsFileView', 'TabsPackages'];
     if ( typeof idx === 'string' ) {

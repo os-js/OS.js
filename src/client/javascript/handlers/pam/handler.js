@@ -49,12 +49,12 @@
    * @extends OSjs.Core._Handler
    * @class
    */
-  var PAMHandler = function() {
+  function PAMHandler() {
     OSjs.Core._Handler.apply(this, arguments);
-    this._saveTimeout = null;
-  };
+  }
 
   PAMHandler.prototype = Object.create(OSjs.Core._Handler.prototype);
+  PAMHandler.constructor = OSjs.Core._Handler;
 
   /**
    * Override default init() method
@@ -71,70 +71,21 @@
    * PAM login api call
    */
   PAMHandler.prototype.login = function(username, password, callback) {
-    console.debug('OSjs::Handlers::PAMHandler::login()');
-    var opts = {username: username, password: password};
-    this.callAPI('login', opts, function(response) {
-      if ( response.result ) { // This contains an object with user data
-        callback(response.result);
-      } else {
-        callback(false, response.error ? ('Error while logging in: ' + response.error) : 'Invalid login');
-      }
-    }, function(error) {
-      callback(false, 'Login error: ' + error);
-    });
+    return OSjs.Core._Handler.prototype.login.apply(this, arguments);
   };
 
   /**
    * PAM logout api call
    */
   PAMHandler.prototype.logout = function(save, callback) {
-    console.debug('OSjs::Handlers::PAMHandler::logout()', save);
-    var self = this;
-
-    function _finished() {
-      var opts = {};
-      self.callAPI('logout', opts, function(response) {
-        if ( response.result ) {
-          callback(true);
-        } else {
-          callback(false, 'An error occured: ' + (response.error || 'Unknown error'));
-        }
-      }, function(error) {
-        callback(false, 'Logout error: ' + error);
-      });
-    }
-
-    OSjs.Core._Handler.prototype.logout.call(this, save, _finished);
+    return OSjs.Core._Handler.prototype.logout.apply(this, arguments);
   };
 
   /**
-   * Override default settings saving
+   * PAM settings api call
    */
   PAMHandler.prototype.saveSettings = function(pool, storage, callback) {
-    console.debug('OSjs::Handlers::PAMHandler::saveSettings()');
-
-    var self = this;
-    var opts = {settings: storage};
-
-    function _save() {
-      self.callAPI('settings', opts, function(response) {
-        console.debug('PAMHandler::syncSettings()', response);
-        if ( response.result ) {
-          callback.call(self, true);
-        } else {
-          callback.call(self, false);
-        }
-      }, function(error) {
-        console.warn('PAMHandler::syncSettings()', 'Call error', error);
-        callback.call(self, false);
-      });
-    }
-
-    if ( this._saveTimeout ) {
-      clearTimeout(this._saveTimeout);
-      this._saveTimeout = null;
-    }
-    setTimeout(_save, 100);
+    return OSjs.Core._Handler.prototype.saveSettings.apply(this, arguments);
   };
 
   /////////////////////////////////////////////////////////////////////////////

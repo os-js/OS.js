@@ -42,6 +42,8 @@
 
   var _isMounted    = false;
 
+  var _mimeCache;
+
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -97,27 +99,23 @@
    * Yeah... it's pretty rough, but OneDrive does
    * not support mimes yet
    */
-  var getItemMime = (function() {
-    var EXTs;
-
-    return function(iter) {
-      if ( !EXTs ) {
-        EXTs = API.getConfig('MIME.mapping', {});
-      }
-      var mime = null;
-      if ( getItemType(iter) !== 'dir' ) {
-        mime = 'application/octet-stream';
-        var ext = Utils.filext(iter.name);
-        if ( ext.length ) {
-          ext = '.' + ext;
-          if ( EXTs[ext] ) {
-            mime = EXTs[ext];
-          }
+  function getItemMime(iter) {
+    if ( !_mimeCache ) {
+      _mimeCache = API.getConfig('MIME.mapping', {});
+    }
+    var mime = null;
+    if ( getItemType(iter) !== 'dir' ) {
+      mime = 'application/octet-stream';
+      var ext = Utils.filext(iter.name);
+      if ( ext.length ) {
+        ext = '.' + ext;
+        if ( _mimeCache[ext] ) {
+          mime = _mimeCache[ext];
         }
       }
-      return mime;
-    };
-  })();
+    }
+    return mime;
+  }
 
   /**
    * Create an Array filled with OS.js VFS file metadata
@@ -632,6 +630,11 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * This is the Microsoft OneDrive VFS Abstraction for OS.js
+   *
+   * @api OSjs.VFS.Modules.OneDrive
+   */
   OSjs.VFS.Modules.OneDrive = OSjs.VFS.Modules.OneDrive || {
     readOnly: false,
     description: 'OneDrive',

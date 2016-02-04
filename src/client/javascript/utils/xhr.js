@@ -51,12 +51,12 @@
    * @option args Object     requestHeaders       Tuple with headers (default = null)
    * @option args boolean    json                 Handle as a JSON request/response (default = false)
    * @option args boolean    jsonp                Handle as a JSONP request (default = false)
-   * @option args Function   onerror              onerror callback
-   * @option args Function   onsuccess            onsuccess callback
-   * @option args Function   oncreated            oncreated callback
-   * @option args Function   onfailed             onfailed callback
-   * @option args Function   oncanceled           oncanceled callback
-   * @option args Function   ontimeout            ontimeout callback
+   * @option args Function   onerror              onerror callback => fn(error, evt, request, url)
+   * @option args Function   onsuccess            onsuccess callback => fn(result, request, url)
+   * @option args Function   oncreated            oncreated callback => fn(request)
+   * @option args Function   onfailed             onfailed callback => fn(evt)
+   * @option args Function   oncanceled           oncanceled callback => fn(evt)
+   * @option args Function   ontimeout            ontimeout callback => fn(evt)
    *
    * @return  void
    *
@@ -167,7 +167,7 @@
         };
         request.onload = function(evt) {
           if ( request.status === 200 || request.status === 201 || request.status === 304 ) {
-            args.onsuccess(request.response, request);
+            args.onsuccess(request.response, request, args.url);
           } else {
             OSjs.VFS.abToText(request.response, 'text/plain', function(err, txt) {
               var error = txt || err || OSjs.API._('ERR_UTILS_XHR_FATAL');
@@ -196,7 +196,7 @@
     }
 
     if ( (OSjs.API.getConfig('Connection.Type') === 'standalone') ) {
-      args.onerror('You are currently running locally and cannot perform this operation!');
+      args.onerror('You are currently running locally and cannot perform this operation!', null, request, args.url);
       return;
     }
 

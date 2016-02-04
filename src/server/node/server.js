@@ -46,10 +46,6 @@
   // MAIN
   /////////////////////////////////////////////////////////////////////////////
 
-  console.log('***');
-  console.log('***', 'THIS IS A WORK IN PROGRESS!!!');
-  console.log('***');
-
   process.chdir(ROOT);
 
   process.on('exit', function() {

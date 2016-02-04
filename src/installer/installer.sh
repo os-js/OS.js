@@ -54,7 +54,7 @@ git clone --recursive $REPO $DEST
 
 echo "Building"
 cd $DEST
-npm install
+npm install --production
 grunt
 
 echo "INSTALLATION COMPLETE :-)"

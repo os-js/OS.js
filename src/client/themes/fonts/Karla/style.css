@@ -1,57 +1,57 @@
 @font-face {
   font-family:Karla;
-  src: url('/themes/fonts/Karla/Regular.eot');
-  src: url('/themes/fonts/Karla/Regular.eot?#iefix') format('embedded-opentype'),
-       url('/themes/fonts/Karla/Regular.woff') format('woff'),
-       url('/themes/fonts/Karla/Regular.ttf') format('truetype'),
-       url('/themes/fonts/Karla/Regular.svg#karla') format('svg');
+  src: url('%FONTURI%/Karla/Regular.eot');
+  src: url('%FONTURI%/Karla/Regular.eot?#iefix') format('embedded-opentype'),
+       url('%FONTURI%/Karla/Regular.woff') format('woff'),
+       url('%FONTURI%/Karla/Regular.ttf') format('truetype'),
+       url('%FONTURI%/Karla/Regular.svg#karla') format('svg');
   font-weight:normal;
   font-style:normal;
 }
 @font-face {
   font-family:Karla;
-  src: url('/themes/fonts/Karla/Bold.eot');
-  src: url('/themes/fonts/Karla/Bold.eot?#iefix') format('embedded-opentype'),
-       url('/themes/fonts/Karla/Bold.woff') format('woff'),
-       url('/themes/fonts/Karla/Bold.ttf') format('truetype'),
-       url('/themes/fonts/Karla/Bold.svg#karla_bold') format('svg');
+  src: url('%FONTURI%/Karla/Bold.eot');
+  src: url('%FONTURI%/Karla/Bold.eot?#iefix') format('embedded-opentype'),
+       url('%FONTURI%/Karla/Bold.woff') format('woff'),
+       url('%FONTURI%/Karla/Bold.ttf') format('truetype'),
+       url('%FONTURI%/Karla/Bold.svg#karla_bold') format('svg');
   font-weight:bold;
 }
 @font-face {
   font-family:Karla;
-  src: url('/themes/fonts/Karla/Italic.eot');
-  src: url('/themes/fonts/Karla/Italic.eot?#iefix') format('embedded-opentype'),
-       url('/themes/fonts/Karla/Italic.woff') format('woff'),
-       url('/themes/fonts/Karla/Italic.ttf') format('truetype'),
-       url('/themes/fonts/Karla/Italic.svg#karla_italic') format('svg');
+  src: url('%FONTURI%/Karla/Italic.eot');
+  src: url('%FONTURI%/Karla/Italic.eot?#iefix') format('embedded-opentype'),
+       url('%FONTURI%/Karla/Italic.woff') format('woff'),
+       url('%FONTURI%/Karla/Italic.ttf') format('truetype'),
+       url('%FONTURI%/Karla/Italic.svg#karla_italic') format('svg');
   font-style:italic;
 }
 @font-face {
   font-family:Karla;
-  src: url('/themes/fonts/Karla/Italic.eot');
-  src: url('/themes/fonts/Karla/Italic.eot?#iefix') format('embedded-opentype'),
-       url('/themes/fonts/Karla/Italic.woff') format('woff'),
-       url('/themes/fonts/Karla/Italic.ttf') format('truetype'),
-       url('/themes/fonts/Karla/Italic.svg#karla_italic') format('svg');
+  src: url('%FONTURI%/Karla/Italic.eot');
+  src: url('%FONTURI%/Karla/Italic.eot?#iefix') format('embedded-opentype'),
+       url('%FONTURI%/Karla/Italic.woff') format('woff'),
+       url('%FONTURI%/Karla/Italic.ttf') format('truetype'),
+       url('%FONTURI%/Karla/Italic.svg#karla_italic') format('svg');
   font-style:oblique;
 }
 @font-face {
   font-family:Karla;
-  src: url('/themes/fonts/Karla/BoldItalic.eot');
-  src: url('/themes/fonts/Karla/BoldItalic.eot?#iefix') format('embedded-opentype'),
-       url('/themes/fonts/Karla/BoldItalic.woff') format('woff'),
-       url('/themes/fonts/Karla/BoldItalic.ttf') format('truetype'),
-       url('/themes/fonts/Karla/BoldItalic.svg#karla_bolditalic') format('svg');
-  font-style:italic;
+  src: url('%FONTURI%/Karla/BoldItalic.eot');
+  src: url('%FONTURI%/Karla/BoldItalic.eot?#iefix') format('embedded-opentype'),
+       url('%FONTURI%/Karla/BoldItalic.woff') format('woff'),
+       url('%FONTURI%/Karla/BoldItalic.ttf') format('truetype'),
+       url('%FONTURI%/Karla/BoldItalic.svg#karla_bolditalic') format('svg');
+  font-weight:bold;
   font-style:italic;
 }
 @font-face {
   font-family:Karla;
-  src: url('/themes/fonts/Karla/BoldItalic.eot');
-  src: url('/themes/fonts/Karla/BoldItalic.eot?#iefix') format('embedded-opentype'),
-       url('/themes/fonts/Karla/BoldItalic.woff') format('woff'),
-       url('/themes/fonts/Karla/BoldItalic.ttf') format('truetype'),
-       url('/themes/fonts/Karla/BoldItalic.svg#karla_bolditalic') format('svg');
-  font-style:italic;
+  src: url('%FONTURI%/Karla/BoldItalic.eot');
+  src: url('%FONTURI%/Karla/BoldItalic.eot?#iefix') format('embedded-opentype'),
+       url('%FONTURI%/Karla/BoldItalic.woff') format('woff'),
+       url('%FONTURI%/Karla/BoldItalic.ttf') format('truetype'),
+       url('%FONTURI%/Karla/BoldItalic.svg#karla_bolditalic') format('svg');
+  font-weight:bold;
   font-style:oblique;
 }

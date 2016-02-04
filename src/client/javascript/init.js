@@ -136,6 +136,15 @@
       var wm  = OSjs.Core.getWindowManager();
       var win = wm ? wm.getCurrentWindow() : null;
 
+      function sendKey(special) {
+        if ( wm ) {
+          wm.onKeyDown(ev, win, special);
+          if ( win ) {
+            return win._onKeyEvent(ev, 'keydown', special);
+          }
+        }
+      }
+
       function checkPrevent() {
         var d = ev.srcElement || ev.target;
         var doPrevent = d.tagName === 'BODY' ? true : false;
@@ -155,23 +164,32 @@
         return false;
       }
 
-      if ( checkPrevent() ) {
+      function checkShortcut() {
+        if ( ((ev.keyCode === 115 || ev.keyCode === 83) && ev.ctrlKey) || ev.keyCode === 19 ) {
+          if ( ev.shiftKey ) {
+            return 'saveas';
+          } else {
+            return 'save';
+          }
+        } else if ( (ev.keyCode === 79 || ev.keyCode === 83) && ev.ctrlKey ) {
+          return 'open';
+        }
+        return false;
+      }
+
+      var shortcut = checkShortcut();
+      if ( checkPrevent() || shortcut ) {
         ev.preventDefault();
       }
 
       // WindowManager and Window must always recieve events
-      if ( wm ) {
-        wm.onKeyDown(ev, win);
-
-        if ( win ) {
-          return win._onKeyEvent(ev, 'keydown');
-        }
-      }
+      sendKey(shortcut);
 
       return true;
     },
     keypress: function(ev) {
       var wm = OSjs.Core.getWindowManager();
+
       if ( wm ) {
         var win = wm.getCurrentWindow();
         if ( win ) {
@@ -383,8 +401,8 @@
    */
   function initVFS(config, callback) {
     console.debug('initVFS()');
-    if ( OSjs.VFS.registerMounts ) {
-      OSjs.VFS.registerMounts();
+    if ( OSjs.VFS.registerMountpoints ) {
+      OSjs.VFS.registerMountpoints();
     }
 
     callback();
@@ -543,6 +561,10 @@
           win.close();
         }, 500);
       } catch ( e ) {
+      }
+    } else {
+      if ( OSjs.API.getConfig('ReloadOnShutdown') === true ) {
+        window.location.reload();
       }
     }
   };
