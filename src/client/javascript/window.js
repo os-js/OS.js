@@ -323,6 +323,18 @@
       }
     }
 
+    function _initInitialState() {
+      if ( !self._restored ) {
+        if ( self._state.maximized ) {
+          self._state.maximized = false;
+          self._maximize();
+        } else if ( self._state.minimized ) {
+          self._state.minimized = false;
+          self._minimize();
+        }
+      }
+    }
+
     function _initDimension() {
       if ( self._properties.min_height && (self._dimension.h < self._properties.min_height) ) {
         self._dimension.h = self._properties.min_height;
@@ -576,6 +588,8 @@
     this._onChange('create');
     this._toggleLoading(false);
     this._toggleDisabled(false);
+
+    _initInitialState();
 
     if ( this._sound ) {
       API.playSound(this._sound, this._soundVolume);

@@ -95,23 +95,28 @@
     var buttonEnd = scheme.find(this, 'ButtonEnd').set('disabled', true);
 
     seeker.on('change', function(ev) {
-      if ( audio ) {
-        audio.pause();
-        if ( ev ) {
-          audio.currentTime = ev.detail || 0;
-        }
-        audio.play();
+      if ( audio && !audio.paused ) {
+        try {
+          audio.pause();
+          if ( ev ) {
+            audio.currentTime = ev.detail || 0;
+          }
+          audio.play();
+        } catch ( e ) {}
       }
     });
 
     player.on('play', function(ev) {
+      seeker.set('disabled', false);
       buttonPause.set('disabled', false);
       buttonPlay.set('disabled', true);
     });
     player.on('ended', function(ev) {
+      seeker.set('disabled', true);
       buttonPause.set('disabled', true);
     });
     player.on('pause', function(ev) {
+      seeker.set('disabled', true);
       buttonPause.set('disabled', false);
       buttonPlay.set('disabled', false);
     });
@@ -124,6 +129,7 @@
       if ( !player.$element.src ) {
         return;
       }
+
       var msg = null;
       try {
         switch ( ev.target.error.code ) {
