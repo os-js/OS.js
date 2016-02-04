@@ -474,9 +474,10 @@
                         dialog.setMessage("Redirecting to " + redirectURL); //TODO localize
                     }
                     if(step++ === 10){
-                        disableWizard();
+                        disableWizard(function(){
+                            window.location.href =  redirectURL;
+                        });
                         clearInterval(intervalReboot);
-                        window.location.href = redirectURL ;
                     }
                 }, 10 * 1000);
 
@@ -509,9 +510,9 @@
             });
         }
 
-        function disableWizard(){
+        function disableWizard(oncomplete){
             var pool = OSjs.Core.getSettingsManager().instance('Wizard');
-            pool.set('completed', true, true);
+            pool.set('completed', true, oncomplete);
         }
 
         function callAPI(fn, args, cb) {
