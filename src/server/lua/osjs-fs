@@ -28,6 +28,7 @@
 -- @licence Simplified BSD License
 --
 
+local json = require "luci.json"
 local fs = require "nixio.fs"
 local osjs = require "osjs"
 local wsapi = require "wsapi"

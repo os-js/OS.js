@@ -289,35 +289,6 @@ function fs_scandir(request, response, path)
   return error, data
 end
 
-function fs_request(request, response, name, args)
-  local error = false
-  local data = false
-
-  if name == "exists" then
-    error, data = fs_exists(request, response, args[1])
-  elseif name == "read" then
-    error, data = fs_read(request, response, args[1])
-  elseif name == "write" then
-    error, data = fs_write(request, response, args[1], args[2])
-  elseif name == "scandir" then
-    error, data = fs_scandir(request, response, args[1])
-  elseif name == "rename" then
-    error, data = fs_rename(request, response, args[1], args[2])
-  elseif name == "move" then
-    error, data = fs_rename(request, response, args[1], args[2])
-  elseif name == "copy" then
-    error, data = fs_copy(request, response, args[1], args[2])
-  elseif name == "remove" or name == "delete" then
-    error, data = fs_remove(request, response, args[1])
-  elseif name == "mkdir" then
-    error, data = fs_mkdir(request, response, args[1])
-  else
-    error = "Invalid VFS method"
-  end
-
-  return error, data
-end
-
 -- ----------------------------------------------------------------------------
 --                                  CORE API
 -- ----------------------------------------------------------------------------
@@ -629,10 +600,35 @@ end
 --                                     API
 -- ----------------------------------------------------------------------------
 
-function vfs_request(request, response, meth, iargs)
-  error, data = fs_request(request, response, meth, iargs)
+function vfs_request(request, response, name, args)
+  local error = false
+  local data = false
+
+  if name == "exists" then
+    error, data = fs_exists(request, response, args["path"])
+  elseif name == "read" then
+    error, data = fs_read(request, response, args["path"])
+  elseif name == "write" then
+    error, data = fs_write(request, response, args["path"], args["data"])
+  elseif name == "scandir" then
+    error, data = fs_scandir(request, response, args["path"])
+  elseif name == "rename" then
+    error, data = fs_rename(request, response, args["src"], args["dest"])
+  elseif name == "move" then
+    error, data = fs_rename(request, response, args["src"], args["dest"])
+  elseif name == "copy" then
+    error, data = fs_copy(request, response, args["src"], args["dest"])
+  elseif name == "remove" or name == "delete" then
+    error, data = fs_remove(request, response, args["path"])
+  elseif name == "mkdir" then
+    error, data = fs_mkdir(request, response, args["path"])
+  else
+    error = "Invalid VFS method"
+  end
+
   return error, data
 end
+
 
 function api_request(request, response, meth, iargs)
   local error = false

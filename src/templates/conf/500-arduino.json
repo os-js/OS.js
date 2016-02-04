@@ -29,7 +29,7 @@
 
     "Connection": {
       "APIURI": "/cgi-bin/osjs-api",
-      "FSURI":  "/cgi-bin/osjs-fs?path="
+      "FSURI":  "/cgi-bin/osjs-fs"
     },
 
     "AutoStart": ["ArduinoService"],
