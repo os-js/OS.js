@@ -43,8 +43,6 @@ function run(wsapi_env)
   local request  = wrequest.new(wsapi_env, {overwrite = true})
   local response = wresponse.new()
 
-  local method = request.script_name:gsub("^/cgi-bin/osjs-fs/", "")
-
   if not osjs.DEBUGMODE then
     if request.cookies["osjsuser"] == nil then
       response.status = 403
@@ -68,6 +66,7 @@ function run(wsapi_env)
       response.status = 500
     end
   else
+    local method = wsapi_env.PATH_INFO:match("^/(%a+)")
     if method == "upload" then
       local path = request.POST["path"] .. "/"
       local contents = request.POST.upload.contents

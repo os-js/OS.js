@@ -44,7 +44,7 @@ function run(wsapi_env)
   local request  = wrequest.new(wsapi_env)
   local response = wresponse.new()
 
-  local method = request.script_name:gsub("^/cgi-bin/osjs-api/", "")
+  local method = wsapi_env.PATH_INFO:match("^/(%a+)")
 
   local len = tonumber(wsapi_env.CONTENT_LENGTH) or 0
   local input = wsapi_env.input:read(len) or ""
