@@ -2,7 +2,11 @@
 #
 # A simple script for setting wifi connection
 #
-# Arguments: <ssid> <encryption> <key>
+# Arguments:
+#   <ssid> wireless network name
+#   <encryption> encryption type
+#   <key> key to access wireless network
+#   <netrestart> do network restart '1' or not '0'
 #
 
 /sbin/uci set  network.lan=interface
@@ -15,5 +19,8 @@
 /sbin/uci set wireless.@wifi-iface[0].key="$3"
 /sbin/uci commit network
 /sbin/uci commit wireless
-/sbin/wifi
-/etc/init.d/network reload
+
+if [ -n $4 ] && [ $4 = 1 ]; then
+    /sbin/wifi
+    /etc/init.d/network reload
+fi

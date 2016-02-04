@@ -17,6 +17,12 @@
   "client" : {
     "Version" : "2.0.0-arduino-os",
 
+    "SettingsManager": {
+      "Wizard": {
+        "completed": false
+      }
+    },
+
     "Languages": {
       "en_EN": "English"
     },

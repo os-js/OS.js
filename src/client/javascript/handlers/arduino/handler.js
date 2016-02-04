@@ -52,6 +52,14 @@
   var ArduinoHandler = function() {
     OSjs.Core._Handler.apply(this, arguments);
     this._saveTimeout = null;
+
+    API.addHook('onSessionLoaded', function() {
+      var pool = OSjs.Core.getSettingsManager().instance('Wizard');
+      if ( !pool.get('completed') ) {
+        API.launch('ApplicationArduinoWizardSettings');
+      }
+    });
+
   };
 
   ArduinoHandler.prototype = Object.create(OSjs.Core._Handler.prototype);
