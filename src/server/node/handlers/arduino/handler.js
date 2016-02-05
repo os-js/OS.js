@@ -41,25 +41,13 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  // This simply adds full privileges to all users (remove this to enable default check)
-  exports.checkPrivilege = function(request, response, privilege, respond) {
-    var uname = request.cookies.get('username');
-    if ( !uname ) {
-      respond('You have no OS.js Session, please log in!', "text/plain", response, null, 500);
-      return false;
-    }
-    return true;
-  };
-
-  // Attach API functions
-  exports.register = function(CONFIG, API, HANDLER) {
-
-    API.settings = function(args, callback, request, response) {
+  var API = {
+    settings: function(args, callback, request, response) {
       require('fs').writeFileSync('/tmp/osjs-settings.json', JSON.stringify(args.settings, null, 4));
       callback(false, true);
-    };
+    },
 
-    API.login = function(args, callback, request, response) {
+    login: function(args, callback, request, response) {
       function login(data) {
         request.cookies.set('username', data.username, {httpOnly:true});
         request.cookies.set('groups', JSON.stringify(data.groups), {httpOnly:true});
@@ -81,36 +69,36 @@
         name: 'Demo User',
         groups: ['demo']
       }, request, response));
-    };
+    },
 
-    API.logout = function(args, callback, request, response) {
+    logout: function(args, callback, request, response) {
       function logout() {
         request.cookies.set('username', null, {httpOnly:true});
         request.cookies.set('groups', null, {httpOnly:true});
         return true;
       }
       callback(false, logout());
-    };
+    },
 
-    API.sysinfo = function(args, callback, request, response) {
+    sysinfo: function(args, callback, request, response) {
       callback(false, {metrics: [0, 0, 0, 0, 0, 0, 0, 0], hostname: 'foobar', timezone: 'UTC', rest: 'true'});
-    };
+    },
 
-    API.dmesg = function(args, callback, request, response) {
+    dmesg: function(args, callback, request, response) {
       callback(false, "dmesg");
-    };
+    },
 
-    API.syslog = function(args, callback, request, response) {
+    syslog: function(args, callback, request, response) {
       callback(false, "syslog");
-    };
+    },
 
-    API.ps = function(args, callback, request, response) {
+    ps: function(args, callback, request, response) {
       callback(false, [
         {PID: 0, COMMAND: 'xxx', '%MEM': 0, '%CPU': 0}
       ]);
-    };
+    },
 
-    API.opkg = function(args, callback, request, response) {
+    opkg: function(args, callback, request, response) {
       if ( args.command === 'list' ) {
         if ( args.args.category === 'upgradable' ) {
           var res = 'wget - 1.16.1-1 - 1.16.1-2';
@@ -119,17 +107,17 @@
         }
       }
       callback('NOT IMPLEMENTED');
-    };
+    },
 
-    API.netdevices = function(args, callback, request, response) {
+    netdevices: function(args, callback, request, response) {
       callback(false, [
         "lo",
         "eth0",
         "wlan0"
       ]);
-    };
+    },
 
-    API.netinfo = function(args, callback, request, response) {
+    netinfo: function(args, callback, request, response) {
       callback(false, {
         "deviceinfo": {
           "lo": [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
@@ -145,11 +133,44 @@
           }
         ]
       });
+    },
+
+    setpasswd: function(args, callback, request, response) {
+      callback(false, true);
+    }
+
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * @api handler.MysqlHandler
+   * @see handler.Handler
+   * @class
+   */
+  exports.register = function(instance, DefaultHandler) {
+    function ArduinoHandler() {
+      DefaultHandler.call(this, instance, API);
+    }
+
+    ArduinoHandler.prototype = Object.create(DefaultHandler.prototype);
+    ArduinoHandler.constructor = DefaultHandler;
+
+    ArduinoHandler.prototype.checkAPIPrivilege = function(request, response, privilege, callback) {
+      this._checkDefaultPrivilege(request, response, callback);
     };
 
-    API.setpasswd = function(args, callback, request, response) {
-      callback(false, true);
+    ArduinoHandler.prototype.checkVFSPrivilege = function(request, response, path, args, callback) {
+      this._checkDefaultPrivilege(request, response, callback);
     };
+
+    ArduinoHandler.prototype.checkPackagePrivilege = function(request, response, packageName, callback) {
+      this._checkDefaultPrivilege(request, response, callback);
+    };
+
+    return new ArduinoHandler();
   };
 
 })();
