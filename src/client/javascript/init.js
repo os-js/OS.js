@@ -304,11 +304,16 @@
     console.debug('initHandler()');
 
     handler = new OSjs.Core.Handler();
-    handler.init(function() {
+    handler.init(function(error) {
       if ( inited ) {
         return;
       }
       inited = true;
+
+      if ( error ) {
+        onError(error);
+        return;
+      }
 
       handler.boot(function(result, error) {
         if ( error ) {
