@@ -109,15 +109,15 @@
     var opts = {username: username, password: password};
     this.callAPI('login', opts, function(response) {
       if ( response.result ) { // This contains an object with user data
-        callback({
+        callback(false, {
           userData: response.result.userData,
           userSettings: checkSettingsCompability(response.result.userSettings)
         });
       } else {
-        callback(false, response.error ? ('Error while logging in: ' + response.error) : 'Invalid login');
+        callback(response.error ? ('Error while logging in: ' + response.error) : 'Invalid login', false);
       }
     }, function(error) {
-      callback(false, 'Login error: ' + error);
+      callback('Login error: ' + error, false);
     });
   };
 
