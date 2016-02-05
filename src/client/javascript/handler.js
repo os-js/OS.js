@@ -191,11 +191,11 @@
       if ( response.result ) { // This contains an object with user data
         callback(false, response.result);
       } else {
-        callback(response.error ? ('Error while logging in: ' + response.error) : 'Invalid login', false);
+        var error = response.error || API._('ERR_LOGIN_INVALID');
+        callback(API._('ERR_LOGIN_FMT', error), false);
       }
-
     }, function(error) {
-      callback(false, 'Login error: ' + error);
+      callback(API._('ERR_LOGIN_FMT', error), false);
     });
   };
 
