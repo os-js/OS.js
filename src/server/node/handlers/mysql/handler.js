@@ -133,10 +133,14 @@
         var row = rows[0];
         var hash = row.password.replace(/^\$2y(.+)$/i, '\$2a$1');
         bcrypt.compare(login.password, hash, function(err, res) {
-          if ( res === true ) {
-            getUserInfo();
+          if ( err ) {
+            onerror(err);
           } else {
-            invalid();
+            if ( res === true ) {
+              getUserInfo();
+            } else {
+              invalid();
+            }
           }
         });
         return;
