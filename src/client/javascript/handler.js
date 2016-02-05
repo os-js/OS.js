@@ -189,9 +189,9 @@
     var opts = {username: username, password: password};
     this.callAPI('login', opts, function(response) {
       if ( response.result ) { // This contains an object with user data
-        callback(response.result);
+        callback(false, response.result);
       } else {
-        callback(false, response.error ? ('Error while logging in: ' + response.error) : 'Invalid login');
+        callback(response.error ? ('Error while logging in: ' + response.error) : 'Invalid login', false);
       }
 
     }, function(error) {
@@ -708,7 +708,7 @@
     }
 
     function _login(username, password) {
-      self.login(username, password, function(result, error) {
+      self.login(username, password, function(error, result) {
         if ( error ) {
           alert(error);
           _restore();

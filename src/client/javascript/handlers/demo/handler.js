@@ -90,7 +90,7 @@
 
     // Use the 'demo' user
     var self = this;
-    this.login('demo', 'demo', function(result) {
+    this.login('demo', 'demo', function(error, result) {
       self.onLogin(result.userData, getSettings(), function() {
         callback();
       });

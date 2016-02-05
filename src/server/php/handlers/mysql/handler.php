@@ -37,13 +37,14 @@ See doc/example-handler.txt
 */
 
 define("APIHANDLER_DSN", "mysql:host=localhost;dbname=osjs");
-define("APIHANDLER_USER", "osjs");
-define("APIHANDLER_PASS", "osjs");
+define("APIHANDLER_USER", "root");
+define("APIHANDLER_PASS", "acca9pra");
 
 /**
  * MysqlAPIHandler for sessions via database
  */
 class MysqlAPIHandler
+  extends APIHandler
 {
   protected static function _initDB() {
     $args = Array(1002 => "SET NAMES 'utf8'");
