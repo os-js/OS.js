@@ -615,6 +615,11 @@
 
     API.setLocale(getUserLocale());
     OSjs.Core.getSettingsManager().init(userSettings);
+
+    if ( data.blacklistedPackages ) {
+      OSjs.Core.getPackageManager().setBlacklist(data.blacklistedPackages);
+    }
+
     callback();
   };
 
