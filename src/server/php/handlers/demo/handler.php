@@ -43,7 +43,7 @@ class DemoAPIHandler
       "id" => 0,
       "username" => "demo",
       "name" => "Demo User",
-      "groups" => Array("demo")
+      "groups" => Array("admin")
     ));
     return Array(false, $user->getData());
   }
