@@ -35,17 +35,6 @@
   var connection;
 
   /////////////////////////////////////////////////////////////////////////////
-  // CONFIGURATION
-  /////////////////////////////////////////////////////////////////////////////
-
-  var MYSQL_CONFIG = {
-    host     : 'localhost',
-    user     : 'osjs',
-    password : 'osjs',
-    database : 'osjs'
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
   // USER SESSION ABSTRACTION
   /////////////////////////////////////////////////////////////////////////////
 
@@ -211,8 +200,10 @@
     MysqlHandler.constructor = DefaultHandler;
 
     MysqlHandler.prototype.onServerStart = function(cb) {
+      var cfg = instance.config.handlers.mysql;
+
       if ( !connection ) {
-        connection = mysql.createConnection(MYSQL_CONFIG);
+        connection = mysql.createConnection(cfg);
         connection.connect(function() {
           cb();
         });
