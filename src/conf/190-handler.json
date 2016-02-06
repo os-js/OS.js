@@ -1,0 +1,11 @@
+{
+  "server": {
+    "handlers": {
+      "pam": {
+        "groups": "/etc/osjs/groups.json",
+        "blacklist": "/etc/osjs/blacklist.json",
+        "settings": "/home/%USERNAME%/.osjs/settings.json"
+      }
+    }
+  }
+}

@@ -38,22 +38,14 @@
 (function(pam, userid, fs, path) {
   'use strict';
 
-  function getRootPath(username) {
-    return path.join('/home', username, '.osjs');
+  function getSettingsPath(cfg, username) {
+    return cfg.settings.replace('%USERNAME%', username);
   }
 
-  function getSettingsPath(username) {
-    return path.join(getRootPath(username), 'settings.json');
-  }
-
-  function getGroupsPath() {
-    return path.join('/etc', 'osjs', 'groups.json');
-  }
-
-  function authenticate(login, callback) {
+  function authenticate(cfg, login, callback) {
 
     function getUserGroups(cb) {
-      fs.readFile(getGroupsPath(), function(err, gdata) {
+      fs.readFile(cfg.groups, function(err, gdata) {
         var list = {};
         if ( !err ) {
           try {
@@ -66,7 +58,7 @@
     }
 
     function getUserSettings(cb) {
-      fs.readFile(getSettingsPath(login.username), function(err, sdata) {
+      fs.readFile(getSettingsPath(cfg, login.username), function(err, sdata) {
         var settings = {};
         if ( !err && sdata ) {
           try {
@@ -77,17 +69,33 @@
       });
     }
 
+    function getUserBlacklist(cb) {
+      fs.readFile(cfg.blacklist, function(err, bdata) {
+        var blacklist = [];
+
+        if ( !err && bdata ) {
+          try {
+            blacklist = JSON.parse(bdata)[login.username] || [];
+          } catch ( e ) {}
+        }
+
+        cb(blacklist);
+      });
+    }
+
     pam.authenticate(login.username, login.password, function(err) {
       if ( err ) {
         callback(err);
       } else {
         getUserSettings(function(settings) {
           getUserGroups(function(groups) {
-            callback(false, {
-              id: userid.uid(login.username),
-              groups: groups,
-              name: login.username
-            }, settings);
+            getUserBlacklist(function(blacklist) {
+              callback(false, {
+                id: userid.uid(login.username),
+                groups: groups,
+                name: login.username
+              }, settings, blacklist);
+            });
           });
         });
       }
@@ -100,7 +108,8 @@
 
   var API = {
     login: function(login, callback, request, response, config, handler) {
-      authenticate(login, function(err, data, settings) {
+      var cfg = config.handlers.pam;
+      authenticate(cfg, login, function(err, data, settings, blacklist) {
         if ( err ) {
           callback(err);
           return;
@@ -115,7 +124,8 @@
 
         handler.onLogin(request, response, {
           userData: d,
-          userSettings: settings
+          userSettings: settings,
+          blacklistedPackages: blacklist
         }, callback);
       });
     },
@@ -129,9 +139,12 @@
       var uname = handler.getUserName(request, response);
       var data = JSON.stringify(settings);
 
+      var cfg = config.handlers.pam;
+      var spath = getSettingsPath(cfg, uname);
+
       // Make sure directory exists before writing
-      fs.mkdir(getRootPath(uname), function() {
-        fs.writeFile(getSettingsPath(uname), data,  function(err) {
+      fs.mkdir(path.dirname(spath), function() {
+        fs.writeFile(spath, data,  function(err) {
           callback(err || false, !!err);
         });
       });
