@@ -46,3 +46,15 @@ This is an example file for `groups.json`
   "marcello": ["api", "application", "curl", "upload", "vfs"]
 }
 ```
+
+### blacklist.json
+
+This is an example file for `blacklist.json`
+
+```
+
+{
+  "anders": ["ApplicationDraw"]
+}
+
+```
