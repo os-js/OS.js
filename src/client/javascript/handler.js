@@ -592,7 +592,7 @@
   _Handler.prototype.onLogin = function(data, callback) {
     callback = callback || function() {};
 
-    var userSetings = data.userSettings;
+    var userSettings = data.userSettings;
     if ( !userSettings || userSettings instanceof Array ) {
       userSettings = {};
     }
