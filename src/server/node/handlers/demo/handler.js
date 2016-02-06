@@ -76,7 +76,7 @@
      * This overrides and leaves no checks (full access)
      */
     DemoHandler.prototype.checkAPIPrivilege = function(request, response, privilege, callback) {
-      this._checkDefaultPrivilege(request, response, callback);
+      this._checkHasSession(request, response, callback);
     };
 
     /**
@@ -84,7 +84,7 @@
      * This overrides and leaves no checks (full access)
      */
     DemoHandler.prototype.checkVFSPrivilege = function(request, response, path, args, callback) {
-      this._checkDefaultPrivilege(request, response, callback);
+      this._checkHasSession(request, response, callback);
     };
 
     /**
@@ -92,7 +92,7 @@
      * This overrides and leaves no checks (full access)
      */
     DemoHandler.prototype.checkPackagePrivilege = function(request, response, packageName, callback) {
-      this._checkDefaultPrivilege(request, response, callback);
+      this._checkHasSession(request, response, callback);
     };
 
     return new DemoHandler();
