@@ -21,14 +21,6 @@ $ grunt config
 
 ```
 
-### Configure
-
-Then set up the configuration in these files (you only need to edit the one you use):
-
-- `src/server/php/handlers/mysql/handler.php`
-- `src/server/node/handlers/mysql/handler.js`
-
-
 ### Mysql Database table
 
 Create this table:
