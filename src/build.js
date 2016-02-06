@@ -62,6 +62,7 @@
     conf:         _path.join(ROOT, 'src', 'conf'),
     server:       _path.join(ROOT, 'src', 'server'),
     server_node:  _path.join(ROOT, 'src', 'server', 'node'),
+    server_php:   _path.join(ROOT, 'src', 'server', 'php'),
     templates:    _path.join(ROOT, 'src', 'templates'),
     javascript:   _path.join(ROOT, 'src', 'client', 'javascript'),
     stylesheets:  _path.join(ROOT, 'src', 'client', 'stylesheets'),
@@ -1042,6 +1043,35 @@
     });
   }
 
+  function createHandler(grunt, name) {
+    var uname = name.replace(/[^A-z]/g, '').toLowerCase();
+
+    function createHandlerFile(src, dst) {
+      var tpl = readFile(src).toString();
+      tpl = replaceAll(tpl, 'EXAMPLE', name);
+      writeFile(dst, tpl);
+    }
+
+    mkdir(_path.join(PATHS.javascript, 'handlers', uname));
+    mkdir(_path.join(PATHS.server_php, 'handlers', uname));
+    mkdir(_path.join(PATHS.server_node, 'handlers', uname));
+
+    createHandlerFile(
+      _path.join(PATHS.templates, 'handler', 'client.js'),
+      _path.join(PATHS.javascript, 'handlers', uname, 'handler.js')
+    );
+
+    createHandlerFile(
+      _path.join(PATHS.templates, 'handler', 'php.php'),
+      _path.join(PATHS.server_php, 'handlers', uname, 'handler.php')
+    );
+
+    createHandlerFile(
+      _path.join(PATHS.templates, 'handler', 'node.js'),
+      _path.join(PATHS.server_node, 'handlers', uname, 'handler.js')
+    );
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // BUILD
   /////////////////////////////////////////////////////////////////////////////
@@ -1612,6 +1642,7 @@
     createLighttpdConfig:     createLighttpdConfig,
     createNginxConfig:        createNginxConfig,
     createPackage:            createPackage,
+    createHandler:            createHandler,
 
     getConfig: generateBuildConfig,
     getConfigPath: getConfigPath,

@@ -281,6 +281,11 @@
       _build.createPackage(grunt, arg1, arg2);
     });
 
+    grunt.registerTask('create-handler', 'Create a new handler with given name', function(arg1, arg2) {
+      grunt.log.writeln('Creating handler...');
+      _build.createHandler(grunt, arg1);
+    });
+
     //
     // Register aliases
     //
