@@ -185,9 +185,7 @@
     },
 
     logout: function(args, callback, request, response, config, handler) {
-      handler.setUserData(request, response, null, function() {
-        callback(false, true);
-      });
+      handler.onLogout(request, response, callback);
     },
 
     settings: function(args, callback, request, response, config, handler) {
