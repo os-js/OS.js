@@ -49,7 +49,8 @@
       handler.setUserData(request, response, data, function() {
         callback(false, {
           userData: data,
-          userSettings: {}
+          userSettings: {},
+          blacklistedPackages: []
         });
       });
     },

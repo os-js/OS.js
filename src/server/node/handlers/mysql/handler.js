@@ -61,7 +61,8 @@
           name : data.name,
           groups : data.groups
         },
-        userSettings: data.settings
+        userSettings: data.settings,
+        blacklistedPackages: []
       });
     }
 

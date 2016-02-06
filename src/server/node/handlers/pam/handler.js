@@ -116,7 +116,8 @@
         handler.setUserData(request, response, d, function() {
           callback(false, {
             userData: d,
-            userSettings: settings
+            userSettings: settings,
+            blacklistedPackages: []
           });
         });
       });
