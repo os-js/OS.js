@@ -113,13 +113,10 @@
           groups:   data.groups
         };
 
-        handler.setUserData(request, response, d, function() {
-          callback(false, {
-            userData: d,
-            userSettings: settings,
-            blacklistedPackages: []
-          });
-        });
+        handler.onLogin(request, response, {
+          userData: d,
+          userSettings: settings
+        }, callback);
       });
     },
 

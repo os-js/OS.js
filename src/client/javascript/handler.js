@@ -718,7 +718,7 @@
         console.debug('OSjs::Handlers::init()', 'login response', result);
         container.parentNode.removeChild(container);
 
-        self.onLogin(result.userData, result.userSettings, function() {
+        self.onLogin(result, function() {
           callback();
         });
       });

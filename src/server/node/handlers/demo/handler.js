@@ -39,20 +39,14 @@
 
   var API = {
     login: function(args, callback, request, response, config, handler) {
-      var data = {
-        id: 0,
-        username: 'demo',
-        name: 'Demo User',
-        groups: ['admin']
-      };
-
-      handler.setUserData(request, response, data, function() {
-        callback(false, {
-          userData: data,
-          userSettings: {},
-          blacklistedPackages: []
-        });
-      });
+      handler.onLogin(request, response, {
+        userData: {
+          id: 0,
+          username: 'demo',
+          name: 'Demo User',
+          groups: ['admin']
+        }
+      }, callback);
     },
 
     logout: function(args, callback, request, response, config, handler) {

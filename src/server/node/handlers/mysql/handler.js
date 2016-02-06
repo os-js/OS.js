@@ -54,16 +54,15 @@
     console.log('APIUser::login()');
 
     function complete(data) {
-      callback(false, {
-        userData : {
+      handler.onLogin(request, response, {
+        userData: {
           id : data.id,
           username : data.username,
           name : data.name,
           groups : data.groups
         },
-        userSettings: data.settings,
-        blacklistedPackages: []
-      });
+        userSettings: data.settings
+      }, callback);
     }
 
     function invalid() {
@@ -179,7 +178,7 @@
           return;
         }
 
-        handler.setUserData(request, response, result.userData, function() {
+        handler.onLogin(request, response, result, function() {
           callback(false, result);
         });
       }, config, handler);
