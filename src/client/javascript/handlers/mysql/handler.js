@@ -60,10 +60,9 @@ See doc/mysql-handler.txt
    * Override default init() method
    */
   MysqlHandler.prototype.init = function(callback) {
-    // Located in src/client/javasript/hander.js
     var self = this;
-    this.initLoginScreen(function() {
-      OSjs.Core._Handler.prototype.init.call(self, callback);
+    OSjs.Core._Handler.prototype.init.call(this, function() {
+      self.initLoginScreen(callback);
     });
   };
 
