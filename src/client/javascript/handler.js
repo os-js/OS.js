@@ -582,22 +582,22 @@
   /**
    * Called when login() is finished
    *
-   * @param   Object    userData      JSON User Data
-   * @param   Object    userSettings  JSON User Settings
+   * @param   Object    data          JSON Data from login action (userData, userSettings, etc)
    * @param   Function  callback      Callback function
    *
    * @return  void
    *
    * @method  _Handler::onLogin()
    */
-  _Handler.prototype.onLogin = function(userData, userSettings, callback) {
+  _Handler.prototype.onLogin = function(data, callback) {
     callback = callback || function() {};
 
+    var userSetings = data.userSettings;
     if ( !userSettings || userSettings instanceof Array ) {
       userSettings = {};
     }
 
-    this.userData = userData;
+    this.userData = data.userData;
 
     // Ensure we get the user-selected locale configured from WM
     function getUserLocale() {

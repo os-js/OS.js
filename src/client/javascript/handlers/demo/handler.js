@@ -82,25 +82,28 @@
     var self = this;
 
     OSjs.Core._Handler.prototype.init.call(this, function() {
-      function finished(userData) {
-        self.onLogin(userData, getSettings(), function() {
+      function finished(result) {
+        result.userSettings = getSettings();
+        self.onLogin(result, function() {
           callback();
         });
       }
 
       if ( window.location.href.match(/^file\:\/\//) ) { // NW
         finished({
-          id: 0,
-          username: 'demo',
-          name: 'Local Server',
-          groups: ['admin']
+          userData: {
+            id: 0,
+            username: 'demo',
+            name: 'Local Server',
+            groups: ['admin']
+          }
         });
       } else {
         self.login('demo', 'demo', function(error, result) {
           if ( error ) {
             callback(error);
           } else {
-            finished(result.userData);
+            finished(result);
           }
         });
       }
