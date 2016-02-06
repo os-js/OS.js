@@ -419,7 +419,11 @@ describe('Node HTTP Server', function() {
         assert.equal(false, err);
         assert.equal(200, res.statusCode);
         assert.equal(false, body.error);
-        assert.equal(JSON.stringify(exp), JSON.stringify(body.result));
+        var expc = {
+          userData: body.result.userData,
+          userSettings: body.result.userSettings,
+        };
+        assert.equal(JSON.stringify(exp), JSON.stringify(expc));
         done();
       });
     });
