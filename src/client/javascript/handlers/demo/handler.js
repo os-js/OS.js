@@ -79,28 +79,31 @@
   DemoHandler.prototype.init = function(callback) {
     console.info('OSjs::DemoHandler::init()');
 
-    // Use the 'demo' user
     var self = this;
 
     OSjs.Core._Handler.prototype.init.call(this, function() {
-      if ( window.location.href.match(/^file\:\/\//) ) {
-        callback({
+      function finished(userData) {
+        self.onLogin(userData, getSettings(), function() {
+          callback();
+        });
+      }
+
+      if ( window.location.href.match(/^file\:\/\//) ) { // NW
+        finished({
           id: 0,
           username: 'demo',
           name: 'Local Server',
           groups: ['admin']
         });
+      } else {
+        self.login('demo', 'demo', function(error, result) {
+          if ( error ) {
+            callback(error);
+          } else {
+            finished(result.userData);
+          }
+        });
       }
-
-      self.login('demo', 'demo', function(error, result) {
-        if ( error ) {
-          callback(error);
-        } else {
-          self.onLogin(result.userData, getSettings(), function() {
-            callback();
-          });
-        }
-      });
     });
   };
 
