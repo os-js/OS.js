@@ -1402,7 +1402,7 @@
     var module = (function() {
       var isMounted = true;
 
-      return {
+      return _createMountpoint({
         readOnly: false,
         description: opts.description,
         visible: true,
@@ -1418,9 +1418,6 @@
         mounted: function() {
           return isMounted;
         },
-        enabled: function() {
-          return true;
-        },
         root: moduleRoot,
         icon: opts.icon,
         match: moduleMatch,
@@ -1434,7 +1431,7 @@
             callback(API._('ERR_VFSMODULE_INVALID_TYPE_FMT', opts.type));
           }
         }
-      };
+      });
     })();
 
     var validModule = (function() {
@@ -1503,7 +1500,7 @@
         var iter = config[key];
         console.info('VFS', 'Registering mountpoint', key, iter);
 
-        OSjs.VFS.Modules[key] = {
+        OSjs.VFS.Modules[key] = _createMountpoint({
           readOnly: (typeof iter.readOnly === 'undefined') ? false : (iter.readOnly === true),
           description: iter.description || key,
           icon: iter.icon || 'devices/harddrive.png',
@@ -1511,22 +1508,38 @@
           visible: true,
           internal: true,
           match: createMatch(key + '://'),
-          unmount: function(cb) {
-            (cb || function() {})(API._('ERR_VFS_UNAVAILABLE'), false);
-          },
-          mounted: function() {
-            return true;
-          },
-          enabled: function() {
-            return (typeof iter.enabled === 'undefined') || iter.enabled === true;
-          },
           request: function() {
             // This module uses the same API as public
             OSjs.VFS.Transports.Internal.request.apply(null, arguments);
           }
-        };
+        });
       });
     }
+  }
+
+  /**
+   * Wrapper for creating a new VFS module
+   *
+   * THIS IS ONLY USED INTERNALLY
+   *
+   * @param   Object  params      Module parameters
+   *
+   * @return  Object              Module parameters
+   *
+   * @api   OSjs.VFS.createMountpoint()
+   */
+  function _createMountpoint(params) {
+    return Utils.argumentDefaults(params, {
+      unmount: function(cb) {
+        (cb || function() {})(API._('ERR_VFS_UNAVAILABLE'), false);
+      },
+      mounted: function() {
+        return true;
+      },
+      enabled: function() {
+        return true;
+      }
+    });
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1551,6 +1564,7 @@
   OSjs.VFS.blobToAb              = blobToAb;
   OSjs.VFS.dataSourceToAb        = dataSourceToAb;
 
+  OSjs.VFS._createMountpoint     = _createMountpoint;
   OSjs.VFS.createMountpoint      = createMountpoint;
   OSjs.VFS.removeMountpoint      = removeMountpoint;
   OSjs.VFS.registerMountpoints   = registerMountpoints;
