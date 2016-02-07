@@ -3,8 +3,8 @@
 Run:
 
 ```shell
-# Install all dev dependencies
-npm install
+# Install NW grunt builder library
+npm install grunt-nw-builder
 
 # Make NW build
 grunt nw

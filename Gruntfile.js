@@ -38,6 +38,8 @@
 
   module.exports = function(grunt) {
 
+    grunt.file.defaultEncoding = 'utf-8';
+
     //
     // Load plugins
     //
@@ -45,15 +47,27 @@
       require('time-grunt')(grunt);
     } catch (e) { }
 
-    grunt.file.defaultEncoding = 'utf-8';
+    // Make sure we only load required modules (ignore warnings)
+    var checks = ['test', 'jshint', 'jscs', 'csslint', 'mochaTest'];
+    checks.forEach(function(k) {
+      if ( grunt.cli.tasks.indexOf(k) >= 0 ) {
+        grunt.loadNpmTasks('grunt-contrib-jshint');
+        grunt.loadNpmTasks('grunt-mocha-test');
+        //grunt.loadNpmTasks('grunt-mocha');
+        grunt.loadNpmTasks('grunt-jscs');
+        grunt.loadNpmTasks('grunt-contrib-csslint');
+        return false;
+      }
+      return true;
+    });
 
-    grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-mocha-test');
-    //grunt.loadNpmTasks('grunt-mocha');
-    grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-jscs');
-    grunt.loadNpmTasks('grunt-contrib-csslint');
-    grunt.loadNpmTasks('grunt-nw-builder');
+    if ( grunt.cli.tasks.indexOf('nw') >= 0 ) {
+      grunt.loadNpmTasks('grunt-nw-builder');
+    }
+
+    if ( grunt.cli.tasks.indexOf('watch') >= 0 ) {
+      grunt.loadNpmTasks('grunt-contrib-watch');
+    }
 
     //
     // Load tasks
