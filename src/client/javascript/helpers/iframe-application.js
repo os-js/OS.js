@@ -239,10 +239,11 @@
    * @see Application::init()
    * @method IFrameApplication::init()
    */
-  IFrameApplication.prototype.init = function(settings, metadata) {
+  IFrameApplication.prototype.init = function(settings, metadata, onInited) {
     Application.prototype.init.apply(this, arguments);
     var name = this.__pname + 'Window';
     this._addWindow(new IFrameApplicationWindow(name, this.options, this), null, true);
+    onInited();
   };
 
   /////////////////////////////////////////////////////////////////////////////
