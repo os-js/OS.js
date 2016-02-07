@@ -4,6 +4,7 @@
   "icon": "apps/system-software-install.png",
   "category": "system",
   "singular": true,
+  "enabled": false,
   "preload": [
     {
       "src": "main.js",
