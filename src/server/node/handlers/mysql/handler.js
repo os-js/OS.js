@@ -70,7 +70,7 @@
     }
 
     function getUserInfo() {
-      var q = 'SELECT `id`, `username`, `name`, `groups`, `settings` FROM `osjs_users` WHERE `username` = ? LIMIT 1;';
+      var q = 'SELECT `id`, `username`, `name`, `groups`, `settings` FROM `users` WHERE `username` = ? LIMIT 1;';
       var a = [login.username];
 
       connection.query(q, a, function(err, rows, fields) {
@@ -109,7 +109,7 @@
       });
     }
 
-    var q = 'SELECT `password` FROM `osjs_users` WHERE `username` = ? LIMIT 1;';
+    var q = 'SELECT `password` FROM `users` WHERE `username` = ? LIMIT 1;';
     var a = [login.username];
 
     connection.query(q, a, function(err, rows, fields) {
