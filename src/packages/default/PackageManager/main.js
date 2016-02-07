@@ -31,7 +31,7 @@
   'use strict';
 
   function fetchJSON(cb) {
-    var url = 'http://os-js.github.io/OS.js/store/packages.json';
+    var url = 'http://91.247.228.125/store/packages.json';
     API.curl({
       body: {
         url: url,
