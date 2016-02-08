@@ -16,7 +16,7 @@ Works in any modern browser and can be deployed on any platform using Node or PH
 
 ## Demo
 
-I have a demo running on my server: http://osjsv2.0o.no
+I have a demo running on my server: https://osjsv2.0o.no
 
 Please note that it may be unavailable at times and slightly out-of-date.
 
