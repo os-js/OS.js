@@ -158,7 +158,7 @@
       var lon = self.position.coords.longitude;
       var cbn = 'PanelItemWeatherCallback_' + _itemCount;
       var unt = 'metric';
-      var url = Utils.format('http://api.openweathermap.org/data/2.5/weather?lat={0}&lon={1}&callback={2}&units={3}', lat, lon, cbn, unt);
+      var url = Utils.format('//api.openweathermap.org/data/2.5/weather?lat={0}&lon={1}&callback={2}&units={3}', lat, lon, cbn, unt);
       var script = null;
 
       window[cbn] = function(result) {
