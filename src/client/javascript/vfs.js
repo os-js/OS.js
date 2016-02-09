@@ -1445,7 +1445,7 @@
     })();
 
     if ( validModule !== true ) {
-      throw new Error('ERR_VFSMODULE_INVALID_CONFIG_FMT', validModule);
+      throw new Error(API._('ERR_VFSMODULE_INVALID_CONFIG_FMT', validModule));
     }
 
     OSjs.VFS.Modules[opts.name] = module;

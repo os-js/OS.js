@@ -403,7 +403,14 @@
     'LBL_SHOW_SIDEBAR' : 'Show sidebar',
     'LBL_SHOW_NAVIGATION' : 'Show navigation',
     'LBL_SHOW_HIDDENFILES' : 'Show hidden files',
-    'LBL_SHOW_FILEEXTENSIONS' : 'Show file extensions'
+    'LBL_SHOW_FILEEXTENSIONS' : 'Show file extensions',
+    'LBL_MOUNT': 'Mount',
+    'LBL_DESCRIPTION': 'Description',
+    'LBL_USERNAME': 'Username',
+    'LBL_PASSWORD': 'Password',
+    'LBL_HOST': 'Host',
+    'LBL_NAMESPACE': 'Namespace'
+
   };
 
 })();
