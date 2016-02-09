@@ -298,9 +298,11 @@
   /**
    * Get a Window by Name
    *
+   * @param String  name      Window Name
+   *
    * @see Application::_getWindow()
    *
-   * @method Application::_getWindowsByName()
+   * @method Application::_getWindowByName()
    */
   Application.prototype._getWindowByName = function(name) {
     return this._getWindow(name);
@@ -308,6 +310,8 @@
 
   /**
    * Get Windows(!) by Tag
+   *
+   * @param String  tag       Tag name
    *
    * @see Application::_getWindow()
    * @return Array
@@ -341,6 +345,8 @@
 
   /**
    * Get the sessions JSON
+   *
+   * @param   String    k       The settings key
    *
    * @return  Object    the current settings
    *
