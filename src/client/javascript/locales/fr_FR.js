@@ -83,6 +83,8 @@
     // Handler
     'TITLE_SIGN_OUT' : 'Déconnexion',
     'TITLE_SIGNED_IN_AS_FMT' : 'Connecté en tant que: {0}',
+    'ERR_LOGIN_FMT' : 'Erreur de connexion : {0}',
+    'ERR_LOGIN_INVALID' : 'Identification invalide',
 
     // SESSION
     'MSG_SESSION_WARNING' : 'Êtes-vous sûr de vouloir quitter OS.js? Tous vos paramètres et vos données seront perdues!',
@@ -209,6 +211,21 @@
     'ERR_VFS_DOWNLOAD_NO_FILE': 'Impossible de télécharger un chemin sans chemin',
     'ERR_VFS_DOWNLOAD_FAILED' : 'Une erreur est survenue lors du téléchargement: {0}',
     'ERR_VFS_REMOTEREAD_EMPTY': 'La réponse est vide',
+
+    'ERR_VFSMODULE_INVALID'            : 'Module VFS invalide',
+    'ERR_VFSMODULE_INVALID_FMT'        : 'Module VFS invalide: {0}',
+    'ERR_VFSMODULE_INVALID_METHOD'     : 'Méthode VFS invalide',
+    'ERR_VFSMODULE_INVALID_METHOD_FMT' : 'Méthode VFS invalide: {0}',
+    'ERR_VFSMODULE_INVALID_TYPE'       : 'Type de module VFS invalide',
+    'ERR_VFSMODULE_INVALID_TYPE_FMT'   : 'Type de module VFS invalide: {0}',
+    'ERR_VFSMODULE_INVALID_CONFIG'     : 'Configuration VFS Module ',
+    'ERR_VFSMODULE_INVALID_CONFIG_FMT' : 'Configuration VFS Module non valide : {0}',
+    'ERR_VFSMODULE_ALREADY_MOUNTED'    : 'Module VFS déjà monté',
+    'ERR_VFSMODULE_ALREADY_MOUNTED_FMT': 'Module VFS \'{0}\' déjà monté',
+    'ERR_VFSMODULE_NOT_MOUNTED'        : 'Module VFS non monté',
+    'ERR_VFSMODULE_NOT_MOUNTED_FMT'    : 'Module VFS \'{0}\' non monté',
+    'ERR_VFSMODULE_EXCEPTION'          : 'Exception du module VFS',
+    'ERR_VFSMODULE_EXCEPTION_FMT'      : 'Exception du module VFS: {0}',
     'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Téléchargement du fichier',
 
     'ERR_VFSMODULE_XHR_ERROR'      : 'Erreur XHR',
@@ -387,7 +404,13 @@
     'LBL_SHOW_SIDEBAR' : 'Afficher la barre de côté',
     'LBL_SHOW_NAVIGATION' : 'Afficher la navigation',
     'LBL_SHOW_HIDDENFILES' : 'Afficher les fichiers cachés',
-    'LBL_SHOW_FILEEXTENSIONS' : 'Afficher les extensions de fichier'
+    'LBL_SHOW_FILEEXTENSIONS' : 'Afficher les extensions de fichier',
+    'LBL_MOUNT': 'Monter',
+    'LBL_DESCRIPTION': 'Description',
+    'LBL_USERNAME': 'Nom d\'utilisateur',
+    'LBL_PASSWORD': 'Mot de passe',
+    'LBL_HOST': 'Hôte',
+    'LBL_NAMESPACE': 'Espace de nom'
   };
 
 })();
