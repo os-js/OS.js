@@ -51,7 +51,7 @@
    * @option args Object     requestHeaders       Tuple with headers (default = null)
    * @option args boolean    json                 Handle as a JSON request/response (default = false)
    * @option args boolean    jsonp                Handle as a JSONP request (default = false)
-   * @option args Array      acceptcodes          Array of accepted status codes for success signal (Optional)
+   * @option args Array      acceptcodes          Array of accepted status codes for success signal [arraybuffer] (Optional)
    * @option args Function   onerror              onerror callback => fn(error, evt, request, url)
    * @option args Function   onsuccess            onsuccess callback => fn(result, request, url)
    * @option args Function   oncreated            oncreated callback => fn(request)
@@ -168,7 +168,7 @@
           cleanup();
         };
         request.onload = function(evt) {
-          if ( args.acceptcodes(request.status) >= 0 ) {
+          if ( args.acceptcodes.indexOf(request.status) >= 0 ) {
             args.onsuccess(request.response, request, args.url);
           } else {
             OSjs.VFS.abToText(request.response, 'text/plain', function(err, txt) {
