@@ -8,10 +8,10 @@ $ npm install node-mysql bcryptjs
 
 # Change `handler` to `mysql`.
 $ grunt config:set:handler:mysql
-$ grunt config:set:server:handlers:mysql:host:localhost
-$ grunt config:set:server:handlers:mysql:user:osjsuser
-$ grunt config:set:server:handlers:mysql:password:osjspassword
-$ grunt config:set:server:handlers:mysql:database:osjs
+$ grunt config:set:server.handlers.mysql.host:localhost
+$ grunt config:set:server.handlers.mysql.user:osjsuser
+$ grunt config:set:server.handlers.mysql.password:osjspassword
+$ grunt config:set:server.handlers.mysql.database:osjs
 
 # Update configurations
 $ grunt config
