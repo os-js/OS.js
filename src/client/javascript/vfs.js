@@ -797,7 +797,7 @@
       var msrc = getModuleFromPath(src.path);
       var mdst = getModuleFromPath(dest.path);
 
-      if ( (srcInternal && dstInternal) ) {
+      if ( (srcInternal && dstInternal) || (msrc === mdst) ) {
         var tmp = (msrc === mdst) ? src.path : null;
         request(tmp, 'copy', [src, dest], function(error, response) {
           dialogProgress(100);
@@ -872,7 +872,7 @@
       var msrc = getModuleFromPath(src.path);
       var mdst = getModuleFromPath(dest.path);
 
-      if ( (srcInternal && dstInternal) ) {
+      if ( (srcInternal && dstInternal) || (msrc === mdst) ) {
         var tmp = (msrc === mdst) ? src.path : null;
         request(tmp, 'move', [src, dest], function(error, response) {
           if ( error ) {
