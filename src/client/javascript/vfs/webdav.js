@@ -83,18 +83,36 @@
       return doc.firstChild;
     }
 
-    var url = getURL(args.path);
-    var file = new OSjs.VFS.File(args.path, args.mime || 'application/octet-stream');
-    url += resolvePath(file).replace(/^\//, '');
+    function getUrl(p, f) {
+      var url = getURL(p);
+      url += resolvePath(f).replace(/^\//, '');
+      return url;
+    }
+
+    var mime = args.mime || 'application/octet-stream';
+    var headers = {};
+    var sourceFile = new OSjs.VFS.File(args.path, mime);
+    var sourceUrl = getUrl(args.path, sourceFile);
+    var destUrl = null;
+
+    if ( args.dest ) {
+      destUrl = getUrl(args.dest, new OSjs.VFS.File(args.dest, mime));
+      headers.Destination = destUrl;
+    }
 
     function externalCall() {
-      var opts = {url: url, method: method};
+      var opts = {
+        url: sourceUrl,
+        method: method,
+        requestHeaders: headers
+      };
+
       if ( raw ) {
         opts.binary = true;
-        opts.mime = file.mime;
+        opts.mime = mime;
       }
 
-      if ( method === 'PUT' && typeof args.data !== 'undefined' ) {
+      if ( typeof args.data !== 'undefined' ) {
         opts.query = args.data;
       }
 
@@ -109,13 +127,13 @@
           return;
         }
 
-        if ( ([200, 203, 207]).indexOf(response.result.httpCode) < 0 ) {
+        if ( ([200, 201, 203, 204, 205, 207]).indexOf(response.result.httpCode) < 0 ) {
           callback(API._('ERR_VFSMODULE_XHR_ERROR') + ': ' + response.result.httpCode);
           return;
         }
 
         if ( opts.binary ) {
-          OSjs.VFS.dataSourceToAb(response.result.body, file.mime, callback);
+          OSjs.VFS.dataSourceToAb(response.result.body, mime, callback);
         } else {
           var doc = parseDocument(response.result.body);
           callback(false, doc);
@@ -125,8 +143,8 @@
       });
     }
 
-    if ( getCORSAllowed(file) ) {
-      OSjs.VFS.internalCall('get', {url: url, method: method}, callback);
+    if ( getCORSAllowed(sourceFile) ) {
+      OSjs.VFS.internalCall('get', {url: sourceUrl, method: method}, callback);
     } else {
       externalCall();
     }
@@ -143,6 +161,15 @@
       var ns = getNamespace(item);
       var list = [];
       var reqpath = resolvePath(item);
+      var root = OSjs.VFS.getRootFromPath(item.path);
+
+      if ( item.path !== root ) {
+        list.push({
+          path: root,
+          filename: '..',
+          type: 'dir'
+        });
+      }
 
       doc.children.forEach(function(c) {
         var type = 'file';
@@ -187,12 +214,13 @@
         var path = getPath();
         if ( path.match(/\/$/) ) {
           type = 'dir';
+          path = path.replace(/\/$/, '') || '/';
         }
 
         if ( path !== reqpath ) {
           list.push({
             id: getId(),
-            path: item.path.replace(/\/$/, '') + path,
+            path: root + path.replace(/^\//, ''),
             filename: Utils.filename(path),
             size: getSize(),
             mime: getMime(),
@@ -225,23 +253,25 @@
   };
 
   davTransport.copy = function(src, dest, callback) {
-    callback(API._('ERR_VFS_UNAVAILABLE'));
+    davCall('COPY', {path: src.path, dest: dest.path}, callback);
   };
 
   davTransport.move = function(src, dest, callback) {
-    callback(API._('ERR_VFS_UNAVAILABLE'));
+    davCall('MOVE', {path: src.path, dest: dest.path}, callback);
   };
 
   davTransport.unlink = function(item, callback) {
-    callback(API._('ERR_VFS_UNAVAILABLE'));
+    davCall('DELETE', {path: item.path}, callback);
   };
 
   davTransport.mkdir = function(item, callback) {
-    callback(API._('ERR_VFS_UNAVAILABLE'));
+    davCall('MKCOL', {path: item.path}, callback);
   };
 
   davTransport.exists = function(item, callback) {
-    callback(API._('ERR_VFS_UNAVAILABLE'));
+    davCall('PROPFIND', {path: item.path}, function(error, doc) {
+      callback(false, !error);
+    });
   };
 
   davTransport.fileinfo = function(item, callback, options) {
