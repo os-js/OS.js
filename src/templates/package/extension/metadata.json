@@ -3,7 +3,7 @@
   "type":       "extension",
   "build":      {
     "copy": [
-      "package.json",
+      "metadata.json",
       "extension.js"
     ]
   },

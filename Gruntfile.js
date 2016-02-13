@@ -154,7 +154,7 @@
             'src/client/themes/styles/*/metadata.json',
             'src/client/themes/sounds/*/metadata.json',
             'src/client/themes/icons/*/metadata.json',
-            'src/packages/*/*/package.json'
+            'src/packages/*/*/metadata.json'
           ],
           tasks: ['config', 'manifest']
         }

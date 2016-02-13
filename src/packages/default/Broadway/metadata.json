@@ -5,7 +5,7 @@
   "config": {},
   "build": {
     "copy": [
-      "package.json",
+      "metadata.json",
       "broadway.js",
       "extension.js",
       "extension.css",

@@ -237,7 +237,7 @@
         if ( resp && (resp instanceof Array) ) {
           resp.forEach(function(iter) {
             if ( !iter.filename.match(/^\./) && iter.type === 'dir' ) {
-              queue.push(Utils.pathJoin(dir.path, iter.filename, 'package.json'));
+              queue.push(Utils.pathJoin(dir.path, iter.filename, 'metadata.json'));
             }
           });
         }
