@@ -88,15 +88,21 @@
       return;
     }
 
-    var fullPath = realPath ? path : instance.vfs.getRealPath(path, instance.config, request).root;
-    _fs.exists(fullPath, function(exists) {
-      if ( exists ) {
-        var mime = instance.vfs.getMime(fullPath, instance.config);
-        respond(null, mime, response, [], 200, fullPath);
-      } else {
-        respondNotFound(null, response, fullPath);
-      }
-    });
+    try {
+      var fullPath = realPath ? path : instance.vfs.getRealPath(path, instance.config, request).root;
+      _fs.exists(fullPath, function(exists) {
+        if ( exists ) {
+          var mime = instance.vfs.getMime(fullPath, instance.config);
+          respond(null, mime, response, [], 200, fullPath);
+        } else {
+          respondNotFound(null, response, fullPath);
+        }
+      });
+    } catch ( e ) {
+      console.error('!!! Caught exception', e);
+      console.warn(e.stack);
+      respondError(e, response, true);
+    }
   }
 
   /**
