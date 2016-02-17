@@ -106,8 +106,16 @@
       if ( ev && ev.data && typeof ev.data.wid !== 'undefined' && typeof ev.data.pid !== 'undefined' ) {
         console.debug('window::message()', ev.data);
         var proc = OSjs.API.getProcess(ev.data.pid);
-        var win  = proc._getWindow(ev.data.wid, 'wid');
-        win.onPostMessage(ev.data.message, ev);
+        if ( proc ) {
+          if ( typeof proc.onPostMessage === 'function' ) {
+            proc.onPostMessage(ev.data.message, ev);
+          }
+
+          var win  = proc._getWindow(ev.data.wid, 'wid');
+          if ( win ) {
+            win.onPostMessage(ev.data.message, ev);
+          }
+        }
       }
     },
 
