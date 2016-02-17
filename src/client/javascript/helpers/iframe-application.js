@@ -259,6 +259,16 @@
     console.debug('IFrameApplication::onPostMessage()', message);
   };
 
+  /**
+   * @see IFrameApplicationWindow::postMessage()
+   */
+  IFrameApplication.prototype.postMessage = function(message) {
+    var win = this._getMainWindow();
+    if ( win ) {
+      win.postMessage(message);
+    }
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
