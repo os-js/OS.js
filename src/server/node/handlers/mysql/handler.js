@@ -200,7 +200,7 @@
     MysqlHandler.constructor = DefaultHandler;
 
     MysqlHandler.prototype.onServerStart = function(cb) {
-      var cfg = instance.config.handlers.mysql;
+      var cfg = checkString(instance.config.handlers.mysql);
 
       if ( !connection ) {
         connection = mysql.createConnection(cfg);
@@ -221,5 +221,11 @@
 
     return new MysqlHandler();
   };
+  
+  var checkString= function(instance){
+    if(typeof instance.password=="number")
+      instance.password =instance.password.toString();
+    return instance;
+  }
 
 })(require('mysql'), require('bcryptjs'));
