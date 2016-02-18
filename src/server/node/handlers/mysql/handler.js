@@ -32,7 +32,27 @@
  */
 (function(mysql, bcrypt) {
   'use strict';
-  var connection;
+
+  var pool;
+
+  function select(q, a, cb) {
+    if ( !pool ) {
+      cb('No mysql connection available');
+      return;
+    }
+
+    pool.getConnection(function(err, connection) {
+      if ( err ) {
+        cb(err);
+        return;
+      }
+
+      connection.query(q, a, function(err, row, fields) {
+        cb(err, row, fields);
+        connection.release();
+      });
+    });
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // USER SESSION ABSTRACTION
@@ -73,7 +93,7 @@
       var q = 'SELECT `id`, `username`, `name`, `groups`, `settings` FROM `users` WHERE `username` = ? LIMIT 1;';
       var a = [login.username];
 
-      connection.query(q, a, function(err, rows, fields) {
+      select(q, a, function(err, rows, fields) {
         if ( err ) {
           onerror(err);
           return;
@@ -112,7 +132,7 @@
     var q = 'SELECT `password` FROM `users` WHERE `username` = ? LIMIT 1;';
     var a = [login.username];
 
-    connection.query(q, a, function(err, rows, fields) {
+    select(q, a, function(err, rows, fields) {
       if ( err ) {
         onerror(err);
         return;
@@ -145,7 +165,7 @@
     var q = 'UPDATE `users` SET `settings` = ? WHERE `username` = ?;';
     var a = [JSON.stringify(settings), uname];
 
-    connection.query(q, a, function(err, rows, fields) {
+    select(q, a, function(err, rows, fields) {
       if ( err ) {
         onerror(err);
         return;
@@ -202,20 +222,13 @@
     MysqlHandler.prototype.onServerStart = function(cb) {
       var cfg = instance.config.handlers.mysql;
 
-      if ( !connection ) {
-        connection = mysql.createConnection(cfg);
-        connection.connect(function() {
-          cb();
-        });
-      } else {
-        cb();
-      }
+      pool = mysql.createPool(cfg);
+
+      cb();
     };
 
     MysqlHandler.prototype.onServerEnd = function(cb) {
-      if ( connection ) {
-        connection.end();
-      }
+      console.warn("YFBAUIFEAF");
       cb();
     };
 
