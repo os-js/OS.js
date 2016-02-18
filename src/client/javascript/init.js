@@ -323,14 +323,7 @@
         return;
       }
 
-      handler.boot(function(error) {
-        if ( error ) {
-          onError(error);
-          return;
-        }
-
-        callback();
-      });
+      callback();
     });
   }
 
@@ -505,21 +498,24 @@
             initVFS(config, function() {
               OSjs.API.triggerHook('onInited');
 
-              initWindowManager(config, function() {
-                OSjs.API.triggerHook('onWMInited');
+              OSjs.GUI.initDialogScheme(function() {
+                initWindowManager(config, function() {
+                  OSjs.API.triggerHook('onWMInited');
 
-                OSjs.Utils.$remove(document.getElementById('LoadingScreen'));
+                  OSjs.Utils.$remove(document.getElementById('LoadingScreen'));
 
-                initEvents();
-                var wm = OSjs.Core.getWindowManager();
-                wm._fullyLoaded = true;
+                  initEvents();
+                  var wm = OSjs.Core.getWindowManager();
+                  wm._fullyLoaded = true;
 
-                console.groupEnd();
+                  console.groupEnd();
 
-                initSession(config, function() {
-                  OSjs.API.triggerHook('onSessionLoaded');
-                });
-              }); // wm
+                  initSession(config, function() {
+                    OSjs.API.triggerHook('onSessionLoaded');
+                  });
+                }); // wm
+              });
+
             }); // vfs
           }); // settings
         }); // packages
@@ -558,6 +554,7 @@
 
     OSjs.API.blurMenu();
     OSjs.API.killAll();
+    OSjs.GUI.destroyDialogScheme();
 
     var ring = OSjs.API.getServiceNotificationIcon();
     if ( ring ) {

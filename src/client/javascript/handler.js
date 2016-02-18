@@ -62,7 +62,6 @@
 
     this._saveTimeout = null;
 
-    this.dialogs    = null;
     this.offline    = false;
     this.nw         = null;
     this.userData   = {
@@ -132,41 +131,9 @@
       });
     }
 
-    if ( this.dialogs ) {
-      this.dialogs.destroy();
-    }
-    this.dialogs = null;
     this.nw = null;
 
     _handlerInstance = null;
-  };
-
-  /**
-   * Called after the Handler is initialized
-   *
-   * @param   Function      callback        Callback function
-   *
-   * @return  void
-   *
-   * @method  _Handler::boot()
-   */
-  _Handler.prototype.boot = function(callback) {
-    var self = this;
-    console.info('Handler::boot()');
-
-    var root = API.getConfig('Connection.RootURI');
-    var url = root + 'client/dialogs.html';
-    if ( API.getConfig('Connection.Dist') === 'dist' ) {
-      url = root + 'dialogs.html';
-    }
-
-    this.dialogs = OSjs.GUI.createScheme(url);
-    this.dialogs.load(function(error) {
-      if ( error ) {
-        console.warn('Handler::boot()', 'error loading dialog schemes', error);
-      }
-      callback();
-    });
   };
 
   /**

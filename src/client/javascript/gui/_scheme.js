@@ -33,6 +33,8 @@
   window.OSjs = window.OSjs || {};
   OSjs.GUI = OSjs.GUI || {};
 
+  var dialogScheme;
+
   /////////////////////////////////////////////////////////////////////////////
   // INTERNAL HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -487,6 +489,57 @@
    */
   OSjs.GUI.createScheme = function(url) {
     return new UIScheme(url);
+  };
+
+  /**
+   * Get the Dialog scheme
+   *
+   * @return UIScheme
+   * @api OSjs.GUI.getDialogScheme()
+   */
+  OSjs.GUI.getDialogScheme = function() {
+    return dialogScheme;
+  };
+
+  /**
+   * Destroy the Dialog scheme
+   *
+   * @return void
+   * @api OSjs.GUI.destroyDialogScheme()
+   */
+  OSjs.GUI.destroyDialogScheme = function() {
+    if ( dialogScheme ) {
+      dialogScheme.destroy();
+    }
+    dialogScheme = null;
+  };
+
+  /**
+   * Initialize the Dialog scheme
+   *
+   * @param   Function    cb      Callback function
+   * @return void
+   * @api OSjs.GUI.destroyDialogScheme()
+   */
+  OSjs.GUI.initDialogScheme = function(cb) {
+    if ( dialogScheme ) {
+      cb();
+      return;
+    }
+
+    var root = API.getConfig('Connection.RootURI');
+    var url = root + 'client/dialogs.html';
+    if ( API.getConfig('Connection.Dist') === 'dist' ) {
+      url = root + 'dialogs.html';
+    }
+
+    dialogScheme = OSjs.GUI.createScheme(url);
+    dialogScheme.load(function(error) {
+      if ( error ) {
+        console.warn('OSjs.GUI.initDialogScheme()', 'error loading dialog schemes', error);
+      }
+      cb();
+    });
   };
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS);
