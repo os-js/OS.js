@@ -35,7 +35,7 @@
 
   var pool;
 
-  function select(q, a, cb) {
+  function query(q, a, cb) {
     if ( !pool ) {
       cb('No mysql connection available');
       return;
@@ -93,7 +93,7 @@
       var q = 'SELECT `id`, `username`, `name`, `groups`, `settings` FROM `users` WHERE `username` = ? LIMIT 1;';
       var a = [login.username];
 
-      select(q, a, function(err, rows, fields) {
+      query(q, a, function(err, rows, fields) {
         if ( err ) {
           onerror(err);
           return;
@@ -132,7 +132,7 @@
     var q = 'SELECT `password` FROM `users` WHERE `username` = ? LIMIT 1;';
     var a = [login.username];
 
-    select(q, a, function(err, rows, fields) {
+    query(q, a, function(err, rows, fields) {
       if ( err ) {
         onerror(err);
         return;
@@ -165,7 +165,7 @@
     var q = 'UPDATE `users` SET `settings` = ? WHERE `username` = ?;';
     var a = [JSON.stringify(settings), uname];
 
-    select(q, a, function(err, rows, fields) {
+    query(q, a, function(err, rows, fields) {
       if ( err ) {
         onerror(err);
         return;
