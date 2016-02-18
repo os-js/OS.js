@@ -165,10 +165,7 @@
       if ( error ) {
         console.warn('Handler::boot()', 'error loading dialog schemes', error);
       }
-
-      OSjs.Core.getPackageManager().load(function(presult, perror) {
-        callback(presult, perror);
-      });
+      callback();
     });
   };
 

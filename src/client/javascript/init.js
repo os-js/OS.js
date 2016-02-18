@@ -323,7 +323,7 @@
         return;
       }
 
-      handler.boot(function(result, error) {
+      handler.boot(function(error) {
         if ( error ) {
           onError(error);
           return;
@@ -410,6 +410,15 @@
   }
 
   /**
+   * Initializes the PackageManager
+   */
+  function initPackageManager(cfg, callback) {
+    OSjs.Core.getPackageManager().load(function(result, error) {
+      callback(error, result);
+    });
+  }
+
+  /**
    * Initalizes the VFS
    */
   function initVFS(config, callback) {
@@ -491,34 +500,31 @@
       OSjs.API.triggerHook('onInitialize');
 
       initHandler(config, function() {
+        initPackageManager(config, function() {
+          initSettingsManager(config, function() {
+            initVFS(config, function() {
+              OSjs.API.triggerHook('onInited');
 
-        initSettingsManager(config, function() {
+              initWindowManager(config, function() {
+                OSjs.API.triggerHook('onWMInited');
 
-          initVFS(config, function() {
-            OSjs.API.triggerHook('onInited');
+                OSjs.Utils.$remove(document.getElementById('LoadingScreen'));
 
-            initWindowManager(config, function() {
-              OSjs.API.triggerHook('onWMInited');
+                initEvents();
+                var wm = OSjs.Core.getWindowManager();
+                wm._fullyLoaded = true;
 
-              OSjs.Utils.$remove(document.getElementById('LoadingScreen'));
+                console.groupEnd();
 
-              initEvents();
-              var wm = OSjs.Core.getWindowManager();
-              wm._fullyLoaded = true;
-
-              console.groupEnd();
-
-              initSession(config, function() {
-                OSjs.API.triggerHook('onSessionLoaded');
-              });
-            }); // wm
-          }); // vfs
-
-        }); // settings
-
-      }); // preload
-
-    }); // handler
+                initSession(config, function() {
+                  OSjs.API.triggerHook('onSessionLoaded');
+                });
+              }); // wm
+            }); // vfs
+          }); // settings
+        }); // packages
+      }); // handler
+    }); // preload
   }
 
   /////////////////////////////////////////////////////////////////////////////
