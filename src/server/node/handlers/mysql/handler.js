@@ -228,7 +228,6 @@
     };
 
     MysqlHandler.prototype.onServerEnd = function(cb) {
-      console.warn("YFBAUIFEAF");
       cb();
     };
 
