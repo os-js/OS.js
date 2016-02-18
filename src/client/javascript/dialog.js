@@ -30,8 +30,6 @@
 (function(Utils, API, Window) {
   'use strict';
 
-  var dialogScheme;
-
   window.OSjs = window.OSjs || {};
   OSjs.Core   = OSjs.Core   || {};
 
@@ -77,7 +75,7 @@
       this.scheme = args.scheme;
       delete args.scheme;
     } else {
-      this.scheme = OSjs.GUI.getDialogScheme();
+      this.scheme = OSjs.GUI.DialogScheme.get();
     }
 
     this.args = args;

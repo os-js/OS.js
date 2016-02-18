@@ -498,7 +498,7 @@
             initVFS(config, function() {
               OSjs.API.triggerHook('onInited');
 
-              OSjs.GUI.initDialogScheme(function() {
+              OSjs.GUI.DialogScheme.init(function() {
                 initWindowManager(config, function() {
                   OSjs.API.triggerHook('onWMInited');
 
@@ -554,7 +554,7 @@
 
     OSjs.API.blurMenu();
     OSjs.API.killAll();
-    OSjs.GUI.destroyDialogScheme();
+    OSjs.GUI.DialogScheme.destroy();
 
     var ring = OSjs.API.getServiceNotificationIcon();
     if ( ring ) {
