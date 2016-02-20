@@ -57,14 +57,14 @@ class MysqlAPIHandler
 
     unset($_SESSION['user']);
 
-    $q = "SELECT `id`, `username`, `name`, `groups`, `settings` FROM `users` WHERE `username` = ? AND `password` = ? LIMIT 1;";
-    $a = Array($arguments['username'], $arguments['password']);
+    $q = "SELECT `id`, `username`, `password`, `name`, `groups`, `settings` FROM `users` WHERE `username` = ? LIMIT 1;";
+    $a = Array($arguments['username']);
 
     $response = false;
     if ( $stmt = $db->prepare($q) ) {
       $stmt->setFetchMode(PDO::FETCH_ASSOC);
       if ( $stmt->execute($a) ) {
-        if ( $row = $stmt->fetch() ) {
+        if ( ($row = $stmt->fetch()) && password_verify($arguments['password'], str_replace('$2y$', '$2a$', $row['password'])) ) {
           $response = Array(
             "userData" => Array(
               "id"        => (int) $row['id'],
