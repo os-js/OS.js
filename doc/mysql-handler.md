@@ -41,15 +41,15 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 ```
 
--- Create administration user
+-- Create administration user {username : admin , password : admin}
 
 INSERT INTO `users` (`username`, `password`, `name`, `groups`)
-VALUES ('admin', 'admin', 'Administrator', '["admin"]');
+VALUES ('admin', '$2y$10$No35SQZ6AnOVaxfHm9vut.9BqzqFy4lwxxlOmvuF4CIh7wCQ1QcYK', 'Administrator', '["admin"]');
 
--- Create normal user with all groups
+-- Create normal user with all groups {username : user , password : user}
 
 INSERT INTO `users` (`username`, `password`, `name`, `groups`)
-VALUES ('user', 'user', 'Normal User', '["api","application","vfs","upload","curl"]');
+VALUES ('user', '$2y$10$zbsaDuXt33X31PePp7H/Xen1jR3tvaC8t.JGxJldxW535eK9TRkV6', 'Normal User', '["api","application","vfs","upload","curl"]');
 
 ```
 
