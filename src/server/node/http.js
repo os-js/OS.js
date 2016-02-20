@@ -108,8 +108,8 @@
   /**
    * Respond with JSON data
    */
-  function respondJSON(data, response, headers) {
-    respond(JSON.stringify(data), 'application/json', response, headers || [], 200);
+  function respondJSON(data, response, headers, code) {
+    respond(JSON.stringify(data), 'application/json', response, headers || [], code || 200);
   }
 
   /**
@@ -118,7 +118,7 @@
   function respondError(message, response, json) {
     if ( json ) {
       message = 'Internal Server Error (HTTP 500): ' + message.toString();
-      respondJSON({result: null, error: message}, response);
+      respondJSON({result: null, error: message}, response, [], 500);
     } else {
       respond(message.toString(), 'text/plain', response, [], 500);
     }
