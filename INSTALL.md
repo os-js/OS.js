@@ -13,10 +13,10 @@ I have also made a [simplified installation guide](http://os.js.org/doc/manuals/
 * [Dependencies](#dependencies)
 * Installation methods
   1. Automated
-    * [NIX](#automated)
+    * [*NIX](#automated)
     * [Windows](#automated-1)
   2. Manual
-    * [NIX](#manual)
+    * [*NIX](#manual)
     * [Windows](#manual-1)
   3. Containers and Virtual Machines
     * [Vagrant](#vagrant)
@@ -44,7 +44,7 @@ To easily apply updates and other changes, I recommend using **git** to download
 
 If you install npm packages without `--production` parameter, you need to install mocha `sudo npm install -g mocha`
 
-## NIX
+## *NIX
 
 ### Automated
 
