@@ -221,8 +221,17 @@
 
     MysqlHandler.prototype.onServerStart = function(cb) {
       var cfg = instance.config.handlers.mysql;
+      var ccfg = {};
 
-      pool = mysql.createPool(cfg);
+      Object.keys(cfg).forEach(function(c) {
+        if ( typeof cfg[c] === 'object' ) {
+          ccfg[c] = cfg[c];
+        } else {
+          ccfg[c] = String(cfg[c]);
+        }
+      });
+
+      pool = mysql.createPool(ccfg);
 
       cb();
     };
