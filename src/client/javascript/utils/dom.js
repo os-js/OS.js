@@ -508,6 +508,8 @@
           holdTimeout = setTimeout(function() {
             if ( !isDone ) {
               isDone = true;
+              ev.stopPropagation();
+              ev.preventDefault();
               callback.call(el, ev, pos(ev, true), true);
             }
           }, 450);
