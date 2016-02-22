@@ -226,26 +226,28 @@
         mel.insertBefore(span, mel.firstChild);
 
         var submenu = mel.querySelector('gui-menu');
-        Utils.$bind(mel, 'click', function(ev) {
+        Utils.$bind(mel, 'click', function(ev, pos, wasTouch) {
           blurMenu();
 
-          if ( submenu ) {
-            lastMenu = function() {
-              Utils.$removeClass(mel, 'gui-active');
-            };
-          }
-
-          if ( Utils.$hasClass(mel, 'gui-active') ) {
+          setTimeout(function() {
             if ( submenu ) {
-              Utils.$removeClass(mel, 'gui-active');
-            }
-          } else {
-            if ( submenu ) {
-              Utils.$addClass(mel, 'gui-active');
+              lastMenu = function() {
+                Utils.$removeClass(mel, 'gui-active');
+              };
             }
 
-            mel.dispatchEvent(new CustomEvent('_select', {detail: {index: idx, id: id}}));
-          }
+            if ( Utils.$hasClass(mel, 'gui-active') ) {
+              if ( submenu ) {
+                Utils.$removeClass(mel, 'gui-active');
+              }
+            } else {
+              if ( submenu ) {
+                Utils.$addClass(mel, 'gui-active');
+              }
+
+              mel.dispatchEvent(new CustomEvent('_select', {detail: {index: idx, id: id}}));
+            }
+          }, wasTouch ? 0 : 200); // NOTE: This is a fix for touch devices
         }, false);
 
       });

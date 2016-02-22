@@ -503,7 +503,7 @@
 
           holdTimeout = setTimeout(function() {
             whenFinished = false;
-          }, 200);
+          }, 300);
         } else if ( evName === 'contextmenu' ) {
           holdTimeout = setTimeout(function() {
             if ( !isDone ) {
