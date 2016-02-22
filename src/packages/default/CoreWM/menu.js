@@ -191,23 +191,6 @@
   function doShowMenu(ev) {
     var wm = OSjs.Core.getWindowManager();
 
-    function isTouchDevice() {
-      if ( 'ontouchstart' in document.documentElement ) {
-        return true;
-      }
-      try {
-        if ( document.createEvent('TouchEvent') ) {
-          return true;
-        }
-      } catch ( e ) {}
-
-      var el = document.createElement('div');
-      el.setAttribute('ongesturestart', 'return;'); // or try 'ontouchstart'
-      return typeof el.ongesturestart === 'function';
-    }
-
-    //if ( isTouchDevice() || (wm && wm.getSetting('useTouchMenu') === true) ) {
-    //FIXME
     if ( (wm && wm.getSetting('useTouchMenu') === true) ) {
       var inst = new ApplicationMenu();
       var pos = {x: ev.clientX, y: ev.clientY};
