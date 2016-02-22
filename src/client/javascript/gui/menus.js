@@ -228,7 +228,6 @@
         var submenu = mel.querySelector('gui-menu');
         Utils.$bind(mel, 'click', function(ev, pos, wasTouch) {
           blurMenu();
-
           setTimeout(function() {
             if ( submenu ) {
               lastMenu = function() {
@@ -247,7 +246,7 @@
 
               mel.dispatchEvent(new CustomEvent('_select', {detail: {index: idx, id: id}}));
             }
-          }, wasTouch ? 0 : 200); // NOTE: This is a fix for touch devices
+          }, wasTouch ? 200 : 0); // NOTE: This is a fix for touch devices
         }, false);
 
       });
