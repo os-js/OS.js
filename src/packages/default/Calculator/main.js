@@ -203,6 +203,15 @@
       if ( !String(output).length ) {
         output = String(0);
       }
+
+      if ( output === 'NaN' || isNaN(output) ) {
+        Utils.$addClass(this._$element, 'NaN');
+
+        setTimeout(function() {
+          Utils.$removeClass(self._$element, 'NaN');
+        }, 3000);
+      }
+
       this._scheme.find(this, 'Output').set('value', String(output));
     }
   };
