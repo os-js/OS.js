@@ -124,11 +124,6 @@ corewm-panel .PanelItemNotificationArea > div.BusyNotification > div:after {
     -moz-transform: rotate( 360deg );
   }
 }
-@-ms-keyframes NotificationSpinAnim {
-  to {
-    -ms-transform: rotate( 360deg );
-  }
-}
 @keyframes NotificationSpinAnim {
   to {
     transform: rotate( 360deg );
