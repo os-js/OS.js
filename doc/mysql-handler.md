@@ -1,8 +1,8 @@
 With the *mysql* handler you can enable a login prompt for OS.js.
 
-**This assumes you have a server running with mysql already and that you have some knowledge about setting up tables and making connections etc**
+**This assumes you have a server running with mysql already and and that you know how to use the CLI utilities.**
 
-## Setup
+## Setup OS.js
 
 ```
 # Install node dependency
@@ -23,23 +23,35 @@ $ grunt config
 
 ```
 
-### Mysql Database table
+## Setup Mysql
 
-Create this table:
+Create a database and user in your mysql server with the information you entered above:
 
 ```
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `groups` text,
-  `settings` text,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+
+# Log on to mysql server with an administrator account (in this case 'root')
+$ mysql -u root -p
+
+# Create the new database
+mysql> CREATE DATABASE 'osjs';
+
+# Create the new user
+mysql> GRANT USAGE ON *.* TO osjsuser@localhost IDENTIFIED BY 'osjspassword';
+
+# Grant access to the user on created database
+mysql> GRANT ALL PRIVILEGES ON osjs.* TO osjsuser@localhost;
+
 ```
 
-### Create user(s)
+Then import the required table:
+
+```
+
+$ mysql -u osjsuser -p osjs < doc/mysql-handler.sql
+
+```
+
+## Create user(s)
 
 Use the utility that comes with OS.js. You will be prompted for a password when managing the users:
 
