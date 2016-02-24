@@ -167,10 +167,10 @@ application-window[data-minimized="true"] {
 /* Desktop */
 body[data-attention="true"]:after {
   position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
+  top : 0;
+  left : 0;
+  right : 0;
+  bottom : 0;
   opacity : 0;
 
   -webkit-animation: pulseback 2s linear infinite;
