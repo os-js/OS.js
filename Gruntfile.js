@@ -88,8 +88,7 @@
           'src/packages/default/**/*.js',
           '!src/packages/default/Broadway/**',
           '!src/packages/default/**/locales.js',
-          '!src/packages/default/**/locale.js',
-          '!src/packages/default/Calculator/main.js'
+          '!src/packages/default/**/locale.js'
         ]
       },
       csslint: {
@@ -169,8 +168,7 @@
           'src/client/javascript/*.js',
           'src/client/javascript/**/*.js',
           'src/packages/default/**/*.js',
-          '!src/packages/default/Broadway/**',
-          '!src/packages/default/Calculator/main.js'
+          '!src/packages/default/Broadway/**'
         ],
         options: {
           config: '.jscsrc',
