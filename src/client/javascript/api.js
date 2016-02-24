@@ -438,6 +438,42 @@
   }
 
   /**
+   * Restarts all processes with the given name
+   *
+   * If you have multiple instances of the process
+   *
+   * @param   String      n               Application Name
+   *
+   * @return  void
+   * @api     OSjs.API.relaunch()
+   */
+  function doReLaunchProcess(n) {
+    function relaunch(p) {
+      var data = null;
+      var args = {};
+      if ( p instanceof OSjs.Core.Application ) {
+        data = p._getSessionData();
+      }
+
+      try {
+        p.destroy(true); // kill
+      } catch ( e ) {
+        console.warn('OSjs.API.relaunch()', e.stack, e);
+      }
+
+      if ( data !== null ) {
+        args = data.args;
+        args.__resume__ = true;
+        args.__windows__ = data.windows || [];
+      }
+
+      OSjs.API.launch(n, args);
+    }
+
+    OSjs.API.getProcess(n).forEach(relaunch);
+  }
+
+  /**
    * Launch a Process
    *
    * @param   String      n               Application Name
@@ -1606,6 +1642,7 @@
   OSjs.API.open                   = doLaunchFile;
   OSjs.API.launch                 = doLaunchProcess;
   OSjs.API.launchList             = doLaunchProcessList;
+  OSjs.API.relaunch               = doReLaunchProcess;
 
   OSjs.API.getApplicationResource = doGetApplicationResource;
   OSjs.API.getThemeCSS            = doGetThemeCSS;

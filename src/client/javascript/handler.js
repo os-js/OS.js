@@ -192,38 +192,14 @@
     }
 
     function saveSession(cb) {
-      function getSession() {
-        var procs = API.getProcesses();
-
-        function getSessionSaveData(app) {
-          var args = app.__args;
-          var wins = app.__windows;
-          var data = {name: app.__pname, args: args, windows: []};
-
-          wins.forEach(function(win, i) {
-            if ( win && win._properties.allow_session ) {
-              data.windows.push({
-                name      : win._name,
-                dimension : win._dimension,
-                position  : win._position,
-                state     : win._state
-              });
-            }
-          });
-
-          return data;
+      var data = [];
+      API.getProcesses().forEach(function(proc, i) {
+        if ( proc && (proc instanceof OSjs.Core.Application) ) {
+          data.push(proc._getSessionData());
         }
+      });
 
-        var data = [];
-        procs.forEach(function(proc, i) {
-          if ( proc && (proc instanceof OSjs.Core.Application) ) {
-            data.push(getSessionSaveData(proc));
-          }
-        });
-        return data;
-      }
-
-      OSjs.Core.getSettingsManager().set('UserSession', null, getSession(), cb);
+      OSjs.Core.getSettingsManager().set('UserSession', null, data, cb);
     }
 
     var wm = OSjs.Core.getWindowManager();
@@ -276,7 +252,7 @@
    *
    * @return  void
    *
-   * @method  _Handler::loadSession()
+   * @method  _Handler::saveSettings()
    */
   _Handler.prototype.saveSettings = function(pool, storage, callback) {
     var self = this;

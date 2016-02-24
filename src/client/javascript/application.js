@@ -357,6 +357,32 @@
   };
 
   /**
+   * Get the current application session data
+   *
+   * @return  Object    the current session data
+   *
+   * @method  Application::_getSessionData()
+   */
+  Application.prototype._getSessionData = function() {
+    var args = this.__args;
+    var wins = this.__windows;
+    var data = {name: this.__pname, args: args, windows: []};
+
+    wins.forEach(function(win, i) {
+      if ( win && win._properties.allow_session ) {
+        data.windows.push({
+          name      : win._name,
+          dimension : win._dimension,
+          position  : win._position,
+          state     : win._state
+        });
+      }
+    });
+
+    return data;
+  };
+
+  /**
    * Set a setting
    *
    * @param   String    k             Key
