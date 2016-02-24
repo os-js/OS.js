@@ -1,5 +1,7 @@
 With the *mysql* handler you can enable a login prompt for OS.js.
 
+**This assumes you have a server running with mysql already and that you have some knowledge about setting up tables and making connections etc**
+
 ## Setup
 
 ```
@@ -37,25 +39,18 @@ CREATE TABLE IF NOT EXISTS `users` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 ```
 
-### Create users in database
+### Create user(s)
+
+Use the utility that comes with OS.js. You will be prompted for a password when managing the users:
 
 ```
 
--- Create administration user {username : admin , password : admin}
+# Add normal user
+node bin/mysql-user.js add anders api,application,fs,upload,curl
+mkdir vfs/home/anders
 
-INSERT INTO `users` (`username`, `password`, `name`, `groups`)
-VALUES ('admin', '$2y$10$No35SQZ6AnOVaxfHm9vut.9BqzqFy4lwxxlOmvuF4CIh7wCQ1QcYK', 'Administrator', '["admin"]');
+# Add administrator user
+node bin/mysql-user.js add myadminaccount admin
+mkdir vfs/home/myadminaccount
 
--- Create normal user with all groups {username : user , password : user}
-
-INSERT INTO `users` (`username`, `password`, `name`, `groups`)
-VALUES ('user', '$2y$10$zbsaDuXt33X31PePp7H/Xen1jR3tvaC8t.JGxJldxW535eK9TRkV6', 'Normal User', '["api","application","vfs","upload","curl"]');
-
-```
-
-### Create users in VFS area
-
-```
-mkdir vfs/home/admin
-mkdir vfs/home/user
 ```
