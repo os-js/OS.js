@@ -440,6 +440,8 @@
   /**
    * Restarts all processes with the given name
    *
+   * This also reloads any metadata preload items defined in the application.
+   *
    * @param   String      n               Application Name
    *
    * @return  void
@@ -464,6 +466,8 @@
         args.__resume__ = true;
         args.__windows__ = data.windows || [];
       }
+
+      args.__preload__ = {force: true};
 
       OSjs.API.launch(n, args);
     }
@@ -494,6 +498,7 @@
     console.group('doLaunchProcess()', n, arg);
 
     var splash = null;
+    var pargs = {};
     var handler = OSjs.Core.getHandler();
     var packman = OSjs.Core.getPackageManager();
     var compability = OSjs.Utils.getCompability();
@@ -681,21 +686,17 @@
         return false;
       }
 
+      if ( arg.__preload__ ) {
+        pargs = arg.__preload__;
+        delete arg.__preload__;
+      }
+
       // Preload
       if ( !OSjs.Applications[n] ) {
         splash = createLaunchSplash(data, n);
       }
-      createLoading(n, {className: 'StartupNotification', tooltip: 'Starting ' + n});
 
-      /*
-      if ( window.location.href.match(/^file\:\/\//) ) {
-        data.preload.forEach(function(file, idx) {
-          if ( file.src && file.src.match(/^\//) ) {
-            file.src = file.src.replace(/^\//, '');
-          }
-        });
-      }
-      */
+      createLoading(n, {className: 'StartupNotification', tooltip: 'Starting ' + n});
 
       OSjs.Utils.preload(data.preload, function(total, failed) {
         destroyLoading(n);
@@ -712,7 +713,7 @@
         if ( splash ) {
           splash.update(progress, count);
         }
-      });
+      }, pargs);
 
       return true;
     }

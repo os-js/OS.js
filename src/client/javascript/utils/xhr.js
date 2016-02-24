@@ -316,8 +316,9 @@
       });
     }
 
-    return function(list, callback, callbackProgress) {
+    return function(list, callback, callbackProgress, args) {
       list = (list || []).slice();
+      args = args || {};
 
       var successes  = [];
       var failed     = [];
@@ -347,7 +348,7 @@
 
         var item = list[index];
         if ( item ) {
-          if ( (item.force !== true) && _LOADED[item.src] === true ) {
+          if ( _LOADED[item.src] === true && (item.force !== true && args.force !== true) ) {
             _loaded(true);
             return;
           }
