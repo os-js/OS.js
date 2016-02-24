@@ -440,8 +440,6 @@
   /**
    * Restarts all processes with the given name
    *
-   * If you have multiple instances of the process
-   *
    * @param   String      n               Application Name
    *
    * @return  void
