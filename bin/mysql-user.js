@@ -29,6 +29,8 @@
  * @licence Simplified BSD License
  */
 (function(bcrypt, mysql, fs, path, util) {
+  'use strict';
+
   var ROOT = path.join(__dirname, '/../');
   var args = process.argv;
   var pool;
