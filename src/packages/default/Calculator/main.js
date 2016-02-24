@@ -70,7 +70,7 @@
     ['7',  '8',    '9',    'minus'],
     ['4',  '5',    '6',    'multiply'],
     ['1',  '2',    '3',    'divide'],
-    ['0',  'swap', 'dec',  'equal']
+    ['0',  'dec',  'equal']
   ];
 
   /////////////////////////////////////////////////////////////////////////////
@@ -124,10 +124,15 @@
       var op = buttons[r][c];
 
       el = scheme.get(el);
-      el.set('value', labels[op]);
-      el.on('click', function() {
-        self.operation(op);
-      });
+      el.set('value', labels[op] || '');
+      if ( op === null ) {
+        Utils.$addClass(el.$element, 'noop');
+        el.set('disabled', true);
+      } else {
+        el.on('click', function() {
+          self.operation(op);
+        });
+      }
     });
 
     return root;
