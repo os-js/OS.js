@@ -2,9 +2,6 @@
 /*!
  * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Mysql Handler: Login screen and session/settings handling via database
- * PLEASE NOTE THAT THIS AN EXAMPLE ONLY, AND SHOUD BE MODIFIED BEFORE USAGE
- *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
