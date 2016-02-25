@@ -465,7 +465,7 @@
     function session() {
       handler.loadSession(function() {
         setTimeout(function() {
-          events.resize(true);
+          events.resize(null, true);
         }, 500);
 
         callback();
