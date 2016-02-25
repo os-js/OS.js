@@ -323,18 +323,6 @@
       }
     }
 
-    function _initInitialState() {
-      if ( !self._restored ) {
-        if ( self._state.maximized ) {
-          self._state.maximized = false;
-          self._maximize();
-        } else if ( self._state.minimized ) {
-          self._state.minimized = false;
-          self._minimize();
-        }
-      }
-    }
-
     function _initDimension() {
       if ( self._properties.min_height && (self._dimension.h < self._properties.min_height) ) {
         self._dimension.h = self._properties.min_height;
@@ -589,8 +577,6 @@
     this._toggleLoading(false);
     this._toggleDisabled(false);
 
-    _initInitialState();
-
     if ( this._sound ) {
       API.playSound(this._sound, this._soundVolume);
     }
@@ -602,6 +588,15 @@
 
   Window.prototype._inited = function() {
     this._loaded = true;
+
+    if ( !this._restored ) {
+      if ( this._state.maximized ) {
+        this._maximize(true);
+      } else if ( this._state.minimized ) {
+        this._minimize(true);
+      }
+    }
+
     console.debug('OSjs::Core::Window::_inited()', this._name);
   };
 
@@ -908,13 +903,13 @@
    *
    * @method    Window::_minimize()
    */
-  Window.prototype._minimize = function() {
+  Window.prototype._minimize = function(force) {
     var self = this;
     if ( !this._properties.allow_minimize || this._destroyed  ) {
       return false;
     }
 
-    if ( this._state.minimized ) {
+    if ( !force && this._state.minimized ) {
       this._restore(false, true);
       return true;
     }
@@ -949,14 +944,14 @@
    *
    * @method    Window::_maximize()
    */
-  Window.prototype._maximize = function() {
+  Window.prototype._maximize = function(force) {
     var self = this;
 
     if ( !this._properties.allow_maximize || this._destroyed || !this._$element  ) {
       return false;
     }
 
-    if ( this._state.maximized ) {
+    if ( !force && this._state.maximized ) {
       this._restore(true, false);
       return true;
     }
