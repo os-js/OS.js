@@ -106,8 +106,16 @@
       if ( ev && ev.data && typeof ev.data.wid !== 'undefined' && typeof ev.data.pid !== 'undefined' ) {
         console.debug('window::message()', ev.data);
         var proc = OSjs.API.getProcess(ev.data.pid);
-        var win  = proc._getWindow(ev.data.wid, 'wid');
-        win.onPostMessage(ev.data.message, ev);
+        if ( proc ) {
+          if ( typeof proc.onPostMessage === 'function' ) {
+            proc.onPostMessage(ev.data.message, ev);
+          }
+
+          var win  = proc._getWindow(ev.data.wid, 'wid');
+          if ( win ) {
+            win.onPostMessage(ev.data.message, ev);
+          }
+        }
       }
     },
 
@@ -315,14 +323,7 @@
         return;
       }
 
-      handler.boot(function(result, error) {
-        if ( error ) {
-          onError(error);
-          return;
-        }
-
-        callback();
-      });
+      callback();
     });
   }
 
@@ -399,6 +400,15 @@
     });
 
     callback();
+  }
+
+  /**
+   * Initializes the PackageManager
+   */
+  function initPackageManager(cfg, callback) {
+    OSjs.Core.getPackageManager().load(function(result, error) {
+      callback(error, result);
+    });
   }
 
   /**
@@ -483,34 +493,34 @@
       OSjs.API.triggerHook('onInitialize');
 
       initHandler(config, function() {
+        initPackageManager(config, function() {
+          initSettingsManager(config, function() {
+            initVFS(config, function() {
+              OSjs.API.triggerHook('onInited');
 
-        initSettingsManager(config, function() {
+              OSjs.GUI.DialogScheme.init(function() {
+                initWindowManager(config, function() {
+                  OSjs.API.triggerHook('onWMInited');
 
-          initVFS(config, function() {
-            OSjs.API.triggerHook('onInited');
+                  OSjs.Utils.$remove(document.getElementById('LoadingScreen'));
 
-            initWindowManager(config, function() {
-              OSjs.API.triggerHook('onWMInited');
+                  initEvents();
+                  var wm = OSjs.Core.getWindowManager();
+                  wm._fullyLoaded = true;
 
-              OSjs.Utils.$remove(document.getElementById('LoadingScreen'));
+                  console.groupEnd();
 
-              initEvents();
-              var wm = OSjs.Core.getWindowManager();
-              wm._fullyLoaded = true;
-
-              console.groupEnd();
-
-              initSession(config, function() {
-                OSjs.API.triggerHook('onSessionLoaded');
+                  initSession(config, function() {
+                    OSjs.API.triggerHook('onSessionLoaded');
+                  });
+                }); // wm
               });
-            }); // wm
-          }); // vfs
 
-        }); // settings
-
-      }); // preload
-
-    }); // handler
+            }); // vfs
+          }); // settings
+        }); // packages
+      }); // handler
+    }); // preload
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -544,6 +554,7 @@
 
     OSjs.API.blurMenu();
     OSjs.API.killAll();
+    OSjs.GUI.DialogScheme.destroy();
 
     var ring = OSjs.API.getServiceNotificationIcon();
     if ( ring ) {

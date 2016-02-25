@@ -30,6 +30,8 @@
 (function(CoreWM, Panel, PanelItem, Utils, API, VFS) {
   'use strict';
 
+  // FIXME: This item does not cache Event collections
+
   /////////////////////////////////////////////////////////////////////////////
   // ITEM
   /////////////////////////////////////////////////////////////////////////////
@@ -63,14 +65,14 @@
       this.$container.title = this.opts.tooltip;
     }
 
-    this.$container.addEventListener('click', function(ev) {
+    Utils.$bind(this.$container, 'click', function(ev) {
       ev.stopPropagation();
       ev.preventDefault();
       OSjs.API.blurMenu();
       self.onClick.apply(self, arguments);
       return false;
     });
-    this.$container.addEventListener('contextmenu', function(ev) {
+    Utils.$bind(this.$container, 'contextmenu', function(ev) {
       ev.stopPropagation();
       ev.preventDefault();
       OSjs.API.blurMenu();

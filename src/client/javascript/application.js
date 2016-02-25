@@ -298,9 +298,11 @@
   /**
    * Get a Window by Name
    *
+   * @param String  name      Window Name
+   *
    * @see Application::_getWindow()
    *
-   * @method Application::_getWindowsByName()
+   * @method Application::_getWindowByName()
    */
   Application.prototype._getWindowByName = function(name) {
     return this._getWindow(name);
@@ -308,6 +310,8 @@
 
   /**
    * Get Windows(!) by Tag
+   *
+   * @param String  tag       Tag name
    *
    * @see Application::_getWindow()
    * @return Array
@@ -342,12 +346,40 @@
   /**
    * Get the sessions JSON
    *
+   * @param   String    k       The settings key
+   *
    * @return  Object    the current settings
    *
    * @method  Application::_getSettings()
    */
   Application.prototype._getSetting = function(k) {
     return this.__settings.get(k);
+  };
+
+  /**
+   * Get the current application session data
+   *
+   * @return  Object    the current session data
+   *
+   * @method  Application::_getSessionData()
+   */
+  Application.prototype._getSessionData = function() {
+    var args = this.__args;
+    var wins = this.__windows;
+    var data = {name: this.__pname, args: args, windows: []};
+
+    wins.forEach(function(win, i) {
+      if ( win && win._properties.allow_session ) {
+        data.windows.push({
+          name      : win._name,
+          dimension : win._dimension,
+          position  : win._position,
+          state     : win._state
+        });
+      }
+    });
+
+    return data;
   };
 
   /**

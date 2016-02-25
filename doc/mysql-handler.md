@@ -1,13 +1,19 @@
 With the *mysql* handler you can enable a login prompt for OS.js.
 
-## Setup
+**This assumes you have a server running with mysql already and and that you know how to use the CLI utilities.**
+
+## Setup OS.js
 
 ```
 # Install node dependency
-$ npm install node-mysql brypt
+$ npm install mysql bcryptjs
 
 # Change `handler` to `mysql`.
 $ grunt config:set:handler:mysql
+$ grunt config:set:server.handlers.mysql.host:localhost
+$ grunt config:set:server.handlers.mysql.user:osjsuser
+$ grunt config:set:server.handlers.mysql.password:osjspassword
+$ grunt config:set:server.handlers.mysql.database:osjs
 
 # Update configurations
 $ grunt config
@@ -17,49 +23,46 @@ $ grunt config
 
 ```
 
-### Configure
+## Setup Mysql
 
-Then set up the configuration in these files (you only need to edit the one you use):
-
-- `src/server/php/handlers/mysql/handler.php`
-- `src/server/node/handlers/mysql/handler.js`
-
-
-### Mysql Database table
-
-Create this table:
-
-```
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `groups` text,
-  `settings` text,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
-```
-
-### Create users in database
+Create a database and user in your mysql server with the information you entered above:
 
 ```
 
--- Create administration user
+# Log on to mysql server with an administrator account (in this case 'root')
+$ mysql -u root -p
 
-INSERT INTO `users` (`username`, `password`, `name`, `groups`)
-VALUES ('admin', 'admin', 'Administrator', '["admin"]');
+# Create the new database
+mysql> CREATE DATABASE 'osjs';
 
--- Create normal user with all groups
+# Create the new user
+mysql> GRANT USAGE ON *.* TO osjsuser@localhost IDENTIFIED BY 'osjspassword';
 
-INSERT INTO `users` (`username`, `password`, `name`, `groups`)
-VALUES ('user', 'user', 'Normal User', '["api","application","vfs","upload","curl"]');
+# Grant access to the user on created database
+mysql> GRANT ALL PRIVILEGES ON osjs.* TO osjsuser@localhost;
+
+```
+
+Then import the required table:
 
 ```
 
-### Create users in VFS area
+$ mysql -u osjsuser -p osjs < doc/mysql-handler.sql
 
 ```
-mkdir vfs/home/admin
-mkdir vfs/home/user
+
+## Create user(s)
+
+Use the utility that comes with OS.js. You will be prompted for a password when managing the users:
+
+```
+
+# Add normal user
+node bin/mysql-user.js add anders api,application,fs,upload,curl
+mkdir vfs/home/anders
+
+# Add administrator user
+node bin/mysql-user.js add myadminaccount admin
+mkdir vfs/home/myadminaccount
+
 ```

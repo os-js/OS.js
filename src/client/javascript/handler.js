@@ -62,7 +62,6 @@
 
     this._saveTimeout = null;
 
-    this.dialogs    = null;
     this.offline    = false;
     this.nw         = null;
     this.userData   = {
@@ -132,44 +131,9 @@
       });
     }
 
-    if ( this.dialogs ) {
-      this.dialogs.destroy();
-    }
-    this.dialogs = null;
     this.nw = null;
 
     _handlerInstance = null;
-  };
-
-  /**
-   * Called after the Handler is initialized
-   *
-   * @param   Function      callback        Callback function
-   *
-   * @return  void
-   *
-   * @method  _Handler::boot()
-   */
-  _Handler.prototype.boot = function(callback) {
-    var self = this;
-    console.info('Handler::boot()');
-
-    var root = API.getConfig('Connection.RootURI');
-    var url = root + 'client/dialogs.html';
-    if ( API.getConfig('Connection.Dist') === 'dist' ) {
-      url = root + 'dialogs.html';
-    }
-
-    this.dialogs = OSjs.GUI.createScheme(url);
-    this.dialogs.load(function(error) {
-      if ( error ) {
-        console.warn('Handler::boot()', 'error loading dialog schemes', error);
-      }
-
-      OSjs.Core.getPackageManager().load(function(presult, perror) {
-        callback(presult, perror);
-      });
-    });
   };
 
   /**
@@ -228,38 +192,14 @@
     }
 
     function saveSession(cb) {
-      function getSession() {
-        var procs = API.getProcesses();
-
-        function getSessionSaveData(app) {
-          var args = app.__args;
-          var wins = app.__windows;
-          var data = {name: app.__pname, args: args, windows: []};
-
-          wins.forEach(function(win, i) {
-            if ( win && win._properties.allow_session ) {
-              data.windows.push({
-                name      : win._name,
-                dimension : win._dimension,
-                position  : win._position,
-                state     : win._state
-              });
-            }
-          });
-
-          return data;
+      var data = [];
+      API.getProcesses().forEach(function(proc, i) {
+        if ( proc && (proc instanceof OSjs.Core.Application) ) {
+          data.push(proc._getSessionData());
         }
+      });
 
-        var data = [];
-        procs.forEach(function(proc, i) {
-          if ( proc && (proc instanceof OSjs.Core.Application) ) {
-            data.push(getSessionSaveData(proc));
-          }
-        });
-        return data;
-      }
-
-      OSjs.Core.getSettingsManager().set('UserSession', null, getSession(), cb);
+      OSjs.Core.getSettingsManager().set('UserSession', null, data, cb);
     }
 
     var wm = OSjs.Core.getWindowManager();
@@ -312,7 +252,7 @@
    *
    * @return  void
    *
-   * @method  _Handler::loadSession()
+   * @method  _Handler::saveSettings()
    */
   _Handler.prototype.saveSettings = function(pool, storage, callback) {
     var self = this;
@@ -582,22 +522,22 @@
   /**
    * Called when login() is finished
    *
-   * @param   Object    userData      JSON User Data
-   * @param   Object    userSettings  JSON User Settings
+   * @param   Object    data          JSON Data from login action (userData, userSettings, etc)
    * @param   Function  callback      Callback function
    *
    * @return  void
    *
    * @method  _Handler::onLogin()
    */
-  _Handler.prototype.onLogin = function(userData, userSettings, callback) {
+  _Handler.prototype.onLogin = function(data, callback) {
     callback = callback || function() {};
 
+    var userSettings = data.userSettings;
     if ( !userSettings || userSettings instanceof Array ) {
       userSettings = {};
     }
 
-    this.userData = userData;
+    this.userData = data.userData;
 
     // Ensure we get the user-selected locale configured from WM
     function getUserLocale() {
@@ -615,6 +555,11 @@
 
     API.setLocale(getUserLocale());
     OSjs.Core.getSettingsManager().init(userSettings);
+
+    if ( data.blacklistedPackages ) {
+      OSjs.Core.getPackageManager().setBlacklist(data.blacklistedPackages);
+    }
+
     callback();
   };
 
@@ -718,7 +663,7 @@
         console.debug('OSjs::Handlers::init()', 'login response', result);
         container.parentNode.removeChild(container);
 
-        self.onLogin(result.userData, result.userSettings, function() {
+        self.onLogin(result, function() {
           callback();
         });
       });

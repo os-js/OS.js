@@ -44,14 +44,15 @@ corewm-panel .PanelItemNotificationArea > div.StartupNotification > div {
   left : 50%;
   width : 16px;
   height : 16px;
+  box-sizing : border-box;
 }
 corewm-panel .PanelItemNotificationArea > div.StartupNotification > div:before {
   display: block;
   position: absolute;
-  left: 7px; /*( 16px / 2 ) - 1px;*/
+  left: 7px;
   top: 2px;
   width: 2px;
-  height: 6px; /*( 16px / 2 ) - 2px;*/
+  height: 6px;
   background-color: #fff;
   content: "";
 
@@ -60,10 +61,11 @@ corewm-panel .PanelItemNotificationArea > div.StartupNotification > div:before {
       -ms-animation: NotificationSpinAnim 3s linear infinite;
           animation: NotificationSpinAnim 3s linear infinite;
 
-  -webkit-transform-origin: 1px 6px; /* 1px ( 16px / 2 ) - 2px;*/
-     -moz-transform-origin: 1px 6px; /* 1px ( 16px / 2 ) - 2px;*/
-      -ms-transform-origin: 1px 6px; /* 1px ( 16px / 2 ) - 2px;*/
-          transform-origin: 1px 6px; /* 1px ( 16px / 2 ) - 2px;*/
+  -webkit-transform-origin: 1px 6px;
+     -moz-transform-origin: 1px 6px;
+      -ms-transform-origin: 1px 6px;
+       -o-transform-origin: 1px 6px;
+          transform-origin: 1px 6px;
 }
 corewm-panel .PanelItemNotificationArea > div.StartupNotification > div:after {
     display: block;
@@ -78,11 +80,13 @@ corewm-panel .PanelItemNotificationArea > div.StartupNotification > div:after {
     -webkit-animation: NotificationSpinAnim 18s linear infinite; /* NotificationSpinAnim 6 * 3s linear infinite; */
        -moz-animation: NotificationSpinAnim 18s linear infinite; /* NotificationSpinAnim 6 * 3s linear infinite; */
         -ms-animation: NotificationSpinAnim 18s linear infinite; /* NotificationSpinAnim 6 * 3s linear infinite; */
+         -o-animation: NotificationSpinAnim 18s linear infinite; /* NotificationSpinAnim 6 * 3s linear infinite; */
             animation: NotificationSpinAnim 18s linear infinite; /* NotificationSpinAnim 6 * 3s linear infinite; */
 
     -webkit-transform-origin: 1px 5px; /* 1px ( 16px / 2 ) - 3px;*/
        -moz-transform-origin: 1px 5px; /* 1px ( 16px / 2 ) - 3px;*/
         -ms-transform-origin: 1px 5px; /* 1px ( 16px / 2 ) - 3px;*/
+         -o-transform-origin: 1px 5px; /* 1px ( 16px / 2 ) - 3px;*/
             transform-origin: 1px 5px; /* 1px ( 16px / 2 ) - 3px;*/
 }
 
@@ -119,14 +123,14 @@ corewm-panel .PanelItemNotificationArea > div.BusyNotification > div:after {
     -webkit-transform: rotate( 360deg );
   }
 }
-@-moz-keyframes NotificationSpinAnim {
+@-moz-keyframes notificationspinanim {
   to {
     -moz-transform: rotate( 360deg );
   }
 }
-@-ms-keyframes NotificationSpinAnim {
+@-o-keyframes notificationspinanim {
   to {
-    -ms-transform: rotate( 360deg );
+    -o-transform: rotate( 360deg );
   }
 }
 @keyframes NotificationSpinAnim {

@@ -1,4 +1,95 @@
-# 2.0.0
+# 2.0.0-alpha72
+
+New Logo, Moved repo to organization, Better privilege and group support, a ton of bugfixes and improvements!
+
+* Calculator: Updates
+* Writer: Updates
+* FileManager: Locale updates
+* FileManager: UI improvements and better VFS triggers
+* CoreWM: Improved notifications
+* CoreWM: When shut down, settings are reset to defaults
+* CoreWM: Fixed desktop shortcuts
+* CoreWM: Fixed loading indicators
+* Draw: Locale updates and bugfixes
+* dialogs: Updated File dialog, bugfixes
+* dialogs: API::createDialog() now has default callback
+* windowmanager: Bugfixes
+* windownanager: Clamp resize values when resizing
+* gui: StatusBar improvements
+* gui: PanedView improvements
+* gui: FileView improvements and fixes
+* gui: Updated login screen look
+* scheme: Bugfixes
+* handler: Improved API
+* handler: Updated NW support
+* handler: Included server handlers now use bcrypt
+* settings-manager: Improved saving
+* application: _onMessage() now returns boolean
+* application: Moved get/set Argument functions down to process
+* iframe-application: IE/Edge improvements
+* default-application: Added CTRL+S shortcut
+* default-application: Added CTRL+O shortcut
+* zip-archiver: Added removal support and many fixes and improvements
+* vfs: Added 'Blob' support
+* vfs: Added support for custom mountpoints via client API
+* vfs: Added WebDAV support
+* vfs: Overhault of apis
+* vfs: Support for HTTP reads over general api
+* vfs: Better handling of datauri data transfers
+* vfs: File upload abstraction improvements
+* api: HTTP API URI overhalut (entirely new and improved)
+* server-node: Now has checkserver-nodePrivilege
+* server-node: Now has checkVFSPrivilege
+* server-node: Now has checkPackagePrivilege
+* server-node: Added exif info in fileinfo()
+* server-node: Added permission info in fileinfo()
+* server-node: General improvements and cleanups
+* server: Reworked handler server integration
+* themes: Some Firefox related fixes
+* themes: updated Wallpaper
+* themes: updated favicon
+* themes: Updated 'Material' theme
+* locales: Added Portuguese (pt_BR)
+* locales: Added Korean (ko_KR)
+* locales: Updated French (fr_FR)
+* locales: Updated Polish (pl_PL)
+* utils: XHR call now has timeout argument
+* utils: XHR IE/Edge updates
+* utils: Added parseurl() function
+* build: Added 'ReloadOnShutdown' client config
+* build: Updated Windows symlinks script
+* build: Grunt compress task now also does core files
+* build: Improved Windows support
+* build: Added support for creating dummy packages
+* build: Updated Gruntfile
+* build: Improved 'dist' file generation
+* build: Updated unit-tests
+* build: CSS is now also linted
+* build: Code style check improvements
+* build: Now places manifest in server dir for backend as well
+* build: Support for custom server src/conf entries
+* misc: Added .editorconfig
+* misc: Updated installer scripts
+* misc: Updated locales overall
+* misc: Code file-tree updates
+* misc: Removed deprecated code
+* misc: Cleaned up a lot of stuff
+* misc: Improved error logging
+* misc: Updated Vagrantfile
+* misc: Added new error handling to async functions
+* misc: jshint
+* misc: Updated MIME database
+* misc: Moved some dependencies to devDependencies
+* doc: Updated README
+* doc: Updated INSTALL
+* doc: Added logo SVG sources
+* doc: Added complete node backend documentation
+* doc: Cleaned up all documentation
+* doc: Updated bithoundrc
+* doc: Updated package.json
+* doc: Updated badges
+
+# 2.0.0-alpha71
 
 OS.js exploded on social media and there was a lot of activity. This is just a digest of all the changes.
 

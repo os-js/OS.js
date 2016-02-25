@@ -20,11 +20,6 @@
     -moz-transform: rotate( 180deg );
   }
 }
-@-ms-keyframes windowloadinganim {
-  to {
-    -ms-transform: rotate( 180deg );
-  }
-}
 @-o-keyframes windowloadinganim {
   to {
     -o-transform: rotate( 180deg );
@@ -42,9 +37,6 @@
 @-moz-keyframes show {
   50% { -moz-transform: scale(1.03); }
 }
-@-ms-keyframes show {
-  50% { -ms-transform: scale(1.03); }
-}
 @keyframes show {
   50% { transform: scale(1.03); }
 }
@@ -56,10 +48,6 @@
 @-moz-keyframes hide {
   50% { -moz-transform: scale(0.97); }
   100% { opacity: 0; -moz-transform: scale(0.90);  }
-}
-@-ms-keyframes hide {
-  50% { -ms-transform: scale(0.97); }
-  100% { opacity: 0; -ms-transform: scale(0.90);  }
 }
 @keyframes hide {
   50% { transform: scale(0.97); }
@@ -80,13 +68,6 @@
   30%  {-moz-transform: scale(1.005); opacity: 1;}
   100% {opacity: 0; -moz-transform: scale(1);}
 }
-@-ms-keyframes pulse {
-  0%   {-ms-transform: scale(0.95); opacity: 0;}
-  8%   {-ms-transform: scale(1.0); opacity: 0;}
-  15%  {-ms-transform: scale(1.001); opacity: 1;}
-  30%  {-ms-transform: scale(1.005); opacity: 1;}
-  100% {opacity: 0; -ms-transform: scale(1);}
-}
 @keyframes pulse {
   0%   {transform: scale(0.95); opacity: 0;}
   8%   {transform: scale(1.0); opacity: 0;}
@@ -99,9 +80,6 @@
   50% { opacity: .35; }
 }
 @-moz-keyframes pulseback {
-  50% { opacity: .35; }
-}
-@-ms-keyframes pulseback {
   50% { opacity: .35; }
 }
 @keyframes pulseback {
@@ -127,16 +105,6 @@
   70% { -moz-transform: scale(1.005); }
   80% { -moz-transform: scale(1); }
   100% { -moz-transform: scale(1); }
-}
-@-ms-keyframes attention {
-  0% { -ms-transform: scale(1); }
-  30% { -ms-transform: scale(1); }
-  40% { -ms-transform: scale(1.02); }
-  50% { -ms-transform: scale(1); }
-  60% { -ms-transform: scale(1); }
-  70% { -ms-transform: scale(1.005); }
-  80% { -ms-transform: scale(1); }
-  100% { -ms-transform: scale(1); }
 }
 @keyframes attention {
   0% { transform: scale(1); }
@@ -199,10 +167,10 @@ application-window[data-minimized="true"] {
 /* Desktop */
 body[data-attention="true"]:after {
   position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
+  top : 0;
+  left : 0;
+  right : 0;
+  bottom : 0;
   opacity : 0;
 
   -webkit-animation: pulseback 2s linear infinite;

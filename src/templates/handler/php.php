@@ -1,18 +1,19 @@
+<?php
 /*!
- * OS.js - JavaScript Cloud/Web Desktop Platform
+ * OS.js - JavaScript Operating System
  *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
+ * modification, are permitted provided that the following conditions are met: 
+ * 
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
+ *    list of conditions and the following disclaimer. 
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- *
+ *    and/or other materials provided with the distribution. 
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -27,32 +28,42 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API) {
-  'use strict';
 
-  window.OSjs           = window.OSjs       || {};
-  OSjs.VFS              = OSjs.VFS          || {};
-  OSjs.VFS.Modules      = OSjs.VFS.Modules  || {};
+/**
+ * This is your handler class
+ *
+ * Out-of-the-box support for permissions! You just have to make sure your
+ * login method returns the right groups.
+ *
+ * @link http://os.js.org/doc/tutorials/create-handler.html
+ */
+class EXAMPLEAPIHandler
+  extends APIHandler
+{
+  public static function login(Array $arguments) {
+    $user = APIUser::login(Array(
+      "id" => 0,
+      "username" => "test",
+      "name" => "EXAMPLE handler user",
+      "groups" => Array("admin")
+    ));
+    return Array(false, $user->getData());
+  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+  public static function logout(Array $arguments) {
+    APIUser::logout();
+    return Array(false, true);
+  }
 
-  /**
-   * This is a virtual module for showing 'dist' files in OS.js
-   *
-   * @see OSjs.VFS.Transports.Internal
-   * @api OSjs.VFS.Modules.User
-   */
-  OSjs.VFS.Modules.User = OSjs.VFS.Modules.User || OSjs.VFS._createMountpoint({
-    readOnly: false,
-    description: 'Home',
-    root: 'home:///',
-    icon: 'places/folder_home.png',
-    match: /^home\:\/\//,
-    visible: true,
-    internal: true,
-    request: OSjs.VFS.Transports.Internal.request
-  });
+  public static function settings(Array $arguments) {
+    return Array(false, true);
+  }
 
-})(OSjs.Utils, OSjs.API);
+}
+
+API::AddHandler('login', Array('EXAMPLEAPIHandler', 'login'));
+API::AddHandler('logout', Array('EXAMPLEAPIHandler', 'logout'));
+API::AddHandler('logout', Array('EXAMPLEAPIHandler', 'settings'));
+API::SetHandler('EXAMPLEAPIHandler');
+
+?>

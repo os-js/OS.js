@@ -88,22 +88,28 @@
       return;
     }
 
-    var fullPath = realPath ? path : instance.vfs.getRealPath(path, instance.config, request).root;
-    _fs.exists(fullPath, function(exists) {
-      if ( exists ) {
-        var mime = instance.vfs.getMime(fullPath, instance.config);
-        respond(null, mime, response, [], 200, fullPath);
-      } else {
-        respondNotFound(null, response, fullPath);
-      }
-    });
+    try {
+      var fullPath = realPath ? path : instance.vfs.getRealPath(path, instance.config, request).root;
+      _fs.exists(fullPath, function(exists) {
+        if ( exists ) {
+          var mime = instance.vfs.getMime(fullPath, instance.config);
+          respond(null, mime, response, [], 200, fullPath);
+        } else {
+          respondNotFound(null, response, fullPath);
+        }
+      });
+    } catch ( e ) {
+      console.error('!!! Caught exception', e);
+      console.warn(e.stack);
+      respondError(e, response, true);
+    }
   }
 
   /**
    * Respond with JSON data
    */
-  function respondJSON(data, response, headers) {
-    respond(JSON.stringify(data), 'application/json', response, headers || [], 200);
+  function respondJSON(data, response, headers, code) {
+    respond(JSON.stringify(data), 'application/json', response, headers || [], code || 200);
   }
 
   /**
@@ -112,7 +118,7 @@
   function respondError(message, response, json) {
     if ( json ) {
       message = 'Internal Server Error (HTTP 500): ' + message.toString();
-      respondJSON({result: null, error: message}, response);
+      respondJSON({result: null, error: message}, response, [], 500);
     } else {
       respond(message.toString(), 'text/plain', response, [], 500);
     }

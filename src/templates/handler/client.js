@@ -27,67 +27,50 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API) {
+(function(API, Utils, VFS) {
   'use strict';
 
-  window.OSjs       = window.OSjs       || {};
-  OSjs.VFS          = OSjs.VFS          || {};
-  OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
+  window.OSjs = window.OSjs || {};
+  OSjs.Core   = OSjs.Core   || {};
 
   /////////////////////////////////////////////////////////////////////////////
-  // API
+  // HANDLER
   /////////////////////////////////////////////////////////////////////////////
 
-  var OSjsStorage = {};
-  OSjsStorage.url = function(item, callback) {
-    var root = window.location.pathname || '/';
-    if ( root === '/' || window.location.protocol === 'file:' ) {
-      root = '';
-    }
+  /**
+   * @extends OSjs.Core._Handler
+   * @class
+   */
+  function EXAMPLEHandler() {
+    OSjs.Core._Handler.apply(this, arguments);
+  }
 
-    var url = item.path.replace(OSjs.VFS.Modules.OSjs.match, root);
-    callback(false, url);
+  EXAMPLEHandler.prototype = Object.create(OSjs.Core._Handler.prototype);
+  EXAMPLEHandler.constructor = OSjs.Core._Handler;
+
+  EXAMPLEHandler.prototype.init = function(callback) {
+    var self = this;
+    OSjs.Core._Handler.prototype.init.call(this, function() {
+      self.initLoginScreen(callback);
+    });
   };
 
-  /////////////////////////////////////////////////////////////////////////////
-  // WRAPPERS
-  /////////////////////////////////////////////////////////////////////////////
+  EXAMPLEHandler.prototype.login = function(username, password, callback) {
+    return OSjs.Core._Handler.prototype.login.apply(this, arguments);
+  };
 
-  function makeRequest(name, args, callback, options) {
-    args = args || [];
-    callback = callback || {};
+  EXAMPLEHandler.prototype.logout = function(save, callback) {
+    return OSjs.Core._Handler.prototype.logout.apply(this, arguments);
+  };
 
-    var restricted = ['write', 'copy', 'move', 'unlink', 'mkdir', 'exists', 'fileinfo', 'trash', 'untrash', 'emptyTrash'];
-    if ( OSjsStorage[name] ) {
-      var fargs = args;
-      fargs.push(callback);
-      fargs.push(options);
-      return OSjsStorage[name].apply(OSjsStorage, fargs);
-    } else if ( restricted.indexOf(name) !== -1 ) {
-      return callback(API._('ERR_VFS_UNAVAILABLE'));
-    }
-    OSjs.VFS.Transports.Internal.request.apply(null, arguments);
-  }
+  EXAMPLEHandler.prototype.saveSettings = function(pool, storage, callback) {
+    return OSjs.Core._Handler.prototype.saveSettings.apply(this, arguments);
+  };
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * This is a virtual module for showing 'dist' files in OS.js
-   *
-   * @see OSjs.VFS.Transports.Internal
-   * @api OSjs.VFS.Modules.OSjs
-   */
-  OSjs.VFS.Modules.OSjs = OSjs.VFS.Modules.OSjs || OSjs.VFS._createMountpoint({
-    readOnly: true,
-    description: 'OS.js',
-    root: 'osjs:///',
-    match: /^osjs\:\/\//,
-    icon: 'devices/harddrive.png',
-    visible: true,
-    internal: true,
-    request: makeRequest
-  });
+  OSjs.Core.Handler = EXAMPLEHandler;
 
-})(OSjs.Utils, OSjs.API);
+})(OSjs.API, OSjs.Utils, OSjs.VFS);

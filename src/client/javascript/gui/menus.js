@@ -226,8 +226,11 @@
         mel.insertBefore(span, mel.firstChild);
 
         var submenu = mel.querySelector('gui-menu');
-        Utils.$bind(mel, 'click', function(ev) {
+        Utils.$bind(mel, 'mousedown', function(ev) {
           blurMenu();
+
+          ev.preventDefault();
+          ev.stopPropagation();
 
           if ( submenu ) {
             lastMenu = function() {

@@ -3,16 +3,16 @@
  *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -28,15 +28,15 @@
  * @licence Simplified BSD License
  */
 (function(Application, Window, Utils, API, VFS, GUI) {
-//  'use strict';
+  'use strict';
 
   var ops = {
-    'dec'      : '.',
-    'perc'     : '%',
-    'minus'    : '-',
-    'plus'     : '+',
-    'multiply' : '*',
-    'divide'   : '/'
+    dec      : '.',
+    perc     : '%',
+    minus    : '-',
+    plus     : '+',
+    multiply : '*',
+    divide   : '/'
   };
 
   var keys = {
@@ -46,19 +46,19 @@
     111: 'divide',
     110: 'dec',
     188: 'dec',
-     13: 'equal',
-     47: 'divide',
-     46: 'CE',
-     45: 'minus',
-     44: 'dec',
-     43: 'plus',
-     42: 'multiply',
-     27: 'CE',
-      8: 'nbs'
+    13: 'equal',
+    47: 'divide',
+    46: 'CE',
+    45: 'minus',
+    44: 'dec',
+    43: 'plus',
+    42: 'multiply',
+    27: 'CE',
+    8: 'nbs'
   };
 
   var labels = {
-    'CE' : 'CE',  'nbs' : '←',  'perc' : '%',  'plus'     : '+',
+    'CE' : 'CE',  'AC'  : 'AC', 'perc' : '%',  'plus'     : '+',
     '7'  : '7',   '8'   : '8',  '9'    : '9',  'minus'    : '-',
     '4'  : '4',   '5'   : '5',  '6'    : '6',  'multiply' : 'x',
     '1'  : '1',   '2'   : '2',  '3'    : '3',  'divide'   : '÷',
@@ -66,11 +66,11 @@
   };
 
   var buttons = [
-    ['CE', 'nbs',  'perc', 'plus'],
+    ['CE', 'AC',   'perc', 'plus'],
     ['7',  '8',    '9',    'minus'],
     ['4',  '5',    '6',    'multiply'],
     ['1',  '2',    '3',    'divide'],
-    ['0',  'swap', 'dec',  'equal']
+    ['0',  'dec',  'equal']
   ];
 
   /////////////////////////////////////////////////////////////////////////////
@@ -87,8 +87,9 @@
       height: 340
     }, app, scheme]);
 
-    this.calc_array = ['=', 1, '0', '0', 0];
-    this.pas_ch = 0;
+    this.total = 0;
+    this.entries = [];
+    this.temp = '';
   }
 
   ApplicationCalculatorWindow.prototype = Object.create(Window.prototype);
@@ -106,10 +107,10 @@
       ev.preventDefault();
 
       var keyCode = ev.which || ev.keyCode;
-      if ( (keyCode>95) && (keyCode<106) ) {
-        self.operation(keyCode-96);
-      } else if ( (keyCode>47) && (keyCode<58) ) {
-        self.operation(keyCode-48);
+      if ( (keyCode > 95) && (keyCode < 106) ) {
+        self.operation(keyCode - 96);
+      } else if ( (keyCode > 47) && (keyCode < 58) ) {
+        self.operation(keyCode - 48);
       } else {
         if ( typeof keys[keyCode] !== 'undefined' ) {
           self.operation(keys[keyCode]);
@@ -123,158 +124,102 @@
       var op = buttons[r][c];
 
       el = scheme.get(el);
-      el.set('value', labels[op]);
-      el.on('click', function() {
-        self.operation(op);
-      });
+      el.set('value', labels[op] || '');
+      if ( op === null ) {
+        Utils.$addClass(el.$element, 'noop');
+        el.set('disabled', true);
+      } else {
+        el.on('click', function() {
+          self.operation(op);
+        });
+      }
     });
 
     return root;
   };
 
-  ApplicationCalculatorWindow.prototype.operation = function(o) {
-    var calcul;
-    var gel = this._scheme.find(this, 'Output');
-    var addition = false;
-    var getval = function() {
-      return gel.get('value').toString();
-    };
+  ApplicationCalculatorWindow.prototype.operation = function(val) {
+    var self = this;
 
-    switch ( o ) {
-      case 'CE' :
-        this.calc_array = ['=', 1, '0', '0', 0];
-        gel.set('value', '0');
-      break;
+    function getAnswer() {
+      var nt = Number(self.entries[0]);
 
-      case 'nbs' :
-        if ( getval()<10 && getval()>-10 ) {
-          gel.set('value', 0);
-        } else {
-          gel.set('value', getval().slice(0, getval().length-1));
-          this.pas_ch = 1;
+      for ( var i = 1; i < self.entries.length; i++ ) {
+        var nextNum = Number(self.entries[i + 1]);
+        var symbol = self.entries[i];
+        if (symbol === '+') {
+          nt += nextNum;
+        } else if ( symbol === '-' ) {
+          nt -= nextNum;
+        } else if ( symbol === '*' ) {
+          nt *= nextNum;
+        } else if ( symbol === '/' ) {
+          nt /= nextNum;
         }
-        if ( this.calc_array[0] == '=' ) {
-          this.calc_array[2] = getval();
-          this.calc_array[3] = 0;
-        } else {
-          this.calc_array[3] = getval();
-        }
-      break;
+        i++;
+      }
 
-      case 'plus' :
-      case 'minus' :
-      case 'multiply' :
-      case 'divide' :
-        if ( this.calc_array[0] != '=' && this.calc_array[1] != 1 ) {
-          eval('calcul='+this.calc_array[2]+this.calc_array[0]+this.calc_array[3]+';');
+      if ( nt < 0 ) {
+        nt = Math.abs(nt) + '-';
+      }
 
-          gel.set('value', calcul);
-          this.calc_array[2]=calcul;
-          this.calc_array[3]=0;
-        }
-        this.calc_array[0] = ops[o];
-      break;
-
-      case 'dec' :
-        if ( getval().indexOf(ops.dec) === -1 ) {
-          if ( this.calc_array[1] == 1 && getval().indexOf(ops.dec) === -1 ) {
-            gel.set('value', '0.');
-
-            this.calc_array[1] = 0;
-          } else {
-            gel.set('value', getval() + '.');
-          }
-
-          if ( this.calc_array[0] == '=' ) {
-            this.calc_array[2] = getval();
-            this.calc_array[3] = 0;
-          } else {
-            this.calc_array[3] = getval();
-          }
-        }
-        addition = true;
-      break;
-
-      case 'perc' :
-        gel.set('value', getval()/100);
-        if ( this.calc_array[0] == '=' ) {
-          this.calc_array[2] = getval();
-          this.calc_array[3] = 0;
-        } else {
-          this.calc_array[3] = getval();
-        }
-        this.pas_ch = 1;
-      break;
-
-      case 'swap' :
-        gel.set('value', getval()*-1);
-        if ( this.calc_array[0] == '=' ) {
-          this.calc_array[2] = getval();
-          this.calc_array[3] = 0;
-        } else {
-          this.calc_array[3] = getval();
-        }
-        this.pas_ch = 1;
-      break;
-
-      case 'equal' :
-        if ( this.calc_array[0] != '=' && this.calc_array[1] != 1 ) {
-          if ( typeof this.calc_array[2] === 'string' ) {
-            this.calc_array[2] = this.calc_array[2].replace(/^0+/, '');
-          }
-          if ( typeof this.calc_array[3] === 'string' ) {
-            this.calc_array[3] = this.calc_array[3].replace(/^0+/, '');
-          }
-          eval('calcul='+this.calc_array[2]+this.calc_array[0]+this.calc_array[3]+';');
-          this.calc_array[0] = '=';
-          gel.set('value', calcul);
-          this.calc_array[2]=calcul;
-          this.calc_array[3]=0;
-        }
-      break;
-
-      default:
-        var n = (o << 0);
-        if ( this.calc_array[1] == 1 ) {
-          gel.set('value', n);
-        } else {
-          gel.set('value', getval() + n);
-        }
-
-        if ( this.calc_array[0] == '=' ) {
-          this.calc_array[2] = getval();
-          this.calc_array[3] = 0;
-        } else {
-          this.calc_array[3] = getval();
-        }
-        this.calc_array[1] = 0;
-
-        addition = true;
-      break;
+      return nt;
     }
 
-    if ( !addition ) {
-      if ( this.pas_ch == 0 ) {
-        this.calc_array[1] = 1;
+    var output = (function() {
+      // Kudos http://codepen.io/GeoffStorbeck/pen/zxgaqw
+
+      if ( !isNaN(val) || val === '.' ) { // Number
+        self.temp += val;
+
+        return self.temp.substring(0,10);
+      } else if ( val === 'AC' ) { // Clear
+        self.entries = [];
+        self.temp = '';
+        self.total = 0;
+
+        return '';
+      } else if ( val === 'CE' ) { // Clear Last Entry
+        self.temp = '';
+
+        return '';
+      } else if ( val === 'equal' ) { // Equal
+        self.entries.push(self.temp);
+
+        var nt = getAnswer();
+        self.entries = [];
+        self.temp = '';
+
+        return nt;
       } else {
-        this.pas_ch=0;
+        if ( typeof ops[val] !== 'undefined' ) {
+          val = ops[val];
+        }
+
+        self.entries.push(self.temp);
+        self.entries.push(val);
+        self.temp = '';
       }
-    }
 
-    gel.focus();
-  };
+      return null;
+    })();
 
-  ApplicationCalculatorWindow.prototype._focus = function() {
-    if ( Window.prototype._focus.apply(this, arguments) ) {
-      var input = this._scheme.find(this, 'Output');
-      if ( input ) {
-        input.focus();
+    if ( output !== null ) {
+      if ( !String(output).length ) {
+        output = String(0);
       }
-      return true;
-    }
-    return false;
-  };
 
+      if ( output === 'NaN' || isNaN(output) ) {
+        Utils.$addClass(this._$element, 'NaN');
+
+        setTimeout(function() {
+          Utils.$removeClass(self._$element, 'NaN');
+        }, 3000);
+      }
+
+      this._scheme.find(this, 'Output').set('value', String(output));
+    }
+  };
 
   /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
@@ -295,7 +240,6 @@
     var scheme = GUI.createScheme(url);
     scheme.load(function(error, result) {
       self._addWindow(new ApplicationCalculatorWindow(self, metadata, scheme));
-
       onInited();
     });
 

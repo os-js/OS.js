@@ -28,10 +28,13 @@
  * @licence Simplified BSD License
  */
 (function(API, Utils, VFS) {
+  /*jshint latedef: false */
   'use strict';
 
   window.OSjs = window.OSjs || {};
   OSjs.GUI = OSjs.GUI || {};
+
+  var dialogScheme;
 
   /////////////////////////////////////////////////////////////////////////////
   // INTERNAL HELPERS
@@ -112,6 +115,21 @@
 
   /////////////////////////////////////////////////////////////////////////////
   // API
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Shortcut for creating a new UIScheme class
+   *
+   * @param String    url     URL to scheme file
+   * @return UIScheme
+   * @api OSjs.GUI.createScheme()
+   */
+  function createScheme(url) {
+    return new UIScheme(url);
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // SCHEME
   /////////////////////////////////////////////////////////////////////////////
 
   /**
@@ -473,20 +491,75 @@
   };
 
   /////////////////////////////////////////////////////////////////////////////
+  // DialogScheme
+  /////////////////////////////////////////////////////////////////////////////
+
+  var DialogScheme = (function() {
+    var dialogScheme;
+
+    return {
+
+      /**
+       * Get the Dialog scheme
+       *
+       * @return UIScheme
+       * @api OSjs.GUI.DialogScheme.get()
+       */
+      get: function() {
+        return dialogScheme;
+      },
+
+      /**
+       * Destroy the Dialog scheme
+       *
+       * @return void
+       * @api OSjs.GUI.DialogScheme.destroy()
+       */
+      destroy: function() {
+        if ( dialogScheme ) {
+          dialogScheme.destroy();
+        }
+        dialogScheme = null;
+      },
+
+      /**
+       * Initialize the Dialog scheme
+       *
+       * @param   Function    cb      Callback function
+       * @return void
+       * @api OSjs.GUI.DialogScheme.init()
+       */
+      init: function(cb) {
+        if ( dialogScheme ) {
+          cb();
+          return;
+        }
+
+        var root = API.getConfig('Connection.RootURI');
+        var url = root + 'client/dialogs.html';
+        if ( API.getConfig('Connection.Dist') === 'dist' ) {
+          url = root + 'dialogs.html';
+        }
+
+        dialogScheme = OSjs.GUI.createScheme(url);
+        dialogScheme.load(function(error) {
+          if ( error ) {
+            console.warn('OSjs.GUI.initDialogScheme()', 'error loading dialog schemes', error);
+          }
+          cb();
+        });
+      }
+
+    };
+
+  })();
+
+  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.GUI.Scheme = UIScheme;
-
-  /**
-   * Shortcut for creating a new UIScheme class
-   *
-   * @param String    url     URL to scheme file
-   * @return UIScheme
-   * @api OSjs.GUI.createScheme()
-   */
-  OSjs.GUI.createScheme = function(url) {
-    return new UIScheme(url);
-  };
+  OSjs.GUI.DialogScheme = DialogScheme;
+  OSjs.GUI.createScheme = createScheme;
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS);

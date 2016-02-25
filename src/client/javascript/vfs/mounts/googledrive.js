@@ -895,7 +895,7 @@
    *
    * @api OSjs.VFS.Modules.GoogleDrive
    */
-  OSjs.VFS.Modules.GoogleDrive = OSjs.VFS.Modules.GoogleDrive || {
+  OSjs.VFS.Modules.GoogleDrive = OSjs.VFS.Modules.GoogleDrive || OSjs.VFS._createMountpoint({
     readOnly: false,
     description: 'Google Drive',
     visible: true,
@@ -923,6 +923,6 @@
     icon: 'places/google-drive.png',
     match: /^google-drive\:\/\//,
     request: makeRequest
-  };
+  });
 
 })(OSjs.Utils, OSjs.API);

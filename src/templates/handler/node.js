@@ -1,6 +1,9 @@
 /*!
  * OS.js - JavaScript Cloud/Web Desktop Platform
  *
+ * Example Handler: Login screen and session/settings handling via database
+ * PLEASE NOTE THAT THIS AN EXAMPLE ONLY, AND SHOUD BE MODIFIED BEFORE USAGE
+ *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
@@ -27,67 +30,71 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API) {
+(function() {
   'use strict';
-
-  window.OSjs       = window.OSjs       || {};
-  OSjs.VFS          = OSjs.VFS          || {};
-  OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // API
   /////////////////////////////////////////////////////////////////////////////
 
-  var OSjsStorage = {};
-  OSjsStorage.url = function(item, callback) {
-    var root = window.location.pathname || '/';
-    if ( root === '/' || window.location.protocol === 'file:' ) {
-      root = '';
-    }
+  /**
+   * These methods will be added to the OS.js `API` namespace
+   */
+  var API = {
+    login: function(args, callback, request, response, config, handler) {
+      handler.onLogin(request, response, {
+        userSettings: {},
+        userData: {
+          id: 0,
+          username: 'test',
+          name: 'EXAMPLE handler user',
+          groups: ['admin']
+        }
+      }, callback);
+    },
 
-    var url = item.path.replace(OSjs.VFS.Modules.OSjs.match, root);
-    callback(false, url);
+    logout: function(args, callback, request, response, config, handler) {
+      handler.onLogout(request, response, callback);
+    },
+
+    settings: function(args, callback, request, response, config, handler) {
+      callback(false, true);
+    }
   };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // WRAPPERS
-  /////////////////////////////////////////////////////////////////////////////
-
-  function makeRequest(name, args, callback, options) {
-    args = args || [];
-    callback = callback || {};
-
-    var restricted = ['write', 'copy', 'move', 'unlink', 'mkdir', 'exists', 'fileinfo', 'trash', 'untrash', 'emptyTrash'];
-    if ( OSjsStorage[name] ) {
-      var fargs = args;
-      fargs.push(callback);
-      fargs.push(options);
-      return OSjsStorage[name].apply(OSjsStorage, fargs);
-    } else if ( restricted.indexOf(name) !== -1 ) {
-      return callback(API._('ERR_VFS_UNAVAILABLE'));
-    }
-    OSjs.VFS.Transports.Internal.request.apply(null, arguments);
-  }
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
   /**
-   * This is a virtual module for showing 'dist' files in OS.js
+   * This is your handler class
    *
-   * @see OSjs.VFS.Transports.Internal
-   * @api OSjs.VFS.Modules.OSjs
+   * Out-of-the-box support for permissions! You just have to make sure your
+   * login method returns the right groups.
+   *
+   * @link http://os.js.org/doc/tutorials/create-handler.html
+   *
+   * @api handler.EXAMPLEHandler
+   * @see handler.Handler
+   * @class
    */
-  OSjs.VFS.Modules.OSjs = OSjs.VFS.Modules.OSjs || OSjs.VFS._createMountpoint({
-    readOnly: true,
-    description: 'OS.js',
-    root: 'osjs:///',
-    match: /^osjs\:\/\//,
-    icon: 'devices/harddrive.png',
-    visible: true,
-    internal: true,
-    request: makeRequest
-  });
+  exports.register = function(instance, DefaultHandler) {
+    function EXAMPLEHandler() {
+      DefaultHandler.call(this, instance, API);
+    }
 
-})(OSjs.Utils, OSjs.API);
+    EXAMPLEHandler.prototype = Object.create(DefaultHandler.prototype);
+    EXAMPLEHandler.constructor = DefaultHandler;
+
+    EXAMPLEHandler.prototype.onServerStart = function(cb) {
+      cb();
+    };
+
+    EXAMPLEHandler.prototype.onServerEnd = function(cb) {
+      cb();
+    };
+
+    return new EXAMPLEHandler();
+  };
+
+})();

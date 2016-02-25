@@ -52,6 +52,7 @@
 
     opts = opts || {};
     args = args || {};
+
     callback = callback || function() {};
     if ( typeof callback !== 'function' ) {
       throw new TypeError('DialogWindow expects a callback Function, gave: ' + typeof callback);
@@ -70,8 +71,14 @@
     this._state.ontop                 = true;
     this._tag                         = 'DialogWindow';
 
+    if ( args.scheme && args.scheme instanceof OSjs.GUI.Helpers.Scheme ) {
+      this.scheme = args.scheme;
+      delete args.scheme;
+    } else {
+      this.scheme = OSjs.GUI.DialogScheme.get();
+    }
+
     this.args = args;
-    this.scheme = OSjs.Core.getHandler().dialogs;
     this.className = className;
     this.buttonClicked = false;
 

@@ -37,9 +37,110 @@
   height : 50px;
 }
 
+.ApplicationCalculatorWindow gui-grid > gui-grid-row {
+  height : 20%;
+}
+
 .ApplicationCalculatorWindow gui-text > input {
   font-size : 30px;
   font-family : Monospace;
   line-height : 50px;
   text-align : right;
+}
+
+.ApplicationCalculatorWindow.noop {
+  opacity : .1;
+}
+
+.ApplicationCalculatorWindow.NaN {
+  -webkit-animation:CalculatorSuck 3s linear;
+     -moz-animation:CalculatorSuck 3s linear;
+      -ms-animation:CalculatorSuck 3s linear;
+       -o-animation:CalculatorSuck 3s linear;
+          animation:CalculatorSuck 3s linear;
+}
+
+@-webkit-keyframes CalculatorSuck {
+  100% {
+    -webkit-transform: scale(0) rotate(360deg);
+    transform: scale(0) rotate(360deg);
+    -webkit-opacity: 0;
+  }
+
+  50% {
+    -webkit-transform: scale(.5) rotate(180deg);
+    transform: scale(.5) rotate(180deg);
+  }
+
+  10% {
+    -webkit-transform: scale(1.5) rotate(0deg);
+    transform: scale(1.5) rotate(0deg);
+  }
+
+  0% {
+    -webkit-opacity: 1;
+  }
+}
+
+@-moz-keyframes CalculatorSuck {
+  100% {
+    -moz-transform: scale(0) rotate(360deg);
+    transform: scale(0) rotate(360deg);
+    -moz-opacity: 0;
+  }
+
+  50% {
+    -moz-transform: scale(.5) rotate(180deg);
+    transform: scale(.5) rotate(180deg);
+  }
+
+  10% {
+    -moz-transform: scale(1.5) rotate(0deg);
+    transform: scale(1.5) rotate(0deg);
+  }
+
+  0% {
+    -moz-opacity: 1;
+  }
+}
+
+@-o-keyframes CalculatorSuck {
+  100% {
+    -o-transform: scale(0) rotate(360deg);
+    transform: scale(0) rotate(360deg);
+    -o-opacity: 0;
+  }
+
+  50% {
+    -o-transform: scale(.5) rotate(180deg);
+    transform: scale(.5) rotate(180deg);
+  }
+
+  10% {
+    -o-transform: scale(1.5) rotate(0deg);
+    transform: scale(1.5) rotate(0deg);
+  }
+
+  0% {
+    -o-opacity: 1;
+  }
+}
+
+@keyframes CalculatorSuck {
+  100% {
+    transform: scale(0) rotate(360deg);
+    opacity: 0;
+  }
+
+  50% {
+    transform: scale(.5) rotate(180deg);
+  }
+
+  10% {
+    transform: scale(1.5) rotate(0deg);
+  }
+
+  0% {
+    opacity: 1;
+  }
 }

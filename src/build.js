@@ -62,6 +62,7 @@
     conf:         _path.join(ROOT, 'src', 'conf'),
     server:       _path.join(ROOT, 'src', 'server'),
     server_node:  _path.join(ROOT, 'src', 'server', 'node'),
+    server_php:   _path.join(ROOT, 'src', 'server', 'php'),
     templates:    _path.join(ROOT, 'src', 'templates'),
     javascript:   _path.join(ROOT, 'src', 'client', 'javascript'),
     stylesheets:  _path.join(ROOT, 'src', 'client', 'stylesheets'),
@@ -410,7 +411,7 @@
     });
 
     if ( found ) {
-      var src = _path.join(PATHS.packages, found.path, 'package.json');
+      var src = _path.join(PATHS.packages, found.path, 'metadata.json');
       if ( _fs.existsSync(src) ) {
         console.log(enable ? 'Enabling' : 'Disabling', 'package', found.path);
 
@@ -577,7 +578,7 @@
         var dir = _path.join(srcDir || PATHS.packages, r);
         getDirectories(dir).forEach(function(p) {
           var pdir = _path.join(dir, p);
-          var mpath = _path.join(pdir, 'package.json');
+          var mpath = _path.join(pdir, 'metadata.json');
 
           if ( _fs.existsSync(mpath) ) {
             var raw = _fs.readFileSync(mpath);
@@ -994,23 +995,23 @@
     var typemap = {
       iframe: {
         src: 'iframe-application',
-        cpy: ['main.js', 'package.json']
+        cpy: ['main.js', 'metadata.json']
       },
       dummy: {
         src: 'dummy',
-        cpy: ['main.js', 'package.json']
+        cpy: ['main.js', 'metadata.json']
       },
       application: {
         src: 'application',
-        cpy: ['main.js', 'main.css', 'package.json', 'scheme.html']
+        cpy: ['main.js', 'main.css', 'metadata.json', 'scheme.html']
       },
       service: {
         src: 'service',
-        cpy: ['main.js', 'package.json']
+        cpy: ['main.js', 'metadata.json']
       },
       extension: {
         src: 'extension',
-        cpy: ['extension.js', 'package.json']
+        cpy: ['extension.js', 'metadata.json']
       }
     };
 
@@ -1040,6 +1041,35 @@
     typemap[type].cpy.forEach(function(c) {
       rep(_path.join(dst, c));
     });
+  }
+
+  function createHandler(grunt, name) {
+    var uname = name.replace(/[^A-z]/g, '').toLowerCase();
+
+    function createHandlerFile(src, dst) {
+      var tpl = readFile(src).toString();
+      tpl = replaceAll(tpl, 'EXAMPLE', name);
+      writeFile(dst, tpl);
+    }
+
+    mkdir(_path.join(PATHS.javascript, 'handlers', uname));
+    mkdir(_path.join(PATHS.server_php, 'handlers', uname));
+    mkdir(_path.join(PATHS.server_node, 'handlers', uname));
+
+    createHandlerFile(
+      _path.join(PATHS.templates, 'handler', 'client.js'),
+      _path.join(PATHS.javascript, 'handlers', uname, 'handler.js')
+    );
+
+    createHandlerFile(
+      _path.join(PATHS.templates, 'handler', 'php.php'),
+      _path.join(PATHS.server_php, 'handlers', uname, 'handler.php')
+    );
+
+    createHandlerFile(
+      _path.join(PATHS.templates, 'handler', 'node.js'),
+      _path.join(PATHS.server_node, 'handlers', uname, 'handler.js')
+    );
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1194,8 +1224,8 @@
         _path.join(PATHS.out_standalone, 'vfs', 'home', 'demo', 'README.md')
       );
       copyFile(
-        _path.join(PATHS.templates, 'nw', 'package.json'),
-        _path.join(PATHS.out_standalone, 'package.json')
+        _path.join(PATHS.templates, 'nw', 'metadata.json'),
+        _path.join(PATHS.out_standalone, 'metadata.json')
       );
 
       // Install dependencies
@@ -1289,7 +1319,7 @@
 
       writeFile(_path.join(dst, 'combined.js'), combined.js.join('\n'));
       writeFile(_path.join(dst, 'combined.css'), combined.css.join('\n'));
-      writeFile(_path.join(dst, 'package.json'), JSON.stringify(iter, null, 2));
+      writeFile(_path.join(dst, 'metadata.json'), JSON.stringify(iter, null, 2));
 
       remove.forEach(function(r) {
         deleteFile(r);
@@ -1587,7 +1617,7 @@
           if ( basename && newname && minified ) {
             writeFile(_path.join(PATHS.out_client_packages, p, newname), minified);
             iter.preload[idx].src = _path.join(p, pl.src.replace(_path.basename(pl.src), newname));
-            writeFile(_path.join(PATHS.out_client_packages, p, 'package.json'), JSON.stringify(iter, null, 2));
+            writeFile(_path.join(PATHS.out_client_packages, p, 'metadata.json'), JSON.stringify(iter, null, 2));
           }
         });
       }
@@ -1612,6 +1642,7 @@
     createLighttpdConfig:     createLighttpdConfig,
     createNginxConfig:        createNginxConfig,
     createPackage:            createPackage,
+    createHandler:            createHandler,
 
     getConfig: generateBuildConfig,
     getConfigPath: getConfigPath,

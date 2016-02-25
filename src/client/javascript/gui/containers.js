@@ -197,7 +197,11 @@
         }, false);
 
         label.appendChild(document.createTextNode(lbltxt));
-        el.appendChild(label);
+        if ( el.children.length ) {
+          el.insertBefore(label, el.children[0]);
+        } else {
+          el.appendChild(label);
+        }
       }
     };
   })();

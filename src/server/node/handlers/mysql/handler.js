@@ -1,9 +1,6 @@
 /*!
  * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Mysql Handler: Login screen and session/settings handling via database
- * PLEASE NOTE THAT THIS AN EXAMPLE ONLY, AND SHOUD BE MODIFIED BEFORE USAGE
- *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
@@ -32,18 +29,27 @@
  */
 (function(mysql, bcrypt) {
   'use strict';
-  var connection;
 
-  /////////////////////////////////////////////////////////////////////////////
-  // CONFIGURATION
-  /////////////////////////////////////////////////////////////////////////////
+  var pool;
 
-  var MYSQL_CONFIG = {
-    host     : 'localhost',
-    user     : 'osjs',
-    password : 'osjs',
-    database : 'osjs'
-  };
+  function query(q, a, cb) {
+    if ( !pool ) {
+      cb('No mysql connection available');
+      return;
+    }
+
+    pool.getConnection(function(err, connection) {
+      if ( err ) {
+        cb(err);
+        return;
+      }
+
+      connection.query(q, a, function(err, row, fields) {
+        cb(err, row, fields);
+        connection.release();
+      });
+    });
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // USER SESSION ABSTRACTION
@@ -54,15 +60,15 @@
     console.log('APIUser::login()');
 
     function complete(data) {
-      callback(false, {
-        userData : {
+      handler.onLogin(request, response, {
+        userData: {
           id : data.id,
           username : data.username,
           name : data.name,
           groups : data.groups
         },
         userSettings: data.settings
-      });
+      }, callback);
     }
 
     function invalid() {
@@ -81,10 +87,10 @@
     }
 
     function getUserInfo() {
-      var q = 'SELECT `id`, `username`, `name`, `groups`, `settings` FROM `osjs_users` WHERE `username` = ? LIMIT 1;';
+      var q = 'SELECT `id`, `username`, `name`, `groups`, `settings` FROM `users` WHERE `username` = ? LIMIT 1;';
       var a = [login.username];
 
-      connection.query(q, a, function(err, rows, fields) {
+      query(q, a, function(err, rows, fields) {
         if ( err ) {
           onerror(err);
           return;
@@ -120,10 +126,10 @@
       });
     }
 
-    var q = 'SELECT `password` FROM `osjs_users` WHERE `username` = ? LIMIT 1;';
+    var q = 'SELECT `password` FROM `users` WHERE `username` = ? LIMIT 1;';
     var a = [login.username];
 
-    connection.query(q, a, function(err, rows, fields) {
+    query(q, a, function(err, rows, fields) {
       if ( err ) {
         onerror(err);
         return;
@@ -156,7 +162,7 @@
     var q = 'UPDATE `users` SET `settings` = ? WHERE `username` = ?;';
     var a = [JSON.stringify(settings), uname];
 
-    connection.query(q, a, function(err, rows, fields) {
+    query(q, a, function(err, rows, fields) {
       if ( err ) {
         onerror(err);
         return;
@@ -178,16 +184,14 @@
           return;
         }
 
-        handler.setUserData(request, response, result.userData, function() {
+        handler.onLogin(request, response, result, function() {
           callback(false, result);
         });
       }, config, handler);
     },
 
     logout: function(args, callback, request, response, config, handler) {
-      handler.setUserData(request, response, null, function() {
-        callback(false, true);
-      });
+      handler.onLogout(request, response, callback);
     },
 
     settings: function(args, callback, request, response, config, handler) {
@@ -213,20 +217,23 @@
     MysqlHandler.constructor = DefaultHandler;
 
     MysqlHandler.prototype.onServerStart = function(cb) {
-      if ( !connection ) {
-        connection = mysql.createConnection(MYSQL_CONFIG);
-        connection.connect(function() {
-          cb();
-        });
-      } else {
-        cb();
-      }
+      var cfg = instance.config.handlers.mysql;
+      var ccfg = {};
+
+      Object.keys(cfg).forEach(function(c) {
+        if ( typeof cfg[c] === 'object' ) {
+          ccfg[c] = cfg[c];
+        } else {
+          ccfg[c] = String(cfg[c]);
+        }
+      });
+
+      pool = mysql.createPool(ccfg);
+
+      cb();
     };
 
     MysqlHandler.prototype.onServerEnd = function(cb) {
-      if ( connection ) {
-        connection.end();
-      }
       cb();
     };
 

@@ -12,8 +12,14 @@ $ npm install userid
 $ mkdir /etc/osjs
 $ edit /etc/osjs/groups.json
 
+# Set up package blacklist (optional)
+$ edit /etc/osjs/blacklist.json
+
 # Change `handler` to `pam`
 $ grunt config:set:handler:pam
+
+# Optionally configure the paths used
+$ edit src/conf/190-handler.json
 
 # Update configuration and template files
 $ grunt config
@@ -39,4 +45,16 @@ This is an example file for `groups.json`
   "guest": ["api", "application", "upload", "vfs"],
   "marcello": ["api", "application", "curl", "upload", "vfs"]
 }
+```
+
+### blacklist.json
+
+This is an example file for `blacklist.json`
+
+```
+
+{
+  "anders": ["ApplicationDraw"]
+}
+
 ```

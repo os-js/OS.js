@@ -38,6 +38,8 @@
 
   module.exports = function(grunt) {
 
+    grunt.file.defaultEncoding = 'utf-8';
+
     //
     // Load plugins
     //
@@ -45,15 +47,27 @@
       require('time-grunt')(grunt);
     } catch (e) { }
 
-    grunt.file.defaultEncoding = 'utf-8';
+    // Make sure we only load required modules (ignore warnings)
+    var checks = ['test', 'jshint', 'jscs', 'csslint', 'mochaTest'];
+    checks.forEach(function(k) {
+      if ( grunt.cli.tasks.indexOf(k) >= 0 ) {
+        grunt.loadNpmTasks('grunt-contrib-jshint');
+        grunt.loadNpmTasks('grunt-mocha-test');
+        //grunt.loadNpmTasks('grunt-mocha');
+        grunt.loadNpmTasks('grunt-jscs');
+        grunt.loadNpmTasks('grunt-contrib-csslint');
+        return false;
+      }
+      return true;
+    });
 
-    grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-mocha-test');
-    //grunt.loadNpmTasks('grunt-mocha');
-    grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-jscs');
-    grunt.loadNpmTasks('grunt-contrib-csslint');
-    grunt.loadNpmTasks('grunt-nw-builder');
+    if ( grunt.cli.tasks.indexOf('nw') >= 0 ) {
+      grunt.loadNpmTasks('grunt-nw-builder');
+    }
+
+    if ( grunt.cli.tasks.indexOf('watch') >= 0 ) {
+      grunt.loadNpmTasks('grunt-contrib-watch');
+    }
 
     //
     // Load tasks
@@ -74,8 +88,7 @@
           'src/packages/default/**/*.js',
           '!src/packages/default/Broadway/**',
           '!src/packages/default/**/locales.js',
-          '!src/packages/default/**/locale.js',
-          '!src/packages/default/Calculator/main.js'
+          '!src/packages/default/**/locale.js'
         ]
       },
       csslint: {
@@ -140,7 +153,7 @@
             'src/client/themes/styles/*/metadata.json',
             'src/client/themes/sounds/*/metadata.json',
             'src/client/themes/icons/*/metadata.json',
-            'src/packages/*/*/package.json'
+            'src/packages/*/*/metadata.json'
           ],
           tasks: ['config', 'manifest']
         }
@@ -155,8 +168,7 @@
           'src/client/javascript/*.js',
           'src/client/javascript/**/*.js',
           'src/packages/default/**/*.js',
-          '!src/packages/default/Broadway/**',
-          '!src/packages/default/Calculator/main.js'
+          '!src/packages/default/Broadway/**'
         ],
         options: {
           config: '.jscsrc',
@@ -279,6 +291,11 @@
     grunt.registerTask('create-package', 'Create a new package/application: [repo/]PackageName[:type] (types: application, iframe, service, extension)', function(arg1, arg2) {
       grunt.log.writeln('Creating package...');
       _build.createPackage(grunt, arg1, arg2);
+    });
+
+    grunt.registerTask('create-handler', 'Create a new handler with given name', function(arg1, arg2) {
+      grunt.log.writeln('Creating handler...');
+      _build.createHandler(grunt, arg1);
     });
 
     //

@@ -43,9 +43,13 @@ class DemoAPIHandler
       "id" => 0,
       "username" => "demo",
       "name" => "Demo User",
-      "groups" => Array("demo")
+      "groups" => Array("admin")
     ));
-    return Array(false, $user->getData());
+
+    return Array(false, Array(
+      "userData" => $user->getData(),
+      "userSettings" => Array()
+    ));
   }
 
   public static function logout(Array $arguments) {

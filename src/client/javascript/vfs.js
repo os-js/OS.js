@@ -171,15 +171,14 @@
   /**
    * Get module name from path
    */
-  function getModuleFromPath(test) {
-    test = test || '';
+  function getModuleFromPath(test, retdef) {
+    retdef = typeof retdef === 'undefined' ? true : (retdef === true);
 
-    var m = OSjs.VFS.Modules;
     var d = null;
 
-    if ( test !== null ) {
-      Object.keys(m).forEach(function(name) {
-        var i = m[name];
+    if ( typeof test === 'string' ) {
+      Object.keys(OSjs.VFS.Modules).forEach(function(name) {
+        var i = OSjs.VFS.Modules[name];
         if ( i.enabled() === true && i.match && test.match(i.match) ) {
           d = name;
           return false;
@@ -188,24 +187,34 @@
       });
     }
 
-    if ( !d ) {
-      return DefaultModule;
-    }
-
-    return d;
+    return d || (retdef ? DefaultModule : null);
   }
 
   /**
    * Perform VFS request
    */
   function request(test, method, args, callback, options) {
-    var m = OSjs.VFS.Modules;
-    var d = getModuleFromPath(test);
-    var h = OSjs.Core.getHandler();
+    var d = getModuleFromPath(test, false);
 
-    h.onVFSRequest(d, method, args, function() {
+    if ( !d ) {
+      throw new Error(API._('ERR_VFSMODULE_NOT_FOUND_FMT', test));
+    }
+    if ( typeof method !== 'string' ) {
+      throw new TypeError(API._('ERR_ARGUMENT_FMT', 'VFS::' + method, 'method', 'String', typeof method));
+    }
+    if ( !(args instanceof Object) ) {
+      throw new TypeError(API._('ERR_ARGUMENT_FMT', 'VFS::' + method, 'args', 'Object', typeof args));
+    }
+    if ( !(callback instanceof Function) ) {
+      throw new TypeError(API._('ERR_ARGUMENT_FMT', 'VFS::' + method, 'callback', 'Function', typeof callback));
+    }
+    if ( options && !(options instanceof Object) ) {
+      throw new TypeError(API._('ERR_ARGUMENT_FMT', 'VFS::' + method, 'options', 'Object', typeof options));
+    }
+
+    OSjs.Core.getHandler().onVFSRequest(d, method, args, function vfsRequestCallback() {
       try {
-        m[d].request(method, args, callback, options);
+        OSjs.VFS.Modules[d].request(method, args, callback, options);
       } catch ( e ) {
         var msg = API._('ERR_VFSMODULE_EXCEPTION_FMT', e.toString());
         callback(msg);
@@ -607,9 +616,11 @@
    */
   OSjs.VFS.scandir = function(item, callback, options) {
     console.info('VFS::scandir()', item, options);
-    if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    item = checkMetadataArgument(item);
+    if ( arguments.length < 2 ) {
+      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+    }
 
+    item = checkMetadataArgument(item);
     request(item.path, 'scandir', [item], function(error, response) {
       if ( error ) {
         error = API._('ERR_VFSMODULE_SCANDIR_FMT', error);
@@ -634,7 +645,9 @@
    */
   OSjs.VFS.write = function(item, data, callback, options, appRef) {
     console.info('VFS::write()', item, options);
-    if ( arguments.length < 3 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
+    if ( arguments.length < 3 ) {
+      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+    }
 
     item = checkMetadataArgument(item);
 
@@ -699,7 +712,9 @@
    */
   OSjs.VFS.read = function(item, callback, options) {
     console.info('VFS::read()', item, options);
-    if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
+    if ( arguments.length < 2 ) {
+      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+    }
 
     item = checkMetadataArgument(item);
 
@@ -714,17 +729,17 @@
 
       if ( options.type ) {
         var types = {
-          datasource: function() {
+          datasource: function readToDataSource() {
             OSjs.VFS.abToDataSource(response, item.mime, function(error, dataSource) {
               callback(error, error ? null : dataSource);
             });
           },
-          text: function() {
+          text: function readToText() {
             OSjs.VFS.abToText(response, item.mime, function(error, text) {
               callback(error, error ? null : text);
             });
           },
-          blob: function() {
+          blob: function readToBlob() {
             OSjs.VFS.abToBlob(response, item.mime, function(error, blob) {
               callback(error, error ? null : blob);
             });
@@ -766,7 +781,9 @@
    */
   OSjs.VFS.copy = function(src, dest, callback, options, appRef) {
     console.info('VFS::copy()', src, dest, options);
-    if ( arguments.length < 3 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
+    if ( arguments.length < 3 ) {
+      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+    }
 
     src = checkMetadataArgument(src, API._('ERR_VFS_EXPECT_SRC_FILE'));
     dest = checkMetadataArgument(dest, API._('ERR_VFS_EXPECT_DST_FILE'));
@@ -797,7 +814,7 @@
       var msrc = getModuleFromPath(src.path);
       var mdst = getModuleFromPath(dest.path);
 
-      if ( (srcInternal && dstInternal) ) {
+      if ( (srcInternal && dstInternal) || (msrc === mdst) ) {
         var tmp = (msrc === mdst) ? src.path : null;
         request(tmp, 'copy', [src, dest], function(error, response) {
           dialogProgress(100);
@@ -853,7 +870,10 @@
    */
   OSjs.VFS.move = function(src, dest, callback, options, appRef) {
     console.info('VFS::move()', src, dest, options);
-    if ( arguments.length < 3 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
+    if ( arguments.length < 3 ) {
+      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+    }
+
     src = checkMetadataArgument(src, API._('ERR_VFS_EXPECT_SRC_FILE'));
     dest = checkMetadataArgument(dest, API._('ERR_VFS_EXPECT_DST_FILE'));
 
@@ -872,7 +892,7 @@
       var msrc = getModuleFromPath(src.path);
       var mdst = getModuleFromPath(dest.path);
 
-      if ( (srcInternal && dstInternal) ) {
+      if ( (srcInternal && dstInternal) || (msrc === mdst) ) {
         var tmp = (msrc === mdst) ? src.path : null;
         request(tmp, 'move', [src, dest], function(error, response) {
           if ( error ) {
@@ -924,7 +944,9 @@
    */
   OSjs.VFS.unlink = function(item, callback, options, appRef) {
     console.info('VFS::unlink()', item, options);
-    if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
+    if ( arguments.length < 2 ) {
+      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+    }
 
     item = checkMetadataArgument(item);
 
@@ -957,7 +979,9 @@
    */
   OSjs.VFS.mkdir = function(item, callback, options, appRef) {
     console.info('VFS::mkdir()', item, options);
-    if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
+    if ( arguments.length < 2 ) {
+      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+    }
 
     item = checkMetadataArgument(item);
 
@@ -993,7 +1017,10 @@
    */
   OSjs.VFS.exists = function(item, callback) {
     console.info('VFS::exists()', item);
-    if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
+    if ( arguments.length < 2 ) {
+      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+    }
+
     item = checkMetadataArgument(item);
     request(item.path, 'exists', [item], callback);
   };
@@ -1009,9 +1036,11 @@
    */
   OSjs.VFS.fileinfo = function(item, callback) {
     console.info('VFS::fileinfo()', item);
-    if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-    item = checkMetadataArgument(item);
+    if ( arguments.length < 2 ) {
+      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+    }
 
+    item = checkMetadataArgument(item);
     request(item.path, 'fileinfo', [item], function(error, response) {
       if ( error ) {
         error = API._('ERR_VFSMODULE_FILEINFO_FMT', error);
@@ -1031,7 +1060,10 @@
    */
   OSjs.VFS.url = function(item, callback) {
     console.info('VFS::url()', item);
-    if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
+    if ( arguments.length < 2 ) {
+      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+    }
+
     item = checkMetadataArgument(item);
     request(item.path, 'url', [item], function(error, response) {
       if ( error ) {
@@ -1062,13 +1094,9 @@
   OSjs.VFS.upload = function(args, callback, options, appRef) {
     console.info('VFS::upload()', args);
     args = args || {};
-    if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
-
-    /*
-    if ( !(args.app instanceof OSjs.Core.Process) ) {
-      throw new Error('upload() expects an Application reference');
+    if ( arguments.length < 2 ) {
+      throw new Error(API._('ERR_VFS_NUM_ARGS'));
     }
-    */
     if ( !args.files ) {
       throw new Error(API._('ERR_VFS_UPLOAD_NO_FILES'));
     }
@@ -1151,14 +1179,16 @@
    * @return  void
    * @api     OSjs.VFS.download()
    */
-  OSjs.VFS.download = (function() {
+  OSjs.VFS.download = (function download() {
     var _didx = 1;
 
     return function(args, callback) {
       console.info('VFS::download()', args);
       args = args || {};
 
-      if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
+      if ( arguments.length < 2 ) {
+        throw new Error(API._('ERR_VFS_NUM_ARGS'));
+      }
 
       if ( !args.path ) {
         throw new Error(API._('ERR_VFS_DOWNLOAD_NO_FILE'));
@@ -1229,7 +1259,9 @@
    */
   OSjs.VFS.trash = function(item, callback) {
     console.info('VFS::trash()', item);
-    if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
+    if ( arguments.length < 2 ) {
+      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+    }
     item = checkMetadataArgument(item);
 
     request(item.path, 'trash', [item], function(error, response) {
@@ -1253,7 +1285,9 @@
    */
   OSjs.VFS.untrash = function(item, callback) {
     console.info('VFS::untrash()', item);
-    if ( arguments.length < 2 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
+    if ( arguments.length < 2 ) {
+      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+    }
     item = checkMetadataArgument(item);
 
     request(item.path, 'untrash', [item], function(error, response) {
@@ -1276,7 +1310,10 @@
    */
   OSjs.VFS.emptyTrash = function(callback) {
     console.info('VFS::emptyTrash()');
-    if ( arguments.length < 1 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
+    if ( arguments.length < 1 ) {
+      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+    }
+
     request(null, 'emptyTrash', [], function(error, response) {
       if ( error ) {
         error = API._('ERR_VFSMODULE_EMPTYTRASH_FMT', error);
@@ -1399,10 +1436,10 @@
     var moduleMatch = createMatch(modulePath);
     var moduleOptions = opts.options || {};
 
-    var module = (function() {
+    var module = (function createMountpointModule() {
       var isMounted = true;
 
-      return {
+      return _createMountpoint({
         readOnly: false,
         description: opts.description,
         visible: true,
@@ -1418,9 +1455,6 @@
         mounted: function() {
           return isMounted;
         },
-        enabled: function() {
-          return true;
-        },
         root: moduleRoot,
         icon: opts.icon,
         match: moduleMatch,
@@ -1434,7 +1468,7 @@
             callback(API._('ERR_VFSMODULE_INVALID_TYPE_FMT', opts.type));
           }
         }
-      };
+      });
     })();
 
     var validModule = (function() {
@@ -1448,7 +1482,7 @@
     })();
 
     if ( validModule !== true ) {
-      throw new Error('ERR_VFSMODULE_INVALID_CONFIG_FMT', validModule);
+      throw new Error(API._('ERR_VFSMODULE_INVALID_CONFIG_FMT', validModule));
     }
 
     OSjs.VFS.Modules[opts.name] = module;
@@ -1503,7 +1537,7 @@
         var iter = config[key];
         console.info('VFS', 'Registering mountpoint', key, iter);
 
-        OSjs.VFS.Modules[key] = {
+        OSjs.VFS.Modules[key] = _createMountpoint({
           readOnly: (typeof iter.readOnly === 'undefined') ? false : (iter.readOnly === true),
           description: iter.description || key,
           icon: iter.icon || 'devices/harddrive.png',
@@ -1511,22 +1545,38 @@
           visible: true,
           internal: true,
           match: createMatch(key + '://'),
-          unmount: function(cb) {
-            (cb || function() {})(API._('ERR_VFS_UNAVAILABLE'), false);
-          },
-          mounted: function() {
-            return true;
-          },
-          enabled: function() {
-            return (typeof iter.enabled === 'undefined') || iter.enabled === true;
-          },
-          request: function() {
+          request: function mountpointRequest() {
             // This module uses the same API as public
             OSjs.VFS.Transports.Internal.request.apply(null, arguments);
           }
-        };
+        });
       });
     }
+  }
+
+  /**
+   * Wrapper for creating a new VFS module
+   *
+   * THIS IS ONLY USED INTERNALLY
+   *
+   * @param   Object  params      Module parameters
+   *
+   * @return  Object              Module parameters
+   *
+   * @api   OSjs.VFS.createMountpoint()
+   */
+  function _createMountpoint(params) {
+    return Utils.argumentDefaults(params, {
+      unmount: function(cb) {
+        (cb || function() {})(API._('ERR_VFS_UNAVAILABLE'), false);
+      },
+      mounted: function() {
+        return true;
+      },
+      enabled: function() {
+        return true;
+      }
+    });
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1551,6 +1601,7 @@
   OSjs.VFS.blobToAb              = blobToAb;
   OSjs.VFS.dataSourceToAb        = dataSourceToAb;
 
+  OSjs.VFS._createMountpoint     = _createMountpoint;
   OSjs.VFS.createMountpoint      = createMountpoint;
   OSjs.VFS.removeMountpoint      = removeMountpoint;
   OSjs.VFS.registerMountpoints   = registerMountpoints;

@@ -635,7 +635,7 @@
    *
    * @api OSjs.VFS.Modules.OneDrive
    */
-  OSjs.VFS.Modules.OneDrive = OSjs.VFS.Modules.OneDrive || {
+  OSjs.VFS.Modules.OneDrive = OSjs.VFS.Modules.OneDrive || OSjs.VFS._createMountpoint({
     readOnly: false,
     description: 'OneDrive',
     visible: true,
@@ -663,6 +663,6 @@
     icon: 'places/onedrive.png',
     match: /^onedrive\:\/\//,
     request: makeRequest
-  };
+  });
 
 })(OSjs.Utils, OSjs.API);

@@ -189,7 +189,7 @@
    * @param   String      src       Source
    * @return  void
    *
-   * @method IFrameApplicationWindow::onPostMessage()
+   * @method IFrameApplicationWindow::setLocation()
    */
   IFrameApplicationWindow.prototype.setLocation = function(src, iframe) {
     iframe = iframe || this._frame;
@@ -239,10 +239,34 @@
    * @see Application::init()
    * @method IFrameApplication::init()
    */
-  IFrameApplication.prototype.init = function(settings, metadata) {
+  IFrameApplication.prototype.init = function(settings, metadata, onInited) {
     Application.prototype.init.apply(this, arguments);
     var name = this.__pname + 'Window';
     this._addWindow(new IFrameApplicationWindow(name, this.options, this), null, true);
+    onInited();
+  };
+
+  /**
+   * When Application receives a message from IFrame Application
+   *
+   * @param   Mixed       message     The message
+   * @param   DOMEvent    ev          DOM Event
+   * @return  void
+   *
+   * @method IFrameApplication::onPostMessage()
+   */
+  IFrameApplication.prototype.onPostMessage = function(message, ev) {
+    console.debug('IFrameApplication::onPostMessage()', message);
+  };
+
+  /**
+   * @see IFrameApplicationWindow::postMessage()
+   */
+  IFrameApplication.prototype.postMessage = function(message) {
+    var win = this._getMainWindow();
+    if ( win ) {
+      win.postMessage(message);
+    }
   };
 
   /////////////////////////////////////////////////////////////////////////////

@@ -30,6 +30,8 @@
 (function(CoreWM, Panel, PanelItem, Utils, API, VFS) {
   'use strict';
 
+  // FIXME: This item does not cache Event collections
+
   /////////////////////////////////////////////////////////////////////////////
   // ITEM
   /////////////////////////////////////////////////////////////////////////////
@@ -97,13 +99,14 @@
       el.innerHTML = '<img alt="" src="' + win._icon + '" /><span>' + win._title + '</span>';
       el.className = className;
       el.title = win._title;
-      el.onclick = function() {
+
+      Utils.$bind(el, 'click', function() {
         win._restore(false, true);
-      };
-      el.oncontextmenu = function(ev) {
+      });
+      Utils.$bind(el, 'contextmenu', function(ev) {
         ev.stopPropagation();
         return false;
-      };
+      });
 
       var peeking = false;
       OSjs.API.createDroppable(el, {
@@ -145,8 +148,6 @@
       this.$element.appendChild(el);
     } else if ( ev === 'close' ) {
       _change(cn, function(el) {
-        el.onclick = null;
-        el.oncontextmenu = null;
         el.parentNode.removeChild(el);
       });
     } else if ( ev === 'focus' ) {
