@@ -202,12 +202,9 @@
             }
         });
 
-        getCurrentBoardSettings();
-        getCurrentWifiSettings();
-        scanNetworks();
-
-        function getCurrentWifiSettings() {
+        function getCurrentWifiSettings(cb) {
             callAPI('iwinfo', {}, function (err, result) {
+              cb();
                 /*var info = (result || '').split(' ');
                 var keys = ['ap', 'ssid', 'security', 'signal'];
                 var list = {};
@@ -238,8 +235,10 @@
             });
         }
 
-        function getCurrentBoardSettings() {
+        function getCurrentBoardSettings(cb) {
             callAPI('sysinfo', {}, function (err, result) {
+              cb();
+
                 if (err) {
                     alert(err);
                     return;
@@ -488,8 +487,11 @@
             });
         }
 
-        function scanNetworks(){
+        function scanNetworks(cb){
+          cb = cb || function() {};
+
             callAPI('iwscan', {device: 'radio0'}, function(err, result) {
+              cb();
                 ddlWifiSSID.clear();
 
                 if ( !err && result ) {
@@ -534,6 +536,17 @@
                 }
             });
         }
+
+        self._toggleLoading(true);
+        setTimeout(function() {
+          getCurrentBoardSettings(function() {
+            getCurrentWifiSettings(function() {
+              scanNetworks(function() {
+                self._toggleLoading(false);
+              });
+            });
+          });
+        }, 250);
 
     };
 
