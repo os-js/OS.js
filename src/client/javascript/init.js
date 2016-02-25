@@ -232,13 +232,13 @@
     resize: (function() {
       var _timeout;
 
-      function _resize(ev) {
+      function _resize(ev, wasInited) {
         var wm = OSjs.Core.getWindowManager();
         if ( !wm ) { return; }
-        wm.resize(ev, wm.getWindowSpace());
+        wm.resize(ev, wm.getWindowSpace(), wasInited);
       }
 
-      return function(ev) {
+      return function(ev, wasInited) {
         if ( _timeout ) {
           clearTimeout(_timeout);
           _timeout = null;
@@ -246,7 +246,7 @@
 
         var self = this;
         _timeout = setTimeout(function() {
-          _resize.call(self, ev);
+          _resize.call(self, ev, wasInited);
         }, 100);
       };
     })(),
@@ -465,7 +465,7 @@
     function session() {
       handler.loadSession(function() {
         setTimeout(function() {
-          events.resize();
+          events.resize(true);
         }, 500);
 
         callback();
