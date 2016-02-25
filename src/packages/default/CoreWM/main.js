@@ -377,7 +377,7 @@
   // Events
   //
 
-  CoreWM.prototype.resize = function(ev, rect) {
+  CoreWM.prototype.resize = function(ev, rect, wasInited) {
     if ( !this.getSetting('moveOnResize') ) { return; }
 
     var space = this.getWindowSpace();
@@ -413,7 +413,7 @@
       }
 
       // Restore maximized windows (FIXME: Better solution?)
-      if ( iter._state.maximized ) {
+      if ( iter._state.maximized && (wasInited ? iter._restored : true) ) {
         iter._restore(true, false);
       }
     }
