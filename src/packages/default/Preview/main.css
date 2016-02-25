@@ -28,17 +28,13 @@
  * @licence Simplified BSD License
  */
 
-.ApplicationPreviewWindow {
-}
-
-
 .ApplicationPreviewWindow gui-container {
   overflow : hidden;
 }
 .ApplicationPreviewWindow gui-video {
   text-align : center;
   vertical-align : middle;
-  display : block;
+  display : inline-block;
   background : #000;
   height : 100%;
 }

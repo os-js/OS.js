@@ -227,6 +227,24 @@
     return null;
   };
 
+  /**
+   * Window key
+   */
+  DefaultApplicationWindow.prototype._onKeyEvent = function(ev, type, shortcut) {
+    if ( shortcut === 'save' ) {
+      this._app.saveDialog(this.currentFile, this, !this.currentFile);
+      return false;
+    } else if ( shortcut === 'saveas' ) {
+      this._app.saveDialog(this.currentFile, this, true);
+      return false;
+    } else if ( shortcut === 'open' ) {
+      this._app.openDialog(this.currentFile, this);
+      return false;
+    }
+
+    return Window.prototype._onKeyEvent.apply(this, arguments);
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////

@@ -35,21 +35,6 @@
   OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
 
   /////////////////////////////////////////////////////////////////////////////
-  // API
-  /////////////////////////////////////////////////////////////////////////////
-
-  var OSjsStorage = {};
-  OSjsStorage.url = function(item, callback) {
-    var root = window.location.pathname || '/';
-    if ( root === '/' || window.location.protocol === 'file:' ) {
-      root = '';
-    }
-
-    var url = item.path.replace(OSjs.VFS.Modules.OSjs.match, root);
-    callback(false, url);
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
   // WRAPPERS
   /////////////////////////////////////////////////////////////////////////////
 
@@ -57,32 +42,58 @@
     args = args || [];
     callback = callback || {};
 
-    var restricted = ['write', 'copy', 'move', 'unlink', 'mkdir', 'exists', 'fileinfo', 'trash', 'untrash', 'emptyTrash'];
-    if ( OSjsStorage[name] ) {
-      var fargs = args;
-      fargs.push(callback);
-      fargs.push(options);
-      return OSjsStorage[name].apply(OSjsStorage, fargs);
-    } else if ( restricted.indexOf(name) !== -1 ) {
-      return callback(API._('ERR_VFS_UNAVAILABLE'));
+    function getFiles() {
+      var metadata = OSjs.Core.getPackageManager().getPackages();
+      var files = [];
+
+      Object.keys(metadata).forEach(function(m) {
+        var iter = metadata[m];
+        if ( iter.type !== 'extension' ) {
+          files.push(new OSjs.VFS.File({
+            filename: iter.name,
+            icon: {
+              filename: iter.icon,
+              application: m
+            },
+            type: 'application',
+            path: 'applications:///' + m,
+            mime: 'osjs/application'
+          }, 'osjs/application'));
+        }
+      });
+
+      return files;
     }
-    OSjs.VFS._NullModule.request.apply(null, arguments);
+
+    if ( name === 'scandir' ) {
+      var files = getFiles();
+      callback(false, files);
+      return;
+    }
+
+    return callback(API._('ERR_VFS_UNAVAILABLE'));
   }
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.VFS.Modules.OSjs = OSjs.VFS.Modules.OSjs || {
+  /**
+   * This is a virtual module for showing 'applications' in OS.js
+   *
+   * @api OSjs.VFS.Modules.Apps
+   */
+  OSjs.VFS.Modules.Apps = OSjs.VFS.Modules.Apps || {
     readOnly: true,
-    description: 'OS.js',
-    root: 'osjs:///',
-    match: /^osjs\:\/\//,
-    icon: 'devices/harddrive.png',
+    description: 'Applications',
+    root: 'applications:///',
+    match: /^applications\:\/\//,
+    icon: 'places/user-bookmarks.png',
+    special: true,
     visible: true,
     internal: true,
     unmount: function(cb) {
-      OSjs.VFS._NullModule.unmount(cb);
+      (cb || function() {})(API._('ERR_VFS_UNAVAILABLE'), false);
     },
     mounted: function() {
       return true;

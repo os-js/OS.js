@@ -33,6 +33,17 @@
   window.OSjs           = window.OSjs       || {};
   OSjs.VFS              = OSjs.VFS          || {};
   OSjs.VFS.Modules      = OSjs.VFS.Modules  || {};
+
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * This is a virtual module for showing 'dist' files in OS.js
+   *
+   * @see OSjs.VFS.Transports.Internal
+   * @api OSjs.VFS.Modules.User
+   */
   OSjs.VFS.Modules.User = OSjs.VFS.Modules.User || {
     readOnly: false,
     description: 'Home',
@@ -42,7 +53,7 @@
     visible: true,
     internal: true,
     unmount: function(cb) {
-      OSjs.VFS._NullModule.unmount(cb);
+      (cb || function() {})(API._('ERR_VFS_UNAVAILABLE'), false);
     },
     mounted: function() {
       return true;
@@ -50,10 +61,7 @@
     enabled: function() {
       return true;
     },
-    request: function() {
-      // This module uses the same API as public
-      OSjs.VFS._NullModule.request.apply(null, arguments);
-    }
+    request: OSjs.VFS.Transports.Internal.request
   };
 
 })(OSjs.Utils, OSjs.API);

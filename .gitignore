@@ -18,6 +18,7 @@ vfs/*/*
 src/conf/999-*
 src/conf/900-custom.json
 src/server/settings.json
+src/server/packages.json
 src/installer/installer.exe
 
 dist/test*

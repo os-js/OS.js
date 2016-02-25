@@ -6,16 +6,16 @@
  *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -35,7 +35,7 @@
 // See doc/pam-handler.txt
 //
 
-(function(qs, pam, userid, fs, path) {
+(function(pam, userid, fs, path) {
   'use strict';
 
   function getRootPath(username) {
@@ -95,43 +95,42 @@
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
+  // API
   /////////////////////////////////////////////////////////////////////////////
 
-  // Attach API functions
-  exports.register = function(CONFIG, API, HANDLER) {
-    API.login = function(login, callback, request, response, body) {
+  var API = {
+    login: function(login, callback, request, response, config, handler) {
       authenticate(login, function(err, data, settings) {
         if ( err ) {
           callback(err);
           return;
         }
 
-        request.cookies.set('username', login.username, {httpOnly:true});
-        request.cookies.set('groups', JSON.stringify(data.groups), {httpOnly:true});
+        var d = {
+          id:       data.id,
+          username: login.username,
+          name:     data.name,
+          groups:   data.groups
+        };
 
-        callback(false, {
-          userData : {
-            id:       data.id,
-            username: login.username,
-            name:     data.name,
-            groups:   data.groups
-          },
-          userSettings: settings
+        handler.setUserData(request, response, d, function() {
+          callback(false, {
+            userData: d,
+            userSettings: settings
+          });
         });
-
       });
-    };
+    },
 
-    API.logout = function(args, callback, request, response) {
-      request.cookies.set('username', null, {httpOnly:true});
-      request.cookies.set('groups', null, {httpOnly:true});
-      callback(false, true);
-    };
+    logout: function(args, callback, request, response, config, handler) {
+      handler.setUserData(request, response, null, function() {
+        callback(false, true);
+      });
+    },
 
-    API.settings = function(args, callback, request, response) {
+    settings: function(args, callback, request, response, config, handler) {
       var settings = args.settings;
-      var uname = request.cookies.get('username');
+      var uname = handler.getUserName(request, response);
       var data = JSON.stringify(settings);
 
       // Make sure directory exists before writing
@@ -140,11 +139,30 @@
           callback(err || false, !!err);
         });
       });
-    };
+    }
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * @api handler.PAMHandler
+   * @see handler.Handler
+   * @class
+   */
+  exports.register = function(instance, DefaultHandler) {
+    function PAMHandler() {
+      DefaultHandler.call(this, instance, API);
+    }
+
+    PAMHandler.prototype = Object.create(DefaultHandler.prototype);
+    PAMHandler.constructor = DefaultHandler;
+
+    return new PAMHandler();
   };
 
 })(
-  require('querystring'),
   require('authenticate-pam'),
   require('userid'),
   require('fs'),

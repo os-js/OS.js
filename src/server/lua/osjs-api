@@ -44,15 +44,15 @@ function run(wsapi_env)
   local len = tonumber(wsapi_env.CONTENT_LENGTH) or 0
   local input = wsapi_env.input:read(len) or ""
   local idata = json.decode(input) or {}
-  local iargs = idata["arguments"] or {}
 
   local request  = wrequest.new(wsapi_env)
   local response = wresponse.new()
+  local method = wsapi_env.PATH_INFO:match("^/(%a+)")
 
   response:content_type("application/json")
 
   if not osjs.DEBUGMODE then
-    if idata["method"] ~= "login" and idata["method"] ~= "logout" then
+    if method ~= "login" and method ~= "logout" then
       if request.cookies["osjsuser"] == nil then
         response.status = 403
         response:write("Not Allowed")
@@ -61,7 +61,7 @@ function run(wsapi_env)
     end
   end
 
-  local error, data = osjs.api_request(request, response, idata["method"], iargs)
+  local error, data = osjs.api_request(request, response, method, idata)
   local result = {error = error, result = data}
   response:write(json.encode(result))
   return response:finish()

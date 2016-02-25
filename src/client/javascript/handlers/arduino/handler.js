@@ -91,16 +91,33 @@
    */
   ArduinoHandler.prototype.login = function(username, password, callback) {
     console.debug('OSjs::Handlers::ArduinoHandler::login()');
+
+    function checkSettingsCompability(settings) {
+      // This resets the settings whenever a version update is done
+      // these are not written until the user actually performs a save operation
+      settings = settings || {};
+
+      var curr = API.getConfig('Version');
+      if ( !settings['__version__'] || settings['__version__'] !== curr ) {
+        settings = {};
+      }
+      settings['__version__'] = curr;
+
+      return settings;
+    }
+
     var opts = {username: username, password: password};
     this.callAPI('login', opts, function(response) {
       if ( response.result ) { // This contains an object with user data
-        callback(response.result);
+        callback(false, {
+          userData: response.result.userData,
+          userSettings: checkSettingsCompability(response.result.userSettings)
+        });
       } else {
-        callback(false, response.error ? ('Error while logging in: ' + response.error) : 'Invalid login');
+        callback(response.error ? ('Error while logging in: ' + response.error) : 'Invalid login', false);
       }
-
     }, function(error) {
-      callback(false, 'Login error: ' + error);
+      callback('Login error: ' + error, false);
     });
   };
 

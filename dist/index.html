@@ -2,12 +2,10 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="google" content="notranslate" />
-
     <!--
-    OS.js - JavaScript Cloud/Web Desktop Platform
+    OS.js - JavaScript Operating System
 
-    Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
+    Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -33,11 +31,11 @@
     @author  Anders Evenrud <andersevenrud@gmail.com>
     @licence Simplified BSD License
     -->
-    <meta name="description" content="OS.js - JavaScript Cloud/Web Desktop Platform" />
+    <meta name="description" content="OS.js is a light-weight JavaScript based desktop solution" />
     <meta name="keywords" content="OS.js,Web Desktop,Cloud Desktop,JavaScript OS" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>OS.js</title>
+    <title>Arduino OS</title>
     <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="favicon.ico" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <link rel="apple-touch-icon-precomposed" href="favicon.png" />
@@ -51,10 +49,20 @@
     <script type="text/javascript" charset="utf-8" src="osjs.js"></script>
     <script type="text/javascript" charset="utf-8" src="locales.js"></script>
 
+    <style type="text/css">
+      #Login {
+        height : 160px;
+        margin-top : -80px;
+      }
+      #Login > form > div:first-child {
+        display : none;
+      }
+    </style>
+
   </head>
-  <body>
+  <body data-handler="arduino">
     <div id="LoadingScreen">
-      <img alt="" src="osjs-logo.png" />
+      <img alt="" src="splash.png" />
     </div>
 
     <div id="Login">

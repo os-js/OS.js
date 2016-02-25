@@ -73,6 +73,8 @@
     this.direction  = null;
     this.startX     = mousePosition.x;
     this.startY     = mousePosition.y;
+    this.minWidth   = win._properties.min_width;
+    this.minHeight  = win._properties.min_height;
 
     var windowRects = [];
     _WM.getWindows().forEach(function(w) {
@@ -232,6 +234,18 @@
       var newWidth = null;
       var newHeight = null;
 
+      function isSizeAllowed() {
+        if ( current.minHeight && newHeight < current.minHeight ) {
+          return false;
+        }
+
+        if ( current.minWidth && newWidth < current.minWidth ) {
+          return false;
+        }
+
+        return true;
+      }
+
       var resizeMap = {
         s: function() {
           newWidth = current.rectWindow.w;
@@ -260,6 +274,7 @@
         n: function() {
           newTop = current.rectWindow.y + dy;
           newLeft = current.rectWindow.x;
+
           newHeight = current.rectWindow.h - dy;
           newWidth = current.rectWindow.w;
         },
@@ -279,6 +294,15 @@
 
       if ( resizeMap[current.direction] ) {
         resizeMap[current.direction]();
+      }
+
+      if ( newTop < current.rectWorkspace.top && newTop !== null ) {
+        newTop = current.rectWorkspace.top;
+        newHeight -= current.rectWorkspace.top - mousePosition.y;
+      }
+
+      if ( !isSizeAllowed() ) {
+        return false;
       }
 
       return {left: newLeft, top: newTop, width: newWidth, height: newHeight};

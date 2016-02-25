@@ -6,16 +6,16 @@
  *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -30,7 +30,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(qs, mysql) {
+(function(mysql, bcrypt) {
   'use strict';
   var connection;
 
@@ -50,13 +50,10 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var APIUser = function() {};
-  APIUser.login = function(login, request, response, callback) {
+  APIUser.login = function(login, request, response, callback, config, handler) {
     console.log('APIUser::login()');
 
     function complete(data) {
-      request.cookies.set('username', data.username, {httpOnly:true});
-      request.cookies.set('groups', JSON.stringify(data.groups), {httpOnly:true});
-
       callback(false, {
         userData : {
           id : data.id,
@@ -72,20 +69,27 @@
       callback('Invalid login credentials');
     }
 
+    function onerror(err) {
+      console.error(err.toString());
+      callback(err.toString());
+      return;
+    }
+
     if ( !login ) {
       invalid();
       return;
     }
 
-    var q = 'SELECT `id`, `username`, `name`, `groups`, `settings` FROM `users` WHERE `username` = ? AND `password` = ? LIMIT 1;';
-    var a = [login.username, login.password];
+    function getUserInfo() {
+      var q = 'SELECT `id`, `username`, `name`, `groups`, `settings` FROM `osjs_users` WHERE `username` = ? LIMIT 1;';
+      var a = [login.username];
 
-    connection.query(q, a, function(err, rows, fields) {
-      if ( err ) {
-        console.error(err);
-        callback(err.Error);
-        return;
-      } else {
+      connection.query(q, a, function(err, rows, fields) {
+        if ( err ) {
+          onerror(err);
+          return;
+        }
+
         if ( rows[0] ) {
           var row = rows[0];
           var settings = {};
@@ -112,6 +116,34 @@
           });
           return;
         }
+        invalid();
+      });
+    }
+
+    var q = 'SELECT `password` FROM `osjs_users` WHERE `username` = ? LIMIT 1;';
+    var a = [login.username];
+
+    connection.query(q, a, function(err, rows, fields) {
+      if ( err ) {
+        onerror(err);
+        return;
+      }
+
+      if ( rows[0] ) {
+        var row = rows[0];
+        var hash = row.password.replace(/^\$2y(.+)$/i, '\$2a$1');
+        bcrypt.compare(login.password, hash, function(err, res) {
+          if ( err ) {
+            onerror(err);
+          } else {
+            if ( res === true ) {
+              getUserInfo();
+            } else {
+              invalid();
+            }
+          }
+        });
+        return;
       }
 
       invalid();
@@ -126,8 +158,7 @@
 
     connection.query(q, a, function(err, rows, fields) {
       if ( err ) {
-        console.error(err);
-        callback(err.Error);
+        onerror(err);
         return;
       }
 
@@ -135,48 +166,71 @@
     });
   };
 
-  APIUser.logout = function(request, response) {
-    console.log('APIUser::logout()');
-    request.cookies.set('username', null, {httpOnly:true});
-    request.cookies.set('groups', null, {httpOnly:true});
-    return true;
+  /////////////////////////////////////////////////////////////////////////////
+  // API
+  /////////////////////////////////////////////////////////////////////////////
+
+  var API = {
+    login: function(args, callback, request, response, config, handler) {
+      APIUser.login(args, request, response, function(error, result) {
+        if ( error ) {
+          callback(error);
+          return;
+        }
+
+        handler.setUserData(request, response, result.userData, function() {
+          callback(false, result);
+        });
+      }, config, handler);
+    },
+
+    logout: function(args, callback, request, response, config, handler) {
+      handler.setUserData(request, response, null, function() {
+        callback(false, true);
+      });
+    },
+
+    settings: function(args, callback, request, response, config, handler) {
+      APIUser.updateSettings(args.settings, request, response, callback);
+    }
   };
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  exports.register = function(CONFIG, API, HANDLER) {
-    console.info('-->', 'Registering handler API methods');
+  /**
+   * @api handler.MysqlHandler
+   * @see handler.Handler
+   * @class
+   */
+  exports.register = function(instance, DefaultHandler) {
+    function MysqlHandler() {
+      DefaultHandler.call(this, instance, API);
+    }
 
-    HANDLER.onServerStart = function() {
+    MysqlHandler.prototype = Object.create(DefaultHandler.prototype);
+    MysqlHandler.constructor = DefaultHandler;
+
+    MysqlHandler.prototype.onServerStart = function(cb) {
       if ( !connection ) {
         connection = mysql.createConnection(MYSQL_CONFIG);
-        connection.connect();
+        connection.connect(function() {
+          cb();
+        });
+      } else {
+        cb();
       }
     };
 
-    HANDLER.onServerEnd = function() {
+    MysqlHandler.prototype.onServerEnd = function(cb) {
       if ( connection ) {
         connection.end();
       }
+      cb();
     };
 
-    API.login = function(args, callback, request, response, body) {
-      APIUser.login(args, request, response, function(error, result) {
-        callback(error, result);
-      });
-    };
-
-    API.logout = function(args, callback, request, response) {
-      var result = APIUser.logout(request, response);
-      callback(false, result);
-    };
-
-    API.settings = function(args, callback, request, response) {
-      APIUser.updateSettings(args.settings, request, response, callback);
-    };
-
+    return new MysqlHandler();
   };
 
-})(require('querystring'), require('mysql'));
+})(require('mysql'), require('bcryptjs'));

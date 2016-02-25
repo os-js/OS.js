@@ -28,6 +28,7 @@
 -- @licence Simplified BSD License
 --
 
+local json = require "luci.json"
 local fs = require "nixio.fs"
 local osjs = require "osjs"
 local wsapi = require "wsapi"
@@ -40,6 +41,14 @@ local wresponse = require "wsapi.response"
 -- ----------------------------------------------------------------------------
 
 function run(wsapi_env)
+  local method = wsapi_env.PATH_INFO:match("^/(%a+)")
+  local idata = {}
+  if wsapi_env.REQUEST_METHOD == "POST" and method ~= "upload" then
+    local len = tonumber(wsapi_env.CONTENT_LENGTH) or 0
+    local input = wsapi_env.input:read(len) or ""
+    idata = json.decode(input) or {}
+  end
+
   local request  = wrequest.new(wsapi_env, {overwrite = true})
   local response = wresponse.new()
 
@@ -52,7 +61,7 @@ function run(wsapi_env)
   end
 
   if request.method == "GET" then
-    local path = request.GET["path"]
+    local path = wsapi_env.PATH_INFO:gsub("^/get/", "")
     local realpath = osjs.get_real_path(request, response, path)
 
     if realpath ~= nil then
@@ -66,24 +75,31 @@ function run(wsapi_env)
       response.status = 500
     end
   else
-    local path = request.POST["path"] .. "/"
-    local contents = request.POST.upload.contents
-    local filename = request.POST.upload.name
-    local realpath = osjs.get_real_path(request, response, path)
+    if method == "upload" then
+      local path = request.POST["path"] .. "/"
+      local contents = request.POST.upload.contents
+      local filename = request.POST.upload.name
+      local realpath = osjs.get_real_path(request, response, path)
 
-    if realpath and filename then
-      realpath = realpath .. filename
+      if realpath and filename then
+        realpath = realpath .. filename
 
-      if not fs.writefile(realpath, contents) then
+        if not fs.writefile(realpath, contents) then
+          response.status = 500
+          response:write("Failed to upload file")
+        end
+      else
         response.status = 500
-        response:write("Failed to upload file")
+        response:write("No filename or path given to upload")
       end
-    else
-      response.status = 500
-      response:write("No filename or path given to upload")
-    end
 
-    response:write(1)
+      response:write(1)
+    else
+      local error, data = osjs.vfs_request(request, response, method, idata)
+      local result = {error = error, result = data}
+      response:content_type("application/json")
+      response:write(json.encode(result))
+    end
 
   end
 

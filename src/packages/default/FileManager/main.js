@@ -208,7 +208,6 @@
   };
 
   ApplicationFileManagerWindow.prototype.checkSelection = function(files) {
-    // FIXME: Locales
     var scheme = this._scheme;
 
     if ( !scheme ) {
@@ -218,13 +217,25 @@
     var self = this;
     var content = '';
     var statusbar = scheme.find(this, 'Statusbar');
+    var doTranslate = OSjs.Applications.ApplicationFileManager._;
 
     var sum, label;
 
-    function toggleMenuItems(isFile) {
-      scheme.find(self, 'MenuInfo').set('disabled', !isFile);
-      scheme.find(self, 'MenuDownload').set('disabled', !isFile);
-      scheme.find(self, 'MenuOpen').set('disabled', !isFile);
+    function toggleMenuItems(isFile, isDirectory) {
+      /*
+       * Toggling MenuItems with the bit MODE_F or MODE_FD set by type of selected items
+       * MODE_F : Selected items consist of ONLY files
+       * MODE_FD : One or many items are selected (type doesn't matter)
+       */
+
+      var MODE_F = !isFile || !!isDirectory;
+      var MODE_FD = !(isFile || isDirectory);
+
+      scheme.find(self, 'MenuRename').set('disabled', MODE_FD);
+      scheme.find(self, 'MenuDelete').set('disabled', MODE_FD);
+      scheme.find(self, 'MenuInfo').set('disabled', MODE_FD);  // TODO: Directory info must be supported
+      scheme.find(self, 'MenuDownload').set('disabled', MODE_F);
+      scheme.find(self, 'MenuOpen').set('disabled', MODE_F);
     }
 
     if ( files && files.length ) {
@@ -239,17 +250,17 @@
       });
 
       label = 'Selected {0} files, {1} dirs, {2}';
-      content = Utils.format(label, sum.files, sum.directories, Utils.humanFileSize(sum.size));
+      content = doTranslate(label, sum.files, sum.directories, Utils.humanFileSize(sum.size));
 
-      toggleMenuItems(sum.files && !sum.directories);
+      toggleMenuItems(sum.files, sum.directories);
     } else {
       sum = this.currentSummary;
       if ( sum ) {
         label = 'Showing {0} files ({1} hidden), {2} dirs, {3}';
-        content = Utils.format(label, sum.files, sum.hidden, sum.directories, Utils.humanFileSize(sum.size));
+        content = doTranslate(label, sum.files, sum.hidden, sum.directories, Utils.humanFileSize(sum.size));
       }
 
-      toggleMenuItems(false);
+      toggleMenuItems(false, false);
     }
 
     statusbar.set('value', content);
@@ -298,6 +309,10 @@
 
     var sideViewItems = [];
     VFS.getModules({special: true}).forEach(function(m, i) {
+      if ( m.module.dynamic && !m.module.mounted() ) {
+        return;
+      }
+
       var classNames = [m.module.mounted() ? 'mounted' : 'unmounted'];
       if ( m.module.readOnly ) {
         classNames.push('readonly gui-has-emblem');
@@ -336,12 +351,13 @@
               this.changePath(path);
             }
           }
-
           this.updateSideView(m);
         }
       }
     } else {
       if ( args.file && this.currentPath === Utils.dirname(args.file.path) ) {
+        this.changePath(null);
+      } else if ( args.dir && this.currentPath === args.dir ) {
         this.changePath(null);
       }
     }
@@ -489,7 +505,9 @@
 
     if ( set ) {
       vfsOptions.save(function() {
-        self.changePath(null);
+        setTimeout(function() {
+          self.changePath(null);
+        }, 10);
       });
     }
     return toggle;

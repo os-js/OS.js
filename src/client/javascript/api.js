@@ -262,12 +262,14 @@
   /**
    * Perform cURL call
    *
-   * @param   Object    args      cURL Arguments (see backend)
-   * @param   Function  callback  Callback function
-   *                              fn(error, result)
+   * The response is in form of: {httpCode, body}
+   *
+   * @param   Object    args      cURL Arguments (see docs)
+   * @param   Function  callback  Callback function => fn(error, response)
    *
    * @return  void
    * @link    http://os.js.org/doc/tutorials/using-curl.html
+   * @link    http://os.js.org/doc/server/srcservernodenode_modulesosjsapijs.html#api-curl
    * @api     OSjs.API.curl()
    */
   function doCurl(args, callback) {
@@ -288,13 +290,18 @@
   /**
    * Global function for calling API (backend)
    *
+   * You can call VFS functions by prefixing your method name with "FS:"
+   *
+   * Response is in form of: {error, result}
+   *
    * @param   String    m       Method name
    * @param   Object    a       Method arguments
-   * @param   Function  cok     Callback on success
-   * @param   Function  cerror  (Optional) Callback on HTTP error
+   * @param   Function  cok     Callback on success => fn(response)
+   * @param   Function  cerror  (Optional) Callback on HTTP error => fn(error)
    * @param   Object    options (Optional) Options to send to the XHR request
    *
    * @see     OSjs.Core.Handler.callAPI()
+   * @see     OSjs.Utils.ajax()
    *
    * @return  void
    * @api     OSjs.API.call()
@@ -1364,12 +1371,14 @@
     }
 
     var result = true;
-    group.forEach(function(g) {
-      if ( userGroups.indexOf(g) < 0 ) {
-        result = false;
-      }
-      return result;
-    });
+    if ( userGroups.indexOf('admin') < 0 ) {
+      group.forEach(function(g) {
+        if ( userGroups.indexOf(g) < 0 ) {
+          result = false;
+        }
+        return result;
+      });
+    }
     return result;
   }
 
@@ -1571,7 +1580,7 @@
    * Method for adding a hook
    *
    * @param   String    name    Hook name
-   * @param   Function  fn      Callback
+   * @param   Function  fn      Callback => fn()
    *
    * @return  void
    * @api     OSjs.API.addHook()

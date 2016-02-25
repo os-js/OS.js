@@ -30,18 +30,18 @@
 (function(Utils, API) {
   'use strict';
 
-  window.OSjs       = window.OSjs       || {};
-  OSjs.VFS          = OSjs.VFS          || {};
-  OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
+  window.OSjs          = window.OSjs          || {};
+  OSjs.VFS             = OSjs.VFS             || {};
+  OSjs.VFS.Transports  = OSjs.VFS.Transports  || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // API
   /////////////////////////////////////////////////////////////////////////////
 
-  var _NullModule = {};
+  var internalTransport = {};
 
-  _NullModule.scandir = function(item, callback, options) {
-    OSjs.VFS.internalCall('scandir', [item.path], function(error, result) {
+  internalTransport.scandir = function(item, callback, options) {
+    OSjs.VFS.internalCall('scandir', {path: item.path}, function(error, result) {
       var list = [];
       if ( result ) {
         result = OSjs.VFS.filterScandir(result, options);
@@ -53,26 +53,23 @@
     });
   };
 
-  _NullModule.write = function(item, data, callback, options) {
+  internalTransport.write = function(item, data, callback, options) {
     options = options || {};
     options.onprogress = options.onprogress || function() {};
 
     function _write(dataSource) {
-      var wopts = [item.path, dataSource, options];
+      var wopts = {path: item.path, data: dataSource};
 
       /*
       if ( API.getConfig('Connection.Type') === 'nw' ) {
-        OSjs.Core.getHandler().nw.request('fs', {
-          'method': 'write',
-          'arguments': wopts
-        }, function(err, res) {
+        OSjs.Core.getHandler().nw.request(true, 'write', wopt, function(err, res) {
           callback(err, res);
         });
         return;
       }
       */
 
-      OSjs.VFS.internalCall('write', wopts, callback);
+      OSjs.VFS.internalCall('write', wopts, callback, options);
     }
 
     if ( typeof data === 'string' && !data.length ) {
@@ -90,92 +87,58 @@
     });
   };
 
-  _NullModule.read = function(item, callback, options) {
-    options = options || {};
-    options.onprogress = options.onprogress || function() {};
+  internalTransport.read = function(item, callback, options) {
 
     if ( API.getConfig('Connection.Type') === 'nw' ) {
-      OSjs.Core.getHandler().nw.request('fs', {
-        'method': 'read',
-        'arguments': [
-          item.path,
-          {raw: true}
-        ]
+      OSjs.Core.getHandler().nw.request(true, 'read', {
+        path: item.path,
+        options: {raw: true}
       }, function(err, res) {
         callback(err, res);
       });
       return;
     }
 
-    this.url(item, function(error, url) {
-      if ( error ) {
-        return callback(error);
-      }
-
-      Utils.ajax({
-        url: url,
-        method: 'GET',
-        responseType: 'arraybuffer',
-        onprogress: function(ev) {
-          if ( ev.lengthComputable ) {
-            options.onprogress(ev, ev.loaded / ev.total);
-          } else {
-            options.onprogress(ev, -1);
-          }
-        },
-        onsuccess: function(response, xhr) {
-          if ( !xhr || xhr.status === 404 || xhr.status === 500 ) {
-            callback(xhr.statusText || response);
-            return;
-          }
-          callback(false, response);
-        },
-        onerror: function(error) {
-          callback(error);
-        }
-      });
-    });
+    OSjs.VFS.internalCall('get', {path: item.path}, callback, options);
   };
 
-  _NullModule.copy = function(src, dest, callback) {
-    OSjs.VFS.internalCall('copy', [src.path, dest.path], callback);
+  internalTransport.copy = function(src, dest, callback) {
+    OSjs.VFS.internalCall('copy', {src: src.path, dest: dest.path}, callback);
   };
 
-  _NullModule.move = function(src, dest, callback) {
-    OSjs.VFS.internalCall('move', [src.path, dest.path], callback);
+  internalTransport.move = function(src, dest, callback) {
+    OSjs.VFS.internalCall('move', {src: src.path, dest: dest.path}, callback);
   };
 
-  _NullModule.unlink = function(item, callback) {
-    OSjs.VFS.internalCall('delete', [item.path], callback);
+  internalTransport.unlink = function(item, callback) {
+    OSjs.VFS.internalCall('delete', {path: item.path}, callback);
   };
 
-  _NullModule.mkdir = function(item, callback) {
-    OSjs.VFS.internalCall('mkdir', [item.path], callback);
+  internalTransport.mkdir = function(item, callback) {
+    OSjs.VFS.internalCall('mkdir', {path: item.path}, callback);
   };
 
-  _NullModule.exists = function(item, callback) {
-    OSjs.VFS.internalCall('exists', [item.path], callback);
+  internalTransport.exists = function(item, callback) {
+    OSjs.VFS.internalCall('exists', {path: item.path}, callback);
   };
 
-  _NullModule.fileinfo = function(item, callback) {
-    OSjs.VFS.internalCall('fileinfo', [item.path], callback);
+  internalTransport.fileinfo = function(item, callback) {
+    OSjs.VFS.internalCall('fileinfo', {path: item.path}, callback);
   };
 
-  _NullModule.url = function(item, callback) {
-    var path    = typeof item === 'string' ? item : item.path;
-    var fsuri   = API.getConfig('Connection.FSURI');
-    callback(false, path ? (fsuri + path) : fsuri);
+  internalTransport.url = function(item, callback) {
+    callback(false, OSjs.VFS.Transports.Internal.path(item));
   };
 
-  _NullModule.trash = function(item, callback) {
+  internalTransport.trash = function(item, callback) {
     callback(API._('ERR_VFS_UNAVAILABLE'));
   };
 
-  _NullModule.untrash = function(item, callback) {
+  internalTransport.untrash = function(item, callback) {
     callback(API._('ERR_VFS_UNAVAILABLE'));
   };
 
-  _NullModule.emptyTrash = function(item, callback) {
+  internalTransport.emptyTrash = function(item, callback) {
     callback(API._('ERR_VFS_UNAVAILABLE'));
   };
 
@@ -183,36 +146,54 @@
   // WRAPPERS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Make a OS.js Server HTTP request for VFS
+   *
+   * @param   String      name      Method name
+   * @param   Object      args      Method arguments
+   * @param   Function    callback  Callback => fn(error, result)
+   * @param   Object      option    (Optional) request options
+   *
+   * @return  void
+   * @api OSjs.VFS.Transports.Internal.request()
+   */
   function makeRequest(name, args, callback, options) {
     args = args || [];
     callback = callback || {};
 
-    if ( !_NullModule[name] ) {
-      throw new Error('Invalid _NullModule API call name');
+    if ( !internalTransport[name] ) {
+      throw new Error('Invalid Internal API call name');
     }
 
     var fargs = args;
     fargs.push(callback);
     fargs.push(options);
-    _NullModule[name].apply(_NullModule, fargs);
+    internalTransport[name].apply(internalTransport, fargs);
+  }
+
+  /**
+   * Make a OS.js Server HTTP URL for VFS
+   *
+   * @param   Mixed       item        (Optional) Path of VFS.File object
+   *
+   * @retun   String                  URL based on input
+   *
+   * @api OSjs.VFS.Transports.Internal.path()
+   */
+  function makePath(item) {
+    if ( typeof item === 'string' ) {
+      item = new OSjs.VFS.File(item);
+    }
+    return OSjs.Core.getHandler().getVFSPath(item);
   }
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.VFS._NullModule = {
-    unmount: function(cb) {
-      cb = cb || function() {};
-      cb(API._('ERR_VFS_UNAVAILABLE'), false);
-    },
-    mounted: function() {
-      return true;
-    },
-    enabled: function() {
-      return true;
-    },
-    request: makeRequest
+  OSjs.VFS.Transports.Internal = {
+    request: makeRequest,
+    path: makePath
   };
 
 })(OSjs.Utils, OSjs.API);

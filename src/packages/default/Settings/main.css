@@ -28,9 +28,8 @@
  * @licence Simplified BSD License
  */
 
-.ApplicationSettingsWindow application-window-content {
-}
-
+/*.ApplicationSettingsWindow application-window-content {
+}*/
 
 .ApplicationSettingsWindow gui-label[data-id="Header"] {
   padding-top : 10px;
@@ -50,6 +49,6 @@
 .ApplicationSettingsWindow gui-vbox-container[data-id="TabsContainer"] > gui-tabs {
   display : none;
 }
-.ApplicationSettingsWindow gui-vbox-container[data-id="TabsContainer"] > gui-tabs.active {
+.ApplicationSettingsWindow gui-vbox-container[data-id="TabsContainer"] > .active {
   display : block;
 }

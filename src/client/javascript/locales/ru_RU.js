@@ -271,7 +271,8 @@
     'LBL_ORDERED_LIST'  : 'Нумерованный список',
     'LBL_BACKGROUND_IMAGE' : 'Фоновое изображение',
     'LBL_BACKGROUND_COLOR' : 'Фоновоый цвет',
-    'LBL_UNORDERED_LIST'   : 'Неупорядоченный список'
+    'LBL_UNORDERED_LIST'   : 'Неупорядоченный список',
+    'LBL_SHOW_SIDEBAR' : 'Отобразить боковую панель'
   };
 
 })();

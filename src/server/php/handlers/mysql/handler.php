@@ -2,7 +2,7 @@
 /*!
  * OS.js - JavaScript Operating System
  *
- * Example Handler: Login screen and session/settings handling via database
+ * Mysql Handler: Login screen and session/settings handling via database
  * PLEASE NOTE THAT THIS AN EXAMPLE ONLY, AND SHOUD BE MODIFIED BEFORE USAGE
  *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
@@ -37,13 +37,14 @@ See doc/example-handler.txt
 */
 
 define("APIHANDLER_DSN", "mysql:host=localhost;dbname=osjs");
-define("APIHANDLER_USER", "osjs");
-define("APIHANDLER_PASS", "osjs");
+define("APIHANDLER_USER", "root");
+define("APIHANDLER_PASS", "acca9pra");
 
 /**
- * ExampleAPIHandler for sessions via database
+ * MysqlAPIHandler for sessions via database
  */
-class ExampleAPIHandler
+class MysqlAPIHandler
+  extends APIHandler
 {
   protected static function _initDB() {
     $args = Array(1002 => "SET NAMES 'utf8'");
@@ -137,9 +138,9 @@ class ExampleAPIHandler
 }
 
 
-API::AddHandler('login', Array('ExampleAPIHandler', 'login'));
-API::AddHandler('logout', Array('ExampleAPIHandler', 'logout'));
-API::AddHandler('settings', Array('ExampleAPIHandler', 'settings'));
-API::SetHandler('ExampleAPIHandler');
+API::AddHandler('login', Array('MysqlAPIHandler', 'login'));
+API::AddHandler('logout', Array('MysqlAPIHandler', 'logout'));
+API::AddHandler('settings', Array('MysqlAPIHandler', 'settings'));
+API::SetHandler('MysqlAPIHandler');
 
 ?>

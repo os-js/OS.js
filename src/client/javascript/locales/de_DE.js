@@ -272,7 +272,8 @@
     'LBL_ORDERED_LIST'  : 'Sortierte Liste',
     'LBL_BACKGROUND_IMAGE' : 'Hintergrundbild',
     'LBL_BACKGROUND_COLOR' : 'Hintergrundfarbe',
-    'LBL_UNORDERED_LIST'   : 'Unsortierte Liste'
+    'LBL_UNORDERED_LIST'   : 'Unsortierte Liste',
+    'LBL_SHOW_SIDEBAR' : 'Seitenleiste anzeigen'
   };
 
 })();

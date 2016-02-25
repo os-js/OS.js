@@ -36,142 +36,52 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var _Locales = {
-    no_NO : {
-      'Toggle tools toolbar' : 'Svitsj verktøylinje',
-      'Toggle layers toolbar' : 'Svitsj lag-verktøylinje',
-      'Layer' : 'Lag',
-      'Effect' : 'Effekt',
-      'Flip Horizontally' : 'Flipp Horisontalt',
-      'Flip Vertically' : 'Flipp Vertikalt',
-      'Foreground' : 'Forgrunn',
-      'Background' : 'Bakgrunn',
-      'Foreground (Fill) Color' : 'Forgrunn (Fyll) Farge',
-      'Background (Stroke) Color' : 'Bakgrunn (Strøk) Farge',
-      'Line join' : 'Linje Knytting',
-      'Line width' : 'Linje Bredde',
-      'Toggle Stroke' : 'Svitsj strøk',
-      'Enable stroke' : 'Skru på strøk',
-      'Round' : 'Rund',
-      'Miter' : 'Skjev',
-      'Bevel' : 'Kantet',
-      'Stroked' : 'Strøk På',
-      'No stroke' : 'Strøk Av',
+    bg_BG : {
+      'Toggle tools toolbar' : 'Бар с инструменти',
+      'Toggle layers toolbar' : 'Бар с слоеве',
+      'Layer' : 'Слой',
+      'Effect' : 'Ефект',
+      'Flip Horizontally' : 'Обърни хоризонтално',
+      'Flip Vertically' : 'Обърни вертикално',
+      'Foreground' : 'Преден фон',
+      'Bakgrunn' : 'Заден фон',
+      'Foreground (Fill) Color' : 'Преден фон (Запълни) цвят',
+      'Background (Stroke) Color' : 'Заден фон цвят',
+      'Line join' : 'Съединяване на линии',
+      'Line width' : 'Широчина на линия',
+      'Toggle Stroke' : 'Превключване на удър',
+      'Enable stroke' : 'Включи удър',
+      'Round' : 'Кръгъл',
+      'Miter' : 'Митра',
+      'Bevel' : 'Откос',
+      'Stroked' : 'Ударен',
+      'No stroke' : 'Без удър',
 
-      'Pointer' : 'Peker',
-      'Move active layer' : 'Flytt aktivt lag',
+      'Pointer' : 'Стрелка',
+      'Move active layer' : 'Премести активен слой',
 
-      'Picker' : 'Plukker',
-      'LMB: set fg color, RMB: set gb color' : 'LMB: sett bg farge, RMB: sett fg farge',
+      'Picker' : 'берач',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'LMB: изберете цвят за преден план, RMB: изберете цвят за фон',
 
-      'Pencil' : 'Penn',
-      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: Tegn med fg/bg farge',
-      'Path' : 'Sti',
+      'Pencil' : 'Молив',
+      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: рисувай с fg/bg цвят',
+      'Path' : 'Път',
 
-      'Square/Rectangle' : 'Firkant/Rektangel',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Tegn med fg/bg farge, SHIFT: Tegn rektangel',
+      'Square/Rectangle' : 'Квадрат/Правоъгъкник',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: рисувай с fb/bg цвят, SHIFT: нарисувай правоъгълник',
 
-      'Circle/Ellipse' : 'Sirkel/Ellipse',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Tegn med fg/bg farge, SHIFT: Tegn ellipse',
+      'Circle/Ellipse' : 'Кръг/Елипса',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: рисувай с fb/bg цвят, SHIFT: нарисувай елипса',
 
-      'Blur' : 'Klatte (Blur)',
-      'Noise' : 'Støy',
-      'Invert colors' : 'Inverter farger',
-      'Grayscale' : 'Gråskala',
-      'Sharpen' : 'Skarpgjør',
-      'Simple Blur' : 'Simpel Klatte (Blur)',
+      'Blur' : 'Замъгли',
+      'Noise' : 'Шум',
+      'Invert colors' : 'Инвертирай цветове',
+      'Grayscale' : 'Черно-бяло',
+      'Sharpen' : 'Острота',
+      'Simple Blur' : 'Опростено замъгляване',
 
-      'Radius' : 'Radius',
-      'Iterations' : 'Itereringer'
-    },
-    pl_PL : {
-      'Toggle tools toolbar' : 'Przełącz Pasek narzędzi',
-      'Toggle layers toolbar' : 'Przełącz Pasek warstw',
-      'Layer' : 'Warstwy',
-      'Effect' : 'Efekty',
-      'Flip Horizontally' : 'Przerzuć w poziomie',
-      'Flip Vertically' : 'Przerzuć w pionie',
-      'Foreground' : 'Pierwszy plan',
-      'Bakgrunn' : 'Tło',
-      'Line join' : 'Rodzaj lini',
-      'Line width' : 'Grubość',
-      'Toggle Stroke' : 'Włącz/wyłącz obramowanie',
-      'Enable stroke' : 'Włącz obramowanie',
-      'Round' : 'Zwykłe',
-      'Miter' : 'Paski',
-      'Bevel' : 'Kątownik',
-      'Stroked' : 'Obranowanie',
-      'No stroke' : 'Bez obramowania',
-
-      'Pointer' : 'Wskaźnik',
-      'Move active layer' : 'Przenieś aktywne warstwy',
-
-      'Picker' : 'Wybór',
-      'LMB: set fg color, RMB: set gb color' : 'LMB: Wstaw kolor bg, RMB: ustaw kolor fg',
-
-      'Pencil' : 'Ołówek',
-      'LMB/RMB: Draw with fg/bg color' : 'Maluj w kolorze fg/bg',
-      'Path' : 'Ścieżka',
-
-      'Square/Rectangle' : 'Kwadratowe / prostokątne',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Maluj w kolorze fb/bg, SHIFT: Narysuj prostokąt',
-
-      'Circle/Ellipse' : 'Koło / Elipsa',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Maluj w kolorze fb/bg, SHIFT: Narysuj elipse',
-
-      'Blur' : 'Blur',
-      'Noise' : 'Szum',
-      'Invert colors' : 'Odwróc kolory',
-      'Grayscale' : 'Skala szaroścu',
-      'Sharpen' : 'Zaostrzone',
-      'Simple Blur' : 'Łatwy Blur',
-
-      'Radius' : 'Promień',
-      'Iterations' : 'Powtórzenia'
-    },
-    sk_SK : {
-      'Toggle tools toolbar' : 'Zobraz panel nástrojov',
-      'Toggle layers toolbar' : 'Zobraz vrstvy',
-      'Layer' : 'Vrstvy',
-      'Effect' : 'Efekty',
-      'Flip Horizontally' : 'Transformuj horizontálne',
-      'Flip Vertically' : 'Transformuj vertikálne',
-      'Foreground' : 'Popredie',
-      'Bakgrunn' : 'Pozadie',
-      'Line join' : 'Typ čiary',
-      'Line width' : 'Šírka čiary',
-      'Toggle Stroke' : 'Zapnúť orámovanie',
-      'Enable stroke' : 'Orámovanie',
-      'Round' : 'Okrúhly',
-      'Miter' : 'Naklonený',
-      'Bevel' : 'Šikmý',
-      'Stroked' : 'Orámovaný',
-      'No stroke' : 'Bez orámovania',
-
-      'Pointer' : 'Ukazovateľ',
-      'Move active layer' : 'Presuň aktívnu vrstvu',
-
-      'Picker' : 'Kurzor',
-      'LMB: set fg color, RMB: set gb color' : 'LMB: nastav farbu pozadia, RMB: nastav farbu popredia',
-
-      'Pencil' : 'Ceruzka',
-      'LMB/RMB: Draw with fg/bg color' : 'Maľuj farbou fg/bg',
-      'Path' : 'Cesta',
-
-      'Square/Rectangle' : 'Štvorec / Obdĺžnik',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Maľuj farbou fb/bg, SHIFT: Obdĺžnik',
-
-      'Circle/Ellipse' : 'Kruh / Elipsa',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Maľuj farbou fb/bg, SHIFT: Elipsa',
-
-      'Blur' : 'Rozmazať',
-      'Noise' : 'Šum',
-      'Invert colors' : 'Invertovať farby',
-      'Grayscale' : 'Odtiene šedej',
-      'Sharpen' : 'Zostriť',
-      'Simple Blur' : 'Jednoduchý Blur',
-
-      'Radius' : 'Rádius',
-      'Iterations' : 'Iterácie'
+      'Radius' : 'Радиус',
+      'Iterations' : 'Повторения'
     },
     de_DE : {
       'Toggle tools toolbar' : 'Tools Toolbar',
@@ -198,7 +108,7 @@
       'Move active layer' : 'Bewege aktive Ebene',
 
       'Picker' : 'Wähler',
-      'LMB: set fg color, RMB: set gb color' : 'LMB: wähle Vordergrundfarbe, RMB: wähle Hintergrundfarbe',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'LMB: wähle Vordergrundfarbe, RMB: wähle Hintergrundfarbe',
 
       'Pencil' : 'Stift',
       'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: Zeichnen mit fg/bg Farbe',
@@ -245,7 +155,7 @@
       'Move active layer' : 'Mover la capa activa',
 
       'Picker' : 'Selector',
-      'LMB: set fg color, RMB: set gb color' : 'LMB: Establecer el color de primer plano, RMB: Establecer el color de fondo',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'LMB: Establecer el color de primer plano, RMB: Establecer el color de fondo',
 
       'Pencil' : 'Lápiz',
       'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: Dibujar con el color de fondo/de primer plano',
@@ -268,53 +178,102 @@
       'Iterations' : 'Iteraciones'
     },
     fr_FR : {
+      'Toggle tools toolbar' : 'Afficher la barre d\'outils',
+      'Toggle layers toolbar' : 'Afficher la barre des calques',
+      'Layer' : 'Calque',
+      'Effect' : 'Effet',
+      'Flip Horizontally' : 'Pivoter horizontalement',
+      'Flip Vertically' : 'Pivoter verticalement',
+      'Foreground' : 'Avant-plan',
+      'Background' : 'Arrière-plan',
+      'Foreground (Fill) Color' : 'Couleur de l\'avant-plan (remplissage)',
+      'Background (Stroke) Color' : 'Couleur de l\'arrière-plan (trait)',
+      'Line join' : 'Jointure',
+      'Line width' : 'Taille de la ligne',
+      'Toggle Stroke' : 'Afficher les traits',
+      'Enable stroke' : 'Activer les traits',
+      'Round' : 'Arrondi',
+      'Miter' : 'Pointu',
+      'Bevel' : 'Biseauté',
+      'Stroked' : 'Barré',
+      'No stroke' : 'Non barré',
+
+      'Pointer' : 'Pointeur',
+      'Move active layer' : 'Déplacer le calque actif',
+
+      'Picker' : 'Sélecteur',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'Clic gauche: sélectionne la couleur de l\'avant-plan, clic droit: sélectionne la couleur de l\'arrière-plan',
+
+      'Pencil' : 'Pinceau',
+      'LMB: Use foreground-, RMB: Use background color' : 'Clic gauche: utilise la couleur d\'avant-plan, clic droit : utilise la couleur d\'arrière-plan',
+      'Path' : 'Chemin',
+
+      'Square/Rectangle' : 'Carré/Rectangle',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode' : 'Clic gauche: utilise la couleur d\'avant-plan, clic droit: utilise la couleur d\'arrière-plan, SHIFT: affiche le mode rectangle',
+
+      'Circle/Ellipse' : 'Cercle/Ellipse',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode' : 'Clic gauche: utilise la couleur d\'avant-plan, clic droit: utilise la couleur d\'arrière-plan, SHIFT: affiche le mode ellipse',
+
+      'LMB: Fill with foreground-, RMB: Fill with background color': 'Clic gauche: remplir avec la couleur d\'avant-plan, clic droit: remplir avec la couleur d\'arrière-plan',
+      'Set foreground color': 'Définir la couleur d\'avant-plan',
+      'Set background color': 'Définir la couleur d\'arrière-plan',
+
+      'Blur' : 'Flou',
+      'Noise' : 'Bruit',
+      'Invert colors' : 'Inverser les couleurs',
+      'Grayscale' : 'Niveau de gris',
+      'Sharpen' : 'Netteté',
+      'Simple Blur' : 'Flou simple',
+
+      'Radius' : 'Rayon',
+      'Iterations' : 'Itérations'
     },
-    ru_RU : {
-      'Toggle tools toolbar' : 'Панель инструментов',
-      'Toggle layers toolbar' : 'Панель слоев',
-      'Layer' : 'Слой',
-      'Effect' : 'Эффекты',
-      'Flip Horizontally' : 'Отразить горизонтально',
-      'Flip Vertically' : 'Отразить вертикально',
-      'Foreground' : 'Передний план',
-      'Bakgrunn' : 'Фон',
-      'Foreground (Fill) Color' : 'Передний план (Заливка) цвет',
-      'Background (Stroke) Color' : 'Фоновый (Обводка) цвет',
-      'Line join' : 'Замкнутая линия',
-      'Line width' : 'Ширина линии',
-      'Toggle Stroke' : 'Вкл/выкл обводку',
-      'Enable stroke' : 'Включить обводку',
-      'Round' : 'Закругленный',
-      'Miter' : 'Прямой',
-      'Bevel' : 'Скошенный',
-      'Stroked' : 'С обводкой',
-      'No stroke' : 'Без обводки',
+    it_IT : {
+      'Toggle tools toolbar' : 'Mostra la barra strumenti',
+      'Toggle layers toolbar' : 'Mostra la barra dei livelli',
+      'Layer' : 'Livello',
+      'Effect' : 'Effetto',
+      'Flip Horizontally' : 'Specchia orizzontalmente',
+      'Flip Vertically' : 'Specchia verticalmente',
+      'Foreground' : 'Primopiano',
+      'Background' : 'Sfondo',
+      'Foreground (Fill) Color' : 'Colore in primopiano (Riempimento)',
+      'Background (Stroke) Color' : 'Colore di sfondo (Tracciato)',
+      'Line join' : 'Congiungi linea',
+      'Line width' : 'Lunghezza linea',
+      'Toggle Stroke' : 'Mostra tracciato',
+      'Enable stroke' : 'Abilita tracciato',
+      'Round' : 'Arrotonda',
+      'Miter' : 'Miter',
+      'Bevel' : 'Smussatura',
+      'Stroked' : 'Tracciato',
+      'No stroke' : 'Nessun tracciato',
 
-      'Pointer' : 'Указатель',
-      'Move active layer' : 'Перемещает активный слой',
+      'Pointer' : 'Puntatore',
+      'Move active layer' : 'Sposta livello attivo',
 
-      'Picker' : 'Пипетка',
-      'LMB: set fg color, RMB: set gb color' : 'ЛКМ: устананавливает первичный цвет, ПКМ: устанавливает вторичный(фоновый) цвет',
+      'Picker' : 'Selettore',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'LMB: Imposta colore primopiano, RMB: Imposta colore di sfondo',
 
-      'Pencil' : 'Карандаш',
-      'LMB/RMB: Draw with fg/bg color' : 'ЛКМ/ПКМ: Рисует первичным/вторичным цветом',
-      'Path' : 'Прямая',
+      'Pencil' : 'Matita',
+      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: Disegna con colori fg/bg',
+      'Path' : 'Percorso',
 
-      'Square/Rectangle' : 'Квадрат/Прямоугольник',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'ЛКМ/ПКМ: рисует первичным/вторичным цветом квадрат, SHIFT: нарисовать прямоуголник',
+      'Square/Rectangle' : 'Quadrato/Rettangolo',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Disegna con colori di fg/bg, SHIFT: Disegna rettangolo',
 
-      'Circle/Ellipse' : 'Круг/Эллипс',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'ЛКМ/ПКМ: рисует первичным/вторичным цветом круг, SHIFT: нарисовать эллипс',
+      'Circle/Ellipse' : 'Cerchio/Ellisse',
+      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Disegna con colori di fg/bg, SHIFT: Disegna ellisse',
 
-      'Blur' : 'Размытие (Blur)',
-      'Noise' : 'Шум',
-      'Invert colors' : 'Инвертировать цвета',
-      'Grayscale' : 'Обесцветить',
-      'Sharpen' : 'Сточить',
-      'Simple Blur' : 'Простое размытие (Blur)',
+      'Blur' : 'Sfoca',
+      'Noise' : 'Disturbo',
+      'Invert colors' : 'Inverti colori',
+      'Grayscale' : 'Scala di grigi',
+      'Sharpen' : 'Intensifica',
+      'Simple Blur' : 'Sfocatura leggera',
 
-      'Radius' : 'Радиус',
-      'Iterations' : 'Итерации'
+      'Radius' : 'Raggio',
+      'Iterations' : 'Ripetizioni'
     },
     ko_KR : {
       'Toggle tools toolbar' : '도구 툴바 켜기/끄기',
@@ -341,17 +300,17 @@
       'Move active layer' : '활성 레이어 옮기기',
 
       'Picker' : '색상 추출',
-      'LMB: set fg color, RMB: set gb color' : '왼쪽 마우스 버튼: 전경색, 오른쪽 마우스 버튼 ',
+      'LMB: Pick foreground-, RMB: Pick background color' : '왼쪽 마우스 버튼: 전경색, 오른쪽 마우스 버튼 : 배경색',
 
       'Pencil' : '연필',
-      'LMB/RMB: Draw with fg/bg color' : '왼쪽 마우스/오른쪽 마우스 버튼 전경/배경색 그리기',
+      'LMB: Use foreground-, RMB: Use background color' : '왼쪽 마우스/오른쪽 마우스 버튼 전경/배경색 그리기',
       'Path' : '경로',
 
       'Square/Rectangle' : '정사각형/직사각형',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : '왼쪽/오른쪽 마우스 버튼 전경/배경색 그리기, SHIFT: 직사각형 그리기',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode' : '왼쪽/오른쪽 마우스 버튼 전경/배경색 그리기, SHIFT: 직사각형 그리기',
 
       'Circle/Ellipse' : '원/타원',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : '왼쪽/오른쪽 마우스 버튼 전경/배경색 그리기, SHIFT: 타원 그리기',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode' : '왼쪽/오른쪽 마우스 버튼 전경/배경색 그리기, SHIFT: 타원 그리기',
 
       'Blur' : '블러',
       'Noise' : '노이즈',
@@ -361,7 +320,10 @@
       'Simple Blur' : '약한 블러',
 
       'Radius' : '반경',
-      'Iterations' : '반복'
+      'Iterations' : '반복',
+
+      'LMB: Fill with foreground-, RMB: Fill with background color': '왼쪽 마우스/오른쪽 마우스 버튼 전경/배경색 칠하기',
+      'Set {0} color': '{0}색을 선택'
     },
     nl_NL : {
       'Toggle tools toolbar' : 'Toolbar gereedschappen',
@@ -388,17 +350,17 @@
       'Move active layer' : 'Verplaats de aktieve laag',
 
       'Picker' : 'Kiezer',
-      'LMB: set fg color, RMB: set gb color' : 'LMB: Kies voorgrond-kleur, RMB: Kies achtergrondkleur',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'LMB: Kies voorgrond-kleur, RMB: Kies achtergrondkleur',
 
       'Pencil' : 'Penseel',
-      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: Teken met voor- en achtergrondkleur',
+      'LMB: Use foreground-, RMB: Use background color' : 'LMB/RMB: Teken met voor- en achtergrondkleur',
       'Path' : 'Pfad',
 
       'Square/Rectangle' : 'Vierkant/rechthoek',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Teken met voor- en achtergrondkleur, SHIFT: Rechnthoek tekenen',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode' : 'LMB/RMB: Teken met voor- en achtergrondkleur, SHIFT: Rechnthoek tekenen',
 
       'Circle/Ellipse' : 'Cirkel/elipse',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: Teken met voor- en achtergrondkleur, SHIFT: Elipse tekenen',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode' : 'LMB/RMB: Teken met voor- en achtergrondkleur, SHIFT: Elipse tekenen',
 
       'Blur' : 'Vager maken (Blur)',
       'Noise' : 'Ruis',
@@ -410,52 +372,191 @@
       'Radius' : 'Radius',
       'Iterations' : 'Doorgangen'
     },
-    vi_VN : {
-      'Toggle tools toolbar' : 'Công cụ bật tắt thanh công cụ',
-      'Toggle layers toolbar' : 'Bật tắt cửa sổ layer',
-      'Layer' : 'Lớp',
-      'Effect' : 'Hiệu ứng',
-      'Flip Horizontally' : 'Lật ngang',
-      'Flip Vertically' : 'Lật theo chiều dọc',
-      'Foreground' : 'Nền trước',
-      'Background' : 'Nền dưới',
-      'Foreground (Fill) Color' : 'Màu nền trước',
-      'Background (Stroke) Color' : 'Màu nền dưới',
-      'Line join' : 'Ghép đoạn thằng',
-      'Line width' : 'Độ rộng dòng',
-      'Toggle Stroke' : 'Bật tắt nét',
-      'Enable stroke' : 'Bật nét',
-      'Round' : 'Tròn',
-      'Miter' : 'Góc',
-      'Bevel' : 'Góc xiên',
-      'Stroked' : 'Vuốt',
-      'No stroke' : 'Không vuốt',
+    no_NO : {
+      'Toggle tools toolbar' : 'Svitsj verktøylinje',
+      'Toggle layers toolbar' : 'Svitsj lag-verktøylinje',
+      'Layer' : 'Lag',
+      'Effect' : 'Effekt',
+      'Flip Horizontally' : 'Flipp Horisontalt',
+      'Flip Vertically' : 'Flipp Vertikalt',
+      'Foreground' : 'Forgrunn',
+      'Background' : 'Bakgrunn',
+      'Foreground (Fill) Color' : 'Forgrunn (Fyll) Farge',
+      'Background (Stroke) Color' : 'Bakgrunn (Strøk) Farge',
+      'Line join' : 'Linje Knytting',
+      'Line width' : 'Linje Bredde',
+      'Toggle Stroke' : 'Svitsj strøk',
+      'Enable stroke' : 'Skru på strøk',
+      'Round' : 'Rund',
+      'Miter' : 'Skjev',
+      'Bevel' : 'Kantet',
+      'Stroked' : 'Strøk På',
+      'No stroke' : 'Strøk Av',
 
-      'Pointer' : 'Con trỏ',
-      'Move active layer' : 'Di chuyển layer đang chọn',
+      'Pointer' : 'Peker',
+      'Move active layer' : 'Flytt aktivt lag',
 
-      'Picker' : 'Bảng chọn',
-      'LMB: set fg color, RMB: set gb color' : 'LMB: chọn màu fg, RMB: chọn màu gb',
+      'Picker' : 'Plukker',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'LMB: sett bg farge, RMB: sett fg farge',
 
-      'Pencil' : 'Bút chì',
-      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: vẽ với màu fg/bg',
-      'Path' : 'Đường',
+      'Pencil' : 'Penn',
+      'LMB: Use foreground-, RMB: Use background color' : 'LMB/RMB: Tegn med fg/bg farge',
+      'Path' : 'Sti',
 
       'Square/Rectangle' : 'Firkant/Rektangel',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: Tegn med fg/bg farge, SHIFT: Tegn rektangel',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode' : 'LMB/RMB: Tegn med fg/bg farge, SHIFT: Tegn rektangel',
 
-      'Circle/Ellipse' : 'Vuông / chữ nhật',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: vẽ với màu fg/bg, SHIFT: Vẽ ê-líp',
+      'Circle/Ellipse' : 'Sirkel/Ellipse',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode' : 'LMB/RMB: Tegn med fg/bg farge, SHIFT: Tegn ellipse',
 
-      'Blur' : 'Làm mờ',
-      'Noise' : 'Làm nhiễu',
-      'Invert colors' : 'Nghịch đảo màu',
-      'Grayscale' : 'Độ xám',
-      'Sharpen' : 'Làm sắc nét',
-      'Simple Blur' : 'Làm mờ đơn giản',
+      'Blur' : 'Klatte (Blur)',
+      'Noise' : 'Støy',
+      'Invert colors' : 'Inverter farger',
+      'Grayscale' : 'Gråskala',
+      'Sharpen' : 'Skarpgjør',
+      'Simple Blur' : 'Simpel Klatte (Blur)',
 
-      'Radius' : 'Bán kính',
-      'Iterations' : 'Lặp đi lặp lại'
+      'Radius' : 'Radius',
+      'Iterations' : 'Itereringer'
+    },
+    pl_PL : {
+      'Toggle tools toolbar' : 'Przełącz Pasek narzędzi',
+      'Toggle layers toolbar' : 'Przełącz Pasek warstw',
+      'Layer' : 'Warstwy',
+      'Effect' : 'Efekty',
+      'Flip Horizontally' : 'Przerzuć w poziomie',
+      'Flip Vertically' : 'Przerzuć w pionie',
+      'Foreground' : 'Pierwszy plan',
+      'Bakgrunn' : 'Tło',
+      'Foreground (Fill) Color' : 'Kolor pierwszoplanowy (Wypełnienie)',
+      'Background (Stroke) Color' : 'Kolor tła (Wycinanie)',
+      'Line join' : 'Rodzaj lini',
+      'Line width' : 'Grubość',
+      'Toggle Stroke' : 'Włącz/wyłącz obramowanie',
+      'Enable stroke' : 'Włącz obramowanie',
+      'Round' : 'Zwykłe',
+      'Miter' : 'Paski',
+      'Bevel' : 'Kątownik',
+      'Stroked' : 'Obranowanie',
+      'No stroke' : 'Bez obramowania',
+
+      'Pointer' : 'Wskaźnik',
+      'Move active layer' : 'Przenieś aktywne warstwy',
+
+      'Picker' : 'Wybór',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'LMB: Wstaw kolor bg, RMB: ustaw kolor fg',
+
+      'Pencil' : 'Ołówek',
+      'LMB: Use foreground-, RMB: Use background color' : 'Maluj w kolorze fg/bg',
+      'Path' : 'Ścieżka',
+
+      'Square/Rectangle' : 'Kwadratowe / prostokątne',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode' : 'LMB/RMB: Maluj w kolorze fb/bg, SHIFT: Narysuj prostokąt',
+
+      'Circle/Ellipse' : 'Koło / Elipsa',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode' : 'LMB/RMB: Maluj w kolorze fb/bg, SHIFT: Narysuj elipse',
+
+      'Blur' : 'Blur',
+      'Noise' : 'Szum',
+      'Invert colors' : 'Odwróc kolory',
+      'Grayscale' : 'Skala szaroścu',
+      'Sharpen' : 'Zaostrzone',
+      'Simple Blur' : 'Łatwy Blur',
+
+      'Radius' : 'Promień',
+      'Iterations' : 'Powtórzenia'
+    },
+    ru_RU : {
+      'Toggle tools toolbar' : 'Панель инструментов',
+      'Toggle layers toolbar' : 'Панель слоев',
+      'Layer' : 'Слой',
+      'Effect' : 'Эффекты',
+      'Flip Horizontally' : 'Отразить горизонтально',
+      'Flip Vertically' : 'Отразить вертикально',
+      'Foreground' : 'Передний план',
+      'Bakgrunn' : 'Фон',
+      'Foreground (Fill) Color' : 'Передний план (Заливка) цвет',
+      'Background (Stroke) Color' : 'Фоновый (Обводка) цвет',
+      'Line join' : 'Замкнутая линия',
+      'Line width' : 'Ширина линии',
+      'Toggle Stroke' : 'Вкл/выкл обводку',
+      'Enable stroke' : 'Включить обводку',
+      'Round' : 'Закругленный',
+      'Miter' : 'Прямой',
+      'Bevel' : 'Скошенный',
+      'Stroked' : 'С обводкой',
+      'No stroke' : 'Без обводки',
+
+      'Pointer' : 'Указатель',
+      'Move active layer' : 'Перемещает активный слой',
+
+      'Picker' : 'Пипетка',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'ЛКМ: устананавливает первичный цвет, ПКМ: устанавливает вторичный(фоновый) цвет',
+
+      'Pencil' : 'Карандаш',
+      'LMB: Use foreground-, RMB: Use background color' : 'ЛКМ/ПКМ: Рисует первичным/вторичным цветом',
+      'Path' : 'Прямая',
+
+      'Square/Rectangle' : 'Квадрат/Прямоугольник',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode' : 'ЛКМ/ПКМ: рисует первичным/вторичным цветом квадрат, SHIFT: нарисовать прямоуголник',
+
+      'Circle/Ellipse' : 'Круг/Эллипс',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode' : 'ЛКМ/ПКМ: рисует первичным/вторичным цветом круг, SHIFT: нарисовать эллипс',
+
+      'Blur' : 'Размытие (Blur)',
+      'Noise' : 'Шум',
+      'Invert colors' : 'Инвертировать цвета',
+      'Grayscale' : 'Обесцветить',
+      'Sharpen' : 'Сточить',
+      'Simple Blur' : 'Простое размытие (Blur)',
+
+      'Radius' : 'Радиус',
+      'Iterations' : 'Итерации'
+    },
+    sk_SK : {
+      'Toggle tools toolbar' : 'Zobraz panel nástrojov',
+      'Toggle layers toolbar' : 'Zobraz vrstvy',
+      'Layer' : 'Vrstvy',
+      'Effect' : 'Efekty',
+      'Flip Horizontally' : 'Transformuj horizontálne',
+      'Flip Vertically' : 'Transformuj vertikálne',
+      'Foreground' : 'Popredie',
+      'Bakgrunn' : 'Pozadie',
+      'Line join' : 'Typ čiary',
+      'Line width' : 'Šírka čiary',
+      'Toggle Stroke' : 'Zapnúť orámovanie',
+      'Enable stroke' : 'Orámovanie',
+      'Round' : 'Okrúhly',
+      'Miter' : 'Naklonený',
+      'Bevel' : 'Šikmý',
+      'Stroked' : 'Orámovaný',
+      'No stroke' : 'Bez orámovania',
+
+      'Pointer' : 'Ukazovateľ',
+      'Move active layer' : 'Presuň aktívnu vrstvu',
+
+      'Picker' : 'Kurzor',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'LMB: nastav farbu pozadia, RMB: nastav farbu popredia',
+
+      'Pencil' : 'Ceruzka',
+      'LMB: Use foreground-, RMB: Use background color' : 'Maľuj farbou fg/bg',
+      'Path' : 'Cesta',
+
+      'Square/Rectangle' : 'Štvorec / Obdĺžnik',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode' : 'LMB/RMB: Maľuj farbou fb/bg, SHIFT: Obdĺžnik',
+
+      'Circle/Ellipse' : 'Kruh / Elipsa',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode' : 'LMB/RMB: Maľuj farbou fb/bg, SHIFT: Elipsa',
+
+      'Blur' : 'Rozmazať',
+      'Noise' : 'Šum',
+      'Invert colors' : 'Invertovať farby',
+      'Grayscale' : 'Odtiene šedej',
+      'Sharpen' : 'Zostriť',
+      'Simple Blur' : 'Jednoduchý Blur',
+
+      'Radius' : 'Rádius',
+      'Iterations' : 'Iterácie'
     },
     tr_TR : {
       'Toggle tools toolbar' : 'araç çubugu değiştirme araçları',  //yanlış olabilir
@@ -482,17 +583,17 @@
       'Move active layer' : 'hareket eden katman',
 
       'Picker' : 'toplayıcı',
-      'LMB: set fg color, RMB: set gb color' : 'LMB: fg rengi ayarla, RMB: gb rengi ayarla',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'LMB: fg rengi ayarla, RMB: gb rengi ayarla',
 
       'Pencil' : 'kalem',
-      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB:fg/bg rengi ile çiz',
+      'LMB: Use foreground-, RMB: Use background color' : 'LMB/RMB:fg/bg rengi ile çiz',
       'Path' : 'yol',
 
       'Square/Rectangle' : 'kare/üçgen',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: fg/bg renkleri ile çiz , SHIFT: üçgen çiz',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode' : 'LMB/RMB: fg/bg renkleri ile çiz , SHIFT: üçgen çiz',
 
       'Circle/Ellipse' : 'dair/elips',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: fb/bg ile çiz , SHIFT: elips çiz',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode' : 'LMB/RMB: fb/bg ile çiz , SHIFT: elips çiz',
 
       'Blur' : 'Bulanık',
       'Noise' : 'gürültü',
@@ -504,55 +605,53 @@
       'Radius' : 'yarıçap',
       'Iterations' : 'yineleme'
     },
+    vi_VN : {
+      'Toggle tools toolbar' : 'Công cụ bật tắt thanh công cụ',
+      'Toggle layers toolbar' : 'Bật tắt cửa sổ layer',
+      'Layer' : 'Lớp',
+      'Effect' : 'Hiệu ứng',
+      'Flip Horizontally' : 'Lật ngang',
+      'Flip Vertically' : 'Lật theo chiều dọc',
+      'Foreground' : 'Nền trước',
+      'Background' : 'Nền dưới',
+      'Foreground (Fill) Color' : 'Màu nền trước',
+      'Background (Stroke) Color' : 'Màu nền dưới',
+      'Line join' : 'Ghép đoạn thằng',
+      'Line width' : 'Độ rộng dòng',
+      'Toggle Stroke' : 'Bật tắt nét',
+      'Enable stroke' : 'Bật nét',
+      'Round' : 'Tròn',
+      'Miter' : 'Góc',
+      'Bevel' : 'Góc xiên',
+      'Stroked' : 'Vuốt',
+      'No stroke' : 'Không vuốt',
 
-    bg_BG : {
-      'Toggle tools toolbar' : 'Бар с инструменти',
-      'Toggle layers toolbar' : 'Бар с слоеве',
-      'Layer' : 'Слой',
-      'Effect' : 'Ефект',
-      'Flip Horizontally' : 'Обърни хоризонтално',
-      'Flip Vertically' : 'Обърни вертикално',
-      'Foreground' : 'Преден фон',
-      'Bakgrunn' : 'Заден фон',
-      'Foreground (Fill) Color' : 'Преден фон (Запълни) цвят',
-      'Background (Stroke) Color' : 'Заден фон цвят',
-      'Line join' : 'Съединяване на линии',
-      'Line width' : 'Широчина на линия',
-      'Toggle Stroke' : 'Превключване на удър',
-      'Enable stroke' : 'Включи удър',
-      'Round' : 'Кръгъл',
-      'Miter' : 'Митра',
-      'Bevel' : 'Откос',
-      'Stroked' : 'Ударен',
-      'No stroke' : 'Без удър',
+      'Pointer' : 'Con trỏ',
+      'Move active layer' : 'Di chuyển layer đang chọn',
 
-      'Pointer' : 'Стрелка',
-      'Move active layer' : 'Премести активен слой',
+      'Picker' : 'Bảng chọn',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'LMB: chọn màu fg, RMB: chọn màu gb',
 
-      'Picker' : 'берач',
-      'LMB: set fg color, RMB: set gb color' : 'LMB: изберете цвят за преден план, RMB: изберете цвят за фон',
+      'Pencil' : 'Bút chì',
+      'LMB: Use foreground-, RMB: Use background color' : 'LMB/RMB: vẽ với màu fg/bg',
+      'Path' : 'Đường',
 
-      'Pencil' : 'Молив',
-      'LMB/RMB: Draw with fg/bg color' : 'LMB/RMB: рисувай с fg/bg цвят',
-      'Path' : 'Път',
+      'Square/Rectangle' : 'Firkant/Rektangel',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode' : 'LMB/RMB: Tegn med fg/bg farge, SHIFT: Tegn rektangel',
 
-      'Square/Rectangle' : 'Квадрат/Правоъгъкник',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw rectangle' : 'LMB/RMB: рисувай с fb/bg цвят, SHIFT: нарисувай правоъгълник',
+      'Circle/Ellipse' : 'Vuông / chữ nhật',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode' : 'LMB/RMB: vẽ với màu fg/bg, SHIFT: Vẽ ê-líp',
 
-      'Circle/Ellipse' : 'Кръг/Елипса',
-      'LMB/RMB: Draw with fg/bg color, SHIFT: Draw ellipse' : 'LMB/RMB: рисувай с fb/bg цвят, SHIFT: нарисувай елипса',
+      'Blur' : 'Làm mờ',
+      'Noise' : 'Làm nhiễu',
+      'Invert colors' : 'Nghịch đảo màu',
+      'Grayscale' : 'Độ xám',
+      'Sharpen' : 'Làm sắc nét',
+      'Simple Blur' : 'Làm mờ đơn giản',
 
-      'Blur' : 'Замъгли',
-      'Noise' : 'Шум',
-      'Invert colors' : 'Инвертирай цветове',
-      'Grayscale' : 'Черно-бяло',
-      'Sharpen' : 'Острота',
-      'Simple Blur' : 'Опростено замъгляване',
-
-      'Radius' : 'Радиус',
-      'Iterations' : 'Повторения'
+      'Radius' : 'Bán kính',
+      'Iterations' : 'Lặp đi lặp lại'
     }
-
   };
 
   function _() {

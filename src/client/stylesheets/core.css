@@ -52,18 +52,19 @@ body, input, button, textarea, label, select {
 #Login {
   background : #fff;
   width : 400px;
-  height : 180px;
+  height : 230px;
   padding : 20px;
   position : absolute;
   left : 50%;
   top : 50%;
   z-index : 9999;
-  margin-left : -224px;
-  margin-top : -114px;
+  margin-left : -200px;
+  margin-top : -115px;
   border : 4px solid rgba(0, 0, 0, .1);
-  -webkit-box-shadow: 0px 0px 5px 4px rgba(0,0,0,0.15);
-  -moz-box-shadow: 0px 0px 5px 4px rgba(0,0,0,0.15);
-  box-shadow: 0px 0px 5px 4px rgba(0,0,0,0.15);
+  -webkit-box-shadow: 0 0 5px 4px rgba(0,0,0,0.15);
+  -moz-box-shadow: 0 0 5px 4px rgba(0,0,0,0.15);
+  box-shadow: 0 0 5px 4px rgba(0,0,0,0.15);
+  box-sizing : border-box;
 
   display : none;
 }
@@ -172,10 +173,10 @@ body[data-attention="true"]:after {
   content : '';
   display : block;
   position : fixed;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
+  top : 0;
+  left : 0;
+  right : 0;
+  bottom : 0;
   z-index : 1;
 }
 
@@ -191,17 +192,19 @@ body[data-attention="true"]:after {
   right : 5px;
   font-size : 12px;
   color : #fff;
-  text-shadow: 0px 0px 2px rgba(34, 34, 34, .5);
+  text-shadow: 0 0 2px rgba(34, 34, 34, .5);
   text-align : right;
   line-height : 20px;
   z-index : 2;
   opacity : .7;
-  -webkit-user-select : none;
-  -moz-user-select : none;
-  user-select : none;
   cursor : default;
 
   display : none;
+  -webkit-user-select : none;
+     -moz-user-select : none;
+      -ms-user-select : none;
+       -o-user-select : none;
+          user-select : none;
 }
 
   #DebugNotice a {
@@ -232,34 +235,34 @@ application-window-buttons {
 
 application-window {
   position : absolute;
-  top : 0px;
-  left : 0px;
+  top : 0;
+  left : 0;
   overflow : visible;
 }
 application-window:before {
   content : '';
   position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
+  top : 0;
+  left : 0;
+  right : 0;
+  bottom : 0;
 }
 
 application-window-top {
   position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
+  top : 0;
+  left : 0;
+  right : 0;
   height : 20px;
   z-index : 5;
 }
   application-window-top,
   application-window-top > * {
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+    -webkit-user-select : none;
+       -moz-user-select : none;
+        -ms-user-select : none;
+         -o-user-select : none;
+            user-select : none;
   }
 
 application-window-icon {
@@ -275,7 +278,6 @@ application-window-icon {
   application-window-icon > img {
     margin : 0;
     padding : 0;
-    padding : 0px;
     border : 0 none;
     pointer-events: none;
     vertical-align : middle;
@@ -283,25 +285,27 @@ application-window-icon {
 
 application-window-title {
   position : absolute;
-  top : 0px;
+  top : 0;
   left : 20px;
-  right : 0px; /* Calculated in script */
+  right : 0; /* Calculated in script */
   height : 100%;
   z-index : 1;
   overflow : hidden;
   white-space : nowrap;
   line-height : 20px;
-
   display : block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  -o-text-overflow: ellipsis;
+
+  -webkit-text-overflow: ellipsis;
+     -moz-text-overflow: ellipsis;
+      -ms-text-overflow: ellipsis;
+       -o-text-overflow: ellipsis;
+          text-overflow: ellipsis;
 }
 
 application-window-buttons {
   position : absolute;
-  top : 0px;
-  right : 0px;
+  top : 0;
+  right : 0;
   z-index : 3;
   height : 100%;
 }
@@ -316,26 +320,26 @@ application-window-buttons {
 
 application-window-content {
   position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
+  top : 0;
+  left : 0;
+  right : 0;
+  bottom : 0;
   overflow : hidden;
   z-index : 1;
 }
 
 application-window-resize {
   position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
+  top : 0;
+  left : 0;
+  right : 0;
+  bottom : 0;
   z-index : -1;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+  -webkit-user-select : none;
+     -moz-user-select : none;
+      -ms-user-select : none;
+       -o-user-select : none;
+          user-select : none;
 }
 application-window-outer[data-allow-resize="false"] window-resize {
   display : none;
@@ -343,10 +347,10 @@ application-window-outer[data-allow-resize="false"] window-resize {
 
 application-window-loading {
   position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
+  top : 0;
+  left : 0;
+  right : 0;
+  bottom : 0;
   z-index : 999999;
 }
 
@@ -358,20 +362,20 @@ application-window-loading {
 
 application-window-disabled {
   position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
+  top : 0;
+  left : 0;
+  right : 0;
+  bottom : 0;
   z-index : 999998;
 }
 
 application-window[data-dnd-state="true"]:after {
   content : '';
   position : absolute;
-  top : 0px;
-  left : 0px;
-  bottom : 0px;
-  right : 0px;
+  top : 0;
+  left : 0;
+  bottom : 0;
+  right : 0;
   /*z-index : 10;*/
 }
 
@@ -382,30 +386,33 @@ application-window[data-hint="moving"] iframe {
 
 application-window-warning  {
   position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
+  top : 0;
+  left : 0;
+  right : 0;
   height : 30px;
   line-height : 20px;
   margin : 4px;
   border : 1px solid transparent;
   z-index : 99999;
+  box-sizing : border-box;
 }
   application-window-warning > div:nth-child(1) {
     position : absolute;
-    top : 0px;
-    right : 0px;
-    bottom : 0px;
+    top : 0;
+    right : 0;
+    bottom : 0;
     padding : 4px;
+    box-sizing : border-box;
   }
   application-window-warning > div:nth-child(2) {
     position : absolute;
-    top : 0px;
-    left : 0px;
+    top : 0;
+    left : 0;
     right : 20px;
-    bottom : 0px;
+    bottom : 0;
     padding : 4px;
     overflow : hidden;
+    box-sizing : border-box;
   }
 
 /**
@@ -427,7 +434,7 @@ application-window.DialogWindow gui-button-bar gui-button {
 .IFrameApplicationWindow application-window-content {
   background : #000;
 }
-iframe.IframeApplicationFrame {
+.IframeApplicationFrame {
   box-sizing : border-box;
   margin : 0;
   padding : 0;
@@ -436,10 +443,10 @@ iframe.IframeApplicationFrame {
   border : 0 none;
   outline : 0 none;
   position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
+  top : 0;
+  left : 0;
+  right : 0;
+  bottom : 0;
 }
 
 application-window[data-focused="false"] iframe {

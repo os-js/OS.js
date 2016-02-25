@@ -42,6 +42,8 @@ You just need **node** and **npm**. Install them with your package manager or do
 
 To easily apply updates and other changes, I recommend using **git** to download instead of using a zip-file/automated installer.
 
+If you install npm packages without `--production` parameter, you need to install mocha `sudo npm install -g mocha`
+
 ## NIX
 
 ### Automated
@@ -134,7 +136,7 @@ You can install [node supervisor](https://github.com/petruisfan/node-supervisor)
 
 You can start a server manually with `(cd dist; php -S 0.0.0.0:8000 ../src/server/php/server.php)` or look below for webserver alternatives.
 
-If you have a "webhost" (or "webhotel") with ex. cPanel without shell access (or no node support), you can run OS.js, but has to be built on another computer, then transfered over to the target machine. The only downside here is that you'd have to run from /OS.js/dist/ without doing modifications to the setup (if you don't have access to mod_rewrite to create proxy rules).
+If you have a "webhost" (or "webhotel") with ex. cPanel without shell access (or no node support), you can run OS.js, but has to be built on another computer, then transfered over to the target machine. The only downside here is that you'd have to run from /OS.js/dist/ without doing modifications to the setup (if you don't have access to mod_rewrite to create proxy rules). You can find more info on this [here](https://github.com/os-js/OS.js/blob/master/doc/cpanel-host.md).
 
 *By default PHP uses 'dist' as the default root*
 

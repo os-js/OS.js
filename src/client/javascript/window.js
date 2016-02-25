@@ -323,6 +323,18 @@
       }
     }
 
+    function _initInitialState() {
+      if ( !self._restored ) {
+        if ( self._state.maximized ) {
+          self._state.maximized = false;
+          self._maximize();
+        } else if ( self._state.minimized ) {
+          self._state.minimized = false;
+          self._minimize();
+        }
+      }
+    }
+
     function _initDimension() {
       if ( self._properties.min_height && (self._dimension.h < self._properties.min_height) ) {
         self._dimension.h = self._properties.min_height;
@@ -576,6 +588,8 @@
     this._onChange('create');
     this._toggleLoading(false);
     this._toggleDisabled(false);
+
+    _initInitialState();
 
     if ( this._sound ) {
       API.playSound(this._sound, this._soundVolume);
@@ -1563,73 +1577,80 @@
     console.debug(this._name, '>', 'OSjs::Core::Window::_onWindowIconClick()');
 
     var self = this;
-    var list = [];
-
-    if ( this._properties.allow_minimize ) {
-      list.push({
-        title:    API._('WINDOW_MINIMIZE'),
-        icon:     API.getIcon('actions/stock_up.png'),
-        onClick:  function(name, iter) {
-          self._minimize();
-        }
-      });
-    }
-    if ( this._properties.allow_maximize ) {
-      list.push({
-        title:    API._('WINDOW_MAXIMIZE'),
-        icon:     API.getIcon('actions/window_fullscreen.png'),
-        onClick:  function(name, iter) {
-          self._maximize();
-          self._focus();
-        }
-      });
-    }
-    if ( this._state.maximized ) {
-      list.push({
-        title:    API._('WINDOW_RESTORE'),
-        icon:     API.getIcon('actions/view-restore.png'),
-        onClick:  function(name, iter) {
-          self._restore();
-          self._focus();
-        }
-      });
-    }
-    if ( this._properties.allow_ontop ) {
-      if ( this._state.ontop ) {
-        list.push({
-          title:    API._('WINDOW_ONTOP_OFF'),
-          icon:     API.getIcon('actions/window-new.png'),
-          onClick:  function(name, iter) {
-            self._state.ontop = false;
-            if ( self._$element ) {
-              self._$element.style.zIndex = getNextZindex(false);
-            }
+    var control = [
+      [this._properties.allow_minimize, function() {
+        return {
+          title: API._('WINDOW_MINIMIZE'),
+          icon: API.getIcon('actions/stock_up.png'),
+          onClick: function(name, iter) {
+            self._minimize();
+          }
+        };
+      }],
+      [this._properties.allow_maximize, function() {
+        return {
+          title: API._('WINDOW_MAXIMIZE'),
+          icon: API.getIcon('actions/window_fullscreen.png'),
+          onClick: function(name, iter) {
+            self._maximize();
             self._focus();
           }
-        });
-      } else {
-        list.push({
-          title:    API._('WINDOW_ONTOP_ON'),
-          icon:     API.getIcon('actions/window-new.png'),
-          onClick:  function(name, iter) {
+        };
+      }],
+      [this._state.maximized, function() {
+        return {
+          title: API._('WINDOW_RESTORE'),
+          icon: API.getIcon('actions/view-restore.png'),
+          onClick: function(name, iter) {
+            self._restore();
+            self._focus();
+          }
+        };
+      }],
+      [this._properties.allow_ontop, function() {
+        if ( self._state.ontop ) {
+          return {
+            title: API._('WINDOW_ONTOP_OFF'),
+            icon: API.getIcon('actions/window-new.png'),
+            onClick: function(name, iter) {
+              self._state.ontop = false;
+              if ( self._$element ) {
+                self._$element.style.zIndex = getNextZindex(false);
+              }
+              self._focus();
+            }
+          };
+        }
+
+        return {
+          title: API._('WINDOW_ONTOP_ON'),
+          icon: API.getIcon('actions/window-new.png'),
+          onClick: function(name, iter) {
             self._state.ontop = true;
             if ( self._$element ) {
               self._$element.style.zIndex = getNextZindex(true);
             }
             self._focus();
           }
-        });
+        };
+      }],
+      [this._properties.allow_close, function() {
+        return {
+          title: API._('WINDOW_CLOSE'),
+          icon: API.getIcon('actions/window-close.png'),
+          onClick: function(name, iter) {
+            self._close();
+          }
+        };
+      }]
+    ];
+
+    var list = [];
+    control.forEach(function(iter) {
+      if (iter[0] ) {
+        list.push(iter[1]());
       }
-    }
-    if ( this._properties.allow_close ) {
-      list.push({
-        title:    API._('WINDOW_CLOSE'),
-        icon:     API.getIcon('actions/window-close.png'),
-        onClick:  function(name, iter) {
-          self._close();
-        }
-      });
-    }
+    });
 
     OSjs.API.createMenu(list, ev);
   };
