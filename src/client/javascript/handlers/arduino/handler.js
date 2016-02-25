@@ -109,6 +109,10 @@
     var opts = {username: username, password: password};
     this.callAPI('login', opts, function(response) {
       if ( response.result ) { // This contains an object with user data
+        try {
+          document.cookie = 'osjsuser=' + username;
+        } catch (e) {}
+
         callback(false, {
           userData: response.result.userData,
           userSettings: checkSettingsCompability(response.result.userSettings)
