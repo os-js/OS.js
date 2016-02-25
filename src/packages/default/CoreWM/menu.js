@@ -128,7 +128,7 @@
       img.src = _createIcon(iter, a, '32x32');
 
       var txt = document.createElement('div');
-      txt.appendChild(document.createTextNode(iter.name.replace(/([^\s-]{6})([^\s-]{6})/, '$1-$2')));
+      txt.appendChild(document.createTextNode(iter.name)); //.replace(/([^\s-]{8})([^\s-]{8})/, '$1-$2')));
 
       Utils.$bind(entry, 'mousedown', function(ev) {
         ev.stopPropagation();
