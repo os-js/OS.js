@@ -577,6 +577,8 @@
       }
 
       collection.add(el, [evName, cbNormal, param === true]);
+
+      return collection;
     };
   })();
 
