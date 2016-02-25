@@ -222,16 +222,18 @@
                 var secu = list['security'] !== '<none>' ? list['security'] : '';
                  */
 
-                var ssid = result['ssid'] !== '<none>' ? result['ssid'].trim() : '';
-                var secu = result['security'] !== '<none>' ? result['security'].trim() : '';
+                if ( !err && result ) {
+                  var ssid = result['ssid'] !== '<none>' ? result['ssid'].trim() : '';
+                  var secu = result['security'] !== '<none>' ? result['security'].trim() : '';
 
 
-                txtWifiSSID.set("value", ssid);
-                ddlWifiEncryption.set("value", secu); //FIXME at the moment the security is always <none>
+                  txtWifiSSID.set("value", ssid);
+                  ddlWifiEncryption.set("value", secu); //FIXME at the moment the security is always <none>
 
-                //set the current settings
-                self.currentSettings.encryption = secu;
-                self.currentSettings.ssid = ssid;
+                  //set the current settings
+                  self.currentSettings.encryption = secu;
+                  self.currentSettings.ssid = ssid;
+                }
 
             });
         }
