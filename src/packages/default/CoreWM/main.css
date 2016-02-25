@@ -275,6 +275,7 @@ corewm-window-switcher > div.Active {
   min-height : 100px;
   width : 504px;
   max-width : 100%;
+  max-height : 100%;
   overflow : hidden;
   padding : 0;
 }
@@ -302,3 +303,13 @@ corewm-window-switcher > div.Active {
   box-sizing : border-box;
   margin-top : 5px;
 }
+
+@media all and (max-width: 800px) {
+
+  #CoreWMApplicationMenu {
+    overflow : auto;
+    text-align : center;
+  }
+
+}
+

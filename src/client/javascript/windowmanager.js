@@ -623,11 +623,12 @@
    * }
    *
    * @param   Object    styles      Style object
+   * @param   String    rawStyles   (Optional) raw CSS data
    *
    * @return  void
    * @method  WindowManager::createStylesheet()
    */
-  WindowManager.prototype.createStylesheet = function(styles) {
+  WindowManager.prototype.createStylesheet = function(styles, rawStyles) {
     this.destroyStylesheet();
 
     var innerHTML = [];
@@ -642,6 +643,9 @@
     });
 
     innerHTML = innerHTML.join('\n');
+    if ( rawStyles ) {
+      innerHTML += '\n' + rawStyles;
+    }
 
     var style       = document.createElement('style');
     style.type      = 'text/css';
