@@ -868,6 +868,7 @@
   };
 
   CoreWM.prototype.setStyles = function(settings) {
+    /*jshint sub:false*/
     var styles = {};
     var raw = '';
 
