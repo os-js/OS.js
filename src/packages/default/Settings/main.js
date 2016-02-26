@@ -552,7 +552,9 @@
     if ( init ) {
       var langs = [];
       Object.keys(locales).forEach(function(l) {
-        langs.push({label: locales[l], value: l});
+        if ( OSjs.Locales[l] ) {
+          langs.push({label: locales[l], value: l});
+        }
       });
       scheme.find(this, 'UserLocale').add(langs);
     }

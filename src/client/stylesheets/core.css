@@ -452,3 +452,35 @@ application-window.DialogWindow gui-button-bar gui-button {
 application-window[data-focused="false"] iframe {
   pointer-events : none;
 }
+
+/**
+ * ===========================================================================
+ *                               RESPONSIVE
+ * ===========================================================================
+ */
+
+@media all and (max-width: 800px) {
+
+  body {
+    overflow : hidden;
+  }
+
+  application-window {
+    width : auto !important;
+    height : auto !important;
+    left : 0 !important;
+    right : 0 !important;
+    bottom : 0 !important;
+    top : 0 !important;
+  }
+
+  application-window-button-maximize,
+  application-window-button-minimize {
+    display : none !important;
+  }
+
+  application-window-content {
+    overflow : auto !important;
+  }
+
+}
