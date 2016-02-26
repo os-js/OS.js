@@ -1,7 +1,21 @@
 {
   "client" : {
     "Languages": {
-      "en_EN": "English"
+      "en_EN": "English",
+      "bg_BG": "Bulgarian (Bulgaria)",
+      "no_NO": "Norsk (Norwegian)",
+      "de_DE": "Deutsch (German)",
+      "es_ES": "Spanish (Spain)",
+      "fr_FR": "French (France)",
+      "ru_RU": "Russian (Russia)",
+      "ko_KR": "Korean (Korea)",
+      "zh_CN": "Chinese (China)",
+      "nl_NL": "Dutch (Nederlands)",
+      "pl_PL": "Polski (Poland)",
+      "pt_BR": "Portuguese (Brazil)",
+      "sk_SK": "Slovak (Slovenčina)",
+      "vi_VN": "Vietnamese (Tiếng Việt)",
+      "tr_TR": "Turkish(Turkey)"
     }
   }
 }
