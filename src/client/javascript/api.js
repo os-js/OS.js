@@ -896,8 +896,6 @@
 
     var map = [
       {match: 'application/pdf', icon: 'mimetypes/gnome-mime-application-pdf.png'},
-      {match: 'osjs/document', icon: 'mimetypes/gnome-mime-application-msword.png'},
-      {match: 'osjs/draw', icon: 'mimetypes/image.png'},
       {match: 'application/zip', icon: 'mimetypes/folder_tar.png'},
       {match: 'application/x-python', icon: 'mimetypes/stock_script.png'},
       {match: 'application/x-lua', icon: 'mimetypes/stock_script.png'},
@@ -905,6 +903,9 @@
       {match: 'text/html', icon: 'mimetypes/stock_script.png'},
       {match: 'text/xml', icon: 'mimetypes/stock_script.png'},
       {match: 'text/css', icon: 'mimetypes/stock_script.png'},
+
+      {match: 'osjs/document', icon: 'mimetypes/gnome-mime-application-msword.png'},
+      {match: 'osjs/draw', icon: 'mimetypes/image.png'},
 
       {match: /^text\//, icon: 'mimetypes/txt.png'},
       {match: /^audio\//, icon: 'mimetypes/sound.png'},
@@ -920,17 +921,19 @@
     } else {
       var mime = file.mime || 'application/octet-stream';
 
-      map.forEach(function(iter) {
+      map.every(function(iter) {
         var match = false;
         if ( typeof iter.match === 'string' ) {
           match = (mime === iter.match);
         } else {
           match = mime.match(iter.match);
         }
+
         if ( match ) {
           icon = iter.icon;
           return false;
         }
+
         return true;
       });
     }
