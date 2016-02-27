@@ -1405,7 +1405,7 @@
 
     var result = true;
     if ( userGroups.indexOf('admin') < 0 ) {
-      group.forEach(function(g) {
+      group.every(function(g) {
         if ( userGroups.indexOf(g) < 0 ) {
           result = false;
         }

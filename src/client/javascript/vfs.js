@@ -121,7 +121,7 @@
     var d = null;
 
     if ( test !== null ) {
-      Object.keys(m).forEach(function(name) {
+      Object.keys(m).every(function(name) {
         var i = m[name];
         if ( i.internal === true && i.match && test.match(i.match) ) {
           d = true;
@@ -177,7 +177,7 @@
     var d = null;
 
     if ( typeof test === 'string' ) {
-      Object.keys(OSjs.VFS.Modules).forEach(function(name) {
+      Object.keys(OSjs.VFS.Modules).every(function(name) {
         var i = OSjs.VFS.Modules[name];
         if ( i.enabled() === true && i.match && test.match(i.match) ) {
           d = name;
@@ -251,7 +251,7 @@
     function validMime(iter) {
       if ( options.mimeFilter && options.mimeFilter.length && iter.mime ) {
         var valid = false;
-        options.mimeFilter.forEach(function(miter) {
+        options.mimeFilter.every(function(miter) {
           if ( iter.mime.match(miter) ) {
             valid = true;
             return false;

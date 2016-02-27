@@ -147,7 +147,7 @@
       return _PROCS[name];
     }
 
-    _PROCS.forEach(function(p, i) {
+    _PROCS.every(function(p, i) {
       if ( p ) {
         if ( p.__pname === name ) {
           if ( first ) {

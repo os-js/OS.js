@@ -278,7 +278,7 @@
     }
 
     var result = key === 'tag' ? [] : null;
-    this.__windows.forEach(function(win, i) {
+    this.__windows.every(function(win, i) {
       if ( win ) {
         if ( win['_' + key] === value ) {
           if ( key === 'tag' ) {

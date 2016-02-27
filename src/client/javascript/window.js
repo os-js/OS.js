@@ -266,7 +266,7 @@
 
       // Internals for restoring previous state (session)
       if ( appRef && appRef.__args && appRef.__args.__windows__ ) {
-        appRef.__args.__windows__.forEach(function(restore) {
+        appRef.__args.__windows__.every(function(restore) {
           if ( restore.name && restore.name === self._name ) {
             self._position.x = restore.position.x;
             self._position.y = restore.position.y;
@@ -751,7 +751,7 @@
    */
   Window.prototype._removeChild = function(w) {
     var self = this;
-    this._children.forEach(function(child, i) {
+    this._children.every(function(child, i) {
       if ( child && child._wid === w._wid ) {
         console.debug('OSjs::Core::Window::_removeChild()');
 
@@ -777,7 +777,7 @@
     key = key || 'wid';
 
     var result = key === 'tag' ? [] : null;
-    this._children.forEach(function(child, i) {
+    this._children.every(function(child, i) {
       if ( child ) {
         if ( key === 'tag' ) {
           result.push(child);
@@ -1442,7 +1442,7 @@
       var found = null;
       var list = elements.slice(idx, elements.length);
 
-      list.forEach(function(el, idx) {
+      list.every(function(el, idx) {
         // offsetParent makes sure the element is 'visible'
         if ( !found && el.offsetParent && !el.getAttribute('disabled') && el.getAttribute('data-disabled') !== 'true' ) {
           console.debug('Window::_nextTabIndex()', 'next', idx);
@@ -1458,7 +1458,7 @@
       var elements = root.querySelectorAll('input, select, textarea, .gui-data-view');
       var found = -1;
 
-      elements.forEach(function(el, idx) {
+      elements.every(function(el, idx) {
         if ( el === current ) {
           found = idx;
         }
