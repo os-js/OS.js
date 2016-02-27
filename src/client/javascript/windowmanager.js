@@ -234,16 +234,13 @@
       var newWidth = null;
       var newHeight = null;
 
-      function isSizeAllowed() {
+      function clampSizeAllowed() {
         if ( current.minHeight && newHeight < current.minHeight ) {
-          return false;
+          newHeight = current.minHeight;
         }
-
         if ( current.minWidth && newWidth < current.minWidth ) {
-          return false;
+          newWidth = current.minWidth;
         }
-
-        return true;
       }
 
       var resizeMap = {
@@ -301,9 +298,7 @@
         newHeight -= current.rectWorkspace.top - mousePosition.y;
       }
 
-      if ( !isSizeAllowed() ) {
-        return false;
-      }
+      clampSizeAllowed();
 
       return {left: newLeft, top: newTop, width: newWidth, height: newHeight};
     }

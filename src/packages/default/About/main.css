@@ -39,10 +39,6 @@
 .ApplicationAboutWindow h1 {
   margin : 0;
   padding : 10px;
-}
-.ApplicationAboutWindow h2 {
-  margin : 0;
-  padding : 10px;
-  font-weight : normal;
+  font-size : 40px;
 }
 

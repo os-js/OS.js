@@ -89,9 +89,9 @@
   ApplicationPreview.prototype = Object.create(DefaultApplication.prototype);
   ApplicationPreview.constructor = DefaultApplication;
 
-  ApplicationPreview.prototype.init = function(settings, metadata, onInited) {
+  ApplicationPreview.prototype.init = function(settings, metadata) {
     var self = this;
-    DefaultApplication.prototype.init.call(this, settings, metadata, onInited, function(scheme, file) {
+    DefaultApplication.prototype.init.call(this, settings, metadata, function(scheme, file) {
       self._addWindow(new ApplicationPreviewWindow(self, metadata, scheme, file));
     });
   };

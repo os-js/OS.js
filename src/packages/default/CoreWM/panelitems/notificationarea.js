@@ -30,8 +30,6 @@
 (function(CoreWM, Panel, PanelItem, Utils, API, VFS) {
   'use strict';
 
-  // FIXME: This item does not cache Event collections
-
   /////////////////////////////////////////////////////////////////////////////
   // ITEM
   /////////////////////////////////////////////////////////////////////////////
@@ -48,6 +46,8 @@
     this.onDestroy      = opts.onDestroy     || function() {};
     this.onClick        = opts.onClick       || function() {};
     this.onContextMenu  = opts.onContextMenu || function() {};
+    this.evClick        = null;
+    this.evMenu         = null;
 
     this._build(name);
     this.onCreated.call(this);
@@ -65,14 +65,15 @@
       this.$container.title = this.opts.tooltip;
     }
 
-    Utils.$bind(this.$container, 'click', function(ev) {
+    this.evClick = Utils.$bind(this.$container, 'click', function(ev) {
       ev.stopPropagation();
       ev.preventDefault();
       OSjs.API.blurMenu();
       self.onClick.apply(self, arguments);
       return false;
     });
-    Utils.$bind(this.$container, 'contextmenu', function(ev) {
+
+    this.evMenu = Utils.$bind(this.$container, 'contextmenu', function(ev) {
       ev.stopPropagation();
       ev.preventDefault();
       OSjs.API.blurMenu();
@@ -119,17 +120,24 @@
   };
 
   NotificationAreaItem.prototype.destroy = function() {
+    if ( this.evClick ) {
+      this.evClick = Utils.$unbind(this.evClick);
+    }
+    if ( this.evMenu ) {
+      this.evMenu = Utils.$unbind(this.evMenu);
+    }
     this.onDestroy.call(this);
 
     this.$image     = Utils.$remove(this.$image);
     this.$container = Utils.$remove(this.$container);
   };
 
+  // NOTE: This is a workaround for resetting items on panel change
+  var _restartFix = {};
+
   /**
    * PanelItem: NotificationArea
    */
-  var _restartFix = {}; // FIXME: This is a workaround for resetting items on panel change
-
   var PanelItemNotificationArea = function() {
     PanelItem.apply(this, ['PanelItemNotificationArea PanelItemFill PanelItemRight']);
     this.notifications = {};

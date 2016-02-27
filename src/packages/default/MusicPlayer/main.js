@@ -248,9 +248,9 @@
     return DefaultApplication.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationMusicPlayer.prototype.init = function(settings, metadata, onInited) {
+  ApplicationMusicPlayer.prototype.init = function(settings, metadata) {
     var self = this;
-    DefaultApplication.prototype.init.call(this, settings, metadata, onInited, function(scheme, file) {
+    DefaultApplication.prototype.init.call(this, settings, metadata, function(scheme, file) {
       self._addWindow(new ApplicationMusicPlayerWindow(self, metadata, scheme, file));
     });
   };

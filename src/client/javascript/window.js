@@ -146,8 +146,8 @@
     var _WID                = 0;
     var _DEFAULT_WIDTH      = 200;
     var _DEFAULT_HEIGHT     = 200;
-    var _DEFAULT_MIN_HEIGHT = 100;
-    var _DEFAULT_MIN_WIDTH  = 100;
+    var _DEFAULT_MIN_HEIGHT = 150;
+    var _DEFAULT_MIN_WIDTH  = 150;
     var _DEFAULT_SND_VOLUME = 1.0;
     var _NAMES              = [];
 
@@ -466,13 +466,6 @@
     var windowTop           = document.createElement('application-window-top');
     var windowIcon          = document.createElement('application-window-icon');
     var windowTitle         = document.createElement('application-window-title');
-    var windowButtons       = document.createElement('application-window-buttons');
-
-    var windowIconImage         = document.createElement('img');
-    windowIconImage.alt         = this._title;
-    windowIconImage.src         = this._icon;
-    windowIconImage.width       = 16;
-    windowIconImage.height      = 16;
 
     windowTitle.appendChild(document.createTextNode(this._title));
 
@@ -514,13 +507,6 @@
     Utils.$bind(windowLoading, 'mousedown', _noEvent);
     Utils.$bind(windowDisabled, 'mousedown', _noEvent);
 
-    if ( !isTouch ) {
-      Utils.$bind(windowButtons, 'mousedown', function(ev) {
-        ev.preventDefault();
-        return stopPropagation(ev);
-      });
-    }
-
     Utils.$bind(main, 'mousedown', function(ev) {
       self._focus();
       return stopPropagation(ev);
@@ -543,15 +529,11 @@
     main.style.left   = this._position.x + 'px';
     main.style.zIndex = getNextZindex(this._state.ontop);
 
-    windowIcon.appendChild(windowIconImage);
-
-    windowButtons.appendChild(buttonMinimize);
-    windowButtons.appendChild(buttonMaximize);
-    windowButtons.appendChild(buttonClose);
-
     windowTop.appendChild(windowIcon);
     windowTop.appendChild(windowTitle);
-    windowTop.appendChild(windowButtons);
+    windowTop.appendChild(buttonMinimize);
+    windowTop.appendChild(buttonMaximize);
+    windowTop.appendChild(buttonClose);
 
     windowLoading.appendChild(windowLoadingImage);
 
@@ -565,17 +547,16 @@
     this._$root     = windowWrapper;
     this._$top      = windowTop;
     this._$loading  = windowLoading;
-    this._$winicon  = windowIconImage;
+    this._$winicon  = windowIcon;
     this._$disabled = windowDisabled;
     this._$resize   = windowResize;
 
     document.body.appendChild(this._$element);
 
-    windowTitle.style.right = windowButtons.offsetWidth + 'px';
-
     this._onChange('create');
     this._toggleLoading(false);
     this._toggleDisabled(false);
+    this._setIcon(this._icon);
 
     if ( this._sound ) {
       API.playSound(this._sound, this._soundVolume);
@@ -1816,8 +1797,10 @@
    */
   Window.prototype._setIcon = function(i) {
     if ( this._$winicon ) {
-      this._$winicon.src = i;
+      this._$winicon.title = this._title;
+      this._$winicon.style.backgroundImage = 'url(' + i + ')';
     }
+
     this._icon = i;
     this._onChange('icon');
   };

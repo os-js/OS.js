@@ -848,9 +848,9 @@ gui-slider {
    */
 
   gui-slider input::-moz-range-track {
+    /*csslint vendor-prefix:false */
+
     -moz-appearance: none;
-     -ms-appearance: none;
-      -o-appearance: none;
          appearance: none;
 
     background : transparent;
@@ -879,6 +879,8 @@ gui-slider {
    * RANGE THUMB
    */
   gui-slider input::-moz-range-thumb {
+    /*csslint vendor-prefix:false */
+
     -moz-appearance: none;
     -moz-border-radius : 0;
     border-radius : 0;
@@ -887,6 +889,8 @@ gui-slider {
   }*/
 
   gui-slider input::-webkit-slider-thumb {
+    /*csslint vendor-prefix:false */
+
     -webkit-appearance: none !important;
     -webkit-border-radius : 0;
     border-radius : 0;
@@ -895,6 +899,8 @@ gui-slider {
   }*/
 
   gui-slider input::-ms-thumb {
+    /*csslint vendor-prefix:false */
+
     -ms-appearance : none !important;
     -ms-border-radius : 0;
     border-radius : 0;

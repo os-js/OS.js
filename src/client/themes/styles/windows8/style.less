@@ -55,6 +55,13 @@ gui-progress-bar > div {
   background: #6dabf4;
 }
 
+application-window-top {
+  height : 25px;
+}
+application-window-title {
+  line-height : 25px;
+}
+
 application-window[data-focused="false"]:before {
   background : #ebebeb;
   border : 1px solid #d3d3d3;
@@ -74,20 +81,14 @@ application-window-content[data-focused="true"] {
   border : 1px solid #dadada;
 }
 
-application-window-buttons {
-  height : 20px;
-  right : 2px;
-  top : -5px;
+.application-window-button-entry {
+  width : 26px;
+  line-height : 20px;
+  text-align :  center;
+  font-family : Arial;
+  font-size : 10px;
+  margin-top : -5px;
 }
-
-  application-window-buttons > .application-window-button-entry {
-    height : 20px;
-    width : 26px;
-    line-height : 20px;
-    text-align :  center;
-    font-family : Arial;
-    font-size : 10px;
-  }
 application-window-button-maximize {
   background : url('windows8/wm/maximize.png') no-repeat center center;
 }

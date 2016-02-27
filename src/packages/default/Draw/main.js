@@ -497,9 +497,9 @@
   ApplicationDraw.prototype = Object.create(DefaultApplication.prototype);
   ApplicationDraw.constructor = DefaultApplication;
 
-  ApplicationDraw.prototype.init = function(settings, metadata, onInited) {
+  ApplicationDraw.prototype.init = function(settings, metadata) {
     var self = this;
-    DefaultApplication.prototype.init.call(this, settings, metadata, onInited, function(scheme, file) {
+    DefaultApplication.prototype.init.call(this, settings, metadata, function(scheme, file) {
       self._addWindow(new ApplicationDrawWindow(self, metadata, scheme, file));
     });
   };

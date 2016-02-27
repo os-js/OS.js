@@ -228,8 +228,7 @@ application-window-icon,
 application-window-title,
 application-window-loading,
 application-window-disabled,
-application-window-loading-indicator,
-application-window-buttons {
+application-window-loading-indicator {
   display : block;
 }
 
@@ -255,6 +254,18 @@ application-window-top {
   right : 0;
   height : 20px;
   z-index : 5;
+
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+
+  -webkit-flex-wrap: nowrap;
+     -moz-flex-wrap: nowrap;
+      -ms-flex-wrap: nowrap;
+       -o-flex-wrap: nowrap;
+          flex-wrap: nowrap;
 }
   application-window-top,
   application-window-top > * {
@@ -265,29 +276,32 @@ application-window-top {
             user-select : none;
   }
 
-application-window-icon {
-  position : absolute;
-  top : 50%;
-  left : 4px;
-  width : 16px;
-  height : 16px;
-  z-index : 2;
-  margin-top : -8px;
-  text-align : center;
-}
-  application-window-icon > img {
-    margin : 0;
-    padding : 0;
-    border : 0 none;
-    pointer-events: none;
-    vertical-align : middle;
+  application-window-top > * {
+    min-width : 16px;
+    min-height : 16px;
+
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+    -webkit-flex: 0 0 auto;
+       -moz-flex: 0 0 auto;
+        -ms-flex: 0 0 auto;
+         -o-flex: 0 0 auto;
+            flex: 0 0 auto;
   }
 
+application-window-icon {
+  text-align : center;
+  position : relative;
+  background-position : center center;
+  background-repeat : no-repeat;
+  background-size : 16px;
+}
+
 application-window-title {
-  position : absolute;
-  top : 0;
-  left : 20px;
-  right : 0; /* Calculated in script */
   height : 100%;
   z-index : 1;
   overflow : hidden;
@@ -300,23 +314,22 @@ application-window-title {
       -ms-text-overflow: ellipsis;
        -o-text-overflow: ellipsis;
           text-overflow: ellipsis;
+
+  -webkit-flex: 1 1 auto;
+     -moz-flex: 1 1 auto;
+      -ms-flex: 1 1 auto;
+       -o-flex: 1 1 auto;
+          flex: 1 1 auto;
 }
 
-application-window-buttons {
-  position : absolute;
-  top : 0;
-  right : 0;
-  z-index : 3;
+.application-window-button-entry {
+  padding : 0;
+  margin : 0;
   height : 100%;
+  text-align : center;
+  display : inline-block;
+  position : relative;
 }
-  application-window-buttons > .application-window-button-entry {
-    padding : 0;
-    margin : 0;
-    height : 100%;
-    text-align : center;
-    display : inline-block;
-    position : relative;
-  }
 
 application-window-content {
   position : absolute;
@@ -341,8 +354,9 @@ application-window-resize {
        -o-user-select : none;
           user-select : none;
 }
-application-window-outer[data-allow-resize="false"] window-resize {
+application-window[data-allow-resize="false"] > application-window-resize {
   display : none;
+  cursor : default !important;
 }
 
 application-window-loading {

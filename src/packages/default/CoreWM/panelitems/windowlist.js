@@ -30,58 +30,88 @@
 (function(CoreWM, Panel, PanelItem, Utils, API, VFS) {
   'use strict';
 
-  // FIXME: This item does not cache Event collections
-
   /////////////////////////////////////////////////////////////////////////////
   // ITEM
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * PanelItem: WindowList
-   */
-  var PanelItemWindowList = function() {
-    PanelItem.apply(this, ['PanelItemWindowList PanelItemWide']);
+  function WindowListEntry(win, className) {
 
-    this.$element = null;
-  };
+    var el = document.createElement('li');
+    el.innerHTML = '<img alt="" src="' + win._icon + '" /><span>' + win._title + '</span>';
+    el.className = className;
+    el.title = win._title;
 
-  PanelItemWindowList.prototype = Object.create(PanelItem.prototype);
-  PanelItemWindowList.Name = 'Window List'; // Static name
-  PanelItemWindowList.Description = 'Toggle between open windows'; // Static description
-  PanelItemWindowList.Icon = 'apps/xfwm4.png'; // Static icon
+    this.evClick = Utils.$bind(el, 'click', function() {
+      win._restore(false, true);
+    });
 
-  PanelItemWindowList.prototype.init = function() {
-    var root = PanelItem.prototype.init.apply(this, arguments);
+    this.evMenu = Utils.$bind(el, 'contextmenu', function(ev) {
+      ev.stopPropagation();
+      return false;
+    });
 
-    this.$element = document.createElement('ul');
-    root.appendChild(this.$element);
-
-    var wm = OSjs.Core.getWindowManager();
-    if ( wm ) {
-      var wins = wm.getWindows();
-      for ( var i = 0; i < wins.length; i++ ) {
-        if ( wins[i] ) {
-          this.update('create', wins[i]);
+    var peeking = false;
+    OSjs.API.createDroppable(el, {
+      onDrop: function(ev, el) {
+        if ( win ) {
+          win._focus();
         }
+      },
+      onLeave: function() {
+        if ( peeking ) {
+          peeking = false;
+        }
+      },
+      onEnter: function(ev, inst, args) {
+        if ( !peeking ) {
+          if ( win ) {
+            win._focus();
+          }
+          peeking = true;
+        }
+      },
+      onItemDropped: function(ev, el, item, args) {
+        if ( win ) {
+          return win._onDndEvent(ev, 'itemDrop', item, args);
+        }
+        return false;
+      },
+      onFilesDropped: function(ev, el, files, args) {
+        if ( win ) {
+          return win._onDndEvent(ev, 'filesDrop', files, args);
+        }
+        return false;
       }
+    });
+
+    if ( win._state.focused ) {
+      el.className += ' Focused';
     }
 
-    return root;
-  };
+    this.$element = el;
+    this.id = win._wid;
+  }
 
-  PanelItemWindowList.prototype.destroy = function() {
-    PanelItem.prototype.destroy.apply(this, arguments);
-  };
-
-  PanelItemWindowList.prototype.update = function(ev, win) {
-    var self = this;
-    if ( !this.$element || (win && win._properties.allow_windowlist === false) ) {
-      return;
+  WindowListEntry.prototype.destroy = function() {
+    if ( this.evClick ) {
+      this.evClick = this.evClick.destroy();
     }
 
+    if ( this.evMenu ) {
+      this.evMenu = this.evMenu.destroy();
+    }
+
+    if ( this.$element ) {
+      this.$element = Utils.$remove(this.$element);
+    }
+  };
+
+  WindowListEntry.prototype.event = function(ev, win, parentEl) {
     var cn = 'WindowList_Window_' + win._wid;
-    var _change = function(cn, callback) {
-      var els = self.$element.getElementsByClassName(cn);
+    var el = this.$element;
+
+    function _change(cn, callback) {
+      var els = parentEl.getElementsByClassName(cn);
       if ( els.length ) {
         for ( var i = 0, l = els.length; i < l; i++ ) {
           if ( els[i] && els[i].parentNode ) {
@@ -89,68 +119,9 @@
           }
         }
       }
-    };
+    }
 
-    if ( ev === 'create' ) {
-      var className = 'Button WindowList_Window_' + win._wid;
-      if ( this.$element.getElementsByClassName(className).length ) { return; }
-
-      var el = document.createElement('li');
-      el.innerHTML = '<img alt="" src="' + win._icon + '" /><span>' + win._title + '</span>';
-      el.className = className;
-      el.title = win._title;
-
-      Utils.$bind(el, 'click', function() {
-        win._restore(false, true);
-      });
-      Utils.$bind(el, 'contextmenu', function(ev) {
-        ev.stopPropagation();
-        return false;
-      });
-
-      var peeking = false;
-      OSjs.API.createDroppable(el, {
-        onDrop: function(ev, el) {
-          if ( win ) {
-            win._focus();
-          }
-        },
-        onLeave: function() {
-          if ( peeking ) {
-            peeking = false;
-          }
-        },
-        onEnter: function(ev, inst, args) {
-          if ( !peeking ) {
-            if ( win ) {
-              win._focus();
-            }
-            peeking = true;
-          }
-        },
-        onItemDropped: function(ev, el, item, args) {
-          if ( win ) {
-            return win._onDndEvent(ev, 'itemDrop', item, args);
-          }
-          return false;
-        },
-        onFilesDropped: function(ev, el, files, args) {
-          if ( win ) {
-            return win._onDndEvent(ev, 'filesDrop', files, args);
-          }
-          return false;
-        }
-      });
-
-      if ( win._state.focused ) {
-        el.className += ' Focused';
-      }
-      this.$element.appendChild(el);
-    } else if ( ev === 'close' ) {
-      _change(cn, function(el) {
-        el.parentNode.removeChild(el);
-      });
-    } else if ( ev === 'focus' ) {
+    if ( ev === 'focus' ) {
       _change(cn, function(el) {
         el.className += ' Focused';
       });
@@ -179,6 +150,92 @@
           el.className = el.className.replace(/\s?Attention/, '');
         }
       });
+    } else if ( ev === 'close' ) {
+      return false;
+    }
+
+    return true;
+  };
+
+  /**
+   * PanelItem: WindowList
+   */
+  function PanelItemWindowList() {
+    PanelItem.apply(this, ['PanelItemWindowList PanelItemWide']);
+    this.$element = null;
+    this.entries = [];
+  }
+
+  PanelItemWindowList.prototype = Object.create(PanelItem.prototype);
+  PanelItemWindowList.Name = 'Window List'; // Static name
+  PanelItemWindowList.Description = 'Toggle between open windows'; // Static description
+  PanelItemWindowList.Icon = 'apps/xfwm4.png'; // Static icon
+
+  PanelItemWindowList.prototype.init = function() {
+    var root = PanelItem.prototype.init.apply(this, arguments);
+
+    this.$element = document.createElement('ul');
+    root.appendChild(this.$element);
+
+    var wm = OSjs.Core.getWindowManager();
+    if ( wm ) {
+      var wins = wm.getWindows();
+      for ( var i = 0; i < wins.length; i++ ) {
+        if ( wins[i] ) {
+          this.update('create', wins[i]);
+        }
+      }
+    }
+
+    return root;
+  };
+
+  PanelItemWindowList.prototype.destroy = function() {
+    this.entries.forEach(function(e) {
+      try {
+        e.destroy();
+      } catch ( e ) {}
+      e = null;
+    });
+
+    this.entries = [];
+
+    PanelItem.prototype.destroy.apply(this, arguments);
+  };
+
+  PanelItemWindowList.prototype.update = function(ev, win) {
+    var self = this;
+    if ( !this.$element || (win && win._properties.allow_windowlist === false) ) {
+      return;
+    }
+
+    var entry = null;
+    if ( ev === 'create' ) {
+      var className = 'Button WindowList_Window_' + win._wid;
+      if ( this.$element.getElementsByClassName(className).length ) {
+        return;
+      }
+
+      entry = new WindowListEntry(win, className);
+      this.entries.push(entry);
+      this.$element.appendChild(entry.$element);
+    } else {
+      var found = -1;
+      this.entries.forEach(function(e, idx) {
+        if ( e.id === win._wid ) {
+          found = idx;
+        }
+        return found !== -1;
+      });
+
+      entry = this.entries[found];
+      if ( entry ) {
+        if ( entry.event(ev, win, this.$element) === false ) {
+          entry.destroy();
+
+          this.entries.splice(found, 1);
+        }
+      }
     }
   };
 
