@@ -114,7 +114,6 @@
     }
   };
 
-
   /**
    * Element: 'gui-grid'
    *
@@ -133,7 +132,6 @@
       });
     }
   };
-
 
   /**
    * Element: 'gui-vbox'
