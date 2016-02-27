@@ -30,8 +30,6 @@
 (function(CoreWM, Panel, PanelItem, Utils, API, VFS) {
   'use strict';
 
-  var _itemCount = 0;
-
   /////////////////////////////////////////////////////////////////////////////
   // ITEM
   /////////////////////////////////////////////////////////////////////////////
@@ -149,7 +147,6 @@
     }
 
     function updateWeather() {
-      console.warn(busy, self.position);
       if ( busy || !self.position ) {
         return;
       }
@@ -157,26 +154,28 @@
 
       var lat = self.position.coords.latitude;
       var lon = self.position.coords.longitude;
-      var cbn = 'PanelItemWeatherCallback_' + _itemCount;
       var unt = 'metric';
       var key = '4ea33327bcfa4ea0293b2d02b6fda385';
-      var url = Utils.format('http://api.openweathermap.org/data/2.5/weather?lat={0}&lon={1}&callback={2}&units={3}&APPID={4}', lat, lon, cbn, unt, key);
-      var script = null;
+      var url = Utils.format('http://api.openweathermap.org/data/2.5/weather?lat={0}&lon={1}&units={2}&APPID={3}', lat, lon, unt, key);
 
-      window[cbn] = function(result) {
-        busy = false;
-        setWeather(result.name, result.weather ? result.weather[0] : null, result.main);
-        Utils.$remove(script);
-        delete window[cbn];
-      };
+      API.curl({
+        body: {
+          url: url
+        }
+      }, function(error, response) {
+        if ( !error && response ) {
+          var result = null;
+          try {
+            result = JSON.parse(response.body);
+          } catch ( e ) {}
 
-      script = Utils.$createJS(url, null, function() {
-        busy = false;
-      }, function() {
+          if ( result ) {
+            setWeather(result.name, result.weather ? result.weather[0] : null, result.main);
+          }
+        }
+
         busy = false;
       });
-
-      _itemCount++;
     }
 
     setImage(API.getIcon('status/weather-severe-alert.png'));
