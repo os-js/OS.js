@@ -149,6 +149,7 @@
     }
 
     function updateWeather() {
+      console.warn(busy, self.position);
       if ( busy || !self.position ) {
         return;
       }
@@ -158,7 +159,8 @@
       var lon = self.position.coords.longitude;
       var cbn = 'PanelItemWeatherCallback_' + _itemCount;
       var unt = 'metric';
-      var url = Utils.format('//api.openweathermap.org/data/2.5/weather?lat={0}&lon={1}&callback={2}&units={3}', lat, lon, cbn, unt);
+      var key = '4ea33327bcfa4ea0293b2d02b6fda385';
+      var url = Utils.format('http://api.openweathermap.org/data/2.5/weather?lat={0}&lon={1}&callback={2}&units={3}&APPID={4}', lat, lon, cbn, unt, key);
       var script = null;
 
       window[cbn] = function(result) {
@@ -168,7 +170,11 @@
         delete window[cbn];
       };
 
-      script = Utils.$createJS(url);
+      script = Utils.$createJS(url, null, function() {
+        busy = false;
+      }, function() {
+        busy = false;
+      });
 
       _itemCount++;
     }
