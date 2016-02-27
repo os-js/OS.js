@@ -18,10 +18,7 @@ application-window-title {
 }
 
 .application-window-button-entry {
-  text-align : center;
-  height : 10px;
   width : 20px;
-  padding : 0;
 }
 
 application-window-content {
@@ -40,7 +37,7 @@ application-window-button-maximize:active,
 application-window[data-focused="true"] application-window-button-maximize,
 application-window[data-focused="true"] application-window-button-maximize:hover,
 application-window[data-focused="true"] application-window-button-maximize:active {
-  background : url('glass/wm/maximize.png') no-repeat bottom center;
+  background : url('glass/wm/maximize.png') no-repeat center center;
 }
 
 /* Min */
@@ -50,7 +47,7 @@ application-window-button-minimize:active,
 application-window[data-focused="true"] application-window-button-minimize,
 application-window[data-focused="true"] application-window-button-minimize:hover,
 application-window[data-focused="true"] application-window-button-minimize:active {
-  background : url('glass/wm/minimize.png') no-repeat bottom center;
+  background : url('glass/wm/minimize.png') no-repeat center 70%;
 }
 
 /* Close */
@@ -60,6 +57,6 @@ application-window-button-close:active,
 application-window[data-focused="true"] application-window-button-close,
 application-window[data-focused="true"] application-window-button-close:hover,
 application-window[data-focused="true"] application-window-button-close:active {
-  background : url('glass/wm/close.png') no-repeat bottom center;
+  background : url('glass/wm/close.png') no-repeat center center;
 }
 
