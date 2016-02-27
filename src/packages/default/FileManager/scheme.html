@@ -59,89 +59,90 @@
         </gui-menu-bar-entry>
 
       </gui-menu-bar>
-      </gui-vbox-container>
+    </gui-vbox-container>
 
-      <!-- TOOLBAR -->
-      <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto" data-id="ToolbarContainer">
-        <gui-toolbar data-id="TopToolbar" class="gui-flex">
+    <!-- TOOLBAR -->
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto" data-id="ToolbarContainer">
+      <gui-toolbar data-id="TopToolbar" class="gui-flex">
 
-          <gui-button data-icon="stock://16x16/actions/back.png" data-id="GoBack"></gui-button>
-          <gui-button data-icon="stock://16x16/actions/next.png" data-id="GoNext"></gui-button>
-          <gui-text class="gui-flex-grow" data-id="GoLocation" data-placeholder="location:///path"></gui-text>
+        <gui-button data-icon="stock://16x16/actions/back.png" data-id="GoBack"></gui-button>
+        <gui-button data-icon="stock://16x16/actions/next.png" data-id="GoNext"></gui-button>
+        <gui-text class="gui-flex-grow" data-id="GoLocation" data-placeholder="location:///path"></gui-text>
 
-        </gui-toolbar>
-      </gui-vbox-container>
+      </gui-toolbar>
+    </gui-vbox-container>
 
-      <!-- CONTENT -->
-      <gui-vbox-container data-grow="1" data-shrink="0" data-basis="auto" data-fill="true">
-        <gui-paned-view>
-          <!-- SIDE PANEL -->
-          <gui-paned-view-container data-basis="150px" data-grow="0" data-shrink="0" data-multiple="false" data-id="SideContainer">
-            <gui-list-view data-id="SideView" data-single-click="true">
-            </gui-list-view>
-          </gui-paned-view-container>
+    <!-- CONTENT -->
+    <gui-vbox-container data-grow="1" data-shrink="0" data-basis="auto" data-fill="true">
+      <gui-paned-view>
+        <!-- SIDE PANEL -->
+        <gui-paned-view-container data-basis="150px" data-grow="0" data-shrink="0" data-multiple="false" data-id="SideContainer">
+          <gui-list-view data-id="SideView" data-single-click="true">
+          </gui-list-view>
+        </gui-paned-view-container>
 
-          <!-- FILE VIEW -->
-          <gui-paned-view-container data-grow="1" data-shrink="1">
-            <gui-file-view data-id="FileView">
-            </gui-file-view>
-          </gui-paned-view-container>
-        </gui-paned-view>
-      </gui-vbox-container>
+        <!-- FILE VIEW -->
+        <gui-paned-view-container data-grow="1" data-shrink="1">
+          <gui-file-view data-id="FileView">
+          </gui-file-view>
+        </gui-paned-view-container>
+      </gui-paned-view>
+    </gui-vbox-container>
 
 
-      <!-- STATUSBAR -->
-      <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
-        <gui-statusbar data-id="Statusbar"></gui-statusbar>
-      </gui-vbox-container>
-    </gui-vbox>
+    <!-- STATUSBAR -->
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-statusbar data-id="Statusbar"></gui-statusbar>
+    </gui-vbox-container>
+  </gui-vbox>
 
-  </application-window>
+</application-window>
 
-  <application-window data-id="MountWindow">
-    <gui-vbox>
-      <gui-vbox-container data-grow="1" data-shrink="1" data-fill="true">
+<application-window data-id="MountWindow">
+  <gui-vbox>
+    <gui-vbox-container data-grow="1" data-shrink="1" data-fill="true">
 
-        <gui-scroll-view>
-          <gui-vbox>
-            <gui-vbox-container data-shrink="1">
-              <gui-label>LBL_TYPE</gui-label>
-            </gui-vbox-container>
-            <gui-vbox-container data-expand="true">
-              <gui-select data-id="MountType">
-                <gui-select-option data-value="webdav">WebDAV (OwnCloud)</gui-select-option>
-              </gui-select>
-            </gui-vbox-container>
+      <gui-scroll-view>
+        <gui-vbox>
+          <gui-vbox-container data-shrink="1">
+            <gui-label>LBL_TYPE</gui-label>
+          </gui-vbox-container>
+          <gui-vbox-container data-expand="true">
+            <gui-select data-id="MountType">
+              <gui-select-option data-value="webdav">WebDAV (OwnCloud)</gui-select-option>
+            </gui-select>
+          </gui-vbox-container>
 
-            <gui-vbox-container data-shrink="1">
-              <gui-label>LBL_NAME</gui-label>
-            </gui-vbox-container>
-            <gui-vbox-container data-expand="true">
-              <gui-text data-id="MountName" data-placeholder="mydav"></gui-text>
-            </gui-vbox-container>
+          <gui-vbox-container data-shrink="1">
+            <gui-label>LBL_NAME</gui-label>
+          </gui-vbox-container>
+          <gui-vbox-container data-expand="true">
+            <gui-text data-id="MountName" data-placeholder="mydav"></gui-text>
+          </gui-vbox-container>
 
-            <gui-vbox-container data-shrink="1">
-              <gui-label>LBL_DESCRIPTION</gui-label>
-            </gui-vbox-container>
-            <gui-vbox-container data-expand="true">
-              <gui-text data-id="MountDescription" data-placeholder="My DAV"></gui-text>
-            </gui-vbox-container>
+          <gui-vbox-container data-shrink="1">
+            <gui-label>LBL_DESCRIPTION</gui-label>
+          </gui-vbox-container>
+          <gui-vbox-container data-expand="true">
+            <gui-text data-id="MountDescription" data-placeholder="My DAV"></gui-text>
+          </gui-vbox-container>
 
-            <gui-vbox-container data-grow="1">
-              <gui-expander data-label="LBL_SETTINGS" data-expanded="false">
-                <gui-vbox>
-                  <gui-vbox-container data-shrink="1">
-                    <gui-label>LBL_HOST</gui-label>
-                  </gui-vbox-container>
-                  <gui-vbox-container data-expand="true">
-                    <gui-text data-id="MountHost" data-placeholder="http://127.0.0.1/remote.php/webdav/"></gui-text>
-                  </gui-vbox-container>
 
-                  <gui-vbox-container data-shrink="1">
-                    <gui-label>LBL_NAMESPACE</gui-label>
-                  </gui-vbox-container>
-                  <gui-vbox-container data-expand="true">
-                    <gui-text data-id="MountNamespace" data-placeholder="DAV"></gui-text>
+          <gui-vbox-container data-grow="1">
+            <gui-expander data-label="LBL_SETTINGS" data-expanded="false">
+              <gui-vbox>
+                <gui-vbox-container data-shrink="1">
+                  <gui-label>LBL_HOST</gui-label>
+                </gui-vbox-container>
+                <gui-vbox-container data-expand="true">
+                  <gui-text data-id="MountHost" data-placeholder="http://127.0.0.1/remote.php/webdav/"></gui-text>
+                </gui-vbox-container>
+
+                <gui-vbox-container data-shrink="1">
+                  <gui-label>LBL_NAMESPACE</gui-label>
+                </gui-vbox-container>
+                <gui-vbox-container data-expand="true">
+                  <gui-text data-id="MountNamespace" data-placeholder="DAV"></gui-text>
                 </gui-vbox-container>
 
                 <gui-vbox-container data-shrink="1">
@@ -167,7 +168,8 @@
               </gui-vbox>
             </gui-expander>
           </gui-vbox-container>
-        <gui-vbox>
+
+        </gui-vbox>
       </gui-scroll-view>
     </gui-vbox-container>
 
