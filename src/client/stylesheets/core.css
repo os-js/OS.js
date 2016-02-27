@@ -295,19 +295,10 @@ application-window-top {
 application-window-icon {
   text-align : center;
   position : relative;
+  background-position : center center;
+  background-repeat : no-repeat;
+  background-size : 16px;
 }
-  application-window-icon > img {
-    margin : 0;
-    padding : 0;
-    border : 0 none;
-    pointer-events: none;
-    vertical-align : middle;
-
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin: -8px 0 0 -8px;
-  }
 
 application-window-title {
   height : 100%;

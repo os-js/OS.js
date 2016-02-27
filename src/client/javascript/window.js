@@ -467,12 +467,6 @@
     var windowIcon          = document.createElement('application-window-icon');
     var windowTitle         = document.createElement('application-window-title');
 
-    var windowIconImage         = document.createElement('img');
-    windowIconImage.alt         = this._title;
-    windowIconImage.src         = this._icon;
-    windowIconImage.width       = 16;
-    windowIconImage.height      = 16;
-
     windowTitle.appendChild(document.createTextNode(this._title));
 
     Utils.$bind(windowTitle, 'dblclick', function() {
@@ -535,8 +529,6 @@
     main.style.left   = this._position.x + 'px';
     main.style.zIndex = getNextZindex(this._state.ontop);
 
-    windowIcon.appendChild(windowIconImage);
-
     windowTop.appendChild(windowIcon);
     windowTop.appendChild(windowTitle);
     windowTop.appendChild(buttonMinimize);
@@ -555,7 +547,7 @@
     this._$root     = windowWrapper;
     this._$top      = windowTop;
     this._$loading  = windowLoading;
-    this._$winicon  = windowIconImage;
+    this._$winicon  = windowIcon;
     this._$disabled = windowDisabled;
     this._$resize   = windowResize;
 
@@ -564,6 +556,7 @@
     this._onChange('create');
     this._toggleLoading(false);
     this._toggleDisabled(false);
+    this._setIcon(this._icon);
 
     if ( this._sound ) {
       API.playSound(this._sound, this._soundVolume);
@@ -1804,8 +1797,10 @@
    */
   Window.prototype._setIcon = function(i) {
     if ( this._$winicon ) {
-      this._$winicon.src = i;
+      this._$winicon.title = this._title;
+      this._$winicon.style.backgroundImage = 'url(' + i + ')';
     }
+
     this._icon = i;
     this._onChange('icon');
   };
