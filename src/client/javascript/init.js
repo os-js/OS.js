@@ -59,15 +59,21 @@
 
   // Compability
   (function() {
-    if ( window.HTMLCollection ) {
-      window.HTMLCollection.prototype.forEach = Array.prototype.forEach;
-    }
-    if ( window.NodeList ) {
-      window.NodeList.prototype.forEach = Array.prototype.forEach;
-    }
-    if ( window.FileList ) {
-      window.FileList.prototype.forEach = Array.prototype.forEach;
-    }
+    var compability = ['forEach', 'every'];
+
+    compability.forEach(function(n) {
+      if ( window.HTMLCollection ) {
+        window.HTMLCollection.prototype[n] = Array.prototype[n];
+      }
+
+      if ( window.NodeList ) {
+        window.NodeList.prototype[n] = Array.prototype[n];
+      }
+
+      if ( window.FileList ) {
+        window.FileList.prototype[n] = Array.prototype[n];
+      }
+    });
 
     (function() {
       function CustomEvent(event, params) {
