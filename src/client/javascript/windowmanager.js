@@ -340,7 +340,7 @@
 
       // Snapping to other windows
       if ( windowSnapSize > 0 ) {
-        current.snapRects.forEach(function(rect) {
+        current.snapRects.every(function(rect) {
           // >
           if ( newRight >= (rect.left - windowSnapSize) && newRight <= (rect.left + windowSnapSize) ) { // Left
             newLeft = rect.left - (current.rectWindow.w + (borderSize * 2));
@@ -514,7 +514,7 @@
    */
   WindowManager.prototype.getWindow = function(name) {
     var result = null;
-    this._windows.forEach(function(w) {
+    this._windows.every(function(w) {
       if ( w && w._name === name ) {
         result = w;
       }
@@ -574,7 +574,7 @@
     console.debug('WindowManager::removeWindow()', w._wid);
 
     var result = false;
-    this._windows.forEach(function(win, i) {
+    this._windows.every(function(win, i) {
       if ( win && win._wid === w._wid ) {
         self._windows[i] = null;
         result = true;
