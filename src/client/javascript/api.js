@@ -646,11 +646,7 @@
 
       try {
         var settings = OSjs.Core.getSettingsManager().get(a.__pname) || {};
-        a.init(settings, result, function() {
-          setTimeout(function() {
-            _done();
-          }, 100);
-        });
+        a.init(settings, result, function() {}); // NOTE: Empty function is for backward-compability
         onFinished(a, result);
 
         doTriggerHook('onApplicationLaunched', [{
@@ -667,10 +663,7 @@
         _error(OSjs.API._('ERR_APP_INIT_FAILED_FMT', n, ex.toString()), ex);
       }
 
-      // Just in case something goes wrong
-      setTimeout(function() {
-        _done();
-      }, 30 * 1000);
+      _done();
     }
 
     function launch() {

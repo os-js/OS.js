@@ -45,7 +45,7 @@
     return Service.prototype.destroy.apply(this, arguments);
   };
 
-  EXAMPLEService.prototype.init = function(settings, metadata, onInited) {
+  EXAMPLEService.prototype.init = function(settings, metadata) {
     Service.prototype.init.apply(this, arguments);
   };
 

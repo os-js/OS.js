@@ -690,7 +690,7 @@
     return Application.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationFileManager.prototype.init = function(settings, metadata, onInited) {
+  ApplicationFileManager.prototype.init = function(settings, metadata) {
     Application.prototype.init.apply(this, arguments);
 
     var self = this;
@@ -700,8 +700,6 @@
     var scheme = GUI.createScheme(url);
     scheme.load(function(error, result) {
       self._addWindow(new ApplicationFileManagerWindow(self, metadata, scheme, path, settings));
-
-      onInited();
     });
 
     this._setScheme(scheme);
