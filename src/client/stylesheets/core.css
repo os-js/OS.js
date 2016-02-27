@@ -362,8 +362,9 @@ application-window-resize {
        -o-user-select : none;
           user-select : none;
 }
-application-window-outer[data-allow-resize="false"] window-resize {
+application-window[data-allow-resize="false"] > application-window-resize {
   display : none;
+  cursor : default !important;
 }
 
 application-window-loading {
