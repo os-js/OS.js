@@ -146,8 +146,8 @@
     var _WID                = 0;
     var _DEFAULT_WIDTH      = 200;
     var _DEFAULT_HEIGHT     = 200;
-    var _DEFAULT_MIN_HEIGHT = 100;
-    var _DEFAULT_MIN_WIDTH  = 100;
+    var _DEFAULT_MIN_HEIGHT = 150;
+    var _DEFAULT_MIN_WIDTH  = 150;
     var _DEFAULT_SND_VOLUME = 1.0;
     var _NAMES              = [];
 
