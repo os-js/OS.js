@@ -37,10 +37,6 @@
   height : 50px;
 }
 
-.ApplicationCalculatorWindow gui-grid > gui-grid-row {
-  height : 20%;
-}
-
 .ApplicationCalculatorWindow gui-text > input {
   font-size : 30px;
   font-family : Monospace;
