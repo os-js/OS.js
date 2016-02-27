@@ -571,8 +571,6 @@
 
     document.body.appendChild(this._$element);
 
-    windowTitle.style.right = windowButtons.offsetWidth + 'px';
-
     this._onChange('create');
     this._toggleLoading(false);
     this._toggleDisabled(false);
