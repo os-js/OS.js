@@ -186,7 +186,7 @@
     return Application.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationArduinoPackageManager.prototype.init = function(settings, metadata, onInited) {
+  ApplicationArduinoPackageManager.prototype.init = function(settings, metadata) {
     Application.prototype.init.apply(this, arguments);
 
     var self = this;
@@ -194,7 +194,6 @@
     var scheme = GUI.createScheme(url);
     scheme.load(function(error, result) {
       self._addWindow(new ApplicationArduinoPackageManagerWindow(self, metadata, scheme));
-      onInited();
       self.checkArguments(self.startupArgs);
     });
 

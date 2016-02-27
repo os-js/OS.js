@@ -93,7 +93,7 @@
   ApplicationArduinoSysLog.prototype = Object.create(Application.prototype);
   ApplicationArduinoSysLog.constructor = Application;
 
-  ApplicationArduinoSysLog.prototype.init = function(settings, metadata, onInited) {
+  ApplicationArduinoSysLog.prototype.init = function(settings, metadata) {
     Application.prototype.init.apply(this, arguments);
 
     var self = this;
@@ -101,7 +101,6 @@
     var scheme = GUI.createScheme(url);
     scheme.load(function(error, result) {
       self._addWindow(new ApplicationArduinoSysLogWindow(self, metadata, scheme));
-      onInited();
     });
     this._setScheme(scheme);
   };
