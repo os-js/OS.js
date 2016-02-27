@@ -308,6 +308,8 @@
    */
   var _CALL_INDEX = 1;
   function doAPICall(m, a, cok, cerror, options) {
+    a = a || {};
+
     var lname = 'APICall_' + _CALL_INDEX;
 
     if ( typeof a.__loading === 'undefined' || a.__loading === true ) {
