@@ -466,7 +466,6 @@
     var windowTop           = document.createElement('application-window-top');
     var windowIcon          = document.createElement('application-window-icon');
     var windowTitle         = document.createElement('application-window-title');
-    var windowButtons       = document.createElement('application-window-buttons');
 
     var windowIconImage         = document.createElement('img');
     windowIconImage.alt         = this._title;
@@ -514,13 +513,6 @@
     Utils.$bind(windowLoading, 'mousedown', _noEvent);
     Utils.$bind(windowDisabled, 'mousedown', _noEvent);
 
-    if ( !isTouch ) {
-      Utils.$bind(windowButtons, 'mousedown', function(ev) {
-        ev.preventDefault();
-        return stopPropagation(ev);
-      });
-    }
-
     Utils.$bind(main, 'mousedown', function(ev) {
       self._focus();
       return stopPropagation(ev);
@@ -545,13 +537,11 @@
 
     windowIcon.appendChild(windowIconImage);
 
-    windowButtons.appendChild(buttonMinimize);
-    windowButtons.appendChild(buttonMaximize);
-    windowButtons.appendChild(buttonClose);
-
     windowTop.appendChild(windowIcon);
     windowTop.appendChild(windowTitle);
-    windowTop.appendChild(windowButtons);
+    windowTop.appendChild(buttonMinimize);
+    windowTop.appendChild(buttonMaximize);
+    windowTop.appendChild(buttonClose);
 
     windowLoading.appendChild(windowLoadingImage);
 

@@ -126,88 +126,83 @@ application-window{
       font-weight: 300;
       color: rgba(255, 255, 255, 0.9);
     }
-    application-window-buttons {
+
+    .application-window-button-entry {
       height: 100%;
-      right: 0;
-      top: 0;
+      width: 30px;
+      line-height: 20px;
+      text-align: center;
+      font-family: Arial;
+      font-size: 10px;
+      z-index: 0;
 
-      .application-window-button-entry {
-        height: 100%;
-        width: 30px;
-        line-height: 20px;
-        text-align: center;
-        font-family: Arial;
-        font-size: 10px;
-        z-index: 0;
-
-        &:hover {
-          background-color: rgba(255, 255, 255, 0.2);
-        }
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+      &:after,
+      &:before {
+        z-index: 1;
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+      }
+    }
+    application-window-button-close:before,
+    application-window-button-close:after {
+      width: 15px;
+      height: 2px;
+      background-color: @fadedWhite;
+      transition: background-color 0.2s;
+    }
+    application-window-button-close{
+      &:before {
+        transform: translate(-50%, -50%) rotate(45deg);
+      }
+      &:after {
+        transform: translate(-50%, -50%) rotate(-45deg);
+      }
+      &:hover{
         &:after,
         &:before {
-          z-index: 1;
-          content: '';
-          position: absolute;
-          top: 50%;
-          left: 50%;
+          background-color: #fff;
         }
       }
-      application-window-button-close:before,
-      application-window-button-close:after {
-        width: 15px;
-        height: 2px;
-        background-color: @fadedWhite;
-        transition: background-color 0.2s;
+    }
+    application-window-button-maximize{
+      &:before,
+      &:after {
+        width: 11px;
+        height: 9px;
+        background: @clr-blue-700;
+        border: 1px solid @fadedWhite;
+        border-top-width: 2px;
+        transform: translate(-50%, -50%);
+        transition: border-color 0.2s;
       }
-      application-window-button-close{
-        &:before {
-          transform: translate(-50%, -50%) rotate(45deg);
-        }
-        &:after {
-          transform: translate(-50%, -50%) rotate(-45deg);
-        }
-        &:hover{
-          &:after,
-          &:before {
-            background-color: #fff;
-          }
-        }
+      &:before{
+        opacity: 0;
+        margin: -3px 0 0 3px;
+        transition: margin 0.3s, opacity 0.3s;
       }
-      application-window-button-maximize{
+      &:hover{
         &:before,
-        &:after {
-          width: 11px;
-          height: 9px;
-          background: @clr-blue-700;
-          border: 1px solid @fadedWhite;
-          border-top-width: 2px;
-          transform: translate(-50%, -50%);
-          transition: border-color 0.2s;
-        }
-        &:before{
-          opacity: 0;
-          margin: -3px 0 0 3px;
-          transition: margin 0.3s, opacity 0.3s;
-        }
-        &:hover{
-          &:before,
-          &:after{
-            border-color: #fff;
-            background: #468FD8;
-          }
+        &:after{
+          border-color: #fff;
+          background: #468FD8;
         }
       }
-      application-window-button-minimize{
-        &:after {
-          width: 11px;
-          height: 9px;
-          border-bottom: 2px solid @fadedWhite;
-          transform: translate(-50%, -50%);
-          transition: border-color 0.2s;
-        }
-        &:hover:after{
-          border-color: #fff;
-        }
+    }
+    application-window-button-minimize{
+      &:after {
+        width: 11px;
+        height: 9px;
+        border-bottom: 2px solid @fadedWhite;
+        transform: translate(-50%, -50%);
+        transition: border-color 0.2s;
+      }
+      &:hover:after{
+        border-color: #fff;
       }
     }
   }

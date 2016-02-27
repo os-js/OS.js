@@ -227,8 +227,7 @@ application-window-icon,
 application-window-title,
 application-window-loading,
 application-window-disabled,
-application-window-loading-indicator,
-application-window-buttons {
+application-window-loading-indicator {
   display : block;
 }
 
@@ -331,17 +330,14 @@ application-window-title {
           flex: 1 1 auto;
 }
 
-application-window-buttons {
+.application-window-button-entry {
+  padding : 0;
+  margin : 0;
   height : 100%;
+  text-align : center;
+  display : inline-block;
+  position : relative;
 }
-  application-window-buttons > .application-window-button-entry {
-    padding : 0;
-    margin : 0;
-    height : 100%;
-    text-align : center;
-    display : inline-block;
-    position : relative;
-  }
 
 application-window-content {
   position : absolute;

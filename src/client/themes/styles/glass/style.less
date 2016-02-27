@@ -10,12 +10,18 @@
 
 @window_border_size   : 5px;
 
-application-window-buttons > .application-window-button-entry {
-  margin : 2px;
-  width : 10px;
-  height : 18px;
-  padding : 4px;
+application-window-top {
+  height : 25px;
+}
+application-window-title {
+  line-height : 25px;
+}
+
+.application-window-button-entry {
   text-align : center;
+  height : 10px;
+  width : 20px;
+  padding : 0;
 }
 
 application-window-content {
@@ -25,17 +31,6 @@ application-window-content {
 application-window:before {
   opacity : .7;
   border : 1px solid @base_background_color;
-}
-
-application-window-buttons {
-  height : 10px;
-  top : 50%;
-  margin-top : -6px;
-}
-application-window-buttons > .application-window-button-entry {
-  height : 10px;
-  width : 20px;
-  padding : 0;
 }
 
 /* Max */
