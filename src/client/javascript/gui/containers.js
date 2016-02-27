@@ -115,6 +115,25 @@
   };
 
   /**
+   * Element: 'gui-grid'
+   *
+   * A grid-type container with equal-sized containers
+   *
+   * @api OSjs.GUI.Elements.gui-grid
+   * @class
+   */
+  GUI.Elements['gui-grid'] = {
+    build: function(el) {
+      var rows = el.getElementsByTagName('gui-grid-row');
+      var p = 100 / rows.length;
+
+      rows.forEach(function(r) {
+        r.style.height = String(p) + '%';
+      });
+    }
+  };
+
+  /**
    * Element: 'gui-vbox'
    *
    * Vertical boxed layout
