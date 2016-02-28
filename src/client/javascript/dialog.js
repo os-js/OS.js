@@ -71,7 +71,7 @@
     this._state.ontop                 = true;
     this._tag                         = 'DialogWindow';
 
-    if ( args.scheme && args.scheme instanceof OSjs.GUI.Helpers.Scheme ) {
+    if ( args.scheme && args.scheme instanceof OSjs.GUI.Scheme ) {
       this.scheme = args.scheme;
       delete args.scheme;
     } else {
