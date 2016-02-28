@@ -718,15 +718,8 @@
   function getClientConfig(grunt, dist) {
     var cfg = generateBuildConfig(grunt);
     var settings = clone(cfg.client);
-    var themes = readThemeMetadata(grunt);
-    var extensions = getCoreExtensions(grunt);
-    var mime = cfg.mime;
-
+    var autostart = settings.AutoStart;
     var preloads = [];
-    var styles = themes.styles;
-    var sounds = {};
-    var icons = {};
-    var fonts = themes.fonts;
 
     if ( dist === 'dist-dev' ) {
       preloads.push({
@@ -741,6 +734,12 @@
       });
     }
 
+    var themes = readThemeMetadata(grunt);
+    var styles = themes.styles;
+    var sounds = {};
+    var icons = {};
+    var fonts = themes.fonts;
+
     themes.sounds.forEach(function(t) {
       sounds[t.name] = t.title;
     });
@@ -749,6 +748,7 @@
       icons[t.name] = t.title;
     });
 
+    var extensions = getCoreExtensions(grunt);
     Object.keys(extensions).forEach(function(p) {
       var e = extensions[p];
       if ( e.sources ) {
@@ -761,13 +761,22 @@
       }
     });
 
+    var packages = readPackageMetadata();
+    Object.keys(packages).forEach(function(n) {
+      var meta = packages[n];
+      if ( meta.autostart === true ) {
+        autostart.push(n.split('/')[1]);
+      }
+    });
+
     settings.Styles = styles;
     settings.Icons = icons;
     settings.Sounds = sounds;
     settings.Fonts.list = fonts.concat(settings.Fonts.list);
-    settings.MIME = mime;
+    settings.MIME = cfg.mime;
     settings.Preloads = preloads;
     settings.Connection.Dist = dist;
+    settings.AutoStart = autostart;
 
     return settings;
   }
