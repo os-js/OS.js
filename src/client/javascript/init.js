@@ -42,7 +42,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   // Make sure these namespaces exist
-  (['API', 'GUI', 'Core', 'Dialogs', 'Helpers', 'Applications', 'Locales', 'VFS']).forEach(function(ns) {
+  (['API', 'GUI', 'Core', 'Dialogs', 'Helpers', 'Applications', 'Locales', 'VFS', 'Extensions']).forEach(function(ns) {
     OSjs[ns] = OSjs[ns] || {};
   });
 
@@ -392,6 +392,34 @@
   }
 
   /**
+   * Loads all extensions
+   */
+  function initExtensions(config, callback) {
+    var exts = Object.keys(OSjs.Extensions);
+
+    console.group('initExtensions()', exts);
+
+    function next(i) {
+      if ( i >= exts.length - 1 ) {
+        console.groupEnd();
+        callback();
+        return;
+      }
+
+      try {
+        OSjs.Extensions[exts[i]].init(function() {
+          next(i+1);
+        });
+      } catch ( e ) {
+        console.warn('Extension init failed', e.stack, e);
+        next(i+1);
+      }
+    }
+
+    next(0);
+  }
+
+  /**
    * Initializes the SettingsManager pools
    * from configuration file(s)
    */
@@ -498,34 +526,36 @@
     initPreload(config, function() {
       OSjs.API.triggerHook('onInitialize');
 
-      initHandler(config, function() {
-        initPackageManager(config, function() {
-          initSettingsManager(config, function() {
-            initVFS(config, function() {
-              OSjs.API.triggerHook('onInited');
+      initExtensions(config, function() {
+        initHandler(config, function() {
+          initPackageManager(config, function() {
+            initSettingsManager(config, function() {
+              initVFS(config, function() {
+                OSjs.API.triggerHook('onInited');
 
-              OSjs.GUI.DialogScheme.init(function() {
-                initWindowManager(config, function() {
-                  OSjs.API.triggerHook('onWMInited');
+                OSjs.GUI.DialogScheme.init(function() {
+                  initWindowManager(config, function() {
+                    OSjs.API.triggerHook('onWMInited');
 
-                  OSjs.Utils.$remove(document.getElementById('LoadingScreen'));
+                    OSjs.Utils.$remove(document.getElementById('LoadingScreen'));
 
-                  initEvents();
-                  var wm = OSjs.Core.getWindowManager();
-                  wm._fullyLoaded = true;
+                    initEvents();
+                    var wm = OSjs.Core.getWindowManager();
+                    wm._fullyLoaded = true;
 
-                  console.groupEnd();
+                    console.groupEnd();
 
-                  initSession(config, function() {
-                    OSjs.API.triggerHook('onSessionLoaded');
-                  });
-                }); // wm
-              });
+                    initSession(config, function() {
+                      OSjs.API.triggerHook('onSessionLoaded');
+                    });
+                  }); // wm
+                });
 
-            }); // vfs
-          }); // settings
-        }); // packages
-      }); // handler
+              }); // vfs
+            }); // settings
+          }); // packages
+        }); // handler
+      }); // extensions
     }); // preload
   }
 

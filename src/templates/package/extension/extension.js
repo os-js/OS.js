@@ -33,13 +33,24 @@
   // MODULE API
   /////////////////////////////////////////////////////////////////////////////
 
-  var EXAMPLE = {};
+  /**
+   * Extension modules requires an init() method
+   */
+  var EXAMPLE = {
+    init: function(done) {
+      done();
+    }
+  };
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Helpers.EXAMPLE = EXAMPLE;
+  /**
+   * This is an example using the internal Extension system.
+   * You can use any namespace you want and override already defined internal methods
+   */
+  OSjs.Extensions.EXAMPLE = EXAMPLE;
 
 })(OSjs.Utils, OSjs.VFS, OSjs.API);
 

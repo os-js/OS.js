@@ -7,7 +7,7 @@
       "extension.js"
     ]
   },
-  "preload":    [
+  "sources":    [
     {"src": "extension.js", "type": "javascript"}
   ]
 }
