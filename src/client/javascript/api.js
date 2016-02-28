@@ -1127,6 +1127,8 @@
   /**
    * Create a new dialog
    *
+   * You can also pass a function as `className` to return an instance of your own class
+   *
    * @param   String        className       Dialog Namespace Class Name
    * @param   Object        args            Arguments you want to send to dialog
    * @param   Function      callback        Callback on dialog action (close/ok etc) => fn(ev, button, result)
@@ -1154,7 +1156,7 @@
       callback.apply(null, arguments);
     }
 
-    var win = new OSjs.Dialogs[className](args, cb);
+    var win = typeof className === 'string' ? new OSjs.Dialogs[className](args, cb) : className(args, cb);
 
     if ( !parentObj ) {
       var wm = OSjs.Core.getWindowManager();
