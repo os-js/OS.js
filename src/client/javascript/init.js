@@ -401,7 +401,7 @@
     console.group('initExtensions()', exts);
 
     function next(i) {
-      if ( i >= exts.length - 1 ) {
+      if ( i >= exts.length ) {
         console.groupEnd();
         callback();
         return;
