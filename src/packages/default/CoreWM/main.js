@@ -156,6 +156,8 @@
       return false;
     }
 
+    this.removeNotificationIcon('_HandlerUserNotification');
+
     if ( this.iconView ) {
       this.iconView.destroy();
     }

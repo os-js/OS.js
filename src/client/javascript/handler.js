@@ -202,11 +202,6 @@
       OSjs.Core.getSettingsManager().set('UserSession', null, data, cb);
     }
 
-    var wm = OSjs.Core.getWindowManager();
-    if ( wm ) {
-      wm.removeNotificationIcon('_HandlerUserNotification');
-    }
-
     if ( save ) {
       saveSession(function() {
         _finished(true);
