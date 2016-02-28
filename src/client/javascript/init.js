@@ -408,11 +408,11 @@
 
       try {
         OSjs.Extensions[exts[i]].init(function() {
-          next(i+1);
+          next(i + 1);
         });
       } catch ( e ) {
         console.warn('Extension init failed', e.stack, e);
-        next(i+1);
+        next(i + 1);
       }
     }
 
