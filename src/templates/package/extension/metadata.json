@@ -1,5 +1,5 @@
 {
-  "className":  "ApplicationEXAMPLE",
+  "className":  "EXAMPLEExtension",
   "type":       "extension",
   "build":      {
     "copy": [
