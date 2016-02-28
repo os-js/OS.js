@@ -529,9 +529,9 @@
     initPreload(config, function() {
       OSjs.API.triggerHook('onInitialize');
 
-      initExtensions(config, function() {
-        initHandler(config, function() {
-          initPackageManager(config, function() {
+      initHandler(config, function() {
+        initPackageManager(config, function() {
+          initExtensions(config, function() {
             initSettingsManager(config, function() {
               initVFS(config, function() {
                 OSjs.API.triggerHook('onInited');
@@ -556,9 +556,9 @@
 
               }); // vfs
             }); // settings
-          }); // packages
-        }); // handler
-      }); // extensions
+          }); // extensions
+        }); // packages
+      }); // handler
     }); // preload
   }
 
