@@ -37,7 +37,7 @@
    * Extension modules requires an init() method
    */
   var EXAMPLE = {
-    init: function(done) {
+    init: function(metadata, done) {
       done();
     }
   };

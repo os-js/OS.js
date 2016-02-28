@@ -396,6 +396,7 @@
    */
   function initExtensions(config, callback) {
     var exts = Object.keys(OSjs.Extensions);
+    var manifest =  OSjs.Core.getMetadata();
 
     console.group('initExtensions()', exts);
 
@@ -407,7 +408,9 @@
       }
 
       try {
-        OSjs.Extensions[exts[i]].init(function() {
+        var m = manifest[exts[i]];
+
+        OSjs.Extensions[exts[i]].init(m, function() {
           next(i + 1);
         });
       } catch ( e ) {
