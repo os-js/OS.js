@@ -31,15 +31,9 @@ NIX: `curl -sS http://os.js.org/installer | sh`
 
 Windows: http://os.js.org/installer.exe
 
-## How to contribute
+## Contributions
 
 Read the official [contribution docs](https://github.com/os-js/OS.js/blob/master/CONTRIBUTING.md) for more information.
-
-[Want to join the translation team?](https://github.com/os-js/OS.js/wiki/Join-the-translation-team)
-
-[Got questions or suggestions?](https://github.com/os-js/OS.js/issues)
-
-[Join the chatroom!](https://gitter.im/os-js/OS.js)
 
 # Links
 
