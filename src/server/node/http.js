@@ -115,12 +115,14 @@
   /**
    * Respond with an error
    */
-  function respondError(message, response, json) {
+  function respondError(message, response, json, code) {
+    code = code || 500;
+
     if ( json ) {
       message = 'Internal Server Error (HTTP 500): ' + message.toString();
-      respondJSON({result: null, error: message}, response, [], 500);
+      respondJSON({result: null, error: message}, response, [], code);
     } else {
-      respond(message.toString(), 'text/plain', response, [], 500);
+      respond(message.toString(), 'text/plain', response, [], code);
     }
   }
 
@@ -199,7 +201,7 @@
         } catch ( e ) {
           console.error('!!! Caught exception', e);
           console.warn(e.stack);
-          respondError(e, response, true);
+          respondError(e, response, true, 200);
         }
       });
     }
