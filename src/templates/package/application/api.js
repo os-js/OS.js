@@ -29,6 +29,7 @@
  */
 (function() {
 
+  // See http://os.js.org/doc/tutorials/application-with-server-api.html
   module.exports = {
   };
 

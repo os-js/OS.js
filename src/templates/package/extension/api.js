@@ -30,6 +30,13 @@
  */
 (function() {
 
+  //
+  // Here you can extend the API and VFS namespaces
+  //
+  // `instance` holds the running OS.js server environment variables and such.
+  // For more information on this, look up `src/server/node/node_modules/osjs/osjs.js`
+  //
+
   exports.register = function(API, VFS, instance) {
   };
 
