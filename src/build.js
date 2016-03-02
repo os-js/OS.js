@@ -476,21 +476,16 @@
       ignores = ignores || [];
 
       var config = {};
+
+      // src/conf files
       var files = getConfigFiles(PATHS.conf);
       files.forEach(function(iter) {
         if ( ignores.indexOf(_path.basename(iter)) >= 0 ) {
           return;
         }
-
-        try {
-          var json = JSON.parse(_fs.readFileSync(iter));
-          var tjson = JSON.parse(JSON.stringify(config));
-          config = mergeObject(tjson, json);
-        } catch ( e ) {
-          console.log(e.stack);
-          grunt.fail.fatal('WARNING: Failed to parse ' + iter.replace(ROOT, ''));
-        }
+        config = readAndMerge(grunt, iter, config);
       });
+
       return JSON.parse(JSON.stringify(config));
     }
 
@@ -711,6 +706,18 @@
     return result;
   }
 
+  function readAndMerge(grunt, iter, config) {
+    console.log('+++', iter);
+    try {
+      var json = JSON.parse(_fs.readFileSync(iter));
+      config = mergeObject(clone(config), json);
+    } catch ( e ) {
+      console.log(e.stack);
+      grunt.fail.fatal('WARNING: Failed to parse ' + iter.replace(ROOT, ''));
+    }
+    return config;
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // CONFIGS
   /////////////////////////////////////////////////////////////////////////////
@@ -798,6 +805,13 @@
           loadExtensions.push(path);
         }
       });
+
+      if ( extensions[e].conf && extensions[e].conf instanceof Array ) {
+        extensions[e].conf.forEach(function(c) {
+          var p = _path.join(PATHS.packages, extensions[e].path, c);
+          cfg = readAndMerge(grunt, p, cfg);
+        });
+      }
     });
 
     function buildServer() {
