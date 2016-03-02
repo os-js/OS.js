@@ -186,6 +186,14 @@
   }
 
   /**
+   * Wrapper for warning message
+   */
+  function warning(grunt, str) {
+    str = 'WARN: ' + str;
+    grunt.log.writeln(str['yellow'].bold);
+  }
+
+  /**
    * Merges two objects together
    */
   function mergeObject(into, from) {
@@ -1050,7 +1058,8 @@
     }
 
     if ( _fs.existsSync(dst) ) {
-      throw new Error('Template already exists');
+      warning(grunt, 'The package ' + name + ' already exists in repository ' + repo);
+      throw new Error('Package already exists');
     }
 
     function rep(file) {
@@ -1064,6 +1073,12 @@
     typemap[type].cpy.forEach(function(c) {
       rep(_path.join(dst, c));
     });
+
+    var cfg = generateBuildConfig(grunt);
+    if ( (cfg.repositories || []).indexOf(repo) < 0 ) {
+      warning(grunt, 'The repository \'' + repo + '\' is not active.');
+      warning(grunt, 'Activate with `grunt config:add-repository' + repo);
+    }
   }
 
   function createHandler(grunt, name) {
