@@ -121,13 +121,13 @@ Node is the prefered server for OS.js.
 ### Production (dist)
 
 ```
-./bin/start-dist.sh` or `bin\win-start-dist
+./bin/start-dist.sh or bin\win-start-dist
 ```
 
 ### Development (dist-dev)
 
 ```
-./bin/start-dev.sh` or `bin\win-start-dev
+./bin/start-dev.sh or bin\win-start-dev
 ```
 
 You can install [node supervisor](https://github.com/petruisfan/node-supervisor) and the development (dist-dev) server will automatically reload on change.
