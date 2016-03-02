@@ -132,6 +132,10 @@ Node is the prefered server for OS.js.
 
 You can install [node supervisor](https://github.com/petruisfan/node-supervisor) and the development (dist-dev) server will automatically reload on change.
 
+### Running behind a webserver
+
+You can use nginx to run behind a webserver to increase performance and security using a *reverse proxy*. See the included [nginx-node](https://github.com/os-js/OS.js/blob/master/doc/nginx-node.conf) configuration file (for a very basic example)
+
 ## PHP5
 
 You can start a server manually with `(cd dist; php -S 0.0.0.0:8000 ../src/server/php/server.php)` or look below for webserver alternatives.
