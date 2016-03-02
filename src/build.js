@@ -1026,15 +1026,15 @@
       },
       application: {
         src: 'application',
-        cpy: ['main.js', 'main.css', 'metadata.json', 'scheme.html']
+        cpy: ['api.js', 'main.js', 'main.css', 'metadata.json', 'scheme.html']
       },
       service: {
         src: 'service',
-        cpy: ['main.js', 'metadata.json']
+        cpy: ['api.js', 'main.js', 'metadata.json']
       },
       extension: {
         src: 'extension',
-        cpy: ['extension.js', 'metadata.json']
+        cpy: ['api.js', 'extension.js', 'metadata.json']
       }
     };
 
