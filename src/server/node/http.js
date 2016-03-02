@@ -316,9 +316,9 @@
     instance.handler.onServerStart(function() {
       var port = setup.port || instance.config.port;
       if ( instance.config.logging ) {
-        console.log('***');
-        console.log('***', 'OS.js is listening on http://localhost:' + port);
-        console.log('***');
+        console.log('\n\n***');
+        console.log('***', 'OS.js is listening on http://localhost:' + port + ' (handler:' + instance.config.handler + ' dir:' + instance.setup.dist + ')');
+        console.log('***\n\n');
       }
 
       server.listen(port);
