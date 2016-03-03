@@ -1,4 +1,4 @@
-# OS.js on X11
+# Install OS.js as a Linux Distribution
 
 OS.js can run as a **X11** Desktop.
 

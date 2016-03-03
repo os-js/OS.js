@@ -6,27 +6,22 @@ Installation is done in a few simple steps and only takes a minute to get runnin
 
 For more general information look at the [README](README.md) file or in the [official documentation](http://os.js.org/doc/).
 
-I have also made a [simplified installation guide](http://os.js.org/doc/manuals/man-install.html) so you don't have to read this entire thing.
-
 #### Table of Contents
 
 * [Dependencies](#dependencies)
-* Installation methods
-  1. Automated
-    * [*NIX](#automated)
-    * [Windows](#automated-1)
-  2. Manual
-    * [*NIX](#manual)
-    * [Windows](#manual-1)
-  3. Containers and Virtual Machines
+* [Installation methods](#installation)
+  1. Standard Installation
+    * [*NIX](#nix)
+    * [Windows](#windows)
+  2. Containers and Virtual Machines
     * [Vagrant](#vagrant)
     * [Docker](#docker)
     * [NW.js](#nwjs)
-    * [X11](#x11)
-  4. Single-board-computers
+  3. Single-board-computers
     * [Raspberry PI](#raspberry-pi)
     * [Arduino](#arduino)
     * [Intel Edison](#intel-edison)
+  4. Linux distribution
 * [Running](#running)
   1. [Node](#node)
   2. [PHP5](#php5)
@@ -34,61 +29,33 @@ I have also made a [simplified installation guide](http://os.js.org/doc/manuals/
 
 # Dependencies
 
-You just need **node** and **npm**. Install them with your package manager or download the [official installer](https://nodejs.org).
+You only need these packages installed:
 
-**Debian\Ubuntu:** Also install package `nodejs-legacy`.
+- `git`
+- `node` (debian users also need `nodejs-legacy`)
+- `npm`
 
 # Installation
 
-To easily apply updates and other changes, I recommend using **git** to download instead of using a zip-file/automated installer.
+OS.js runs on all patforms and web-servers. Choose one of the methods described below, then proceed to the [run](#running) section.
 
-If you install npm packages without `--production` parameter, you need to install mocha `sudo npm install -g mocha`
+## Standard Installation
 
-## *NIX
+You can also find documentation on this on the [official homepage](http://os.js.org/doc/manuals/man-install.html).
 
-### Automated
+If you want to install on your computer or server directly:
 
-Run `curl -sS http://os.js.org/installer | sh`.
+### *NIX
 
-### Manual
+See [install-nix.md](https://github.com/os-js/OS.js/blob/master/doc/install-nix.md).
 
-```shell
-$ sudo npm install -g grunt-cli
+### Windows
 
-# You can also download and extarct the latest zip
-$ git clone https://github.com/os-js/OS.js.git
-$ cd OS.js
-$ npm install --production
-$ grunt
-```
-
-## Windows
-
-### Automated
-
-Download and run http://os.js.org/installer.exe.
-
-### Manual
-
-[Official video instruction on YouTube](https://www.youtube.com/watch?v=Cj3OdxTdGGc)
-
-Run `cmd` as *Administrator* (important)!
-
-```shell
-$ npm install -g grunt-cli
-
-# You can also download and extarct the latest zip
-$ git clone https://github.com/os-js/OS.js.git
-$ cd OS.js
-$ npm install --production
-
-# This is required to make the Development Environment work, but is optional.
-$ bin\create-windows-symlinks
-
-$ grunt --force
-```
+See [install-windows.md](https://github.com/os-js/OS.js/blob/master/doc/install-windows.md).
 
 ## Containers and Virtual Machines
+
+If you want to install on your computer, but in an isolated environment (container)
 
 ### Vagrant
 
@@ -102,13 +69,9 @@ See [Docker.md](https://github.com/os-js/OS.js/blob/master/doc/Docker.md).
 
 See [build-nw.md](https://github.com/os-js/OS.js/blob/master/doc/build-nw.md).
 
-### X11
-
-See [build-x11.md](https://github.com/os-js/OS.js/blob/master/doc/build-x11.md).
-
 ## Single-board-computers
 
-OS.js runs on all platforms, but there are some documentation for spesific platforms:
+You can also install/deploy OS.js on these platforms, but has some spesific documentation:
 
 ### Raspberry PI
 
@@ -122,13 +85,17 @@ See [platform-arduino.md](https://github.com/os-js/OS.js/blob/master/doc/platfor
 
 See [platform-edison.md](https://github.com/os-js/OS.js/blob/master/doc/platform-edison.md).
 
+## Linux distribution
+
+OS.js can run as a Linux distribution on top of X11. See [install-x11.md](https://github.com/os-js/OS.js/blob/master/doc/install-x11.md) for more information.
+
 # Running
 
-*If you built OS.js using a container (above) you can skip this.*
+*If you installed OS.js with a container (above), you can skip the step(s) below*
 
-Make sure the _VFS_ directories in `vfs/` are given the same permissions as the web-servers running user.
+After you have successfully installed OS.js you need to start a server. You can either do this by running behind a traditional webserver or see how to start them manually below.
 
-After you have started a server, simply navigate to http://localhost:8000 (port 8000 is default).
+When you have started a server, simply navigate to [http://localhost:8000](http://localhost:8000) (port 8000 is default).
 
 ## Node
 
@@ -146,7 +113,9 @@ See [server-node.md](https://github.com/os-js/OS.js/blob/master/doc/server-node.
 
 ## PHP5
 
-See [server-php.md](https://github.com/os-js/OS.js/blob/master/doc/server-php.md) for how to set it up on your server.
+See [server-php.md](https://github.com/os-js/OS.js/blob/master/doc/server-php.md) for more information about running on PHP.
+
+You can also run without a webserver, using the command-line:
 
 ```
 # Start production server
@@ -158,10 +127,4 @@ See [server-php.md](https://github.com/os-js/OS.js/blob/master/doc/server-php.md
 
 # Setting up optional features
 
-* [Add packages](http://os.js.org/doc/manuals/man-package-manager.html)
-* [Google API and Google Drive](http://os.js.org/doc/manuals/man-google-api.html)
-* [Windows Live API and OneDrive](http://os.js.org/doc/manuals/man-windows-live-api.html)
-* [Dropbox](http://os.js.org/doc/manuals/man-dropbox.html)
-* [Broadway](http://os.js.org/doc/manuals/man-broadway.html)
-* [ZIP support](http://os.js.org/doc/manuals/man-zip.html)
-
+Visit the [official documentation](http://os.js.org/doc/manuals/) for more information.
