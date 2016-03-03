@@ -23,6 +23,10 @@ I have also made a [simplified installation guide](http://os.js.org/doc/manuals/
     * [Docker](#docker)
     * [NW.js](#nwjs)
     * [X11](#x11)
+  4. Single-board-computers
+    * [Raspberry PI](#raspberrypi)
+    * [Arduino](#arduino)
+    * [Intel Edison](#inteledison)
 * [Running](#running)
   2. [Node](#node)
   3. PHP
@@ -105,6 +109,22 @@ See [NW.md](https://github.com/os-js/OS.js/blob/master/doc/NW.md).
 ### X11
 
 See [X11.md](https://github.com/os-js/OS.js/blob/master/doc/X11.md).
+
+## Single-board-computers
+
+OS.js runs on all platforms, but there are some documentation for spesific platforms:
+
+### Raspberry PI
+
+See [platform-raspi.md](https://github.com/os-js/OS.js/blob/master/doc/platform-raspi.md).
+
+### Arduino
+
+See [platform-arduino.md](https://github.com/os-js/OS.js/blob/master/doc/platform-arduino.md).
+
+### Intel Edison
+
+See [platform-edison.md](https://github.com/os-js/OS.js/blob/master/doc/platform-edison.md).
 
 # Running
 
