@@ -13,10 +13,10 @@ I have also made a [simplified installation guide](http://os.js.org/doc/manuals/
 * [Dependencies](#dependencies)
 * Installation methods
   1. Automated
-    * [NIX](#automated)
+    * [*NIX](#automated)
     * [Windows](#automated-1)
   2. Manual
-    * [NIX](#manual)
+    * [*NIX](#manual)
     * [Windows](#manual-1)
   3. Containers and Virtual Machines
     * [Vagrant](#vagrant)
@@ -48,7 +48,7 @@ To easily apply updates and other changes, I recommend using **git** to download
 
 If you install npm packages without `--production` parameter, you need to install mocha `sudo npm install -g mocha`
 
-## NIX
+## *NIX
 
 ### Automated
 
@@ -136,51 +136,29 @@ After you have started a server, simply navigate to http://localhost:8000 (port 
 
 ## Node
 
-Node is the prefered server for OS.js.
+This is the prefered method for running OS.js.
 
-### Production (dist)
+See [server-node.md](https://github.com/os-js/OS.js/blob/master/doc/server-node.md) for more information about running on Node.
 
 ```
+# Start production server (linux or windows)
 ./bin/start-dist.sh or bin\win-start-dist
-```
 
-### Development (dist-dev)
-
-```
+# Start development server (linux or windows)
 ./bin/start-dev.sh or bin\win-start-dev
 ```
 
-You can install [node supervisor](https://github.com/petruisfan/node-supervisor) and the development (dist-dev) server will automatically reload on change.
-
-### Running behind a webserver
-
-You can use nginx to run behind a webserver to increase performance and security using a *reverse proxy*. See the included [nginx-node](https://github.com/os-js/OS.js/blob/master/doc/nginx-node.conf) configuration file (for a very basic example)
-
 ## PHP5
 
-You can start a server manually with `(cd dist; php -S 0.0.0.0:8000 ../src/server/php/server.php)` or look below for webserver alternatives.
+See [server-php.md](https://github.com/os-js/OS.js/blob/master/doc/server-php.md) for how to set it up on your server.
 
-If you have a "webhost" (or "webhotel") with ex. cPanel without shell access (or no node support), you can run OS.js, but has to be built on another computer, then transfered over to the target machine. The only downside here is that you'd have to run from /OS.js/dist/ without doing modifications to the setup (if you don't have access to mod_rewrite to create proxy rules). You can find more info on this [here](https://github.com/os-js/OS.js/blob/master/doc/cpanel-host.md).
+```
+# Start production server
+(cd dist; php -S 0.0.0.0:8000 ../src/server/php/server.php)
 
-*By default PHP uses 'dist' as the default root*
-
-### Apache
-
-Run `grunt apache-vhost` to generate config file (or look in doc/ for example)
-
-*Note* You have to enable mod_rewrite for Apache and make sure htaccess is allowed.
-
-### Lighttpd
-
-Run `grunt lighttpd-config` to generate config file (or look in doc/ for example)
-
-### Nginx
-
-Run `grunt nginx-config` to generate config file (or look in doc/ for example)
-
-### WAMP
-
-Works fine. Just look up the Apache section above for configuration.
+# Start development server
+(cd dist-dev; php -S 0.0.0.0:8000 ../src/server/php/server.php)
+```
 
 # Setting up optional features
 
