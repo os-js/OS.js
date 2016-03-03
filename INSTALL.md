@@ -28,12 +28,8 @@ I have also made a [simplified installation guide](http://os.js.org/doc/manuals/
     * [Arduino](#arduino)
     * [Intel Edison](#intel-edison)
 * [Running](#running)
-  2. [Node](#node)
-  3. PHP
-    * [Apache](#apache)
-    * [Lighttpd](#lighttpd)
-    * [Nginx](#nginx)
-    * [WAMP](#wamp)
+  1. [Node](#node)
+  2. [PHP5](#php5)
 * [Setting up optional features](#setting-up-optional-features)
 
 # Dependencies
