@@ -104,11 +104,11 @@ See [Docker.md](https://github.com/os-js/OS.js/blob/master/doc/Docker.md).
 
 ### NW.js
 
-See [NW.md](https://github.com/os-js/OS.js/blob/master/doc/NW.md).
+See [build-nw.md](https://github.com/os-js/OS.js/blob/master/doc/build-nw.md).
 
 ### X11
 
-See [X11.md](https://github.com/os-js/OS.js/blob/master/doc/X11.md).
+See [build-x11.md](https://github.com/os-js/OS.js/blob/master/doc/build-x11.md).
 
 ## Single-board-computers
 
