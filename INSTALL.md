@@ -24,9 +24,9 @@ I have also made a [simplified installation guide](http://os.js.org/doc/manuals/
     * [NW.js](#nwjs)
     * [X11](#x11)
   4. Single-board-computers
-    * [Raspberry PI](#raspberrypi)
+    * [Raspberry PI](#raspberry-pi)
     * [Arduino](#arduino)
-    * [Intel Edison](#inteledison)
+    * [Intel Edison](#intel-edison)
 * [Running](#running)
   2. [Node](#node)
   3. PHP
