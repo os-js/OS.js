@@ -1,7 +1,5 @@
 # Installation instructions
 
-Server runs on Linux, OS X, BSD and Windows.
-
 Installation is done in a few simple steps and only takes a minute to get running.
 
 For more general information look at the [README](README.md) file or in the [official documentation](http://os.js.org/doc/).
@@ -67,7 +65,7 @@ See [Docker.md](https://github.com/os-js/OS.js/blob/master/doc/Docker.md).
 
 ### NW.js
 
-See [build-nw.md](https://github.com/os-js/OS.js/blob/master/doc/build-nw.md).
+See [NW.md](https://github.com/os-js/OS.js/blob/master/doc/NW.md).
 
 ## Single-board-computers
 

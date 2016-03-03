@@ -1,1 +1,0 @@
-# cPanel Hosting Setup guide
