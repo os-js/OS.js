@@ -8,6 +8,8 @@ These are some of the ways you can contribute to OS.js:
 * **Testing** Things are always changing, and automated tests are not enough to ensure everything is working 100%. [Join the Testing team](https://github.com/os-js/OS.js/wiki/Join-the-testing-team)
 * **Documentation** Found something in the [homepage or documentation](https://github.com/andersevenrud/os.js.org) that does not seem right?
 * **Community** Join in our [Gitter](https://gitter.im/os-js/OS.js) chat room for fun and tech talk!
+* **Anonymous tips** Donate/tip anonymously with [Gratipay](https://gratipay.com/os-js/)
+* **Donate** Donate via [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=andersevenrud%40gmail%2ecom&lc=NO&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted)
 
 You can also submit patches and questions directly to me via [email](mailto:andersevenrud@gmail.com), but using GitHub is preferred.
 
@@ -18,18 +20,12 @@ You can also submit patches and questions directly to me via [email](mailto:ande
 * [FAQ and discussion](https://github.com/os-js/OS.js/issues/49)
 * [Chat room](https://gitter.im/os-js/OS.js)
 * [Subreddit](https://www.reddit.com/r/osjs)
-* [PayPal donation](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=andersevenrud%40gmail%2ecom&lc=NO&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted)
-* [Gratipay donation](https://gratipay.com/os-js/)
-
-# Source Code
-
-* [OS.js Source Code](https://github.com/os-js/OS.js)
-* [OS.js Homepage Code](https://github.com/andersevenrud/os.js.org)
-
+* [OS.js Core Source](https://github.com/os-js/OS.js)
+* [OS.js Homepage Source](https://github.com/andersevenrud/os.js.org)
 
 # Setting up the development environment
 
-To get started you need a [Github](https://github.com/) account. 
+To get started you need a [Github](https://github.com/) account.
 
 ## Prepare
 
