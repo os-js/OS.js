@@ -29,8 +29,6 @@ echo "[deb] Preparing..."
 
 rm -rf $OUTDIR
 
-(cd src/conf; ln -sf ../templates/conf/500-x11.json 500-x11.json)
-
 npm install nan@1.1.0
 npm install authenticate-pam
 npm install userid
