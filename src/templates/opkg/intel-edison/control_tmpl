@@ -1,6 +1,6 @@
 Package: osjs
 Version: VER
-Depends: node
+Depends: nodejs
 Priority: optional
 Source: opkg/edison/ARCH
 Section: misc
