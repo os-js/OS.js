@@ -26,9 +26,9 @@ mkdir -p $TMPDIR
 rm -rf dist/themes/*
 rm -rf dist/packages/*
 
-rm src/conf/500-arduino.json
-rm src/conf/500-edison.json
-rm src/conf/500-x11.json
+rm src/conf/500-arduino.json 2>/dev/null
+rm src/conf/500-edison.json 2>/dev/null
+rm src/conf/500-x11.json 2>/dev/null
 
 if [ "$TEMPLATE" == "arduino" ]; then
   (cd src/conf; ln -sf ../templates/conf/500-arduino.json 500-arduino.json)
@@ -41,6 +41,8 @@ fi
 if [ "$TEMPLATE" == "deb" ]; then
   (cd src/conf; ln -sf ../templates/conf/500-x11.json 500-x11.json)
 fi
+
+echo "[image] Updating sources..."
 
 git checkout -- dist &>/dev/null
 npm install --production &>/dev/null
@@ -151,10 +153,10 @@ rm $OUTDIR/dist/packages/*/*/api.php 2>/dev/null
 rm $OUTDIR/dist/packages/*/*/server.lua 2>/dev/null
 if [ "$TEMPLATE" == "arduino" ]; then
   rm $OUTDIR/dist/packages/*/*/api.js 2>/dev/null
+  rm $OUTDIR/dist/packages/target/CodeMirror/vendor 2>/dev/null
 fi
 rm $OUTDIR/dist/packages/target/CoreWM/panelitems 2>/dev/null
-rm $OUTDIR/dist/packages/target/CodeMirror/vendor 2>/dev/null
-rm $OUTDIR/build/dist/themes/styles/material/*.less 2>/dev/null
+rm $OUTDIR/build/dist/themes/styles/*/*.less 2>/dev/null
 
 echo "[image] Done :)"
 exit 0

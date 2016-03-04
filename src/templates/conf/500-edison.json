@@ -1,7 +1,7 @@
 {
   "themes": {
     "icons": ["default"],
-    "styles": ["material"],
+    "styles": ["default"],
     "sounds": [],
     "fonts": ["Karla"]
   },
