@@ -69,6 +69,8 @@ if [ "$TEMPLATE" == "arduino" ]; then
 else
   cp -r src/server/node/* $OUTDIR/server/
   cp -r node_modules $OUTDIR/
+  rm -rf $OUTDIR/node_modules/grunt*
+  rm -rf $OUTDIR/node_modules/*grunt
   modclean -p $OUTDIR -d -r -n safe
 fi
 

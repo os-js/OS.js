@@ -48,7 +48,7 @@ echo "[opkg] Building..."
 #
 # Create package files
 #
-mkdir -p $OUTDIR/ipkg
+mkdir -p $OUTDIR/ipkg/CONTROL
 mkdir -p $OUTDIR/data/osjs
 if [ "$TEMPLATE" == "arduino" ]; then
   mkdir -p $OUTDIR/data/usr/lib/lua/osjs
@@ -62,8 +62,9 @@ echo "[opkg] Packing..."
 #
 
 F=$(readlink -f $OUTDIR)
-cp src/templates/opkg/$TEMPLATE/* $OUTDIR/ipkg/
-awk '{gsub("ARCH", "'"$ARCH"'", $0); print }' $OUTDIR/ipkg/control_tmpl | awk '{gsub("VER", "'"${VERSION}"'", $0); print }' > $OUTDIR/ipkg/control
+cp src/templates/opkg/$TEMPLATE/* $OUTDIR/ipkg/CONTROL/
+awk '{gsub("ARCH", "'"$ARCH"'", $0); print }' $OUTDIR/ipkg/CONTROL/control_tmpl | awk '{gsub("VER", "'"${VERSION}"'", $0); print }' > $OUTDIR/ipkg/CONTROL/control
+rm -rf $OUTDIR/ipkg/CONTROL/control_tmpl
 (cd $OUTDIR/ipkg; tar -czf $F/control.tar.gz *)
 (cd $OUTDIR/data; tar -czf $F/data.tar.gz *)
 echo $VERSION > $OUTDIR/debian-binary
