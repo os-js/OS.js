@@ -40,7 +40,7 @@ OUTDIR=".build/opkg"
 rm -rf $OUTDIR
 
 if [ "$TEMPLATE" == "arduino" ]; then
-  (cd src/conf; ln -sf ../templates/conf/500-arduino 500-arduino.json)
+  (cd src/conf; ln -sf ../templates/conf/500-arduino.json 500-arduino.json)
 fi
 
 echo "[opkg] Building..."

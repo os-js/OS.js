@@ -38,11 +38,11 @@ echo "[image] Building..."
 grunt all dist-files &>/dev/null
 
 mkdir -p $OUTDIR/bin
+mkdir -p $OUTDIR/server
 cp README.md $OUTDIR/
 cp AUTHORS $OUTDIR/
 cp LICENSE $OUTDIR/
 cp -r dist $OUTDIR/
-mkdir -p $OUTDIR/server
 cp src/server/settings.json $OUTDIR/
 cp src/server/packages.json $OUTDIR/
 
@@ -65,9 +65,9 @@ if [ "$TEMPLATE" == "arduino" ]; then
   cp bin/arduino-ifconfig*.sh $OUTDIR/bin/
   cp bin/arduino-wizard*.sh $OUTDIR/bin/
 
-  mv $OUTDIR/server/lua/osjs.lua $ROOTDIR/lib/
-  mv $OUTDIR/server/lua/osjs-fs $OUTDIR/dist/cgi-bin/
-  mv $OUTDIR/server/lua/osjs-api $OUTDIR/dist/cgi-bin/
+  mv $OUTDIR/server/osjs.lua $ROOTDIR/lib/
+  mv $OUTDIR/server/osjs-fs $OUTDIR/dist/cgi-bin/
+  mv $OUTDIR/server/osjs-api $OUTDIR/dist/cgi-bin/
   rm -rf $OUTDIR/server
 else
   cp -r src/server/node/* $OUTDIR/server/
@@ -86,38 +86,42 @@ echo "[image] Cleaning up..."
 # Remove unused icons
 #
 
-rm -rf $TMPDIR
-mkdir -p $TMPDIR
-mkdir -p $TMPDIR/16x16
-mkdir -p $TMPDIR/32x32
+if [ "$TEMPLATE" != "deb" ]; then
+  rm -rf $TMPDIR
+  mkdir -p $TMPDIR
+  mkdir -p $TMPDIR/16x16
+  mkdir -p $TMPDIR/32x32
 
-FILES=$(find $OUTDIR/dist/themes/icons/default/16x16 -maxdepth 1 -type d)
-for d in $FILES; do
-  b=$(basename $d)
-  mkdir -p $TMPDIR/16x16/$b
-  mkdir -p $TMPDIR/32x32/$b
-done
+  FILES=$(find $OUTDIR/dist/themes/icons/default/16x16 -maxdepth 1 -type d)
+  for d in $FILES; do
+    b=$(basename $d)
+    mkdir -p $TMPDIR/16x16/$b
+    mkdir -p $TMPDIR/32x32/$b
+  done
 
-GREPPED=$(grep -RHIi "\.png" $OUTDIR/dist/ | egrep -o '\w+\/[_A-Za-z0-9\-]+\.png')
-for g in $GREPPED; do
-  cp -L $OUTDIR/dist/themes/icons/default/16x16/$g $TMPDIR/16x16/$g 2>/dev/null
-  cp -L $OUTDIR/dist/themes/icons/default/32x32/$g $TMPDIR/32x32/$g 2>/dev/null
-done
+  GREPPED=$(grep -RHIi "\.png" $OUTDIR/dist/ | egrep -o '\w+\/[_A-Za-z0-9\-]+\.png')
+  for g in $GREPPED; do
+    cp -L $OUTDIR/dist/themes/icons/default/16x16/$g $TMPDIR/16x16/$g 2>/dev/null
+    cp -L $OUTDIR/dist/themes/icons/default/32x32/$g $TMPDIR/32x32/$g 2>/dev/null
+  done
 
-cp $OUTDIR/dist/themes/icons/default/16x16/*.png $TMPDIR/16x16/
-cp $OUTDIR/dist/themes/icons/default/32x32/*.png $TMPDIR/32x32/
+  cp $OUTDIR/dist/themes/icons/default/16x16/*.png $TMPDIR/16x16/
+  cp $OUTDIR/dist/themes/icons/default/32x32/*.png $TMPDIR/32x32/
 
-rm -rf $OUTDIR/dist/themes/icons/default/*
-mv $TMPDIR/* $OUTDIR/dist/themes/icons/default/
+  rm -rf $OUTDIR/dist/themes/icons/default/*
+  mv $TMPDIR/* $OUTDIR/dist/themes/icons/default/
 
-rm -rf $TMPDIR
+  rm -rf $TMPDIR
+fi
 
 #
 # Cleanup
 #
 
-rm -rf $OUTDIR/dist/themes/sounds/*
-rm -rf $OUTDIR/dist/themes/wallpapers/*
+if [ "$TEMPLATE" != "deb" ]; then
+  rm -rf $OUTDIR/dist/themes/sounds/*
+  rm -rf $OUTDIR/dist/themes/wallpapers/*
+fi
 
 rm $OUTDIR/dist/*.min.* 2>/dev/null
 rm $OUTDIR/dist/.htaccess 2>/dev/null
@@ -129,6 +133,9 @@ rm $OUTDIR/dist/api.php 2>/dev/null
 rm $OUTDIR/dist/packages/*/*/package.json 2>/dev/null
 rm $OUTDIR/dist/packages/*/*/api.php 2>/dev/null
 rm $OUTDIR/dist/packages/*/*/server.lua 2>/dev/null
+if [ "$TEMPLATE" == "arduino" ]; then
+  rm $OUTDIR/dist/packages/*/*/api.js 2>/dev/null
+fi
 rm $OUTDIR/dist/packages/target/CoreWM/panelitems 2>/dev/null
 rm $OUTDIR/dist/packages/target/CodeMirror/vendor 2>/dev/null
 rm $OUTDIR/build/dist/themes/styles/material/*.less 2>/dev/null

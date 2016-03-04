@@ -35,7 +35,7 @@ npm install nan@1.1.0
 npm install authenticate-pam
 npm install userid
 
-./bin/make-packaged.sh
+./bin/make-packaged.sh deb
 
 echo "[deb] Building..."
 
