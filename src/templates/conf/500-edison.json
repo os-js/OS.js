@@ -1,0 +1,41 @@
+{
+  "themes": {
+    "icons": ["default"],
+    "styles": ["material"],
+    "sounds": [],
+    "fonts": ["Karla"]
+  },
+  "client": {
+    "VFS": {
+      "MaxUploadSize": 1073741824,
+      "Mountpoints": {
+        "shared": {
+          "enabled": false
+        },
+        "root": {
+          "description": "Edison Storage"
+        }
+      }
+    },
+    "WM" : {
+      "args": {
+        "defaults": {
+          "theme"           : "default",
+          "icons"           : "default",
+          "sounds"          : "default",
+          "background"      : "color",
+          "enableSounds"    : false
+        }
+      }
+    }
+  },
+  "server" : {
+    "tmpdir": "/tmp",
+    "vfs": {
+      "homes":  "/home",
+      "mounts": {
+        "root": "/"
+      }
+    }
+  }
+}
