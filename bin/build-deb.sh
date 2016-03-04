@@ -5,15 +5,21 @@
 
 NAME=$1
 VERSION=$2
+ARCH=$3
 
 if [ -z $VERSION ]; then
   echo "Missing version argument"
-  echo "usage: build-deb.sh <name> <version>"
+  echo "usage: build-deb.sh <name> <version> <arch>"
   exit 1
 fi
 if [ -z $NAME ]; then
   echo "Missing name argument"
-  echo "usage: build-deb.sh <name> <version>"
+  echo "usage: build-deb.sh <name> <version> <arch>"
+  exit 1
+fi
+if [ -z $ARCH ]; then
+  echo "Missing architechture argument"
+  echo "usage: build-deb <name> <version> <arch>"
   exit 1
 fi
 
@@ -61,9 +67,9 @@ cp -r src/templates/deb/* $OUTDIR/
 #
 # Debian CONTROL
 #
-mv $OUTDIR/DEBIAN $OUTDIR/DEBIAN.tmp
 mkdir -p $OUTDIR/DEBIAN
-mv $OUTDIR/DEBIAN.tmp $OUTDIR/DEBIAN/control
+awk '{gsub("ARCH", "'"$ARCH"'", $0); print }' $OUTDIR/ipkg/DEBIAN_tmpl | awk '{gsub("VER", "'"${VERSION}"'", $0); print }' > $OUTDIR/DEBIAN/control
+rm $OUTDIR/DEBIAN_tmpl
 
 echo "[deb] Packing..."
 
