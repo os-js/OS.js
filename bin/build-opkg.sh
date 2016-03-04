@@ -65,10 +65,12 @@ F=$(readlink -f $OUTDIR)
 cp src/templates/opkg/$TEMPLATE/* $OUTDIR/ipkg/CONTROL/
 awk '{gsub("ARCH", "'"$ARCH"'", $0); print }' $OUTDIR/ipkg/CONTROL/control_tmpl | awk '{gsub("VER", "'"${VERSION}"'", $0); print }' > $OUTDIR/ipkg/CONTROL/control
 rm -rf $OUTDIR/ipkg/CONTROL/control_tmpl
-(cd $OUTDIR/ipkg; tar -czf $F/control.tar.gz *)
-(cd $OUTDIR/data; tar -czf $F/data.tar.gz *)
+(cd $OUTDIR/ipkg; tar -cz --format=gnu -f $F/control.tar.gz *)
+(cd $OUTDIR/data; tar -cz --format=gnu -f $F/data.tar.gz *)
 echo $VERSION > $OUTDIR/debian-binary
-tar -C $OUTDIR -cz ./debian-binary ./data.tar.gz ./control.tar.gz > $OUTDIR/$PKGNAME
+#tar -C $OUTDIR -cz ./debian-binary ./data.tar.gz ./control.tar.gz > $OUTDIR/$PKGNAME
+(cd $OUTDIR; ar -crf $F/$PKGNAME ./debian-binary ./control.tar.gz ./data.tar.gz)
+
 
 #
 # Clean up
