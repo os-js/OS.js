@@ -1,0 +1,11 @@
+Package: osjs
+Version: VER
+Depends: node
+Priority: optional
+Source: package/os-js/osjs
+Section: luci
+Architecture: ARCH
+Maintainer: Anders Evenrud <andersevenrud@gmail.com>
+Description: OS.js Cloud/Web Desktop http://os.js.org
+Suggests:
+Conflicts:

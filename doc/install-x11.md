@@ -22,7 +22,7 @@ $ sudo npm install -g grunt-cli
 
 $ git clone https://github.com/os-js/OS.js.git
 $ cd OS.js
-$ ./bin/build-debian-image.sh
+$ ./bin/build-deb.sh osjs 2.0.0-0001
 
 #
 # Install
