@@ -11,5 +11,5 @@ This build uses **Lua** which was spesifially made to use `uhttpd` (openwrt).
 Make sure to use the `arduino` branch for this
 
 ```
-./bin/build-opkg.sh osjs 2.0.0-0001 ar71xx arduino
+./bin/build-opkg.sh osjs 2.0.0-VERSION ar71xx arduino
 ```

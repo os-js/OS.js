@@ -39,3 +39,14 @@ $ ./bin/build-opkg.sh osjs 2.0.0-VERSION all intel-edison
 $ ./bin/build-opkg.sh osjs 2.0.0-VERSION x86 intel-edison
 $ ./bin/build-opkg.sh osjs 2.0.0-VERSION i586 intel-edison
 ```
+
+## How to start
+
+Currently there is no automatic startup, so you have to do this manually
+
+**PAM support is in development**
+
+```
+mkdir /home/demo
+/osjs/bin/start-edison.sh
+```
