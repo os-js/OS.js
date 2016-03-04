@@ -35,7 +35,7 @@ if [ "$TEMPLATE" == "arduino" ]; then
 fi
 
 if [ "$TEMPLATE" == "intel-edison" ]; then
-  (cd src/conf; ln -sf ../templates/conf/500-edison 500-edison.json)
+  (cd src/conf; ln -sf ../templates/conf/500-edison.json 500-edison.json)
 fi
 
 if [ "$TEMPLATE" == "deb" ]; then
