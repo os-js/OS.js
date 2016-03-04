@@ -26,6 +26,22 @@ mkdir -p $TMPDIR
 rm -rf dist/themes/*
 rm -rf dist/packages/*
 
+rm src/conf/500-arduino.json
+rm src/conf/500-edison.json
+rm src/conf/500-x11.json
+
+if [ "$TEMPLATE" == "arduino" ]; then
+  (cd src/conf; ln -sf ../templates/conf/500-arduino.json 500-arduino.json)
+fi
+
+if [ "$TEMPLATE" == "intel-edison" ]; then
+  (cd src/conf; ln -sf ../templates/conf/500-edison 500-edison.json)
+fi
+
+if [ "$TEMPLATE" == "deb" ]; then
+  (cd src/conf; ln -sf ../templates/conf/500-x11.json 500-x11.json)
+fi
+
 git checkout -- dist &>/dev/null
 npm install --production &>/dev/null
 
