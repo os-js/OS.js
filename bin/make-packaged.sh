@@ -88,6 +88,9 @@ if [ "$TEMPLATE" == "arduino" ]; then
   mv $OUTDIR/server/osjs-api $OUTDIR/dist/cgi-bin/
   rm -rf $OUTDIR/server
 else
+  if [ "$TEMPLATE" == "intel-edison" ]; then
+    cp bin/start-edison.sh $OUTDIR/bin/
+  fi
   cp -r src/server/node/* $OUTDIR/server/
   cp -r node_modules $OUTDIR/
   rm -rf $OUTDIR/node_modules/grunt*
