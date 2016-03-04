@@ -68,7 +68,7 @@ cp -r src/templates/deb/* $OUTDIR/
 # Debian CONTROL
 #
 mkdir -p $OUTDIR/DEBIAN
-awk '{gsub("ARCH", "'"$ARCH"'", $0); print }' $OUTDIR/ipkg/DEBIAN_tmpl | awk '{gsub("VER", "'"${VERSION}"'", $0); print }' > $OUTDIR/DEBIAN/control
+awk '{gsub("ARCH", "'"$ARCH"'", $0); print }' $OUTDIR/DEBIAN_tmpl | awk '{gsub("VER", "'"${VERSION}"'", $0); print }' > $OUTDIR/DEBIAN/control
 rm $OUTDIR/DEBIAN_tmpl
 
 echo "[deb] Packing..."
@@ -76,7 +76,7 @@ echo "[deb] Packing..."
 #
 # Create package
 #
-dpkg-deb --build $PKGNAME
+dpkg-deb --build $OUTDIR $PKGNAME.deb
 
 echo "[deb] Done :)"
 
