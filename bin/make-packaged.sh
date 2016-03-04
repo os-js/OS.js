@@ -3,21 +3,24 @@
 # This script creates a optimized build for packaging purposes
 #
 
+ROOTDIR=".build/output"
 OUTDIR=".build/output"
 TMPDIR=".build/tmp"
+PREFIX=""
 TEMPLATE=$1
 
 if [ "$TEMPLATE" == "arduino" ]; then
-  if [ "$(git branch)" != "arduino" ]; then
+  if [ "$(git rev-parse --abbrev-ref HEAD)" != "arduino" ]; then
     echo "You need to be on the 'arduino' brach to do this"
     exit 1
   fi
+  OUTDIR=".build/output/osjs"
 fi
 
 #
 # Reset
 #
-rm -rf $OUTDIR
+rm -rf $ROOTDIR
 mkdir -p $OUTDIR
 mkdir -p $TMPDIR
 rm -rf dist/themes/*
@@ -45,7 +48,7 @@ cp src/server/packages.json $OUTDIR/
 
 if [ "$TEMPLATE" == "arduino" ]; then
   mkdir -p $OUTDIR/dist/cgi-bin
-  mkdir -p $OUTDIR/lib/osjs/app
+  mkdir -p $ROOTDIR/lib/osjs/app
   cp -r src/server/lua/* $OUTDIR/server/
 
   APPS=`(cd src/packages/target; find . -maxdepth 1)`
@@ -53,7 +56,7 @@ if [ "$TEMPLATE" == "arduino" ]; then
     AD=$(basename $AD)
     AN=$(echo $AD | awk '{print tolower($0)}')
     if [[ "$AD" != "." ]]; then
-      cp -v src/packages/target/$AD/server.lua $OUTDIR/lib/osjs/app/$AN.lua 2>/dev/null
+      cp -v src/packages/target/$AD/server.lua $ROOTDIR/lib/osjs/app/$AN.lua 2>/dev/null
     fi
   done
 
@@ -62,7 +65,7 @@ if [ "$TEMPLATE" == "arduino" ]; then
   cp bin/arduino-ifconfig*.sh $OUTDIR/bin/
   cp bin/arduino-wizard*.sh $OUTDIR/bin/
 
-  mv $OUTDIR/server/lua/osjs.lua $OUTDIR/lib/
+  mv $OUTDIR/server/lua/osjs.lua $ROOTDIR/lib/
   mv $OUTDIR/server/lua/osjs-fs $OUTDIR/dist/cgi-bin/
   mv $OUTDIR/server/lua/osjs-api $OUTDIR/dist/cgi-bin/
   rm -rf $OUTDIR/server
