@@ -10,6 +10,7 @@ These are some of the ways you can contribute to OS.js:
 * **Community** Join in our [Gitter](https://gitter.im/os-js/OS.js) chat room for fun and tech talk!
 * **Anonymous tips** Donate/tip anonymously with [Gratipay](https://gratipay.com/os-js/)
 * **Donate** Donate via [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=andersevenrud%40gmail%2ecom&lc=NO&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted)
+* **Support** by becoming a [Patreon](https://www.patreon.com/user?u=2978551&ty=h&u=2978551)
 
 You can also submit patches and questions directly to me via [email](mailto:andersevenrud@gmail.com), but using GitHub is preferred.
 
