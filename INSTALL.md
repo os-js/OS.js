@@ -20,9 +20,6 @@ For more general information look at the [README](README.md) file or in the [off
     * [Arduino](#arduino)
     * [Intel Edison](#intel-edison)
   4. Linux distribution
-* [Running](#running)
-  1. [Node](#node)
-  2. [PHP5](#php5)
 * [Setting up optional features](#setting-up-optional-features)
 
 # Dependencies
@@ -86,42 +83,6 @@ See [platform-edison.md](https://github.com/os-js/OS.js/blob/master/doc/platform
 ## Linux distribution
 
 OS.js can run as a Linux distribution on top of X11. See [install-x11.md](https://github.com/os-js/OS.js/blob/master/doc/install-x11.md) for more information.
-
-# Running
-
-*If you installed OS.js with a container (above), you can skip the step(s) below*
-
-After you have successfully installed OS.js you need to start a server. You can either do this by running behind a traditional webserver or see how to start them manually below.
-
-When you have started a server, simply navigate to [http://localhost:8000](http://localhost:8000) (port 8000 is default).
-
-## Node
-
-This is the prefered method for running OS.js.
-
-See [server-node.md](https://github.com/os-js/OS.js/blob/master/doc/server-node.md) for more information about running on Node.
-
-```
-# Start production server (linux or windows)
-./bin/start-dist.sh or bin\win-start-dist
-
-# Start development server (linux or windows)
-./bin/start-dev.sh or bin\win-start-dev
-```
-
-## PHP5
-
-See [server-php.md](https://github.com/os-js/OS.js/blob/master/doc/server-php.md) for more information about running on PHP.
-
-You can also run without a webserver, using the command-line:
-
-```
-# Start production server
-(cd dist; php -S 0.0.0.0:8000 ../src/server/php/server.php)
-
-# Start development server
-(cd dist-dev; php -S 0.0.0.0:8000 ../src/server/php/server.php)
-```
 
 # Setting up optional features
 
