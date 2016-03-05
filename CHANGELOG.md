@@ -1,3 +1,80 @@
+# 2.0.0-alpha73
+
+A ton of fixes, improvements and developer support updates!
+
+Now also supports Intel Edison platforms.
+
+* GUI: Better touch support
+* GUI: Better scaling support
+* GUI: Added media-queries for devices <800px
+* GUI: gui-grid now dynamic
+* GUI: Added some more generics to CSS (like % containers)
+* API: Added relaunc() to relaunch/reload apps
+* API: getIcon() should now always return proper file icons
+* VFS: General improvements
+* VFS: WebDAV implementation complete
+* VFS: Better handling of copy/move between identical transports
+* VFS: General improvements
+* About: Rewritten
+* Preview: Fixed video position
+* Calculator: Refactored completely
+* Settings: Package Management moved to its own app
+* Settings: Now only shows physically loaded languages
+* CoreWM: Updated weather panel item
+* CoreWM: Updated windowlist panel item
+* CoreWM: Cleaned up CSS
+* CoreWM: Fixed loading indicators
+* CoreWM: Updated touch menu
+* CoreWM: Improved notification area
+* CoreWM: No longer shows handles on non-resizable windows
+* CoreWM: Improved resize clamping
+* CoreWM: Simplified Window HTML markup a bit
+* FileManager: Added create connection dialog
+* iframe-application: Better initialization
+* iframe-application: Better bi-directional communications support
+* dialogs: Support for creating from custom callback and scheme
+* utils: Added `acceptcodes` to XHR call
+* handlers: Updated init() patterns
+* handlers: Updated NW support
+* handlers: Simplified integration
+* handlers: Now supports blacklisting of apps
+* handlers: Now reads settings from src/conf
+* handlers: Better mysql handler
+* handlers: bcrypt in mysql handler
+* handlers: Demo handler fixes for PHP
+* locales: Updated en_EN
+* locales: Updated fr_FR
+* locales: Updated ko_KR
+* server-node: Updated APIs
+* server-node: Better extension support
+* server-node: Fixed where curl would returned garbled binaries
+* server-node: Bugfixes
+* server-node: Updated HTTP return codes
+* server-node: Deny deletion of protocol root dirs
+* server-node: Better logging
+* server-php: Deny deletion of protocol root dirs
+* build: Added support for generating Handlers
+* build: Grunt now handles extensions better
+* build: Renamed `package.json` to `metadata.json` for apps
+* build: Better package extension support
+* build: Added `autostart` parameter to package metadata
+* build: Better feedback on grunt create-package tasks
+* build: Now supports making opkg dists
+* build: Better deb dist support
+* build: Includes a "packaging" script
+* doc: Updated INSTALL
+* doc: Updated README
+* doc: Updated CONTRIBUTING
+* doc: Updated all platform docs
+* doc: Updated all installation docs
+* doc: Updated code docs
+* misc: Added .github (new) features
+* misc: Updated templates
+* misc: Removed deprecated methods
+* misc: Updated browser compabilty
+* misc: Fixed some possible vulnerabilities
+* platform: Now fully supports Intel Edison
+
 # 2.0.0-alpha72
 
 New Logo, Moved repo to organization, Better privilege and group support, a ton of bugfixes and improvements!
