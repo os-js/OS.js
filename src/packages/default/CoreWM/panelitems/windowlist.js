@@ -37,9 +37,17 @@
   function WindowListEntry(win, className) {
 
     var el = document.createElement('li');
-    el.innerHTML = '<img alt="" src="' + win._icon + '" /><span>' + win._title + '</span>';
     el.className = className;
     el.title = win._title;
+
+    var img = document.createElement('img');
+    img.src = win._icon;
+
+    var span = document.createElement('span');
+    span.appendChild(document.createTextNode(win._title));
+
+    el.appendChild(img);
+    el.appendChild(span);
 
     this.evClick = Utils.$bind(el, 'click', function() {
       win._restore(false, true);
@@ -131,8 +139,11 @@
       });
     } else if ( ev === 'title' ) {
       _change(cn, function(el) {
-        el.getElementsByTagName('span')[0].innerHTML = win._title;
-        el.title = win._title;
+        var span = el.getElementsByTagName('span')[0];
+        if ( span ) {
+          Utils.$empty(span);
+          span.appendChild(document.createTextNode(win._title));
+        }
       });
     } else if ( ev === 'icon' ) {
       _change(cn, function(el) {
