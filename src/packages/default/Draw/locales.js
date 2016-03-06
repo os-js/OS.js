@@ -56,7 +56,6 @@
       'Bevel' : 'Откос',
       'Stroked' : 'Ударен',
       'No stroke' : 'Без удър',
-
       'Pointer' : 'Стрелка',
       'Move active layer' : 'Премести активен слой',
 

@@ -2,6 +2,7 @@
   "className": "ApplicationCalculator",
   "name": "Calculator",
   "names": {
+    "it_IT": "Calcolatrice",
     "bg_Bg": "Клакулатор",
     "fr_FR": "Calculatrice",
     "it_IT": "Calcolatrice",

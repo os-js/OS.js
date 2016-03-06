@@ -2,6 +2,7 @@
   "className": "CoreWM",
   "name": "OS.js Window Manager",
   "names": {
+    "it_IT": "OS.js Gestore Finestre",
     "bg_BG": "Мениджър на прозорци на OS.js",
     "de_DE": "OS.js Fenster-Manager",
     "es_ES": "OS.js Window Manager",
