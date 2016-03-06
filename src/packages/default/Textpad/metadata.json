@@ -3,6 +3,7 @@
   "name": "Textpad",
   "description": "Simple text editor",
   "names": {
+    "it_IT": "Editor Testi",
     "bg_BG": "Текстов редактор",
     "de_DE": "Texteditor",
     "fr_FR": "Éditeur de texte",
@@ -17,6 +18,7 @@
     "vi_VN": "Trình sửa văn bản"
   },
   "descriptions": {
+    "it_IT": "Semplice editor di testi",
     "bg_BG": "Стандартен текстов редактор",
     "de_DE": "Einfacher Texteditor",
     "fr_FR": "Éditeur de texte simple",

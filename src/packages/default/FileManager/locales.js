@@ -67,6 +67,7 @@
       'Showing {0} files ({1} hidden), {2} dirs, {3}' : '{0} fichier(s) affiché(s) ({1} caché(s)), {2} dossier(s), {3}'
     },
     it_IT : {
+      'Show Sidebar' : 'Mostra barra laterale',
       'Copying file...' : 'Copiamento file...',
       "Copying <span>{0}</span> to <span>{1}</span>" : "Copia <span>{0}</span> in <span>{1}</span>",
       "Refreshing..." : "Ricarica...",
@@ -76,7 +77,7 @@
       "Rename <span>{0}</span>" : "Rinomina <span>{0}</span>",
       "Delete <span>{0}</span> ?" : "Cancellare <span>{0}</span> ?",
       'Selected {0} files, {1} dirs, {2}' : '{0} file selezionati, {1} cartelle, {2}',
-      'Showing {0} files ({1} hidden), {2} dirs, {3}' : 'Mostrando {0} file(s) ({1} nascosti), {2} cartelle, {3}'
+      'Showing {0} files ({1} hidden), {2} dirs, {3}' : 'Visualizzando {0} file(s) ({1} nascosti), {2} cartelle, {3}'
     },
     ko_KR : {
       'Copying file...' : '파일 복사...',

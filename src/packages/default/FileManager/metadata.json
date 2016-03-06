@@ -3,6 +3,7 @@
   "name": "File Manager",
   "description": "The default file manager",
   "names": {
+    "it_IT": "Gestore File",
     "bg_BG": "Файлов мениджър",
     "de_DE": "Dateimanager",
     "fr_FR": "Explorateur de fichier",
@@ -17,6 +18,7 @@
     "vi_VN": "Quản lí file"
   },
   "descriptions": {
+    "it_IT": "Il gestore file predefinito",
     "bg_BG": "Стандартния файлов мениджър",
     "de_DE": "Standardmäßiger Dateimanager",
     "fr_FR": "Gestionnaire de fichier par défaut",
