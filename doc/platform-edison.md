@@ -24,9 +24,9 @@ $ opkg install git
 ```
 $ edit vi /etc/opkg/base-feeds.conf
 
-  src all http://91.247.228.125/opkg/edison/all
-  src x86 http://91.247.228.125/opkg/edison/x86
-  src i586 http://91.247.228.125/opkg/edison/i586
+  src all http://builds.os.js.org/opkg/edison/all
+  src x86 http://builds.os.js.org/opkg/edison/x86
+  src i586 http://builds.os.js.org/opkg/edison/i586
 
 $ opkg update
 $ opkg install osjs

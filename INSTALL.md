@@ -82,7 +82,7 @@ See [platform-edison.md](https://github.com/os-js/OS.js/blob/master/doc/platform
 
 ## Linux distribution
 
-OS.js can run as a Linux distribution on top of X11. See [install-x11.md](https://github.com/os-js/OS.js/blob/master/doc/install-x11.md) for more information.
+OS.js can run as a Linux distribution on top of X11. See [X11.md](https://github.com/os-js/OS.js/blob/master/doc/X11.md) for more information.
 
 # Setting up optional features
 

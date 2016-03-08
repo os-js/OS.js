@@ -1,5 +1,7 @@
 # OS.js on NW
 
+## Building your own
+
 Run:
 
 ```shell
@@ -23,3 +25,9 @@ npm install nw-builder@2.1.0
 ```
 
 to downgrade and try again
+
+## Prebuilt packages
+
+You can also get ready builds from http://builds.os.js.org/nw/.
+
+Please note that these might be outdated!
