@@ -1,14 +1,4 @@
 {
   "client" : {
-    "Connection": {
-      "RootURI":      "/OS.js-v2/dist/",
-      "APIURI":       "/OS.js-v2/dist/API",
-      "FSURI":        "/OS.js-v2/dist/FS",
-      "MetadataURI":  "/OS.js-v2/dist/packages.js",
-      "ThemeURI":     "/OS.js-v2/dist/themes/styles",
-      "SoundURI":     "/OS.js-v2/dist/themes/sounds",
-      "IconURI":      "/OS.js-v2/dist/themes/icons",
-      "PackageURI":   "/OS.js-v2/dist/packages"
-    }
   }
 }
