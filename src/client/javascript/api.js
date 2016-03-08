@@ -276,7 +276,14 @@
     args = args || {};
     callback = callback || {};
 
-    doAPICall('curl', args.body, function(response) {
+    var opts = args.body;
+    if ( typeof opts === 'object' ) {
+      console.warn('DEPRECATION WARNING', 'The \'body\' wrapper is no longer needed');
+    } else {
+      opts = args;
+    }
+
+    doAPICall('curl', opts, function(response) {
       if ( response && response.error ) {
         callback(response.error);
         return;

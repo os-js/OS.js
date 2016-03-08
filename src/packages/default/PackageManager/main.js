@@ -33,10 +33,8 @@
   function fetchJSON(cb) {
     var url = 'http://91.247.228.125/store/packages.json';
     API.curl({
-      body: {
-        url: url,
-        method: 'GET'
-      }
+      url: url,
+      method: 'GET'
     }, cb);
   }
 

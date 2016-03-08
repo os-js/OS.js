@@ -1350,12 +1350,10 @@
     options = options || {};
 
     API.curl({
-      body: {
-        url: url,
-        binary: true,
-        mime: mime,
-        method: 'POST'
-      }
+      url: url,
+      binary: true,
+      mime: mime,
+      method: 'POST'
     }, function(error, response) {
       if ( error ) {
         callback(error);

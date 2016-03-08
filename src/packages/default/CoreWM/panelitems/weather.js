@@ -159,9 +159,7 @@
       var url = Utils.format('http://api.openweathermap.org/data/2.5/weather?lat={0}&lon={1}&units={2}&APPID={3}', lat, lon, unt, key);
 
       API.curl({
-        body: {
-          url: url
-        }
+        url: url
       }, function(error, response) {
         if ( !error && response ) {
           var result = null;
