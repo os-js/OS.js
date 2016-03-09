@@ -1261,8 +1261,8 @@
         _path.join(PATHS.out_standalone, 'vfs', 'home', 'demo', 'README.md')
       );
       copyFile(
-        _path.join(PATHS.templates, 'nw', 'metadata.json'),
-        _path.join(PATHS.out_standalone, 'metadata.json')
+        _path.join(PATHS.templates, 'nw', 'package.json'),
+        _path.join(PATHS.out_standalone, 'package.json')
       );
 
       // Install dependencies
