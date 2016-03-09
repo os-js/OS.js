@@ -10,7 +10,7 @@ This build uses **Lua** which was spesifially made to use `uhttpd` (openwrt).
 
 ## Unofficial builds
 
-You can get unofficial and experimental builds from http://builds.os.js.org/opkg/arduino/
+You can get unofficial and experimental builds from https://builds.os.js.org/opkg/arduino/
 
 
 ## Make your own image
