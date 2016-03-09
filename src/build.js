@@ -1264,6 +1264,10 @@
         _path.join(PATHS.templates, 'nw', 'package.json'),
         _path.join(PATHS.out_standalone, 'package.json')
       );
+      copyFile(
+        _path.join(PATHS.server, 'packages.json'),
+        _path.join(PATHS.out_standalone, 'packages.json')
+      );
 
       // Install dependencies
       copyFile(
