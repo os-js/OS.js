@@ -1192,13 +1192,12 @@
       copyFile(src, dst);
     });
 
-    var splashFile = _path.join(tpldir, 'splash.png');
-    if ( _fs.existsSync(splashFile) ) {
-      copyFile(splashFile, _path.join(outdir, 'splash.png'));
-    }
-
-    copyFile(_path.join(tpldir, 'favicon.png'), _path.join(outdir, 'favicon.png'));
-    copyFile(_path.join(tpldir, 'favicon.ico'), _path.join(outdir, 'favicon.ico'));
+    var ignore = ['index.html'];
+    _fs.readdirSync(tpldir).forEach(function(iter) {
+      if ( ignore.indexOf(iter) < 0 ) {
+        copyFile(_path.join(tpldir, iter), _path.join(outdir, iter));
+      }
+    });
 
     createIndex(grunt, null, dist);
   }
