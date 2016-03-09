@@ -1409,7 +1409,7 @@
    *
    * @return  void
    *
-   * @link  http://os.js.org/doc/manuals/man-mountpoints.html
+   * @link  https://os.js.org/doc/manuals/man-mountpoints.html
    *
    * @api   OSjs.VFS.createMountpoint()
    */

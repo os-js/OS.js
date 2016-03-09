@@ -2,7 +2,7 @@
   <img alt="OS.js Logo" src="https://raw.githubusercontent.com/os-js/OS.js/master/src/gfx/logo-big.png" />
 </p>
 
-[OS.js](http://os.js.org/) is an [open-source](https://raw.githubusercontent.com/os-js/OS.js/master/LICENSE) desktop implementation for your browser with a fully-fledged window manager, Application APIs, GUI toolkits and filesystem abstraction.
+[OS.js](https://os.js.org/) is an [open-source](https://raw.githubusercontent.com/os-js/OS.js/master/LICENSE) desktop implementation for your browser with a fully-fledged window manager, Application APIs, GUI toolkits and filesystem abstraction.
 
 Works in any modern browser and can be deployed on any platform using Node or PHP.
 
@@ -32,7 +32,7 @@ Please read [contribution docs](https://github.com/os-js/OS.js/blob/master/CONTR
 
 ## Documentation
 
-Manuals, Tutorials and API documentation can be found on the [doc section](http://os.js.org/doc/) on the official homepage.
+Manuals, Tutorials and API documentation can be found on the [doc section](https://os.js.org/doc/) on the official homepage.
 
 ## Links
 

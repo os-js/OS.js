@@ -590,7 +590,7 @@ Bugfixes, build system updates, size reduction, new API helpers, touch event com
 Also features the new IFrame Applications which help developers EASILY create applications that not
 relies on OS.js APIs. You can convert your existing JavaScript application in no-time :)
 
-http://os.js.org/doc/tutorials/iframe-application.html
+https://os.js.org/doc/tutorials/iframe-application.html
 
 * API: Added IFrameApplication helper
 * API: Added IFrameApplicationWindow helper

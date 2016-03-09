@@ -6,7 +6,7 @@ Make sure you have **all dependencies installed** before beginning.
 
 ## Automated
 
-Download and run http://os.js.org/installer.exe.
+Download and run https://os.js.org/installer.exe.
 
 ## Manual
 

@@ -16,8 +16,8 @@ You can also submit patches and questions directly to me via [email](mailto:ande
 
 # Resources
 
-* [Homepage](http://os.js.org/)
-* [Documentation](http://os.js.org/doc/)
+* [Homepage](https://os.js.org/)
+* [Documentation](https://os.js.org/doc/)
 * [FAQ and discussion](https://github.com/os-js/OS.js/issues/49)
 * [Chat room](https://gitter.im/os-js/OS.js)
 * [Subreddit](https://www.reddit.com/r/osjs)
@@ -32,7 +32,7 @@ To get started you need a [Github](https://github.com/) account.
 
 Then proceed to **fork** OS.js via the official [project page](https://github.com/os-js/OS.js).
 
-Follow the official documentation on how to [install and run OS.js](http://os.js.org/doc/manuals/man-install.html), with one exception -- run the development server instead:
+Follow the official documentation on how to [install and run OS.js](https://os.js.org/doc/manuals/man-install.html), with one exception -- run the development server instead:
 
 ```
 ./bin/start-node-dev.sh

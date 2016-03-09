@@ -2,7 +2,7 @@
 
 Installation is done in a few simple steps and only takes a minute to get running.
 
-For more general information look at the [README](README.md) file or in the [official documentation](http://os.js.org/doc/).
+For more general information look at the [README](README.md) file or in the [official documentation](https://os.js.org/doc/).
 
 #### Table of Contents
 
@@ -36,7 +36,7 @@ OS.js runs on all patforms and web-servers. Choose one of the methods described 
 
 ## Standard Installation
 
-You can also find documentation on this on the [official homepage](http://os.js.org/doc/manuals/man-install.html).
+You can also find documentation on this on the [official homepage](https://os.js.org/doc/manuals/man-install.html).
 
 If you want to install on your computer or server directly:
 
@@ -86,4 +86,4 @@ OS.js can run as a Linux distribution on top of X11. See [X11.md](https://github
 
 # Setting up optional features
 
-Visit the [official documentation](http://os.js.org/doc/manuals/) for more information.
+Visit the [official documentation](https://os.js.org/doc/manuals/) for more information.

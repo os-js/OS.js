@@ -268,8 +268,8 @@
    * @param   Function  callback  Callback function => fn(error, response)
    *
    * @return  void
-   * @link    http://os.js.org/doc/tutorials/using-curl.html
-   * @link    http://os.js.org/doc/server/srcservernodenode_modulesosjsapijs.html#api-curl
+   * @link    https://os.js.org/doc/tutorials/using-curl.html
+   * @link    https://os.js.org/doc/server/srcservernodenode_modulesosjsapijs.html#api-curl
    * @api     OSjs.API.curl()
    */
   function doCurl(args, callback) {
