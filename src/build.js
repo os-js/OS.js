@@ -717,8 +717,10 @@
   function readAndMerge(grunt, iter, config) {
     console.log('+++', iter);
     try {
-      var json = JSON.parse(_fs.readFileSync(iter));
-      config = mergeObject(clone(config), json);
+      if ( _fs.existsSync(iter) ) {
+        var json = JSON.parse(_fs.readFileSync(iter));
+        config = mergeObject(clone(config), json);
+      }
     } catch ( e ) {
       console.log(e.stack);
       grunt.fail.fatal('WARNING: Failed to parse ' + iter.replace(ROOT, ''));
