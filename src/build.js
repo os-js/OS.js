@@ -816,8 +816,12 @@
 
       if ( extensions[e].conf && extensions[e].conf instanceof Array ) {
         extensions[e].conf.forEach(function(c) {
-          var p = _path.join(PATHS.packages, extensions[e].path, c);
-          cfg = readAndMerge(grunt, p, cfg);
+          try {
+            var p = _path.join(PATHS.packages, extensions[e].path, c);
+            cfg = readAndMerge(grunt, p, cfg);
+          } catch ( e ) {
+            console.warn('createConfigurationFiles()', e, e.stack);
+          }
         });
       }
     });
