@@ -1413,6 +1413,9 @@
         var path = _path.join(PATHS.fonts, i, 'style.css');
         var rout = readFile(path).toString();
         var rep = cfg.client.Connection.FontURI;
+        if ( !rep.match(/^\//) ) { // Fix for relative paths (CSS)
+          rep = rep.replace(/^\w+\//, '');
+        }
         rout = rout.replace(/\%FONTURI\%/g, rep);
         styles.push(rout);
       });
