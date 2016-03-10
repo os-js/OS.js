@@ -811,7 +811,7 @@
       (['api.php', 'api.js']).forEach(function(c) {
         var dir = _path.join(PATHS.packages, e, c);
         if ( _fs.existsSync(dir) ) {
-          var path = fixWinPath(dir).replace(fixWinPath(ROOT), '');
+          var path = '/' + fixWinPath(dir).replace(fixWinPath(PATHS.src), cfg.server.srcdir);
           loadExtensions.push(path);
         }
       });
