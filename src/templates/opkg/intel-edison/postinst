@@ -1,4 +1,1 @@
 #!/bin/sh
-[ "${IPKG_NO_SCRIPT}" = "1" ] && exit 0
-. ${IPKG_INSTROOT}/lib/functions.sh
-default_postinst $0 $@
