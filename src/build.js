@@ -765,19 +765,6 @@
       icons[t.name] = t.title;
     });
 
-    var extensions = getCoreExtensions(grunt);
-    Object.keys(extensions).forEach(function(p) {
-      var e = extensions[p];
-      if ( e.sources ) {
-        e.sources.forEach(function(ee) {
-          preloads.push({
-            type: ee.type,
-            src: _path.join('/', 'packages', p, ee.src)
-          });
-        });
-      }
-    });
-
     var packages = readPackageMetadata();
     Object.keys(packages).forEach(function(n) {
       var meta = packages[n];
