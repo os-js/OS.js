@@ -1328,14 +1328,13 @@
       var remove = [];
 
       (iter.preload || []).forEach(function(p) {
-        var path = _path.join(src, p.src);
-
-        if ( p.combine === false ) {
+        if ( p.combine === false || p.src.match(/^(ftp|https?\:)?\/\//) ) {
           pre.push(p);
           return;
         }
 
         try {
+          var path = _path.join(src, p.src);
           if ( p.type === 'javascript' ) {
             combined.js.push(readFile(path).toString());
           } else if ( p.type === 'stylesheet' ) {
