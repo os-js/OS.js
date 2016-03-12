@@ -12,4 +12,4 @@ $ vagrant ssh
   $ ./bin/start-dev.sh
 ```
 
-Then simply navigate to [http://192.168.60.4:8000](http://192.168.60.4:8000).
+Then simply navigate to [http://osjs.vagrant.dev:8000](http://osjs.vagrant.dev:8000), or [http://192.168.60.4:8000](http://192.168.60.4:8000).
