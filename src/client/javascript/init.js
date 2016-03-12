@@ -267,6 +267,36 @@
       document.body.scrollTop = 0;
       document.body.scrollLeft = 0;
       return true;
+    },
+
+    hashchange: function(ev) {
+      var hash = window.location.hash.substr(1);
+      var spl = hash.split(/^([\w\.\-_]+)\:(.*)/);
+
+      function getArgs(q) {
+        var args = {};
+        q.split('&').forEach(function(a) {
+          var b = a.split('=');
+          var k = decodeURIComponent(b[0]);
+          args[k] = decodeURIComponent(b[1] || '');
+        });
+        return args;
+      }
+
+      if ( spl.length === 4 ) {
+        var root = spl[1];
+        var args = getArgs(spl[2]);
+
+        if ( root ) {
+          OSjs.API.getProcess(root).forEach(function(p) {
+            p._onMessage(null, 'hashchange', {
+              source: null,
+              hash: hash,
+              args: args
+            });
+          });
+        }
+      }
     }
   };
 
@@ -345,6 +375,7 @@
     document.addEventListener('keypress', events.keypress, true);
     document.addEventListener('keyup', events.keyup, true);
     document.addEventListener('mousedown', events.mousedown, false);
+    window.addEventListener('hashchange', events.hashchange, false);
     window.addEventListener('resize', events.resize, false);
     window.addEventListener('scroll', events.scroll, false);
     window.addEventListener('fullscreenchange', events.fullscreen, false);
@@ -598,6 +629,7 @@
     document.removeEventListener('keypress', events.keypress, true);
     document.removeEventListener('keyup', events.keyup, true);
     document.removeEventListener('mousedown', events.mousedown, false);
+    window.removeEventListener('hashchange', events.hashchange, false);
     window.removeEventListener('resize', events.resize, false);
     window.removeEventListener('scroll', events.scroll, false);
     window.removeEventListener('message', events.message, false);
