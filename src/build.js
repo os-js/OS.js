@@ -832,10 +832,6 @@
       var jsonSettings = clone(cfg.server);
       jsonSettings.extensions = loadExtensions;
       jsonSettings.mimes = cfg.mime.mapping;
-      jsonSettings.uri = {
-        api: cfg.client.Connection.APIURI,
-        fs: cfg.client.Connection.FSURI
-      };
 
       try {
         jsonSettings.vfs.maxuploadsize = cfg.client.VFS.MaxUploadSize;
