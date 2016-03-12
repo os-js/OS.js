@@ -1534,7 +1534,7 @@
             var pcss = false;
             var pjs  = false;
             manifest.preload.forEach(function(p) {
-              if ( p.combine === false ) {
+              if ( p.combine === false || p.src.match(/^(ftp|https?\:)?\/\//) ) {
                 preload.push(p);
                 return;
               }
