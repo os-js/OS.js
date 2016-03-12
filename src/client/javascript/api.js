@@ -512,52 +512,6 @@
     var packman = OSjs.Core.getPackageManager();
     var compability = OSjs.Utils.getCompability();
 
-    function createLaunchSplash(data, n) {
-      var splash = null;
-      var splashBar = null;
-
-      if ( data.splash === false ) { return; }
-
-      splash = document.createElement('application-splash');
-
-      var icon = document.createElement('img');
-      icon.alt = n;
-      icon.src = OSjs.API.getIcon(data.icon);
-
-      var titleText = document.createElement('b');
-      titleText.appendChild(document.createTextNode(data.name));
-
-      var title = document.createElement('span');
-      title.appendChild(document.createTextNode('Launching '));
-      title.appendChild(titleText);
-      title.appendChild(document.createTextNode('...'));
-
-      splashBar = document.createElement('gui-progress-bar');
-      OSjs.GUI.Elements['gui-progress-bar'].build(splashBar);
-
-      splash.appendChild(icon);
-      splash.appendChild(title);
-      splash.appendChild(splashBar);
-
-      document.body.appendChild(splash);
-
-      return {
-        destroy: function() {
-          OSjs.Utils.$remove(splash);
-          splash = null;
-          splashBar = null;
-        },
-        update: function(p, c) {
-          if ( !splash || !splashBar ) { return; }
-          var per = c ? 0 : 100;
-          if ( c ) {
-            per = (p / c) * 100;
-          }
-          (new OSjs.GUI.Element(splashBar)).set('value', per);
-        }
-      };
-    }
-
     function checkApplicationCompability(comp) {
       var result = [];
       if ( typeof comp !== 'undefined' && (comp instanceof Array) ) {
@@ -695,7 +649,9 @@
 
       // Preload
       if ( !OSjs.Applications[n] ) {
-        splash = createLaunchSplash(data, n);
+        if ( data.splash !== false ) {
+          splash = OSjs.API.createSplash(data.name, data.icon);
+        }
       }
 
       createLoading(n, {className: 'StartupNotification', tooltip: 'Starting ' + n});
@@ -1424,6 +1380,73 @@
     return result;
   }
 
+  /**
+   * Checks the given permission (groups) against logged in user
+   *
+   * Returns an object with the methods `update(precentage)` and `destroy()`
+   *
+   * @param   String      name          The name to display
+   * @param   String      icon          The icon to display
+   * @param   String      label         (Optional) The label (default = 'Starting')
+   * @param   DOMElement  parentEl      (Optional) The parent element
+   *
+   * @return  Object
+   *
+   * @api     OSjs.API.createSplash()
+   */
+  function doCreateSplash(name, icon, label, parentEl) {
+    label = label || 'Starting';
+    parentEl = parentEl || document.body;
+
+    var splash = document.createElement('application-splash');
+    var img;
+
+    if ( icon ) {
+      img = document.createElement('img');
+      img.alt = name;
+      img.src = OSjs.API.getIcon(icon);
+    }
+
+    var titleText = document.createElement('b');
+    titleText.appendChild(document.createTextNode(name));
+
+    var title = document.createElement('span');
+    title.appendChild(document.createTextNode(label + ' '));
+    title.appendChild(titleText);
+    title.appendChild(document.createTextNode('...'));
+
+    var splashBar = document.createElement('gui-progress-bar');
+    OSjs.GUI.Elements['gui-progress-bar'].build(splashBar);
+
+    if ( img ) {
+      splash.appendChild(img);
+    }
+    splash.appendChild(title);
+    splash.appendChild(splashBar);
+
+    parentEl.appendChild(splash);
+
+    return {
+      destroy: function() {
+        splash = OSjs.Utils.$remove(splash);
+
+        img = null;
+        title = null;
+        titleText = null;
+        splashBar = null;
+      },
+
+      update: function(p, c) {
+        if ( !splash || !splashBar ) { return; }
+        var per = c ? 0 : 100;
+        if ( c ) {
+          per = (p / c) * 100;
+        }
+        (new OSjs.GUI.Element(splashBar)).set('value', per);
+      }
+    };
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // MISC API METHODS
   /////////////////////////////////////////////////////////////////////////////
@@ -1666,6 +1689,7 @@
   OSjs.API.blurMenu               = function() {}; // gui.js
   OSjs.API.createLoading          = createLoading;
   OSjs.API.destroyLoading         = destroyLoading;
+  OSjs.API.createSplash           = doCreateSplash;
   OSjs.API.createDialog           = doCreateDialog;
   OSjs.API.createNotification     = doCreateNotification;
   OSjs.API.checkPermission        = doCheckPermission;

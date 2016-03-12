@@ -523,6 +523,8 @@
     console.group('init()');
 
     var config = OSjs.Core.getConfig();
+    var splash = document.getElementById('LoadingScreen');
+    var loading = OSjs.API.createSplash('OS.js', null, null, splash);
 
     initLayout();
 
@@ -530,17 +532,29 @@
       OSjs.API.triggerHook('onInitialize');
 
       initHandler(config, function() {
+
         initPackageManager(config, function() {
+          loading.update(3, 8);
+
           initExtensions(config, function() {
+            loading.update(4, 8);
+
             initSettingsManager(config, function() {
+              loading.update(5, 8);
+
               initVFS(config, function() {
+                loading.update(6, 8);
+
                 OSjs.API.triggerHook('onInited');
 
                 OSjs.GUI.DialogScheme.init(function() {
-                  initWindowManager(config, function() {
-                    OSjs.API.triggerHook('onWMInited');
+                  loading.update(7, 8);
 
-                    OSjs.Utils.$remove(document.getElementById('LoadingScreen'));
+                  initWindowManager(config, function() {
+                    loading = loading.destroy();
+                    splash = OSjs.Utils.$remove(splash);
+
+                    OSjs.API.triggerHook('onWMInited');
 
                     initEvents();
                     var wm = OSjs.Core.getWindowManager();

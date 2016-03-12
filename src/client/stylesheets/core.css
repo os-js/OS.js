@@ -59,7 +59,7 @@ body, input, button, textarea, label, select {
   top : 50%;
   z-index : 9999;
   margin-left : -200px;
-  margin-top : -115px;
+  margin-top : -155px; /* -40 because of loading bar*/
   border : 4px solid rgba(0, 0, 0, .1);
   -webkit-box-shadow: 0 0 5px 4px rgba(0,0,0,0.15);
   -moz-box-shadow: 0 0 5px 4px rgba(0,0,0,0.15);
@@ -138,7 +138,7 @@ application-splash {
   height : 55px;
   margin-left : -150px;
   margin-top : -28px;
-  z-index : 99999999;
+  z-index : 99999998;
 }
   application-splash > img {
     display : block;
@@ -162,6 +162,39 @@ application-splash {
     left : 5px;
     right : 5px;
   }
+
+#LoadingScreen application-splash {
+  position : absolute;
+  height : 30px;
+  width : auto;
+  top : auto;
+  left : 0;
+  right : 0;
+  bottom : -40px;
+  margin : 0;
+  background : #fff;
+  z-index : 99999999;
+}
+  #LoadingScreen application-splash > span {
+    display : none;
+  }
+  #LoadingScreen application-splash > gui-progress-bar {
+    top : 5px;
+    left : 5px;
+    right : 5px;
+    bottom : 5px;
+    height : auto;
+  }
+    #LoadingScreen application-splash > gui-progress-bar:before {
+      border : 1px solid #ccc;
+      background : #ddd;
+    }
+    #LoadingScreen application-splash > gui-progress-bar > span {
+      display : none;
+    }
+    #LoadingScreen application-splash > gui-progress-bar > div {
+      background : rgb(87, 42, 121);
+    }
 
 /**
  * ===========================================================================
