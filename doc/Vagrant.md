@@ -6,6 +6,10 @@ Just use [this configuration file](https://raw.githubusercontent.com/os-js/OS.js
 
 ```shell
 $ vagrant up
+$ vagrant ssh
+
+  $ cd OS.js
+  $ ./bin/start-dev.sh
 ```
 
-When you have started the image, simply navigate to [http://IP:8000](http://IP:8000) (port 8000 is default).
+Then simply navigate to [http://192.168.60.4:8000](http://192.168.60.4:8000).
