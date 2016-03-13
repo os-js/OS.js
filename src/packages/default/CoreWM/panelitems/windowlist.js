@@ -39,6 +39,7 @@
     var el = document.createElement('li');
     el.className = className;
     el.title = win._title;
+    el.setAttribute('role', 'button');
 
     var img = document.createElement('img');
     img.src = win._icon;
@@ -186,6 +187,7 @@
     var root = PanelItem.prototype.init.apply(this, arguments);
 
     this.$element = document.createElement('ul');
+    this.$element.setAttribute('role', 'toolbar');
     root.appendChild(this.$element);
 
     var wm = OSjs.Core.getWindowManager();

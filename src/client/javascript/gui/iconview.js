@@ -55,6 +55,7 @@
 
     GUI.Elements._dataview.bindEntryEvents(el, cel, 'gui-icon-view-entry');
 
+    cel.setAttribute('role', 'listitem');
     cel.appendChild(dicon);
     cel.appendChild(dlabel);
   }
@@ -105,6 +106,8 @@
         }
         initEntry(el, cel);
       });
+
+      el.setAttribute('role', 'list');
 
       GUI.Elements._dataview.build(el, applyArgs);
     },

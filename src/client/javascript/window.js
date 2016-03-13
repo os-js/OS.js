@@ -529,6 +529,13 @@
     main.style.left   = this._position.x + 'px';
     main.style.zIndex = getNextZindex(this._state.ontop);
 
+    main.setAttribute('role', 'application');
+    windowIcon.setAttribute('role', 'button');
+    windowIcon.setAttribute('aria-haspopup', 'true');
+    buttonClose.setAttribute('role', 'button');
+    buttonMinimize.setAttribute('role', 'button');
+    buttonMaximize.setAttribute('role', 'button');
+
     windowTop.appendChild(windowIcon);
     windowTop.appendChild(windowTitle);
     windowTop.appendChild(buttonMinimize);

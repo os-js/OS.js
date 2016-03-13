@@ -100,6 +100,8 @@
     var self = this;
     var root = Window.prototype.init.apply(this, arguments);
 
+    root.setAttribute('role', 'alertdialog');
+
     this.scheme.render(this, this.className.replace(/Dialog$/, ''), root, 'application-dialog', function(node) {
       node.querySelectorAll('gui-label').forEach(function(el) {
         if ( el.childNodes.length && el.childNodes[0].nodeType === 3 && el.childNodes[0].nodeValue ) {

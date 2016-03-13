@@ -127,6 +127,7 @@
 
     this._$container = document.createElement('corewm-panel-container');
     this._$element = document.createElement('corewm-panel');
+    this._$element.setAttribute('role', 'widget');
 
     Utils.$bind(this._$element, 'mousedown', function(ev) {
       ev.preventDefault();

@@ -61,6 +61,7 @@
     var root = PanelItem.prototype.init.apply(this, arguments);
 
     this.$container = document.createElement('ul');
+    this.$container.setAttribute('role', 'toolbar');
     root.appendChild(this.$container);
 
     this.renderButtons();
@@ -224,6 +225,7 @@
     sel.className = 'Button';
     sel.title = title;
     sel.innerHTML = '<img alt="" src="' + API.getIcon(icon) + '" />';
+    sel.setAttribute('role', 'button');
 
     Utils.$bind(sel, 'click', callback);
     Utils.$bind(sel, 'contextmenu', function(ev) {

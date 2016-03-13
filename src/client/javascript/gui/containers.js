@@ -115,6 +115,32 @@
   };
 
   /**
+   * Element: 'gui-button-bar'
+   *
+   * @api OSjs.GUI.Elements.gui-button-bar
+   * @class
+   */
+  GUI.Elements['gui-button-bar'] = {
+    build: function(el) {
+      el.setAttribute('role', 'toolbar');
+      el.setAttribute('aria-orientation', el.getAttribute('data-orientation') || 'horizontal');
+    }
+  };
+
+  /**
+   * Element: 'gui-toolbar'
+   *
+   * @api OSjs.GUI.Elements.gui-toolbar
+   * @class
+   */
+  GUI.Elements['gui-toolbar'] = {
+    build: function(el) {
+      el.setAttribute('role', 'toolbar');
+      el.setAttribute('aria-orientation', el.getAttribute('data-orientation') || 'horizontal');
+    }
+  };
+
+  /**
    * Element: 'gui-grid'
    *
    * A grid-type container with equal-sized containers
@@ -129,7 +155,12 @@
 
       rows.forEach(function(r) {
         r.style.height = String(p) + '%';
+
+        rows.getElementsByTagName('gui-grid-entry').forEach(function(c) {
+          c.setAttribute('role', 'gridcell');
+        });
       });
+
     }
   };
 
@@ -143,11 +174,14 @@
    */
   GUI.Elements['gui-vbox'] = {
     build: function(el) {
+      el.setAttribute('role', 'grid');
+      el.setAttribute('aria-orientation', 'vertical');
     }
   };
 
   GUI.Elements['gui-vbox-container'] = {
     build: function(el) {
+      el.setAttribute('role', 'gridcell');
       GUI.Helpers.setFlexbox(el);
     }
   };
@@ -162,11 +196,14 @@
    */
   GUI.Elements['gui-hbox'] = {
     build: function(el) {
+      el.setAttribute('role', 'grid');
+      el.setAttribute('aria-orientation', 'horizontal');
     }
   };
 
   GUI.Elements['gui-hbox-container'] = {
     build: function(el) {
+      el.setAttribute('role', 'gridcell');
       GUI.Helpers.setFlexbox(el);
     }
   };
@@ -216,6 +253,8 @@
         }, false);
 
         label.appendChild(document.createTextNode(lbltxt));
+
+        el.setAttribute('role', 'toolbar');
         if ( el.children.length ) {
           el.insertBefore(label, el.children[0]);
         } else {

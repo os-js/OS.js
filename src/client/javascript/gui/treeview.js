@@ -145,11 +145,15 @@
         el.appendChild(body);
       }
 
+      body.setAttribute('role', 'tree');
+      body.setAttribute('aria-multiselectable', body.getAttribute('data-multiselect') || 'false');
+
       el.querySelectorAll('gui-tree-view-entry').forEach(function(sel, idx) {
         if ( !found ) {
           body.appendChild(sel);
         }
 
+        sel.setAttribute('role', 'treeitem');
         initEntry(el, sel);
       });
 

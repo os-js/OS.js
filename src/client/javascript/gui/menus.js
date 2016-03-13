@@ -161,9 +161,16 @@
             if ( child.children && child.children.length ) {
               Utils.$addClass(child, 'gui-menu-expand');
               expand = true;
+
+              child.setAttribute('aria-haspopup', 'true');
+            } else {
+              child.setAttribute('aria-haspopup', 'false');
             }
+            child.setAttribute('role', 'menuitem');
+
             label = GUI.Helpers.getLabel(child);
             icon = GUI.Helpers.getIcon(child, winRef);
+            child.setAttribute('aria-label', label);
 
             span = document.createElement('label');
             if ( icon ) {
@@ -192,6 +199,8 @@
         }
       }
 
+      el.setAttribute('role', 'menu');
+
       runChildren(el, 0);
     }
   };
@@ -217,6 +226,8 @@
       });
     },
     build: function(el) {
+      el.setAttribute('role', 'menubar');
+
       el.querySelectorAll('gui-menu-bar-entry').forEach(function(mel, idx) {
         var label = GUI.Helpers.getLabel(mel);
         var id = mel.getAttribute('data-id');
@@ -224,9 +235,12 @@
         var span = document.createElement('span');
         span.appendChild(document.createTextNode(label));
 
+        mel.setAttribute('role', 'menuitem');
+
         mel.insertBefore(span, mel.firstChild);
 
         var submenu = mel.querySelector('gui-menu');
+        mel.setAttribute('aria-haspopup', String(!!submenu));
         Utils.$bind(mel, 'mousedown', function(ev) {
           blurMenu();
 

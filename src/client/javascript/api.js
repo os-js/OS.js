@@ -1199,7 +1199,11 @@
     }
 
     el.setAttribute('draggable', 'true');
+    el.setAttribute('aria-grabbed', 'false');
+
     el.addEventListener('dragstart', function(ev) {
+      this.setAttribute('aria-grabbed', 'true');
+
       this.style.opacity = '0.4';
       if ( ev.dataTransfer ) {
         _dragStart(ev);
@@ -1208,6 +1212,7 @@
     }, false);
 
     el.addEventListener('dragend', function(ev) {
+      this.setAttribute('aria-grabbed', 'false');
       this.style.opacity = '1.0';
       return args.onEnd(ev, this, args);
     }, false);
@@ -1284,6 +1289,8 @@
 
       return false;
     }
+
+    el.setAttribute('aria-dropeffect', args.effect);
 
     el.addEventListener('drop', function(ev) {
       //Utils.$removeClass(el, 'onDragEnter');
