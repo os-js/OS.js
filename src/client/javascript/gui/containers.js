@@ -98,7 +98,9 @@
 
       }
 
+      el.setAttribute('role', 'grid');
       el.querySelectorAll('gui-paned-view-container').forEach(function(cel, idx) {
+        cel.setAttribute('role', 'gridcell');
         if ( idx % 2 ) {
           var resizer = document.createElement('gui-paned-view-handle');
           cel.parentNode.insertBefore(resizer, cel);
