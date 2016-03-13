@@ -220,6 +220,7 @@
         } else {
           firstChild.removeAttribute('disabled');
         }
+        el.setAttribute('aria-disabled', String(value === true));
         return;
       }
 

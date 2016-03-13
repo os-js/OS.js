@@ -92,6 +92,7 @@
 
       GUI.Helpers.createInputLabel(el, type, input);
 
+      el.setAttribute('aria-disabled', String(disabled));
       Utils.$bind(input, 'change', function(ev) {
         var value = input.value;
         if ( type === 'radio' || type === 'checkbox' ) {
@@ -192,6 +193,7 @@
       select.dispatchEvent(new CustomEvent('_change', {detail: select.value}));
     }, false);
 
+    el.setAttribute('aria-disabled', String(disabled));
     el.appendChild(select);
   }
 
@@ -259,7 +261,7 @@
       var label = GUI.Helpers.getValueLabel(el, true);
       var lbl = document.createElement('label');
       lbl.appendChild(document.createTextNode(label));
-      el.setAttribute('role', 'text');
+      el.setAttribute('role', 'heading');
       el.setAttribute('data-label', String(label));
       el.appendChild(lbl);
     }
@@ -738,6 +740,8 @@
         input.removeAttribute('disabled');
         input.value = value;
         input.setAttribute('disabled', 'disabled');
+        input.setAttribute('aria-disabled', 'true');
+
         return true;
       }
       return false;

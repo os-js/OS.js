@@ -471,6 +471,7 @@
     var windowIcon          = document.createElement('application-window-icon');
     var windowTitle         = document.createElement('application-window-title');
 
+    windowTitle.setAttribute('role', 'text');
     windowTitle.appendChild(document.createTextNode(this._title));
 
     Utils.$bind(windowTitle, 'dblclick', function() {

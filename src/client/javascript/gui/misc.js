@@ -188,6 +188,9 @@
         value = parseInt(value, 10);
         value = Math.max(0, Math.min(100, value));
 
+        el.setAttribute('aria-label', String(value));
+        el.setAttribute('aria-valuenow', String(value));
+
         el.querySelector('div').style.width = value.toString() + '%';
         el.querySelector('span').innerHTML = value + '%';
         return true;
@@ -205,6 +208,12 @@
 
       var span = document.createElement('span');
       span.appendChild(document.createTextNode(percentage));
+
+      el.setAttribute('role', 'progressbar');
+      el.setAttribute('aria-valuemin', 0);
+      el.setAttribute('aria-valuemax', 100);
+      el.setAttribute('aria-label', 0);
+      el.setAttribute('aria-valuenow', 0);
 
       el.appendChild(progress);
       el.appendChild(span);

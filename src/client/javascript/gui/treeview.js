@@ -74,6 +74,9 @@
         data: GUI.Helpers.getViewNodeValue(root)
       };
 
+      root.setAttribute('data-expanded', String(expanded));
+      root.setAttribute('aria-expanded', String(expanded));
+
       el.dispatchEvent(new CustomEvent('_expand', {detail: {entries: [selected], expanded: expanded, element: root}}));
     } // handleItemExpand()
 
@@ -149,6 +152,8 @@
       body.setAttribute('aria-multiselectable', body.getAttribute('data-multiselect') || 'false');
 
       el.querySelectorAll('gui-tree-view-entry').forEach(function(sel, idx) {
+        sel.setAttribute('aria-expanded', 'false');
+
         if ( !found ) {
           body.appendChild(sel);
         }

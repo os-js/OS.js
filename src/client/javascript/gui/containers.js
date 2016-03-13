@@ -103,6 +103,7 @@
         cel.setAttribute('role', 'gridcell');
         if ( idx % 2 ) {
           var resizer = document.createElement('gui-paned-view-handle');
+          resizer.setAttribute('role', 'separator');
           cel.parentNode.insertBefore(resizer, cel);
           bindResizer(resizer, idx);
         }
@@ -229,6 +230,7 @@
         expanded = !expanded;
       }
 
+      el.setAttribute('aria-expanded', String(expanded));
       el.setAttribute('data-expanded', String(expanded));
       return expanded;
     }
@@ -257,6 +259,8 @@
         label.appendChild(document.createTextNode(lbltxt));
 
         el.setAttribute('role', 'toolbar');
+        el.setAttribute('aria-expanded', 'true');
+        el.setAttribute('data-expanded', 'true');
         if ( el.children.length ) {
           el.insertBefore(label, el.children[0]);
         } else {
