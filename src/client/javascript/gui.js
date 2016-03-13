@@ -473,11 +473,117 @@
     Utils.$bind(el, 'mousedown', _onMouseDown, false);
   }
 
+  /**
+   * Method for getting the next (or previous) element in sequence
+   *
+   * If you don't supply a current element, the first one will be taken!
+   *
+   * @param   boolean           prev        Get previous element instead of next
+   * @param   DOMElement        el          The current element
+   * @param   DOMElement        root        The root container
+   *
+   * @api OSjs.GUI.Helpers.getNextElement()
+   */
+  function getNextElement(prev, current, root) {
+    function getElements() {
+      var ignore_roles = ['menu', 'menuitem', 'grid', 'gridcell', 'listitem'];
+      var list = [];
+
+      root.querySelectorAll('.gui-element').forEach(function(e) {
+        // Ignore focused and disabled elements, and certain aria roles
+        if ( Utils.$hasClass(e, 'gui-focus-element') || ignore_roles.indexOf(e.getAttribute('role')) >= 0 || e.getAttribute('data-disabled') === 'true' ) {
+          return;
+        }
+
+        // Elements without offsetParent are invisible
+        if ( e.offsetParent ) {
+          list.push(e);
+        }
+      });
+      return list;
+    }
+
+    function getCurrentIndex(els, m) {
+      var found = -1;
+
+      // Simply get index from array, it seems indexOf is a bit iffy here ?!
+      if ( m ) {
+        els.every(function(e, idx) {
+          if ( e === m ) {
+            found = idx;
+          }
+          return found === -1;
+        });
+      }
+
+      return found;
+    }
+
+    function getCurrentParent(els, m) {
+      if ( m ) {
+        var cur = m;
+        while ( cur.parentNode ) {
+          if ( Utils.$hasClass(cur, 'gui-element') ) {
+            return cur;
+          }
+          cur = cur.parentNode;
+        }
+
+        return null;
+      }
+
+      // When we dont have a initial element, take the first one
+      return els[0];
+    }
+
+    function getNextIndex(els, p, i) {
+      // This could probably be prettier, but it does the job
+      if ( prev ) {
+        i = (i <= 0) ? (els.length) - 1 : (i - 1);
+      } else {
+        i = (i >= (els.length - 1)) ? 0 : (i + 1);
+      }
+      return i;
+    }
+
+    function getNextElement(els, i) {
+      var next = els[i];
+
+      // Get "real" elements from input wrappers
+      if ( next.tagName.match(/^GUI\-(BUTTON|TEXT|PASSWORD|SWITCH|CHECKBOX|RADIO|SELECT)/) ) {
+        next = next.querySelectorAll('input, textarea, button')[0];
+      }
+
+      // Special case for elements that wraps
+      if ( next.tagName === 'GUI-FILE-VIEW' ) {
+        next = next.children[0];
+      }
+
+      return next;
+    }
+
+    if ( root ) {
+      var elements = getElements();
+      if ( elements.length ) {
+        var currentParent = getCurrentParent(elements, current);
+        var currentIndex = getCurrentIndex(elements, currentParent);
+
+        if ( currentIndex >= 0 ) {
+          var nextIndex = getNextIndex(elements, currentParent, currentIndex);
+          return getNextElement(elements, nextIndex);
+        }
+      }
+    }
+
+    return null;
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.GUI.Helpers = {
+    getNextElement: getNextElement,
     getProperty: getProperty,
     getValueLabel: getValueLabel,
     getViewNodeValue: getViewNodeValue,
