@@ -51,6 +51,18 @@
       response.end();
     }
 
+    if ( pipeFile ) {
+      var isdir = false;
+      try {
+        isdir = _fs.lstatSync(pipeFile).isDirectory();
+      } catch ( e ) {}
+
+      if ( isdir ) {
+        respondError('Invalid request', response);
+        return;
+      }
+    }
+
     headers.forEach(function(h) {
       response.writeHead.apply(response, h);
     });
