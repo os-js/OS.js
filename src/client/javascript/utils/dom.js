@@ -359,7 +359,7 @@
    */
   OSjs.Utils.$hasClass = function(el, name) {
     if ( el && name ) {
-      return el.className.replace(/\s+/, '').split(' ').indexOf(name) >= 0;
+      return el.className.replace(/\s+/, ' ').split(' ').indexOf(name) >= 0;
     }
     return false;
   };
