@@ -130,6 +130,8 @@
     },
     build: function(el, customMenu, winRef) {
 
+      var isMenuBarChild =  el.parentNode ? el.parentNode.tagName === 'GUI-MENU-BAR-ENTRY' : false;
+
       function createTyped(child, par) {
         var type = child.getAttribute('data-type');
         var value = child.getAttribute('data-checked') === 'true';
@@ -145,6 +147,8 @@
           input.addEventListener('click', function(ev) {
             blurMenu();
           }, true);
+
+          par.setAttribute('role', 'menuitem' + type);
           par.appendChild(input);
         }
       }
@@ -166,7 +170,14 @@
             } else {
               child.setAttribute('aria-haspopup', 'false');
             }
-            child.setAttribute('role', 'menuitem');
+
+            var vlevel = level + 1;
+            if ( isMenuBarChild ) {
+              vlevel++;
+            }
+
+            child.setAttribute('aria-level', String(vlevel));
+            child.setAttribute('role', 'menuitem' + (child.getAttribute('data-type') || ''));
 
             label = GUI.Helpers.getLabel(child);
             icon = GUI.Helpers.getIcon(child, winRef);
@@ -228,6 +239,25 @@
     build: function(el) {
       el.setAttribute('role', 'menubar');
 
+      function updateChildren(sm, level) {
+        if ( !sm ) {
+          return;
+        }
+
+        var children = sm.children;
+        var child;
+
+        for ( var i = 0; i < children.length; i++ ) {
+          child = children[i];
+          if ( child.tagName === 'GUI-MENU-ENTRY' ) {
+
+            child.setAttribute('aria-haspopup', String(!!child.firstChild));
+            child.setAttribute('aria-level', String(level));
+            updateChildren(child.firstChild, level + 1);
+          }
+        }
+      }
+
       el.querySelectorAll('gui-menu-bar-entry').forEach(function(mel, idx) {
         var label = GUI.Helpers.getLabel(mel);
         var id = mel.getAttribute('data-id');
@@ -236,11 +266,14 @@
         span.appendChild(document.createTextNode(label));
 
         mel.setAttribute('role', 'menuitem');
+        mel.setAttribute('aria-level', '1');
 
         mel.insertBefore(span, mel.firstChild);
 
         var submenu = mel.querySelector('gui-menu');
         mel.setAttribute('aria-haspopup', String(!!submenu));
+        updateChildren(submenu, 2);
+
         Utils.$bind(mel, 'mousedown', function(ev) {
           blurMenu();
 

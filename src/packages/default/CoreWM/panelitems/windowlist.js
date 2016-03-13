@@ -40,6 +40,7 @@
     el.className = className;
     el.title = win._title;
     el.setAttribute('role', 'button');
+    el.setAttribute('aria-label', win._title);
 
     var img = document.createElement('img');
     img.src = win._icon;
@@ -140,6 +141,8 @@
       });
     } else if ( ev === 'title' ) {
       _change(cn, function(el) {
+        el.setAttribute('aria-label', win._title);
+
         var span = el.getElementsByTagName('span')[0];
         if ( span ) {
           Utils.$empty(span);

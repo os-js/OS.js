@@ -98,9 +98,9 @@
 
   DialogWindow.prototype.init = function() {
     var self = this;
-    var root = Window.prototype.init.apply(this, arguments);
 
-    root.setAttribute('role', 'alertdialog');
+    var root = Window.prototype.init.apply(this, arguments);
+    root.setAttribute('role', 'dialog');
 
     this.scheme.render(this, this.className.replace(/Dialog$/, ''), root, 'application-dialog', function(node) {
       node.querySelectorAll('gui-label').forEach(function(el) {

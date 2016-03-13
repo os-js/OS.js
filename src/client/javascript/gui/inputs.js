@@ -242,6 +242,8 @@
   GUI.Elements['gui-label'] = {
     set: function(el, param, value, isHTML) {
       if ( param === 'value' || param === 'label' ) {
+        el.setAttribute('data-label', String(value));
+
         var lbl = el.querySelector('label');
         Utils.$empty(lbl);
         if ( isHTML ) {
@@ -257,6 +259,8 @@
       var label = GUI.Helpers.getValueLabel(el, true);
       var lbl = document.createElement('label');
       lbl.appendChild(document.createTextNode(label));
+      el.setAttribute('role', 'text');
+      el.setAttribute('data-label', String(label));
       el.appendChild(lbl);
     }
   };

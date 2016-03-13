@@ -209,6 +209,7 @@
       this._children      = [];                             // Child Windows
       this._parent        = null;                           // Parent Window reference
       this._disabled      = true;                           // If Window is currently disabled
+      this._loading       = false;                          // If Window is currently loading
       this._sound         = null;                           // Play this sound when window opens
       this._soundVolume   = _DEFAULT_SND_VOLUME;            // ... using this volume
       this._blinkTimer    = null;
@@ -533,11 +534,17 @@
     main.style.zIndex = getNextZindex(this._state.ontop);
 
     main.setAttribute('role', 'application');
+    main.setAttribute('aria-live', 'polite');
+    main.setAttribute('aria-hidden', 'false');
     windowIcon.setAttribute('role', 'button');
     windowIcon.setAttribute('aria-haspopup', 'true');
+    windowIcon.setAttribute('aria-label', 'Window Menu');
     buttonClose.setAttribute('role', 'button');
+    buttonClose.setAttribute('aria-label', 'Close Window');
     buttonMinimize.setAttribute('role', 'button');
+    buttonMinimize.setAttribute('aria-label', 'Minimize Window');
     buttonMaximize.setAttribute('role', 'button');
+    buttonMaximize.setAttribute('aria-label', 'Maximize Window');
 
     windowTop.appendChild(windowIcon);
     windowTop.appendChild(windowTitle);
@@ -571,6 +578,8 @@
     if ( this._sound ) {
       API.playSound(this._sound, this._soundVolume);
     }
+
+    this._checkAria();
 
     console.groupEnd();
 
@@ -925,6 +934,8 @@
       wm.setCurrentWindow(null);
     }
 
+    this._checkAria();
+
     return true;
   };
 
@@ -974,6 +985,8 @@
     });
 
     this._onChange('maximize');
+
+    this._checkAria();
 
     return true;
   };
@@ -1027,6 +1040,8 @@
     this._onChange('restore');
 
     this._focus();
+
+    this._checkAria();
   };
 
   /**
@@ -1068,6 +1083,8 @@
 
     this._state.focused = true;
 
+    this._checkAria();
+
     return true;
   };
 
@@ -1101,6 +1118,8 @@
     if ( win && win._wid === this._wid ) {
       wm.setCurrentWindow(null);
     }
+
+    this._checkAria();
 
     return true;
   };
@@ -1326,7 +1345,10 @@
     if ( this._$disabled ) {
       this._$disabled.style.display = t ? 'block' : 'none';
     }
+
     this._disabled = t ? true : false;
+
+    this._checkAria();
   };
 
   /**
@@ -1342,6 +1364,32 @@
     console.debug(this._name, '>', 'OSjs::Core::Window::_toggleLoading()', t);
     if ( this._$loading ) {
       this._$loading.style.display = t ? 'block' : 'none';
+    }
+
+    this._loading = t ? true : false;
+
+    this._checkAria();
+  };
+
+  /**
+   * Check for ARIA updates
+   *
+   * @return void
+   */
+  Window.prototype._checkAria = function() {
+    if ( this._$element ) {
+      var t = this._loading || this._disabled;
+      var d = this._disabled;
+      var h = this._state.minimized;
+      var s = this._state.focused;
+      var l = this._$element.style.zIndex;
+
+      this._$element.setAttribute('aria-busy', String(t));
+      this._$element.setAttribute('aria-label', String(this._title));
+      this._$element.setAttribute('aria-hidden', String(h));
+      this._$element.setAttribute('aria-selected', String(s));
+      this._$element.setAttribute('aria-disabled', String(d));
+      this._$element.setAttribute('aria-level', String(l));
     }
   };
 
@@ -1723,6 +1771,8 @@
     }
 
     this._onChange('title');
+
+    this._checkAria();
   };
 
   /**

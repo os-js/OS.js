@@ -1406,8 +1406,9 @@
     parentEl = parentEl || document.body;
 
     var splash = document.createElement('application-splash');
-    var img;
+    splash.setAttribute('role', 'dialog');
 
+    var img;
     if ( icon ) {
       img = document.createElement('img');
       img.alt = name;

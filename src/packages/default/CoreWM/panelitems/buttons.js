@@ -226,6 +226,7 @@
     sel.title = title;
     sel.innerHTML = '<img alt="" src="' + API.getIcon(icon) + '" />';
     sel.setAttribute('role', 'button');
+    sel.setAttribute('aria-label', title);
 
     Utils.$bind(sel, 'click', callback);
     Utils.$bind(sel, 'contextmenu', function(ev) {

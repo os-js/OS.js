@@ -61,6 +61,9 @@
     }
 
     this.$container.className = classNames.join(' ');
+    this.$container.setAttribute('role', 'button');
+    this.$container.setAttribute('aria-label', this.opts.title);
+
     if ( this.opts.tooltip ) {
       this.$container.title = this.opts.tooltip;
     }
@@ -150,6 +153,7 @@
 
   PanelItemNotificationArea.prototype.init = function() {
     var root = PanelItem.prototype.init.apply(this, arguments);
+    root.setAttribute('role', 'toolbar');
 
     var fix = Object.keys(_restartFix);
     var self = this;
