@@ -8,7 +8,9 @@ Make sure the _VFS_ directories in `vfs/` are given the same permissions as the 
 
 ## Apache
 
-Run `grunt apache-vhost` to generate config file (or look in doc/configs/ for example)
+Run `grunt apache-htaccess` to generate the required htaccess files for Apache to work properly.
+
+Run `grunt apache-vhost` to generate config file (or look in doc/configs/ for example) you can use.
 
 *Note* You have to enable mod_rewrite for Apache and make sure htaccess is allowed.
 
