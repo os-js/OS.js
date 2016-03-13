@@ -44,6 +44,7 @@
     Utils.$empty(el);
 
     var input = document.createElement(type === 'textarea' ? 'textarea' : 'input');
+
     var attribs = {
       value: null,
       type: type,
@@ -92,7 +93,28 @@
 
       GUI.Helpers.createInputLabel(el, type, input);
 
+      var rolemap = {
+        'TEXTAREA': function() {
+          return 'textbox';
+        },
+        'INPUT': function(i) {
+          var typemap = {
+            'range': 'slider',
+            'text': 'textbox',
+            'password': 'textbox'
+          };
+
+          return typemap[i.type] || i.type;
+        }
+      };
+
+      if ( rolemap[el.tagName] ) {
+        input.setAttribute('role', rolemap[el.tagName](input));
+      }
+      input.setAttribute('aria-label', el.getAttribute('title') || '');
+      el.setAttribute('role', 'none');
       el.setAttribute('aria-disabled', String(disabled));
+
       Utils.$bind(input, 'change', function(ev) {
         var value = input.value;
         if ( type === 'radio' || type === 'checkbox' ) {
@@ -193,6 +215,8 @@
       select.dispatchEvent(new CustomEvent('_change', {detail: select.value}));
     }, false);
 
+    select.setAttribute('role', 'combobox');
+    select.setAttribute('aria-label', el.getAttribute('title') || '');
     el.setAttribute('aria-disabled', String(disabled));
     el.appendChild(select);
   }
@@ -371,6 +395,7 @@
     bind: bindInputEvents,
     build: function(el) {
       var input = document.createElement('input');
+      input.setAttribute('role', 'button');
       input.setAttribute('type', 'file');
       input.onchange = function(ev) {
         input.dispatchEvent(new CustomEvent('_change', {detail: input.files[0]}));
@@ -527,6 +552,9 @@
         } else {
           lbl.appendChild(document.createTextNode(value));
         }
+
+        lbl.setAttribute('aria-label', value);
+
         return true;
       }
       return false;
@@ -600,6 +628,7 @@
           Utils.$addClass(el, 'gui-has-label');
         }
         input.appendChild(document.createTextNode(label));
+        input.setAttribute('aria-label', label);
       }
 
       if ( disabled ) {
@@ -611,6 +640,7 @@
       setGroup(group);
       _buttonCount++;
 
+      el.setAttribute('role', 'navigation');
       el.appendChild(input);
     }
   };

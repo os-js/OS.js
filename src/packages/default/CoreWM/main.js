@@ -57,7 +57,7 @@
     this.importedSettings = importSettings;
 
     this._$notifications    = document.createElement('corewm-notifications');
-    this._$notifications.setAttribute('role', 'widget');
+    this._$notifications.setAttribute('role', 'log');
 
     document.body.appendChild(this._$notifications);
   };
@@ -662,7 +662,7 @@
       }
 
       container.setAttribute('aria-label', String(opts.title));
-      container.setAttribute('role', 'widget');
+      container.setAttribute('role', 'alert');
 
       container.className = classNames.join(' ');
       container.onclick = function(ev) {

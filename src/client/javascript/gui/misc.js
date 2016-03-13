@@ -248,6 +248,7 @@
       var lbl = el.getAttribute('data-label') || el.getAttribute('data-value') || el.innerHTML || '';
       var span = document.createElement('gui-statusbar-label');
       span.innerHTML = lbl;
+      el.setAttribute('role', 'log');
       el.appendChild(span);
     }
   };

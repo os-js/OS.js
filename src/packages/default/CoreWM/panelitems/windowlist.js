@@ -43,6 +43,7 @@
     el.setAttribute('aria-label', win._title);
 
     var img = document.createElement('img');
+    img.alt = win._title;
     img.src = win._icon;
 
     var span = document.createElement('span');
@@ -147,6 +148,10 @@
         if ( span ) {
           Utils.$empty(span);
           span.appendChild(document.createTextNode(win._title));
+        }
+        var img = el.getElementsByTagName('img')[0];
+        if ( img ) {
+          img.alt = win._title;
         }
       });
     } else if ( ev === 'icon' ) {

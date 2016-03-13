@@ -322,11 +322,13 @@
     var ver = OSjs.API.getConfig('Version', 'unknown version');
     var cop = 'Copyright © 2011-2016 ';
     var lnk = document.createElement('a');
+    lnk.setAttribute('aria-hidden', 'true');
     lnk.href = 'mailto:andersevenrud@gmail.com';
     lnk.appendChild(document.createTextNode('Anders Evenrud'));
 
     var el = document.createElement('div');
     el.id = 'DebugNotice';
+    el.setAttribute('aria-hidden', 'true');
     el.appendChild(document.createTextNode(OSjs.Utils.format('OS.js {0}', ver)));
     el.appendChild(document.createElement('br'));
     el.appendChild(document.createTextNode(cop));

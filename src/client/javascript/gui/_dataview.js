@@ -474,6 +474,7 @@
 
       if ( !el.querySelector('textarea.gui-focus-element') && !el.getAttribute('no-selection') ) {
         var underlay = document.createElement('textarea');
+        underlay.setAttribute('aria-label', '');
         underlay.setAttribute('readonly', 'true');
         underlay.className = 'gui-focus-element';
         Utils.$bind(underlay, 'focus', function(ev) {
