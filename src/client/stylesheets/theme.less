@@ -49,7 +49,7 @@
 @gui_base_padding : 4px;
 
 @gui_selected_background_color       : rgb(45, 115, 210);
-@gui_selected_blur_background_color  : rgba(45, 115, 210, .8);
+@gui_selected_blur_background_color  : rgba(45, 115, 210, .2);
 @gui_selected_foreground_color       : #ffffff;
 
 @gui_zebra_foreground_color          : inherit;
@@ -1112,8 +1112,8 @@ gui-list-view {
       }
 
     gui-list-view-row.gui-active {
-      background-color: @gui_selected_blur_background_color !important;
-      color: @gui_selected_foreground_color !important;
+      background-color: @gui_selected_blur_background_color;
+      color: @gui_selected_foreground_color;
     }
     gui-list-view.gui-element-focused gui-list-view-row.gui-active {
       background-color: @gui_selected_background_color;
