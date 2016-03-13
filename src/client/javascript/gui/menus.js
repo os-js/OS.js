@@ -36,9 +36,10 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
-  function blurMenu() {
-    if ( !lastMenu ) { return; }
-    lastMenu();
+  function blurMenu(ev) {
+    if ( lastMenu ) {
+      lastMenu(ev);
+    }
     lastMenu = null;
   }
 
@@ -64,7 +65,7 @@
       }
 
       if ( !isExpander ) {
-        blurMenu();
+        blurMenu(ev);
       }
     }, false);
   }
@@ -233,7 +234,10 @@
           ev.stopPropagation();
 
           if ( submenu ) {
-            lastMenu = function() {
+            lastMenu = function(ev) {
+              if ( ev ) {
+                ev.stopPropagation();
+              }
               Utils.$removeClass(mel, 'gui-active');
             };
           }
