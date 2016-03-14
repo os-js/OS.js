@@ -154,7 +154,7 @@
       'MenuInsertLink': function() {
         API.createDialog('Input', {
           message: _('Insert URL'),
-          placeholder: 'http://os.js.org'
+          placeholder: 'https://os.js.org'
         }, function(ev, button, result) {
           if ( button !== 'ok' || !result ) {
             return;

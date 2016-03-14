@@ -1,6 +1,7 @@
 {
   "server" : {
     "tmpdir": "/tmp",
+    "srcdir": "src",
     "vfs": {
       "proxy": false,
       "homes":  "%DROOT%/vfs/home",
@@ -19,6 +20,7 @@
       }
     },
     "handler" : "%HANDLER%",
-    "port" : 8000
+    "port" : 8000,
+    "basedir": ""
   }
 }

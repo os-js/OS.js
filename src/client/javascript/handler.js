@@ -51,8 +51,8 @@
    * OSjs.Core.getHandler();
    *
    * @api   OSjs.Core._Handler
-   * @link http://os.js.org/doc/manuals/man-multiuser.html
-   * @link http://os.js.org/doc/tutorials/create-handler.html
+   * @link https://os.js.org/doc/manuals/man-multiuser.html
+   * @link https://os.js.org/doc/tutorials/create-handler.html
    * @class _Handler
    */
   var _Handler = function() {
@@ -200,11 +200,6 @@
       });
 
       OSjs.Core.getSettingsManager().set('UserSession', null, data, cb);
-    }
-
-    var wm = OSjs.Core.getWindowManager();
-    if ( wm ) {
-      wm.removeNotificationIcon('_HandlerUserNotification');
     }
 
     if ( save ) {

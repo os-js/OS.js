@@ -73,19 +73,60 @@
 
     console.info('PackageManager::load()');
 
-    this._loadMetadata(function(err) {
-      if ( err ) {
-        callback(err);
-        return;
-      }
+    function loadMetadata(cb) {
+      self._loadMetadata(function(err) {
+        if ( err ) {
+          callback(err);
+          return;
+        }
 
-      var len = Object.keys(self.packages).length;
-      if ( len ) {
+        var len = Object.keys(self.packages).length;
+        if ( len ) {
+          cb();
+          return;
+        }
+
+        callback(false, 'No packages found!');
+      });
+    }
+
+    loadMetadata(function() {
+      self._loadExtensions(function() {
         callback(true);
-        return;
-      }
-      callback(false, 'No packages found!');
+      });
     });
+
+  };
+
+  /**
+   * Internal method for loading all extensions
+   *
+   * @param  Function callback      callback
+   *
+   * @return void
+   *
+   * @method PackageManager::_loadExtensions()
+   */
+  PackageManager.prototype._loadExtensions = function(callback) {
+    var packages = this.packages;
+    var preloads = [];
+
+    Object.keys(packages).forEach(function(k) {
+      var iter = packages[k];
+      if ( iter.type === 'extension' && iter.sources ) {
+        iter.sources.forEach(function(p) {
+          preloads.push(p);
+        });
+      }
+    });
+
+    if ( preloads.length ) {
+      Utils.preload(preloads, function(total, failed) {
+        callback();
+      });
+    } else {
+      callback();
+    }
   };
 
   /**

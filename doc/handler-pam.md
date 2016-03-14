@@ -42,8 +42,8 @@ This is an example file for `groups.json`
 ```
 {
   "anders": ["admin"],
-  "guest": ["api", "application", "upload", "vfs"],
-  "marcello": ["api", "application", "curl", "upload", "vfs"]
+  "guest": ["api", "application", "upload", "fs"],
+  "marcello": ["api", "application", "curl", "upload", "fs"]
 }
 ```
 

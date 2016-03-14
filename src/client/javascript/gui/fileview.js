@@ -212,6 +212,7 @@
       });
     }
 
+    el.setAttribute('role', 'region');
     el.appendChild(nel.$element);
   }
 

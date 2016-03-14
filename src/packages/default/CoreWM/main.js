@@ -57,6 +57,8 @@
     this.importedSettings = importSettings;
 
     this._$notifications    = document.createElement('corewm-notifications');
+    this._$notifications.setAttribute('role', 'log');
+
     document.body.appendChild(this._$notifications);
   };
 
@@ -165,6 +167,8 @@
     if ( !force && kill && !window.confirm(OSjs.Applications.CoreWM._('Killing this process will stop things from working!')) ) {
       return false;
     }
+
+    this.removeNotificationIcon('_HandlerUserNotification');
 
     if ( this.iconView ) {
       this.iconView.destroy();
@@ -666,6 +670,9 @@
       if ( _visible > 0 ) {
         this._$notifications.style.display = 'block';
       }
+
+      container.setAttribute('aria-label', String(opts.title));
+      container.setAttribute('role', 'alert');
 
       container.className = classNames.join(' ');
       container.onclick = function(ev) {

@@ -44,6 +44,7 @@
     Utils.$empty(el);
 
     var input = document.createElement(type === 'textarea' ? 'textarea' : 'input');
+
     var attribs = {
       value: null,
       type: type,
@@ -92,6 +93,28 @@
 
       GUI.Helpers.createInputLabel(el, type, input);
 
+      var rolemap = {
+        'TEXTAREA': function() {
+          return 'textbox';
+        },
+        'INPUT': function(i) {
+          var typemap = {
+            'range': 'slider',
+            'text': 'textbox',
+            'password': 'textbox'
+          };
+
+          return typemap[i.type] || i.type;
+        }
+      };
+
+      if ( rolemap[el.tagName] ) {
+        input.setAttribute('role', rolemap[el.tagName](input));
+      }
+      input.setAttribute('aria-label', el.getAttribute('title') || '');
+      el.setAttribute('role', 'region');
+      el.setAttribute('aria-disabled', String(disabled));
+
       Utils.$bind(input, 'change', function(ev) {
         var value = input.value;
         if ( type === 'radio' || type === 'checkbox' ) {
@@ -125,6 +148,7 @@
 
     entries.forEach(function(e) {
       var opt = document.createElement('option');
+      opt.setAttribute('role', 'option');
       opt.setAttribute('value', e.value);
       opt.appendChild(document.createTextNode(e.label));
 
@@ -179,6 +203,7 @@
       var label = sel.childNodes.length ? sel.childNodes[0].nodeValue : '';
 
       var option = document.createElement('option');
+      option.setAttribute('role', 'option');
       option.setAttribute('value', value);
       option.appendChild(document.createTextNode(label));
       if ( sel.getAttribute('selected') ) {
@@ -192,6 +217,10 @@
       select.dispatchEvent(new CustomEvent('_change', {detail: select.value}));
     }, false);
 
+    select.setAttribute('role', 'listbox');
+    select.setAttribute('aria-label', el.getAttribute('title') || '');
+    el.setAttribute('aria-disabled', String(disabled));
+    el.setAttribute('role', 'region');
     el.appendChild(select);
   }
 
@@ -242,6 +271,8 @@
   GUI.Elements['gui-label'] = {
     set: function(el, param, value, isHTML) {
       if ( param === 'value' || param === 'label' ) {
+        el.setAttribute('data-label', String(value));
+
         var lbl = el.querySelector('label');
         Utils.$empty(lbl);
         if ( isHTML ) {
@@ -257,6 +288,8 @@
       var label = GUI.Helpers.getValueLabel(el, true);
       var lbl = document.createElement('label');
       lbl.appendChild(document.createTextNode(label));
+      el.setAttribute('role', 'heading');
+      el.setAttribute('data-label', String(label));
       el.appendChild(lbl);
     }
   };
@@ -365,6 +398,7 @@
     bind: bindInputEvents,
     build: function(el) {
       var input = document.createElement('input');
+      input.setAttribute('role', 'button');
       input.setAttribute('type', 'file');
       input.onchange = function(ev) {
         input.dispatchEvent(new CustomEvent('_change', {detail: input.files[0]}));
@@ -521,6 +555,9 @@
         } else {
           lbl.appendChild(document.createTextNode(value));
         }
+
+        lbl.setAttribute('aria-label', value);
+
         return true;
       }
       return false;
@@ -594,6 +631,7 @@
           Utils.$addClass(el, 'gui-has-label');
         }
         input.appendChild(document.createTextNode(label));
+        input.setAttribute('aria-label', label);
       }
 
       if ( disabled ) {
@@ -605,6 +643,7 @@
       setGroup(group);
       _buttonCount++;
 
+      el.setAttribute('role', 'navigation');
       el.appendChild(input);
     }
   };
@@ -734,6 +773,8 @@
         input.removeAttribute('disabled');
         input.value = value;
         input.setAttribute('disabled', 'disabled');
+        input.setAttribute('aria-disabled', 'true');
+
         return true;
       }
       return false;

@@ -148,6 +148,8 @@
       if ( el._columns[idx] && !el._columns[idx].visible ) {
         cel.style.display = 'none';
       }
+
+      cel.setAttribute('role', 'listitem');
     });
 
     GUI.Elements._dataview.bindEntryEvents(el, row, 'gui-list-view-row');
@@ -297,6 +299,10 @@
         head = document.createElement('gui-list-view-head');
         el.insertBefore(head, body);
       }
+
+      head.setAttribute('role', 'group');
+      body.setAttribute('role', 'group');
+      el.setAttribute('role', 'list');
 
       // Misc UI
       createResizers(el);

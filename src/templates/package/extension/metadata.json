@@ -1,5 +1,5 @@
 {
-  "className":  "ApplicationEXAMPLE",
+  "className":  "EXAMPLEExtension",
   "type":       "extension",
   "build":      {
     "copy": [
@@ -7,7 +7,9 @@
       "extension.js"
     ]
   },
-  "preload":    [
+  "conf": [
+  ],
+  "sources":    [
     {"src": "extension.js", "type": "javascript"}
   ]
 }

@@ -47,7 +47,7 @@ Then import the required table:
 
 ```
 
-$ mysql -u osjsuser -p osjs < doc/mysql-handler.sql
+$ mysql -u osjsuser -p osjs < doc/handler-mysql.sql
 
 ```
 

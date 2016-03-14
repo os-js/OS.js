@@ -74,6 +74,9 @@
         data: GUI.Helpers.getViewNodeValue(root)
       };
 
+      root.setAttribute('data-expanded', String(expanded));
+      root.setAttribute('aria-expanded', String(expanded));
+
       el.dispatchEvent(new CustomEvent('_expand', {detail: {entries: [selected], expanded: expanded, element: root}}));
     } // handleItemExpand()
 
@@ -140,16 +143,24 @@
     build: function(el, applyArgs) {
       var body = el.querySelector('gui-tree-view-body');
       var found = !!body;
+
       if ( !body ) {
         body = document.createElement('gui-tree-view-body');
         el.appendChild(body);
       }
 
+      body.setAttribute('role', 'group');
+      el.setAttribute('role', 'tree');
+      el.setAttribute('aria-multiselectable', body.getAttribute('data-multiselect') || 'false');
+
       el.querySelectorAll('gui-tree-view-entry').forEach(function(sel, idx) {
+        sel.setAttribute('aria-expanded', 'false');
+
         if ( !found ) {
           body.appendChild(sel);
         }
 
+        sel.setAttribute('role', 'treeitem');
         initEntry(el, sel);
       });
 

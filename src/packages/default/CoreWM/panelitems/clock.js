@@ -99,6 +99,7 @@
         var d = OSjs.Helpers.Date.format(now, tooltipFmt);
         Utils.$empty(clock);
         clock.appendChild(document.createTextNode(t));
+        clock.setAttribute('aria-label', String(t));
         clock.title = d;
       }
     }
@@ -119,6 +120,7 @@
 
     this.$clock = document.createElement('div');
     this.$clock.innerHTML = '00:00:00';
+    root.setAttribute('role', 'button');
     root.appendChild(this.$clock);
 
     this.createInterval();

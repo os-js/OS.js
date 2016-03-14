@@ -37,9 +37,20 @@
   function WindowListEntry(win, className) {
 
     var el = document.createElement('li');
-    el.innerHTML = '<img alt="" src="' + win._icon + '" /><span>' + win._title + '</span>';
     el.className = className;
     el.title = win._title;
+    el.setAttribute('role', 'button');
+    el.setAttribute('aria-label', win._title);
+
+    var img = document.createElement('img');
+    img.alt = win._title;
+    img.src = win._icon;
+
+    var span = document.createElement('span');
+    span.appendChild(document.createTextNode(win._title));
+
+    el.appendChild(img);
+    el.appendChild(span);
 
     this.evClick = Utils.$bind(el, 'click', function() {
       win._restore(false, true);
@@ -131,8 +142,17 @@
       });
     } else if ( ev === 'title' ) {
       _change(cn, function(el) {
-        el.getElementsByTagName('span')[0].innerHTML = win._title;
-        el.title = win._title;
+        el.setAttribute('aria-label', win._title);
+
+        var span = el.getElementsByTagName('span')[0];
+        if ( span ) {
+          Utils.$empty(span);
+          span.appendChild(document.createTextNode(win._title));
+        }
+        var img = el.getElementsByTagName('img')[0];
+        if ( img ) {
+          img.alt = win._title;
+        }
       });
     } else if ( ev === 'icon' ) {
       _change(cn, function(el) {
@@ -175,6 +195,7 @@
     var root = PanelItem.prototype.init.apply(this, arguments);
 
     this.$element = document.createElement('ul');
+    this.$element.setAttribute('role', 'toolbar');
     root.appendChild(this.$element);
 
     var wm = OSjs.Core.getWindowManager();

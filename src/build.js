@@ -186,6 +186,14 @@
   }
 
   /**
+   * Wrapper for warning message
+   */
+  function warning(grunt, str) {
+    str = 'WARN: ' + str;
+    grunt.log.writeln(str['yellow'].bold);
+  }
+
+  /**
    * Merges two objects together
    */
   function mergeObject(into, from) {
@@ -476,21 +484,16 @@
       ignores = ignores || [];
 
       var config = {};
+
+      // src/conf files
       var files = getConfigFiles(PATHS.conf);
       files.forEach(function(iter) {
         if ( ignores.indexOf(_path.basename(iter)) >= 0 ) {
           return;
         }
-
-        try {
-          var json = JSON.parse(_fs.readFileSync(iter));
-          var tjson = JSON.parse(JSON.stringify(config));
-          config = mergeObject(tjson, json);
-        } catch ( e ) {
-          console.log(e.stack);
-          grunt.fail.fatal('WARNING: Failed to parse ' + iter.replace(ROOT, ''));
-        }
+        config = readAndMerge(grunt, iter, config);
       });
+
       return JSON.parse(JSON.stringify(config));
     }
 
@@ -711,6 +714,20 @@
     return result;
   }
 
+  function readAndMerge(grunt, iter, config) {
+    console.log('+++', iter);
+    try {
+      if ( _fs.existsSync(iter) ) {
+        var json = JSON.parse(_fs.readFileSync(iter));
+        config = mergeObject(clone(config), json);
+      }
+    } catch ( e ) {
+      console.log(e.stack);
+      grunt.fail.fatal('WARNING: Failed to parse ' + iter.replace(ROOT, ''));
+    }
+    return config;
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // CONFIGS
   /////////////////////////////////////////////////////////////////////////////
@@ -718,15 +735,8 @@
   function getClientConfig(grunt, dist) {
     var cfg = generateBuildConfig(grunt);
     var settings = clone(cfg.client);
-    var themes = readThemeMetadata(grunt);
-    var extensions = getCoreExtensions(grunt);
-    var mime = cfg.mime;
-
+    var autostart = settings.AutoStart;
     var preloads = [];
-    var styles = themes.styles;
-    var sounds = {};
-    var icons = {};
-    var fonts = themes.fonts;
 
     if ( dist === 'dist-dev' ) {
       preloads.push({
@@ -741,6 +751,12 @@
       });
     }
 
+    var themes = readThemeMetadata(grunt);
+    var styles = themes.styles;
+    var sounds = {};
+    var icons = {};
+    var fonts = themes.fonts;
+
     themes.sounds.forEach(function(t) {
       sounds[t.name] = t.title;
     });
@@ -749,15 +765,11 @@
       icons[t.name] = t.title;
     });
 
-    Object.keys(extensions).forEach(function(p) {
-      var e = extensions[p];
-      if ( e.sources ) {
-        e.sources.forEach(function(ee) {
-          preloads.push({
-            type: ee.type,
-            src: _path.join('/', 'packages', p, ee.src)
-          });
-        });
+    var packages = readPackageMetadata();
+    Object.keys(packages).forEach(function(n) {
+      var meta = packages[n];
+      if ( meta.autostart === true ) {
+        autostart.push(n.split('/')[1]);
       }
     });
 
@@ -765,9 +777,10 @@
     settings.Icons = icons;
     settings.Sounds = sounds;
     settings.Fonts.list = fonts.concat(settings.Fonts.list);
-    settings.MIME = mime;
+    settings.MIME = cfg.mime;
     settings.Preloads = preloads;
     settings.Connection.Dist = dist;
+    settings.AutoStart = autostart;
 
     return settings;
   }
@@ -785,20 +798,27 @@
       (['api.php', 'api.js']).forEach(function(c) {
         var dir = _path.join(PATHS.packages, e, c);
         if ( _fs.existsSync(dir) ) {
-          var path = fixWinPath(dir).replace(fixWinPath(ROOT), '');
+          var path = '/' + fixWinPath(dir).replace(fixWinPath(PATHS.src), cfg.server.srcdir);
           loadExtensions.push(path);
         }
       });
+
+      if ( extensions[e].conf && extensions[e].conf instanceof Array ) {
+        extensions[e].conf.forEach(function(c) {
+          try {
+            var p = _path.join(PATHS.packages, extensions[e].path, c);
+            cfg = readAndMerge(grunt, p, cfg);
+          } catch ( e ) {
+            console.warn('createConfigurationFiles()', e, e.stack);
+          }
+        });
+      }
     });
 
     function buildServer() {
       var jsonSettings = clone(cfg.server);
       jsonSettings.extensions = loadExtensions;
       jsonSettings.mimes = cfg.mime.mapping;
-      jsonSettings.uri = {
-        api: cfg.client.Connection.APIURI,
-        fs: cfg.client.Connection.FSURI
-      };
 
       try {
         jsonSettings.vfs.maxuploadsize = cfg.client.VFS.MaxUploadSize;
@@ -1003,15 +1023,15 @@
       },
       application: {
         src: 'application',
-        cpy: ['main.js', 'main.css', 'metadata.json', 'scheme.html']
+        cpy: ['api.js', 'main.js', 'main.css', 'metadata.json', 'scheme.html']
       },
       service: {
         src: 'service',
-        cpy: ['main.js', 'metadata.json']
+        cpy: ['api.js', 'main.js', 'metadata.json']
       },
       extension: {
         src: 'extension',
-        cpy: ['extension.js', 'metadata.json']
+        cpy: ['api.js', 'extension.js', 'metadata.json']
       }
     };
 
@@ -1027,7 +1047,8 @@
     }
 
     if ( _fs.existsSync(dst) ) {
-      throw new Error('Template already exists');
+      warning(grunt, 'The package ' + name + ' already exists in repository ' + repo);
+      throw new Error('Package already exists');
     }
 
     function rep(file) {
@@ -1041,6 +1062,12 @@
     typemap[type].cpy.forEach(function(c) {
       rep(_path.join(dst, c));
     });
+
+    var cfg = generateBuildConfig(grunt);
+    if ( (cfg.repositories || []).indexOf(repo) < 0 ) {
+      warning(grunt, 'The repository \'' + repo + '\' is not active.');
+      warning(grunt, 'Activate with `grunt config:add-repository' + repo);
+    }
   }
 
   function createHandler(grunt, name) {
@@ -1154,13 +1181,12 @@
       copyFile(src, dst);
     });
 
-    var splashFile = _path.join(tpldir, 'splash.png');
-    if ( _fs.existsSync(splashFile) ) {
-      copyFile(splashFile, _path.join(outdir, 'splash.png'));
-    }
-
-    copyFile(_path.join(tpldir, 'favicon.png'), _path.join(outdir, 'favicon.png'));
-    copyFile(_path.join(tpldir, 'favicon.ico'), _path.join(outdir, 'favicon.ico'));
+    var ignore = ['index.html'];
+    _fs.readdirSync(tpldir).forEach(function(iter) {
+      if ( ignore.indexOf(iter) < 0 ) {
+        copyFile(_path.join(tpldir, iter), _path.join(outdir, iter));
+      }
+    });
 
     createIndex(grunt, null, dist);
   }
@@ -1224,8 +1250,12 @@
         _path.join(PATHS.out_standalone, 'vfs', 'home', 'demo', 'README.md')
       );
       copyFile(
-        _path.join(PATHS.templates, 'nw', 'metadata.json'),
-        _path.join(PATHS.out_standalone, 'metadata.json')
+        _path.join(PATHS.templates, 'nw', 'package.json'),
+        _path.join(PATHS.out_standalone, 'package.json')
+      );
+      copyFile(
+        _path.join(PATHS.server, 'packages.json'),
+        _path.join(PATHS.out_standalone, 'packages.json')
       );
 
       // Install dependencies
@@ -1285,14 +1315,13 @@
       var remove = [];
 
       (iter.preload || []).forEach(function(p) {
-        var path = _path.join(src, p.src);
-
-        if ( p.combine === false ) {
+        if ( p.combine === false || p.src.match(/^(ftp|https?\:)?\/\//) ) {
           pre.push(p);
           return;
         }
 
         try {
+          var path = _path.join(src, p.src);
           if ( p.type === 'javascript' ) {
             combined.js.push(readFile(path).toString());
           } else if ( p.type === 'stylesheet' ) {
@@ -1366,6 +1395,9 @@
         var path = _path.join(PATHS.fonts, i, 'style.css');
         var rout = readFile(path).toString();
         var rep = cfg.client.Connection.FontURI;
+        if ( !rep.match(/^\//) ) { // Fix for relative paths (CSS)
+          rep = rep.replace(/^\w+\//, '');
+        }
         rout = rout.replace(/\%FONTURI\%/g, rep);
         styles.push(rout);
       });
@@ -1489,7 +1521,7 @@
             var pcss = false;
             var pjs  = false;
             manifest.preload.forEach(function(p) {
-              if ( p.combine === false ) {
+              if ( p.combine === false || p.src.match(/^(ftp|https?\:)?\/\//) ) {
                 preload.push(p);
                 return;
               }

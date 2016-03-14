@@ -31,7 +31,7 @@
   'use strict';
 
   var DIST = (process && process.argv.length > 2) ? process.argv[2] : 'dist';
-  var ROOT = _path.join(__dirname, '/../../../');
+  var ROOT = (process && process.argv.length > 3) ? process.argv[3] : _path.join(__dirname, '/../../../');
 
   if ( DIST === 'x11' ) {
     DIST = 'dist';

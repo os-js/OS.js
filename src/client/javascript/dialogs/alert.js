@@ -58,6 +58,7 @@
 
   AlertDialog.prototype.init = function() {
     var root = DialogWindow.prototype.init.apply(this, arguments);
+    root.setAttribute('role', 'alertdialog');
     this.scheme.find(this, 'Message').set('value', this.args.message, true);
     return root;
   };

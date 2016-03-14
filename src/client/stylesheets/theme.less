@@ -49,7 +49,7 @@
 @gui_base_padding : 4px;
 
 @gui_selected_background_color       : rgb(45, 115, 210);
-@gui_selected_blur_background_color  : rgba(45, 115, 210, .8);
+@gui_selected_blur_background_color  : rgba(45, 115, 210, .2);
 @gui_selected_foreground_color       : #ffffff;
 
 @gui_zebra_foreground_color          : inherit;
@@ -440,6 +440,76 @@ gui-container[data-borders="true"] {
     gui-vbox-container[data-fill='true'] > * {
       width : calc(~"100% - "@gui_base_padding * 2);
       height : calc(~"100% - "@gui_base_padding * 2);
+    }
+
+    gui-hbox-container > .perc-100 {
+      height : calc(~"100% - "@gui_base_padding * 2);
+    }
+    gui-vbox-container > .perc-100 {
+      width : calc(~"100% - "@gui_base_padding * 2);
+    }
+
+    gui-hbox-container > .perc-90 {
+      height : calc(~"90% - "@gui_base_padding * 2);
+    }
+    gui-vbox-container > .perc-90 {
+      width : calc(~"90% - "@gui_base_padding * 2);
+    }
+
+    gui-hbox-container > .perc-80 {
+      height : calc(~"80% - "@gui_base_padding * 2);
+    }
+    gui-vbox-container > .perc-80 {
+      width : calc(~"80% - "@gui_base_padding * 2);
+    }
+
+    gui-hbox-container > .perc-70 {
+      height : calc(~"70% - "@gui_base_padding * 2);
+    }
+    gui-vbox-container > .perc-70 {
+      width : calc(~"70% - "@gui_base_padding * 2);
+    }
+
+    gui-hbox-container > .perc-60 {
+      height : calc(~"60% - "@gui_base_padding * 2);
+    }
+    gui-vbox-container > .perc-60 {
+      width : calc(~"60% - "@gui_base_padding * 2);
+    }
+
+    gui-hbox-container > .perc-50 {
+      height : calc(~"50% - "@gui_base_padding * 2);
+    }
+    gui-vbox-container > .perc-50 {
+      width : calc(~"50% - "@gui_base_padding * 2);
+    }
+
+    gui-hbox-container > .perc-40 {
+      height : calc(~"40% - "@gui_base_padding * 2);
+    }
+    gui-vbox-container > .perc-40 {
+      width : calc(~"40% - "@gui_base_padding * 2);
+    }
+
+    gui-hbox-container > .perc-30 {
+      height : calc(~"30% - "@gui_base_padding * 2);
+    }
+    gui-vbox-container > .perc-30 {
+      width : calc(~"30% - "@gui_base_padding * 2);
+    }
+
+    gui-hbox-container > .perc-20 {
+      height : calc(~"20% - "@gui_base_padding * 2);
+    }
+    gui-vbox-container > .perc-20 {
+      width : calc(~"20% - "@gui_base_padding * 2);
+    }
+
+    gui-hbox-container > .perc-10 {
+      height : calc(~"10% - "@gui_base_padding * 2);
+    }
+    gui-vbox-container > .perc-10 {
+      width : calc(~"10% - "@gui_base_padding * 2);
     }
 
 /* Paned View */
@@ -1042,8 +1112,8 @@ gui-list-view {
       }
 
     gui-list-view-row.gui-active {
-      background-color: @gui_selected_blur_background_color !important;
-      color: @gui_selected_foreground_color !important;
+      background-color: @gui_selected_blur_background_color;
+      color: @gui_selected_foreground_color;
     }
     gui-list-view.gui-element-focused gui-list-view-row.gui-active {
       background-color: @gui_selected_background_color;

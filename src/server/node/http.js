@@ -51,6 +51,18 @@
       response.end();
     }
 
+    if ( pipeFile ) {
+      var isdir = false;
+      try {
+        isdir = _fs.lstatSync(pipeFile).isDirectory();
+      } catch ( e ) {}
+
+      if ( isdir ) {
+        respondError('Invalid request', response);
+        return;
+      }
+    }
+
     headers.forEach(function(h) {
       response.writeHead.apply(response, h);
     });
@@ -115,12 +127,14 @@
   /**
    * Respond with an error
    */
-  function respondError(message, response, json) {
+  function respondError(message, response, json, code) {
+    code = code || 500;
+
     if ( json ) {
       message = 'Internal Server Error (HTTP 500): ' + message.toString();
-      respondJSON({result: null, error: message}, response, [], 500);
+      respondJSON({result: null, error: message}, response, [], code);
     } else {
-      respond(message.toString(), 'text/plain', response, [], 500);
+      respond(message.toString(), 'text/plain', response, [], code);
     }
   }
 
@@ -199,7 +213,7 @@
         } catch ( e ) {
           console.error('!!! Caught exception', e);
           console.warn(e.stack);
-          respondError(e, response, true);
+          respondError(e, response, true, 200);
         }
       });
     }
@@ -314,9 +328,9 @@
     instance.handler.onServerStart(function() {
       var port = setup.port || instance.config.port;
       if ( instance.config.logging ) {
-        console.log('***');
-        console.log('***', 'OS.js is listening on http://localhost:' + port);
-        console.log('***');
+        console.log('\n\n***');
+        console.log('***', 'OS.js is listening on http://localhost:' + port + ' (handler:' + instance.config.handler + ' dir:' + instance.setup.dist + ')');
+        console.log('***\n\n');
       }
 
       server.listen(port);

@@ -1350,12 +1350,10 @@
     options = options || {};
 
     API.curl({
-      body: {
-        url: url,
-        binary: true,
-        mime: mime,
-        method: 'POST'
-      }
+      url: url,
+      binary: true,
+      mime: mime,
+      method: 'POST'
     }, function(error, response) {
       if ( error ) {
         callback(error);
@@ -1411,7 +1409,7 @@
    *
    * @return  void
    *
-   * @link  http://os.js.org/doc/manuals/man-mountpoints.html
+   * @link  https://os.js.org/doc/manuals/man-mountpoints.html
    *
    * @api   OSjs.VFS.createMountpoint()
    */

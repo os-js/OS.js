@@ -98,11 +98,16 @@
           selectTab(ev, idx, tab);
         }, false);
 
+        tab.setAttribute('role', 'tab');
+        tab.setAttribute('aria-label', label);
+        el.setAttribute('role', 'tabpanel');
         tab.appendChild(document.createTextNode(label));
         tabs.appendChild(tab);
         contents.appendChild(el);
       });
 
+      tabs.setAttribute('role', 'tablist');
+      el.setAttribute('role', 'navigation');
       el.appendChild(tabs);
       el.appendChild(contents);
 

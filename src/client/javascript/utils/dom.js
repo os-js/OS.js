@@ -359,10 +359,7 @@
    */
   OSjs.Utils.$hasClass = function(el, name) {
     if ( el && name ) {
-      var re = new RegExp('\\s?' + name);
-      if ( re.test(el.className) !== false ) {
-        return true;
-      }
+      return el.className.replace(/\s+/, ' ').split(' ').indexOf(name) >= 0;
     }
     return false;
   };

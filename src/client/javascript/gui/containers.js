@@ -101,6 +101,7 @@
       el.querySelectorAll('gui-paned-view-container').forEach(function(cel, idx) {
         if ( idx % 2 ) {
           var resizer = document.createElement('gui-paned-view-handle');
+          resizer.setAttribute('role', 'separator');
           cel.parentNode.insertBefore(resizer, cel);
           bindResizer(resizer, idx);
         }
@@ -115,6 +116,30 @@
   };
 
   /**
+   * Element: 'gui-button-bar'
+   *
+   * @api OSjs.GUI.Elements.gui-button-bar
+   * @class
+   */
+  GUI.Elements['gui-button-bar'] = {
+    build: function(el) {
+      el.setAttribute('role', 'toolbar');
+    }
+  };
+
+  /**
+   * Element: 'gui-toolbar'
+   *
+   * @api OSjs.GUI.Elements.gui-toolbar
+   * @class
+   */
+  GUI.Elements['gui-toolbar'] = {
+    build: function(el) {
+      el.setAttribute('role', 'toolbar');
+    }
+  };
+
+  /**
    * Element: 'gui-grid'
    *
    * A grid-type container with equal-sized containers
@@ -124,7 +149,7 @@
    */
   GUI.Elements['gui-grid'] = {
     build: function(el) {
-      var rows = el.getElementsByTagName('gui-grid-row');
+      var rows = el.querySelectorAll('gui-grid-row');
       var p = 100 / rows.length;
 
       rows.forEach(function(r) {
@@ -190,6 +215,7 @@
         expanded = !expanded;
       }
 
+      el.setAttribute('aria-expanded', String(expanded));
       el.setAttribute('data-expanded', String(expanded));
       return expanded;
     }
@@ -216,6 +242,10 @@
         }, false);
 
         label.appendChild(document.createTextNode(lbltxt));
+
+        el.setAttribute('role', 'toolbar');
+        el.setAttribute('aria-expanded', 'true');
+        el.setAttribute('data-expanded', 'true');
         if ( el.children.length ) {
           el.insertBefore(label, el.children[0]);
         } else {

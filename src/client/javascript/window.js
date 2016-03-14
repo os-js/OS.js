@@ -90,6 +90,9 @@
     return 301;
   }
 
+  /**
+   * Wrapper to wait for animations to finish
+   */
   function waitForAnimation(cb) {
     var wm = OSjs.Core.getWindowManager();
     var anim = wm ? wm.getSetting('animations') : false;
@@ -206,6 +209,7 @@
       this._children      = [];                             // Child Windows
       this._parent        = null;                           // Parent Window reference
       this._disabled      = true;                           // If Window is currently disabled
+      this._loading       = false;                          // If Window is currently loading
       this._sound         = null;                           // Play this sound when window opens
       this._soundVolume   = _DEFAULT_SND_VOLUME;            // ... using this volume
       this._blinkTimer    = null;
@@ -467,6 +471,7 @@
     var windowIcon          = document.createElement('application-window-icon');
     var windowTitle         = document.createElement('application-window-title');
 
+    windowTitle.setAttribute('role', 'heading');
     windowTitle.appendChild(document.createTextNode(this._title));
 
     Utils.$bind(windowTitle, 'dblclick', function() {
@@ -529,6 +534,19 @@
     main.style.left   = this._position.x + 'px';
     main.style.zIndex = getNextZindex(this._state.ontop);
 
+    main.setAttribute('role', 'application');
+    main.setAttribute('aria-live', 'polite');
+    main.setAttribute('aria-hidden', 'false');
+    windowIcon.setAttribute('role', 'button');
+    windowIcon.setAttribute('aria-haspopup', 'true');
+    windowIcon.setAttribute('aria-label', 'Window Menu');
+    buttonClose.setAttribute('role', 'button');
+    buttonClose.setAttribute('aria-label', 'Close Window');
+    buttonMinimize.setAttribute('role', 'button');
+    buttonMinimize.setAttribute('aria-label', 'Minimize Window');
+    buttonMaximize.setAttribute('role', 'button');
+    buttonMaximize.setAttribute('aria-label', 'Maximize Window');
+
     windowTop.appendChild(windowIcon);
     windowTop.appendChild(windowTitle);
     windowTop.appendChild(buttonMinimize);
@@ -561,6 +579,8 @@
     if ( this._sound ) {
       API.playSound(this._sound, this._soundVolume);
     }
+
+    this._checkAria();
 
     console.groupEnd();
 
@@ -915,6 +935,8 @@
       wm.setCurrentWindow(null);
     }
 
+    this._checkAria();
+
     return true;
   };
 
@@ -964,6 +986,8 @@
     });
 
     this._onChange('maximize');
+
+    this._checkAria();
 
     return true;
   };
@@ -1017,6 +1041,8 @@
     this._onChange('restore');
 
     this._focus();
+
+    this._checkAria();
   };
 
   /**
@@ -1058,6 +1084,8 @@
 
     this._state.focused = true;
 
+    this._checkAria();
+
     return true;
   };
 
@@ -1091,6 +1119,8 @@
     if ( win && win._wid === this._wid ) {
       wm.setCurrentWindow(null);
     }
+
+    this._checkAria();
 
     return true;
   };
@@ -1316,7 +1346,10 @@
     if ( this._$disabled ) {
       this._$disabled.style.display = t ? 'block' : 'none';
     }
+
     this._disabled = t ? true : false;
+
+    this._checkAria();
   };
 
   /**
@@ -1332,6 +1365,29 @@
     console.debug(this._name, '>', 'OSjs::Core::Window::_toggleLoading()', t);
     if ( this._$loading ) {
       this._$loading.style.display = t ? 'block' : 'none';
+    }
+
+    this._loading = t ? true : false;
+
+    this._checkAria();
+  };
+
+  /**
+   * Check for ARIA updates
+   *
+   * @return void
+   */
+  Window.prototype._checkAria = function() {
+    if ( this._$element ) {
+      var t = this._loading || this._disabled;
+      var d = this._disabled;
+      var h = this._state.minimized;
+      var f = !this._state.focused;
+
+      this._$element.setAttribute('aria-busy', String(t));
+      this._$element.setAttribute('aria-hidden', String(h));
+      this._$element.setAttribute('aria-disabled', String(d));
+      this._$root.setAttribute('aria-hidden', String(f));
     }
   };
 
@@ -1397,85 +1453,14 @@
    * @method  Window::_nextTabIndex()
    */
   Window.prototype._nextTabIndex = function(ev) {
-
-    var prev = ev.shiftKey;
-    var accept = ['input', 'select', 'textarea', 'gui-list-view', 'gui-tree-view', 'gui-icon-view']; // Textarea/Iframe accepts TAB
-    var current = document.activeElement;
-    var currentTag = current ? current.tagName.toLowerCase() : null;
-    var root = this._$root;
-
-    function clamp(idx, size) {
-      if ( prev ) {
-        idx--;
-        if ( idx <= 0 ) {
-          idx = size - 1;
-        }
+    var nextElement = OSjs.GUI.Helpers.getNextElement(ev.shiftKey, document.activeElement, this._$root);
+    if ( nextElement ) {
+      if ( Utils.$hasClass(nextElement, 'gui-data-view') ) {
+        new OSjs.GUI.ElementDataView(nextElement)._call('focus');
       } else {
-        idx++;
-        if ( idx >= size ) {
-          idx = 0;
-        }
-      }
-
-      return idx;
-    }
-
-    function go(idx, elements) {
-      idx = clamp(idx, elements.length);
-
-      var el = getNextElement(idx, elements);
-      if ( el ) {
-        console.debug('Window::_nextTabIndex()', '=>', idx, el.tagName, el);
-
-        if ( Utils.$hasClass(el, 'gui-data-view') ) {
-          new OSjs.GUI.ElementDataView(el)._call('focus');
-        } else {
-          try {
-            el.focus();
-            //elements[idx].focus();
-          } catch ( e ) {}
-        }
-      }
-    }
-
-    function getNextElement(idx, elements) {
-      var found = null;
-      var list = elements.slice(idx, elements.length);
-
-      list.every(function(el, idx) {
-        // offsetParent makes sure the element is 'visible'
-        if ( !found && el.offsetParent && !el.getAttribute('disabled') && el.getAttribute('data-disabled') !== 'true' ) {
-          console.debug('Window::_nextTabIndex()', 'next', idx);
-          found = el;
-        }
-        return !!found;
-      });
-
-      return found;
-    }
-
-    if ( currentTag && accept.indexOf(currentTag) >= 0 ) {
-      var elements = root.querySelectorAll('input, select, textarea, .gui-data-view');
-      var found = -1;
-
-      elements.every(function(el, idx) {
-        if ( el === current ) {
-          found = idx;
-        }
-        return found < 0;
-      });
-
-      if ( found >= 0 ) {
-        var fel = elements[found];
-
-        if ( fel.tagName.toLowerCase() === 'textarea' && !Utils.$hasClass(fel, 'gui-focus-element') ) {
-          return;
-        }
-
-        ev.preventDefault();
-        ev.stopPropagation();
-
-        go(found, Array.prototype.slice.call(elements));
+        try {
+          nextElement.focus();
+        } catch ( e ) {}
       }
     }
   };
@@ -1784,6 +1769,8 @@
     }
 
     this._onChange('title');
+
+    this._checkAria();
   };
 
   /**
