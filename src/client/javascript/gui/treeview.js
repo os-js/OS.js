@@ -148,8 +148,8 @@
         el.appendChild(body);
       }
 
-      body.setAttribute('role', 'tree');
-      body.setAttribute('aria-multiselectable', body.getAttribute('data-multiselect') || 'false');
+      el.setAttribute('role', 'tree');
+      el.setAttribute('aria-multiselectable', body.getAttribute('data-multiselect') || 'false');
 
       el.querySelectorAll('gui-tree-view-entry').forEach(function(sel, idx) {
         sel.setAttribute('aria-expanded', 'false');

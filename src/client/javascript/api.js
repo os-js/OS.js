@@ -252,6 +252,11 @@
       CurrentLocale = DefaultLocale;
     }
 
+    var html = document.querySelector('html');
+    if ( html ) {
+      html.setAttribute('lang', l);
+    }
+
     console.log('doSetLocale()', CurrentLocale);
   }
 

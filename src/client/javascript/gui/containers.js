@@ -143,7 +143,6 @@
   GUI.Elements['gui-button-bar'] = {
     build: function(el) {
       el.setAttribute('role', 'toolbar');
-      el.setAttribute('aria-orientation', el.getAttribute('data-orientation') || 'horizontal');
     }
   };
 
@@ -156,7 +155,6 @@
   GUI.Elements['gui-toolbar'] = {
     build: function(el) {
       el.setAttribute('role', 'toolbar');
-      el.setAttribute('aria-orientation', el.getAttribute('data-orientation') || 'horizontal');
     }
   };
 

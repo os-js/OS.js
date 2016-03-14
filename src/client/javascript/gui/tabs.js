@@ -107,7 +107,6 @@
       });
 
       tabs.setAttribute('role', 'tablist');
-      tabs.setAttribute('aria-orientation', 'horizontal');
       el.setAttribute('role', 'navigation');
       el.appendChild(tabs);
       el.appendChild(contents);

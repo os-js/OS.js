@@ -176,7 +176,6 @@
               vlevel++;
             }
 
-            child.setAttribute('aria-level', String(vlevel));
             child.setAttribute('role', 'menuitem' + (child.getAttribute('data-type') || ''));
 
             label = GUI.Helpers.getLabel(child);
@@ -252,7 +251,6 @@
           if ( child.tagName === 'GUI-MENU-ENTRY' ) {
 
             child.setAttribute('aria-haspopup', String(!!child.firstChild));
-            child.setAttribute('aria-level', String(level));
             updateChildren(child.firstChild, level + 1);
           }
         }
@@ -266,7 +264,6 @@
         span.appendChild(document.createTextNode(label));
 
         mel.setAttribute('role', 'menuitem');
-        mel.setAttribute('aria-level', '1');
 
         mel.insertBefore(span, mel.firstChild);
 

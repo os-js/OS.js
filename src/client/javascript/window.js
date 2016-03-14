@@ -1382,15 +1382,12 @@
       var t = this._loading || this._disabled;
       var d = this._disabled;
       var h = this._state.minimized;
-      var s = this._state.focused;
-      var l = this._$element.style.zIndex;
+      var f = !this._state.focused;
 
       this._$element.setAttribute('aria-busy', String(t));
-      this._$element.setAttribute('aria-label', String(this._title));
       this._$element.setAttribute('aria-hidden', String(h));
-      this._$element.setAttribute('aria-selected', String(s));
       this._$element.setAttribute('aria-disabled', String(d));
-      this._$element.setAttribute('aria-level', String(l));
+      this._$root.setAttribute('aria-hidden', String(f));
     }
   };
 

@@ -112,7 +112,7 @@
         input.setAttribute('role', rolemap[el.tagName](input));
       }
       input.setAttribute('aria-label', el.getAttribute('title') || '');
-      el.setAttribute('role', 'none');
+      el.setAttribute('role', 'region');
       el.setAttribute('aria-disabled', String(disabled));
 
       Utils.$bind(input, 'change', function(ev) {
@@ -148,6 +148,7 @@
 
     entries.forEach(function(e) {
       var opt = document.createElement('option');
+      opt.setAttribute('role', 'option');
       opt.setAttribute('value', e.value);
       opt.appendChild(document.createTextNode(e.label));
 
@@ -202,6 +203,7 @@
       var label = sel.childNodes.length ? sel.childNodes[0].nodeValue : '';
 
       var option = document.createElement('option');
+      option.setAttribute('role', 'option');
       option.setAttribute('value', value);
       option.appendChild(document.createTextNode(label));
       if ( sel.getAttribute('selected') ) {
@@ -218,6 +220,7 @@
     select.setAttribute('role', 'combobox');
     select.setAttribute('aria-label', el.getAttribute('title') || '');
     el.setAttribute('aria-disabled', String(disabled));
+    el.setAttribute('role', 'region');
     el.appendChild(select);
   }
 
