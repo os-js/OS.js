@@ -143,11 +143,13 @@
     build: function(el, applyArgs) {
       var body = el.querySelector('gui-tree-view-body');
       var found = !!body;
+
       if ( !body ) {
         body = document.createElement('gui-tree-view-body');
         el.appendChild(body);
       }
 
+      body.setAttribute('role', 'group');
       el.setAttribute('role', 'tree');
       el.setAttribute('aria-multiselectable', body.getAttribute('data-multiselect') || 'false');
 
