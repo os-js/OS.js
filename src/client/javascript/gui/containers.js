@@ -34,21 +34,6 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
-  function boxRole(el, role) {
-    el.children.forEach(function(e) {
-      if ( e.getAttribute('role') ) {
-        e.setAttribute('role', e.getAttribute('role') + ' ' + role);
-      } else {
-        e.setAttribute('role', role);
-      }
-    });
-  }
-
-  function boxContainer(el) {
-    el.setAttribute('role', 'row');
-    boxRole(el, 'cell');
-    GUI.Helpers.setFlexbox(el);
-  }
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
@@ -114,7 +99,6 @@
 
       }
 
-      el.setAttribute('role', 'grid');
       el.querySelectorAll('gui-paned-view-container').forEach(function(cel, idx) {
         if ( idx % 2 ) {
           var resizer = document.createElement('gui-paned-view-handle');
@@ -128,8 +112,6 @@
 
   GUI.Elements['gui-paned-view-container'] = {
     build: function(el) {
-      el.setAttribute('role', 'row');
-      boxRole(el, 'cell');
       GUI.Helpers.setFlexbox(el);
     }
   };
@@ -171,17 +153,9 @@
       var rows = el.querySelectorAll('gui-grid-row');
       var p = 100 / rows.length;
 
-      el.setAttribute('role', 'grid');
-
       rows.forEach(function(r) {
         r.style.height = String(p) + '%';
-        r.setAttribute('role', 'row');
-
-        r.getElementsByTagName('gui-grid-entry').forEach(function(c) {
-          c.setAttribute('role', 'gridcell');
-        });
       });
-
     }
   };
 
@@ -195,14 +169,12 @@
    */
   GUI.Elements['gui-vbox'] = {
     build: function(el) {
-      el.setAttribute('role', 'grid');
-      //el.setAttribute('aria-orientation', 'vertical');
     }
   };
 
   GUI.Elements['gui-vbox-container'] = {
     build: function(el) {
-      boxContainer(el);
+      GUI.Helpers.setFlexbox(el);
     }
   };
 
@@ -216,14 +188,12 @@
    */
   GUI.Elements['gui-hbox'] = {
     build: function(el) {
-      el.setAttribute('role', 'grid');
-      //el.setAttribute('aria-orientation', 'horizontal');
     }
   };
 
   GUI.Elements['gui-hbox-container'] = {
     build: function(el) {
-      boxContainer(el);
+      GUI.Helpers.setFlexbox(el);
     }
   };
 
