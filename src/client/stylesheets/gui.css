@@ -559,14 +559,10 @@ gui-tabs {
         right : 0;
         bottom : 0;
       }
-  gui-tabs > div {
+  gui-tabs > gui-tab-container {
     overflow : hidden;
+    display : none;
   }
-
-    gui-tab-container {
-      display : none;
-      height : 100%;
-    }
     gui-tab-container.gui-active {
       display : block;
     }

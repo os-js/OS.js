@@ -597,14 +597,11 @@ gui-expander {
         bottom : -1px;
         border-bottom : 1px solid @base_background_color;
       }
-  gui-tabs > div {
+  gui-tabs > gui-tab-container {
     height : ~"calc(100% - 25px)";
     border : 1px solid @gui_border_color;
+    padding : @gui_base_padding;
   }
-
-    gui-tab-container {
-      padding : @gui_base_padding;
-    }
 
 /* Button Bar */
 
