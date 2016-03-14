@@ -217,7 +217,7 @@
       select.dispatchEvent(new CustomEvent('_change', {detail: select.value}));
     }, false);
 
-    select.setAttribute('role', 'combobox');
+    select.setAttribute('role', 'listbox');
     select.setAttribute('aria-label', el.getAttribute('title') || '');
     el.setAttribute('aria-disabled', String(disabled));
     el.setAttribute('role', 'region');

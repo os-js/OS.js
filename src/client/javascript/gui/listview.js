@@ -300,6 +300,8 @@
         el.insertBefore(head, body);
       }
 
+      head.setAttribute('role', 'group');
+      body.setAttribute('role', 'group');
       el.setAttribute('role', 'list');
 
       // Misc UI
