@@ -207,8 +207,10 @@
         if ( tagName === 'gui-radio' || tagName === 'gui-checkbox' ) {
           if ( value ) {
             firstChild.setAttribute('checked', 'checked');
+            firstChild.checked = true;
           } else {
             firstChild.removeAttribute('checked');
+            firstChild.checked = false;
           }
         }
 
