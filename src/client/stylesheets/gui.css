@@ -504,6 +504,8 @@ gui-button-bar {
   overflow : hidden;
   /* NOTE: Fixes spacing errors in FF */
   font-size : 0;
+  min-width : 16px;
+  min-height : 16px;
 }
 gui-button-bar {
   white-space: nowrap;
@@ -1237,6 +1239,7 @@ gui-menu.gui-root-menu {
 gui-menu-bar {
   position : relative;
   display : block;
+  min-height : 16px;
 }
   gui-menu-bar-entry {
     position : relative;
