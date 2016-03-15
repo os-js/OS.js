@@ -403,10 +403,11 @@
    *
    * See `ev.detail` for more information on events.
    *
-   * @getter    value     String        The value/checked state
-   * @setter    value     String        The value/checked state
+   * @getter    value     boolean       The value/checked state
+   * @setter    value     boolean       The value/checked state
    * @setter    disabled  boolean       Set disabled state
    * @property  disabled  boolean       Disabled state
+   * @property  label     String        (Optional) Set a label on the input element
    * @event     change                  When input has changed => fn(ev)
    *
    * @api OSjs.GUI.Elements.gui-radio
@@ -426,10 +427,11 @@
    *
    * See `ev.detail` for more information on events.
    *
-   * @getter    value     String        The value/checked state
-   * @setter    value     String        The value/checked state
+   * @getter    value     boolean       The value/checked state
+   * @setter    value     boolean       The value/checked state
    * @setter    disabled  boolean       Set disabled state
    * @property  disabled  boolean       Disabled state
+   * @property  label     String        (Optional) Set a label on the input element
    * @event     change                  When input has changed => fn(ev)
    *
    * @api OSjs.GUI.Elements.gui-checbox
@@ -511,11 +513,12 @@
    *
    * A normal button
    *
-   * @getter    value     String        The value/enabled state
-   * @setter    value     String        The value/enabled state
-   * @setter    icon      String        Icon
+   * @getter    value     String        The value
+   * @setter    value     String        The value
+   * @setter    icon      String        Icon source
    * @setter    disabled  boolean       Set disabled state
    * @property  disabled  boolean       Disabled state
+   * @property  icon      String        Icon source
    * @event     click                   When input was clicked => fn(ev)
    *
    * @api OSjs.GUI.Elements.gui-button
@@ -639,8 +642,8 @@
    *
    * See `ev.detail` for more information on events.
    *
-   * @getter    value     String        The value/enabled state
-   * @setter    value     String        The value/enabled state
+   * @getter    value     String        The value
+   * @setter    value     String        The value
    * @setter    disabled  boolean       Set disabled state
    * @property  disabled  boolean       Disabled state
    * @event     change                  When input has changed => fn(ev)
@@ -668,8 +671,8 @@
    *
    * See `ev.detail` for more information on events.
    *
-   * @getter    value     String        The value/enabled state
-   * @setter    value     String        The value/enabled state
+   * @getter    value     String        The value
+   * @setter    value     String        The value
    * @setter    disabled  boolean       Set disabled state
    * @property  disabled  boolean       Disabled state
    * @event     change                  When input has changed => fn(ev)
@@ -689,8 +692,8 @@
    *
    * See `ev.detail` for more information on events.
    *
-   * @getter    value     String        The value/enabled state
-   * @setter    value     String        The value/enabled state
+   * @getter    value     String        The value
+   * @setter    value     String        The value
    * @setter    disabled  boolean       Set disabled state
    * @property  min       integer       The minimum value
    * @property  max       integer       The maxmimum value
@@ -719,8 +722,8 @@
    *
    * A text area displaying current value with a button to open a modal/dialog etc.
    *
-   * @getter    value     String        The value/enabled state
-   * @setter    value     String        The value/enabled state
+   * @getter    value     String        The value
+   * @setter    value     String        The value
    * @event     open                    When button was pressed => fn(ev)
    *
    * @api OSjs.GUI.Elements.gui-input-modal
