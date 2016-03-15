@@ -300,14 +300,16 @@
    *
    * Text area input (multi-line)
    *
-   * See `ev.detail` for more information on events.
+   * See `ev.detail` for data on events (like on 'change').
    *
-   * @getter    value     String        The value/contents
-   * @setter    value     String        The value/contents
-   * @setter    label     String        The label text
-   * @setter    disabled  boolean       Set disabled state
-   * @property  disabled  boolean       Disabled state
-   * @event     change                  When input has changed => fn(ev)
+   * @getter    value         String        The value/contents
+   * @setter    value         String        The value/contents
+   * @setter    label         String        The label text
+   * @setter    disabled      boolean       Set disabled state
+   * @property  disabled      boolean       Disabled state
+   * @property  value         String        The input value
+   * @property  placeholder   String        An optional placeholder
+   * @event     change                      When input has changed => fn(ev)
    *
    * @api OSjs.GUI.Elements.gui-textarea
    * @class
@@ -324,14 +326,16 @@
    *
    * Text input.
    *
-   * See `ev.detail` for more information on events.
+   * See `ev.detail` for data on events (like on 'change').
    *
-   * @getter    value     String        The value/contents
-   * @setter    value     String        The value/contents
-   * @setter    disabled  boolean       Set disabled state
-   * @property  disabled  boolean       Disabled state
-   * @event     change                  When input has changed => fn(ev)
-   * @event     enter                   When enter key was pressed => fn(ev)
+   * @getter    value         String        The value/contents
+   * @setter    value         String        The value/contents
+   * @setter    disabled      boolean       Set disabled state
+   * @property  disabled      boolean       Disabled state
+   * @property  value         String        The input value
+   * @property  placeholder   String        An optional placeholder
+   * @event     change                      When input has changed => fn(ev)
+   * @event     enter                       When enter key was pressed => fn(ev)
    *
    * @api OSjs.GUI.Elements.gui-text
    * @class
@@ -348,14 +352,16 @@
    *
    * Password input.
    *
-   * See `ev.detail` for more information on events.
+   * See `ev.detail` for data on events (like on 'change').
    *
-   * @getter    value     String        The value/contents
-   * @setter    value     String        The value/contents
-   * @setter    disabled  boolean       Set disabled state
-   * @property  disabled  boolean       Disabled state
-   * @event     change                  When input has changed => fn(ev)
-   * @event     enter                   When enter key was pressed => fn(ev)
+   * @getter    value         String        The value/contents
+   * @setter    value         String        The value/contents
+   * @setter    disabled      boolean       Set disabled state
+   * @property  disabled      boolean       Disabled state
+   * @property  value         String        The input value
+   * @property  placeholder   String        An optional placeholder
+   * @event     change                      When input has changed => fn(ev)
+   * @event     enter                       When enter key was pressed => fn(ev)
    *
    * @api OSjs.GUI.Elements.gui-password
    * @class
@@ -372,7 +378,7 @@
    *
    * File upload selector.
    *
-   * See `ev.detail` for more information on events.
+   * See `ev.detail` for data on events (like on 'change').
    *
    * @getter    value     String        The value/contents
    * @setter    value     String        The value/contents
@@ -401,13 +407,14 @@
    *
    * Radio selection input.
    *
-   * See `ev.detail` for more information on events.
+   * See `ev.detail` for data on events (like on 'change').
    *
    * @getter    value     boolean       The value/checked state
    * @setter    value     boolean       The value/checked state
    * @setter    disabled  boolean       Set disabled state
    * @property  disabled  boolean       Disabled state
    * @property  label     String        (Optional) Set a label on the input element
+   * @property  group     String        (Optional) A group identificator
    * @event     change                  When input has changed => fn(ev)
    *
    * @api OSjs.GUI.Elements.gui-radio
@@ -425,13 +432,14 @@
    *
    * Checkbox selection input.
    *
-   * See `ev.detail` for more information on events.
+   * See `ev.detail` for data on events (like on 'change').
    *
    * @getter    value     boolean       The value/checked state
    * @setter    value     boolean       The value/checked state
    * @setter    disabled  boolean       Set disabled state
    * @property  disabled  boolean       Disabled state
    * @property  label     String        (Optional) Set a label on the input element
+   * @property  group     String        (Optional) A group identificator
    * @event     change                  When input has changed => fn(ev)
    *
    * @api OSjs.GUI.Elements.gui-checbox
@@ -449,7 +457,7 @@
    *
    * A switch (on/off) input.
    *
-   * See `ev.detail` for more information on events.
+   * See `ev.detail` for data on events (like on 'change').
    *
    * @getter    value     String        The value/enabled state
    * @setter    value     String        The value/enabled state
@@ -640,7 +648,7 @@
    * }
    * ```
    *
-   * See `ev.detail` for more information on events.
+   * See `ev.detail` for data on events (like on 'change').
    *
    * @getter    value     String        The value
    * @setter    value     String        The value
@@ -669,7 +677,7 @@
    * }
    * ```
    *
-   * See `ev.detail` for more information on events.
+   * See `ev.detail` for data on events (like on 'change').
    *
    * @getter    value     String        The value
    * @setter    value     String        The value
@@ -690,7 +698,7 @@
    *
    * A slider input.
    *
-   * See `ev.detail` for more information on events.
+   * See `ev.detail` for data on events (like on 'change').
    *
    * @getter    value     String        The value
    * @setter    value     String        The value

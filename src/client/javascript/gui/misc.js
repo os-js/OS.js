@@ -72,7 +72,7 @@
    *
    * A box for selecting color(s) in the rainbow.
    *
-   * See `ev.detail` for more information on events.
+   * See `ev.detail` for data on events (like on 'change').
    *
    * @getter    value   String        The value (color)
    * @setter    value   String        The value (color)

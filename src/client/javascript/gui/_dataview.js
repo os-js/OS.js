@@ -187,7 +187,7 @@
    *
    * This is an abstraction layer for Icon, Tree and List views.
    *
-   * See `ev.detail` for more information on events.
+   * See `ev.detail` for data on events (like on 'change').
    *
    * @getter    value     Mixed         The value/currently selected
    * @getter    selected  Mixed         Alias of 'value'
