@@ -611,7 +611,7 @@
       }
 
       function setImage() {
-        if ( icon ) {
+        if ( icon && icon !== 'null' ) {
           var img = document.createElement('img');
           img.src = icon;
           img.alt = el.getAttribute('data-tooltip') || '';
