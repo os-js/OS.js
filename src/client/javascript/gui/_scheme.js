@@ -364,10 +364,19 @@
       if ( frag ) {
         var width = parseInt(frag.getAttribute('data-width'), 10) || 0;
         var height = parseInt(frag.getAttribute('data-height'), 10) || 0;
+        var allow_maximize = frag.getAttribute('data-allow_maximize');
+        var allow_minimize = frag.getAttribute('data-allow_minimize');
+        var allow_close = frag.getAttribute('data-allow_close');
+        var allow_resize = frag.getAttribute('data-allow_resize');
 
         if ( (!isNaN(width) && width > 0) || (!isNaN(height) && height > 0) ) {
           win._resize(width, height);
         }
+
+        win._setProperty('allow_maximize', allow_maximize);
+        win._setProperty('allow_minimize', allow_minimize);
+        win._setProperty('allow_close', allow_close);
+        win._setProperty('allow_resize', allow_resize);
       }
     }
 

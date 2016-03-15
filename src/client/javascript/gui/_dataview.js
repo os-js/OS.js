@@ -162,18 +162,16 @@
   }
 
   function matchValueByKey(r, val, key, idx) {
-    if ( val || val === 0 ) {
-      var value = r.getAttribute('data-value');
-      if ( !key && (val === idx || val === value) ) {
-        return r;
-      } else {
-        try {
-          var json = JSON.parse(value);
-          if ( typeof json[key] === 'object' ? json[key] === val : String(json[key]) === String(val) ) {
-            return r;
-          }
-        } catch ( e ) {}
-      }
+    var value = r.getAttribute('data-value');
+    if ( !key && (val === idx || val === value) ) {
+      return r;
+    } else {
+      try {
+        var json = JSON.parse(value);
+        if ( typeof json[key] === 'object' ? json[key] === val : String(json[key]) === String(val) ) {
+          return r;
+        }
+      } catch ( e ) {}
     }
     return false;
   }
@@ -455,6 +453,7 @@
           sel(r, idx);
         }
       });
+
       el._selected = select;
     },
 
