@@ -50,9 +50,8 @@
    *
    * A container with tabs for displaying content.
    *
-   * Events:
-   *  select        When tab has changed => fn(ev)
-   *  activat       Alias of 'select'
+   * @event     select                    When tab has changed => fn(ev)
+   * @event     activate                  Alias of 'select'
    *
    * @api OSjs.GUI.Elements.gui-tabs
    * @class

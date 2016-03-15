@@ -220,8 +220,7 @@
    *
    * A menubar with sub-menus
    *
-   * Events:
-   *  select        When an entry was selected (click) => fn(ev)
+   * @event     select               When an entry was selected (click) => fn(ev)
    *
    * @api OSjs.GUI.Elements.gui-menu-bar
    * @class
@@ -315,6 +314,7 @@
    * Create and show a new menu
    *
    * Format:
+   * ```
    * [
    *  {
    *    title: "Title",
@@ -324,6 +324,7 @@
    *  }
    *  ...
    * ]
+   * ```
    *
    * @param   Array       items             Array of items
    * @param   Event       ev                DOM Event or dict with x/y

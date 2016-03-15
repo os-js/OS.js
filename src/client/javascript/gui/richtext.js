@@ -134,6 +134,9 @@
    *
    * "Richt text" input area.
    *
+   * @getter    value   String        The value/contents
+   * @setter    value   String        The value/contents
+   *
    * @api OSjs.GUI.Elements.gui-richtext
    * @class
    */

@@ -187,27 +187,19 @@
    *
    * This is an abstraction layer for Icon, Tree and List views.
    *
-   * Events:
-   *  select        When an entry was selected (click) => fn(ev)
-   *  activate      When an entry was activated (doubleclick) => fn(ev)
+   * See `ev.detail` for more information on events.
    *
-   * Parameters:
-   *  multiple  boolean     Multiple selection (default=true)
-   *
-   * Setters:
-   *  value         Sets the selected entry(es)
-   *  selected      Alias for 'value'
-   *
-   * Getters:
-   *  entry         Gets an entry by value, key
-   *  value         Gets the selected entry(es)
-   *  selected      Alias for 'value'
-   *
-   * Actions:
-   *  add(arg)      Adds en entry (or from array)
-   *  remove(arg)   Removes an entry
-   *  patch(arg)    Patch/Update entries from array
-   *  clear()
+   * @getter    value     Mixed         The value/currently selected
+   * @getter    selected  Mixed         Alias of 'value'
+   * @getter    entry     Mixed         Gets an etnry by value, key
+   * @setter    value     Mixed         The value/currently selected
+   * @property  multiple  boolean       If multiple elements are selectable
+   * @event     select                  When entry was selected => fn(ev)
+   * @event     activate                When entry was activated => fn(ev)
+   * @action    add                     Add elements(s) => fn(entries)
+   * @action    patch                   Patch/Update elements => fn(entries)
+   * @action    remove                  Removes element => fn(arg)
+   * @action    clear                   Clear elements => fn()
    *
    * @api OSjs.GUI.Elements._dataview
    * @class

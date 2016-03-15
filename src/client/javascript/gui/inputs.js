@@ -261,9 +261,10 @@
    *
    * Just a normal label.
    *
-   * Setters:
-   *  value         Sets the label
-   *  label         Alias for 'value'
+   * @getter    value     String        The value/contents
+   * @setter    value     String        The value/contents
+   * @setter    label     String        The label text
+   * @property  disabled  boolean       Disabled state
    *
    * @api OSjs.GUI.Elements.gui-label
    * @class
@@ -299,17 +300,14 @@
    *
    * Text area input (multi-line)
    *
-   * Events:
-   *  change        When input has changed => fn(ev)
+   * See `ev.detail` for more information on events.
    *
-   * Parameters:
-   *  disabled  boolean     Disabled state
-   *
-   * Getters:
-   *  value         Gets the input value
-   *
-   * Setters:
-   *  value         Sets the input value
+   * @getter    value     String        The value/contents
+   * @setter    value     String        The value/contents
+   * @setter    label     String        The label text
+   * @setter    disabled  boolean       Set disabled state
+   * @property  disabled  boolean       Disabled state
+   * @event     change                  When input has changed => fn(ev)
    *
    * @api OSjs.GUI.Elements.gui-textarea
    * @class
@@ -326,18 +324,14 @@
    *
    * Text input.
    *
-   * Events:
-   *  change        When input has changed => fn(ev)
-   *  enter         On enter press => fn(ev)
+   * See `ev.detail` for more information on events.
    *
-   * Parameters:
-   *  disabled  boolean     Disabled state
-   *
-   * Getters:
-   *  value         Gets the input value
-   *
-   * Setters:
-   *  value         Sets the input value
+   * @getter    value     String        The value/contents
+   * @setter    value     String        The value/contents
+   * @setter    disabled  boolean       Set disabled state
+   * @property  disabled  boolean       Disabled state
+   * @event     change                  When input has changed => fn(ev)
+   * @event     enter                   When enter key was pressed => fn(ev)
    *
    * @api OSjs.GUI.Elements.gui-text
    * @class
@@ -354,18 +348,14 @@
    *
    * Password input.
    *
-   * Events:
-   *  change        When input has changed => fn(ev)
-   *  enter         On enter press => fn(ev)
+   * See `ev.detail` for more information on events.
    *
-   * Parameters:
-   *  disabled  boolean     Disabled state
-   *
-   * Getters:
-   *  value         Gets the input value
-   *
-   * Setters:
-   *  value         Sets the input value
+   * @getter    value     String        The value/contents
+   * @setter    value     String        The value/contents
+   * @setter    disabled  boolean       Set disabled state
+   * @property  disabled  boolean       Disabled state
+   * @event     change                  When input has changed => fn(ev)
+   * @event     enter                   When enter key was pressed => fn(ev)
    *
    * @api OSjs.GUI.Elements.gui-password
    * @class
@@ -382,14 +372,13 @@
    *
    * File upload selector.
    *
-   * Events:
-   *  change        When input has changed => fn(ev)
+   * See `ev.detail` for more information on events.
    *
-   * Getters:
-   *  value         Gets the input value
-   *
-   * Setters:
-   *  value         Sets the input value
+   * @getter    value     String        The value/contents
+   * @setter    value     String        The value/contents
+   * @setter    disabled  boolean       Set disabled state
+   * @property  disabled  boolean       Disabled state
+   * @event     change                  When input has changed => fn(ev)
    *
    * @api OSjs.GUI.Elements.gui-file-upload
    * @class
@@ -412,17 +401,13 @@
    *
    * Radio selection input.
    *
-   * Events:
-   *  change        When input has changed => fn(ev)
+   * See `ev.detail` for more information on events.
    *
-   * Parameters:
-   *  disabled  boolean     Disabled state
-   *
-   * Getters:
-   *  value         Gets the input value
-   *
-   * Setters:
-   *  value         Sets the input value
+   * @getter    value     String        The value/checked state
+   * @setter    value     String        The value/checked state
+   * @setter    disabled  boolean       Set disabled state
+   * @property  disabled  boolean       Disabled state
+   * @event     change                  When input has changed => fn(ev)
    *
    * @api OSjs.GUI.Elements.gui-radio
    * @class
@@ -439,17 +424,13 @@
    *
    * Checkbox selection input.
    *
-   * Events:
-   *  change        When input has changed => fn(ev)
+   * See `ev.detail` for more information on events.
    *
-   * Parameters:
-   *  disabled  boolean     Disabled state
-   *
-   * Getters:
-   *  value         Gets the input value
-   *
-   * Setters:
-   *  value         Sets the input value
+   * @getter    value     String        The value/checked state
+   * @setter    value     String        The value/checked state
+   * @setter    disabled  boolean       Set disabled state
+   * @property  disabled  boolean       Disabled state
+   * @event     change                  When input has changed => fn(ev)
    *
    * @api OSjs.GUI.Elements.gui-checbox
    * @class
@@ -466,17 +447,13 @@
    *
    * A switch (on/off) input.
    *
-   * Events:
-   *  change        When input has changed => fn(ev)
+   * See `ev.detail` for more information on events.
    *
-   * Parameters:
-   *  disabled  boolean     Disabled state
-   *
-   * Getters:
-   *  value         Gets the input value
-   *
-   * Setters:
-   *  value         Sets the input value
+   * @getter    value     String        The value/enabled state
+   * @setter    value     String        The value/enabled state
+   * @setter    disabled  boolean       Set disabled state
+   * @property  disabled  boolean       Disabled state
+   * @event     change                  When input has changed => fn(ev)
    *
    * @api OSjs.GUI.Elements.gui-switch
    * @class
@@ -534,13 +511,12 @@
    *
    * A normal button
    *
-   * Events:
-   *  click         When button was clicked => fn(ev)
-   *
-   * Parameters:
-   *  disabled    boolean     Disabled state
-   *  label       String      The label
-   *  icon        String      The icon (optional)
+   * @getter    value     String        The value/enabled state
+   * @setter    value     String        The value/enabled state
+   * @setter    icon      String        Icon
+   * @setter    disabled  boolean       Set disabled state
+   * @property  disabled  boolean       Disabled state
+   * @event     click                   When input was clicked => fn(ev)
    *
    * @api OSjs.GUI.Elements.gui-button
    * @class
@@ -653,22 +629,24 @@
    *
    * A selection dropdown.
    *
-   * Events:
-   *  change        When input has changed => fn(ev)
+   * Format for add():
+   * ```
+   * {
+   *  label: "Label",
+   *  value: "Value"
+   * }
+   * ```
    *
-   * Parameters:
-   *  disabled  boolean     Disabled state
+   * See `ev.detail` for more information on events.
    *
-   * Actions:
-   *  add(arg)      Adds en entry (or from array)
-   *  remove(arg)   Removes an entry
-   *  clear()
-   *
-   * Getters:
-   *  value         Gets the input value
-   *
-   * Setters:
-   *  value         Sets the input value
+   * @getter    value     String        The value/enabled state
+   * @setter    value     String        The value/enabled state
+   * @setter    disabled  boolean       Set disabled state
+   * @property  disabled  boolean       Disabled state
+   * @event     change                  When input has changed => fn(ev)
+   * @action    add                     Add elements(s) => fn(entries)
+   * @action    clear                   Clear elements => fn()
+   * @action    remove                  Removes element => fn(arg)
    *
    * @api OSjs.GUI.Elements.gui-select
    * @class
@@ -680,22 +658,24 @@
    *
    * A selection list (same as dropdown except multiple)
    *
-   * Events:
-   *  change        When input has changed => fn(ev)
+   * Format for add():
+   * ```
+   * {
+   *  label: "Label",
+   *  value: "Value"
+   * }
+   * ```
    *
-   * Parameters:
-   *  disabled  boolean     Disabled state
+   * See `ev.detail` for more information on events.
    *
-   * Actions:
-   *  add(arg)      Adds en entry (or from array)
-   *  remove(arg)   Removes an entry
-   *  clear()
-   *
-   * Getters:
-   *  value         Gets the input value
-   *
-   * Setters:
-   *  value         Sets the input value
+   * @getter    value     String        The value/enabled state
+   * @setter    value     String        The value/enabled state
+   * @setter    disabled  boolean       Set disabled state
+   * @property  disabled  boolean       Disabled state
+   * @event     change                  When input has changed => fn(ev)
+   * @action    add                     Add elements(s) => fn(entries)
+   * @action    clear                   Clear elements => fn()
+   * @action    remove                  Removes element => fn(arg)
    *
    * @api OSjs.GUI.Elements.gui-select-list
    * @class
@@ -707,19 +687,15 @@
    *
    * A slider input.
    *
-   * Events:
-   *  change        When input has changed => fn(ev)
+   * See `ev.detail` for more information on events.
    *
-   * Parameters:
-   *  min       int         Minimum value
-   *  max       int         Maximum value
-   *  disabled  boolean     Disabled state
-   *
-   * Getters:
-   *  value         Gets the input value
-   *
-   * Setters:
-   *  value         Sets the input value
+   * @getter    value     String        The value/enabled state
+   * @setter    value     String        The value/enabled state
+   * @setter    disabled  boolean       Set disabled state
+   * @property  min       integer       The minimum value
+   * @property  max       integer       The maxmimum value
+   * @property  disabled  boolean       Disabled state
+   * @event     change                  When input has changed => fn(ev)
    *
    * @api OSjs.GUI.Elements.gui-slider
    * @class
@@ -743,14 +719,9 @@
    *
    * A text area displaying current value with a button to open a modal/dialog etc.
    *
-   * Events:
-   *  open          When the open button was pressed => fn(ev)
-   *
-   * Getters:
-   *  value         Gets the input value
-   *
-   * Setters:
-   *  value         Sets the input value
+   * @getter    value     String        The value/enabled state
+   * @setter    value     String        The value/enabled state
+   * @event     open                    When button was pressed => fn(ev)
    *
    * @api OSjs.GUI.Elements.gui-input-modal
    * @class

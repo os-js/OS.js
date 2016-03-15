@@ -345,18 +345,14 @@
    *
    * Abstraction layer for displaying files within Icon-, Tree- or List Views
    *
-   * Events:
-   *  select        When an entry was selected (click) => fn(ev)
-   *  activate      When an entry was activated (doubleclick) => fn(ev)
+   * For more properties and events etc, see 'dataview'
    *
-   * Parameters:
-   *  type          String      Child type
-   *  filter        Array       MIME Filters
-   *  dotfiles      boolean     Show dotfiles (default=true)
-   *  extensions    boolean     Show file extensions (default=true)
-   *
-   * Actions:
-   *  chdir(args)   Change directory (args = {path: '', done: function() })
+   * @property  multiple    boolean       If multiple elements are selectable
+   * @property  type        String        Child type
+   * @property  filter      Array         MIME Filters
+   * @property  dotfiles    boolean       Show dotfiles (default=true)
+   * @property  extensions  boolean       Show file extensions (default=true)
+   * @action    chdir                     Change directory => fn(args)  (args = {path: '', done: function() })
    *
    * @api OSjs.GUI.Elements.gui-file-view
    * @see OSjs.GUI.Elements.gui-list-view

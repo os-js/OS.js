@@ -43,11 +43,8 @@
    *
    * A box that displays a color.
    *
-   * Getters:
-   *  value         Gets the input value
-   *
-   * Setters:
-   *  value         Sets the input value
+   * @getter    value   String        The value (color)
+   * @setter    value   String        The value (color)
    *
    * @api OSjs.GUI.Elements.gui-color-box
    * @class
@@ -75,8 +72,11 @@
    *
    * A box for selecting color(s) in the rainbow.
    *
-   * Events:
-   *  change        When input has changed => fn(ev)
+   * See `ev.detail` for more information on events.
+   *
+   * @getter    value   String        The value (color)
+   * @setter    value   String        The value (color)
+   * @event     change                When input has changed => fn(ev)
    *
    * @api OSjs.GUI.Elements.gui-color-swatch
    * @class
@@ -151,8 +151,7 @@
    *
    * IFrame container.
    *
-   * Parameters:
-   *  src       String        The URL/location
+   * @property  src     String        The source (src)
    *
    * @api OSjs.GUI.Elements.gui-iframe
    * @class
@@ -172,11 +171,8 @@
    *
    * Progress bar element.
    *
-   * Parameters:
-   *  progress  int           Progress
-   *
-   * Setters:
-   *  progress                Progress
+   * @setter    progress    integer     Progress value (percentage)
+   * @property  progress    integer     Progress value (percentage)
    *
    * @api OSjs.GUI.Elements.gui-progress-bar
    * @class
@@ -225,9 +221,8 @@
    *
    * Status bar element.
    *
-   * Setters:
-   *  value                   Sets the text value
-   *  label                   Alias for 'value'
+   * @setter    value       String      Content to set
+   * @setter    label       String      Alias of 'value'
    *
    * @api OSjs.GUI.Elements.gui-statusbar
    * @class

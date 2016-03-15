@@ -109,6 +109,12 @@
     }
   };
 
+  /**
+   * Element: 'gui-paned-view-container'
+   *
+   * @api OSjs.GUI.Elements.gui-paned-view-container
+   * @class
+   */
   GUI.Elements['gui-paned-view-container'] = {
     build: function(el) {
       GUI.Helpers.setFlexbox(el);
@@ -159,6 +165,28 @@
   };
 
   /**
+   * Element: 'gui-grid-row'
+   *
+   * @api OSjs.GUI.Elements.gui-grid-row
+   * @class
+   */
+  GUI.Elements['gui-grid-row'] = {
+    build: function(el) {
+    }
+  };
+
+  /**
+   * Element: 'gui-grid-entry'
+   *
+   * @api OSjs.GUI.Elements.gui-grid-entry
+   * @class
+   */
+  GUI.Elements['gui-grid-entry'] = {
+    build: function(el) {
+    }
+  };
+
+  /**
    * Element: 'gui-vbox'
    *
    * Vertical boxed layout
@@ -171,6 +199,20 @@
     }
   };
 
+  /**
+   * Element: 'gui-vbox-container'
+   *
+   * Vertical boxed layout container
+   *
+   * @property  base      String        CSS base flexbox property
+   * @property  grow      integer       CSS grow flexbox property
+   * @property  shrink    integer       CSS shrink flexbox property
+   * @property  expand    boolean       Make content expand to full width
+   * @property  fill      boolean       Make content fill up entire space
+   *
+   * @api OSjs.GUI.Elements.gui-vbox-container
+   * @class
+   */
   GUI.Elements['gui-vbox-container'] = {
     build: function(el) {
       GUI.Helpers.setFlexbox(el);
@@ -190,6 +232,20 @@
     }
   };
 
+  /**
+   * Element: 'gui-hbox-container'
+   *
+   * Horizontal boxed layout container
+   *
+   * @property  base      String        CSS base flexbox property
+   * @property  grow      integer       CSS grow flexbox property
+   * @property  shrink    integer       CSS shrink flexbox property
+   * @property  expand    boolean       Make content expand to full width
+   * @property  fill      boolean       Make content fill up entire space
+   *
+   * @api OSjs.GUI.Elements.gui-hbox-container
+   * @class
+   */
   GUI.Elements['gui-hbox-container'] = {
     build: function(el) {
       GUI.Helpers.setFlexbox(el);
@@ -201,9 +257,8 @@
    *
    * A expandable/collapsable container with label and indicator
    *
-   * Parameters:
-   *  String      label     The label
-   *  boolean     expanded  Expanded state (default=true)
+   * @property  label     String        The label
+   * @property  expanded  boolean       Expanded state (default=true)
    *
    * @api OSjs.GUI.Elements.gui-expander
    * @class
