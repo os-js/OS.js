@@ -321,7 +321,7 @@
         return false;
       } else if ( value === 'null' ) {
         return null;
-      } else if ( value.match(/^\d+$/) ) {
+      } else if ( value.match(/^\d+$/) && !String(value).match(/^0/) ) {
         return parseInt(value, 10);
       } else if ( value.match(/^\d{0,2}(\.\d{0,2}){0,1}$/) ) {
         return parseFloat(value);
