@@ -33,7 +33,7 @@ Create a database and user in your mysql server with the information you entered
 $ mysql -u root -p
 
 # Create the new database
-mysql> CREATE DATABASE 'osjs';
+mysql> CREATE DATABASE osjs;
 
 # Create the new user
 mysql> GRANT USAGE ON *.* TO osjsuser@localhost IDENTIFIED BY 'osjspassword';
