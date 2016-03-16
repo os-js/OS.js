@@ -221,7 +221,7 @@
         var newpreloads = [];
 
         preloads.forEach(function(p) {
-          var src = path.replace(/package\.json$/, p.src);
+          var src = path.replace(/metadata\.json$/, p.src);
           var file = new OSjs.VFS.File(src);
 
           OSjs.VFS.url(file, function(err, resp) {
