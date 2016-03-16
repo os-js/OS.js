@@ -303,7 +303,9 @@
       var node = content.cloneNode(true);
 
       // Resolve fragment includes before dynamic rendering
-      resolveFragments(this, node);
+      if ( args.resolve !== false ) {
+        resolveFragments(this, node);
+      }
 
       // Apply a default className to non-containers
       node.querySelectorAll('*').forEach(function(el) {
