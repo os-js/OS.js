@@ -354,6 +354,10 @@
           }
 
           var src = item.src;
+          if ( src.substr(0, 1) !== '/' && !src.match(/^(https?|ftp)/) ) {
+            src = window.location.href + src;
+          }
+
           if ( item.type.match(/^style/) ) {
             createStyle(src, _loaded);
           } else if ( item.type.match(/script$/) ) {

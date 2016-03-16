@@ -235,7 +235,7 @@
 
         });
 
-        meta.path    = OSjs.Utils.filename(path.replace(/\/package\.json$/, ''));
+        meta.path    = OSjs.Utils.filename(path.replace(/\/metadata\.json$/, ''));
         meta.preload = newpreloads;
 
         cbf(meta);

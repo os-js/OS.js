@@ -238,8 +238,13 @@
       return;
     }
 
+    var src = this.url;
+    if ( src.substr(0, 1) !== '/' && !src.match(/^(https?|ftp)/) ) {
+      src = window.location.href + src;
+    }
+
     Utils.ajax({
-      url: this.url,
+      url: src,
       onsuccess: function(html) {
         self._load(html);
         cb(false, self.scheme);
