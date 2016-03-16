@@ -611,6 +611,11 @@
    * @param   Function        callback  Callback function => fn(error, result)
    * @param   Object          options   Optional set of options
    *
+   * @option  options     String      typeFilter      (Optional) Filter by 'file' or 'dir'
+   * @option  options     Array       mimeFilter      (Optional) Array of mime regex matchers
+   * @option  options     boolean     showHiddenFiles (Optional) Show hidden files (default=true)
+   * @option  options     boolean     backlink        (Optional) Return '..' when applicable (default=true)
+   *
    * @return  void
    * @api     OSjs.VFS.scandir()
    */
