@@ -509,8 +509,6 @@
 
     if ( !n ) { throw new Error('Cannot doLaunchProcess() witout a application name'); }
 
-    console.group('doLaunchProcess()', n, arg);
-
     var splash = null;
     var pargs = {};
     var handler = OSjs.Core.getHandler();
@@ -658,8 +656,11 @@
         }
       }
 
+      console.info('Manifest', data);
+
       // Preload
       createLoading(n, {className: 'StartupNotification', tooltip: 'Starting ' + n});
+
       var preload = Array.prototype.slice.call(data.preload);
       if ( data.scope === 'user' ) {
         preload = preload.map(function(p) {
@@ -670,6 +671,20 @@
           }
 
           return p;
+        });
+      }
+
+      if ( data.depends && data.depends instanceof Array ) {
+        data.depends.forEach(function(k) {
+          if ( !OSjs.Applications[k] ) {
+            var chk = packman.getPackage(k);
+            if ( chk && chk.preload ) {
+              console.info('Using dependency', k);
+              chk.preload.forEach(function(p) {
+                preload.unshift(p);
+              });
+            }
+          }
         });
       }
 
@@ -692,6 +707,9 @@
 
       return true;
     }
+
+    console.group('doLaunchProcess()', n);
+    console.info('Arguments', arg);
 
     return launch();
   }
