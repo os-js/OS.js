@@ -38,9 +38,9 @@
         Window.apply(this, ['ApplicationArduinoWizardSettingsWindow', {
             icon: metadata.icon,
             title: metadata.name,
-            width: 600,
-            height: 400,
-            maximized: true
+            width: 800,
+            height: 600,
+            gravity: "center"
         }, app, scheme]);
 
         this.currentSettings = {
@@ -105,8 +105,8 @@
         btnNext.set("value", OSjs.Applications.ApplicationArduinoWizardSettings._('LBL_NEXT'));
 
         /* Step 1 - Welcome */
-        scheme.find(this, "ID_LBL_WS1_LN1").set("value", OSjs.Applications.ApplicationArduinoWizardSettings._('LBL_WELCOME_1LN'));
-        scheme.find(this, "ID_LBL_WS1_LN2").set("value", OSjs.Applications.ApplicationArduinoWizardSettings._('LBL_WELCOME_2LN'));
+        //scheme.find(this, "ID_LBL_WS1_LN1").set("value", OSjs.Applications.ApplicationArduinoWizardSettings._('LBL_WELCOME_1LN'));
+        //scheme.find(this, "ID_LBL_WS1_LN2").set("value", OSjs.Applications.ApplicationArduinoWizardSettings._('LBL_WELCOME_2LN'));
 
         /* Step 2 - Board Setting */
         scheme.find(this, "ID_LBL_WS2_LN1").set("value", OSjs.Applications.ApplicationArduinoWizardSettings._('LBL_BOARD_1LN'));
