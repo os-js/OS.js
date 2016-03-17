@@ -207,67 +207,45 @@
 
     console.debug('PackageManager::generateUserMetadata()');
 
-    function _checkDirectory(cb) {
-      OSjs.VFS.mkdir(dir, function() {
-        cb();
-      });
-    }
+    function _enumPackages(cb) {
 
-    function _runQueue(cb) {
-      console.debug('PackageManager::generateUserMetadata()', '_runQueue()');
+      function __runQueue(done) {
+        console.debug('PackageManager::generateUserMetadata()', '__runQueue()');
 
-      function __handleMetadata(path, meta, cbf) {
-        var preloads = meta.preload || [];
-        var newpreloads = [];
-
-        preloads.forEach(function(p) {
-          var src = path.replace(/metadata\.json$/, p.src);
-          var file = new OSjs.VFS.File(src);
-
-          OSjs.VFS.url(file, function(err, resp) {
-            if ( err || !resp ) { return; }
-
-            newpreloads.push({
-              type: p.type,
-              src: resp
-            });
-          });
-
-        });
-
-        meta.path    = OSjs.Utils.filename(path.replace(/\/metadata\.json$/, ''));
-        meta.preload = newpreloads;
-
-        cbf(meta);
-      }
-
-      function __next() {
-        if ( !queue.length ) {
-          cb();
-          return;
-        }
-
-        var iter = queue.pop();
-        var file = new OSjs.VFS.File(iter, 'application/json');
-        console.debug('PackageManager::generateUserMetadata()', '_runQueue()', '__next()', queue.length, iter);
-        OSjs.VFS.read(file, function(err, resp) {
-          resp = OSjs.Utils.fixJSON(resp);
-          if ( !err && resp ) {
-            __handleMetadata(iter, resp, function(data) {
-              console.debug('PackageManager::generateUserMetadata()', 'ADDING PACKAGE', resp);
-              found[resp.className] = data;
-              __next();
-            });
+        function __next(i) {
+          if ( i >= queue.length ) {
+            done();
             return;
           }
-          __next();
-        }, {type: 'text'});
+
+          var iter = queue[i];
+          var file = new OSjs.VFS.File(iter, 'application/json');
+          var rpath = iter.replace(/\/metadata\.json$/, '');
+          console.debug('PackageManager::generateUserMetadata()', '__runQueue()', '__next()', queue.length, iter);
+
+          OSjs.VFS.read(file, function(err, resp) {
+            var meta = OSjs.Utils.fixJSON(resp);
+            if ( !err && meta ) {
+              console.debug('PackageManager::generateUserMetadata()', 'ADDING PACKAGE', meta);
+              meta.path = OSjs.Utils.filename(rpath);
+              meta.scope = 'user';
+              meta.preload = meta.preload.map(function(p) {
+                if ( p.src.substr(0, 1) !== '/' && !p.src.match(/^(https?|ftp)/) ) {
+                  p.src = rpath + '/' + p.src.replace(/^(\.\/)?/, '');
+                }
+                return p;
+              });
+
+              found[meta.className] = meta;
+            }
+
+            __next(i + 1);
+          }, {type: 'text'});
+        }
+
+        __next(0);
       }
 
-      __next();
-    }
-
-    function _enumPackages(cb) {
       console.debug('PackageManager::generateUserMetadata()', '_enumPackages()');
 
       OSjs.VFS.scandir(dir, function(err, resp) {
@@ -282,7 +260,7 @@
             }
           });
         }
-        _runQueue(cb);
+        __runQueue(cb);
       });
     }
 
@@ -297,7 +275,7 @@
       });
     }
 
-    _checkDirectory(function() {
+    OSjs.VFS.mkdir(dir, function() {
       _enumPackages(function() {
         _writeMetadata(function() {
           self._loadMetadata(function() {

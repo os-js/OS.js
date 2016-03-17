@@ -652,16 +652,28 @@
         delete arg.__preload__;
       }
 
-      // Preload
       if ( !OSjs.Applications[n] ) {
         if ( data.splash !== false ) {
           splash = OSjs.API.createSplash(data.name, data.icon);
         }
       }
 
+      // Preload
       createLoading(n, {className: 'StartupNotification', tooltip: 'Starting ' + n});
+      var preload = Array.prototype.slice.call(data.preload);
+      if ( data.scope === 'user' ) {
+        preload = preload.map(function(p) {
+          if ( p.src.substr(0, 1) !== '/' && !p.src.match(/^(https?|ftp)/) ) {
+            OSjs.VFS.url(p.src, function(error, url) {
+              p.src = url;
+            });
+          }
 
-      OSjs.Utils.preload(data.preload, function(total, failed) {
+          return p;
+        });
+      }
+
+      OSjs.Utils.preload(preload, function(total, failed) {
         destroyLoading(n);
 
         if ( failed.length ) {
