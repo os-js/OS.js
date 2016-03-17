@@ -15,7 +15,7 @@
   },
 
   "client" : {
-    "Version" : "2.0.0-arduino-os",
+    "Version" : "2.0.1-arduino-os",
 
     "SettingsManager": {
       "Wizard": {
