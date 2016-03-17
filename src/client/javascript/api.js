@@ -529,6 +529,50 @@
       return result;
     }
 
+    function getPreloads(data) {
+      var preload = Array.prototype.slice.call(data.preload);
+
+      function _add(chk) {
+        if ( chk && chk.preload ) {
+          chk.preload.forEach(function(p) {
+            preload.unshift(p);
+          });
+        }
+      }
+
+      if ( data.scope === 'user' ) {
+        preload = preload.map(function(p) {
+          if ( p.src.substr(0, 1) !== '/' && !p.src.match(/^(https?|ftp)/) ) {
+            OSjs.VFS.url(p.src, function(error, url) {
+              p.src = url;
+            });
+          }
+
+          return p;
+        });
+      }
+
+      if ( data.depends && data.depends instanceof Array ) {
+        data.depends.forEach(function(k) {
+          if ( !OSjs.Applications[k] ) {
+            console.info('Using dependency', k);
+            _add(packman.getPackage(k));
+          }
+        });
+      }
+
+      var pkgs = packman.getPackages(false);
+      Object.keys(pkgs).forEach(function(pn) {
+        var p = pkgs[pn];
+        if ( p.type === 'extension' && p.uses === n ) {
+          console.info('Using extension', pn);
+          _add(p);
+        }
+      });
+
+      return preload;
+    }
+
     function _done() {
       if ( splash ) {
         splash.destroy();
@@ -661,33 +705,7 @@
       // Preload
       createLoading(n, {className: 'StartupNotification', tooltip: 'Starting ' + n});
 
-      var preload = Array.prototype.slice.call(data.preload);
-      if ( data.scope === 'user' ) {
-        preload = preload.map(function(p) {
-          if ( p.src.substr(0, 1) !== '/' && !p.src.match(/^(https?|ftp)/) ) {
-            OSjs.VFS.url(p.src, function(error, url) {
-              p.src = url;
-            });
-          }
-
-          return p;
-        });
-      }
-
-      if ( data.depends && data.depends instanceof Array ) {
-        data.depends.forEach(function(k) {
-          if ( !OSjs.Applications[k] ) {
-            var chk = packman.getPackage(k);
-            if ( chk && chk.preload ) {
-              console.info('Using dependency', k);
-              chk.preload.forEach(function(p) {
-                preload.unshift(p);
-              });
-            }
-          }
-        });
-      }
-
+      var preload = getPreloads(data);
       OSjs.Utils.preload(preload, function(total, failed) {
         destroyLoading(n);
 
