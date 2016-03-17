@@ -22,17 +22,17 @@
 <!--STEP #1 - WELCOME-->
 <application-fragment data-id="WizardStep1Welcome">
     <gui-vbox data-id="WizardStep1Container">
-        <gui-vbox-container data-grow="1" data-fill="true">
+        <!--gui-vbox-container data-grow="1" data-fill="true">
             <gui-label data-align="top" data-id="ID_LBL_WS1_LN1"/>
-        </gui-vbox-container>
+        </gui-vbox-container-->
 
         <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
-            <gui-label>&nbsp;</gui-label>
+            <img src="/packages/target/ArduinoWizardSettings/welcome.gif" width="100%" height="100%">
         </gui-vbox-container>
 
-        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+        <!--gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
             <gui-label data-align="top" data-id="ID_LBL_WS1_LN2"/>
-        </gui-vbox-container>
+        </gui-vbox-container-->
 
     </gui-vbox>
 </application-fragment>
@@ -41,9 +41,9 @@
 <application-fragment data-id="WizardStep2BoardSettings">
     <gui-hbox  data-id="WizardStep2Container" >
         <gui-hbox-container data-shrink="1" data-fill="true" data-basis="400px">
-
+            <img src="/packages/target/ArduinoWizardSettings/pattern.gif">
         </gui-hbox-container>
-        <gui-hbox-container data-shrink="1" data-fill="true" data-basis="90%">
+        <gui-hbox-container data-shrink="1" data-fill="true" data-basis="90%" style="margin: 10%">
             <gui-vbox class="block-label">
 
                 <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
@@ -506,9 +506,9 @@
 <application-fragment data-id="WizardStep3WifiSettings">
     <gui-hbox data-id="WizardStep3Container">
         <gui-hbox-container data-shrink="1" data-fill="true" data-basis="400px">
-
+            <img src="/packages/target/ArduinoWizardSettings/pattern.gif">
         </gui-hbox-container>
-        <gui-hbox-container data-shrink="1" data-fill="true" data-basis="90%">
+        <gui-hbox-container data-shrink="1" data-fill="true" data-basis="90%" style="margin: 10%">
             <gui-vbox>
                 <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
                     <gui-label data-id="ID_LBL_WS3_LN1"/>
@@ -577,9 +577,9 @@
 <application-fragment data-id="WizardStep4RestApiSettings">
     <gui-hbox data-id="WizardStep4Container">
         <gui-hbox-container data-shrink="1" data-fill="true" data-basis="400px">
-
+            <img src="/packages/target/ArduinoWizardSettings/pattern.gif">
         </gui-hbox-container>
-        <gui-hbox-container data-shrink="1" data-fill="true" data-basis="90%">
+        <gui-hbox-container data-shrink="1" data-fill="true" data-basis="90%" style="margin: 10%">
             <gui-vbox>
 
                 <gui-vbox-container data-shrink="1" data-grow="0" data-expand="false">
@@ -590,8 +590,12 @@
                     <gui-label>&nbsp;</gui-label>
                 </gui-vbox-container>
 
-                <gui-vbox-container data-grow="1" data-shrink="1" data-basis="auto">
+                <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
                     <gui-label data-id="ID_LBL_WS4_LN2"/>
+                </gui-vbox-container>
+
+                <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+                    <gui-label>&nbsp;</gui-label>
                 </gui-vbox-container>
 
                 <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
@@ -605,21 +609,9 @@
 
 <!--STEP #5 - BOARD SETTINGS-->
 <application-fragment data-id="WizardStep5SaveRestart">
-    <gui-hbox data-id="WizardStep5Container">
-        <gui-hbox-container data-shrink="1" data-fill="true" data-basis="400px">
-
-        </gui-hbox-container>
-        <gui-hbox-container data-shrink="1" data-fill="true" data-basis="90%">
-            <gui-vbox>
-                <gui-vbox-container data-grow="1" data-fill="true">
-
-                    <gui-label data-align="center">
-                        Save and Restart
-                    </gui-label>
-
-                </gui-vbox-container>
-
-            </gui-vbox>
-        </gui-hbox-container>
-    </gui-hbox>
+    <gui-vbox data-id="WizardStep5Container">
+        <gui-vbox-container data-shrink="1" data-grow="0" data-expand="true">
+            <img src="/packages/target/ArduinoWizardSettings/bye.gif" width="100%" height="100%">
+        </gui-vbox-container>
+    </gui-vbox>
 </application-fragment>
