@@ -484,6 +484,8 @@ gui-paned-view[data-orientation='vertical'] {
 gui-iframe {
   display : inline-block;
   position : relative;
+  min-width : 16px;
+  min-height : 16px;
 }
   gui-iframe > iframe {
     display : block;
@@ -564,10 +566,16 @@ gui-tabs {
   gui-tabs > gui-tab-container {
     overflow : hidden;
     display : none;
+    position : relative;
   }
     gui-tab-container.gui-active {
       display : block;
     }
+
+application-window-content > gui-tabs {
+  width : 100%;
+  height : 100%;
+}
 
 /* Grid */
 gui-grid {
@@ -1118,6 +1126,8 @@ gui-audio {
 gui-video {
   display : inline-block;
   position : relative;
+  min-width : 16px;
+  min-height : 16px;
 }
   /*gui-video > video {
   }*/
@@ -1137,6 +1147,8 @@ gui-image {
 gui-canvas {
   display : inline-block;
   position : relative;
+  min-width : 16px;
+  min-height : 16px;
 }
 
 /* Color Swatch */
@@ -1336,6 +1348,8 @@ gui-icon-view {
   position : relative;
   display : inline-block;
   overflow : auto;
+  min-width : 16px;
+  min-height : 16px;
 }
   gui-icon-view-body {
     position : absolute;
@@ -1394,6 +1408,8 @@ gui-list-view {
   position : relative;
   display : inline-block;
   overflow : auto;
+  min-width : 16px;
+  min-height : 16px;
 }
   gui-list-view-body {
     display : block;
@@ -1535,6 +1551,8 @@ gui-tree-view {
   position : relative;
   display : inline-block;
   overflow : auto;
+  min-width : 16px;
+  min-height : 16px;
 }
   gui-tree-view-body {
     position : absolute;
