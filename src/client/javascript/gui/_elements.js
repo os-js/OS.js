@@ -110,7 +110,7 @@
    * @return Element this
    */
   UIElement.prototype.show = function() {
-    if ( this.$element && this.$element.style.display === 'none' ) {
+    if ( this.$element && !this.$element.offsetParent ) {
       if ( OSjs.GUI.Elements[this.tagName] && OSjs.GUI.Elements[this.tagName].show ) {
         OSjs.GUI.Elements[this.tagName].show.apply(this, arguments);
       } else {
@@ -129,7 +129,7 @@
    * @return Element this
    */
   UIElement.prototype.hide = function() {
-    if ( this.$element && this.$element.style.display !== 'none' ) {
+    if ( this.$element && this.$element.offsetParent ) {
       if ( !this.oldDisplay ) {
         this.oldDisplay = this.$element.style.display;
       }
