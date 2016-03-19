@@ -154,35 +154,31 @@
       }
 
       function runChildren(pel, level) {
-        var children = pel.children;
-        var child, span, label, expand, icon;
 
-        for ( var i = 0; i < children.length; i++ ) {
-          child = children[i];
-          expand = false;
+        function _checkExpand(child) {
+          if ( child.children && child.children.length ) {
+            Utils.$addClass(child, 'gui-menu-expand');
+            child.setAttribute('aria-haspopup', 'true');
+            return true;
+          } else {
+            child.setAttribute('aria-haspopup', 'false');
+          }
+
+          return false;
+        }
+
+        function createChild(child, i) {
 
           if ( child && child.tagName.toLowerCase() === 'gui-menu-entry') {
-            if ( child.children && child.children.length ) {
-              Utils.$addClass(child, 'gui-menu-expand');
-              expand = true;
-
-              child.setAttribute('aria-haspopup', 'true');
-            } else {
-              child.setAttribute('aria-haspopup', 'false');
-            }
-
-            var vlevel = level + 1;
-            if ( isMenuBarChild ) {
-              vlevel++;
-            }
+            var expand = _checkExpand(child);
 
             child.setAttribute('role', 'menuitem' + (child.getAttribute('data-type') || ''));
 
-            label = GUI.Helpers.getLabel(child);
-            icon = GUI.Helpers.getIcon(child, winRef);
+            var label = GUI.Helpers.getLabel(child);
+            var icon = GUI.Helpers.getIcon(child, winRef);
             child.setAttribute('aria-label', label);
 
-            span = document.createElement('label');
+            var span = document.createElement('label');
             if ( icon ) {
               child.style.backgroundImage = 'url(' + icon + ')';
               Utils.$addClass(span, 'gui-has-image');
@@ -207,6 +203,8 @@
             }
           }
         }
+
+        (pel.children || []).forEach(createChild);
       }
 
       el.setAttribute('role', 'menu');
