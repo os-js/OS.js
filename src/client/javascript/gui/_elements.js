@@ -110,11 +110,13 @@
    * @return Element this
    */
   UIElement.prototype.show = function() {
-    if ( OSjs.GUI.Elements[this.tagName] && OSjs.GUI.Elements[this.tagName].show ) {
-      OSjs.GUI.Elements[this.tagName].show.apply(this, arguments);
-    } else {
-      if ( this.$element ) {
-        this.$element.style.display = this.oldDisplay || '';
+    if ( this.$element && this.$element.style.display === 'none' ) {
+      if ( OSjs.GUI.Elements[this.tagName] && OSjs.GUI.Elements[this.tagName].show ) {
+        OSjs.GUI.Elements[this.tagName].show.apply(this, arguments);
+      } else {
+        if ( this.$element ) {
+          this.$element.style.display = this.oldDisplay || '';
+        }
       }
     }
     return this;
@@ -127,7 +129,7 @@
    * @return Element this
    */
   UIElement.prototype.hide = function() {
-    if ( this.$element ) {
+    if ( this.$element && this.$element.style.display !== 'none' ) {
       if ( !this.oldDisplay ) {
         this.oldDisplay = this.$element.style.display;
       }
