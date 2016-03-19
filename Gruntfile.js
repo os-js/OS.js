@@ -182,8 +182,7 @@
         all: {
           src: [
             'src/client/dialogs.html',
-            'src/packages/default/*/scheme.html',
-            'src/packages/development/*/scheme.html'
+            'src/packages/default/*/scheme.html'
           ]
         }
       },
