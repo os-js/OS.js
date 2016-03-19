@@ -109,21 +109,21 @@
     }
   };
 
-    /**
-     * Element: 'gui-paned-view-container'
-     *
-     * @property  base      String        CSS base flexbox property
-     * @property  grow      integer       CSS grow flexbox property
-     * @property  shrink    integer       CSS shrink flexbox property
-     *
-     * @api OSjs.GUI.Elements.gui-paned-view-container
-     * @class
-     */
-    GUI.Elements['gui-paned-view-container'] = {
-      build: function(el) {
-        GUI.Helpers.setFlexbox(el);
-      }
-    };
+  /**
+   * Element: 'gui-paned-view-container'
+   *
+   * @property  base      String        CSS base flexbox property
+   * @property  grow      integer       CSS grow flexbox property
+   * @property  shrink    integer       CSS shrink flexbox property
+   *
+   * @api OSjs.GUI.Elements.gui-paned-view-container
+   * @class
+   */
+  GUI.Elements['gui-paned-view-container'] = {
+    build: function(el) {
+      GUI.Helpers.setFlexbox(el);
+    }
+  };
 
   /**
    * Element: 'gui-button-bar'
