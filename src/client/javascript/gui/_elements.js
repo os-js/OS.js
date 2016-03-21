@@ -226,13 +226,15 @@
    * @param   Mixed     el        DOMEelement or UIElement
    *
    * @method Element::append()
-   * @return void
+   * @return Element this
    */
   UIElement.prototype.append = function(el) {
     if ( el instanceof UIElement ) {
       el = el.$element;
     }
     this.$element.appendChild(el);
+
+    return this;
   };
 
   /**
@@ -244,7 +246,7 @@
    * @param   Object              args        (Optional) List of arguments to send to the parser
    *
    * @method Element::appendHTML()
-   * @return void
+   * @return Element this
    */
   UIElement.prototype.appendHTML = function(html, scheme, win, args) {
     var el = document.createElement('div');
@@ -258,6 +260,8 @@
     }
 
     el = null;
+
+    return this;
   };
 
   /**
