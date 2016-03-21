@@ -193,14 +193,19 @@
 
       Object.keys(proxies).every(function(k) {
         var test = k;
+        var durl = request.url;
         if ( test.match(/^\(regexp\)\//) ) {
           test = new RegExp(test.replace(/^\(regexp\)\//, '').replace(/\/$/, ''));
+          durl = durl.replace(test, '');
+        } else {
+          durl = durl.substr(k.length);
         }
 
         if ( typeof test === 'string' ? (test === path) : test.test(path) ) {
           var pots = proxies[k];
           if ( typeof pots === 'string' ) {
-            pots = {target: pots, ignorePath: true};
+            request.url = durl;
+            pots = {target: pots};
           }
           stop = true;
 
