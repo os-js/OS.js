@@ -211,7 +211,6 @@
         return !stop;
       });
 
-      console.warn(stop);
       if ( stop ) {
         return;
       }
