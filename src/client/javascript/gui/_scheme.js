@@ -107,9 +107,11 @@
       return false;
     }
 
-    var resolving = true;
-    while ( resolving ) {
-      resolving = _resolve();
+    if ( scheme ) {
+      var resolving = true;
+      while ( resolving ) {
+        resolving = _resolve();
+      }
     }
   }
 
@@ -301,46 +303,11 @@
     }
 
     type = type || content.tagName.toLowerCase();
-    onparse = onparse || function() {};
-    args = args || {};
 
     if ( content ) {
       var node = content.cloneNode(true);
 
-      // Resolve fragment includes before dynamic rendering
-      if ( args.resolve !== false ) {
-        resolveFragments(this, node);
-      }
-
-      // Apply a default className to non-containers
-      node.querySelectorAll('*').forEach(function(el) {
-        var lcase = el.tagName.toLowerCase();
-        if ( lcase.match(/^gui\-/) && !lcase.match(/(\-container|\-(h|v)box|\-columns?|\-rows?|(status|tool)bar|(button|menu)\-bar|bar\-entry)$/) ) {
-          Utils.$addClass(el, 'gui-element');
-        }
-      });
-
-      // Go ahead and parse dynamic elements (like labels)
-      parseDynamic(this, node, win, args);
-
-      // Lastly render elements
-      onparse(node);
-
-      Object.keys(OSjs.GUI.Elements).forEach(function(key) {
-        node.querySelectorAll(key).forEach(function(pel) {
-          if ( pel._wasParsed ) {
-            return;
-          }
-
-          try {
-            OSjs.GUI.Elements[key].build(pel);
-          } catch ( e ) {
-            console.warn('UIScheme::parse()', id, type, win, 'exception');
-            console.warn(e, e.stack);
-          }
-          pel._wasParsed = true;
-        });
-      });
+      UIScheme.parseNode(this, win, node, type, args, onparse, id);
 
       return node;
     }
@@ -504,6 +471,62 @@
    */
   UIScheme.prototype.getHTML = function() {
     return this.scheme.firstChild.innerHTML;
+  };
+
+  /**
+   * Parses the given HTML node and makes OS.js compatible markup
+   *
+   * PLEASE NOTE THAT THIS METHOD IS STATIC!
+   *
+   * @param   OSjs.GUI.Scheme     scheme      Reference to the Scheme
+   * @param   OSjs.Core.Window    win         Reference to the Window
+   * @param   DOMElement          node        The HTML node to parse
+   * @param   Object              args        List of arguments to send to the parser
+   * @param   Function            onparse     Method to signal when parsing has started
+   * @param   Mixed               id          (Optional) The id of the source (for debugging)
+   *
+   * @return  String
+   * @method  Scheme::parseNode()
+   */
+  UIScheme.parseNode = function(scheme, win, node, type, args, onparse, id) {
+    onparse = onparse || function() {};
+    args = args || {};
+    type = type || 'snipplet';
+
+    // Resolve fragment includes before dynamic rendering
+    if ( args.resolve !== false ) {
+      resolveFragments(scheme, node);
+    }
+
+    // Apply a default className to non-containers
+    node.querySelectorAll('*').forEach(function(el) {
+      var lcase = el.tagName.toLowerCase();
+      if ( lcase.match(/^gui\-/) && !lcase.match(/(\-container|\-(h|v)box|\-columns?|\-rows?|(status|tool)bar|(button|menu)\-bar|bar\-entry)$/) ) {
+        Utils.$addClass(el, 'gui-element');
+      }
+    });
+
+    // Go ahead and parse dynamic elements (like labels)
+    parseDynamic(scheme, node, win, args);
+
+    // Lastly render elements
+    onparse(node);
+
+    Object.keys(OSjs.GUI.Elements).forEach(function(key) {
+      node.querySelectorAll(key).forEach(function(pel) {
+        if ( pel._wasParsed ) {
+          return;
+        }
+
+        try {
+          OSjs.GUI.Elements[key].build(pel);
+        } catch ( e ) {
+          console.warn('parseNode()', id, type, win, 'exception');
+          console.warn(e, e.stack);
+        }
+        pel._wasParsed = true;
+      });
+    });
   };
 
   /////////////////////////////////////////////////////////////////////////////

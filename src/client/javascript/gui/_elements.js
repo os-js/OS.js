@@ -236,6 +236,31 @@
   };
 
   /**
+   * Appends (and builds) HTML into the node
+   *
+   * @param   String              html        HTML code
+   * @param   OSjs.GUI.Scheme     scheme      (Optional) Reference to the Scheme
+   * @param   OSjs.Core.Window    win         (Optional) Reference to the Window
+   * @param   Object              args        (Optional) List of arguments to send to the parser
+   *
+   * @method Element::appendHTML()
+   * @return void
+   */
+  UIElement.prototype.appendHTML = function(html, scheme, win, args) {
+    var el = document.createElement('div');
+    el.innerHTML = html;
+
+    OSjs.GUI.Scheme.parseNode(scheme, win, el, null, args);
+
+    // Move elements over
+    while ( el.children.length ) {
+      this.$element.appendChild(el.children[0]);
+    }
+
+    el = null;
+  };
+
+  /**
    * Perform `querySelector`
    *
    * @param     String      q     Query
