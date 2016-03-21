@@ -30,7 +30,15 @@
 (function(_osjs, _http, _path, _url, _fs, _qs, _multipart, Cookies) {
   'use strict';
 
-  var instance, server;
+  var instance, server, proxy, httpProxy;
+
+  try {
+    httpProxy = require('http-proxy');
+    proxy = httpProxy.createProxyServer({});
+    proxy.on('error', function(err) {
+      console.warn(err);
+    });
+  } catch ( e ) {}
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
@@ -177,9 +185,39 @@
    */
   function httpCall(request, response) {
     var url     = _url.parse(request.url, true),
-        path    = decodeURIComponent(url.pathname),
-        cookies = new Cookies(request, response);
+        path    = decodeURIComponent(url.pathname);
 
+    if ( proxy ) {
+      var proxies = instance.config.proxies;
+      var stop = false;
+
+      Object.keys(proxies).every(function(k) {
+        var test = k;
+        if ( test.match(/^\(regexp\)\//) ) {
+          test = new RegExp(test.replace(/^\(regexp\)\//, '').replace(/\/$/, ''));
+        }
+
+        if ( typeof test === 'string' ? (test === path) : test.test(path) ) {
+          var pots = proxies[k];
+          if ( typeof pots === 'string' ) {
+            pots = {target: pots, ignorePath: true};
+          }
+          stop = true;
+
+          console.log('@@@ Request was caught by proxy', k, '=>', pots.target);
+
+          proxy.web(request, response, pots);
+        }
+        return !stop;
+      });
+
+      console.warn(stop);
+      if ( stop ) {
+        return;
+      }
+    }
+
+    var cookies = new Cookies(request, response);
     request.cookies = cookies;
 
     if ( path === '/' ) {
@@ -349,6 +387,10 @@
     cb = cb || function() {};
 
     instance.handler.onServerEnd(function() {
+      if ( proxy ) {
+        proxy.close();
+      }
+
       if ( server ) {
         server.close(cb);
       } else {

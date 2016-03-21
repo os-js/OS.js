@@ -19,6 +19,8 @@
         "fs": "fs"
       }
     },
+    "proxies": {
+    },
     "handler" : "%HANDLER%",
     "port" : 8000,
     "basedir": ""
