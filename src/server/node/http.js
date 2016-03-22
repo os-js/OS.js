@@ -181,35 +181,42 @@
   /////////////////////////////////////////////////////////////////////////////
 
   function proxyCall(request, response) {
+
+    function _getMatcher(k) {
+      var matcher = k;
+      if ( matcher.substr(0, 1) !== '/' ) {
+        matcher = '/' + matcher;
+      } else {
+        var check = k.match(/\/(.*)\/([a-z]+)?/);
+        if ( !check || !check[1] ) {
+          console.warn('Invalid proxy route', k);
+        }
+        matcher = new RegExp(check[1], check[2] || '');
+      }
+      return matcher;
+    }
+
+    function _getOptions(durl, matcher, pots) {
+      if ( typeof pots === 'string' ) {
+        if ( typeof matcher === 'string' ) {
+          request.url = durl.substr(matcher.length) || '/';
+        } else {
+          request.url = durl.replace(matcher, '') || '/';
+        }
+        pots = {target: pots};
+      }
+      return pots;
+    }
+
     if ( proxy ) {
       var proxies = instance.config.proxies;
       var stop = false;
 
       Object.keys(proxies).every(function(k) {
-        var matcher = k;
-        if ( matcher.substr(0, 1) !== '/' ) {
-          matcher = '/' + matcher;
-        } else {
-          var check = k.match(/\/(.*)\/([a-z]+)?/);
-          if ( !check || !check[1] ) {
-            console.warn('Invalid proxy route', k);
-          }
-          matcher = new RegExp(check[1], check[2] || '');
-        }
+        var matcher = _getMatcher(k);
 
         if ( typeof matcher === 'string' ? (matcher === request.url) : matcher.test(request.url) ) {
-          var durl = request.url;
-          var pots = proxies[k];
-
-          if ( typeof pots === 'string' ) {
-            if ( typeof matcher === 'string' ) {
-              request.url = durl.substr(matcher.length) || '/';
-            } else {
-              request.url = durl.replace(matcher, '') || '/';
-            }
-
-            pots = {target: pots};
-          }
+          var pots = _getOptions(request.url, matcher, proxies[k]);
 
           stop = true;
 
@@ -232,32 +239,8 @@
    * Handles a HTTP Request
    */
   function httpCall(request, response) {
-    if ( !proxyCall(request, response) ) {
-      return;
-    }
 
-    var url     = _url.parse(request.url, true),
-        path    = decodeURIComponent(url.pathname);
-
-    var cookies = new Cookies(request, response);
-    request.cookies = cookies;
-
-    if ( path === '/' ) {
-      path += 'index.html';
-    }
-
-    if ( instance.config.logging ) {
-      log(timestamp(), '<<<', path);
-    }
-
-    if ( instance.handler && instance.handler.onRequestStart ) {
-      instance.handler.onRequestStart(request, response);
-    }
-
-    var isVfsCall = path.match(/^\/FS/) !== null;
-    var relPath   = path.replace(/^\/(FS|API)\/?/, '');
-
-    function handleCall(isVfs) {
+    function handleCall(rp, isVfs) {
       var body = '';
 
       request.on('data', function(data) {
@@ -267,7 +250,7 @@
       request.on('end', function() {
         try {
           var args = JSON.parse(body);
-          instance.request(isVfs, relPath, args, function(error, result) {
+          instance.request(isVfs, rp, args, function(error, result) {
             respondJSON({result: result, error: error}, response);
           }, request, response, instance.handler);
         } catch ( e ) {
@@ -312,8 +295,8 @@
       });
     }
 
-    function handleVFSFile() {
-      var dpath = path.replace(/^\/(FS|API)(\/get\/)?/, '');
+    function handleVFSFile(p) {
+      var dpath = p.replace(/^\/(FS|API)(\/get\/)?/, '');
       instance.handler.checkAPIPrivilege(request, response, 'fs', function(err) {
         if ( err ) {
           respondError(err, response);
@@ -323,8 +306,8 @@
       });
     }
 
-    function handleDistFile() {
-      var rpath = path.replace(/^\/+/, '');
+    function handleDistFile(p) {
+      var rpath = p.replace(/^\/+/, '');
       var dpath = _path.join(instance.config.distdir, rpath);
 
       // Checks if the request was a package resource
@@ -344,23 +327,50 @@
       respondFile(unescape(dpath), request, response, true);
     }
 
-    if ( request.method === 'POST' ) {
-      if ( isVfsCall ) {
-        if ( relPath === 'upload') {
-          handleUpload();
+    if ( !proxyCall(request, response) ) {
+      return;
+    }
+
+    var url     = _url.parse(request.url, true);
+    var path    = decodeURIComponent(url.pathname);
+    var cookies = new Cookies(request, response);
+
+    request.cookies = cookies;
+
+    if ( path === '/' ) {
+      path += 'index.html';
+    }
+
+    if ( instance.config.logging ) {
+      log(timestamp(), '<<<', path);
+    }
+
+    if ( instance.handler && instance.handler.onRequestStart ) {
+      instance.handler.onRequestStart(request, response);
+    }
+
+    (function() {
+      var isVfsCall = path.match(/^\/FS/) !== null;
+      var relPath   = path.replace(/^\/(FS|API)\/?/, '');
+
+      if ( request.method === 'POST' ) {
+        if ( isVfsCall ) {
+          if ( relPath === 'upload') {
+            handleUpload();
+          } else {
+            handleCall(relPath, true);
+          }
         } else {
-          handleCall(true);
+          handleCall(relPath, false);
         }
       } else {
-        handleCall(false);
+        if ( isVfsCall ) {
+          handleVFSFile(path);
+        } else { // dist files
+          handleDistFile(path);
+        }
       }
-    } else {
-      if ( isVfsCall ) {
-        handleVFSFile();
-      } else { // dist files
-        handleDistFile();
-      }
-    }
+    })();
   }
 
   /////////////////////////////////////////////////////////////////////////////
