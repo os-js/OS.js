@@ -942,11 +942,18 @@
    */
   function createApacheHtaccess(grunt, dist, outfile) {
     var mimes = [];
-    var mime = generateBuildConfig(grunt).mime;
+    var cfg = generateBuildConfig(grunt);
+    var proxies = [];
 
-    Object.keys(mime.mapping).forEach(function(i) {
+    Object.keys(cfg.mime.mapping).forEach(function(i) {
       if ( i.match(/^\./) ) {
-        mimes.push('  AddType ' + mime.mapping[i] + ' ' + i);
+        mimes.push('  AddType ' + cfg.mime.mapping[i] + ' ' + i);
+      }
+    });
+
+    Object.keys(cfg.server.proxies).forEach(function(k) {
+      if ( k.substr(0, 1) !== '/' && typeof cfg.server.proxies[k] === 'string' ) {
+        proxies.push('     RewriteRule ' + k + ' ' + cfg.server.proxies[k] + ' [P]');
       }
     });
 
@@ -955,6 +962,7 @@
       var dst = _path.join(ROOT, d, '.htaccess');
       var tpl = _fs.readFileSync(src).toString();
       tpl = tpl.replace(/%MIMES%/, mimes.join('\n'));
+      tpl = tpl.replace(/%PROXIES%/, proxies.join('\n'));
       writeFile(dst, tpl);
     }
 
