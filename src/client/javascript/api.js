@@ -544,7 +544,9 @@
         preload = preload.map(function(p) {
           if ( p.src.substr(0, 1) !== '/' && !p.src.match(/^(https?|ftp)/) ) {
             OSjs.VFS.url(p.src, function(error, url) {
-              p.src = url;
+              if ( !error ) {
+                p.src = url;
+              }
             });
           }
 
