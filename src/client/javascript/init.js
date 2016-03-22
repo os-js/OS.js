@@ -59,7 +59,7 @@
 
   // Compability
   (function() {
-    var compability = ['forEach', 'every'];
+    var compability = ['forEach', 'every', 'map'];
 
     compability.forEach(function(n) {
       if ( window.HTMLCollection ) {
