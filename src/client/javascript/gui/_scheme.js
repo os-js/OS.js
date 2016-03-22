@@ -298,7 +298,7 @@
     console.debug('UIScheme::parse()', id);
 
     if ( !content ) {
-      console.error('UIScheme::parse()', 'No fragment found', id, type);
+      console.error('UIScheme::parse()', 'No fragment found', id + '@' + type);
       return null;
     }
 

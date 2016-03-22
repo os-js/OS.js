@@ -230,9 +230,13 @@
    */
   UIElement.prototype.append = function(el) {
     if ( el instanceof UIElement ) {
-      el = el.$element;
+      this.$element.appendChild(el.$element);
+    } else {
+      var outer = document.createElement('div');
+      outer.appendChild(el);
+      this._append(el);
+      outer = null;
     }
-    this.$element.appendChild(el);
 
     return this;
   };
@@ -252,6 +256,10 @@
     var el = document.createElement('div');
     el.innerHTML = html;
 
+    return this._append(el, scheme, win, args);
+  };
+
+  UIElement.prototype._append = function(el, scheme, win, args) {
     OSjs.GUI.Scheme.parseNode(scheme, win, el, null, args);
 
     // Move elements over
