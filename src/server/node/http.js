@@ -180,36 +180,40 @@
   // HTTP
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Handles a HTTP Request
-   */
-  function httpCall(request, response) {
-    var url     = _url.parse(request.url, true),
-        path    = decodeURIComponent(url.pathname);
-
+  function proxyCall(request, response) {
     if ( proxy ) {
       var proxies = instance.config.proxies;
       var stop = false;
 
       Object.keys(proxies).every(function(k) {
-        var test = k;
-        var durl = request.url;
-        if ( test.match(/^\(regexp\)\//) ) {
-          test = new RegExp(test.replace(/^\(regexp\)\//, '').replace(/\/$/, ''));
-          durl = durl.replace(test, '');
+        var matcher = k;
+        if ( matcher.substr(0, 1) !== '/' ) {
+          matcher = '/' + matcher;
         } else {
-          durl = durl.substr(k.length);
+          var check = k.match(/\/(.*)\/([a-z]+)?/);
+          if ( !check || !check[1] ) {
+            console.warn('Invalid proxy route', k);
+          }
+          matcher = new RegExp(check[1], check[2] || '');
         }
 
-        if ( typeof test === 'string' ? (test === path) : test.test(path) ) {
+        if ( typeof matcher === 'string' ? (matcher === request.url) : matcher.test(request.url) ) {
+          var durl = request.url;
           var pots = proxies[k];
+
           if ( typeof pots === 'string' ) {
-            request.url = durl;
+            if ( typeof matcher === 'string' ) {
+              request.url = durl.substr(matcher.length) || '/';
+            } else {
+              request.url = durl.replace(matcher, '') || '/';
+            }
+
             pots = {target: pots};
           }
+
           stop = true;
 
-          console.log('@@@ Request was caught by proxy', k, '=>', pots.target);
+          console.log('@@@ Request was caught by proxy', k, '=>', pots.target, '<=', request.url);
 
           proxy.web(request, response, pots);
         }
@@ -217,9 +221,23 @@
       });
 
       if ( stop ) {
-        return;
+        return false;
       }
     }
+
+    return true;
+  }
+
+  /**
+   * Handles a HTTP Request
+   */
+  function httpCall(request, response) {
+    if ( !proxyCall(request, response) ) {
+      return;
+    }
+
+    var url     = _url.parse(request.url, true),
+        path    = decodeURIComponent(url.pathname);
 
     var cookies = new Cookies(request, response);
     request.cookies = cookies;
