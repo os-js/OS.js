@@ -230,13 +230,13 @@
    */
   UIElement.prototype.append = function(el) {
     if ( el instanceof UIElement ) {
-      this.$element.appendChild(el.$element);
-    } else {
-      var outer = document.createElement('div');
-      outer.appendChild(el);
-      this._append(el);
-      outer = null;
+      el = el.$element;
     }
+
+    var outer = document.createElement('div');
+    outer.appendChild(el);
+    this._append(el);
+    outer = null;
 
     return this;
   };
@@ -276,22 +276,36 @@
    * Perform `querySelector`
    *
    * @param     String      q     Query
+   * @param     boolean     rui   Return UI Element if possible (default=false)
+   *
    * @return    DOMElement
    * @method    Element::querySelector()
    */
-  UIElement.prototype.querySelector = function(q) {
-    return this.$element.querySelector(q);
+  UIElement.prototype.querySelector = function(q, rui) {
+    var el = this.$element.querySelector(q);
+    if ( rui ) {
+      return OSjs.GUI.Scheme.getElementInstance(el, q);
+    }
+    return el;
   };
 
   /**
    * Perform `querySelectorAll`
    *
    * @param     String      q     Query
+   * @param     boolean     rui   Return UI Element if possible (default=false)
+   *
    * @return    DOMElementCollection
    * @method    Element::querySelectorAll()
    */
-  UIElement.prototype.querySelectorAll = function(q) {
-    return this.$element.querySelectorAll(q);
+  UIElement.prototype.querySelectorAll = function(q, rui) {
+    var el = this.$element.querySelectorAll(q);
+    if ( rui ) {
+      el = el.map(function(i) {
+        return OSjs.GUI.Scheme.getElementInstance(i, q);
+      });
+    }
+    return el;
   };
 
   UIElement.prototype._call = function(method, args) {

@@ -416,6 +416,22 @@
   };
 
   /**
+   * Returns given UIElement by query
+   *
+   * @param   Window      win       OS.js Window
+   * @param   String      id        Element ID (data-id)
+   * @param   DOMElement  root      (Optional) Root Node
+   *
+   * @return  UIElement
+   * @method  Scheme::find()
+   */
+  UIScheme.prototype.findByQuery = function(win, query, root) {
+    root = this._findRoot(win, root);
+    var el = root.querySelector(query);
+    return this.get(el, query);
+  };
+
+  /**
    * Returns given DOMElement by ID
    *
    * @param   Window      win       OS.js Window
@@ -454,13 +470,7 @@
    * @method  Scheme::get()
    */
   UIScheme.prototype.get = function(el, q) {
-    if ( el ) {
-      var tagName = el.tagName.toLowerCase();
-      if ( tagName.match(/^gui\-(list|tree|icon|file)\-view$/) || tagName.match(/^gui\-select/) ) {
-        return new OSjs.GUI.ElementDataView(el, q);
-      }
-    }
-    return new OSjs.GUI.Element(el, q);
+    return UIScheme.getElementInstance(el, q);
   };
 
   /**
@@ -527,6 +537,19 @@
         pel._wasParsed = true;
       });
     });
+  };
+
+  /**
+   * @see UIScheme::get()
+   */
+  UIScheme.getElementInstance = function(el, q) {
+    if ( el ) {
+      var tagName = el.tagName.toLowerCase();
+      if ( tagName.match(/^gui\-(list|tree|icon|file)\-view$/) || tagName.match(/^gui\-select/) ) {
+        return new OSjs.GUI.ElementDataView(el, q);
+      }
+    }
+    return new OSjs.GUI.Element(el, q);
   };
 
   /////////////////////////////////////////////////////////////////////////////
