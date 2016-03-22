@@ -591,7 +591,7 @@
 
       console.log('OSjs::Core::WindowManager::notification()', opts);
 
-      var container  = document.createElement('corewm-notification-entry');
+      var container  = document.createElement('corewm-notification');
       var classNames = [''];
       var self       = this;
       var timeout    = null;
@@ -882,8 +882,8 @@
     if ( settings.panels ) {
       settings.panels.forEach(function(p, i) {
         styles['corewm-panel'] = {};
-        styles['corewm-notification-entry'] = {};
-        styles['corewm-notification-entry:before'] = {
+        styles['corewm-notification'] = {};
+        styles['corewm-notification:before'] = {
           'opacity': p.options.opacity / 100
         };
         styles['corewm-panel:before'] = {
@@ -891,11 +891,11 @@
         };
         if ( p.options.background ) {
           styles['corewm-panel:before']['background-color'] = p.options.background;
-          styles['corewm-notification-entry:before']['background-color'] = p.options.background;
+          styles['corewm-notification:before']['background-color'] = p.options.background;
         }
         if ( p.options.foreground ) {
           styles['corewm-panel']['color'] = p.options.foreground;
-          styles['corewm-notification-entry']['color'] = p.options.foreground;
+          styles['corewm-notification']['color'] = p.options.foreground;
         }
       });
     }

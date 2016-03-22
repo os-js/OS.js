@@ -48,7 +48,7 @@ corewm-notifications {
   width : 400px;
 }
 
-corewm-notification-entry {
+corewm-notification {
   display : block;
   position : relative;
   min-height : 10px;
@@ -57,14 +57,14 @@ corewm-notification-entry {
   overflow : hidden;
   white-space : nowrap;
 }
-corewm-notification-entry.HasIcon {
+corewm-notification.HasIcon {
   min-height : 32px;
 }
-corewm-notification-entry.HasIcon img {
+corewm-notification.HasIcon img {
   position : absolute;
 }
-corewm-notification-entry.HasIcon .Title,
-corewm-notification-entry.HasIcon .Message {
+corewm-notification.HasIcon .Title,
+corewm-notification.HasIcon .Message {
   margin-left : 32px;
   padding-left : 5px;
   white-space: -moz-pre-wrap;
@@ -73,7 +73,7 @@ corewm-notification-entry.HasIcon .Message {
   white-space:      pre-wrap;
   word-wrap: break-word;
 }
-corewm-notification-entry:before {
+corewm-notification:before {
   content : '';
   position : absolute;
   top : 0;
