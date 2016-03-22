@@ -72,6 +72,27 @@
   }
 
   /**
+   * Removes element from the DOM
+   *
+   * @method Element::remove()
+   * @return void
+   */
+  UIElement.prototype.remove = function() {
+    this.$element = Utils.$remove(this.$element);
+  };
+
+  /**
+   * Empties the DOM element
+   *
+   * @method Element::empty()
+   * @return Element this
+   */
+  UIElement.prototype.empty = function() {
+    Utils.$empty(this.$element);
+    return this;
+  };
+
+  /**
    * Blur (unfocus)
    *
    * @method Element::blur()
