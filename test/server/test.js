@@ -285,6 +285,7 @@ describe('API', function() {
     });
   });
 
+  /*
   describe('cURL', function() {
     describe('#HEAD', function() {
       it('successfull HEAD request', function(done) {
@@ -343,6 +344,7 @@ describe('API', function() {
     });
 
   });
+  */
 
 });
 
