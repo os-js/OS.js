@@ -15,9 +15,9 @@ These are some of the ways you can contribute to OS.js:
 
 You can also submit patches and questions directly to me via [email](mailto:andersevenrud@gmail.com), but using GitHub is preferred.
 
-## How to contribute
+## Information
 
-http://os.js.org/doc/manuals/man-development.html
+Please read http://os.js.org/doc/manuals/man-development.html before you start making and submitting contributions to the repository.
 
 ## Resources
 
