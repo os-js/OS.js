@@ -78,7 +78,10 @@
         Utils.$bind(input, 'keydown', function(ev) {
           if ( ev.keyCode === Utils.Keys.ENTER ) {
             input.dispatchEvent(new CustomEvent('_enter', {detail: this.value}));
+          } else if ( ev.keyCode === Utils.Keys.C && ev.ctrlKey ) {
+            API.setClipboard(this.value);
           }
+
           if ( type === 'textarea' && ev.keyCode === Utils.Keys.TAB ) {
             ev.preventDefault();
             this.value += '\t';
