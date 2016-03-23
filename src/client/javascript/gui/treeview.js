@@ -80,6 +80,15 @@
       el.dispatchEvent(new CustomEvent('_expand', {detail: {entries: [selected], expanded: expanded, element: root}}));
     } // handleItemExpand()
 
+    function onDndEnter(ev) {
+      ev.stopPropagation();
+      Utils.$addClass(sel, 'dnd-over');
+    }
+
+    function onDndLeave(ev) {
+      Utils.$removeClass(sel, 'dnd-over');
+    }
+
     if ( icon ) {
       dspan.style.backgroundImage = 'url(' + icon + ')';
       Utils.$addClass(dspan, 'gui-has-image');
@@ -120,20 +129,10 @@
     if ( String(sel.getAttribute('data-droppable')) === 'true' ) {
       var timeout;
       GUI.Helpers.createDroppable(container, {
-        onEnter: function(ev) {
-          ev.stopPropagation();
-          Utils.$addClass(sel, 'dnd-over');
-        },
-        onOver: function(ev) {
-          ev.stopPropagation();
-          Utils.$addClass(sel, 'dnd-over');
-        },
-        onLeave: function() {
-          Utils.$removeClass(sel, 'dnd-over');
-        },
-        onDrop: function(ev) {
-          Utils.$removeClass(sel, 'dnd-over');
-        },
+        onEnter: onDndEnter,
+        onOver: onDndEnter,
+        onLeave: onDndLeave,
+        onDrop: onDndLeave,
         onItemDropped: function(ev, eel, item) {
           ev.stopPropagation();
           ev.preventDefault();
