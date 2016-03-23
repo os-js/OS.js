@@ -510,6 +510,22 @@
     return true;
   };
 
+  /**
+   * Initializes the handler with default login form
+   *
+   * @param   Function      callback        Callback function
+   *
+   * @return  void
+   *
+   * @method  _Handler::_initLogin()
+   */
+  _Handler.prototype._initLogin = function(callback) {
+    var self = this;
+    this.init(function() {
+      self.initLoginScreen(callback);
+    });
+  };
+
   //
   // Events
   //

@@ -56,10 +56,7 @@
    * Override default init() method
    */
   MysqlHandler.prototype.init = function(callback) {
-    var self = this;
-    OSjs.Core._Handler.prototype.init.call(this, function() {
-      self.initLoginScreen(callback);
-    });
+    return this._initLogin(callback);
   };
 
   /**
