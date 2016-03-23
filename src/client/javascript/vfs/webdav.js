@@ -116,26 +116,26 @@
         opts.query = args.data;
       }
 
-      API.call('curl', opts, function(response) {
-        if ( response.error ) {
-          callback(response.error);
+      API.call('curl', opts, function(error, result) {
+        if ( error ) {
+          callback(error);
           return;
         }
 
-        if ( !response.result ) {
+        if ( !result ) {
           callback(API._('ERR_VFS_REMOTEREAD_EMPTY'));
           return;
         }
 
-        if ( ([200, 201, 203, 204, 205, 207]).indexOf(response.result.httpCode) < 0 ) {
-          callback(API._('ERR_VFSMODULE_XHR_ERROR') + ': ' + response.result.httpCode);
+        if ( ([200, 201, 203, 204, 205, 207]).indexOf(result.httpCode) < 0 ) {
+          callback(API._('ERR_VFSMODULE_XHR_ERROR') + ': ' + result.httpCode);
           return;
         }
 
         if ( opts.binary ) {
-          OSjs.VFS.dataSourceToAb(response.result.body, mime, callback);
+          OSjs.VFS.dataSourceToAb(result.body, mime, callback);
         } else {
-          var doc = parseDocument(response.result.body);
+          var doc = parseDocument(result.body);
           callback(false, doc);
         }
       }, function(err) {

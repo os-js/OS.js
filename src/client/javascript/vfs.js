@@ -312,14 +312,11 @@
    * Perform default VFS call via backend
    */
   function internalCall(name, args, callback) {
-    API.call('FS:' + name, args, function(res) {
-      if ( !res || (typeof res.result === 'undefined') || res.error ) {
-        callback((res ? res.error : null) || API._('ERR_VFS_FATAL'));
-      } else {
-        callback(false, res.result);
+    API.call('FS:' + name, args, function(err, res) {
+      if ( !err && !res ) {
+        err = API._('ERR_VFS_FATAL');
       }
-    }, function(error) {
-      callback(error);
+      callback(err, res);
     });
   }
 

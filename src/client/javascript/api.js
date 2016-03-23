@@ -304,12 +304,9 @@
    *
    * You can call VFS functions by prefixing your method name with "FS:"
    *
-   * Response is in form of: {error, result}
-   *
    * @param   String    m       Method name
    * @param   Object    a       Method arguments
-   * @param   Function  cok     Callback on success => fn(response)
-   * @param   Function  cerror  (Optional) Callback on HTTP error => fn(error)
+   * @param   Function  cb      Callback on success => fn(err, res)
    * @param   Object    options (Optional) Options to send to the XHR request
    *
    * @see     OSjs.Core.Handler.callAPI()
@@ -319,7 +316,7 @@
    * @api     OSjs.API.call()
    */
   var _CALL_INDEX = 1;
-  function doAPICall(m, a, cok, cerror, options) {
+  function doAPICall(m, a, cb, options) {
     a = a || {};
 
     var lname = 'APICall_' + _CALL_INDEX;
@@ -328,25 +325,23 @@
       createLoading(lname, {className: 'BusyNotification', tooltip: 'API Call'});
     }
 
-    if ( typeof cok !== 'function' ) {
+    if ( typeof cb !== 'function' ) {
       throw new TypeError('call() expects a function as callback');
     }
 
-    if ( typeof cerror !== 'function' ) {
-      cerror = function() {
-        console.warn('API::call()', 'no error handler assigned', arguments);
-      };
+    if ( options && typeof options !== 'object' ) {
+      throw new TypeError('call() expects an object as options');
     }
 
     _CALL_INDEX++;
 
     var handler = OSjs.Core.getHandler();
-    return handler.callAPI(m, a, function() {
+    return handler.callAPI(m, a, function(response) {
       destroyLoading(lname);
-      cok.apply(this, arguments);
-    }, function() {
-      destroyLoading(lname);
-      cerror.apply(this, arguments);
+      response = response || {};
+      cb(response.error || false, response.result);
+    }, function(err) {
+      cb(err);
     }, options);
   }
 

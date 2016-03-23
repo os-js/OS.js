@@ -265,18 +265,12 @@
   Process.prototype._api = function(method, args, callback, showLoading) {
     var self = this;
 
-    function cb() {
+    function cb(err, res) {
       if ( self.__destroyed ) {
         console.warn('Process::_api()', 'INGORED RESPONSE: Process was closed');
         return;
       }
-
-      if ( arguments.length === 3 ) {
-        var response = arguments[0] || {};
-        callback(response.error || false, response.result);
-      } else {
-        callback(arguments[0] || 'Fatal error');
-      }
+      callback(err, res);
     }
 
     return OSjs.API.call('application', {
@@ -284,7 +278,7 @@
       path: this.__path,
       method: method,
       'arguments': args, __loading: showLoading
-    }, cb, cb);
+    }, cb);
   };
 
   /**
