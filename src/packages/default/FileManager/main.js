@@ -675,6 +675,31 @@
     Window.prototype.destroy.apply(this, arguments);
   };
 
+  ApplicationFileManagerWindow.prototype._onKeyEvent = function(ev, type) {
+    var self = this;
+
+    function paste() {
+      var clip = API.getClipboard();
+      if ( clip && (clip instanceof Array) ) {
+        clip.forEach(function(c) {
+          if ( c && (c instanceof VFS.File) ) {
+            var dst = new VFS.File((self.currentPath + '/' + c.filename));
+            self._app.copy(c, dst, self);
+          }
+        });
+      }
+    }
+
+    if ( Window.prototype._onKeyEvent.apply(this, arguments) ) {
+      if ( ev.keyCode === Utils.Keys.V && ev.ctrlKey && type == 'keydown' ) {
+        paste();
+      }
+
+      return true;
+    }
+    return false;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
