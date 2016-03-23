@@ -44,7 +44,7 @@
 
     GUI.Elements['gui-icon-view'].build(this.$element);
 
-    API.createDroppable(this.$element, {
+    GUI.Helpers.createDroppable(this.$element, {
       onOver: function(ev, el, args) {
         wm.onDropOver(ev, el, args);
       },

@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API, Process) {
+(function(Utils, API, GUI, Process) {
   'use strict';
 
   window.OSjs = window.OSjs || {};
@@ -414,7 +414,7 @@
         var border = document.createElement('div');
         border.className = 'WindowDropRect';
 
-        OSjs.API.createDroppable(main, {
+        OSjs.GUI.Helpers.createDroppable(main, {
           onOver: function(ev, el, args) {
             main.setAttribute('data-dnd-state', 'true');
           },
@@ -1871,4 +1871,4 @@
 
   OSjs.Core.Window = Window;
 
-})(OSjs.Utils, OSjs.API, OSjs.Core.Process);
+})(OSjs.Utils, OSjs.API, OSjs.GUI, OSjs.Core.Process);

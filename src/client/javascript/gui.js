@@ -581,6 +581,183 @@
     return null;
   }
 
+  /**
+   * Create a draggable DOM element
+   *
+   * @param   DOMElement    el      DOMElement
+   * @param   Object        args    JSON of draggable params
+   *
+   * @return  void
+   *
+   * @api     OSjs.GUI.Helpers.createDraggable()
+   */
+  function createDraggable(el, args) {
+    args = OSjs.Utils.argumentDefaults(args, {
+      type       : null,
+      effect     : 'move',
+      data       : null,
+      mime       : 'application/json',
+      dragImage  : null,
+      onStart    : function() { return true; },
+      onEnd      : function() { return true; }
+    });
+
+    if ( OSjs.Utils.isIE() ) {
+      args.mime = 'text';
+    }
+
+    function _toString(mime) {
+      return JSON.stringify({
+        type:   args.type,
+        effect: args.effect,
+        data:   args.data,
+        mime:   args.mime
+      });
+    }
+
+    function _dragStart(ev) {
+      try {
+        ev.dataTransfer.effectAllowed = args.effect;
+        if ( args.dragImage && (typeof args.dragImage === 'function') ) {
+          if ( ev.dataTransfer.setDragImage ) {
+            var dragImage = args.dragImage(ev, el);
+            if ( dragImage ) {
+              var dragEl    = dragImage.element;
+              var dragPos   = dragImage.offset;
+
+              document.body.appendChild(dragEl);
+              ev.dataTransfer.setDragImage(dragEl, dragPos.x, dragPos.y);
+            }
+          }
+        }
+        ev.dataTransfer.setData(args.mime, _toString(args.mime));
+      } catch ( e ) {
+        console.warn('Failed to dragstart: ' + e);
+        console.warn(e.stack);
+      }
+    }
+
+    el.setAttribute('draggable', 'true');
+    el.setAttribute('aria-grabbed', 'false');
+
+    el.addEventListener('dragstart', function(ev) {
+      this.setAttribute('aria-grabbed', 'true');
+
+      this.style.opacity = '0.4';
+      if ( ev.dataTransfer ) {
+        _dragStart(ev);
+      }
+      return args.onStart(ev, this, args);
+    }, false);
+
+    el.addEventListener('dragend', function(ev) {
+      this.setAttribute('aria-grabbed', 'false');
+      this.style.opacity = '1.0';
+      return args.onEnd(ev, this, args);
+    }, false);
+  }
+
+  /**
+   * Create a droppable DOM element
+   *
+   * @param   DOMElement    el      DOMElement
+   * @param   Object        args    JSON of droppable params
+   *
+   * @return  void
+   *
+   * @api     OSjs.GUI.Helpers.createDroppable()
+   */
+  function createDroppable(el, args) {
+    args = OSjs.Utils.argumentDefaults(args, {
+      accept         : null,
+      effect         : 'move',
+      mime           : 'application/json',
+      files          : true,
+      onFilesDropped : function() { return true; },
+      onItemDropped  : function() { return true; },
+      onEnter        : function() { return true; },
+      onOver         : function() { return true; },
+      onLeave        : function() { return true; },
+      onDrop         : function() { return true; }
+    });
+
+    if ( OSjs.Utils.isIE() ) {
+      args.mime = 'text';
+    }
+
+    function getParent(start, matcher) {
+      if ( start === matcher ) { return true; }
+      var i = 10;
+
+      while ( start && i > 0 ) {
+        if ( start === matcher ) {
+          return true;
+        }
+        start = start.parentNode;
+        i--;
+      }
+      return false;
+    }
+
+    function _onDrop(ev, el) {
+      ev.stopPropagation();
+      ev.preventDefault();
+
+      args.onDrop(ev, el);
+      if ( !ev.dataTransfer ) { return true; }
+
+      if ( args.files ) {
+        var files = ev.dataTransfer.files;
+        if ( files && files.length ) {
+          return args.onFilesDropped(ev, el, files, args);
+        }
+      }
+
+      var data;
+      try {
+        data = ev.dataTransfer.getData(args.mime);
+      } catch ( e ) {
+        console.warn('Failed to drop: ' + e);
+      }
+      if ( data ) {
+        var item = JSON.parse(data);
+        if ( args.accept === null || args.accept === item.type ) {
+          return args.onItemDropped(ev, el, item, args);
+        }
+      }
+
+      return false;
+    }
+
+    el.setAttribute('aria-dropeffect', args.effect);
+
+    el.addEventListener('drop', function(ev) {
+      //Utils.$removeClass(el, 'onDragEnter');
+      return _onDrop(ev, this);
+    }, false);
+
+    el.addEventListener('dragenter', function(ev) {
+      //Utils.$addClass(el, 'onDragEnter');
+      return args.onEnter.call(this, ev, this, args);
+    }, false);
+
+    el.addEventListener('dragover', function(ev) {
+      ev.preventDefault();
+      if ( !getParent(ev.target, el) ) {
+        return false;
+      }
+
+      ev.stopPropagation();
+      ev.dataTransfer.dropEffect = args.effect;
+      return args.onOver.call(this, ev, this, args);
+    }, false);
+
+    el.addEventListener('dragleave', function(ev) {
+      //Utils.$removeClass(el, 'onDragEnter');
+      return args.onLeave.call(this, ev, this, args);
+    }, false);
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
@@ -597,7 +774,9 @@
     createElement: createElement,
     createDrag: createDrag,
     setProperty: setProperty,
-    setFlexbox: setFlexbox
+    setFlexbox: setFlexbox,
+    createDraggable: createDraggable,
+    createDroppable: createDroppable
   };
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS);

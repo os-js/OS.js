@@ -237,7 +237,7 @@
     var self = this;
 
     // Enable dropping of new wallpaper if no iconview is enabled
-    OSjs.API.createDroppable(document.body, {
+    GUI.Helpers.createDroppable(document.body, {
       onOver: function(ev, el, args) {
         self.onDropOver(ev, el, args);
       },

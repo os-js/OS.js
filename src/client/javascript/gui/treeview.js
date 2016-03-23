@@ -107,7 +107,7 @@
     }
 
     if ( String(sel.getAttribute('data-draggable')) === 'true' ) {
-      API.createDraggable(container, (function() {
+      GUI.Helpers.createDraggable(container, (function() {
         var data = {};
         try {
           data = JSON.parse(sel.getAttribute('data-value'));
@@ -119,7 +119,7 @@
 
     if ( String(sel.getAttribute('data-droppable')) === 'true' ) {
       var timeout;
-      API.createDroppable(container, {
+      GUI.Helpers.createDroppable(container, {
         onEnter: function(ev) {
           ev.stopPropagation();
           Utils.$addClass(sel, 'dnd-over');

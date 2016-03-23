@@ -387,7 +387,7 @@
           }
         }
 
-        API.createDraggable(row, {
+        GUI.Helpers.createDraggable(row, {
           type   : el.getAttribute('data-draggable-type') || row.getAttribute('data-draggable-type'),
           source : source,
           data   : value

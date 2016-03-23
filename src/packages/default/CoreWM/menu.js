@@ -55,7 +55,7 @@
 
     function createEvent(iter) {
       return function(el) {
-        OSjs.API.createDraggable(el, {
+        OSjs.GUI.Helpers.createDraggable(el, {
           type   : 'application',
           data   : {
             launch: iter.name
