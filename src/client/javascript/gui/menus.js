@@ -109,7 +109,7 @@
         var i = Utils.$index(label.parentNode);
         bindSelectionEvent(label.parentNode, label, i, expand, el.querySelector('label'));
       });
-      OSjs.API.createMenu(null, ev, newNode);
+      OSjs.GUI.Helpers.createMenu(null, ev, newNode);
     },
     set: function(el, param, value, arg) {
       if ( param === 'checked' ) {
@@ -304,9 +304,9 @@
    * Blur the currently open menu (aka hiding)
    *
    * @return void
-   * @api OSjs.API.blurMenu()
+   * @api OSjs.GUI.Helpers.blurMenu()
    */
-  OSjs.API.blurMenu = blurMenu;
+  OSjs.GUI.Helpers.blurMenu = blurMenu;
 
   /**
    * Create and show a new menu
@@ -329,9 +329,9 @@
    * @param   Mixed       customInstance    Show a custom created menu
    *
    * @return void
-   * @api OSjs.API.createMenu()
+   * @api OSjs.GUI.Helpers.createMenu()
    */
-  OSjs.API.createMenu = function(items, ev, customInstance) {
+  OSjs.GUI.Helpers.createMenu = function(items, ev, customInstance) {
     items = items || [];
     blurMenu();
 

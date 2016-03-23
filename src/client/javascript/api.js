@@ -1564,8 +1564,22 @@
 
   OSjs.API.getDefaultPath         = doGetDefaultPath;
 
-  OSjs.API.createMenu             = function() {}; // gui.js
-  OSjs.API.blurMenu               = function() {}; // gui.js
+  /**
+   * @api OSjs.API.createMenu()
+   * @see OSjs.GUI.Helpers.createMenu()
+   */
+  OSjs.API.createMenu             = function() {
+    return OSjs.GUI.Helpers.createMenu.apply(null, arguments);
+  };
+
+  /**
+   * @api OSjs.API.blurMenu()
+   * @see OSjs.GUI.Helpers.blurMenu()
+   */
+  OSjs.API.blurMenu               = function() {
+    return OSjs.GUI.Helpers.blurMenu.apply(null, arguments);
+  };
+
   OSjs.API.createLoading          = createLoading;
   OSjs.API.destroyLoading         = destroyLoading;
   OSjs.API.createSplash           = doCreateSplash;
