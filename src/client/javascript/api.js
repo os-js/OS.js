@@ -288,7 +288,7 @@
       opts = args;
     }
 
-    doAPICall('curl', opts, callback);
+    doAPICall('curl', opts, callback, args.options);
   }
 
   /**
