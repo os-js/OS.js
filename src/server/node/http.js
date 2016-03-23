@@ -423,6 +423,8 @@
         proxy.close();
       }
 
+      instance.down();
+
       if ( server ) {
         server.close(cb);
       } else {
