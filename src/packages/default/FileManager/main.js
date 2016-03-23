@@ -691,7 +691,7 @@
     }
 
     if ( Window.prototype._onKeyEvent.apply(this, arguments) ) {
-      if ( ev.keyCode === Utils.Keys.V && ev.ctrlKey && type == 'keydown' ) {
+      if ( ev.keyCode === Utils.Keys.V && ev.ctrlKey && type === 'keydown' ) {
         paste();
       }
 
