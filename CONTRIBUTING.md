@@ -15,7 +15,11 @@ These are some of the ways you can contribute to OS.js:
 
 You can also submit patches and questions directly to me via [email](mailto:andersevenrud@gmail.com), but using GitHub is preferred.
 
-# Resources
+## How to contribute
+
+http://os.js.org/doc/manuals/man-development.html
+
+## Resources
 
 * [Homepage](https://os.js.org/)
 * [Documentation](https://os.js.org/doc/)
@@ -25,38 +29,3 @@ You can also submit patches and questions directly to me via [email](mailto:ande
 * [OS.js Core Source](https://github.com/os-js/OS.js)
 * [OS.js Homepage Source](https://github.com/andersevenrud/os.js.org)
 
-# Setting up the development environment
-
-To get started you need a [Github](https://github.com/) account.
-
-## Prepare
-
-Then proceed to **fork** OS.js via the official [project page](https://github.com/os-js/OS.js).
-
-Follow the official documentation on how to [install and run OS.js](https://os.js.org/doc/manuals/man-install.html), with one exception -- run the development server instead:
-
-```
-./bin/start-node-dev.sh
-```
-
-## Making and submitting changes
-
-* Fork OS.js on github
-* Follow the [style guide](https://github.com/os-js/OS.js/wiki/Style-guide)
-* Use **UTF-8** file encoding
-* I **strongly** recommend using a separate branch for your changes.
-* I **strongly** recommend [squashing](http://makandracards.com/makandra/527-squash-several-git-commits-into-a-single-commit) your commits if you have spread out a task into several pieces.
-* Make sure you test **all your changes** before commiting so it does not lead to extra commits with corrections.
-* Keep your [commit messages](https://robots.thoughtbot.com/5-useful-tips-for-a-better-commit-message) as short as possible and don't include filenames. Write a short description of **what was done**, not *where*. Example: "Themes: Corrected colors" or "Locales: Added ru_RU locales"
-* Send a [pull-request](https://help.github.com/articles/using-pull-requests/) when you are done
-* Keep your fork [up-to-date](https://robots.thoughtbot.com/keeping-a-github-fork-updated) 
-
-Tip: Have `grunt watch` running in the background to automatically run tasks for you when something changes.
-
-Tip: Run `grunt jscs jshint` to check for syntax problems and style guide violations
-
-Tip: Run `grunt mochaTest` to run server-side checks
-
-Tip: Run `grunt test` to test everything
-
-**NOTE THAT I DO NOT ACCEPT PULL-REQUESTS THAT DO NOT FOLLOW THE GUIDELINES ABOVE (AS OF 2016)**
