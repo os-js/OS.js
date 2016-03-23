@@ -89,6 +89,24 @@
       return;
     }
 
+    map[Utils.Keys.C] = function(ev) {
+      if ( ev.ctrlKey ) {
+        var selected = getSelected(el);
+        if ( selected && selected.length ) {
+          var data = [];
+
+          selected.forEach(function(s) {
+            if ( s && s.data ) {
+              data.push(new VFS.File(s.data.path, s.data.mime));
+            }
+          });
+
+          API.setClipboard(data);
+        }
+        console.warn();
+      }
+    };
+
     var selected = el._selected.concat() || [];
     var first = selected.length ? selected[0] : 0;
     var last = selected.length > 1 ? selected[selected.length - 1] : first;
