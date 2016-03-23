@@ -219,6 +219,8 @@
 
       this._scheme.find(this, 'Output').set('value', String(output));
     }
+
+    this._scheme.find(this, 'Output').focus();
   };
 
   /////////////////////////////////////////////////////////////////////////////
