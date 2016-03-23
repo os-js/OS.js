@@ -94,10 +94,6 @@
     LSUPER:     91,
     RSUPER:     92,
 
-    H: 72,
-    M: 77,
-    R: 82,
-
     DELETE:     46,
     INSERT:     45,
     HOME:       36,
@@ -119,6 +115,15 @@
     UP:         38,
     DOWN:       40
   };
+
+  (function() {
+    for ( var n = 48; n <= 57; n++ ) {
+      OSjs.Utils.Keys[String.fromCharCode(n).toUpperCase()] = n;
+    }
+    for ( var c = 65; c <= 90; c++ ) {
+      OSjs.Utils.Keys[String.fromCharCode(c).toUpperCase()] = c;
+    }
+  })();
 
   /**
    * Get the mouse button pressed
