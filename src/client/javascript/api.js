@@ -288,15 +288,7 @@
       opts = args;
     }
 
-    doAPICall('curl', opts, function(response) {
-      if ( response && response.error ) {
-        callback(response.error);
-        return;
-      }
-      callback(false, response ? (response.result || null) : null);
-    }, function(error) {
-      callback(error);
-    }, args.options);
+    doAPICall('curl', opts, callback);
   }
 
   /**
