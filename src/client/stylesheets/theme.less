@@ -83,6 +83,8 @@
 
 @gui_progress_bar_background : @gui_selected_background_color url('/themes/styles/default/gui/progressbar.png') repeat-x center;
 
+@gui_focus_outline : 0 none transparent;
+
 /**
  * ===========================================================================
  *                                 CLASSES
@@ -633,6 +635,9 @@ gui-button[data-icon-size="32"] {
   gui-button button {
     .theme_button();
   }
+  gui-button button:focus {
+    outline: @gui_focus_outline;
+  }
   gui-button button.gui-active,
   gui-button button:active {
     .theme_button_active();
@@ -675,6 +680,10 @@ gui-checkbox {
     line-height: 12px;
     color : @gui_input_foreground_color;
     font-family: Arial;
+  }
+  gui-radio input:focus,
+  gui-checkbox input:focus {
+    outline: @gui_focus_outline;
   }
 
   gui-radio input {
@@ -725,6 +734,9 @@ gui-select {
   gui-select select:disabled {
     .theme_text_input_disabled();
   }
+  gui-select select:focus {
+    outline: @gui_focus_outline;
+  }
 
   gui-select:before {
     right: 1px;
@@ -755,6 +767,9 @@ gui-select {
 gui-select-list select {
   .theme_text_input();
 }
+  gui-select-list select:focus {
+    outline: @gui_focus_outline;
+  }
 gui-select-list select:disabled {
   .theme_text_input_disabled();
 }
@@ -853,6 +868,9 @@ gui-switch {
   gui-switch button {
     .theme_button();
   }
+  gui-switch button:focus {
+    outline: @gui_focus_outline;
+  }
 
   gui-switch > label > div {
     margin-left : @gui_base_padding;
@@ -893,6 +911,10 @@ gui-text {
   gui-text input:disabled {
     .theme_text_input_disabled();
   }
+  gui-password input:focus,
+  gui-text input:focus {
+    outline: @gui_focus_outline;
+  }
 
   gui-password[data-disabled="true"] label,
   gui-text[data-disabled="true"] label {
@@ -903,6 +925,9 @@ gui-text {
 /* Text Area */
   gui-textarea textarea {
     .theme_text_input();
+  }
+  gui-textarea textarea:focus {
+    outline: @gui_focus_outline;
   }
   gui-textarea textarea:disabled {
     .theme_text_input_disabled();
@@ -938,6 +963,9 @@ gui-input-modal button {
   padding-left : 8px;
   padding-right : 8px;
 }
+  gui-input-modal button:focus {
+    outline: @gui_focus_outline;
+  }
 
 /**
  * ===========================================================================
@@ -1060,6 +1088,9 @@ gui-icon-view {
   border : 1px solid @gui_input_border_color;
   padding : @gui_base_padding;
 }
+  gui-icon-view.gui-element-focused {
+    outline: @gui_focus_outline;
+  }
   gui-icon-view-entry {
     cursor : pointer;
     margin : 2px;
@@ -1088,6 +1119,9 @@ gui-list-view {
   background-color : @gui_input_background_color;
   border : 1px solid @gui_input_border_color;
 }
+  gui-list-view.gui-element-focused {
+    outline: @gui_focus_outline;
+  }
   gui-list-view-head {
     background-color : @gui_background_color;
   }
@@ -1131,6 +1165,9 @@ gui-tree-view {
   background-color : @gui_input_background_color;
   border : 1px solid @gui_input_border_color;
 }
+    gui-tree-view.gui-element-focused {
+      outline: @gui_focus_outline;
+    }
     gui-tree-view-entry.dnd-over > div {
       font-weight : bold;
       text-decoration : underline;
