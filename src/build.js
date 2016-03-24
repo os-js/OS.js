@@ -402,40 +402,23 @@
    * Enable/Disable given package
    */
   function togglePackage(grunt, packageName, enable) {
-    var packages = readPackageMetadata(grunt, PATHS.packages, true);
-    var found;
-
-    Object.keys(packages).forEach(function(iter) {
-      if ( packageName.match(/\//) ) {
-        if ( packageName === iter ) {
-          found = packages[iter];
-        }
-      } else {
-        if ( iter.split('/')[1] === packageName ) {
-          found = packages[iter];
-        }
+    var current = getConfigPath(grunt, 'packages.ForceEnable') || [];
+    if ( enable ) {
+      if ( current.indexOf(packageName) < 0 ) {
+        current.push(packageName);
       }
-      return !!found;
-    });
-
-    if ( found ) {
-      var src = _path.join(PATHS.packages, found.path, 'metadata.json');
-      if ( _fs.existsSync(src) ) {
-        console.log(enable ? 'Enabling' : 'Disabling', 'package', found.path);
-
-        var jsn = JSON.parse(_fs.readFileSync(src));
-        jsn.enabled = enable ? null : false;
-        removeNulls(jsn);
-
-        _fs.writeFileSync(src, JSON.stringify(jsn, null, 2));
-
-        return;
+    } else {
+      var idx = current.indexOf(packageName);
+      if ( idx >= 0 ) {
+        current.splice(idx, 1);
       }
     }
 
-    grunt.fail.fatal('Package ' + packageName + ' not found!');
-
-    console.log(found);
+    setConfigPath(grunt, 'packages.ForceEnable', {
+      packages: {
+        ForceEnable: current
+      }
+    }, true);
   }
 
   /**
@@ -560,11 +543,12 @@
     PackageException.prototype = Object.create(Error.prototype);
     PackageException.constructor = Error;
 
-    function check(json, all) {
+    function check(grunt, json, all, pn) {
       if ( !json || !Object.keys(json).length ) {
         throw new PackageException('Package manifest is empty');
       }
-      if ( !all && json.enabled === false || json.enabled === 'false' ) {
+      var current = getConfigPath(grunt, 'packages.ForceEnable') || [];
+      if ( !all && ((json.enabled === false || json.enabled === 'false') && current.indexOf(pn) < 0) ) {
         throw new PackageException('Package is disabled');
       }
       if ( !json.className ) {
@@ -589,7 +573,7 @@
             try {
               var json = JSON.parse(raw);
 
-              if ( check(json, all) ) {
+              if ( check(grunt, json, all, p) ) {
                 list[name] = json;
               }
 
