@@ -402,21 +402,35 @@
    * Enable/Disable given package
    */
   function togglePackage(grunt, packageName, enable) {
-    var current = getConfigPath(grunt, 'packages.ForceEnable') || [];
+    var currentEnabled = getConfigPath(grunt, 'packages.ForceEnable') || [];
+    var currentDisabled = getConfigPath(grunt, 'packages.ForceDisable') || [];
+
+    var idx;
     if ( enable ) {
-      if ( current.indexOf(packageName) < 0 ) {
-        current.push(packageName);
+      if ( currentEnabled.indexOf(packageName) < 0 ) {
+        currentEnabled.push(packageName);
+      }
+
+      idx = currentDisabled.indexOf(packageName);
+      if ( idx >= 0 ) {
+        currentDisabled.splice(idx, 1);
       }
     } else {
-      var idx = current.indexOf(packageName);
+      idx = currentEnabled.indexOf(packageName);
       if ( idx >= 0 ) {
-        current.splice(idx, 1);
+        currentEnabled.splice(idx, 1);
+      }
+
+      idx = currentDisabled.indexOf(packageName);
+      if ( idx < 0 ) {
+        currentDisabled.push(packageName);
       }
     }
 
-    setConfigPath(grunt, 'packages.ForceEnable', {
+    setConfigPath(grunt, 'packages', {
       packages: {
-        ForceEnable: current
+        ForceEnable: currentEnabled,
+        ForceDisable: currentDisabled
       }
     }, true);
   }
@@ -547,10 +561,21 @@
       if ( !json || !Object.keys(json).length ) {
         throw new PackageException('Package manifest is empty');
       }
-      var current = getConfigPath(grunt, 'packages.ForceEnable') || [];
-      if ( !all && ((json.enabled === false || json.enabled === 'false') && current.indexOf(pn) < 0) ) {
-        throw new PackageException('Package is disabled');
+      var currentEnabled = getConfigPath(grunt, 'packages.ForceEnable') || [];
+      var currentDisabled = getConfigPath(grunt, 'packages.ForceDisable') || [];
+
+      if ( !all ) {
+        if ( String(json.enabled) === 'false' ) {
+          if ( currentEnabled.indexOf(pn) < 0 ) {
+            throw new PackageException('Package is disabled');
+          }
+        } else {
+          if ( currentDisabled.indexOf(pn) >= 0 ) {
+            throw new PackageException('Package is disabled (by user config)');
+          }
+        }
       }
+
       if ( !json.className ) {
         throw new PackageException('Package is missing className');
       }

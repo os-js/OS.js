@@ -9,7 +9,8 @@
   "repositories": ["default"],
 
   "packages": {
-    "ForceEnable": []
+    "ForceEnable": [],
+    "forceDisable": []
   },
 
   "mime": {
