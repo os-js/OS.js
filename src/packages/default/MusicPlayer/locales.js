@@ -176,7 +176,7 @@
       'Playback aborted' : 'Воспроизведение прервано',
       'Network or communication error' : 'Ошибка соединения',
       'Decoding failed. Corruption or unsupported media' : 'Не удалось декодировать файл. Файл поврежден или данынй формат не поддерживается',
-      'Media source not supported' : 'Медиа этого типа не поддерживается',
+      'Media source not supported' : 'Тип файла не поддерживается',
       'Failed to play file' : 'Ошибка воспроизведения',
       'Artist' : 'Артист',
       'Album' : 'Альбом',
