@@ -700,6 +700,19 @@
   //
 
   /**
+   * Finds a GUI Element by ID from Scheme.
+   *
+   * This is just a shortcut method
+   *
+   * @param     String      id        The value of element 'data-id' parameter
+   *
+   * @method Window::_find()
+   */
+  Window.prototype._find = function(id) {
+    return this._scheme ? this._scheme.find(id) : null;
+  };
+
+  /**
    * Adds a hook (internal events)
    *
    * @param   String    k       Hook name: focus, blur, destroy
