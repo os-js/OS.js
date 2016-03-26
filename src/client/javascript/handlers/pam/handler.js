@@ -60,7 +60,10 @@
    * Override default init() method
    */
   PAMHandler.prototype.init = function(callback) {
-    return this._initLogin(callback);
+    var self = this;
+    return OSjs.Core._Handler.prototype.init.call(this, function() {
+      self.initLoginScreen(callback);
+    });
   };
 
   /**
