@@ -421,13 +421,24 @@
    * @param   Window      win       OS.js Window
    * @param   String      id        Element ID (data-id)
    * @param   DOMElement  root      (Optional) Root Node
+   * @param   boolean     all       (Optional) Perform `querySelectorAll`
    *
    * @return  UIElement
    * @method  Scheme::find()
    */
-  UIScheme.prototype.findByQuery = function(win, query, root) {
+  UIScheme.prototype.findByQuery = function(win, query, root, all) {
     root = this._findRoot(win, root);
-    var el = root.querySelector(query);
+
+    var el;
+    var self = this;
+
+    if ( all ) {
+      el = root.querySelectorAll(query).map(function(e) {
+        return self.get(e, query);
+      });
+    }
+
+    el = root.querySelector(query);
     return this.get(el, query);
   };
 

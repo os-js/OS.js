@@ -702,14 +702,27 @@
   /**
    * Finds a GUI Element by ID from Scheme.
    *
-   * This is just a shortcut method
+   * THIS IS JUST A SHORTCUT METHOD FROM THE UI SCHEME CLASS
    *
    * @param     String      id        The value of element 'data-id' parameter
    *
+   * @see Scheme::find()
    * @method Window::_find()
    */
   Window.prototype._find = function(id) {
     return this._scheme ? this._scheme.find(this, id) : null;
+  };
+
+  /**
+   * Finds a GUI Element by ID from Scheme.
+   *
+   * THIS IS JUST A SHORTCUT METHOD FROM THE UI SCHEME CLASS
+   *
+   * @see Scheme::findByQuery()
+   * @method Window::_findByQuery()
+   */
+  Window.prototype._findByQuery = function(q, root, all) {
+    return this._scheme ? this._scheme.findByQuery(this, q, root, all) : null;
   };
 
   /**
