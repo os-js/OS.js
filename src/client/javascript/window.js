@@ -709,7 +709,7 @@
    * @method Window::_find()
    */
   Window.prototype._find = function(id) {
-    return this._scheme ? this._scheme.find(id) : null;
+    return this._scheme ? this._scheme.find(this, id) : null;
   };
 
   /**
