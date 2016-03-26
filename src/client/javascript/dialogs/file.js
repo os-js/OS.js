@@ -236,7 +236,11 @@
 
     function resetLastSelected() {
       var rootPath = VFS.getRootFromPath(lastDir);
-      self.scheme.find(self, 'ModuleSelect').set('value', rootPath);
+      try {
+        self.scheme.find(self, 'ModuleSelect').set('value', rootPath);
+      } catch ( e ) {
+        console.warn('FileDialog::changePath()', 'resetLastSelection()', e);
+      }
     }
 
     this._toggleLoading(true);
