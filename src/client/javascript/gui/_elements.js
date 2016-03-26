@@ -252,11 +252,14 @@
   UIElement.prototype.append = function(el) {
     if ( el instanceof UIElement ) {
       el = el.$element;
+    } else if ( typeof el === 'string' || typeof el === 'number' ) {
+      el = document.createTextNode(String(el));
     }
 
     var outer = document.createElement('div');
     outer.appendChild(el);
-    this._append(el);
+
+    this._append(outer);
     outer = null;
 
     return this;
@@ -281,11 +284,13 @@
   };
 
   UIElement.prototype._append = function(el, scheme, win, args) {
-    OSjs.GUI.Scheme.parseNode(scheme, win, el, null, args);
+    if ( el instanceof Element ) {
+      OSjs.GUI.Scheme.parseNode(scheme, win, el, null, args);
+    }
 
     // Move elements over
-    while ( el.children.length ) {
-      this.$element.appendChild(el.children[0]);
+    while ( el.childNodes.length ) {
+      this.$element.appendChild(el.childNodes[0]);
     }
 
     el = null;
