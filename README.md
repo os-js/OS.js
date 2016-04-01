@@ -36,5 +36,5 @@ Manuals, Tutorials and API documentation can be found on the [doc section](https
 
 ## Links
 
-[Author](http://andersevenrud.github.io/), [Community](http://community.os.js.org/), [YouTube](https://www.youtube.com/playlist?list=PLzC5Z5D-YLyEoYXWrxplUIek5uRyF92iG), [Twitter](https://twitter.com/andersevenrud), [Google+](https://plus.google.com/b/113399210633478618934/113399210633478618934), [Facebook](https://www.facebook.com/pages/OSjs/226644300734574), [Reddit](http://www.reddit.com/r/osjs), [OpenHub](https://www.openhub.net/p/OS_js), [Google Groups](https://groups.google.com/forum/#!forum/osjsplatform)
+[Author](http://andersevenrud.github.io/), [Community](http://community.os.js.org/), [YouTube](https://www.youtube.com/playlist?list=PLzC5Z5D-YLyEoYXWrxplUIek5uRyF92iG), [Twitter](https://twitter.com/andersevenrud), [Google+](https://plus.google.com/b/113399210633478618934/113399210633478618934), [Facebook](https://www.facebook.com/os.js.org), [Reddit](http://www.reddit.com/r/osjs), [OpenHub](https://www.openhub.net/p/OS_js), [Google Groups](https://groups.google.com/forum/#!forum/osjsplatform)
 
