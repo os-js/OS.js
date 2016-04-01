@@ -340,7 +340,7 @@
         return _sessions.set(sid, k, v === null ? null : String(v));
       },
       get: function(k, v) {
-        return _sessions.get(sid, k);
+        return _sessions.get(sid, k)[0];
       }
     };
 
