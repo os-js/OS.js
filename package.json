@@ -30,7 +30,7 @@
     "grunt": ">=0.4.5",
     "time-grunt": ">=1.3.0",
     "less": ">=2.6.1",
-    "cookies": ">=0.6.1",
+    "simple-session": ">=0.0.1",
     "node-fs-extra": ">=0.8.1",
     "formidable": ">=1.0.17",
     "request": ">=2.69.0"

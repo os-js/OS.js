@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(_osjs, _http, _path, _url, _fs, _qs, _multipart, Cookies) {
+(function(_osjs, _http, _path, _url, _fs, _qs, _multipart, _sessions) {
   'use strict';
 
   var instance, server, proxy, httpProxy;
@@ -331,11 +331,18 @@
       return;
     }
 
-    var url     = _url.parse(request.url, true);
-    var path    = decodeURIComponent(url.pathname);
-    var cookies = new Cookies(request, response);
+    var url       = _url.parse(request.url, true);
+    var path      = decodeURIComponent(url.pathname);
+    var sid       = _sessions.init(request, response);
 
-    request.cookies = cookies;
+    request.session = {
+      set: function(k, v) {
+        return _sessions.set(sid, k, v === null ? null : String(v));
+      },
+      get: function(k, v) {
+        return _sessions.get(sid, k);
+      }
+    };
 
     if ( path === '/' ) {
       path += 'index.html';
@@ -442,5 +449,5 @@
   require('node-fs-extra'),
   require('querystring'),
   require('formidable'),
-  require('cookies')
+  require('simple-session')
 );
