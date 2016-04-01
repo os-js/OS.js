@@ -2,6 +2,10 @@
 
 New wallpaper, UI improvements, bugfixes and many improvements to the build system(s). Also new developer features!
 
+**API CHANGE**: http://community.os.js.org/t/notice-updated-gui-methods/33
+
+**API CHANGE**: http://community.os.js.org/t/notice-recent-api-changes/31
+
 * UI: New Wallpaper
 * UI: Added loading bar to boot
 * UI: Added WAI-ARIA support
