@@ -31,6 +31,14 @@
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
+  // ABSTRACTION HELPERS
+  /////////////////////////////////////////////////////////////////////////////
+
+  var _iconSizes = { // Defaults to 16x16
+    'gui-icon-view': '32x32'
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
@@ -309,7 +317,7 @@
           id: iter.id || removeExtension(iter.filename, opts),
           label: iter.filename,
           tooltip: tooltip,
-          icon: getFileIcon(iter, tagName === 'gui-icon-view' ? '32x32' : '16x16')
+          icon: getFileIcon(iter, _iconSizes[tagName] || '16x16')
         };
 
         if ( tagName === 'gui-tree-view' && iter.type === 'dir' ) {
@@ -323,7 +331,8 @@
         return row;
       }
 
-      if ( tagName === 'gui-icon-view' || tagName === 'gui-tree-view' ) {
+      // List view works a little differently
+      if ( tagName !== 'gui-list-view' ) {
         return _createEntry();
       }
 

@@ -34,6 +34,14 @@
   GUI.Elements = OSjs.GUI.Elements || {};
 
   /////////////////////////////////////////////////////////////////////////////
+  // ABSTRACTION HELPERS
+  /////////////////////////////////////////////////////////////////////////////
+
+  var _classMap = { // Defaults to (foo-bar)-entry
+    'gui-list-view': 'gui-list-view-row'
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
@@ -68,16 +76,15 @@
   }
 
   function handleKeyPress(el, ev) {
-    var classMap = {
-      'gui-list-view': 'gui-list-view-row',
-      'gui-tree-view': 'gui-tree-view-entry',
-      'gui-icon-view': 'gui-icon-view-entry'
-    };
-
     var map = {};
     var key = ev.keyCode;
     var type = el.tagName.toLowerCase();
-    var className = classMap[type];
+
+    var className = _classMap[type];
+    if ( !className ) {
+      className = type + '-entry';
+    }
+
     var root = el.querySelector(type + '-body');
     var entries = root.querySelectorAll(className);
     var count = entries.length;
