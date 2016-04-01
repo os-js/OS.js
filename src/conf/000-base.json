@@ -3,7 +3,7 @@
   "connection": "http",
 
   "client" : {
-    "Version" : "2.0-alpha73"
+    "Version" : "2.0-alpha74"
   },
 
   "repositories": ["default"],

@@ -1,3 +1,75 @@
+# 2.0.0-alpha74
+
+New wallpaper, UI improvements, bugfixes and many improvements to the build system(s). Also new developer features!
+
+* UI: New Wallpaper
+* UI: Added loading bar to boot
+* UI: Added WAI-ARIA support
+* UI: Schemes can now change window properties (like dimensions)
+* GUI: Fixed menu not disappearing in certain cases
+* GUI: Added `getNextElement()` helper method
+* GUI: Better `show()` and `hide()` methods for GUI Elements
+* GUI: GUI Elements now has `appendHTML()` method
+* GUI: GUI Elements now has `remove()` and `empty()` methods
+* GUI: `append()` in GUI Elements now builds items correctly (when doing it dynamically)
+* GUI: Added minimum sizes to some containers where missing
+* GUI: gui-image src checked if null
+* GUI: Fixed radios not getting unselected properly
+* GUI: Better Scheme APIs
+* GUI: Added DnD support to TreeView
+* GUI: Updated gui-richtext error handling
+* GUI: Updated gui-paned-view resize events to be more precise
+* GUI: All elements now support clipboard
+* GUI: Better DataView abstractions for ease of development (extensions)
+* API: Updated cURL method with new functionality
+* API: Added onhashchange support for application messaging
+* API: Deprecated `Application::_call()` in favour of `Application::_api()`
+* API: `API.call()` now has pattern `=> fn(err, res)`
+* API: Moved `API::createDraggable()` to `GUI::Helpers::createDraggable()`
+* API: Moved `API::createDroppable()` to `GUI::Helpers::createDroppable()`
+* Dialogs: Prevent HTML injection in confirm dialog
+* Dialogs: Focus the 'abort' button by default
+* Windows: Updated next tab support
+* Windows: Added `_find()` shortcut for scheme
+* Windows: Added `_findByQuery()` shortcut for scheme
+* Utils: Better $hasClass
+* ProcessViewer: Remaned forgotten file
+* MusicPlayer: Updated compability
+* FileManager: Now has clipboard support
+* FileManager: Added new keyboard shortcuts
+* Calculator: Focus is now always on the input field
+* locales: Added missing it_IT translations
+* locales: Improved ru_RU translations
+* package-manager: Better extension support
+* package-manager: Updated user-installed package support
+* platform: Updated edison support
+* build: Updated NW support
+* build: Removed all dist files, now generated from template
+* build: Updated config generation and setting
+* build: Updated manifest generation
+* build: Fixed setting configs with leading zeroes
+* build: Metadata now supports `uses` property
+* build: Metadata now supports `depends` property
+* build: Apache files now generated with proxies from config
+* build: Enabling/Disabling packages now happends in config, not manifest
+* server-node: Added 'rawtype' option to `VFS::write()`
+* server-node: Prevent crash when loading of extension fails
+* server-node: Added support for proxies
+* server-node: Now supports spawning child processes
+* server-node: Now uses proper sessions via cookie
+* config: Updated to relative paths
+* misc: Updated Travis support
+* misc: Updated Vagrant support
+* misc: Updated Docker support
+* misc: Updated packages.json dependencies
+* misc: Updated MIME database
+* misc: Cleanups
+* doc: Updated CONTRIBUTING
+* doc: Updated README
+* doc: Updated INSTALL
+* doc: Updated homepage
+* doc: Updated docs
+
 # 2.0.0-alpha73
 
 A ton of fixes, improvements and developer support updates!
