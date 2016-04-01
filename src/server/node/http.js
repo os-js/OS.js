@@ -339,8 +339,12 @@
       set: function(k, v) {
         return _sessions.set(sid, k, v === null ? null : String(v));
       },
-      get: function(k, v) {
-        return _sessions.get(sid, k)[0];
+      get: function(k) {
+        var v = _sessions.get(sid, k);
+        if ( v !== false ) {
+          return v[0];
+        }
+        return false;
       }
     };
 

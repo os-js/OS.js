@@ -15,7 +15,7 @@ var instance = osjs.init({
 
 var response = {};
 var request = {
-  cookies: {
+  session: {
     get: function(key) {
       if ( key === 'username' ) {
         return 'demo';
@@ -367,8 +367,8 @@ describe('Node HTTP Server', function() {
 
     if ( cookie ) {
       var j = req.jar();
-      var cookie = req.cookie('username=demo');
-      j.setCookie(cookie, url);
+      var ck = req.cookie(cookie);
+      j.setCookie(ck, url);
       opts.jar = j;
     }
 
@@ -400,6 +400,7 @@ describe('Node HTTP Server', function() {
     });
   });
 
+  var cookie;
   describe('#login', function() {
     it('should return 200 with proper json result', function(done) {
       var data = {
@@ -426,6 +427,8 @@ describe('Node HTTP Server', function() {
           userSettings: body.result.userSettings,
         };
         assert.equal(JSON.stringify(exp), JSON.stringify(expc));
+
+        cookie = res.headers['set-cookie'][0];
         done();
       });
     });
@@ -438,13 +441,15 @@ describe('Node HTTP Server', function() {
         method: 'test'
       };
 
+      var sessid = null;
+
       post(url + '/API/application', data, function(err, res, body) {
         assert.equal(false, err);
         assert.equal(200, res.statusCode);
         assert.equal(false, body.error);
         assert.equal('test', body.result);
         done();
-      }, true);
+      }, cookie);
     });
   });
 
