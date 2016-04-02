@@ -27,6 +27,11 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
+
+//
+// See doc/handler-mysql.txt
+//
+
 (function(mysql, bcrypt) {
   'use strict';
 
