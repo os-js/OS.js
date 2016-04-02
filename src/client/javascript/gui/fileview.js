@@ -236,29 +236,33 @@
       typeFilter:         opts.filetype || null
     };
 
-    VFS.scandir(file, function(error, result) {
-      if ( error ) {
-        cb(error); return;
-      }
+    try {
+      VFS.scandir(file, function(error, result) {
+        if ( error ) {
+          cb(error); return;
+        }
 
-      var list = [];
-      var summary = {size: 0, directories: 0, files: 0, hidden: 0};
+        var list = [];
+        var summary = {size: 0, directories: 0, files: 0, hidden: 0};
 
-      function isHidden(iter) {
-        return (iter.filename || '').substr(0) === '.';
-      }
+        function isHidden(iter) {
+          return (iter.filename || '').substr(0) === '.';
+        }
 
-      (result || []).forEach(function(iter) {
-        list.push(oncreate(iter));
+        (result || []).forEach(function(iter) {
+          list.push(oncreate(iter));
 
-        summary.size += iter.size || 0;
-        summary.directories += iter.type === 'dir' ? 1 : 0;
-        summary.files += iter.type !== 'dir' ? 1 : 0;
-        summary.hidden += isHidden(iter) ? 1 : 0;
-      });
+          summary.size += iter.size || 0;
+          summary.directories += iter.type === 'dir' ? 1 : 0;
+          summary.files += iter.type !== 'dir' ? 1 : 0;
+          summary.hidden += isHidden(iter) ? 1 : 0;
+        });
 
-      cb(false, list, summary);
-    }, scanopts);
+        cb(false, list, summary);
+      }, scanopts);
+    } catch ( e ) {
+      cb(e);
+    }
   }
 
   function readdir(el, dir, done, sopts) {
