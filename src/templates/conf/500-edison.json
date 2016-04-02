@@ -1,4 +1,5 @@
 {
+  "handler": "shadow",
   "themes": {
     "icons": ["default"],
     "styles": ["default"],
