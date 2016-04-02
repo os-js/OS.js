@@ -32,6 +32,29 @@
 
   var instance, server, proxy, httpProxy;
 
+  var colored = (function() {
+    var colors;
+
+    try {
+      colors = require('colors');
+    } catch ( e ) {}
+
+    return function() {
+      var args = Array.prototype.slice.call(arguments);
+      var str = args.shift();
+
+      if ( colors ) {
+        var ref = colors;
+        args.forEach(function(a) {
+          ref = ref[a];
+        });
+        return ref(str);
+      } else {
+        return str;
+      }
+    };
+  })();
+
   try {
     httpProxy = require('http-proxy');
     proxy = httpProxy.createProxyServer({});
@@ -49,7 +72,9 @@
    */
   function respond(data, mime, response, headers, code, pipeFile) {
     if ( instance.config.logging ) {
-      log(timestamp(), '>>>', code, mime, pipeFile || typeof data);
+      var okCodes = [200, 301, 302, 304];
+
+      log(timestamp(), colored('>>>', 'grey', 'bold'), colored(String(code) + ' ' + mime, okCodes.indexOf(code) >= 0 ? 'green' : 'red'), (pipeFile ? '=> ' + colored(pipeFile.replace(instance.setup.root, '/'), 'magenta') : typeof data));
     }
 
     function done() {
@@ -353,7 +378,7 @@
     }
 
     if ( instance.config.logging ) {
-      log(timestamp(), '<<<', path);
+      log(timestamp(), colored('<<<', 'bold'), path);
     }
 
     if ( instance.handler && instance.handler.onRequestStart ) {
