@@ -50,6 +50,7 @@ if [ "$TEMPLATE" == "arduino" ]; then
   mkdir -p $OUTDIR/data/usr/lib/lua/osjs
 fi
 cp -r $SRCDIR/* $OUTDIR/data/osjs/
+cp -r src/templates/opkg/SYSTEM/* $OUTDIR/data/
 
 echo "[opkg] Packing..."
 
