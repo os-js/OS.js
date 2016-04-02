@@ -29,6 +29,7 @@
  * @licence Simplified BSD License
  */
 (function() {
+  'use strict';
 
   //
   // Here you can extend the API and VFS namespaces
