@@ -1535,21 +1535,23 @@
       var points = Object.keys(config);
       points.forEach(function(key) {
         var iter = config[key];
-        console.info('VFS', 'Registering mountpoint', key, iter);
+        if ( iter.enabled !== false ) {
+          console.info('VFS', 'Registering mountpoint', key, iter);
 
-        OSjs.VFS.Modules[key] = _createMountpoint({
-          readOnly: (typeof iter.readOnly === 'undefined') ? false : (iter.readOnly === true),
-          description: iter.description || key,
-          icon: iter.icon || 'devices/harddrive.png',
-          root: key + ':///',
-          visible: true,
-          internal: true,
-          match: createMatch(key + '://'),
-          request: function mountpointRequest() {
-            // This module uses the same API as public
-            OSjs.VFS.Transports.Internal.request.apply(null, arguments);
-          }
-        });
+          OSjs.VFS.Modules[key] = _createMountpoint({
+            readOnly: (typeof iter.readOnly === 'undefined') ? false : (iter.readOnly === true),
+            description: iter.description || key,
+            icon: iter.icon || 'devices/harddrive.png',
+            root: key + ':///',
+            visible: true,
+            internal: true,
+            match: createMatch(key + '://'),
+            request: function mountpointRequest() {
+              // This module uses the same API as public
+              OSjs.VFS.Transports.Internal.request.apply(null, arguments);
+            }
+          });
+        }
       });
     }
   }
