@@ -768,6 +768,7 @@
       if ( settings ) {
         if ( settings.language ) {
           OSjs.Core.getSettingsManager().set('Core', 'Locale', settings.language);
+          API.setLocale(settings.language);
         }
         this._settings.set(null, settings, save);
       }
