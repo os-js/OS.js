@@ -429,7 +429,7 @@
     }
 
     if ( typeof filtered === 'undefined' || filtered === true ) {
-      var pkgs = this.packages;
+      var pkgs = Utils.cloneObject(this.packages);
       var result = {};
       Object.keys(pkgs).forEach(function(name) {
         var iter = pkgs[name];
@@ -444,7 +444,7 @@
       return result;
     }
 
-    return this.packages;
+    return Utils.cloneObject(this.packages);
   };
 
   /**
@@ -468,6 +468,40 @@
       }
     });
     return list;
+  };
+
+  /**
+   * Add a dummy package (useful for having shortcuts in the launcher menu)
+   *
+   * @param   String      n             Name of your package
+   * @param   String      title         The display title
+   * @param   String      icon          The display icon
+   * @param   String      launchName    The package (application) you want to launch
+   * @param   Object      launchArgs    Arguments to send to the spawned application
+   *
+   * @return  void
+   */
+  PackageManager.prototype.addDummyPackage = function(n, title, icon, launchName, launchArgs) {
+    if ( this.packages[n] || OSjs.Applications[n] ) {
+      throw new Error('A package already exists with this name!');
+    }
+    if ( !launchName ) {
+      throw new TypeError('You need to specify a launchName');
+    }
+
+    this.packages[n] = {
+      type: 'application',
+      className: n,
+      description: title,
+      name: title,
+      icon: icon,
+      cateogry: 'other',
+      scope: 'system'
+    };
+
+    OSjs.Applications[n] = function() {
+      API.launch(launchName, launchArgs || {});
+    };
   };
 
   /////////////////////////////////////////////////////////////////////////////
