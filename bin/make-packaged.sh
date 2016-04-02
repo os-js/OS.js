@@ -51,7 +51,8 @@ npm install --production &>/dev/null
 
 if [ "$TEMPLATE" == "intel-edison" ]; then
 #  npm install mraa
-  npm install userid passwd-linux wireless-tools
+  npm install wireless-tools
+  npm install git+https://github.com/andersevenrud/passwd-linux
 fi
 
 echo "[image] Building..."

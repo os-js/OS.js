@@ -1,5 +1,11 @@
 # OS.js on Intel Edison
 
+## Dependencies
+
+```
+$ npm install -g userid
+```
+
 ## Manual installation
 
 Just follow the manual installation docs and you should be able to run without any problems.

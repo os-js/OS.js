@@ -4,7 +4,7 @@ With the *shadow* handler you can enable a login prompt for OS.js and connect it
 
 ```
 # Install node dependencies (you need shadow development package on your system)
-$ npm install passwd-linux
+$ npm install git+https://github.com/andersevenrud/passwd-linux
 $ npm install userid
 
 # Set up groups
