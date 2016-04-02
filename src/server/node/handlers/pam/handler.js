@@ -32,124 +32,11 @@
  */
 
 //
-// See doc/pam-handler.txt
+// See doc/handler-pam.txt
 //
 
-(function(pam, userid, fs, path) {
+(function(_pam, _userid) {
   'use strict';
-
-  function getSettingsPath(cfg, username) {
-    return cfg.settings.replace('%USERNAME%', username);
-  }
-
-  function authenticate(cfg, login, callback) {
-
-    function getUserGroups(cb) {
-      fs.readFile(cfg.groups, function(err, gdata) {
-        var list = {};
-        if ( !err ) {
-          try {
-            list = JSON.parse(gdata.toString());
-          } catch ( e ) {}
-        }
-
-        cb(list[login.username] || []);
-      });
-    }
-
-    function getUserSettings(cb) {
-      fs.readFile(getSettingsPath(cfg, login.username), function(err, sdata) {
-        var settings = {};
-        if ( !err && sdata ) {
-          try {
-            settings = JSON.parse(sdata.toString());
-          } catch ( e ) {}
-        }
-        cb(settings);
-      });
-    }
-
-    function getUserBlacklist(cb) {
-      fs.readFile(cfg.blacklist, function(err, bdata) {
-        var blacklist = [];
-
-        if ( !err && bdata ) {
-          try {
-            blacklist = JSON.parse(bdata)[login.username] || [];
-          } catch ( e ) {}
-        }
-
-        cb(blacklist);
-      });
-    }
-
-    pam.authenticate(login.username, login.password, function(err) {
-      if ( err ) {
-        callback(err);
-      } else {
-        getUserSettings(function(settings) {
-          getUserGroups(function(groups) {
-            getUserBlacklist(function(blacklist) {
-              callback(false, {
-                id: userid.uid(login.username),
-                groups: groups,
-                name: login.username
-              }, settings, blacklist);
-            });
-          });
-        });
-      }
-    });
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
-  // API
-  /////////////////////////////////////////////////////////////////////////////
-
-  var API = {
-    login: function(login, callback, request, response, config, handler) {
-      var cfg = config.handlers.pam;
-      authenticate(cfg, login, function(err, data, settings, blacklist) {
-        if ( err ) {
-          callback(err);
-          return;
-        }
-
-        var d = {
-          id:       data.id,
-          username: login.username,
-          name:     data.name,
-          groups:   data.groups
-        };
-
-        handler.onLogin(request, response, {
-          userData: d,
-          userSettings: settings,
-          blacklistedPackages: blacklist
-        }, callback);
-      });
-    },
-
-    logout: function(args, callback, request, response, config, handler) {
-      handler.onLogout(request, response, callback);
-    },
-
-    settings: function(args, callback, request, response, config, handler) {
-      var settings = args.settings;
-      var uname = handler.getUserName(request, response);
-      var data = JSON.stringify(settings);
-
-      var cfg = config.handlers.pam;
-      var spath = getSettingsPath(cfg, uname);
-
-      // Make sure directory exists before writing
-      fs.mkdir(path.dirname(spath), function() {
-        fs.writeFile(spath, data,  function(err) {
-          callback(err || false, !!err);
-        });
-      });
-    }
-  };
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
@@ -162,7 +49,29 @@
    */
   exports.register = function(instance, DefaultHandler) {
     function PAMHandler() {
-      DefaultHandler.call(this, instance, API);
+      DefaultHandler.call(this, instance, {
+        login: function(login, callback, request, response, config, handler) {
+          var cfg = config.handlers.pam;
+          _pam.authenticate(login.username, login.password, function(err) {
+            if ( err ) {
+              callback(err);
+            } else {
+              handler.onSystemLogin(request, response, cfg, login, function(cb) {
+                cb(_userid.uid(login.username));
+              }, callback);
+            }
+          });
+        },
+
+        logout: function(args, callback, request, response, config, handler) {
+          handler.onLogout(request, response, callback);
+        },
+
+        settings: function(args, callback, request, response, config, handler) {
+          var cfg = config.handlers.pam;
+          handler.onSystemSettings(request, response, cfg, args.settings, callback);
+        }
+      });
     }
 
     PAMHandler.prototype = Object.create(DefaultHandler.prototype);
@@ -173,7 +82,5 @@
 
 })(
   require('authenticate-pam'),
-  require('userid'),
-  require('fs'),
-  require('path')
+  require('userid')
 );
