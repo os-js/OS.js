@@ -31,6 +31,10 @@
  * @licence Simplified BSD License
  */
 
+//
+// See doc/handler-mysql.txt
+//
+
 (function(API, Utils, VFS) {
   'use strict';
 

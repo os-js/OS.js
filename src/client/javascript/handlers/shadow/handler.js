@@ -32,7 +32,7 @@
  */
 
 //
-// See doc/pam-handler.txt
+// See doc/handler-shadow.txt
 //
 
 (function(API, Utils, VFS) {
