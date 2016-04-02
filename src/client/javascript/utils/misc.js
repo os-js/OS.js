@@ -323,6 +323,9 @@
    * @api     OSjs.Utils.asyncs()
    */
   OSjs.Utils.asyncs = function(queue, onentry, ondone) {
+    onentry = onentry || function(e, i, n) { n(); };
+    ondone  = ondone  || function() {};
+
     function next(i) {
       if ( i >= queue.length ) {
         ondone();
