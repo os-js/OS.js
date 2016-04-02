@@ -50,7 +50,7 @@ git checkout -- dist &>/dev/null
 npm install --production &>/dev/null
 
 if [ "$TEMPLATE" == "intel-edison" ]; then
-  npm install mraa
+#  npm install mraa
   npm install userid passwd-linux
 fi
 
