@@ -212,16 +212,10 @@
       function __runQueue(done) {
         console.debug('PackageManager::generateUserMetadata()', '__runQueue()');
 
-        function __next(i) {
-          if ( i >= queue.length ) {
-            done();
-            return;
-          }
-
-          var iter = queue[i];
+        Utils.asyncs(queue, function(iter, i, next) {
           var file = new OSjs.VFS.File(iter, 'application/json');
           var rpath = iter.replace(/\/metadata\.json$/, '');
-          console.debug('PackageManager::generateUserMetadata()', '__runQueue()', '__next()', queue.length, iter);
+          console.debug('PackageManager::generateUserMetadata()', '__runQueue()', 'next()', queue.length, iter);
 
           OSjs.VFS.read(file, function(err, resp) {
             var meta = OSjs.Utils.fixJSON(resp);
@@ -239,11 +233,9 @@
               found[meta.className] = meta;
             }
 
-            __next(i + 1);
+            next();
           }, {type: 'text'});
-        }
-
-        __next(0);
+        }, done);
       }
 
       console.debug('PackageManager::generateUserMetadata()', '_enumPackages()');

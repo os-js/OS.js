@@ -432,27 +432,20 @@
     var manifest =  OSjs.Core.getMetadata();
 
     console.group('initExtensions()', exts);
-
-    function next(i) {
-      if ( i >= exts.length ) {
-        console.groupEnd();
-        callback();
-        return;
-      }
-
+    OSjs.Utils.asyncs(exts, function(entry, idx, next) {
       try {
-        var m = manifest[exts[i]];
-
-        OSjs.Extensions[exts[i]].init(m, function() {
-          next(i + 1);
+        var m = manifest[entry];
+        OSjs.Extensions[entry].init(m, function() {
+          next();
         });
       } catch ( e ) {
         console.warn('Extension init failed', e.stack, e);
-        next(i + 1);
+        next();
       }
-    }
-
-    next(0);
+    }, function() {
+      console.groupEnd();
+      callback();
+    });
   }
 
   /**

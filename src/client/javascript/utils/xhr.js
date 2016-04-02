@@ -322,31 +322,16 @@
 
       var successes  = [];
       var failed     = [];
-      var index      = 0;
 
       console.group('Utils::preload()', list);
 
-      function finished() {
-        console.groupEnd();
-
-        (callback || function() {})(list.length, failed, successes);
-      }
-
-      (function _next() {
-        if ( index >= list.length ) {
-          finished();
-          return;
-        }
-
+      OSjs.Utils.asyncs(list, function(item, index, next) {
         function _loaded(success, src) {
-          index++;
-
           (callbackProgress || function() {})(index, list.length);
           (success ? successes : failed).push(src);
-          _next();
+          next();
         }
 
-        var item = list[index];
         if ( item ) {
           if ( _LOADED[item.src] === true && (item.force !== true && args.force !== true) ) {
             _loaded(true);
@@ -364,10 +349,12 @@
             createScript(src, _loaded);
           }
         } else {
-          _next();
+          next();
         }
-
-      })();
+      }, function() {
+        console.groupEnd();
+        (callback || function() {})(list.length, failed, successes);
+      });
     };
   })();
 

@@ -738,30 +738,7 @@
     onError     = onError     || function() {};
     onFinished  = onFinished  || function() {};
 
-    function _onSuccess(app, metadata, appName, appArgs) {
-      onSuccess(app, metadata, appName, appArgs);
-      _onNext();
-    }
-
-    function _onError(err, appName, appArgs, exc) {
-      console.warn('doLaunchProcessList() _onError()', err);
-      if ( exc ) {
-        console.warn(exc, exc.stack);
-      }
-      onError(err, appName, appArgs);
-      _onNext();
-    }
-
-    var current = 0;
-    function _onNext() {
-      if ( current >= list.length ) {
-        onFinished();
-        return;
-      }
-
-      var s = list[current];
-      current++;
-
+    OSjs.Utils.asyncs(list, function(s, current, next) {
       if ( typeof s === 'string' ) {
         var args = {};
         var spl = s.split('@');
@@ -782,18 +759,20 @@
       var aargs = (typeof s.args === 'undefined') ? {} : (s.args || {});
 
       if ( !aname ) {
-        console.warn('doLaunchProcessList() _onNext()', 'No application name defined');
+        console.warn('doLaunchProcessList() next()', 'No application name defined');
+        next();
         return;
       }
 
       OSjs.API.launch(aname, aargs, function(app, metadata) {
-        _onSuccess(app, metadata, aname, aargs);
+        onSuccess(app, metadata, aname, aargs);
+        next();
       }, function(err, name, args) {
-        _onError(err, name, args);
+        console.warn('doLaunchProcessList() _onError()', err);
+        onError(err, name, args);
+        next();
       });
-    }
-
-    _onNext();
+    }, onFinished);
   }
 
   /////////////////////////////////////////////////////////////////////////////
