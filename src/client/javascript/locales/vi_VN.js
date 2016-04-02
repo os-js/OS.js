@@ -70,7 +70,7 @@
     'ERR_OPERATION_TIMEOUT_FMT'   : 'Hết thời gian phản hồi trong ({0})',
 
     'ERR_ARGUMENT_FMT'    : '\'{0}\' dự kiến \'{1}\' là một \'{2}\',cho \'{3}\'',
-    
+
     // Window
     'ERR_WIN_DUPLICATE_FMT' : 'Bạn đã có một cửa sổ có tên \'{0}\'',
     'WINDOW_MINIMIZE' : 'Giảm thiểu',
@@ -208,7 +208,7 @@
     'ERR_VFS_DOWNLOAD_NO_FILE': 'Không thể tải về một đường dẫn mà không có một đường dẫn',
     'ERR_VFS_DOWNLOAD_FAILED' : 'Một lỗi đã xảy ra trong khi tải về: {0}',
     'ERR_VFS_REMOTEREAD_EMPTY': 'Trả lời là rỗng',
-    
+
     'ERR_VFSMODULE_EXCEPTION'          : 'Lỗi mô-đun VFS',
     'ERR_VFSMODULE_EXCEPTION_FMT'      : 'Lỗi mô-đun VFS: {0}',
     'ERR_VFSMODULE_INVALID_METHOD'     : 'Sai phương thức VFS',
@@ -221,7 +221,7 @@
     'ERR_VFSMODULE_ALREADY_MOUNTED_FMT': 'Mô-đun VFS \'{0}\' đã được gắn',
     'ERR_VFSMODULE_NOT_MOUNTED'        : 'Mô-đun VFS chưa được gắn',
     'ERR_VFSMODULE_NOT_MOUNTED_FMT'    : 'Mô-đun VFS \'{0}\' chưa được gắn',
-    
+
     'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Đang tải xuống tập tin',
 
     'ERR_VFSMODULE_XHR_ERROR'      : 'Lỗi XHR',
@@ -268,7 +268,7 @@
     'ZIP_VENDOR_FAIL'   : 'Không tìm thấy zip.js, bạn có chắc chắn đã thiết lập nó chưa?',
     'ZIP_NO_RESOURCE'   : 'Không có nguồn zip đã được đưa ra',
     'ZIP_NO_PATH'       : 'Không có đường dẫn',
-    
+
     //
     // PackageManager
     //
@@ -407,7 +407,7 @@
     'LBL_PASSWORD': 'Mật khẩu',
     'LBL_HOST': 'Host',
     'LBL_NAMESPACE': 'Namespace'
-    
+
   };
 
 })();
