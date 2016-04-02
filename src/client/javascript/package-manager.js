@@ -476,17 +476,16 @@
    * @param   String      n             Name of your package
    * @param   String      title         The display title
    * @param   String      icon          The display icon
-   * @param   String      launchName    The package (application) you want to launch
-   * @param   Object      launchArgs    Arguments to send to the spawned application
+   * @param   Function    fn            The function to run when the package tries to launch
    *
    * @return  void
    */
-  PackageManager.prototype.addDummyPackage = function(n, title, icon, launchName, launchArgs) {
+  PackageManager.prototype.addDummyPackage = function(n, title, icon, fn) {
     if ( this.packages[n] || OSjs.Applications[n] ) {
       throw new Error('A package already exists with this name!');
     }
-    if ( !launchName ) {
-      throw new TypeError('You need to specify a launchName');
+    if ( typeof fn !== 'function' ) {
+      throw new TypeError('You need to specify a function/callback!');
     }
 
     this.packages[n] = {
@@ -499,9 +498,7 @@
       scope: 'system'
     };
 
-    OSjs.Applications[n] = function() {
-      API.launch(launchName, launchArgs || {});
-    };
+    OSjs.Applications[n] = fn;
   };
 
   /////////////////////////////////////////////////////////////////////////////
