@@ -376,7 +376,7 @@
 
     addFormFile(fd, 'upload', file);
 
-    OSjs.Core.getHandler().callAPI('FS:upload', fd, callback, options);
+    OSjs.Core.getHandler().callAPI('FS:upload', fd, callback, null, options);
   }
 
   /**
