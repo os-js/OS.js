@@ -233,6 +233,12 @@
       return pots;
     }
 
+    function isStringMatch(m, u) {
+      var rm = m.replace(/^\//, '').replace(/\/$/, '');
+      var um = u.replace(/^\//, '').replace(/\/$/, '');
+      return rm === um;
+    }
+
     if ( proxy ) {
       var proxies = instance.config.proxies;
       var stop = false;
@@ -240,12 +246,13 @@
       Object.keys(proxies).every(function(k) {
         var matcher = _getMatcher(k);
 
-        if ( typeof matcher === 'string' ? (matcher === request.url) : matcher.test(request.url) ) {
+        if ( typeof matcher === 'string' ? isStringMatch(matcher, request.url) : matcher.test(request.url) ) {
           var pots = _getOptions(request.url, matcher, proxies[k]);
 
           stop = true;
 
-          console.log('@@@ Request was caught by proxy', k, '=>', pots.target, '<=', request.url);
+          log(timestamp(), colored('<<<', 'bold'), request.url);
+          log(timestamp(), colored('>>>', 'grey', 'bold'), colored(('PROXY ' + k + ' => ' + pots.target), 'yellow'));
 
           proxy.web(request, response, pots);
         }
