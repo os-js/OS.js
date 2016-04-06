@@ -32,10 +32,6 @@
 .ApplicationArduinoCiaoConfiguratorWindow application-window-content {
 }
 
-.ApplicationArduinoCiaoConfiguratorWindow gui-button[data-id="runCiaoButton"] {
-  float: left;
-}
-
 .ApplicationArduinoCiaoConfiguratorWindow gui-button[data-id="editConfigurationButton"] {
   float: right;
 }

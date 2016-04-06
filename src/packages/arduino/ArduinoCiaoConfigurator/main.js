@@ -88,6 +88,9 @@
   };
 
 
+  //TODO boxes
+  // box alto Ciao conf (fisso)
+  // box basso Connector conf (dinamico e solo per overview)
   ApplicationArduinoCiaoConfiguratorWindow.prototype.initUI = function (scheme) {
     var self = this;
     var ciaoPath = "root:///" + "usr/lib/python2.7/ciao/conf";
@@ -137,7 +140,7 @@
             });
           }
         });*/
-        var proc = findProcess(evChange.detail); //TODO <-- how to use better.
+        //var proc = findProcess(evChange.detail); // <-- how to use better.
       }
       else {
         editConfigurationButton.set('disabled', true);
@@ -159,28 +162,9 @@
       }
     });
 
-    //TODO check if CIAO is running and edit start/stop button
-    //todo run start/stop command
+    //check if CIAO is running
     ciaoState(scheme, this);
-    //scheme.find(this, 'runCiaoButton').on('click', function (evClick) {
-    //  var cmd = {
-    //            "Start" : "run-ciao &",
-    //            "Stop" : "/usr/bin/killall -s HUP ciao.py"};
-    //
-    //  self._toggleLoading(true);
-    //
-    //  callAPI("exec", { command : cmd[evClick.currentTarget.innerText]}, function(err, res){
-    //    if(err)
-    //      alert("ERROR in Ciao launch");
-    //    else
-    //      ciaoState(scheme, self);
-    //    self._toggleLoading(false);
-    //  });
-    //});
   };
-
-  //todo delete runCiaoButton
-
 
   function ciaoState(scheme, win){
     callAPI("exec", { command : "ps | grep ciao.py"}, function(err, res){
@@ -204,23 +188,23 @@
     });
   }
 
-  function findProcess(proc){
-    callAPI('getCiaoConnector', {connector : proc}, function(err, result){
-      var resultSplitted = result.split("\n");
-      resultSplitted.forEach(function(it,index,ar) {
-        if (index > 1) {
-          console.log(proc + "is running");
-          //TODO get UI element and set color GREEN
-          return true;
-        }
-        else{
-          console.log(proc + "is not running");
-          //TODO get UI element and set color RED
-          return false;
-      }
-      });
-    });
-  }
+  //function findProcess(proc){
+  //  callAPI('getCiaoConnector', {connector : proc}, function(err, result){
+  //    var resultSplitted = result.split("\n");
+  //    resultSplitted.forEach(function(it,index,ar) {
+  //      if (index > 1) {
+  //        console.log(proc + "is running");
+  //        // get UI element and set color GREEN
+  //        return true;
+  //      }
+  //      else{
+  //        console.log(proc + "is not running");
+  //        // get UI element and set color RED
+  //        return false;
+  //    }
+  //    });
+  //  });
+  //}
 
   function createCommands(CommandsView, scheme, win, commands){
     //Delete previous cmd buttons
