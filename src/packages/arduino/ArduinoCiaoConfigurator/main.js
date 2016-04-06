@@ -1,0 +1,343 @@
+/*!
+ * OS.js - JavaScript Cloud/Web Desktop Platform
+ *
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author  Anders Evenrud <andersevenrud@gmail.com>
+ * @licence Simplified BSD License
+ */
+(function(Application, Window, Utils, API, VFS, GUI) {
+  'use strict';
+
+  /////////////////////////////////////////////////////////////////////////////
+  // WINDOWS
+  /////////////////////////////////////////////////////////////////////////////
+
+  function ApplicationArduinoCiaoConfiguratorWindow(app, metadata, scheme) {
+    Window.apply(this, ['ApplicationArduinoCiaoConfiguratorWindow', {
+      icon: metadata.icon,
+      title: metadata.name,
+      width: 800,
+      height: 600
+    }, app, scheme]);
+  }
+
+  ApplicationArduinoCiaoConfiguratorWindow.prototype = Object.create(Window.prototype);
+  ApplicationArduinoCiaoConfiguratorWindow.constructor = Window.prototype;
+
+  ApplicationArduinoCiaoConfiguratorWindow.prototype.init = function(wmRef, app, scheme) {
+    var root = Window.prototype.init.apply(this, arguments);
+    var self = this;
+
+    //Check if Ciao is installed
+    //TODO fix [match false every first run]
+    callAPI('opkg', {command: "list", args : {category : "installed"}}, function(err,res){
+      if(err)
+        alert("ERROR " + err);
+      if(res.indexOf("ciao")<0)
+        API.createDialog("Confirm", {buttons: ['yes', 'no'], message: "Ciao library not found.\n Do you want install it?" },
+          function(ev, button) {
+            if (button == "yes"){
+              self._toggleLoading(true);
+              callAPI('opkg', {command: "install", args : {packagename : "ciao"}}, function(err,res){
+                var msg = "Done"
+                if(err)
+                  msg = "Error";
+
+                  wmRef.notification({
+                    icon: "apps/update-manager.png",
+                    title: "Ciao installation",
+                    message: msg
+                  });
+                  self._toggleLoading(false);
+                  self.initUI(scheme);
+              });
+            }
+            else
+              app.destroy();
+          });
+      else
+        self.initUI(scheme);
+    });
+
+    // Load and set up scheme (GUI) here
+    scheme.render(this, 'ArduinoCiaoConfiguratorWindow', root);
+
+    return root;
+  };
+
+
+  ApplicationArduinoCiaoConfiguratorWindow.prototype.initUI = function (scheme) {
+    var self = this;
+    var ciaoPath = "root:///" + "usr/lib/python2.7/ciao/conf";
+    var connectorsSelectView = this._scheme.find(this, 'SelectConnectorView');
+    var connectorsList = [{label: "Select connector", value: null}];
+
+    VFS.scandir(ciaoPath, function(err,res){
+      if(err)
+        alert(err);
+
+      connectorsSelectView.clear();
+      res.forEach(function(item, index, array){
+         //item = { filename:"ArduinoLuci" , id:null , mime:"" , path:"root:///osjs/dist/packages/target/ArduinoLuci" , size:0 , type:"dir" }
+        var connectorName = item.filename.split(".")[0];
+        connectorsList.push({
+              label: connectorName,
+              value: connectorName
+        });
+      });
+      connectorsSelectView.add(connectorsList);
+
+    }, {backlink:false});
+
+    var editConfigurationButton = this._scheme.find(this, 'editConfigurationButton');
+    editConfigurationButton.set('disabled', true);
+
+    var that = this;
+    scheme.find(this, 'SelectConnectorView').on('change', function(evChange) {
+      if (evChange.detail != "null")
+      {
+        editConfigurationButton.set('disabled', false);
+        self.showConnectorConf(evChange.detail, ciaoPath, self);
+
+        /*var tmpConfFile = new VFS.File (ciaoPath + "/" + evChange.detail + ".json.conf", "text/plain");
+
+        VFS.read(ciaoPath + "/" + evChange.detail + ".json.conf" , function (err, res){
+          if(err)
+            alert("ERROR : " + err)
+          else {
+            VFS.write(tmpConfFile, res, function(err, res){
+              if(err)
+                alert(err)
+              else {
+                API.launch('ApplicationTextpad', {file: tmpConfFile});
+                API.launch('ApplicationCodeMirror', {file: tmpConfFile});
+              }
+            });
+          }
+        });*/
+        var proc = findProcess(evChange.detail); //TODO <-- how to use better.
+      }
+      else {
+        editConfigurationButton.set('disabled', true);
+        scheme.find(self, 'ConnectorConfView').clear();
+      }
+    });
+
+    scheme.find(this, 'editConfigurationButton').on('click', function (evClick) {
+
+      var confFile = new VFS.File (ciaoPath + "/" + scheme.find(self, 'SelectConnectorView').get("value") + ".json.conf", "text/plain");
+
+      if(scheme.find(self, 'SelectConnectorView').get("value") != "null") {
+        scheme.find(self, 'SelectConnectorView').get("value");
+
+        API.createDialog("Alert", {title: "Alert", message: "To apply changes reset MCU or upload a new Ciao sketch." }, function() {});
+
+        API.launch('ApplicationCodeMirror', {file: confFile});
+        //API.launch('ApplicationTextpad', {file: confFile});
+      }
+    });
+
+    //TODO check if CIAO is running and edit start/stop button
+    //todo run start/stop command
+    ciaoState(scheme, this);
+    //scheme.find(this, 'runCiaoButton').on('click', function (evClick) {
+    //  var cmd = {
+    //            "Start" : "run-ciao &",
+    //            "Stop" : "/usr/bin/killall -s HUP ciao.py"};
+    //
+    //  self._toggleLoading(true);
+    //
+    //  callAPI("exec", { command : cmd[evClick.currentTarget.innerText]}, function(err, res){
+    //    if(err)
+    //      alert("ERROR in Ciao launch");
+    //    else
+    //      ciaoState(scheme, self);
+    //    self._toggleLoading(false);
+    //  });
+    //});
+  };
+
+  //todo delete runCiaoButton
+
+
+  function ciaoState(scheme, win){
+    callAPI("exec", { command : "ps | grep ciao.py"}, function(err, res){
+      if(res.indexOf("python -u ciao.py") > -1){
+        scheme.find(win, 'ciaoStateLabel').set("value", "Ciao is running")
+        console.log("Ciao is running");
+        //alert("Ciao is running");
+      }
+      else{
+        scheme.find(win, 'ciaoStateLabel').set("value", "Ciao is stopped")
+        console.log("Ciao is stopped")
+        //alert("Ciao is stopped")
+      }
+    });
+  }
+  function callAPI(fn, args, cb) {
+    //self._toggleLoading(true);
+    API.call(fn, args, function(response) {
+      //self._toggleLoading(false);
+      return cb(response.error, response.result);
+    });
+  }
+
+  function findProcess(proc){
+    callAPI('getCiaoConnector', {connector : proc}, function(err, result){
+      var resultSplitted = result.split("\n");
+      resultSplitted.forEach(function(it,index,ar) {
+        if (index > 1) {
+          console.log(proc + "is running");
+          //TODO get UI element and set color GREEN
+          return true;
+        }
+        else{
+          console.log(proc + "is not running");
+          //TODO get UI element and set color RED
+          return false;
+      }
+      });
+    });
+  }
+
+  function createCommands(CommandsView, scheme, win, commands){
+    //Delete previous cmd buttons
+    var del = scheme.find(win, "CommandsView").$element;
+    Utils.$empty(del);
+
+    for (var key in commands) {
+      if (commands.hasOwnProperty(key)) {
+        scheme.create(win, "gui-button", { id : key+"Button"}, CommandsView);
+        scheme.find(win, key+"Button").set("value", key);
+        scheme.find(win, key+"Button").set("command", commands[key].join(" "));
+        scheme.find(win, key+"Button").on('click', function(){
+          alert(this.$element.attributes["data-command"].value);
+          callAPI("exec", {command : this.$element.attributes["data-command"].value}, function(err, res) {
+            //TODO - after 2 second check the process
+
+            //var checkProc = window.setInterval(function(){
+            //  if(findProcess("xmpp"/*getNameofProcess*/))
+            //    window.clearInterval(checkProc);
+            //}, 2000);
+          });
+        });
+      }
+    }
+  }
+
+
+  ApplicationArduinoCiaoConfiguratorWindow.prototype.showConnectorConf = function (selection, ciaoPath, wind){
+    var connectorConfView = this._scheme.find(this, 'ConnectorConfView');
+    var CommandsView = this._scheme.find(this, 'CommandsView');
+    var coreConfObj = {}, connectorConfObj = {}, paramsConnectorConfObj = {}, connectorConfFile;
+    var conf = [], thisScheme = this._scheme, thisWindow = Window;
+
+    VFS.read(ciaoPath + "/" + selection + ".json.conf", function (err, res){
+      if(err)
+        alert("ERROR : " + err)
+      else {
+        VFS.abToBinaryString(res, "application/json", function(e,r){
+          if(e)
+            alert("ERROR : " + e);
+          else {
+            coreConfObj = JSON.parse(r);
+            connectorConfFile = (coreConfObj.commands.start[0].split(coreConfObj.name)[0]) + coreConfObj.name + "/" + coreConfObj.name + ".json.conf";
+            console.log(connectorConfFile);
+            VFS.read("root://" + connectorConfFile, function (err, res) {
+              if (err)
+                alert("ERROR IN CONNECTOR CONFIGURATION FILE");
+              else{
+                VFS.abToBinaryString(res, "application/json", function(e,r) {
+                  connectorConfObj = JSON.parse(r);
+                  paramsConnectorConfObj = connectorConfObj.params;
+                  for (var key in paramsConnectorConfObj) {
+                    if (paramsConnectorConfObj.hasOwnProperty(key)) {
+                      conf.push({
+                        value: paramsConnectorConfObj[key],
+                        columns: [
+                          {label: key},
+                          {label: paramsConnectorConfObj[key]}
+                        ]
+                      });
+                    }
+                  }
+                  connectorConfView.clear();
+                  connectorConfView.set('columns', [
+                    {label: 'Key', basis: '60px', grow: 1, shrink: 1},
+                    {label: 'Value', basis: '60px', grow: 1, shrink: 1, textalign: 'left'}
+                  ]);
+                  connectorConfView.add(conf);
+                  createCommands(CommandsView, thisScheme, wind, coreConfObj.commands);
+                });
+              }
+            });
+          }
+        });
+      }
+    });
+  }
+
+  ApplicationArduinoCiaoConfiguratorWindow.prototype.destroy = function() {
+    Window.prototype.destroy.apply(this, arguments);
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // APPLICATION
+  /////////////////////////////////////////////////////////////////////////////
+
+  function ApplicationArduinoCiaoConfigurator(args, metadata) {
+    Application.apply(this, ['ApplicationArduinoCiaoConfigurator', args, metadata]);
+  }
+
+  ApplicationArduinoCiaoConfigurator.prototype = Object.create(Application.prototype);
+  ApplicationArduinoCiaoConfigurator.constructor = Application;
+
+  ApplicationArduinoCiaoConfigurator.prototype.destroy = function() {
+    return Application.prototype.destroy.apply(this, arguments);
+  };
+
+  ApplicationArduinoCiaoConfigurator.prototype.init = function(settings, metadata, onInited) {
+    Application.prototype.init.apply(this, arguments);
+
+    var self = this;
+    var url = API.getApplicationResource(this, './scheme.html');
+    var scheme = GUI.createScheme(url);
+    scheme.load(function(error, result) {
+      self._addWindow(new ApplicationArduinoCiaoConfiguratorWindow(self, metadata, scheme));
+      onInited();
+    });
+
+    this._setScheme(scheme);
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
+  OSjs.Applications = OSjs.Applications || {};
+  OSjs.Applications.ApplicationArduinoCiaoConfigurator = OSjs.Applications.ApplicationArduinoCiaoConfigurator || {};
+  OSjs.Applications.ApplicationArduinoCiaoConfigurator.Class = ApplicationArduinoCiaoConfigurator;
+
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

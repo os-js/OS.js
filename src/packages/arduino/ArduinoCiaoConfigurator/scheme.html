@@ -1,0 +1,34 @@
+<application-window data-id="ArduinoCiaoConfiguratorWindow">
+
+  <gui-vbox>
+
+    <gui-vbox-container data-grow="0" data-shrink="0" data-expand="true">
+      <gui-select data-id="SelectConnectorView">
+      </gui-select>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="1" data-shrink="0" data-fill="true">
+      <gui-list-view data-id="ConnectorConfView" data-multiple="false">
+      </gui-list-view>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-grow="1" data-shrink="0" data-fill="true">
+      <gui-list-view data-id="InfoConnectorView" data-multiple="false">
+      </gui-list-view>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-align="end">
+      <gui-button-bar data-id="CommandsView">
+      </gui-button-bar>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-align="end" data-id="bottomButtonsContainer">
+      <gui-button-bar>
+        <!--gui-button data-id="runCiaoButton"></gui-button-->
+        <gui-label data-id="ciaoStateLabel"></gui-label>
+        <gui-button data-id="editConfigurationButton">Edit Configuration</gui-button>
+      </gui-button-bar>
+    </gui-vbox-container>
+  </gui-vbox>
+
+</application-window>
