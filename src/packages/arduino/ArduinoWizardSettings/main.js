@@ -451,6 +451,7 @@
 
             };
 
+
             // Put all to be saved elements into our api call argument list
             Object.keys(map).forEach(function(key) {
                 if ( toBeSaved[key] ) {
@@ -458,6 +459,8 @@
                 }
             });
 
+
+          disableWizard(function(){
             // One call to rule them all. In lua server script, just check what "keys" were sent over
             callAPI('wizardboardconfig', info, function() {
                 var  step = 3,
@@ -474,16 +477,14 @@
                         dialog.setMessage("Redirecting to " + redirectURL); //TODO localize
                     }
                     if(step++ === 10){
-                        disableWizard(function(){
+                        //disableWizard(function(){
                             window.location.href =  redirectURL;
-                        });
+                        //});
                         clearInterval(intervalReboot);
                     }
                 }, 10 * 1000);
-
-
-
             });
+        });
         }
 
         function scanNetworks(){
