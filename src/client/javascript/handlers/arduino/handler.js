@@ -108,6 +108,13 @@
 
     var opts = {username: username, password: password};
     this.callAPI('login', opts, function(response) {
+
+      try{
+        document.cookie = 'osjsuser=' + username;
+      } catch(e){
+
+      }
+
       if ( response.result ) { // This contains an object with user data
         callback(false, {
           userData: response.result.userData,
