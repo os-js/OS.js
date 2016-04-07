@@ -650,7 +650,7 @@ gui-label {
 }
   gui-label > label {
     display : inline;
-    white-space: nowrap;
+    white-space: normal;
   }
 
 /* Button */
