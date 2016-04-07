@@ -11,6 +11,6 @@ then
 	ln -sf /www/cgi-bin/luci /osjs/dist/cgi-bin/luci
 
 	# Restarting uHttp server
-	/etc/init.d/uhttpd restart
+	#/etc/init.d/uhttpd restart
 fi
 exit 0

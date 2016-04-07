@@ -253,6 +253,8 @@
     }
 
     function createStyle(src, callback, opts) {
+      src = src + '?' + Math.floor(Math.random()*80000);
+
       opts = opts || {};
       opts.check = (typeof opts.check === 'undefined') ? true : (opts.check === true);
       opts.interval = opts.interval || 50;
@@ -286,11 +288,14 @@
           _finished(tries > 0);
           return;
         }
+
         tries--;
       }, opts.interval);
     }
 
     function createScript(src, callback) {
+      src = src + '?' + Math.floor(Math.random()*80000);
+
       var _finished = function(result) {
         _LOADED[src] = result;
         console.info('JavaScript', src, result);
