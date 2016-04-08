@@ -1,6 +1,6 @@
 {
   "name": "OS.js",
-  "version": "2.0.1-arduino-os",
+  "version": "2.0.2-arduino-os",
   "description": "JavaScript Cloud/Web Desktop Platform",
   "url": "http://os.js.org",
   "email": "andersevenrud@gmail.com",
@@ -27,7 +27,7 @@
     "test": "grunt test"
   },
   "dependencies": {
-    "grunt": ">=0.4.5",
+    "grunt": ">=1.0.1",
     "time-grunt": ">=1.2.1",
     "less": ">=2.5.3",
     "cookies": ">=0.5.1",
@@ -36,6 +36,7 @@
     "request": ">=2.64.0"
   },
   "devDependencies": {
+    "mocha": ">=1.20.0",
     "clean-css": ">=3.4.5",
     "uglify-js": ">=2.4.24",
     "grunt-mocha-test": ">=0.12.7",
