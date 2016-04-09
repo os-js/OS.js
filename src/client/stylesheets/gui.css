@@ -1231,14 +1231,20 @@ gui-menu.gui-root-menu {
     }*/
 
   gui-menu > gui-menu-entry > gui-menu {
-    display : none;
     position : absolute;
     z-index : 99999;
+  }
+  gui-menu.gui-showing > gui-menu-entry > gui-menu {
+    display : none;
   }
 
   gui-menu > gui-menu-entry:hover > gui-menu {
     display : inline-block;
     left : 100%;
+    top : 0;
+  }
+  gui-menu.gui-overflowing > gui-menu-entry:hover > gui-menu {
+    left : auto;
     top : 0;
   }
   gui-menu.gui-root-menu > gui-menu-entry:hover > gui-menu {

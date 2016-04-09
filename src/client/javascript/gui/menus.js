@@ -70,6 +70,32 @@
     }, false);
   }
 
+  /**
+   * This function makes menus pop out to the left instead of right
+   *
+   * Does not work for gui-menu-bar atm
+   */
+  function clampSubmenuPositions(r) {
+    function _clamp(rm) {
+      rm.querySelectorAll('gui-menu-entry').forEach(function(srm) {
+        var sm = srm.querySelector('gui-menu');
+        if ( sm ) {
+          sm.style.left = String(-parseInt(sm.offsetWidth, 10)) + 'px';
+          _clamp(sm);
+        }
+      });
+    }
+
+    var pos = Utils.$position(r);
+    if ( (window.innerWidth - pos.right) < r.offsetWidth ) {
+      Utils.$addClass(r, 'gui-overflowing');
+      _clamp(r);
+    }
+
+    // this class is used in caclulations (DOM needs to be visible for that)
+    Utils.$addClass(r, 'gui-showing');
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
@@ -265,6 +291,9 @@
         mel.insertBefore(span, mel.firstChild);
 
         var submenu = mel.querySelector('gui-menu');
+
+        clampSubmenuPositions(submenu);
+
         mel.setAttribute('aria-haspopup', String(!!submenu));
         updateChildren(submenu, 2);
 
@@ -403,6 +432,8 @@
         var newTop = Math.round(space.height - pos.height);
         root.style.top = Math.max(0, newTop) + 'px';
       }
+
+      clampSubmenuPositions(root);
     }, 1);
 
     lastMenu = function() {
