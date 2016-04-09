@@ -1466,18 +1466,39 @@
       copyFile(_path.join(PATHS.themes, 'wallpapers'),
                _path.join(PATHS.dist, 'themes', 'wallpapers'));
 
-      mkdir(_path.join(PATHS.dist, 'themes', 'icons'));
-      cfg.themes.icons.forEach(function(i) {
-        copyFile(_path.join(PATHS.themes, 'icons', i),
-                 _path.join(PATHS.dist, 'themes', 'icons', i));
-      });
-
       mkdir(_path.join(PATHS.dist, 'themes', 'sounds'));
       cfg.themes.sounds.forEach(function(i) {
         copyFile(_path.join(PATHS.themes, 'sounds', i),
                  _path.join(PATHS.dist, 'themes', 'sounds', i));
       });
     }
+
+    function buildIcons() {
+      grunt.log.subhead('Icon packs');
+
+      mkdir(_path.join(PATHS.dist, 'themes', 'icons'));
+
+      cfg.themes.icons.forEach(function(i) {
+        grunt.log.subhead(i + ':');
+
+        var src = _path.join(PATHS.themes, 'icons', i);
+        var dst = _path.join(PATHS.dist, 'themes', 'icons', i);
+        var met = {};
+
+        try {
+          met = JSON.parse(readFile(_path.join(src, 'metadata.json')));
+        } catch ( e ) {}
+
+        if ( met && met.parent ) {
+          console.log('+++', 'Uses parent theme', met.parent);
+          var psrc = _path.join(PATHS.themes, 'icons', met.parent);
+          copyFile(psrc, dst);
+        }
+
+        copyFile(src, dst);
+      });
+    }
+
 
     function cleanup() {
       grunt.log.subhead('Cleaning up...');
@@ -1505,9 +1526,13 @@
     if ( !arg || arg === 'all' ) {
       buildFonts();
       buildStatic();
+      buildIcons();
       buildStyles(null, done);
       return;
+    } else if ( arg === 'icons' ) {
+      buildIcons();
     } else if ( arg === 'resources' ) {
+      buildIcons();
       buildStatic();
     } else if ( arg === 'fonts' ) {
       buildFonts();
