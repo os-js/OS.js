@@ -209,7 +209,7 @@
         output = String(0);
       }
 
-      if ( output === 'NaN' || isNaN(output) ) {
+      if ( output === 'NaN' || output === 'Infinity' || isNaN(output) || !isFinite(output) ) {
         Utils.$addClass(this._$element, 'NaN');
 
         setTimeout(function() {
