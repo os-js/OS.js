@@ -1499,7 +1499,6 @@
       });
     }
 
-
     function cleanup() {
       grunt.log.subhead('Cleaning up...');
 
