@@ -79,8 +79,8 @@
     Application.prototype.init.apply(this, arguments);
 
     var self = this;
-    var url = API.getApplicationResource(this, './scheme.html');
-    var scheme = GUI.createScheme(url);
+    var scheme = GUI.createScheme(this._getResource('./scheme.html'));
+
     scheme.load(function(error, result) {
       self._addWindow(new ApplicationEXAMPLEWindow(self, metadata, scheme));
     });

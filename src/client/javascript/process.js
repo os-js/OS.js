@@ -347,6 +347,22 @@
   };
 
   /**
+   * Get full path to a resorce belonging to this process (package)
+   *
+   * This is a shortcut for API.getApplicationResource()
+   *
+   * @param   String      src       Resource name (path)
+   *
+   * @return  String
+   *
+   * @method  Process::_getResource()
+   * @see     API::getApplicationResource()
+   */
+  Process.prototype._getResource = function(src) {
+    return API.getApplicationResource(this, src);
+  };
+
+  /**
    * Set a launch/session argument
    *
    * @param   String    k             Key
