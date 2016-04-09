@@ -44,6 +44,6 @@
     "grunt-contrib-jshint": ">=1.0.0",
     "grunt-jscs": ">=2.8.0",
     "grunt-contrib-csslint": "1.0.0",
-    "grunt-xml-validator": "git+https://github.com/andersevenrud/grunt-xml-validator.git#HEAD"
+    "grunt-contrib-validate-xml": ">=0.0.1"
   }
 }

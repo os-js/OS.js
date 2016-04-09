@@ -48,7 +48,7 @@
     } catch (e) { }
 
     // Make sure we only load required modules (ignore warnings)
-    var checks = ['test', 'jshint', 'jscs', 'csslint', 'xml_validator', 'mochaTest'];
+    var checks = ['test', 'jshint', 'jscs', 'csslint', 'validate_xml', 'mochaTest'];
     checks.forEach(function(k) {
       if ( grunt.cli.tasks.indexOf(k) >= 0 ) {
         grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -56,7 +56,7 @@
         //grunt.loadNpmTasks('grunt-mocha');
         grunt.loadNpmTasks('grunt-jscs');
         grunt.loadNpmTasks('grunt-contrib-csslint');
-        grunt.loadNpmTasks('grunt-xml-validator');
+        grunt.loadNpmTasks('grunt-contrib-validate-xml');
         return false;
       }
       return true;
@@ -178,7 +178,7 @@
           requireCurlyBraces: ['if']
         }
       },
-      xml_validator: {
+      validate_xml: {
         all: {
           src: [
             'src/client/dialogs.html',
@@ -316,7 +316,7 @@
     grunt.registerTask('nw', ['config', 'core:nw', 'themes', 'packages', 'manifest', 'standalone:nw', 'nwjs']);
     grunt.registerTask('dist', ['config', 'dist-files:dist', 'core', 'themes', 'packages', 'manifest']);
     grunt.registerTask('dist-dev', ['config', 'dist-files:dist-dev', 'themes:fonts', 'themes:styles', 'manifest']);
-    grunt.registerTask('test', ['jshint', 'jscs', 'csslint', 'xml_validator', 'mochaTest'/*, 'mocha'*/]);
+    grunt.registerTask('test', ['jshint', 'jscs', 'csslint', 'validate_xml', 'mochaTest'/*, 'mocha'*/]);
   };
 
 })(require('node-fs-extra'), require('path'), require('./src/build.js'), require('grunt'), require('less'));
