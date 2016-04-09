@@ -149,22 +149,35 @@
   /**
    * Element: 'gui-iframe'
    *
-   * IFrame container.
+   * IFrame container. On NW/Electron/X11 this is a "webview"
    *
    * @property  src     String        The source (src)
    *
    * @api OSjs.GUI.Elements.gui-iframe
    * @class
    */
-  GUI.Elements['gui-iframe'] = {
-    build: function(el) {
-      var src = el.getAttribute('data-src') || 'about:blank';
-      var iframe = document.createElement('iframe');
-      iframe.src = src;
-      iframe.setAttribute('border', 0);
-      el.appendChild(iframe);
+  GUI.Elements['gui-iframe'] = (function() {
+    var tagName = 'iframe';
+    if ( (['nw', 'electron', 'x11']).indexOf(API.getConfig('Connection.Type')) >= 0 ) {
+      tagName = 'webview';
     }
-  };
+
+    return {
+      set: function(el, key, val) {
+        if ( key === 'src' ) {
+          el.querySelector(tagName).src = val;
+        }
+      },
+
+      build: function(el) {
+        var src = el.getAttribute('data-src') || 'about:blank';
+        var iframe = document.createElement(tagName);
+        iframe.src = src;
+        iframe.setAttribute('border', 0);
+        el.appendChild(iframe);
+      }
+    };
+  })();
 
   /**
    * Element: 'gui-progress-bar'
