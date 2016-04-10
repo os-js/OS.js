@@ -387,8 +387,9 @@
    * @method PackageManager::getPackage()
    */
   PackageManager.prototype.getPackage = function(name) {
-    if ( typeof this.packages[name] !== 'undefined' ) {
-      return this.packages[name];
+    var packages = Utils.cloneObject(this.packages);
+    if ( typeof packages[name] !== 'undefined' ) {
+      return packages[name];
     }
     return false;
   };
@@ -405,6 +406,7 @@
   PackageManager.prototype.getPackages = function(filtered) {
     var self = this;
     var hidden = OSjs.Core.getSettingsManager().instance('Packages', {hidden: []}).get('hidden');
+    var packages = Utils.cloneObject(this.packages);
 
     function allowed(i, iter) {
       if ( self.blacklist.indexOf(i) >= 0 ) {
@@ -421,10 +423,9 @@
     }
 
     if ( typeof filtered === 'undefined' || filtered === true ) {
-      var pkgs = Utils.cloneObject(this.packages);
       var result = {};
-      Object.keys(pkgs).forEach(function(name) {
-        var iter = pkgs[name];
+      Object.keys(packages).forEach(function(name) {
+        var iter = packages[name];
         if ( !allowed(name, iter) ) {
           return;
         }
@@ -436,7 +437,7 @@
       return result;
     }
 
-    return Utils.cloneObject(this.packages);
+    return packages;
   };
 
   /**
@@ -449,9 +450,11 @@
   PackageManager.prototype.getPackagesByMime = function(mime) {
     var list = [];
     var self = this;
-    Object.keys(this.packages).forEach(function(i) {
+    var packages = Utils.cloneObject(this.packages);
+
+    Object.keys(packages).forEach(function(i) {
       if ( self.blacklist.indexOf(i) < 0 ) {
-        var a = self.packages[i];
+        var a = packages[i];
         if ( a && a.mime ) {
           if ( Utils.checkAcceptMime(mime, a.mime) ) {
             list.push(i);

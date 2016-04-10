@@ -517,7 +517,7 @@
     }
 
     function getPreloads(data) {
-      var preload = Array.prototype.slice.call(data.preload || []);
+      var preload = (data.preload || []).slice(0);
 
       function _add(chk) {
         if ( chk && chk.preload ) {
