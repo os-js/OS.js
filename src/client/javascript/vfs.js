@@ -313,7 +313,7 @@
    */
   function internalCall(name, args, callback) {
     API.call('FS:' + name, args, function(err, res) {
-      if ( !err && !res ) {
+      if ( !err && typeof res === 'undefined' ) {
         err = API._('ERR_VFS_FATAL');
       }
       callback(err, res);
