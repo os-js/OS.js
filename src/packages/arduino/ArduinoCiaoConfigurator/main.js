@@ -46,15 +46,22 @@
   ApplicationArduinoCiaoConfiguratorWindow.prototype = Object.create(Window.prototype);
   ApplicationArduinoCiaoConfiguratorWindow.constructor = Window.prototype;
 
+
+  //TODO Manage errors
   ApplicationArduinoCiaoConfiguratorWindow.prototype.init = function(wmRef, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
 
     //Check if Ciao is installed
-    //TODO fix [match false every first run]
     callAPI('opkg', {command: "list", args : {category : "installed"}}, function(err,res){
-      if(err)
-        alert("ERROR " + err);
+      if(err){
+        console.log("ERROR in installation phase: " + err);
+        wmRef.notification({
+          icon: "apps/update-manager.png",
+          title: "Error",
+          message: err
+        });
+      }
       if(res.indexOf("ciao")<0)
         API.createDialog("Confirm", {buttons: ['yes', 'no'], message: "Ciao library not found.\n Do you want install it?" },
           function(ev, button) {
@@ -70,15 +77,16 @@
                     title: "Ciao installation",
                     message: msg
                   });
+
                   self._toggleLoading(false);
-                  self.initUI(scheme);
+                  self.initUI(scheme, app);
               });
             }
             else
               app.destroy();
           });
       else
-        self.initUI(scheme);
+        self.initUI(scheme, app);
     });
 
     // Load and set up scheme (GUI) here
@@ -88,19 +96,25 @@
   };
 
 
-  //TODO boxes
-  // box alto Ciao conf (fisso)
-  // box basso Connector conf (dinamico e solo per overview)
-  ApplicationArduinoCiaoConfiguratorWindow.prototype.initUI = function (scheme) {
+  ApplicationArduinoCiaoConfiguratorWindow.prototype.initUI = function (scheme, app) {
     var self = this;
     var ciaoPath = "root:///" + "usr/lib/python2.7/ciao/conf";
+    var ciaoPathRoot = "root:///" + "usr/lib/python2.7/ciao";
     var connectorsSelectView = this._scheme.find(this, 'SelectConnectorView');
     var connectorsList = [{label: "Select connector", value: null}];
 
     VFS.scandir(ciaoPath, function(err,res){
-      if(err)
-        alert(err);
+      if(err) {
+        console.log("Ciao err:" + err);
+        API.createDialog("Error", {
+          title : "Ciao Error",
+          message : "Ciao conf directory not found\nThe app will be closed",
+          error : err
+        }, function (ev, button, result){
+          app.destroy();
+        });
 
+      }
       connectorsSelectView.clear();
       res.forEach(function(item, index, array){
          //item = { filename:"ArduinoLuci" , id:null , mime:"" , path:"root:///osjs/dist/packages/target/ArduinoLuci" , size:0 , type:"dir" }
@@ -116,41 +130,44 @@
 
     var editConfigurationButton = this._scheme.find(this, 'editConfigurationButton');
     editConfigurationButton.set('disabled', true);
+    var editConnectorCoreConfButton = this._scheme.find(this, 'editConnectorCoreConfButton');
+    editConnectorCoreConfButton.set('disabled', true);
 
-    var that = this;
+
     scheme.find(this, 'SelectConnectorView').on('change', function(evChange) {
       if (evChange.detail != "null")
       {
         editConfigurationButton.set('disabled', false);
-        self.showConnectorConf(evChange.detail, ciaoPath, self);
+        editConnectorCoreConfButton.set('disabled', false);
 
-        /*var tmpConfFile = new VFS.File (ciaoPath + "/" + evChange.detail + ".json.conf", "text/plain");
+        self.showConnectorConf(evChange.detail, ciaoPathRoot, self);
 
-        VFS.read(ciaoPath + "/" + evChange.detail + ".json.conf" , function (err, res){
-          if(err)
-            alert("ERROR : " + err)
-          else {
-            VFS.write(tmpConfFile, res, function(err, res){
-              if(err)
-                alert(err)
-              else {
-                API.launch('ApplicationTextpad', {file: tmpConfFile});
-                API.launch('ApplicationCodeMirror', {file: tmpConfFile});
-              }
-            });
-          }
-        });*/
-        //var proc = findProcess(evChange.detail); // <-- how to use better.
+
       }
       else {
         editConfigurationButton.set('disabled', true);
+        editConnectorCoreConfButton.set('disabled', true);
         scheme.find(self, 'ConnectorConfView').clear();
+      }
+    });
+
+    scheme.find(this, 'editConnectorCoreConfButton').on('click', function (evClick) {
+
+      var confFile = new VFS.File (ciaoPathRoot + "/connectors/" + scheme.find(self, 'SelectConnectorView').get("value") + "/" + scheme.find(self, 'SelectConnectorView').get("value") + ".json.conf", "text/plain");
+
+      console.log("@"+confFile)
+      if(scheme.find(self, 'SelectConnectorView').get("value") != "null") {
+        scheme.find(self, 'SelectConnectorView').get("value");
+
+        API.createDialog("Alert", {title: "Alert", message: "To apply changes reset MCU or upload a new Ciao sketch." }, function() {});
+
+        API.launch('ApplicationCodeMirror', {file: confFile});
       }
     });
 
     scheme.find(this, 'editConfigurationButton').on('click', function (evClick) {
 
-      var confFile = new VFS.File (ciaoPath + "/" + scheme.find(self, 'SelectConnectorView').get("value") + ".json.conf", "text/plain");
+      var confFile = new VFS.File (ciaoPathRoot + "/conf/" + scheme.find(self, 'SelectConnectorView').get("value") + ".json.conf", "text/plain");
 
       if(scheme.find(self, 'SelectConnectorView').get("value") != "null") {
         scheme.find(self, 'SelectConnectorView').get("value");
@@ -161,25 +178,8 @@
         //API.launch('ApplicationTextpad', {file: confFile});
       }
     });
-
-    //check if CIAO is running
-    ciaoState(scheme, this);
   };
 
-  function ciaoState(scheme, win){
-    callAPI("exec", { command : "ps | grep ciao.py"}, function(err, res){
-      if(res.indexOf("python -u ciao.py") > -1){
-        scheme.find(win, 'ciaoStateLabel').set("value", "Ciao is running")
-        console.log("Ciao is running");
-        //alert("Ciao is running");
-      }
-      else{
-        scheme.find(win, 'ciaoStateLabel').set("value", "Ciao is stopped")
-        console.log("Ciao is stopped")
-        //alert("Ciao is stopped")
-      }
-    });
-  }
   function callAPI(fn, args, cb) {
     //self._toggleLoading(true);
     API.call(fn, args, function(response) {
@@ -188,76 +188,84 @@
     });
   }
 
-  //function findProcess(proc){
-  //  callAPI('getCiaoConnector', {connector : proc}, function(err, result){
-  //    var resultSplitted = result.split("\n");
-  //    resultSplitted.forEach(function(it,index,ar) {
-  //      if (index > 1) {
-  //        console.log(proc + "is running");
-  //        // get UI element and set color GREEN
-  //        return true;
-  //      }
-  //      else{
-  //        console.log(proc + "is not running");
-  //        // get UI element and set color RED
-  //        return false;
-  //    }
-  //    });
-  //  });
-  //}
-
-  function createCommands(CommandsView, scheme, win, commands){
-    //Delete previous cmd buttons
-    var del = scheme.find(win, "CommandsView").$element;
-    Utils.$empty(del);
-
-    for (var key in commands) {
-      if (commands.hasOwnProperty(key)) {
-        scheme.create(win, "gui-button", { id : key+"Button"}, CommandsView);
-        scheme.find(win, key+"Button").set("value", key);
-        scheme.find(win, key+"Button").set("command", commands[key].join(" "));
-        scheme.find(win, key+"Button").on('click', function(){
-          alert(this.$element.attributes["data-command"].value);
-          callAPI("exec", {command : this.$element.attributes["data-command"].value}, function(err, res) {
-            //TODO - after 2 second check the process
-
-            //var checkProc = window.setInterval(function(){
-            //  if(findProcess("xmpp"/*getNameofProcess*/))
-            //    window.clearInterval(checkProc);
-            //}, 2000);
-          });
-        });
-      }
-    }
-  }
-
-
   ApplicationArduinoCiaoConfiguratorWindow.prototype.showConnectorConf = function (selection, ciaoPath, wind){
     var connectorConfView = this._scheme.find(this, 'ConnectorConfView');
+    var ConnectorCoreConfView = this._scheme.find(this, 'ConnectorCoreConfView');
     var CommandsView = this._scheme.find(this, 'CommandsView');
-    var coreConfObj = {}, connectorConfObj = {}, paramsConnectorConfObj = {}, connectorConfFile;
-    var conf = [], thisScheme = this._scheme, thisWindow = Window;
 
-    VFS.read(ciaoPath + "/" + selection + ".json.conf", function (err, res){
-      if(err)
-        alert("ERROR : " + err)
+    var coreConfObj = {}, connectorConfObj = {}, paramsConnectorConfObj = {}, connectorConfFile;
+    var conf = [], confCore = [], thisScheme = this._scheme, thisWindow = Window;
+
+    VFS.read(ciaoPath + "/conf/" + selection + ".json.conf", function (err, res){
+      if(err) {
+        console.log("Error in connector conf file opening : " + err);
+        API.createDialog("Error", {
+          title : "Ciao Error",
+          message : "Problem in connector conf file opening",
+          error : err
+        });
+      }
       else {
-        VFS.abToBinaryString(res, "application/json", function(e,r){
-          if(e)
-            alert("ERROR : " + e);
+        VFS.abToBinaryString(res, "application/json", function(e,r) {
+          if (e) {
+            console.log("Error in file reading : " + e);
+            API.createDialog("Error", {
+              title : "Ciao Error",
+              message : "Problem in conf file ellaboration",
+              error : err
+            });
+          }
           else {
             coreConfObj = JSON.parse(r);
+
+            for (var key in coreConfObj) {
+              if (coreConfObj.hasOwnProperty(key)) {
+                if(typeof coreConfObj[key] == "object")
+                  confCore.push({
+                    value: coreConfObj[key],
+                    columns: [
+                      {label: key},
+                      {label: JSON.stringify(coreConfObj[key])}
+                    ]
+                  });
+                else
+                confCore.push({
+                  value: coreConfObj[key],
+                  columns: [
+                    {label: key},
+                    {label: coreConfObj[key]}
+                  ]
+                });
+              }
+            }
+
             connectorConfFile = (coreConfObj.commands.start[0].split(coreConfObj.name)[0]) + coreConfObj.name + "/" + coreConfObj.name + ".json.conf";
             console.log(connectorConfFile);
             VFS.read("root://" + connectorConfFile, function (err, res) {
-              if (err)
-                alert("ERROR IN CONNECTOR CONFIGURATION FILE");
+              if (err){
+                console.log("Error in core conf file opening : " + err);
+                API.createDialog("Error", {
+                  title : "Ciao Error",
+                  message : "Problem in core conf file opening",
+                  error : err
+                });
+              }
               else{
                 VFS.abToBinaryString(res, "application/json", function(e,r) {
                   connectorConfObj = JSON.parse(r);
                   paramsConnectorConfObj = connectorConfObj.params;
                   for (var key in paramsConnectorConfObj) {
                     if (paramsConnectorConfObj.hasOwnProperty(key)) {
+                      if(typeof paramsConnectorConfObj[key] == "object")
+                        conf.push({
+                          value: paramsConnectorConfObj[key],
+                          columns: [
+                            {label: key},
+                            {label: JSON.stringify(paramsConnectorConfObj[key])}
+                          ]
+                        });
+
+                      else
                       conf.push({
                         value: paramsConnectorConfObj[key],
                         columns: [
@@ -268,12 +276,17 @@
                     }
                   }
                   connectorConfView.clear();
+                  ConnectorCoreConfView.clear();
                   connectorConfView.set('columns', [
-                    {label: 'Key', basis: '60px', grow: 1, shrink: 1},
-                    {label: 'Value', basis: '60px', grow: 1, shrink: 1, textalign: 'left'}
+                    {label: 'Key', basis: '30px', grow: 1, shrink: 1},
+                    {label: 'Value', basis: '90px', grow: 1, shrink: 1, textalign: 'left'}
+                  ]);
+                  ConnectorCoreConfView.set('columns', [
+                    {label: 'Key', basis: '30px', grow: 1, shrink: 1},
+                    {label: 'Value', basis: '650px', grow: 0, shrink: 0, textalign: 'left'}
                   ]);
                   connectorConfView.add(conf);
-                  createCommands(CommandsView, thisScheme, wind, coreConfObj.commands);
+                  ConnectorCoreConfView.add(confCore);
                 });
               }
             });
@@ -282,6 +295,8 @@
       }
     });
   }
+
+
 
   ApplicationArduinoCiaoConfiguratorWindow.prototype.destroy = function() {
     Window.prototype.destroy.apply(this, arguments);

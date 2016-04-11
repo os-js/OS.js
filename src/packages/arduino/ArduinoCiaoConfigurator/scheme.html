@@ -7,13 +7,27 @@
       </gui-select>
     </gui-vbox-container>
 
+    <gui-vbox-container data-shrink="1" data-align="end" data-id="bottomButtonsContainer">
+      <gui-button-bar>
+        <gui-button data-id="editConnectorCoreConfButton">Edit core configuration</gui-button>
+      </gui-button-bar>
+    </gui-vbox-container>
+
     <gui-vbox-container data-grow="1" data-shrink="0" data-fill="true">
       <gui-list-view data-id="ConnectorConfView" data-multiple="false">
       </gui-list-view>
     </gui-vbox-container>
 
+    <hr style="width: 99%">
+
+    <gui-vbox-container data-shrink="1" data-align="end" data-id="bottomButtonsContainer">
+      <gui-button-bar>
+        <gui-button data-id="editConfigurationButton">Edit Connector Configuration</gui-button>
+      </gui-button-bar>
+    </gui-vbox-container>
+
     <gui-vbox-container data-grow="1" data-shrink="0" data-fill="true">
-      <gui-list-view data-id="InfoConnectorView" data-multiple="false">
+      <gui-list-view data-id="ConnectorCoreConfView" data-multiple="false">
       </gui-list-view>
     </gui-vbox-container>
 
@@ -22,12 +36,6 @@
       </gui-button-bar>
     </gui-vbox-container>
 
-    <gui-vbox-container data-shrink="1" data-align="end" data-id="bottomButtonsContainer">
-      <gui-button-bar>
-        <gui-label data-id="ciaoStateLabel"></gui-label>
-        <gui-button data-id="editConfigurationButton">Edit Configuration</gui-button>
-      </gui-button-bar>
-    </gui-vbox-container>
   </gui-vbox>
 
 </application-window>

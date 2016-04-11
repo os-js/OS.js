@@ -32,6 +32,10 @@
 .ApplicationArduinoCiaoConfiguratorWindow application-window-content {
 }
 
+.ApplicationArduinoCiaoConfiguratorWindow gui-button[data-id="editConnectorCoreConfButton"] {
+  float: right;
+}
+
 .ApplicationArduinoCiaoConfiguratorWindow gui-button[data-id="editConfigurationButton"] {
   float: right;
 }
@@ -40,3 +44,10 @@
   width: 100%;
 }
 
+.ApplicationArduinoCiaoConfiguratorWindow gui-vbox-container[data-id="ConnectorConfView"]{
+  height: 30%;
+}
+
+.ApplicationArduinoCiaoConfiguratorWindow gui-vbox-container[data-id="ConnectorCoreConfView"]{
+  height: 30%;
+}

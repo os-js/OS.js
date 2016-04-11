@@ -752,12 +752,7 @@ function api_request(request, response, meth, iargs)
     console("echo " .. get_wizard_board_config_command(iargs) .. " >> /tmp/os.log")
     data = console(get_wizard_board_config_command(iargs))
 
-  --
-  -- CIAO
-  --
 
-  elseif meth == "getCiaoConnector" then
-    data = console("ps | grep "..iargs["connector"].." | grep ciao")
   --
   -- MISC
   --
