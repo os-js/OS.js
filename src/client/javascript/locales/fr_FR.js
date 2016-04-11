@@ -70,7 +70,7 @@
 
     'ERR_OPERATION_TIMEOUT'       : 'Operation Expirée',
     'ERR_OPERATION_TIMEOUT_FMT'   : 'Operation Expirée ({0})',
-    
+
     'ERR_ARGUMENT_FMT'    : '\'{0}\' attends \'{1}\' d\'être \'{2}\', \'{3}\' fournie',
 
     // Window
@@ -229,7 +229,7 @@
     'ERR_VFSMODULE_EXCEPTION'          : 'Exception du module VFS',
     'ERR_VFSMODULE_EXCEPTION_FMT'      : 'Exception du module VFS: {0}',
     'ERR_VFSMODULE_NOT_FOUND_FMT'      : 'Aucun Module VFS ne correspond {0}. Mauvais chemin ou Mauvais formats ?',
-    
+
     'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Téléchargement du fichier',
 
     'ERR_VFSMODULE_XHR_ERROR'      : 'Erreur XHR',
