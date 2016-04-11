@@ -157,7 +157,7 @@
       'Refresh' : 'Rafraîchir',
       'Install selected' : 'Installer la sélection',
       'Enable TouchMenu' : 'Activer le TouchMenu'
-      },
+    },
     it_IT : {
       'Theme' : 'Tema',
       'Sounds' : 'Suoni',
