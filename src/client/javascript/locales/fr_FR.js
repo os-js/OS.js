@@ -178,7 +178,7 @@
     'GAPI_DISABLED'           : 'Module Google API non configuré ou désactivé',
     'GAPI_SIGN_OUT'           : 'Déconnexion de l\'API Google',
     'GAPI_REVOKE'             : 'Révoquer les permissions et déconnecter',
-    'GAPI_AUTH_FAILURE'       : 'L\'authentification Google API a échoué ou ne s\'est pas déroulée',
+    'GAPI_AUTH_FAILURE'       : 'L\'authentification Google API a échouer ou ne s\'est pas déroulée',
     'GAPI_AUTH_FAILURE_FMT'   : 'Impossible d\'authentifier: {0}:{1}',
     'GAPI_LOAD_FAILURE'       : 'Impossible de charger l\'API Google',
 
