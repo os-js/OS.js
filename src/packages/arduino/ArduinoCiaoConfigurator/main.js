@@ -47,7 +47,6 @@
   ApplicationArduinoCiaoConfiguratorWindow.constructor = Window.prototype;
 
 
-  //TODO Manage errors
   ApplicationArduinoCiaoConfiguratorWindow.prototype.init = function(wmRef, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
