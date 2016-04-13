@@ -127,18 +127,18 @@
       'The audio type is not supported: {0}' : '이 오디오 형식은 지원하지 않습니다: {0}'
     },
     nl_NL : {
-      'Playlist' : 'Afspeel lijst',
-      'Playback aborted' : 'Spelen onderbroken',
-      'Network or communication error' : 'Netwerk communicatie fout',
-      'Decoding failed. Corruption or unsupported media' : 'Dekoderen lukt niet: bestandstype wordt niet ondersteund',
-      'Media source not supported' : 'Media bron wordt niet ondersteund',
-      'Failed to play file' : 'Afspelen lukt niet',
+      'Playlist' : 'Afspeellijst',
+      'Playback aborted' : 'Afspelen afgebroken',
+      'Network or communication error' : 'Netwerk of communicatie fout',
+      'Decoding failed. Corruption or unsupported media' : 'Decoderen mislukt: bestandstype wordt niet ondersteund',
+      'Media source not supported' : 'Mediabron wordt niet ondersteund',
+      'Failed to play file' : 'Afspelen van bestand mislukt',
       'Artist' : 'Artiest',
       'Album' : 'Album',
-      'Track' : 'Naam',
+      'Track' : 'Nummer',
       'Time' : 'Tijd',
       'Media information query failed' : 'Zoeken naar media is niet gelukt',
-      'seek unavailable in format' : 'Voor/acteruit spoelen is niet beschikbaar in dit formaat',
+      'seek unavailable in format' : 'Voor/achteruit spoelen is niet beschikbaar in dit formaat',
       'The audio type is not supported: {0}' : 'Audio type {0} wordt niet ondersteund'
     },
     no_NO : {
