@@ -518,27 +518,14 @@
 
     function getPreloads(data) {
       var preload = (data.preload || []).slice(0);
+      var additions = [];
 
       function _add(chk) {
         if ( chk && chk.preload ) {
           chk.preload.forEach(function(p) {
-            preload.unshift(p);
+            additions.push(p);
           });
         }
-      }
-
-      if ( data.scope === 'user' ) {
-        preload = preload.map(function(p) {
-          if ( p.src.substr(0, 1) !== '/' && !p.src.match(/^(https?|ftp)/) ) {
-            OSjs.VFS.url(p.src, function(error, url) {
-              if ( !error ) {
-                p.src = url;
-              }
-            });
-          }
-
-          return p;
-        });
       }
 
       if ( data.depends && data.depends instanceof Array ) {
@@ -558,6 +545,23 @@
           _add(p);
         }
       });
+
+      preload = additions.concat(preload);
+      additions = [];
+
+      if ( data.scope === 'user' ) {
+        preload = preload.map(function(p) {
+          if ( p.src.substr(0, 1) !== '/' && !p.src.match(/^(https?|ftp)/) ) {
+            OSjs.VFS.url(p.src, function(error, url) {
+              if ( !error ) {
+                p.src = url;
+              }
+            });
+          }
+
+          return p;
+        });
+      }
 
       return preload;
     }
