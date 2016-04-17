@@ -723,7 +723,7 @@
 
       OSjs.Utils.asyncs(_hooks.onApplicationPreload, function(qi, i, n) {
         qi(n, arg, preload, function(p) {
-          if ( typeof p === 'array' ) {
+          if ( p && (p instanceof Array) ) {
             preload = p;
           }
 
