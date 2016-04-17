@@ -50,6 +50,7 @@
     'onSessionLoaded':       [],
     'onLogout':              [],
     'onShutdown':            [],
+    'onApplicationPreload':  [],
     'onApplicationLaunch':   [],
     'onApplicationLaunched': []
   };
@@ -699,22 +700,40 @@
       createLoading(n, {className: 'StartupNotification', tooltip: 'Starting ' + n});
 
       var preload = getPreloads(data);
-      OSjs.Utils.preload(preload, function(total, failed) {
-        destroyLoading(n);
 
-        if ( failed.length ) {
-          _error(OSjs.API._('ERR_APP_PRELOAD_FAILED_FMT', n, failed.join(',')));
-          return;
-        }
+      function _onLaunchPreload() {
 
-        setTimeout(function() {
-          _callback(data);
-        }, 0);
-      }, function(progress, count) {
-        if ( splash ) {
-          splash.update(progress, count);
-        }
-      }, pargs);
+        OSjs.Utils.preload(preload, function(total, failed) {
+          destroyLoading(n);
+
+          if ( failed.length ) {
+            _error(OSjs.API._('ERR_APP_PRELOAD_FAILED_FMT', n, failed.join(',')));
+            return;
+          }
+
+          setTimeout(function() {
+            _callback(data);
+          }, 0);
+        }, function(progress, count) {
+          if ( splash ) {
+            splash.update(progress, count);
+          }
+        }, pargs);
+      }
+
+      OSjs.Utils.asyncs(_hooks.onApplicationPreload, function(qi, i, n) {
+        qi(n, arg, preload, function(p) {
+          if ( typeof p === 'array' ) {
+            preload = p;
+          }
+
+          n();
+        });
+      }, function() {
+        _onLaunchPreload();
+      });
+
+      doTriggerHook('onApplicationLaunch', [n, arg]);
 
       return true;
     }
