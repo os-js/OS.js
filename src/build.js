@@ -190,7 +190,7 @@
    */
   function warning(grunt, str) {
     str = 'WARN: ' + str;
-    grunt.log.writeln(str['yellow'].bold);
+    grunt.log.writeln(str.yellow.bold);
   }
 
   /**
@@ -399,69 +399,6 @@
   })();
 
   /**
-   * Enable/Disable given package
-   */
-  function togglePackage(grunt, packageName, enable) {
-    var currentEnabled = getConfigPath(grunt, 'packages.ForceEnable') || [];
-    var currentDisabled = getConfigPath(grunt, 'packages.ForceDisable') || [];
-
-    var idx;
-    if ( enable ) {
-      if ( currentEnabled.indexOf(packageName) < 0 ) {
-        currentEnabled.push(packageName);
-      }
-
-      idx = currentDisabled.indexOf(packageName);
-      if ( idx >= 0 ) {
-        currentDisabled.splice(idx, 1);
-      }
-    } else {
-      idx = currentEnabled.indexOf(packageName);
-      if ( idx >= 0 ) {
-        currentEnabled.splice(idx, 1);
-      }
-
-      idx = currentDisabled.indexOf(packageName);
-      if ( idx < 0 ) {
-        currentDisabled.push(packageName);
-      }
-    }
-
-    setConfigPath(grunt, 'packages', {
-      packages: {
-        ForceEnable: currentEnabled,
-        ForceDisable: currentDisabled
-      }
-    }, true);
-  }
-
-  /**
-   * Adds repository to config
-   */
-  function addRepository(grunt, name) {
-    var current = getConfigPath(grunt, 'repositories') || [];
-    current.push(name);
-    setConfigPath(grunt, 'repositories', {repositories: current}, true);
-    return current;
-  }
-
-  /**
-   * Removes repository from config
-   */
-  function removeRepository(grunt, name) {
-    var current = getConfigPath(grunt, 'repositories') || [];
-    var found = current.indexOf(name);
-    if ( found >= 0 ) {
-      current.splice(found, 1);
-    }
-    if ( current.length === 1 && current[0] === 'default' ) {
-      current = null;
-    }
-    setConfigPath(grunt, 'repositories', {repositories: current}, true);
-    return current;
-  }
-
-  /**
    * Compile `src/conf` into an object
    */
   var generateBuildConfig = (function generateBuildConfig() {
@@ -561,10 +498,11 @@
       if ( !json || !Object.keys(json).length ) {
         throw new PackageException('Package manifest is empty');
       }
-      var currentEnabled = getConfigPath(grunt, 'packages.ForceEnable') || [];
-      var currentDisabled = getConfigPath(grunt, 'packages.ForceDisable') || [];
 
       if ( !all ) {
+        var currentEnabled = getConfigPath(grunt, 'packages.ForceEnable') || [];
+        var currentDisabled = getConfigPath(grunt, 'packages.ForceDisable') || [];
+
         if ( String(json.enabled) === 'false' ) {
           if ( currentEnabled.indexOf(pn) < 0 ) {
             throw new PackageException('Package is disabled');
@@ -583,7 +521,7 @@
       return true;
     }
 
-    function read(grunt, srcDir, all) {
+    function read(grunt, srcDir) {
       var list = {};
       var cfg = generateBuildConfig(grunt);
       (cfg.repositories || []).forEach(function(r) {
@@ -595,24 +533,15 @@
           if ( _fs.existsSync(mpath) ) {
             var raw = _fs.readFileSync(mpath);
             var name = r + '/' + p;
-            try {
-              var json = JSON.parse(raw);
 
-              if ( check(grunt, json, all, p) ) {
-                list[name] = json;
-              }
+            var json = JSON.parse(raw);
 
-              json.type = json.type || 'application';
-              json.path = name;
-              json.build = json.build || {};
+            json.type = json.type || 'application';
+            json.path = name;
+            json.build = json.build || {};
+            json.repo = r;
 
-            } catch ( e ) {
-              if ( e instanceof PackageException ) {
-                console.warn('!!!', p, e.message);
-              } else {
-                console.warn('readPackageMetadata()', e, e.stack);
-              }
-            }
+            list[name] = json;
           }
 
         });
@@ -622,13 +551,40 @@
 
     var _cache = null;
     return function(grunt, dir, all) {
-      if ( dir ) {
-        return read(grunt, dir, all);
+
+      function f(r, a) {
+        if ( a ) {
+          return r;
+        }
+
+        var filtered = [];
+        Object.keys(r).forEach(function(k) {
+          var p = k.split('/')[1];
+          try {
+            if ( check(grunt, r[k], a, p) ) {
+              filtered[k] = r[k];
+            }
+          } catch ( e ) {
+            if ( e instanceof PackageException ) {
+              console.warn('!!!', p, e.message);
+            } else {
+              console.warn('readPackageMetadata()', e, e.stack);
+            }
+          }
+        });
+        return filtered;
       }
+
+      if ( dir ) {
+        return f(read(grunt, dir), all);
+      }
+
       if ( _cache === null ) {
         _cache = read(grunt);
       }
-      return clone(_cache);
+
+      var result = clone(_cache);
+      return all ? result : f(result);
     };
   })();
 
@@ -1021,6 +977,69 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
+   * Enable/Disable given package
+   */
+  function togglePackage(grunt, packageName, enable) {
+    var currentEnabled = getConfigPath(grunt, 'packages.ForceEnable') || [];
+    var currentDisabled = getConfigPath(grunt, 'packages.ForceDisable') || [];
+
+    var idx;
+    if ( enable ) {
+      if ( currentEnabled.indexOf(packageName) < 0 ) {
+        currentEnabled.push(packageName);
+      }
+
+      idx = currentDisabled.indexOf(packageName);
+      if ( idx >= 0 ) {
+        currentDisabled.splice(idx, 1);
+      }
+    } else {
+      idx = currentEnabled.indexOf(packageName);
+      if ( idx >= 0 ) {
+        currentEnabled.splice(idx, 1);
+      }
+
+      idx = currentDisabled.indexOf(packageName);
+      if ( idx < 0 ) {
+        currentDisabled.push(packageName);
+      }
+    }
+
+    setConfigPath(grunt, 'packages', {
+      packages: {
+        ForceEnable: currentEnabled,
+        ForceDisable: currentDisabled
+      }
+    }, true);
+  }
+
+  /**
+   * Adds repository to config
+   */
+  function addRepository(grunt, name) {
+    var current = getConfigPath(grunt, 'repositories') || [];
+    current.push(name);
+    setConfigPath(grunt, 'repositories', {repositories: current}, true);
+    return current;
+  }
+
+  /**
+   * Removes repository from config
+   */
+  function removeRepository(grunt, name) {
+    var current = getConfigPath(grunt, 'repositories') || [];
+    var found = current.indexOf(name);
+    if ( found >= 0 ) {
+      current.splice(found, 1);
+    }
+    if ( current.length === 1 && current[0] === 'default' ) {
+      current = null;
+    }
+    setConfigPath(grunt, 'repositories', {repositories: current}, true);
+    return current;
+  }
+
+  /**
    * Creates a package
    */
   function createPackage(grunt, arg, type) {
@@ -1114,6 +1133,34 @@
       _path.join(PATHS.templates, 'handler', 'node.js'),
       _path.join(PATHS.server_node, 'handlers', uname, 'handler.js')
     );
+  }
+
+  function listPackages(grunt) {
+    var packages = readPackageMetadata(grunt, null, true);
+    var epackages = readPackageMetadata(grunt, null, false);
+
+    function pl(str, s) {
+      if ( str.length > s ) {
+        str = str.substr(0, s - 3) + '...';
+      }
+
+      while ( str.length <= s ) {
+        str += ' ';
+      }
+
+      return str;
+    }
+
+    grunt.log.subhead('Listing all packages...');
+    Object.keys(packages).forEach(function(pn) {
+      var p = packages[pn];
+      var es = !!epackages[pn];
+      var ess = es ? 'Enabled'.green : 'Disabled'.red;
+      var pn = pn.split('/', 2)[1][es ? 'white' : 'grey'];
+      var rn = p.repo[es ? 'white' : 'grey'];
+
+      console.log(pl(ess, 30), pl(rn, 30), pn);
+    });
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1725,6 +1772,7 @@
     togglePackage: togglePackage,
     addRepository: addRepository,
     removeRepository: removeRepository,
+    listPackages: listPackages,
 
     buildCore:        buildCore,
     buildStandalone:  buildStandalone,

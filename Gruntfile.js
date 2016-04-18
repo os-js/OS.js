@@ -250,7 +250,11 @@
       if ( arg === 'disable' || arg === 'enable' ) {
         _build.togglePackage(grunt, arg2, arg === 'enable');
         return;
+      } else if ( arg === 'list' ) {
+        _build.listPackages(grunt);
+        return;
       }
+
       _build.buildPackages(grunt, arg);
     });
 
