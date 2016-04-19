@@ -1181,6 +1181,16 @@
     });
   }
 
+  function addMountpoint(grunt, name, desc, path) {
+    var current = getConfigPath(grunt, 'client.VFS.Mountpoints') || {};
+    current[name] = {description: desc};
+    setConfigPath(grunt, 'client.VFS.Mountpoints', {client: {VFS: { Mountpoints: current}}}, true);
+
+    current = getConfigPath(grunt, 'server.vfs.mounts') || {};
+    current[name] = path;
+    setConfigPath(grunt, 'server.vfs.mounts', {server: {vfs: {mounts: current}}}, true);
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // BUILD
   /////////////////////////////////////////////////////////////////////////////
@@ -1795,6 +1805,7 @@
     addRepository: addRepository,
     removeRepository: removeRepository,
     listPackages: listPackages,
+    addMountpoint: addMountpoint,
 
     buildCore:        buildCore,
     buildStandalone:  buildStandalone,

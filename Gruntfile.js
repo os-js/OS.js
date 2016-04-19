@@ -218,6 +218,8 @@
         } else if ( fn === 'preload' ) {
           result = _build.addPreload(grunt, key, value, arg);
           console.log(result);
+        } else if ( fn === 'mount' ) {
+          result = _build.addMountpoint(grunt, key, value, arg);
         } else if ( fn === 'add-repository' ) {
           result = _build.addRepository(grunt, key);
           console.log(result);
