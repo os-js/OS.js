@@ -1155,11 +1155,13 @@
     Object.keys(packages).forEach(function(pn) {
       var p = packages[pn];
       var es = !!epackages[pn];
-      var ess = es ? 'Enabled'.green : 'Disabled'.red;
-      var pnn = pn.split('/', 2)[1][es ? 'white' : 'grey'];
-      var rn = p.repo[es ? 'white' : 'grey'];
 
-      console.log(pl(ess, 30), pl(rn, 30), pnn);
+      var lblenabled = es ? 'Enabled'.green : 'Disabled'.red;
+      var lblname = pn.split('/', 2)[1][es ? 'white' : 'grey'];
+      var lblrepo = p.repo[es ? 'white' : 'grey'];
+      var lbltype = p.type[es ? 'white' : 'grey'];
+
+      console.log(pl(lblenabled, 20), pl(lblrepo, 30), pl(lbltype, 25), lblname);
     });
   }
 
