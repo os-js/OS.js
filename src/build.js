@@ -563,6 +563,7 @@
           try {
             if ( check(grunt, r[k], a, p) ) {
               filtered[k] = r[k];
+              filtered[k].enabled = true;
             }
           } catch ( e ) {
             if ( e instanceof PackageException ) {
@@ -1138,6 +1139,8 @@
   function listPackages(grunt) {
     var packages = readPackageMetadata(grunt, null, true);
     var epackages = readPackageMetadata(grunt, null, false);
+    var currentEnabled = getConfigPath(grunt, 'packages.ForceEnable') || [];
+    var currentDisabled = getConfigPath(grunt, 'packages.ForceDisable') || [];
 
     function pl(str, s) {
       if ( str.length > s ) {
@@ -1154,17 +1157,25 @@
     grunt.log.subhead('Listing all packages...');
     Object.keys(packages).forEach(function(pn) {
       var p = packages[pn];
-      var es = !!epackages[pn];
-      var pes = p.enabled !== false;
-
-      var lblenabled = pes ? 'Enabled'.green : 'Disabled'.red;
-      if ( !es ) {
-        lblenabled = 'Disabled'.yellow;
+      var es = p.enabled !== false;
+      var esc = es ? 'green' : 'red';
+      var prn = pn.split('/', 2)[1];
+      if ( es ) {
+        if ( currentDisabled.indexOf(prn) !== -1 ) {
+          es = false;
+          esc = 'yellow';
+        }
+      } else {
+        if ( currentEnabled.indexOf(prn) !== -1 ) {
+          es = true;
+          esc = 'blue';
+        }
       }
 
-      var lblname = pn.split('/', 2)[1][es && pes ? 'white' : 'grey'];
-      var lblrepo = p.repo[es && pes ? 'white' : 'grey'];
-      var lbltype = p.type[es && pes ? 'white' : 'grey'];
+      var lblenabled = (es ? 'Enabled' : 'Disabled')[esc];
+      var lblname = prn[es ? 'white' : 'grey'];
+      var lblrepo = p.repo[es ? 'white' : 'grey'];
+      var lbltype = p.type[es ? 'white' : 'grey'];
 
       console.log(pl(lblenabled, 20), pl(lblrepo, 30), pl(lbltype, 25), lblname);
     });
@@ -1682,7 +1693,11 @@
     generate(PATHS.out_client_dev_manifest, 'dist-dev');
 
     var packages = readPackageMetadata(grunt);
-    writeFile(PATHS.out_server_manifest, JSON.stringify(packages, null, 4));
+    var pout = {};
+    Object.keys(packages).forEach(function(k) {
+      pout[k] = packages[k];
+    });
+    writeFile(PATHS.out_server_manifest, JSON.stringify(pout, null, 4));
   }
 
   /**
