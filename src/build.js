@@ -1155,11 +1155,16 @@
     Object.keys(packages).forEach(function(pn) {
       var p = packages[pn];
       var es = !!epackages[pn];
+      var pes = p.enabled !== false;
 
-      var lblenabled = es ? 'Enabled'.green : 'Disabled'.red;
-      var lblname = pn.split('/', 2)[1][es ? 'white' : 'grey'];
-      var lblrepo = p.repo[es ? 'white' : 'grey'];
-      var lbltype = p.type[es ? 'white' : 'grey'];
+      var lblenabled = pes ? 'Enabled'.green : 'Disabled'.red;
+      if ( !es ) {
+        lblenabled = 'Disabled'.yellow;
+      }
+
+      var lblname = pn.split('/', 2)[1][es && pes ? 'white' : 'grey'];
+      var lblrepo = p.repo[es && pes ? 'white' : 'grey'];
+      var lbltype = p.type[es && pes ? 'white' : 'grey'];
 
       console.log(pl(lblenabled, 20), pl(lblrepo, 30), pl(lbltype, 25), lblname);
     });
