@@ -691,11 +691,13 @@
     }
 
     if ( Window.prototype._onKeyEvent.apply(this, arguments) ) {
-      if ( ev.keyCode === Utils.Keys.V && ev.ctrlKey && type === 'keydown' ) {
-        paste();
-      } else if ( ev.keyCode === Utils.Keys.DELETE ) {
-        var view = this._scheme.find(this, 'FileView');
-        self._app.rm(getSelected(view), self);
+      if ( type === 'keydown' ) {
+        if ( ev.keyCode === Utils.Keys.V && ev.ctrlKey ) {
+          paste();
+        } else if ( ev.keyCode === Utils.Keys.DELETE ) {
+          var view = this._scheme.find(this, 'FileView');
+          self._app.rm(getSelected(view), self);
+        }
       }
 
       return true;
