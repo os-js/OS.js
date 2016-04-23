@@ -240,6 +240,7 @@ corewm-window-switcher > div > img {
   vertical-align : middle;
   margin-right : 5px;
   margin-left : 5px;
+  width : 16px;
 }
 /*corewm-window-switcher > div > span {
 }

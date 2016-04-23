@@ -508,7 +508,7 @@
   CoreWM.prototype.onKeyUp = function(ev, win) {
     if ( !ev ) { return; }
 
-    if ( !ev.shiftKey ) {
+    if ( !ev.altKey ) {
       if ( this.switcher ) {
         this.switcher.hide(ev, win, this);
       }
@@ -519,7 +519,7 @@
     if ( !ev ) { return; }
 
     var keys = Utils.Keys;
-    if ( ev.shiftKey && ev.keyCode === keys.TILDE ) { // Toggle Window switcher
+    if ( ev.altKey && ev.keyCode === keys.TILDE ) { // Toggle Window switcher
       if ( !this.getSetting('enableSwitcher') ) { return; }
 
       if ( this.switcher ) {
