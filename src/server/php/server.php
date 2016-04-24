@@ -90,5 +90,3 @@ if ( $response = APIRequest::call() ) {
 }
 
 return false;
-
-?>

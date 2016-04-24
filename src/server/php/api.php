@@ -578,5 +578,3 @@ class CoreAPIHandler
 
 API::AddHandler('application', Array('CoreAPIHandler', 'application'));
 API::AddHandler('curl', Array('CoreAPIHandler', 'curl'));
-
-?>
