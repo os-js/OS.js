@@ -138,5 +138,3 @@ API::AddHandler('login', Array('MysqlAPIHandler', 'login'));
 API::AddHandler('logout', Array('MysqlAPIHandler', 'logout'));
 API::AddHandler('settings', Array('MysqlAPIHandler', 'settings'));
 API::SetHandler('MysqlAPIHandler');
-
-?>

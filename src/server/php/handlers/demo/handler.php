@@ -69,5 +69,3 @@ class DemoAPIHandler
 API::AddHandler('login', Array('DemoAPIHandler', 'login'));
 API::AddHandler('logout', Array('DemoAPIHandler', 'logout'));
 API::SetHandler('DemoAPIHandler');
-
-?>
