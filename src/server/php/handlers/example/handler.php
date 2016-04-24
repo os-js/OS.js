@@ -48,7 +48,7 @@ class ExampleAPIHandler
   protected static function _initDB() {
     $args = Array(1002 => "SET NAMES 'utf8'");
     if ( !($db = new PDO(APIHANDLER_DSN, APIHANDLER_USER, APIHANDLER_PASS, $args)) ) {
-      throw "Could not set up database connection";
+      throw new Exception("Could not set up database connection");
     }
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     return $db;
