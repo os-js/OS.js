@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -53,6 +53,7 @@
   function PackageManager() {
     var uri = Utils.checkdir(API.getConfig('Connection.MetadataURI'));
 
+    this.blacklist = [];
     this.packages = {};
     this.uri = uri;
   }
@@ -72,19 +73,60 @@
 
     console.info('PackageManager::load()');
 
-    this._loadMetadata(function(err) {
-      if ( err ) {
-        callback(err);
-        return;
-      }
+    function loadMetadata(cb) {
+      self._loadMetadata(function(err) {
+        if ( err ) {
+          callback(err);
+          return;
+        }
 
-      var len = Object.keys(self.packages).length;
-      if ( len ) {
+        var len = Object.keys(self.packages).length;
+        if ( len ) {
+          cb();
+          return;
+        }
+
+        callback(false, 'No packages found!');
+      });
+    }
+
+    loadMetadata(function() {
+      self._loadExtensions(function() {
         callback(true);
-        return;
-      }
-      callback(false, 'No packages found!');
+      });
     });
+
+  };
+
+  /**
+   * Internal method for loading all extensions
+   *
+   * @param  Function callback      callback
+   *
+   * @return void
+   *
+   * @method PackageManager::_loadExtensions()
+   */
+  PackageManager.prototype._loadExtensions = function(callback) {
+    var packages = this.packages;
+    var preloads = [];
+
+    Object.keys(packages).forEach(function(k) {
+      var iter = packages[k];
+      if ( iter.type === 'extension' && iter.sources ) {
+        iter.sources.forEach(function(p) {
+          preloads.push(p);
+        });
+      }
+    });
+
+    if ( preloads.length ) {
+      Utils.preload(preloads, function(total, failed) {
+        callback();
+      });
+    } else {
+      callback();
+    }
   };
 
   /**
@@ -165,67 +207,37 @@
 
     console.debug('PackageManager::generateUserMetadata()');
 
-    function _checkDirectory(cb) {
-      OSjs.VFS.mkdir(dir, function() {
-        cb();
-      });
-    }
-
-    function _runQueue(cb) {
-      console.debug('PackageManager::generateUserMetadata()', '_runQueue()');
-
-      function __handleMetadata(path, meta, cbf) {
-        var preloads = meta.preload || [];
-        var newpreloads = [];
-
-        preloads.forEach(function(p) {
-          var src = path.replace(/package\.json$/, p.src);
-          var file = new OSjs.VFS.File(src);
-
-          OSjs.VFS.url(file, function(err, resp) { // NOTE: This only works for internal FIXME
-            if ( err || !resp ) { return; }
-
-            newpreloads.push({
-              type: p.type,
-              src: resp
-            });
-          });
-
-        });
-
-        meta.path    = OSjs.Utils.filename(path.replace(/\/package\.json$/, ''));
-        meta.preload = newpreloads;
-
-        cbf(meta);
-      }
-
-      function __next() {
-        if ( !queue.length ) {
-          cb();
-          return;
-        }
-
-        var iter = queue.pop();
-        var file = new OSjs.VFS.File(iter, 'application/json');
-        console.debug('PackageManager::generateUserMetadata()', '_runQueue()', '__next()', queue.length, iter);
-        OSjs.VFS.read(file, function(err, resp) {
-          resp = OSjs.Utils.fixJSON(resp);
-          if ( !err && resp ) {
-            __handleMetadata(iter, resp, function(data) {
-              console.debug('PackageManager::generateUserMetadata()', 'ADDING PACKAGE', resp);
-              found[resp.className] = data;
-              __next();
-            });
-            return;
-          }
-          __next();
-        }, {type: 'text'});
-      }
-
-      __next();
-    }
-
     function _enumPackages(cb) {
+
+      function __runQueue(done) {
+        console.debug('PackageManager::generateUserMetadata()', '__runQueue()');
+
+        Utils.asyncs(queue, function(iter, i, next) {
+          var file = new OSjs.VFS.File(iter, 'application/json');
+          var rpath = iter.replace(/\/metadata\.json$/, '');
+          console.debug('PackageManager::generateUserMetadata()', '__runQueue()', 'next()', queue.length, iter);
+
+          OSjs.VFS.read(file, function(err, resp) {
+            var meta = OSjs.Utils.fixJSON(resp);
+            if ( !err && meta ) {
+              console.debug('PackageManager::generateUserMetadata()', 'ADDING PACKAGE', meta);
+              meta.path = OSjs.Utils.filename(rpath);
+              meta.scope = 'user';
+              meta.preload = meta.preload.map(function(p) {
+                if ( p.src.substr(0, 1) !== '/' && !p.src.match(/^(https?|ftp)/) ) {
+                  p.src = rpath + '/' + p.src.replace(/^(\.\/)?/, '');
+                }
+                return p;
+              });
+
+              found[meta.className] = meta;
+            }
+
+            next();
+          }, {type: 'text'});
+        }, done);
+      }
+
       console.debug('PackageManager::generateUserMetadata()', '_enumPackages()');
 
       OSjs.VFS.scandir(dir, function(err, resp) {
@@ -236,11 +248,11 @@
         if ( resp && (resp instanceof Array) ) {
           resp.forEach(function(iter) {
             if ( !iter.filename.match(/^\./) && iter.type === 'dir' ) {
-              queue.push(Utils.pathJoin(dir.path, iter.filename, 'package.json'));
+              queue.push(Utils.pathJoin(dir.path, iter.filename, 'metadata.json'));
             }
           });
         }
-        _runQueue(cb);
+        __runQueue(cb);
       });
     }
 
@@ -255,7 +267,7 @@
       });
     }
 
-    _checkDirectory(function() {
+    OSjs.VFS.mkdir(dir, function() {
       _enumPackages(function() {
         _writeMetadata(function() {
           self._loadMetadata(function() {
@@ -353,6 +365,19 @@
   };
 
   /**
+   * Sets the package blacklist
+   *
+   * @param   Array       list        List of package names
+   *
+   * @return  vboid
+   *
+   * @method  PackageManager::setBlacklist()
+   */
+  PackageManager.prototype.setBlacklist = function(list) {
+    this.blacklist = list || [];
+  };
+
+  /**
    * Get package by name
    *
    * @param String    name      Package name
@@ -362,8 +387,9 @@
    * @method PackageManager::getPackage()
    */
   PackageManager.prototype.getPackage = function(name) {
-    if ( typeof this.packages[name] !== 'undefined' ) {
-      return this.packages[name];
+    var packages = Utils.cloneObject(this.packages);
+    if ( typeof packages[name] !== 'undefined' ) {
+      return packages[name];
     }
     return false;
   };
@@ -378,19 +404,31 @@
    * @method PackageManager::getPackages()
    */
   PackageManager.prototype.getPackages = function(filtered) {
+    var self = this;
     var hidden = OSjs.Core.getSettingsManager().instance('Packages', {hidden: []}).get('hidden');
+    var packages = Utils.cloneObject(this.packages);
+
+    function allowed(i, iter) {
+      if ( self.blacklist.indexOf(i) >= 0 ) {
+        return false;
+      }
+
+      if ( iter && (iter.groups instanceof Array) ) {
+        if ( !API.checkPermission(iter.groups) ) {
+          return false;
+        }
+      }
+
+      return true;
+    }
 
     if ( typeof filtered === 'undefined' || filtered === true ) {
-      var pkgs = this.packages;
       var result = {};
-      Object.keys(pkgs).forEach(function(name) {
-        var iter = pkgs[name];
-        if ( iter && (iter.groups instanceof Array) ) {
-          if ( !API.checkPermission(iter.groups) ) {
-            return;
-          }
+      Object.keys(packages).forEach(function(name) {
+        var iter = packages[name];
+        if ( !allowed(name, iter) ) {
+          return;
         }
-
         if ( iter && hidden.indexOf(name) < 0 ) {
           result[name] = iter;
         }
@@ -399,7 +437,7 @@
       return result;
     }
 
-    return this.packages;
+    return packages;
   };
 
   /**
@@ -412,15 +450,50 @@
   PackageManager.prototype.getPackagesByMime = function(mime) {
     var list = [];
     var self = this;
-    Object.keys(this.packages).forEach(function(i) {
-      var a = self.packages[i];
-      if ( a && a.mime ) {
-        if ( Utils.checkAcceptMime(mime, a.mime) ) {
-          list.push(i);
+    var packages = Utils.cloneObject(this.packages);
+
+    Object.keys(packages).forEach(function(i) {
+      if ( self.blacklist.indexOf(i) < 0 ) {
+        var a = packages[i];
+        if ( a && a.mime ) {
+          if ( Utils.checkAcceptMime(mime, a.mime) ) {
+            list.push(i);
+          }
         }
       }
     });
     return list;
+  };
+
+  /**
+   * Add a dummy package (useful for having shortcuts in the launcher menu)
+   *
+   * @param   String      n             Name of your package
+   * @param   String      title         The display title
+   * @param   String      icon          The display icon
+   * @param   Function    fn            The function to run when the package tries to launch
+   *
+   * @return  void
+   */
+  PackageManager.prototype.addDummyPackage = function(n, title, icon, fn) {
+    if ( this.packages[n] || OSjs.Applications[n] ) {
+      throw new Error('A package already exists with this name!');
+    }
+    if ( typeof fn !== 'function' ) {
+      throw new TypeError('You need to specify a function/callback!');
+    }
+
+    this.packages[n] = {
+      type: 'application',
+      className: n,
+      description: title,
+      name: title,
+      icon: icon,
+      cateogry: 'other',
+      scope: 'system'
+    };
+
+    OSjs.Applications[n] = fn;
   };
 
   /////////////////////////////////////////////////////////////////////////////

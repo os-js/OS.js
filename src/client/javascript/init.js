@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -42,7 +42,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   // Make sure these namespaces exist
-  (['API', 'GUI', 'Core', 'Dialogs', 'Helpers', 'Applications', 'Locales', 'VFS']).forEach(function(ns) {
+  (['API', 'GUI', 'Core', 'Dialogs', 'Helpers', 'Applications', 'Locales', 'VFS', 'Extensions']).forEach(function(ns) {
     OSjs[ns] = OSjs[ns] || {};
   });
 
@@ -59,24 +59,29 @@
 
   // Compability
   (function() {
-    if ( window.HTMLCollection ) {
-      window.HTMLCollection.prototype.forEach = Array.prototype.forEach;
-    }
-    if ( window.NodeList ) {
-      window.NodeList.prototype.forEach = Array.prototype.forEach;
-    }
-    if ( window.FileList ) {
-      window.FileList.prototype.forEach = Array.prototype.forEach;
-    }
+    var compability = ['forEach', 'every', 'map'];
 
-    (function () {
-      function CustomEvent ( event, params ) {
+    compability.forEach(function(n) {
+      if ( window.HTMLCollection ) {
+        window.HTMLCollection.prototype[n] = Array.prototype[n];
+      }
+
+      if ( window.NodeList ) {
+        window.NodeList.prototype[n] = Array.prototype[n];
+      }
+
+      if ( window.FileList ) {
+        window.FileList.prototype[n] = Array.prototype[n];
+      }
+    });
+
+    (function() {
+      function CustomEvent(event, params) {
         params = params || { bubbles: false, cancelable: false, detail: undefined };
         var evt = document.createEvent( 'CustomEvent' );
         evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
         return evt;
       }
-
 
       if ( window.navigator.userAgent.match(/MSIE|Edge|Trident/) ) {
         CustomEvent.prototype = window.Event.prototype;
@@ -107,8 +112,16 @@
       if ( ev && ev.data && typeof ev.data.wid !== 'undefined' && typeof ev.data.pid !== 'undefined' ) {
         console.debug('window::message()', ev.data);
         var proc = OSjs.API.getProcess(ev.data.pid);
-        var win  = proc._getWindow(ev.data.wid, 'wid');
-        win.onPostMessage(ev.data.message, ev);
+        if ( proc ) {
+          if ( typeof proc.onPostMessage === 'function' ) {
+            proc.onPostMessage(ev.data.message, ev);
+          }
+
+          var win  = proc._getWindow(ev.data.wid, 'wid');
+          if ( win ) {
+            win.onPostMessage(ev.data.message, ev);
+          }
+        }
       }
     },
 
@@ -137,6 +150,15 @@
       var wm  = OSjs.Core.getWindowManager();
       var win = wm ? wm.getCurrentWindow() : null;
 
+      function sendKey(special) {
+        if ( wm ) {
+          wm.onKeyDown(ev, win, special);
+          if ( win ) {
+            return win._onKeyEvent(ev, 'keydown', special);
+          }
+        }
+      }
+
       function checkPrevent() {
         var d = ev.srcElement || ev.target;
         var doPrevent = d.tagName === 'BODY' ? true : false;
@@ -156,23 +178,32 @@
         return false;
       }
 
-      if ( checkPrevent() ) {
+      function checkShortcut() {
+        if ( ((ev.keyCode === 115 || ev.keyCode === 83) && ev.ctrlKey) || ev.keyCode === 19 ) {
+          if ( ev.shiftKey ) {
+            return 'saveas';
+          } else {
+            return 'save';
+          }
+        } else if ( (ev.keyCode === 79 || ev.keyCode === 83) && ev.ctrlKey ) {
+          return 'open';
+        }
+        return false;
+      }
+
+      var shortcut = checkShortcut();
+      if ( checkPrevent() || shortcut ) {
         ev.preventDefault();
       }
 
       // WindowManager and Window must always recieve events
-      if ( wm ) {
-        wm.onKeyDown(ev, win);
-
-        if ( win ) {
-          return win._onKeyEvent(ev, 'keydown');
-        }
-      }
+      sendKey(shortcut);
 
       return true;
     },
     keypress: function(ev) {
       var wm = OSjs.Core.getWindowManager();
+
       if ( wm ) {
         var win = wm.getCurrentWindow();
         if ( win ) {
@@ -207,22 +238,21 @@
     resize: (function() {
       var _timeout;
 
-      function _resize(ev) {
+      function _resize(ev, wasInited) {
         var wm = OSjs.Core.getWindowManager();
         if ( !wm ) { return; }
-        wm.resize(ev, wm.getWindowSpace());
+        wm.resize(ev, wm.getWindowSpace(), wasInited);
       }
 
-      return function(ev) {
+      return function(ev, wasInited) {
         if ( _timeout ) {
           clearTimeout(_timeout);
           _timeout = null;
         }
 
-
         var self = this;
         _timeout = setTimeout(function() {
-          _resize.call(self, ev);
+          _resize.call(self, ev, wasInited);
         }, 100);
       };
     })(),
@@ -237,6 +267,36 @@
       document.body.scrollTop = 0;
       document.body.scrollLeft = 0;
       return true;
+    },
+
+    hashchange: function(ev) {
+      var hash = window.location.hash.substr(1);
+      var spl = hash.split(/^([\w\.\-_]+)\:(.*)/);
+
+      function getArgs(q) {
+        var args = {};
+        q.split('&').forEach(function(a) {
+          var b = a.split('=');
+          var k = decodeURIComponent(b[0]);
+          args[k] = decodeURIComponent(b[1] || '');
+        });
+        return args;
+      }
+
+      if ( spl.length === 4 ) {
+        var root = spl[1];
+        var args = getArgs(spl[2]);
+
+        if ( root ) {
+          OSjs.API.getProcess(root).forEach(function(p) {
+            p._onMessage(null, 'hashchange', {
+              source: null,
+              hash: hash,
+              args: args
+            });
+          });
+        }
+      }
     }
   };
 
@@ -260,13 +320,15 @@
     var append = OSjs.API.getConfig('VersionAppend');
 
     var ver = OSjs.API.getConfig('Version', 'unknown version');
-    var cop = 'Copyright © 2011-2015 ';
+    var cop = 'Copyright © 2011-2016 ';
     var lnk = document.createElement('a');
+    lnk.setAttribute('aria-hidden', 'true');
     lnk.href = 'mailto:andersevenrud@gmail.com';
     lnk.appendChild(document.createTextNode('Anders Evenrud'));
 
     var el = document.createElement('div');
     el.id = 'DebugNotice';
+    el.setAttribute('aria-hidden', 'true');
     el.appendChild(document.createTextNode(OSjs.Utils.format('OS.js {0}', ver)));
     el.appendChild(document.createElement('br'));
     el.appendChild(document.createTextNode(cop));
@@ -288,20 +350,18 @@
     console.debug('initHandler()');
 
     handler = new OSjs.Core.Handler();
-    handler.init(function() {
+    handler.init(function(error) {
       if ( inited ) {
         return;
       }
       inited = true;
 
-      handler.boot(function(result, error) {
-        if ( error ) {
-          onError(error);
-          return;
-        }
+      if ( error ) {
+        onError(error);
+        return;
+      }
 
-        callback();
-      });
+      callback();
     });
   }
 
@@ -317,6 +377,7 @@
     document.addEventListener('keypress', events.keypress, true);
     document.addEventListener('keyup', events.keyup, true);
     document.addEventListener('mousedown', events.mousedown, false);
+    window.addEventListener('hashchange', events.hashchange, false);
     window.addEventListener('resize', events.resize, false);
     window.addEventListener('scroll', events.scroll, false);
     window.addEventListener('fullscreenchange', events.fullscreen, false);
@@ -334,7 +395,7 @@
       OSjs.API.error(OSjs.API._('ERR_JAVASCRIPT_EXCEPTION'),
                     OSjs.API._('ERR_JAVACSRIPT_EXCEPTION_DESC'),
                     OSjs.API._('BUGREPORT_MSG'),
-                    exception || {name: 'window::onerror()', fileName: url, lineNumber: linenumber+':'+column, message: message},
+                    exception || {name: 'window::onerror()', fileName: url, lineNumber: linenumber + ':' + column, message: message},
                     true );
 
       return false;
@@ -364,6 +425,30 @@
   }
 
   /**
+   * Loads all extensions
+   */
+  function initExtensions(config, callback) {
+    var exts = Object.keys(OSjs.Extensions);
+    var manifest =  OSjs.Core.getMetadata();
+
+    console.group('initExtensions()', exts);
+    OSjs.Utils.asyncs(exts, function(entry, idx, next) {
+      try {
+        var m = manifest[entry];
+        OSjs.Extensions[entry].init(m, function() {
+          next();
+        });
+      } catch ( e ) {
+        console.warn('Extension init failed', e.stack, e);
+        next();
+      }
+    }, function() {
+      console.groupEnd();
+      callback();
+    });
+  }
+
+  /**
    * Initializes the SettingsManager pools
    * from configuration file(s)
    */
@@ -381,12 +466,21 @@
   }
 
   /**
+   * Initializes the PackageManager
+   */
+  function initPackageManager(cfg, callback) {
+    OSjs.Core.getPackageManager().load(function(result, error) {
+      callback(error, result);
+    });
+  }
+
+  /**
    * Initalizes the VFS
    */
   function initVFS(config, callback) {
     console.debug('initVFS()');
-    if ( OSjs.VFS.registerMounts ) {
-      OSjs.VFS.registerMounts();
+    if ( OSjs.VFS.registerMountpoints ) {
+      OSjs.VFS.registerMountpoints();
     }
 
     callback();
@@ -434,9 +528,8 @@
     function session() {
       handler.loadSession(function() {
         setTimeout(function() {
-          events.resize();
+          events.resize(null, true);
         }, 500);
-
 
         callback();
 
@@ -456,6 +549,8 @@
     console.group('init()');
 
     var config = OSjs.Core.getConfig();
+    var splash = document.getElementById('LoadingScreen');
+    var loading = OSjs.API.createSplash('OS.js', null, null, splash);
 
     initLayout();
 
@@ -464,33 +559,47 @@
 
       initHandler(config, function() {
 
-        initSettingsManager(config, function() {
+        initPackageManager(config, function() {
+          loading.update(3, 8);
 
-          initVFS(config, function() {
-            OSjs.API.triggerHook('onInited');
+          initExtensions(config, function() {
+            loading.update(4, 8);
 
-            initWindowManager(config, function() {
-              OSjs.API.triggerHook('onWMInited');
+            initSettingsManager(config, function() {
+              loading.update(5, 8);
 
-              OSjs.Utils.$remove(document.getElementById('LoadingScreen'));
+              initVFS(config, function() {
+                loading.update(6, 8);
 
-              initEvents();
-              var wm = OSjs.Core.getWindowManager();
-              wm._fullyLoaded = true;
+                OSjs.API.triggerHook('onInited');
 
-              console.groupEnd();
+                OSjs.GUI.DialogScheme.init(function() {
+                  loading.update(7, 8);
 
-              initSession(config, function() {
-                OSjs.API.triggerHook('onSessionLoaded');
-              });
-            }); // wm
-          }); // vfs
+                  initWindowManager(config, function() {
+                    loading = loading.destroy();
+                    splash = OSjs.Utils.$remove(splash);
 
-        }); // settings
+                    OSjs.API.triggerHook('onWMInited');
 
-      }); // preload
+                    initEvents();
+                    var wm = OSjs.Core.getWindowManager();
+                    wm._fullyLoaded = true;
 
-    }); // handler
+                    console.groupEnd();
+
+                    initSession(config, function() {
+                      OSjs.API.triggerHook('onSessionLoaded');
+                    });
+                  }); // wm
+                });
+
+              }); // vfs
+            }); // settings
+          }); // extensions
+        }); // packages
+      }); // handler
+    }); // preload
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -515,6 +624,7 @@
     document.removeEventListener('keypress', events.keypress, true);
     document.removeEventListener('keyup', events.keyup, true);
     document.removeEventListener('mousedown', events.mousedown, false);
+    window.removeEventListener('hashchange', events.hashchange, false);
     window.removeEventListener('resize', events.resize, false);
     window.removeEventListener('scroll', events.scroll, false);
     window.removeEventListener('message', events.message, false);
@@ -524,6 +634,7 @@
 
     OSjs.API.blurMenu();
     OSjs.API.killAll();
+    OSjs.GUI.DialogScheme.destroy();
 
     var ring = OSjs.API.getServiceNotificationIcon();
     if ( ring ) {
@@ -538,14 +649,19 @@
 
     console.warn('OS.js was shut down!');
 
-    if ( window.require ) {
+    if ( OSjs.API.getConfig('Connection.Type') === 'nw' ) {
       try {
         var gui = require('nw.gui');
         var win = gui.Window.get();
         setTimeout(function() {
           win.close();
         }, 500);
-      } catch ( e ) {}
+      } catch ( e ) {
+      }
+    } else {
+      if ( OSjs.API.getConfig('ReloadOnShutdown') === true ) {
+        window.location.reload();
+      }
     }
   };
 

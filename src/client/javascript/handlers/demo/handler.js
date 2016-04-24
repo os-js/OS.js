@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -58,7 +58,7 @@
   /**
    * Demo handler - Uses localStorage for sessions, for testing purposes
    */
-  var DemoHandler = function() {
+  function DemoHandler() {
     OSjs.Core._Handler.apply(this, arguments);
 
     var curr = API.getConfig('Version');
@@ -68,9 +68,10 @@
       localStorage.clear();
     }
     localStorage.setItem('__version__', String(curr));
+  }
 
-  };
   DemoHandler.prototype = Object.create(OSjs.Core._Handler.prototype);
+  DemoHandler.constructor = OSjs.Core._Handler;
 
   /**
    * Demo initialization
@@ -78,42 +79,40 @@
   DemoHandler.prototype.init = function(callback) {
     console.info('OSjs::DemoHandler::init()');
 
-    if ( window.location.href.match(/^file\:\/\//) ) {
-      callback({
-        id: 0,
-        username: 'demo',
-        name: 'Local Server',
-        groups: ['demo']
-      });
-    }
-
-    // Use the 'demo' user
     var self = this;
-    this.login('demo', 'demo', function(userData) {
-      self.onLogin(userData, getSettings(), function() {
-        callback();
-      });
+
+    OSjs.Core._Handler.prototype.init.call(this, function() {
+      function finished(result) {
+        result.userSettings = getSettings();
+        self.onLogin(result, function() {
+          callback();
+        });
+      }
+
+      if ( window.location.href.match(/^file\:\/\//) ) { // NW
+        finished({
+          userData: {
+            id: 0,
+            username: 'demo',
+            name: 'Local Server',
+            groups: ['admin']
+          }
+        });
+      } else {
+        self.login('demo', 'demo', function(error, result) {
+          if ( error ) {
+            callback(error);
+          } else {
+            finished(result);
+          }
+        });
+      }
     });
   };
 
   /**
-   * Demo login. Just an example
+   * Demo settings api call
    */
-  DemoHandler.prototype.login = function(username, password, callback) {
-    console.info('DemoHandler::login()', username);
-    var opts = {username: username, password: password};
-    this.callAPI('login', opts, function(response) {
-      if ( response.result ) { // This contains an object with user data
-        callback(response.result);
-      } else {
-        callback(false, response.error ? ('Error while logging in: ' + response.error) : 'Invalid login');
-      }
-
-    }, function(error) {
-      callback(false, 'Login error: ' + error);
-    });
-  };
-
   DemoHandler.prototype.saveSettings = function(pool, storage, callback) {
     Object.keys(storage).forEach(function(key) {
       if ( pool && key !== pool ) {
@@ -130,9 +129,10 @@
     callback();
   };
 
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
 
-  //
-  // Exports
-  //
   OSjs.Core.Handler = DemoHandler;
+
 })(OSjs.API, OSjs.Utils, OSjs.VFS);

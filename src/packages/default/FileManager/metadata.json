@@ -1,0 +1,49 @@
+{
+  "className": "ApplicationFileManager",
+  "name": "File Manager",
+  "description": "The default file manager",
+  "names": {
+    "bg_BG": "Файлов мениджър",
+    "de_DE": "Dateimanager",
+    "fr_FR": "Explorateur de fichier",
+    "it_IT": "Gestore File",
+    "nl_NL": "bestands beheer",
+    "no_NO": "Fil-håndtering",
+    "pl_PL": "Menedżer Plików",
+    "ko_KR": "파일 탐색기",
+    "sk_SK": "Správca súborov",
+    "ru_RU": "Файловый менеджер",
+    "tr_TR": "Dosya Yöneticisi",
+    "vi_VN": "Quản lí file"
+  },
+  "descriptions": {
+    "bg_BG": "Стандартния файлов мениджър",
+    "de_DE": "Standardmäßiger Dateimanager",
+    "fr_FR": "Gestionnaire de fichier par défaut",
+    "it_IT": "Il gestore file predefinito",
+    "nl_NL": "Standaard bestands beheerder",
+    "no_NO": "Standard Fil-håndtering program",
+    "pl_PL": "Domyślny Menedżer Plików",
+    "ko_KR": "기본 파일 관리자",
+    "sk_SK": "Štandardný správca súborov",
+    "ru_RU": "Стандартный файловый менеджер",
+    "tr_TR": "Varsayılan dosya yöneticisi",
+    "vi_VN": "Trình quản lí file mặc định"
+  },
+  "category": "utilities",
+  "icon": "apps/file-manager.png",
+  "preload": [
+    {
+      "src": "main.js",
+      "type": "javascript"
+    },
+    {
+      "src": "locales.js",
+      "type": "javascript"
+    },
+    {
+      "src": "main.css",
+      "type": "stylesheet"
+    }
+  ]
+}

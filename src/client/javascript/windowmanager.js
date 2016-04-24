@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -73,6 +73,8 @@
     this.direction  = null;
     this.startX     = mousePosition.x;
     this.startY     = mousePosition.y;
+    this.minWidth   = win._properties.min_width;
+    this.minHeight  = win._properties.min_height;
 
     var windowRects = [];
     _WM.getWindows().forEach(function(w) {
@@ -82,8 +84,8 @@
         var rect = {
           left : pos.x - self.theme.borderSize,
           top : pos.y - self.theme.borderSize,
-          width: dim.w + (self.theme.borderSize*2),
-          height: dim.h + (self.theme.borderSize*2) + self.theme.topMargin
+          width: dim.w + (self.theme.borderSize * 2),
+          height: dim.h + (self.theme.borderSize * 2) + self.theme.topMargin
         };
 
         rect.right = rect.left + rect.width;
@@ -107,10 +109,10 @@
       nw: (dirX <= dirD) && (dirY <= dirD),
       n:  (dirX > dirD) && (dirY <= dirD),
       w:  (dirX <= dirD) && (dirY >= dirD),
-      ne: (dirX >= (dir.width-dirD)) && (dirY <= dirD),
-      e:  (dirX >= (dir.width-dirD)) && (dirY > dirD),
-      se: (dirX >= (dir.width-dirD)) && (dirY >= (dir.height-dirD)),
-      sw: (dirX <= dirD) && (dirY >= (dir.height-dirD)),
+      ne: (dirX >= (dir.width - dirD)) && (dirY <= dirD),
+      e:  (dirX >= (dir.width - dirD)) && (dirY > dirD),
+      se: (dirX >= (dir.width - dirD)) && (dirY >= (dir.height - dirD)),
+      sw: (dirX <= dirD) && (dirY >= (dir.height - dirD))
     };
 
     Object.keys(checks).forEach(function(k) {
@@ -232,6 +234,15 @@
       var newWidth = null;
       var newHeight = null;
 
+      function clampSizeAllowed() {
+        if ( current.minHeight && newHeight < current.minHeight ) {
+          newHeight = current.minHeight;
+        }
+        if ( current.minWidth && newWidth < current.minWidth ) {
+          newWidth = current.minWidth;
+        }
+      }
+
       var resizeMap = {
         s: function() {
           newWidth = current.rectWindow.w;
@@ -260,6 +271,7 @@
         n: function() {
           newTop = current.rectWindow.y + dy;
           newLeft = current.rectWindow.x;
+
           newHeight = current.rectWindow.h - dy;
           newWidth = current.rectWindow.w;
         },
@@ -281,6 +293,13 @@
         resizeMap[current.direction]();
       }
 
+      if ( newTop < current.rectWorkspace.top && newTop !== null ) {
+        newTop = current.rectWorkspace.top;
+        newHeight -= current.rectWorkspace.top - mousePosition.y;
+      }
+
+      clampSizeAllowed();
+
       return {left: newLeft, top: newTop, width: newWidth, height: newHeight};
     }
 
@@ -299,19 +318,19 @@
 
       if ( newTop < current.rectWorkspace.top ) { newTop = current.rectWorkspace.top; }
 
-      var newRight = newLeft + current.rectWindow.w + (borderSize*2);
+      var newRight = newLeft + current.rectWindow.w + (borderSize * 2);
       var newBottom = newTop + current.rectWindow.h + topMargin + (borderSize);
 
       // 8-directional corner window snapping
       if ( cornerSnapSize > 0 ) {
-        if ( ((newLeft-borderSize) <= cornerSnapSize) && ((newLeft-borderSize) >= -cornerSnapSize) ) { // Left
+        if ( ((newLeft - borderSize) <= cornerSnapSize) && ((newLeft - borderSize) >= -cornerSnapSize) ) { // Left
           newLeft = borderSize;
         } else if ( (newRight >= (current.rectWorkspace.width - cornerSnapSize)) && (newRight <= (current.rectWorkspace.width + cornerSnapSize)) ) { // Right
           newLeft = current.rectWorkspace.width - current.rectWindow.w - borderSize;
         }
         if ( (newTop <= (current.rectWorkspace.top + cornerSnapSize)) && (newTop >= (current.rectWorkspace.top - cornerSnapSize)) ) { // Top
           newTop = current.rectWorkspace.top + (borderSize);
-        } else if ( 
+        } else if (
                     (newBottom >= ((current.rectWorkspace.height + current.rectWorkspace.top) - cornerSnapSize)) &&
                     (newBottom <= ((current.rectWorkspace.height + current.rectWorkspace.top) + cornerSnapSize))
                   ) { // Bottom
@@ -321,28 +340,28 @@
 
       // Snapping to other windows
       if ( windowSnapSize > 0 ) {
-        current.snapRects.forEach(function(rect) {
+        current.snapRects.every(function(rect) {
           // >
           if ( newRight >= (rect.left - windowSnapSize) && newRight <= (rect.left + windowSnapSize) ) { // Left
-            newLeft = rect.left - (current.rectWindow.w + (borderSize*2));
+            newLeft = rect.left - (current.rectWindow.w + (borderSize * 2));
             return false;
           }
 
           // <
-          if ( (newLeft-borderSize) <= (rect.right + windowSnapSize) && (newLeft-borderSize) >= (rect.right - windowSnapSize) ) { // Right
-            newLeft = rect.right + (borderSize*2);
+          if ( (newLeft - borderSize) <= (rect.right + windowSnapSize) && (newLeft - borderSize) >= (rect.right - windowSnapSize) ) { // Right
+            newLeft = rect.right + (borderSize * 2);
             return false;
           }
 
           // \/
           if ( newBottom >= (rect.top - windowSnapSize) && newBottom <= (rect.top + windowSnapSize) ) { // Top
-            newTop = rect.top - (current.rectWindow.h + (borderSize*2) + topMargin);
+            newTop = rect.top - (current.rectWindow.h + (borderSize * 2) + topMargin);
             return false;
           }
 
           // /\
           if ( newTop <= (rect.bottom + windowSnapSize) && newTop >= (rect.bottom - windowSnapSize) ) { // Bottom
-            newTop = rect.bottom + borderSize*2;
+            newTop = rect.bottom + borderSize * 2;
             return false;
           }
 
@@ -450,7 +469,6 @@
     return Process.prototype.destroy.apply(this, []);
   };
 
-
   /**
    * Initialize the WindowManager
    *
@@ -496,7 +514,7 @@
    */
   WindowManager.prototype.getWindow = function(name) {
     var result = null;
-    this._windows.forEach(function(w) {
+    this._windows.every(function(w) {
       if ( w && w._name === name ) {
         result = w;
       }
@@ -526,12 +544,14 @@
     //attachWindowEvents(w, this);
     createWindowBehaviour(w, this);
 
-    if ( focus === true || (w instanceof OSjs.Core.DialogWindow) ) {
-      w._focus();
-    }
+    this._windows.push(w);
     w._inited();
 
-    this._windows.push(w);
+    if ( focus === true || (w instanceof OSjs.Core.DialogWindow) ) {
+      setTimeout(function() {
+        w._focus();
+      }, 10);
+    }
 
     return w;
   };
@@ -554,7 +574,7 @@
     console.debug('WindowManager::removeWindow()', w._wid);
 
     var result = false;
-    this._windows.forEach(function(win, i) {
+    this._windows.every(function(win, i) {
       if ( win && win._wid === w._wid ) {
         self._windows[i] = null;
         result = true;
@@ -598,11 +618,12 @@
    * }
    *
    * @param   Object    styles      Style object
+   * @param   String    rawStyles   (Optional) raw CSS data
    *
    * @return  void
    * @method  WindowManager::createStylesheet()
    */
-  WindowManager.prototype.createStylesheet = function(styles) {
+  WindowManager.prototype.createStylesheet = function(styles, rawStyles) {
     this.destroyStylesheet();
 
     var innerHTML = [];
@@ -617,6 +638,9 @@
     });
 
     innerHTML = innerHTML.join('\n');
+    if ( rawStyles ) {
+      innerHTML += '\n' + rawStyles;
+    }
 
     var style       = document.createElement('style');
     style.type      = 'text/css';
@@ -913,7 +937,7 @@
     return function() {
       if ( _LNEWY >= (window.innerHeight - 100) ) { _LNEWY = 0; }
       if ( _LNEWX >= (window.innerWidth - 100) )  { _LNEWX = 0; }
-      return {x: _LNEWX+=10, y: _LNEWY+=10};
+      return {x: _LNEWX += 10, y: _LNEWY += 10};
     };
   })();
 
@@ -1036,6 +1060,5 @@
   OSjs.Core.getWindowManager  = function() {
     return _WM;
   };
-
 
 })(OSjs.Utils, OSjs.API, OSjs.Core.Process, OSjs.Core.Window);

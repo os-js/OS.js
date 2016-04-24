@@ -4,3 +4,6 @@ node_js:
 before_script:
   - npm install mocha -g
   - npm install grunt-cli -g
+  - grunt config manifest dist-files
+after_success:
+  - grunt all

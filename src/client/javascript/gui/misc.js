@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -34,7 +34,6 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
-
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
@@ -44,11 +43,8 @@
    *
    * A box that displays a color.
    *
-   * Getters:
-   *  value         Gets the input value
-   *
-   * Setters:
-   *  value         Sets the input value
+   * @getter    value   String        The value (color)
+   * @setter    value   String        The value (color)
    *
    * @api OSjs.GUI.Elements.gui-color-box
    * @class
@@ -76,8 +72,11 @@
    *
    * A box for selecting color(s) in the rainbow.
    *
-   * Events:
-   *  change        When input has changed => fn(ev)
+   * See `ev.detail` for data on events (like on 'change').
+   *
+   * @getter    value   String        The value (color)
+   * @setter    value   String        The value (color)
+   * @event     change                When input has changed => fn(ev)
    *
    * @api OSjs.GUI.Elements.gui-color-swatch
    * @class
@@ -102,8 +101,12 @@
         var pos = OSjs.Utils.$position(cv);
         var cx = typeof ev.offsetX === 'undefined' ? (ev.clientX - pos.left) : ev.offsetX;
         var cy = typeof ev.offsetY === 'undefined' ? (ev.clientY - pos.top) : ev.offsetY;
-        var data = ctx.getImageData(cx, cy, 1, 1).data;
 
+        if ( isNaN(cx) || isNaN(cy) ) {
+          return null;
+        }
+
+        var data = ctx.getImageData(cx, cy, 1, 1).data;
         return {
           r: data[0],
           g: data[1],
@@ -133,7 +136,10 @@
       ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
       Utils.$bind(cv, 'click', function(ev) {
-        cv.dispatchEvent(new CustomEvent('_change', {detail: getColor(ev)}));
+        var c = getColor(ev);
+        if ( c ) {
+          cv.dispatchEvent(new CustomEvent('_change', {detail: c}));
+        }
       }, false);
 
       el.appendChild(cv);
@@ -143,34 +149,43 @@
   /**
    * Element: 'gui-iframe'
    *
-   * IFrame container.
+   * IFrame container. On NW/Electron/X11 this is a "webview"
    *
-   * Parameters:
-   *  src       String        The URL/location
+   * @property  src     String        The source (src)
    *
    * @api OSjs.GUI.Elements.gui-iframe
    * @class
    */
-  GUI.Elements['gui-iframe'] = {
-    build: function(el) {
-      var src = el.getAttribute('data-src') || 'about:blank';
-      var iframe = document.createElement('iframe');
-      iframe.src = src;
-      iframe.setAttribute('border', 0);
-      el.appendChild(iframe);
+  GUI.Elements['gui-iframe'] = (function() {
+    var tagName = 'iframe';
+    if ( (['nw', 'electron', 'x11']).indexOf(API.getConfig('Connection.Type')) >= 0 ) {
+      tagName = 'webview';
     }
-  };
+
+    return {
+      set: function(el, key, val) {
+        if ( key === 'src' ) {
+          el.querySelector(tagName).src = val;
+        }
+      },
+
+      build: function(el) {
+        var src = el.getAttribute('data-src') || 'about:blank';
+        var iframe = document.createElement(tagName);
+        iframe.src = src;
+        iframe.setAttribute('border', 0);
+        el.appendChild(iframe);
+      }
+    };
+  })();
 
   /**
    * Element: 'gui-progress-bar'
    *
    * Progress bar element.
    *
-   * Parameters:
-   *  progress  int           Progress
-   *
-   * Setters:
-   *  progress                Progress
+   * @setter    progress    integer     Progress value (percentage)
+   * @property  progress    integer     Progress value (percentage)
    *
    * @api OSjs.GUI.Elements.gui-progress-bar
    * @class
@@ -181,6 +196,9 @@
       if ( param === 'progress' || param === 'value' ) {
         value = parseInt(value, 10);
         value = Math.max(0, Math.min(100, value));
+
+        el.setAttribute('aria-label', String(value));
+        el.setAttribute('aria-valuenow', String(value));
 
         el.querySelector('div').style.width = value.toString() + '%';
         el.querySelector('span').innerHTML = value + '%';
@@ -200,6 +218,12 @@
       var span = document.createElement('span');
       span.appendChild(document.createTextNode(percentage));
 
+      el.setAttribute('role', 'progressbar');
+      el.setAttribute('aria-valuemin', 0);
+      el.setAttribute('aria-valuemax', 100);
+      el.setAttribute('aria-label', 0);
+      el.setAttribute('aria-valuenow', 0);
+
       el.appendChild(progress);
       el.appendChild(span);
     }
@@ -210,9 +234,8 @@
    *
    * Status bar element.
    *
-   * Setters:
-   *  value                   Sets the text value
-   *  label                   Alias for 'value'
+   * @setter    value       String      Content to set
+   * @setter    label       String      Alias of 'value'
    *
    * @api OSjs.GUI.Elements.gui-statusbar
    * @class
@@ -220,13 +243,21 @@
   GUI.Elements['gui-statusbar'] = {
     set: function(el, param, value) {
       if ( param === 'label' || param === 'value' ) {
-        Utils.$empty(el);
-        el.innerHTML = value;
+        var span = el.getElementsByTagName('gui-statusbar-label')[0];
+        if ( span ) {
+          Utils.$empty(span);
+          span.innerHTML = value;
+        }
         return true;
       }
       return false;
     },
     build: function(el) {
+      var lbl = el.getAttribute('data-label') || el.getAttribute('data-value') || el.innerHTML || '';
+      var span = document.createElement('gui-statusbar-label');
+      span.innerHTML = lbl;
+      el.setAttribute('role', 'log');
+      el.appendChild(span);
     }
   };
 

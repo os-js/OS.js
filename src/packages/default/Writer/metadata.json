@@ -1,0 +1,56 @@
+{
+  "className": "ApplicationWriter",
+  "name": "Writer",
+  "description": "Write rich text documents",
+  "names": {
+    "bg_BG": "Текст",
+    "de_DE": "Writer",
+    "fr_FR": "Traitement de texte",
+    "it_IT": "Writer",
+    "ko_KR": "글쓰기",
+    "nl_NL": "Tekstverwerker",
+    "no_NO": "Writer",
+    "pl_PL": "Writer",
+    "ru_RU": "Текстовый процессор",
+    "sk_SK": "Writer",
+    "tr_TR": "Writer",
+    "vi_VN": "Viết"
+  },
+  "descriptions": {
+    "bg_BG": "Писанене на обогатен текст",
+    "de_DE": "Verfassen Sie Rich-Text-Dokumente",
+    "fr_FR": "Traitement de texte riche",
+    "it_IT": "Scrivi documenti di testo formattati",
+    "ko_KR": "리치 텍스트 문서 작성",
+    "nl_NL": "Tekst verwerker met opmaak",
+    "no_NO": "Skriv riktekst dokumenter",
+    "pl_PL": "Twórz dokumenty rich text",
+    "ru_RU": "Текстовый процессор",
+    "sk_SK": "Editor na tvorbu Rich-Text dokumentov",
+    "tr_TR": "Gelişmiş dökümanlar oluşturun",
+    "vi_VN": "Xem, chỉnh sửa văn bản"
+  },
+  "mime": [
+    "^text",
+    "osjs\\/document"
+  ],
+  "category": "office",
+  "icon": "apps/libreoffice34-writer.png",
+  "compability": [
+    "richtext"
+  ],
+  "preload": [
+    {
+      "src": "locales.js",
+      "type": "javascript"
+    },
+    {
+      "src": "main.js",
+      "type": "javascript"
+    },
+    {
+      "src": "main.css",
+      "type": "stylesheet"
+    }
+  ]
+}

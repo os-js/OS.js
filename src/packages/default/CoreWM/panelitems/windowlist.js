@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -27,59 +27,102 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(CoreWM, Panel, PanelItem, Utils, API, VFS) {
+(function(CoreWM, Panel, PanelItem, Utils, API, GUI, VFS) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
   // ITEM
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * PanelItem: WindowList
-   */
-  var PanelItemWindowList = function() {
-    PanelItem.apply(this, ['PanelItemWindowList PanelItemWide']);
+  function WindowListEntry(win, className) {
 
-    this.$element = null;
-  };
+    var el = document.createElement('li');
+    el.className = className;
+    el.title = win._title;
+    el.setAttribute('role', 'button');
+    el.setAttribute('aria-label', win._title);
 
-  PanelItemWindowList.prototype = Object.create(PanelItem.prototype);
-  PanelItemWindowList.Name = 'Window List'; // Static name
-  PanelItemWindowList.Description = 'Toggle between open windows'; // Static description
-  PanelItemWindowList.Icon = 'apps/xfwm4.png'; // Static icon
+    var img = document.createElement('img');
+    img.alt = win._title;
+    img.src = win._icon;
 
-  PanelItemWindowList.prototype.init = function() {
-    var root = PanelItem.prototype.init.apply(this, arguments);
+    var span = document.createElement('span');
+    span.appendChild(document.createTextNode(win._title));
 
-    this.$element = document.createElement('ul');
-    root.appendChild(this.$element);
+    el.appendChild(img);
+    el.appendChild(span);
 
-    var wm = OSjs.Core.getWindowManager();
-    if ( wm ) {
-      var wins = wm.getWindows();
-      for ( var i = 0; i < wins.length; i++ ) {
-        if ( wins[i] ) {
-          this.update('create', wins[i]);
+    this.evClick = Utils.$bind(el, 'click', function() {
+      win._restore(false, true);
+    });
+
+    this.evMenu = Utils.$bind(el, 'contextmenu', function(ev) {
+      ev.stopPropagation();
+      return false;
+    });
+
+    var peeking = false;
+    OSjs.GUI.Helpers.createDroppable(el, {
+      onDrop: function(ev, el) {
+        if ( win ) {
+          win._focus();
         }
+      },
+      onLeave: function() {
+        if ( peeking ) {
+          peeking = false;
+        }
+      },
+      onEnter: function(ev, inst, args) {
+        if ( !peeking ) {
+          if ( win ) {
+            win._focus();
+          }
+          peeking = true;
+        }
+      },
+      onItemDropped: function(ev, el, item, args) {
+        if ( win ) {
+          return win._onDndEvent(ev, 'itemDrop', item, args);
+        }
+        return false;
+      },
+      onFilesDropped: function(ev, el, files, args) {
+        if ( win ) {
+          return win._onDndEvent(ev, 'filesDrop', files, args);
+        }
+        return false;
       }
+    });
+
+    if ( win._state.focused ) {
+      el.className += ' Focused';
     }
 
-    return root;
-  };
+    this.$element = el;
+    this.id = win._wid;
+  }
 
-  PanelItemWindowList.prototype.destroy = function() {
-    PanelItem.prototype.destroy.apply(this, arguments);
-  };
-
-  PanelItemWindowList.prototype.update = function(ev, win) {
-    var self = this;
-    if ( !this.$element || (win && win._properties.allow_windowlist === false) ) {
-      return;
+  WindowListEntry.prototype.destroy = function() {
+    if ( this.evClick ) {
+      this.evClick = this.evClick.destroy();
     }
 
+    if ( this.evMenu ) {
+      this.evMenu = this.evMenu.destroy();
+    }
+
+    if ( this.$element ) {
+      this.$element = Utils.$remove(this.$element);
+    }
+  };
+
+  WindowListEntry.prototype.event = function(ev, win, parentEl) {
     var cn = 'WindowList_Window_' + win._wid;
-    var _change = function(cn, callback) {
-      var els = self.$element.getElementsByClassName(cn);
+    var el = this.$element;
+
+    function _change(cn, callback) {
+      var els = parentEl.getElementsByClassName(cn);
       if ( els.length ) {
         for ( var i = 0, l = els.length; i < l; i++ ) {
           if ( els[i] && els[i].parentNode ) {
@@ -87,69 +130,9 @@
           }
         }
       }
-    };
+    }
 
-    if ( ev === 'create' ) {
-      var className = 'Button WindowList_Window_' + win._wid;
-      if ( this.$element.getElementsByClassName(className).length ) { return; }
-
-      var el = document.createElement('li');
-      el.innerHTML = '<img alt="" src="' + win._icon + '" /><span>' + win._title + '</span>';
-      el.className = className;
-      el.title = win._title;
-      el.onclick = function() {
-        win._restore(false, true);
-      };
-      el.oncontextmenu = function(ev) {
-        ev.stopPropagation();
-        return false;
-      };
-
-      var peeking = false;
-      OSjs.API.createDroppable(el, {
-        onDrop: function(ev, el) {
-          if ( win ) {
-            win._focus();
-          }
-        },
-        onLeave: function() {
-          if ( peeking ) {
-            peeking = false;
-          }
-        },
-        onEnter: function(ev, inst, args) {
-          if ( !peeking ) {
-            if ( win ) {
-              win._focus();
-            }
-            peeking = true;
-          }
-        },
-        onItemDropped: function(ev, el, item, args) {
-          if ( win ) {
-            return win._onDndEvent(ev, 'itemDrop', item, args);
-          }
-          return false;
-        },
-        onFilesDropped: function(ev, el, files, args) {
-          if ( win ) {
-            return win._onDndEvent(ev, 'filesDrop', files, args);
-          }
-          return false;
-        }
-      });
-
-      if ( win._state.focused ) {
-        el.className += ' Focused';
-      }
-      this.$element.appendChild(el);
-    } else if ( ev === 'close' ) {
-      _change(cn, function(el) {
-        el.onclick = null;
-        el.oncontextmenu = null;
-        el.parentNode.removeChild(el);
-      });
-    } else if ( ev === 'focus' ) {
+    if ( ev === 'focus' ) {
       _change(cn, function(el) {
         el.className += ' Focused';
       });
@@ -159,8 +142,17 @@
       });
     } else if ( ev === 'title' ) {
       _change(cn, function(el) {
-        el.getElementsByTagName('span')[0].innerHTML = win._title;
-        el.title = win._title;
+        el.setAttribute('aria-label', win._title);
+
+        var span = el.getElementsByTagName('span')[0];
+        if ( span ) {
+          Utils.$empty(span);
+          span.appendChild(document.createTextNode(win._title));
+        }
+        var img = el.getElementsByTagName('img')[0];
+        if ( img ) {
+          img.alt = win._title;
+        }
       });
     } else if ( ev === 'icon' ) {
       _change(cn, function(el) {
@@ -178,6 +170,93 @@
           el.className = el.className.replace(/\s?Attention/, '');
         }
       });
+    } else if ( ev === 'close' ) {
+      return false;
+    }
+
+    return true;
+  };
+
+  /**
+   * PanelItem: WindowList
+   */
+  function PanelItemWindowList() {
+    PanelItem.apply(this, ['PanelItemWindowList PanelItemWide']);
+    this.$element = null;
+    this.entries = [];
+  }
+
+  PanelItemWindowList.prototype = Object.create(PanelItem.prototype);
+  PanelItemWindowList.Name = 'Window List'; // Static name
+  PanelItemWindowList.Description = 'Toggle between open windows'; // Static description
+  PanelItemWindowList.Icon = 'apps/xfwm4.png'; // Static icon
+
+  PanelItemWindowList.prototype.init = function() {
+    var root = PanelItem.prototype.init.apply(this, arguments);
+
+    this.$element = document.createElement('ul');
+    this.$element.setAttribute('role', 'toolbar');
+    root.appendChild(this.$element);
+
+    var wm = OSjs.Core.getWindowManager();
+    if ( wm ) {
+      var wins = wm.getWindows();
+      for ( var i = 0; i < wins.length; i++ ) {
+        if ( wins[i] ) {
+          this.update('create', wins[i]);
+        }
+      }
+    }
+
+    return root;
+  };
+
+  PanelItemWindowList.prototype.destroy = function() {
+    this.entries.forEach(function(e) {
+      try {
+        e.destroy();
+      } catch ( e ) {}
+      e = null;
+    });
+
+    this.entries = [];
+
+    PanelItem.prototype.destroy.apply(this, arguments);
+  };
+
+  PanelItemWindowList.prototype.update = function(ev, win) {
+    var self = this;
+    if ( !this.$element || (win && win._properties.allow_windowlist === false) ) {
+      return;
+    }
+
+    var entry = null;
+    if ( ev === 'create' ) {
+      var className = 'Button WindowList_Window_' + win._wid;
+      if ( this.$element.getElementsByClassName(className).length ) {
+        return;
+      }
+
+      entry = new WindowListEntry(win, className);
+      this.entries.push(entry);
+      this.$element.appendChild(entry.$element);
+    } else {
+      var found = -1;
+      this.entries.forEach(function(e, idx) {
+        if ( e.id === win._wid ) {
+          found = idx;
+        }
+        return found !== -1;
+      });
+
+      entry = this.entries[found];
+      if ( entry ) {
+        if ( entry.event(ev, win, this.$element) === false ) {
+          entry.destroy();
+
+          this.entries.splice(found, 1);
+        }
+      }
     }
   };
 
@@ -190,4 +269,4 @@
   OSjs.Applications.CoreWM.PanelItems                  = OSjs.Applications.CoreWM.PanelItems || {};
   OSjs.Applications.CoreWM.PanelItems.WindowList       = PanelItemWindowList;
 
-})(OSjs.Applications.CoreWM.Class, OSjs.Applications.CoreWM.Panel, OSjs.Applications.CoreWM.PanelItem, OSjs.Utils, OSjs.API, OSjs.VFS);
+})(OSjs.Applications.CoreWM.Class, OSjs.Applications.CoreWM.Panel, OSjs.Applications.CoreWM.PanelItem, OSjs.Utils, OSjs.API, OSjs.GUI, OSjs.VFS);

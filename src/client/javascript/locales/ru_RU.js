@@ -1,7 +1,7 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function() {
+  // jscs:disable validateQuoteMarks
   'use strict';
 
   OSjs.Locales = OSjs.Locales || {};
@@ -35,14 +36,14 @@
   OSjs.Locales.ru_RU = {
     'ERR_FILE_OPEN'             : 'Ошибка открытия файла',
     'ERR_WM_NOT_RUNNING'        : 'Менеджер окон не запущен',
-    'ERR_FILE_OPEN_FMT'         : 'Файл \'<span>{0}</span>\' не может быть открыт',
-    'ERR_APP_MIME_NOT_FOUND_FMT': 'Неудалось найти Проиложение, способное открыть файл \'{0}\'',
+    'ERR_FILE_OPEN_FMT'         : 'Файл \'**{0}**\' не может быть открыт',
+    'ERR_APP_MIME_NOT_FOUND_FMT': 'Неудалось найти приложение, способное открыть файл \'{0}\'',
     'ERR_APP_LAUNCH_FAILED'     : 'Ошибка запуска приложения',
     'ERR_APP_LAUNCH_FAILED_FMT' : 'При попытке запуска, произошла следующая ошибка: {0}',
-    'ERR_APP_CONSTRUCT_FAILED_FMT'  : 'Приложение \'{0}\' ошибка построения: {1}',
-    'ERR_APP_INIT_FAILED_FMT'       : 'Приложение \'{0}\' ошибка инициализации (init()): {1}',
-    'ERR_APP_RESOURCES_MISSING_FMT' : 'Приложение \'{0}\' отсутсвует ресурс или ошибка при его загрузке!',
-    'ERR_APP_PRELOAD_FAILED_FMT'    : 'Приложение \'{0}\' ошибка предварительной загрузки: \n{1}',
+    'ERR_APP_CONSTRUCT_FAILED_FMT'  : 'Ошибка при построении приложения \'{0}\': {1}',
+    'ERR_APP_INIT_FAILED_FMT'       : 'Ошибка инициализации в приложении \'{0}\' (init()): {1}',
+    'ERR_APP_RESOURCES_MISSING_FMT' : 'Для приложения \'{0}\' отсутсвует ресурс или ошибка при его загрузке!',
+    'ERR_APP_PRELOAD_FAILED_FMT'    : 'Ошибка предварительной загрузки приложения \'{0}\': \n{1}',
     'ERR_APP_LAUNCH_ALREADY_RUNNING_FMT'    : 'Приложение \'{0}\' уже запущено и единовременно поддерживает только одну копию!',
     'ERR_APP_LAUNCH_MANIFEST_FAILED_FMT'    : 'Ошибка запуска \'{0}\'. Отсутствует манифест данных для приложения!',
     'ERR_APP_LAUNCH_COMPABILITY_FAILED_FMT' : 'Ошибка запуска \'{0}\'. Ваш браузер не поддерживает: {1}',
@@ -51,13 +52,13 @@
     'ERR_CORE_INIT_FAILED'      : 'Ошибка инициализации OS.js',
     'ERR_CORE_INIT_FAILED_DESC' : 'Произошла ошибка в момент инициализации OS.js',
     'ERR_CORE_INIT_NO_WM'       : 'Невозможно запустить OS.js: Оконный менеджер не определен!',
-    'ERR_CORE_INIT_WM_FAILED_FMT'   : 'Невозможно запустить OS.js: Failed to launch Window Manager: {0}',
-    'ERR_CORE_INIT_PRELOAD_FAILED'  : 'Невозможно запустить OS.js: Failed to preload resources...',
-    'ERR_JAVASCRIPT_EXCEPTION'      : 'JavaScript отчет об ошибке',
-    'ERR_JAVACSRIPT_EXCEPTION_DESC' : 'Проихошла непредвиденная ошибка, возможно баг.',
+    'ERR_CORE_INIT_WM_FAILED_FMT'   : 'Невозможно запустить OS.js из-за ошибки при запуске оконного менеджера: {0}',
+    'ERR_CORE_INIT_PRELOAD_FAILED'  : 'Невозможно запустить OS.js: Ошибка при предзагрузке ресурсов..',
+    'ERR_JAVASCRIPT_EXCEPTION'      : 'Отчет об ошибке в JavaScript',
+    'ERR_JAVACSRIPT_EXCEPTION_DESC' : 'Произошла непредвиденная ошибка, возможно баг.',
 
-    'ERR_APP_API_ERROR'           : 'Приложение ошибка API',
-    'ERR_APP_API_ERROR_DESC_FMT'  : 'Приложение {0} неудалось выполнить операцию \'{1}\'',
+    'ERR_APP_API_ERROR'           : 'Ошибка связанная с API приложения',
+    'ERR_APP_API_ERROR_DESC_FMT'  : 'Приложению {0} не удалось выполнить операцию \'{1}\'',
     'ERR_APP_MISSING_ARGUMENT_FMT': 'Пропущен аргумент: {0}',
     'ERR_APP_UNKNOWN_ERROR'       : 'Неизвестная ошибка',
 
@@ -101,21 +102,21 @@
     'DIALOG_FILE_SAVE'      : 'Сохранить',
     'DIALOG_FILE_OPEN'      : 'Открыть',
     'DIALOG_FILE_MKDIR'     : 'Новая папка',
-    'DIALOG_FILE_MKDIR_MSG' : 'Создать новый каталог в <span>{0}</span>',
+    'DIALOG_FILE_MKDIR_MSG' : 'Создать новый каталог в **{0}**',
     'DIALOG_FILE_OVERWRITE' : 'Вы уверены, что хотите перезаписать файл \'{0}\'?',
     'DIALOG_FILE_MNU_VIEWTYPE' : 'Режим просмотра',
     'DIALOG_FILE_MNU_LISTVIEW' : 'Список',
     'DIALOG_FILE_MNU_TREEVIEW' : 'Древовидный',
     'DIALOG_FILE_MNU_ICONVIEW' : 'Значки',
-    'DIALOG_FILE_ERROR'        : 'FileDialog Ошибка',
+    'DIALOG_FILE_ERROR'        : 'Ошибка связанная с FileDialog',
     'DIALOG_FILE_ERROR_SCANDIR': 'Не удалось отобразить содержимое \'{0}\', произошла ошибка',
-    'DIALOG_FILE_MISSING_FILENAME' : 'Вам необходимо выбрать файл или ввести новое имя файла!',
-    'DIALOG_FILE_MISSING_SELECTION': 'Вам необходимо выбрать файл!',
+    'DIALOG_FILE_MISSING_FILENAME' : 'Выберите файл или введите новое имя файла!',
+    'DIALOG_FILE_MISSING_SELECTION': 'Выберите файл!',
 
     'DIALOG_FILEINFO_TITLE'   : 'Информация о файле',
     'DIALOG_FILEINFO_LOADING' : 'Загрузка информации о файле: {0}',
-    'DIALOG_FILEINFO_ERROR'   : 'FileInformationDialog Ошибка',
-    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Ошибка при получения информации о файле <span>{0}</span>',
+    'DIALOG_FILEINFO_ERROR'   : 'Ошибка связанная с FileInformationDialog',
+    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Ошибка при получения информации о файле **{0}**',
     'DIALOG_FILEINFO_ERROR_LOOKUP_FMT' : 'Ошибка при получения информации о файле: {0}',
 
     'DIALOG_INPUT_TITLE' : 'Диалог ввода',
@@ -124,7 +125,7 @@
     'DIALOG_FILEPROGRESS_LOADING' : 'Загрузка...',
 
     'DIALOG_UPLOAD_TITLE'   : 'Загрузка',
-    'DIALOG_UPLOAD_DESC'    : 'Загрузка файла <span>{0}</span>.<br />Максимальный размер: {1} байт',
+    'DIALOG_UPLOAD_DESC'    : 'Загрузка файла **{0}**.<br />Максимальный размер: {1} байт',
     'DIALOG_UPLOAD_MSG_FMT' : 'Загрузка \'{0}\' ({1} {2}) to {3}',
     'DIALOG_UPLOAD_MSG'     : 'Загрузка файла...',
     'DIALOG_UPLOAD_FAILED'  : 'Загрузка не удалась',
@@ -133,7 +134,6 @@
     'DIALOG_UPLOAD_FAILED_CANCELLED': 'Отменено пользователем...',
 
     'DIALOG_FONT_TITLE' : 'Шрифт',
-
 
     'DIALOG_APPCHOOSER_TITLE' : 'Выберите приложение',
     'DIALOG_APPCHOOSER_MSG'   : 'Выберите приложение для открытия',
@@ -155,14 +155,14 @@
     // VFS
     'ERR_VFS_FATAL'           : 'Критическая ошибка',
     'ERR_VFS_FILE_ARGS'       : 'Файл ожидает по меньшей мере один аргумент',
-    'ERR_VFS_NUM_ARGS'        : 'Не достаточно аргументов',
+    'ERR_VFS_NUM_ARGS'        : 'Недостаточно аргументов',
     'ERR_VFS_EXPECT_FILE'     : 'Ожидается file-object',
     'ERR_VFS_EXPECT_SRC_FILE' : 'Ожидается источник file-object',
     'ERR_VFS_EXPECT_DST_FILE' : 'Ожидается имя файла file-object',
     'ERR_VFS_FILE_EXISTS'     : 'Файл с таким именем уже существует',
     'ERR_VFS_TRANSFER_FMT'    : 'Произошла ошибка во время переноса между хранилищами: {0}',
     'ERR_VFS_UPLOAD_NO_DEST'  : 'Невозможно загрузить файл, без указания имени',
-    'ERR_VFS_UPLOAD_NO_FILES' : 'Невозможно загрузить файлы, без указания опредленных файлов',
+    'ERR_VFS_UPLOAD_NO_FILES' : 'Не определены файлы для загрузки',
     'ERR_VFS_UPLOAD_FAIL_FMT' : 'Загрузка файла не удалась: {0}',
     'ERR_VFS_UPLOAD_CANCELLED': 'Загрузка файла была отменена',
     'ERR_VFS_DOWNLOAD_NO_FILE': 'Невозможно скачать каталог без пути',
@@ -200,7 +200,7 @@
     'LBL_ADD_FILE'     : 'Добавить файл',
     'LBL_COMMENT'      : 'Комментарий',
     'LBL_ACCOUNT'      : 'Учетная запись',
-    'LBL_CONNECT'      : 'Connect',
+    'LBL_CONNECT'      : 'Подключиться',
     'LBL_ONLINE'       : 'В сети',
     'LBL_OFFLINE'      : 'Не в сети',
     'LBL_AWAY'         : 'Отошел',
@@ -260,7 +260,7 @@
     'LBL_INSERT'       : 'Вставка',
     'LBL_IMAGE'        : 'Изображение',
     'LBL_LINK'         : 'Ссылка',
-    'LBL_DISCONNECT'    : 'Disconnect',
+    'LBL_DISCONNECT'    : 'Отключиться',
     'LBL_APPLICATIONS'  : 'Приложения',
     'LBL_ADD_FOLDER'    : 'Добавить папку',
     'LBL_INFORMATION'   : 'Информация',
@@ -270,8 +270,9 @@
     'LBL_DOWNLOAD_COMP' : 'Скачать',
     'LBL_ORDERED_LIST'  : 'Нумерованный список',
     'LBL_BACKGROUND_IMAGE' : 'Фоновое изображение',
-    'LBL_BACKGROUND_COLOR' : 'Фоновоый цвет',
-    'LBL_UNORDERED_LIST'   : 'Неупорядоченный список'
+    'LBL_BACKGROUND_COLOR' : 'Фоновый цвет',
+    'LBL_UNORDERED_LIST'   : 'Неупорядоченный список',
+    'LBL_SHOW_SIDEBAR' : 'Отобразить боковую панель'
   };
 
 })();

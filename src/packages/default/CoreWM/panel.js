@@ -1,7 +1,7 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -127,6 +127,7 @@
 
     this._$container = document.createElement('corewm-panel-container');
     this._$element = document.createElement('corewm-panel');
+    this._$element.setAttribute('role', 'toolbar');
 
     Utils.$bind(this._$element, 'mousedown', function(ev) {
       ev.preventDefault();
@@ -352,15 +353,19 @@
       return false;
     }
 
-    var wm = OSjs.Core.getWindowManager();
     var self = this;
-    this._settingsDialog = new DialogRef(this, wm.scheme, function(button) {
-      if ( button === 'ok' ) {
-        self.applySettings();
-      }
-      self._settingsDialog = null;
-    });
-    OSjs.Core.getWindowManager().addWindow(this._settingsDialog, true);
+    var wm = OSjs.Core.getWindowManager();
+
+    if ( DialogRef ) {
+      this._settingsDialog = new DialogRef(this, wm.scheme, function(button) {
+        if ( button === 'ok' ) {
+          self.applySettings();
+        }
+        self._settingsDialog = null;
+      });
+
+      OSjs.Core.getWindowManager().addWindow(this._settingsDialog, true);
+    }
   };
 
   PanelItem.prototype.getRoot = function() {

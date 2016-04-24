@@ -1,5 +1,5 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
  * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
@@ -28,9 +28,8 @@
  * @licence Simplified BSD License
  */
 
-.ApplicationSettingsWindow application-window-content {
-}
-
+/*.ApplicationSettingsWindow application-window-content {
+}*/
 
 .ApplicationSettingsWindow gui-label[data-id="Header"] {
   padding-top : 10px;
@@ -50,6 +49,6 @@
 .ApplicationSettingsWindow gui-vbox-container[data-id="TabsContainer"] > gui-tabs {
   display : none;
 }
-.ApplicationSettingsWindow gui-vbox-container[data-id="TabsContainer"] > gui-tabs.active {
+.ApplicationSettingsWindow gui-vbox-container[data-id="TabsContainer"] > .active {
   display : block;
 }

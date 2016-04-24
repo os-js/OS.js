@@ -1,3 +1,7 @@
+@ECHO OFF
+for %%i in ("%~dp0..") do set "folder=%%~fi"
+cd "%folder%"
+
 cd dist-dev
 
 del client

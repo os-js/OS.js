@@ -2,7 +2,7 @@
 /*!
  * OS.js - JavaScript Operating System
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -159,22 +159,8 @@ class FS
       if ( !is_writable(dirname($fname)) ) throw new Exception("Write permission denied in folder");
     }
 
-    $tmp = explode(",", $content, 2);
-    if ( sizeof($tmp) > 1 ) {
-      $dcontent = array_pop($tmp);
-      $dtype    = array_pop($tmp);
-
-      if ( preg_match("/^data\:image/", $dtype) ) {
-        $dcontent = str_replace(' ', '+', $dcontent);
-      }
-
-      if ( $dcontent === false ) {
-        $dcontent = '';
-      } else {
-        $dcontent = base64_decode($dcontent);
-      }
-
-      $content = $dcontent;
+    if ( empty($opts["raw"]) || $opts["raw"] === false ) {
+      $content = base64_decode(substr($content, strpos($content, ",") + 1));
     }
 
     return file_put_contents($fname, $content) !== false;
@@ -231,6 +217,10 @@ class FS
   public static function delete($fname) {
     list($dirname, $root, $protocol, $fname) = getRealPath($fname);
     if ( $protocol === "osjs://" ) throw new Exception("Not allowed");
+
+    if ( ($dirname ?: '/') === '/' ) {
+      throw new Exception('Permission denied!');
+    }
 
     if ( is_file($fname) ) {
       if ( !is_writeable($fname) ) throw new Exception("Read permission denied");
@@ -346,6 +336,7 @@ class FS
 
 function getRealPath(&$scandir) {
   $scandir  = preg_replace("/\/$/", "", $scandir);
+  //$scandir  = preg_replace("/\/\.\.\/?/", "/", $scandir);
   $scandir  = preg_replace("/\/\.\.\/?/", "/", $scandir);
   $scandir  = preg_replace("/\/$/", "", $scandir);
   $protocol = "";

@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function() {
+  // jscs:disable validateQuoteMarks
   'use strict';
 
   OSjs.Locales = OSjs.Locales || {};
@@ -39,7 +40,7 @@
 
     'ERR_FILE_OPEN'             : 'Error opening file',
     'ERR_WM_NOT_RUNNING'        : 'Window manager is not running',
-    'ERR_FILE_OPEN_FMT'         : 'The file \'<span>{0}</span>\' could not be opened',
+    'ERR_FILE_OPEN_FMT'         : 'The file \'**{0}**\' could not be opened',
     'ERR_APP_MIME_NOT_FOUND_FMT': 'Could not find any Applications with support for \'{0}\' files',
     'ERR_APP_LAUNCH_FAILED'     : 'Failed to launch Application',
     'ERR_APP_LAUNCH_FAILED_FMT' : 'An error occured while trying to launch: {0}',
@@ -68,6 +69,8 @@
     'ERR_OPERATION_TIMEOUT'       : 'Operation Timeout',
     'ERR_OPERATION_TIMEOUT_FMT'   : 'Operation Timeout ({0})',
 
+    'ERR_ARGUMENT_FMT'    : '\'{0}\' expects \'{1}\' to be a \'{2}\', \'{3}\' given',
+
     // Window
     'ERR_WIN_DUPLICATE_FMT' : 'You already have a Window named \'{0}\'',
     'WINDOW_MINIMIZE' : 'Minimize',
@@ -80,6 +83,8 @@
     // Handler
     'TITLE_SIGN_OUT' : 'Sign out',
     'TITLE_SIGNED_IN_AS_FMT' : 'Signed in as: {0}',
+    'ERR_LOGIN_FMT' : 'Login error: {0}',
+    'ERR_LOGIN_INVALID' : 'Invalid login',
 
     // SESSION
     'MSG_SESSION_WARNING' : 'Are you sure you want to quit OS.js? All unsaved settings and application data will be lost!',
@@ -123,7 +128,7 @@
     'DIALOG_FILE_SAVE'      : 'Save',
     'DIALOG_FILE_OPEN'      : 'Open',
     'DIALOG_FILE_MKDIR'     : 'New Folder',
-    'DIALOG_FILE_MKDIR_MSG' : 'Create a new directory in <span>{0}</span>',
+    'DIALOG_FILE_MKDIR_MSG' : 'Create a new directory in **{0}**',
     'DIALOG_FILE_OVERWRITE' : 'Are you sure you want to overwrite the file \'{0}\'?',
     'DIALOG_FILE_MNU_VIEWTYPE' : 'View type',
     'DIALOG_FILE_MNU_LISTVIEW' : 'List View',
@@ -137,7 +142,7 @@
     'DIALOG_FILEINFO_TITLE'   : 'File Information',
     'DIALOG_FILEINFO_LOADING' : 'Loading file information for: {0}',
     'DIALOG_FILEINFO_ERROR'   : 'FileInformationDialog Error',
-    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Failed to get file information for <span>{0}</span>',
+    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Failed to get file information for **{0}**',
     'DIALOG_FILEINFO_ERROR_LOOKUP_FMT' : 'Failed to get file information for: {0}',
 
     'DIALOG_INPUT_TITLE' : 'Input Dialog',
@@ -146,7 +151,7 @@
     'DIALOG_FILEPROGRESS_LOADING' : 'Loading...',
 
     'DIALOG_UPLOAD_TITLE'   : 'Upload Dialog',
-    'DIALOG_UPLOAD_DESC'    : 'Upload file to <span>{0}</span>.<br />Maximum size: {1} bytes',
+    'DIALOG_UPLOAD_DESC'    : 'Upload file to **{0}**.<br />Maximum size: {1} bytes',
     'DIALOG_UPLOAD_MSG_FMT' : 'Uploading \'{0}\' ({1} {2}) to {3}',
     'DIALOG_UPLOAD_MSG'     : 'Uploading file...',
     'DIALOG_UPLOAD_FAILED'  : 'Upload failed',
@@ -206,6 +211,23 @@
     'ERR_VFS_DOWNLOAD_NO_FILE': 'Cannot download a path without a path',
     'ERR_VFS_DOWNLOAD_FAILED' : 'An error occured while downloading: {0}',
     'ERR_VFS_REMOTEREAD_EMPTY': 'Response was empty',
+
+    'ERR_VFSMODULE_INVALID'            : 'Invalid VFS Module',
+    'ERR_VFSMODULE_INVALID_FMT'        : 'Invalid VFS Module: {0}',
+    'ERR_VFSMODULE_INVALID_METHOD'     : 'Invalid VFS Method',
+    'ERR_VFSMODULE_INVALID_METHOD_FMT' : 'Invalid VFS Method: {0}',
+    'ERR_VFSMODULE_INVALID_TYPE'       : 'Invalid VFS Module type',
+    'ERR_VFSMODULE_INVALID_TYPE_FMT'   : 'Invalid VFS Module type: {0}',
+    'ERR_VFSMODULE_INVALID_CONFIG'     : 'Invalid VFS Module configuration',
+    'ERR_VFSMODULE_INVALID_CONFIG_FMT' : 'Invalid VFS Module configuration: {0}',
+    'ERR_VFSMODULE_ALREADY_MOUNTED'    : 'VFS Module already mounted',
+    'ERR_VFSMODULE_ALREADY_MOUNTED_FMT': 'VFS Module \'{0}\' already mounted',
+    'ERR_VFSMODULE_NOT_MOUNTED'        : 'VFS Module not mounted',
+    'ERR_VFSMODULE_NOT_MOUNTED_FMT'    : 'VFS Module \'{0}\' not mounted',
+    'ERR_VFSMODULE_EXCEPTION'          : 'VFS Module Exception',
+    'ERR_VFSMODULE_EXCEPTION_FMT'      : 'VFS Module Exception: {0}',
+    'ERR_VFSMODULE_NOT_FOUND_FMT'      : 'No VFS Module matches {0}. Wrong path or format ?',
+
     'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Downloading file',
 
     'ERR_VFSMODULE_XHR_ERROR'      : 'XHR Error',
@@ -247,11 +269,17 @@
     // VFS -> OneDrive
     'ONEDRIVE_ERR_RESOLVE'      : 'Failed to resolve path: item not found',
 
+    // ZIP
+    'ZIP_PRELOAD_FAIL'  : 'Failed to load zip.js',
+    'ZIP_VENDOR_FAIL'   : 'zip.js library was not found. Did it load properly?',
+    'ZIP_NO_RESOURCE'   : 'No zip resource was given',
+    'ZIP_NO_PATH'       : 'No path given',
+
     //
     // PackageManager
     //
 
-    'ERR_PACKAGE_EXISTS': 'Package installation directroy already exists. Cannot continue!',
+    'ERR_PACKAGE_EXISTS': 'Package installation directory already exists. Cannot continue!',
 
     //
     // DefaultApplication
@@ -374,7 +402,18 @@
     'LBL_BUGREPORT' : 'Bugreport',
     'LBL_INSTALL' : 'Install',
     'LBL_UPDATE' : 'Update',
-    'LBL_REMOVE' : 'Remove'
+    'LBL_REMOVE' : 'Remove',
+    'LBL_SHOW_SIDEBAR' : 'Show sidebar',
+    'LBL_SHOW_NAVIGATION' : 'Show navigation',
+    'LBL_SHOW_HIDDENFILES' : 'Show hidden files',
+    'LBL_SHOW_FILEEXTENSIONS' : 'Show file extensions',
+    'LBL_MOUNT': 'Mount',
+    'LBL_DESCRIPTION': 'Description',
+    'LBL_USERNAME': 'Username',
+    'LBL_PASSWORD': 'Password',
+    'LBL_HOST': 'Host',
+    'LBL_NAMESPACE': 'Namespace'
+
   };
 
 })();

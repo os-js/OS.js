@@ -1,197 +1,89 @@
 # Installation instructions
 
-Server runs on Linux, OS X, BSD and Windows.
-
 Installation is done in a few simple steps and only takes a minute to get running.
 
-For more general information look at the [README](README.md) file or in the [official documentation](http://os.js.org/doc/).
+For more general information look at the [README](README.md) file or in the [official documentation](https://os.js.org/doc/).
 
 #### Table of Contents
 
 * [Dependencies](#dependencies)
-* Installation methods
-  1. Automated
-    * [NIX](#automated)
-    * [Windows](#automated-1)
-  2. Manual
-    * [NIX](#manual)
-    * [Windows](#manual-1)
-  3. Containers and Virtual Machines
+* [Installation methods](#installation)
+  1. Standard Installation
+    * [*NIX](#nix)
+    * [Windows](#windows)
+  2. Containers and Virtual Machines
     * [Vagrant](#vagrant)
     * [Docker](#docker)
-* [Setting up a server and running](#user-content-setting-up-a-server-and-running)
-  1. [Standalone](#standalone)
-  2. [Node](#node)
-  3. PHP
-    * [Internal Server](#internal-web-server-for-php-54)
-    * [Apache](#apache)
-    * [Lighttpd](#lighttpd)
-    * [Nginx](#nginx)
-    * [WAMP](#wamp)
-    * [Webhost](#webhost)
-  4. [X11](#x11)
+    * [NW.js](#nwjs)
+  3. Single-board-computers
+    * [Raspberry PI](#raspberry-pi)
+    * [Arduino](#arduino)
+    * [Intel Edison](#intel-edison)
+  4. Linux distribution
 * [Setting up optional features](#setting-up-optional-features)
-* [Adding additional applications](#adding-additional-applications)
-* [Update instructions](#update-instructions)
 
 # Dependencies
 
-You just need **node** and **npm**. Install them with your package manager or download the [official installer](https://nodejs.org).
+You only need these packages installed:
 
-**Debian\Ubuntu:** Also install package `nodejs-legacy`.
+- `git`
+- `node` (debian users also need `nodejs-legacy`)
+- `npm`
 
 # Installation
 
-To easily apply updates and other changes, I recommend using **git** to download instead of using a zip-file/automated installer.
+OS.js runs on all patforms and web-servers. Choose one of the methods described below, then proceed to the [run](#running) section.
 
-## NIX
+## Standard Installation
 
-### Automated
+You can also find documentation on this on the [official homepage](https://os.js.org/doc/manuals/man-install.html).
 
-Run `curl -sS http://os.js.org/installer | sh`.
+If you want to install on your computer or server directly:
 
-### Manual
+### *NIX
 
-```shell
-$ sudo npm install -g grunt-cli
+See [install-nix.md](https://github.com/os-js/OS.js/blob/master/doc/install-nix.md).
 
-# You can also download and extarct the latest zip
-$ git clone https://github.com/andersevenrud/OS.js-v2.git
-$ cd OS.js-v2
-$ npm install
-$ grunt
-```
+### Windows
 
-## Windows
-
-### Automated
-
-Download and run http://os.js.org/installer.exe.
-
-### Manual
-
-Run `cmd` as *Administrator* (important)!
-
-```shell
-$ npm install -g grunt-cli
-
-# You can also download and extarct the latest zip
-$ git clone https://github.com/andersevenrud/OS.js-v2.git
-$ cd OS.js-v2
-$ npm install
-
-# This is required to make the Development Environment work, but is optional.
-$ bin\create-windows-symlinks
-
-$ grunt --force
-```
-
-[Official video instruction on YouTube](https://www.youtube.com/watch?v=Cj3OdxTdGGc)
+See [install-windows.md](https://github.com/os-js/OS.js/blob/master/doc/install-windows.md).
 
 ## Containers and Virtual Machines
 
+If you want to install on your computer, but in an isolated environment (container)
+
 ### Vagrant
 
-A [Vagrant](https://www.vagrantup.com/) file is also included so you can easily set up a development or testing environment in a Virtual Machine.
-
-Just use [this configuration file](https://raw.githubusercontent.com/andersevenrud/OS.js-v2/master/Vagrantfile).
-
-```shell
-$ vagrant up
-```
+See [Vagrant.md](https://github.com/os-js/OS.js/blob/master/doc/Vagrant.md).
 
 ### Docker
 
-You can also use [Docker](https://www.docker.com/) to set up an environment.
+See [Docker.md](https://github.com/os-js/OS.js/blob/master/doc/Docker.md).
 
-You can grab a configuration from the [community repo](https://registry.hub.docker.com/u/junland/osjs-dev/) 
-(you can also find detailed instructions here), or generate one yourself with `./bin/build-docker-image.sh`.
+### NW.js
 
-# Setting up a server and running
+See [NW.md](https://github.com/os-js/OS.js/blob/master/doc/NW.md).
 
-Make sure the _VFS_ directories in `vfs/` are given the same permissions as the web-servers running user.
+## Single-board-computers
 
-After you have started a server, simply navigate to http://localhost:8000 (port 8000 is default).
+You can also install/deploy OS.js on these platforms, but has some spesific documentation:
 
-## Standalone
+### Raspberry PI
 
-You can run OS.js in `file:///`, but this will disable VFS and HTTP APIs. Just build and run `dist/index.html` with
+See [platform-raspi.md](https://github.com/os-js/OS.js/blob/master/doc/platform-raspi.md).
 
-```
-grunt standalone dist-index:standalone
-```
+### Arduino
 
-Or you can download a nightly (unstable) build [here](http://osjsv2.0o.no/OS.js-v2-minimal-nightly.zip).
+See [platform-arduino.md](https://github.com/os-js/OS.js/blob/master/doc/platform-arduino.md).
 
-## Node
+### Intel Edison
 
-* Production: `./bin/start-node-dist.sh` or `bin\win-start-node-dist`
-* Developement: `./bin/start-node-dev.sh` or `bin\win-start-node-dev`
+See [platform-edison.md](https://github.com/os-js/OS.js/blob/master/doc/platform-edison.md).
 
-You can install [node supervisor](https://github.com/petruisfan/node-supervisor) and the development (dist-dev) server will automatically reload on change.
+## Linux distribution
 
-## PHP5
-
-### Internal Web-server for PHP 5.4+
-
-* Production: `./bin/start-php-dist.sh`
-* Developement: `./bin/start-php-dev.sh`
-
-### Apache
-
-Run `grunt apache-vhost` to generate config file (or look in doc/ for example)
-
-*Note* You have to enable mod_rewrite for Apache and make sure htaccess is allowed.
-
-### Lighttpd
-
-Run `grunt lighttpd-config` to generate config file (or look in doc/ for example)
-
-### Nginx
-
-Run `grunt nginx-config` to generate config file (or look in doc/ for example)
-
-### WAMP
-
-Works fine. Just look up the Apache section above for configuration.
-
-## Webhost
-
-If you have a "webhost" (or "webhotel") with ex. cPanel without shell access (or no node support), you can run OS.js, but
-has to be built on another computer, then transfered over (just follow the instructions above).
-
-The only downside here is that you'd have to run from /OS.js-v2/dist/ without doing modifications to the setup.
-
-## X11
-
-OS.js can run as a *X11* Desktop.
-
-Full documentation [here](https://github.com/andersevenrud/OS.js-v2/blob/master/doc/X11.md).
+OS.js can run as a Linux distribution on top of X11. See [X11.md](https://github.com/os-js/OS.js/blob/master/doc/X11.md) for more information.
 
 # Setting up optional features
 
-* [Google API and Google Drive](http://os.js.org/doc/manuals/man-google-api.html)
-* [Windows Live API and OneDrive](http://os.js.org/doc/manuals/man-windows-live-api.html)
-* [Dropbox](http://os.js.org/doc/manuals/man-dropbox.html)
-* [Broadway](http://os.js.org/doc/manuals/man-broadway.html)
-* [ZIP support](http://os.js.org/doc/manuals/man-zip.html)
-
-# Adding additional applications
-
-You can find instructions [in this manual](http://os.js.org/doc/manuals/man-package-manager.html).
-
-# Update instructions
-
-Download and extract the latest zip, or use the preferred method (git):
-
-```
-# Get latest sources
-$ git pull
-
-# Update dependencies
-$ npm install
-
-# Rebuild
-$ grunt
-
-```
+Visit the [official documentation](https://os.js.org/doc/manuals/) for more information.

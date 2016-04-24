@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API, Process) {
+(function(Utils, API, GUI, Process) {
   'use strict';
 
   window.OSjs = window.OSjs || {};
@@ -47,9 +47,9 @@
 
     return function(ontop) {
       if ( typeof ontop !== 'undefined' && ontop === true ) {
-        return (_ltzindex+=2);
+        return (_ltzindex += 2);
       }
-      return (_lzindex+=2);
+      return (_lzindex += 2);
     };
   })();
 
@@ -90,10 +90,24 @@
     return 301;
   }
 
+  /**
+   * Wrapper to wait for animations to finish
+   */
+  function waitForAnimation(cb) {
+    var wm = OSjs.Core.getWindowManager();
+    var anim = wm ? wm.getSetting('animations') : false;
+    if ( anim ) {
+      setTimeout(function() {
+        cb();
+      }, getAnimDuration());
+    } else {
+      cb();
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // WINDOW
   /////////////////////////////////////////////////////////////////////////////
-
 
   /**
    * Window Class
@@ -135,8 +149,8 @@
     var _WID                = 0;
     var _DEFAULT_WIDTH      = 200;
     var _DEFAULT_HEIGHT     = 200;
-    var _DEFAULT_MIN_HEIGHT = 100;
-    var _DEFAULT_MIN_WIDTH  = 100;
+    var _DEFAULT_MIN_HEIGHT = 150;
+    var _DEFAULT_MIN_WIDTH  = 150;
     var _DEFAULT_SND_VOLUME = 1.0;
     var _NAMES              = [];
 
@@ -195,6 +209,7 @@
       this._children      = [];                             // Child Windows
       this._parent        = null;                           // Parent Window reference
       this._disabled      = true;                           // If Window is currently disabled
+      this._loading       = false;                          // If Window is currently loading
       this._sound         = null;                           // Play this sound when window opens
       this._soundVolume   = _DEFAULT_SND_VOLUME;            // ... using this volume
       this._blinkTimer    = null;
@@ -255,7 +270,7 @@
 
       // Internals for restoring previous state (session)
       if ( appRef && appRef.__args && appRef.__args.__windows__ ) {
-        appRef.__args.__windows__.forEach(function(restore) {
+        appRef.__args.__windows__.every(function(restore) {
           if ( restore.name && restore.name === self._name ) {
             self._position.x = restore.position.x;
             self._position.y = restore.position.y;
@@ -367,31 +382,31 @@
     function _initMaxButton() {
       buttonMaximize            = document.createElement('application-window-button-maximize');
       buttonMaximize.className  = 'application-window-button-entry';
-      if ( self._properties.allow_maximize ) {
-        Utils.$bind(buttonMaximize, 'click', function(ev) {
-          ev.preventDefault();
-          ev.stopPropagation();
-          self._onWindowButtonClick(ev, this, 'maximize');
-          return false;
-        });
-      } else {
+      if ( !self._properties.allow_maximize ) {
         buttonMaximize.style.display = 'none';
       }
+
+      Utils.$bind(buttonMaximize, 'click', function(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        self._onWindowButtonClick(ev, this, 'maximize');
+        return false;
+      });
     }
 
     function _initCloseButton() {
       buttonClose           = document.createElement('application-window-button-close');
       buttonClose.className = 'application-window-button-entry';
-      if ( self._properties.allow_close ) {
-        Utils.$bind(buttonClose, 'click', function(ev) {
-          ev.preventDefault();
-          ev.stopPropagation();
-          self._onWindowButtonClick(ev, this, 'close');
-          return false;
-        });
-      } else {
+      if ( !self._properties.allow_close ) {
         buttonClose.style.display = 'none';
       }
+
+      Utils.$bind(buttonClose, 'click', function(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        self._onWindowButtonClick(ev, this, 'close');
+        return false;
+      });
     }
 
     function _initDnD() {
@@ -399,7 +414,7 @@
         var border = document.createElement('div');
         border.className = 'WindowDropRect';
 
-        OSjs.API.createDroppable(main, {
+        OSjs.GUI.Helpers.createDroppable(main, {
           onOver: function(ev, el, args) {
             main.setAttribute('data-dnd-state', 'true');
           },
@@ -455,20 +470,13 @@
     var windowTop           = document.createElement('application-window-top');
     var windowIcon          = document.createElement('application-window-icon');
     var windowTitle         = document.createElement('application-window-title');
-    var windowButtons       = document.createElement('application-window-buttons');
 
-    var windowIconImage         = document.createElement('img');
-    windowIconImage.alt         = this._title;
-    windowIconImage.src         = this._icon;
-    windowIconImage.width       = 16;
-    windowIconImage.height      = 16;
-
+    windowTitle.setAttribute('role', 'heading');
     windowTitle.appendChild(document.createTextNode(this._title));
 
     Utils.$bind(windowTitle, 'dblclick', function() {
       self._maximize();
     });
-
 
     // Append stuff
     var classNames = ['Window'];
@@ -504,13 +512,6 @@
     Utils.$bind(windowLoading, 'mousedown', _noEvent);
     Utils.$bind(windowDisabled, 'mousedown', _noEvent);
 
-    if ( !isTouch ) {
-      Utils.$bind(windowButtons, 'mousedown', function(ev) {
-        ev.preventDefault();
-        return stopPropagation(ev);
-      });
-    }
-
     Utils.$bind(main, 'mousedown', function(ev) {
       self._focus();
       return stopPropagation(ev);
@@ -533,15 +534,24 @@
     main.style.left   = this._position.x + 'px';
     main.style.zIndex = getNextZindex(this._state.ontop);
 
-    windowIcon.appendChild(windowIconImage);
-
-    windowButtons.appendChild(buttonMinimize);
-    windowButtons.appendChild(buttonMaximize);
-    windowButtons.appendChild(buttonClose);
+    main.setAttribute('role', 'application');
+    main.setAttribute('aria-live', 'polite');
+    main.setAttribute('aria-hidden', 'false');
+    windowIcon.setAttribute('role', 'button');
+    windowIcon.setAttribute('aria-haspopup', 'true');
+    windowIcon.setAttribute('aria-label', 'Window Menu');
+    buttonClose.setAttribute('role', 'button');
+    buttonClose.setAttribute('aria-label', 'Close Window');
+    buttonMinimize.setAttribute('role', 'button');
+    buttonMinimize.setAttribute('aria-label', 'Minimize Window');
+    buttonMaximize.setAttribute('role', 'button');
+    buttonMaximize.setAttribute('aria-label', 'Maximize Window');
 
     windowTop.appendChild(windowIcon);
     windowTop.appendChild(windowTitle);
-    windowTop.appendChild(windowButtons);
+    windowTop.appendChild(buttonMinimize);
+    windowTop.appendChild(buttonMaximize);
+    windowTop.appendChild(buttonClose);
 
     windowLoading.appendChild(windowLoadingImage);
 
@@ -555,21 +565,22 @@
     this._$root     = windowWrapper;
     this._$top      = windowTop;
     this._$loading  = windowLoading;
-    this._$winicon  = windowIconImage;
+    this._$winicon  = windowIcon;
     this._$disabled = windowDisabled;
     this._$resize   = windowResize;
 
     document.body.appendChild(this._$element);
 
-    windowTitle.style.right = windowButtons.offsetWidth + 'px';
-
     this._onChange('create');
     this._toggleLoading(false);
     this._toggleDisabled(false);
+    this._setIcon(this._icon);
 
     if ( this._sound ) {
       API.playSound(this._sound, this._soundVolume);
     }
+
+    this._updateMarkup();
 
     console.groupEnd();
 
@@ -578,6 +589,15 @@
 
   Window.prototype._inited = function() {
     this._loaded = true;
+
+    if ( !this._restored ) {
+      if ( this._state.maximized ) {
+        this._maximize(true);
+      } else if ( this._state.minimized ) {
+        this._minimize(true);
+      }
+    }
+
     console.debug('OSjs::Core::Window::_inited()', this._name);
   };
 
@@ -591,7 +611,10 @@
   Window.prototype.destroy = function() {
     var self = this;
 
-    if ( this._destroyed ) { return false; }
+    if ( this._destroyed ) {
+      return false;
+    }
+
     this._destroyed = true;
 
     var wm = OSjs.Core.getWindowManager();
@@ -676,6 +699,31 @@
   // GUI And Event Hooks
   //
 
+  /**
+   * Finds a GUI Element by ID from Scheme.
+   *
+   * THIS IS JUST A SHORTCUT METHOD FROM THE UI SCHEME CLASS
+   *
+   * @param     String      id        The value of element 'data-id' parameter
+   *
+   * @see Scheme::find()
+   * @method Window::_find()
+   */
+  Window.prototype._find = function(id) {
+    return this._scheme ? this._scheme.find(this, id) : null;
+  };
+
+  /**
+   * Finds a GUI Element by ID from Scheme.
+   *
+   * THIS IS JUST A SHORTCUT METHOD FROM THE UI SCHEME CLASS
+   *
+   * @see Scheme::findByQuery()
+   * @method Window::_findByQuery()
+   */
+  Window.prototype._findByQuery = function(q, root, all) {
+    return this._scheme ? this._scheme.findByQuery(this, q, root, all) : null;
+  };
 
   /**
    * Adds a hook (internal events)
@@ -725,15 +773,17 @@
   // Children (Windows)
   //
 
-  Window.prototype._addChild = function(w, wmAdd) {
+  Window.prototype._addChild = function(w, wmAdd, wmFocus) {
     console.debug('OSjs::Core::Window::_addChild()');
     w._parent = this;
 
     var wm = OSjs.Core.getWindowManager();
     if ( wmAdd && wm ) {
-      wm.addWindow(w);
+      wm.addWindow(w, wmFocus);
     }
     this._children.push(w);
+
+    return w;
   };
 
   /**
@@ -747,7 +797,7 @@
    */
   Window.prototype._removeChild = function(w) {
     var self = this;
-    this._children.forEach(function(child, i) {
+    this._children.every(function(child, i) {
       if ( child && child._wid === w._wid ) {
         console.debug('OSjs::Core::Window::_removeChild()');
 
@@ -773,7 +823,7 @@
     key = key || 'wid';
 
     var result = key === 'tag' ? [] : null;
-    this._children.forEach(function(child, i) {
+    this._children.every(function(child, i) {
       if ( child ) {
         if ( key === 'tag' ) {
           result.push(child);
@@ -863,7 +913,9 @@
    */
   Window.prototype._close = function() {
     console.debug('OSjs::Core::Window::_close()');
-    if ( this._disabled ) { return false; }
+    if ( this._disabled || this._destroyed ) {
+      return false;
+    }
 
     this._blur();
     this.destroy();
@@ -878,42 +930,38 @@
    *
    * @method    Window::_minimize()
    */
-  Window.prototype._minimize = function() {
+  Window.prototype._minimize = function(force) {
     var self = this;
-    console.debug(this._name, '>' , 'OSjs::Core::Window::_minimize()');
-    if ( !this._properties.allow_minimize ) { return false; }
-    //if ( this._disabled ) return false;
-    if ( this._state.minimized ) {
+    if ( !this._properties.allow_minimize || this._destroyed  ) {
+      return false;
+    }
+
+    if ( !force && this._state.minimized ) {
       this._restore(false, true);
       return true;
     }
+
+    console.debug(this._name, '>', 'OSjs::Core::Window::_minimize()');
 
     this._blur();
 
     this._state.minimized = true;
     this._$element.setAttribute('data-minimized', 'true');
 
-    function _hideDOM() {
+    waitForAnimation(function() {
       self._$element.style.display = 'none';
-    }
-
-    var wm = OSjs.Core.getWindowManager();
-    var anim = wm ? wm.getSetting('animations') : false;
-    if ( anim ) {
-      setTimeout(function() {
-        _hideDOM();
-      }, getAnimDuration());
-    } else {
-      _hideDOM();
-    }
+      self._fireHook('minimize');
+    });
 
     this._onChange('minimize');
-    this._fireHook('minimize');
 
+    var wm = OSjs.Core.getWindowManager();
     var win = wm ? wm.getCurrentWindow() : null;
     if ( win && win._wid === this._wid ) {
       wm.setCurrentWindow(null);
     }
+
+    this._updateMarkup();
 
     return true;
   };
@@ -925,15 +973,20 @@
    *
    * @method    Window::_maximize()
    */
-  Window.prototype._maximize = function() {
-    console.debug(this._name, '>' , 'OSjs::Core::Window::_maximize()');
-    if ( !this._properties.allow_maximize ) { return false; }
-    if ( !this._$element ) { return false; }
-    //if ( this._disabled ) return false;
-    if ( this._state.maximized ) {
+  Window.prototype._maximize = function(force) {
+    var self = this;
+
+    if ( !this._properties.allow_maximize || this._destroyed || !this._$element  ) {
+      return false;
+    }
+
+    if ( !force && this._state.maximized ) {
       this._restore(true, false);
       return true;
     }
+
+    console.debug(this._name, '>', 'OSjs::Core::Window::_maximize()');
+
     this._lastPosition    = {x: this._position.x,  y: this._position.y};
     this._lastDimension   = {w: this._dimension.w, h: this._dimension.h};
     this._state.maximized = true;
@@ -952,19 +1005,15 @@
     this._position.x  = s.left;
     this._position.y  = s.top;
 
-    this._onChange('maximize');
     this._focus();
 
-    var wm = OSjs.Core.getWindowManager();
-    var anim = wm ? wm.getSetting('animations') : false;
-    if ( anim ) {
-      var self = this;
-      setTimeout(function() {
-        self._fireHook('maximize');
-      }, getAnimDuration());
-    } else {
-      this._fireHook('maximize');
-    }
+    waitForAnimation(function() {
+      self._fireHook('maximize');
+    });
+
+    this._onChange('maximize');
+
+    this._updateMarkup();
 
     return true;
   };
@@ -980,41 +1029,46 @@
    * @method    Window::_restore()
    */
   Window.prototype._restore = function(max, min) {
-    if ( !this._$element ) { return; }
+    var self = this;
 
-    console.debug(this._name, '>' , 'OSjs::Core::Window::_restore()');
-    //if ( this._disabled ) return ;
+    if ( !this._$element || this._destroyed  ) {
+      return;
+    }
+
+    function restoreMaximized() {
+      if ( max && self._state.maximized ) {
+        self._move(self._lastPosition.x, self._lastPosition.y);
+        self._resize(self._lastDimension.w, self._lastDimension.h);
+        self._state.maximized = false;
+        self._$element.setAttribute('data-maximized', 'false');
+      }
+    }
+
+    function restoreMinimized() {
+      if ( min && self._state.minimized ) {
+        self._$element.style.display = 'block';
+        self._$element.setAttribute('data-minimized', 'false');
+        self._state.minimized = false;
+      }
+    }
+
+    console.debug(this._name, '>', 'OSjs::Core::Window::_restore()');
+
     max = (typeof max === 'undefined') ? true : (max === true);
     min = (typeof min === 'undefined') ? true : (min === true);
 
-    if ( max && this._state.maximized ) {
-      this._move(this._lastPosition.x, this._lastPosition.y);
-      this._resize(this._lastDimension.w, this._lastDimension.h);
-      this._state.maximized = false;
-      this._$element.setAttribute('data-maximized', 'false');
-    }
+    restoreMaximized();
+    restoreMinimized();
 
-    if ( min && this._state.minimized ) {
-      this._$element.style.display = 'block';
-      this._$element.setAttribute('data-minimized', 'false');
-      this._state.minimized = false;
-    }
+    waitForAnimation(function() {
+      self._fireHook('restore');
+    });
 
     this._onChange('restore');
 
-    var wm = OSjs.Core.getWindowManager();
-    var anim = wm ? wm.getSetting('animations') : false;
-    if ( anim ) {
-      var self = this;
-      setTimeout(function() {
-        self._fireHook('restore');
-      }, getAnimDuration());
-    } else {
-      this._fireHook('restore');
-    }
-
     this._focus();
 
+    this._updateMarkup();
   };
 
   /**
@@ -1027,10 +1081,12 @@
    * @method  Window::_focus()
    */
   Window.prototype._focus = function(force) {
-    if ( !this._$element ) { return false; }
+    if ( !this._$element || this._destroyed ) {
+      return false;
+    }
 
-    //if ( !force && this._state.focused ) { return false; }
-    //console.debug(this._name, '>' , 'OSjs::Core::Window::_focus()');
+    console.debug(this._name, '>', 'OSjs::Core::Window::_focus()');
+
     this._toggleAttentionBlink(false);
 
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
@@ -1054,6 +1110,8 @@
 
     this._state.focused = true;
 
+    this._updateMarkup();
+
     return true;
   };
 
@@ -1067,9 +1125,12 @@
    * @method  Window::_blur()
    */
   Window.prototype._blur = function(force) {
-    if ( !this._$element ) { return false; }
-    if ( !force && !this._state.focused ) { return false; }
-    //console.debug(this._name, '>' , 'OSjs::Core::Window::_blur()');
+    if ( !this._$element || this._destroyed || (!force && !this._state.focused) ) {
+      return false;
+    }
+
+    console.debug(this._name, '>', 'OSjs::Core::Window::_blur()');
+
     this._$element.setAttribute('data-focused', 'false');
     this._state.focused = false;
 
@@ -1079,12 +1140,13 @@
     // Force all standard HTML input elements to loose focus
     this._blurGUI();
 
-
     var wm = OSjs.Core.getWindowManager();
     var win = wm ? wm.getCurrentWindow() : null;
     if ( win && win._wid === this._wid ) {
       wm.setCurrentWindow(null);
     }
+
+    this._updateMarkup();
 
     return true;
   };
@@ -1197,7 +1259,10 @@
   };
 
   Window.prototype._resize = function(w, h, force) {
-    if ( !this._$element ) { return false; }
+    if ( !this._$element || this._destroyed  ) {
+      return false;
+    }
+
     var p = this._properties;
 
     if ( !force ) {
@@ -1247,7 +1312,9 @@
    */
   Window.prototype._moveTo = function(pos) {
     var wm = OSjs.Core.getWindowManager();
-    if ( !wm ) { return; }
+    if ( !wm ) {
+      return;
+    }
 
     var s = wm.getWindowSpace();
     var cx = this._position.x;
@@ -1275,9 +1342,13 @@
    * @method  Window::_move()
    */
   Window.prototype._move = function(x, y) {
-    if ( !this._$element ) { return false; }
-    if ( !this._properties.allow_move ) { return false; }
-    if ( typeof x === 'undefined' || typeof y === 'undefined') { return false; }
+    if ( !this._$element || this._destroyed || !this._properties.allow_move  ) {
+      return false;
+    }
+
+    if ( typeof x === 'undefined' || typeof y === 'undefined') {
+      return false;
+    }
 
     this._$element.style.top  = y + 'px';
     this._$element.style.left = x + 'px';
@@ -1297,11 +1368,14 @@
    * @method    Window::_toggleDisabled()
    */
   Window.prototype._toggleDisabled = function(t) {
-    console.debug(this._name, '>' , 'OSjs::Core::Window::_toggleDisabled()', t);
+    console.debug(this._name, '>', 'OSjs::Core::Window::_toggleDisabled()', t);
     if ( this._$disabled ) {
       this._$disabled.style.display = t ? 'block' : 'none';
     }
+
     this._disabled = t ? true : false;
+
+    this._updateMarkup();
   };
 
   /**
@@ -1314,10 +1388,53 @@
    * @method    Window::_toggleLoading()
    */
   Window.prototype._toggleLoading = function(t) {
-    console.debug(this._name, '>' , 'OSjs::Core::Window::_toggleLoading()', t);
+    console.debug(this._name, '>', 'OSjs::Core::Window::_toggleLoading()', t);
     if ( this._$loading ) {
       this._$loading.style.display = t ? 'block' : 'none';
     }
+
+    this._loading = t ? true : false;
+
+    this._updateMarkup();
+  };
+
+  /**
+   * Updates window markup with attributes etc
+   *
+   * @return void
+   *
+   * @method Window::_updateMarkup()
+   */
+  Window.prototype._updateMarkup = function(ui) {
+    if ( !this._$element ) {
+      return;
+    }
+
+    var t = this._loading || this._disabled;
+    var d = this._disabled;
+    var h = this._state.minimized;
+    var f = !this._state.focused;
+
+    this._$element.setAttribute('aria-busy', String(t));
+    this._$element.setAttribute('aria-hidden', String(h));
+    this._$element.setAttribute('aria-disabled', String(d));
+    this._$root.setAttribute('aria-hidden', String(f));
+
+    if ( !ui ) {
+      return;
+    }
+
+    var dmax   = this._properties.allow_maximize === true ? 'inline-block' : 'none';
+    var dmin   = this._properties.allow_minimize === true ? 'inline-block' : 'none';
+    var dclose = this._properties.allow_close === true ? 'inline-block' : 'none';
+
+    this._$top.querySelector('application-window-button-maximize').style.display = dmax;
+    this._$top.querySelector('application-window-button-minimize').style.display = dmin;
+    this._$top.querySelector('application-window-button-close').style.display = dclose;
+
+    var dres   = this._properties.allow_resize === true;
+
+    this._$element.setAttribute('data-allow-resize', String(dres));
   };
 
   /**
@@ -1330,7 +1447,7 @@
    * @method    Window::_toggleAttentionBlink()
    */
   Window.prototype._toggleAttentionBlink = function(t) {
-    if ( !this._$element ) { return false; }
+    if ( !this._$element || this._destroyed  ) { return false; }
     if ( this._state.focused ) { return false; }
 
     var el     = this._$element;
@@ -1350,7 +1467,7 @@
     /*
     if ( t ) {
       if ( !this._blinkTimer ) {
-        console.debug(this._name, '>' , 'OSjs::Core::Window::_toggleAttentionBlink()', t);
+        console.debug(this._name, '>', 'OSjs::Core::Window::_toggleAttentionBlink()', t);
         this._blinkTimer = setInterval(function() {
           s = !s;
 
@@ -1360,7 +1477,7 @@
       }
     } else {
       if ( this._blinkTimer ) {
-        console.debug(this._name, '>' , 'OSjs::Core::Window::_toggleAttentionBlink()', t);
+        console.debug(this._name, '>', 'OSjs::Core::Window::_toggleAttentionBlink()', t);
         clearInterval(this._blinkTimer);
         this._blinkTimer = null;
       }
@@ -1382,85 +1499,14 @@
    * @method  Window::_nextTabIndex()
    */
   Window.prototype._nextTabIndex = function(ev) {
-
-    var prev = ev.shiftKey;
-    var accept = ['input', 'select', 'textarea', 'gui-list-view', 'gui-tree-view', 'gui-icon-view']; // Textarea/Iframe accepts TAB
-    var current = document.activeElement;
-    var currentTag = current ? current.tagName.toLowerCase() : null;
-    var root = this._$root;
-
-    function clamp(idx, size) {
-      if ( prev ) {
-        idx--;
-        if ( idx <= 0 ) {
-          idx = size - 1;
-        }
+    var nextElement = OSjs.GUI.Helpers.getNextElement(ev.shiftKey, document.activeElement, this._$root);
+    if ( nextElement ) {
+      if ( Utils.$hasClass(nextElement, 'gui-data-view') ) {
+        new OSjs.GUI.ElementDataView(nextElement)._call('focus');
       } else {
-        idx++;
-        if ( idx >= size ) {
-          idx = 0;
-        }
-      }
-
-      return idx;
-    }
-
-    function go(idx, elements) {
-      idx = clamp(idx, elements.length);
-
-      var el = getNextElement(idx, elements);
-      if ( el ) {
-        console.debug('Window::_nextTabIndex()', '=>', idx, el.tagName, el);
-
-        if ( Utils.$hasClass(el, 'gui-data-view') ) {
-          new OSjs.GUI.ElementDataView(el)._call('focus');
-        } else {
-          try {
-            el.focus();
-            //elements[idx].focus();
-          } catch ( e ) {}
-        }
-      }
-    }
-
-    function getNextElement(idx, elements) {
-      var found = null;
-      var list = elements.slice(idx, elements.length);
-
-      list.forEach(function(el, idx) {
-        // offsetParent makes sure the element is 'visible'
-        if ( !found && el.offsetParent && !el.getAttribute('disabled') && el.getAttribute('data-disabled') !== 'true' ) {
-          console.debug('Window::_nextTabIndex()', 'next', idx);
-          found = el;
-        }
-        return !!found;
-      });
-
-      return found;
-    }
-
-    if ( currentTag && accept.indexOf(currentTag) >= 0 ) {
-      var elements = root.querySelectorAll('input, select, textarea, .gui-data-view');
-      var found = -1;
-
-      elements.forEach(function(el, idx) {
-        if ( el === current ) {
-          found = idx;
-        }
-        return found < 0;
-      });
-
-      if ( found >= 0 ) {
-        var fel = elements[found];
-
-        if ( fel.tagName.toLowerCase() === 'textarea' && !Utils.$hasClass(fel, 'gui-focus-element') ) {
-          return;
-        }
-
-        ev.preventDefault();
-        ev.stopPropagation();
-
-        go(found, Array.prototype.slice.call(elements));
+        try {
+          nextElement.focus();
+        } catch ( e ) {}
       }
     }
   };
@@ -1480,8 +1526,12 @@
    * @method  Window::_onDndEvent()
    */
   Window.prototype._onDndEvent = function(ev, type) {
+    if ( this._disabled || this._destroyed ) {
+      return false;
+    }
+
     console.debug('OSjs::Core::Window::_onDndEvent()', type);
-    if ( this._disabled ) { return false; }
+
     return true;
   };
 
@@ -1496,6 +1546,10 @@
    * @method  Window::_onKeyEvent()
    */
   Window.prototype._onKeyEvent = function(ev, type) {
+    if ( this._destroyed ) {
+      return false;
+    }
+
     if ( type === 'keydown' && ev.keyCode === Utils.Keys.TAB ) {
       this._nextTabIndex(ev);
     }
@@ -1523,77 +1577,87 @@
    * @method  Window::_onWindowIconClick()
    */
   Window.prototype._onWindowIconClick = function(ev, el) {
-    console.debug(this._name, '>' , 'OSjs::Core::Window::_onWindowIconClick()');
-    if ( !this._properties.allow_iconmenu ) { return; }
+    if ( !this._properties.allow_iconmenu || this._destroyed  ) {
+      return;
+    }
+
+    console.debug(this._name, '>', 'OSjs::Core::Window::_onWindowIconClick()');
 
     var self = this;
-    var list = [];
-
-    if ( this._properties.allow_minimize ) {
-      list.push({
-        title:    API._('WINDOW_MINIMIZE'),
-        icon:     API.getIcon('actions/stock_up.png'),
-        onClick:  function(name, iter) {
-          self._minimize();
-        }
-      });
-    }
-    if ( this._properties.allow_maximize ) {
-      list.push({
-        title:    API._('WINDOW_MAXIMIZE'),
-        icon:     API.getIcon('actions/window_fullscreen.png'),
-        onClick:  function(name, iter) {
-          self._maximize();
-          self._focus();
-        }
-      });
-    }
-    if ( this._state.maximized ) {
-      list.push({
-        title:    API._('WINDOW_RESTORE'),
-        icon:     API.getIcon('actions/view-restore.png'),
-        onClick:  function(name, iter) {
-          self._restore();
-          self._focus();
-        }
-      });
-    }
-    if ( this._properties.allow_ontop ) {
-      if ( this._state.ontop ) {
-        list.push({
-          title:    API._('WINDOW_ONTOP_OFF'),
-          icon:     API.getIcon('actions/window-new.png'),
-          onClick:  function(name, iter) {
-            self._state.ontop = false;
-            if ( self._$element ) {
-              self._$element.style.zIndex = getNextZindex(false);
-            }
+    var control = [
+      [this._properties.allow_minimize, function() {
+        return {
+          title: API._('WINDOW_MINIMIZE'),
+          icon: API.getIcon('actions/stock_up.png'),
+          onClick: function(name, iter) {
+            self._minimize();
+          }
+        };
+      }],
+      [this._properties.allow_maximize, function() {
+        return {
+          title: API._('WINDOW_MAXIMIZE'),
+          icon: API.getIcon('actions/window_fullscreen.png'),
+          onClick: function(name, iter) {
+            self._maximize();
             self._focus();
           }
-        });
-      } else {
-        list.push({
-          title:    API._('WINDOW_ONTOP_ON'),
-          icon:     API.getIcon('actions/window-new.png'),
-          onClick:  function(name, iter) {
+        };
+      }],
+      [this._state.maximized, function() {
+        return {
+          title: API._('WINDOW_RESTORE'),
+          icon: API.getIcon('actions/view-restore.png'),
+          onClick: function(name, iter) {
+            self._restore();
+            self._focus();
+          }
+        };
+      }],
+      [this._properties.allow_ontop, function() {
+        if ( self._state.ontop ) {
+          return {
+            title: API._('WINDOW_ONTOP_OFF'),
+            icon: API.getIcon('actions/window-new.png'),
+            onClick: function(name, iter) {
+              self._state.ontop = false;
+              if ( self._$element ) {
+                self._$element.style.zIndex = getNextZindex(false);
+              }
+              self._focus();
+            }
+          };
+        }
+
+        return {
+          title: API._('WINDOW_ONTOP_ON'),
+          icon: API.getIcon('actions/window-new.png'),
+          onClick: function(name, iter) {
             self._state.ontop = true;
             if ( self._$element ) {
               self._$element.style.zIndex = getNextZindex(true);
             }
             self._focus();
           }
-        });
+        };
+      }],
+      [this._properties.allow_close, function() {
+        return {
+          title: API._('WINDOW_CLOSE'),
+          icon: API.getIcon('actions/window-close.png'),
+          onClick: function(name, iter) {
+            self._close();
+          }
+        };
+      }]
+    ];
+
+    var list = [];
+    control.forEach(function(iter) {
+      if (iter[0] ) {
+        list.push(iter[1]());
       }
-    }
-    if ( this._properties.allow_close ) {
-      list.push({
-        title:    API._('WINDOW_CLOSE'),
-        icon:     API.getIcon('actions/window-close.png'),
-        onClick:  function(name, iter) {
-          self._close();
-        }
-      });
-    }
+    });
 
     OSjs.API.createMenu(list, ev);
   };
@@ -1610,7 +1674,7 @@
    * @method  Window::_onWindowButtonClick()
    */
   Window.prototype._onWindowButtonClick = function(ev, el, btn) {
-    console.debug(this._name, '>' , 'OSjs::Core::Window::_onWindowButtonClick()', btn);
+    console.debug(this._name, '>', 'OSjs::Core::Window::_onWindowButtonClick()', btn);
 
     this._blurGUI();
 
@@ -1636,7 +1700,7 @@
   Window.prototype._onChange = function(ev, byUser) {
     ev = ev || '';
     if ( ev ) {
-      console.debug(this._name, '>' , 'OSjs::Core::Window::_onChange()', ev);
+      console.debug(this._name, '>', 'OSjs::Core::Window::_onChange()', ev);
       var wm = OSjs.Core.getWindowManager();
       if ( wm ) {
         wm.eventWindow(ev, this);
@@ -1657,7 +1721,10 @@
    */
   Window.prototype._getMaximizedSize = function() {
     var s = getWindowSpace();
-    if ( !this._$element ) { return s; }
+    if ( !this._$element || this._destroyed ) {
+      return s;
+    }
+
     var topMargin = 23;
     var borderSize = 0;
 
@@ -1672,8 +1739,8 @@
 
     s.left += borderSize;
     s.top += borderSize;
-    s.width -= (borderSize*2);
-    s.height -= topMargin + (borderSize*2);
+    s.width -= (borderSize * 2);
+    s.height -= topMargin + (borderSize * 2);
 
     return s;
   };
@@ -1726,7 +1793,10 @@
    * @method  Window::_setTitle()
    */
   Window.prototype._setTitle = function(t, append, delimiter) {
-    if ( !this._$element ) { return; }
+    if ( !this._$element || this._destroyed ) {
+      return;
+    }
+
     delimiter = delimiter || '-';
 
     var tel = this._$element.getElementsByTagName('application-window-title')[0];
@@ -1745,6 +1815,8 @@
     }
 
     this._onChange('title');
+
+    this._updateMarkup();
   };
 
   /**
@@ -1758,8 +1830,10 @@
    */
   Window.prototype._setIcon = function(i) {
     if ( this._$winicon ) {
-      this._$winicon.src = i;
+      this._$winicon.title = this._title;
+      this._$winicon.style.backgroundImage = 'url(' + i + ')';
     }
+
     this._icon = i;
     this._onChange('icon');
   };
@@ -1771,14 +1845,13 @@
    */
   Window.prototype._setWarning = function(message) {
     var self = this;
-    if ( this._$warning ) {
-      if ( this._$warning.parentNode ) {
-        this._$warning.parentNode.removeChild(this._$warning);
-      }
-      this._$warning = null;
+
+    this._$warning = Utils.$remove(this._$warning);
+
+    if ( this._destroyed || message === null ) {
+      return;
     }
 
-    if ( message === null ) { return; }
     message = message || '';
 
     var container = document.createElement('application-window-warning');
@@ -1798,10 +1871,30 @@
     this._$root.appendChild(this._$warning);
   };
 
+  /**
+   * Set a window property
+   *
+   * @param   String    p     Key
+   * @param   String    v     Value
+   *
+   * @return  void
+   *
+   * @method Window::_setProperty()
+   */
+  Window.prototype._setProperty = function(p, v) {
+    if ( (v === '' || v === null) || !this._$element || (typeof this._properties[p] === 'undefined') ) {
+      return;
+    }
+
+    this._properties[p] = String(v) === 'true';
+
+    this._updateMarkup(true);
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Core.Window = Window;
 
-})(OSjs.Utils, OSjs.API, OSjs.Core.Process);
+})(OSjs.Utils, OSjs.API, OSjs.GUI, OSjs.Core.Process);

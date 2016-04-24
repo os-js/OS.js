@@ -1,7 +1,7 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(Application, Window, GUI, Dialogs, VFS) {
+  // jscs:disable validateQuoteMarks
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -35,35 +36,20 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var _Locales = {
-    no_NO : {
-      'Playlist' : 'Spilleliste',
-      'Playback aborted' : 'Avspilling avbrutt',
-      'Network or communication error' : 'Nettverks- eller kommunikasjonsfeil',
-      'Decoding failed. Corruption or unsupported media' : 'Dekoding feilet. Korrupt eller ustøttet media',
-      'Media source not supported' : 'Media-kilde ikke støttet',
-      'Failed to play file' : 'Klarte ikke spille av fil',
-      'Artist' : 'Artist',
-      'Album' : 'Album',
-      'Track' : 'Låt',
-      'Time' : 'Tid',
-      'Media information query failed' : 'Media-informasjon forespursel feil',
-      'seek unavailable in format' : 'spoling utilgjenglig i format',
-      'The audio type is not supported: {0}' : 'Denne lyd-typen er ikke støttet: {0}',
-    },
-    pl_PL : {
-      'Playlist' : 'Playlista',
-      'Playback aborted' : 'Odtwarzanie Przerwane',
-      'Network or communication error' : 'Błąd Sieci lub Komunikacji',
-      'Decoding failed. Corruption or unsupported media' : 'Dekodowanie nie powiodło się. Uszkodzony lub nieobsługiwany plik',
-      'Media source not supported' : 'Plik nie jest wspierany',
-      'Failed to play file' : 'Nie można odtworzyć pliku',
-      'Artist' : 'Artysta',
-      'Album' : 'Album',
-      'Track' : 'Ścieżka',
-      'Time' : 'Czas',
-      'Media information query failed' : 'Brak informacji',
-      'seek unavailable in format' : 'Przewijanie nie jest obsługiwane w tym formacie',
-      'The audio type is not supported: {0}' : 'Ten typ audio nie jest obsługiwany: {0}',
+    bg_BG : {
+      'Playlist' : 'Плейлист',
+      'Playback aborted' : 'Прекратено изпълнение',
+      'Network or communication error' : 'Проблем с връзка към мрежа',
+      'Decoding failed. Corruption or unsupported media' : 'Провалено декодиране, повереден файл или неподдържан формат',
+      'Media source not supported' : 'Източника на медия не се поддържа',
+      'Failed to play file' : 'Изпълнението на файла се провали',
+      'Artist' : 'Изпълнител',
+      'Album' : 'Албум',
+      'Track' : 'Песен',
+      'Time' : 'Време',
+      'Media information query failed' : 'Получаване на информация провалено',
+      'seek unavailable in format' : 'Невъществуващ формат',
+      'The audio type is not supported: {0}' : 'Аудио формата не се поддържа'
     },
     de_DE : {
       'Playlist' : 'Wiedergabeliste',
@@ -78,7 +64,7 @@
       'Time' : 'Zeit',
       'Media information query failed' : 'Media Informationssuche gescheitert',
       'seek unavailable in format' : 'Spulen im Format nicht verfügbar',
-      'The audio type is not supported: {0}' : 'Der Audio-Typ {0} ist nicht unterstützt',
+      'The audio type is not supported: {0}' : 'Der Audio-Typ {0} ist nicht unterstützt'
     },
     es_ES : {
       'Playlist' : 'Lista de reproducción',
@@ -93,16 +79,104 @@
       'Time' : 'Tiempo',
       'Media information query failed' : 'Error recupersqndo información del medio',
       'seek unavailable in format' : 'búsqueda no disponible en este formato',
-      'The audio type is not supported: {0}' : 'El tipo de audio no está soportado: {0}',
+      'The audio type is not supported: {0}' : 'El tipo de audio no está soportado: {0}'
     },
     fr_FR : {
+      'Playlist' : 'Liste de lecture',
+      'Playback aborted' : 'Lecture interrompue',
+      'Network or communication error' : 'Erreur de communication ou de réseau',
+      'Decoding failed. Corruption or unsupported media' : 'Décodage raté. Média corrompus ou non pris en charge',
+      'Media source not supported' : 'Source de médias non pris en charge',
+      'Failed to play file' : 'Impossible de lire le fichier',
+      'Artist' : 'Artiste',
+      'Album' : 'Album',
+      'Track' : 'Piste',
+      'Time' : 'Durée',
+      'Media information query failed' : 'Requête des informations média échoué',
+      'seek unavailable in format' : 'recherche indisponible dans ce format',
+      'The audio type is not supported: {0}' : 'Le type audio n\'est pas pris en charge: {0}'
+    },
+    it_IT : {
+      'Playlist' : 'Playlist',
+      'Playback aborted' : 'Riproduzione terminata',
+      'Network or communication error' : 'Errore di rete o di comunicazione',
+      'Decoding failed. Corruption or unsupported media' : 'Decodifica fallita. Supporto corroto o non supportato.',
+      'Media source not supported' : 'Sorgente multimediale non supportata',
+      'Failed to play file' : 'Riproduzione file fallita',
+      'Artist' : 'Artista',
+      'Album' : 'Album',
+      'Track' : 'Traccia',
+      'Time' : 'Tempo',
+      'Media information query failed' : 'Recupero informazioni media fallita',
+      'seek unavailable in format' : 'ricerca non disponibile nel formato',
+      'The audio type is not supported: {0}' : 'Tipo di audio non supportato: {0}'
+    },
+    ko_KR : {
+      'Playlist' : '재생목록',
+      'Playback aborted' : '일시중지',
+      'Network or communication error' : '네트워크 등 통신 문제가 발생했습니다',
+      'Decoding failed. Corruption or unsupported media' : '디코딩에 실패했습니다. 손상되었거나 지원하지 않는 형식입니다',
+      'Media source not supported' : '지원하지 않는 미디어 소스입니다',
+      'Failed to play file' : '파일을 재생하는데 실패했습니다',
+      'Artist' : '아티스트',
+      'Album' : '앨범',
+      'Track' : '트랙',
+      'Time' : '시간',
+      'Media information query failed' : '미디어 정보 조회에 실패했습니다',
+      'seek unavailable in format' : '탐색을 지원하지 않는 형식입니다',
+      'The audio type is not supported: {0}' : '이 오디오 형식은 지원하지 않습니다: {0}'
+    },
+    nl_NL : {
+      'Playlist' : 'Afspeellijst',
+      'Playback aborted' : 'Afspelen afgebroken',
+      'Network or communication error' : 'Netwerk of communicatie fout',
+      'Decoding failed. Corruption or unsupported media' : 'Decoderen mislukt: bestandstype wordt niet ondersteund',
+      'Media source not supported' : 'Mediabron wordt niet ondersteund',
+      'Failed to play file' : 'Afspelen van bestand mislukt',
+      'Artist' : 'Artiest',
+      'Album' : 'Album',
+      'Track' : 'Nummer',
+      'Time' : 'Tijd',
+      'Media information query failed' : 'Zoeken naar media is niet gelukt',
+      'seek unavailable in format' : 'Voor/achteruit spoelen is niet beschikbaar in dit formaat',
+      'The audio type is not supported: {0}' : 'Audio type {0} wordt niet ondersteund'
+    },
+    no_NO : {
+      'Playlist' : 'Spilleliste',
+      'Playback aborted' : 'Avspilling avbrutt',
+      'Network or communication error' : 'Nettverks- eller kommunikasjonsfeil',
+      'Decoding failed. Corruption or unsupported media' : 'Dekoding feilet. Korrupt eller ustøttet media',
+      'Media source not supported' : 'Media-kilde ikke støttet',
+      'Failed to play file' : 'Klarte ikke spille av fil',
+      'Artist' : 'Artist',
+      'Album' : 'Album',
+      'Track' : 'Låt',
+      'Time' : 'Tid',
+      'Media information query failed' : 'Media-informasjon forespursel feil',
+      'seek unavailable in format' : 'spoling utilgjenglig i format',
+      'The audio type is not supported: {0}' : 'Denne lyd-typen er ikke støttet: {0}'
+    },
+    pl_PL : {
+      'Playlist' : 'Playlista',
+      'Playback aborted' : 'Odtwarzanie Przerwane',
+      'Network or communication error' : 'Błąd Sieci lub Komunikacji',
+      'Decoding failed. Corruption or unsupported media' : 'Dekodowanie nie powiodło się. Uszkodzony lub nieobsługiwany plik',
+      'Media source not supported' : 'Plik nie jest wspierany',
+      'Failed to play file' : 'Nie można odtworzyć pliku',
+      'Artist' : 'Artysta',
+      'Album' : 'Album',
+      'Track' : 'Ścieżka',
+      'Time' : 'Czas',
+      'Media information query failed' : 'Brak informacji',
+      'seek unavailable in format' : 'Przewijanie nie jest obsługiwane w tym formacie',
+      'The audio type is not supported: {0}' : 'Ten typ audio nie jest obsługiwany: {0}'
     },
     ru_RU : {
       'Playlist' : 'Список воспроизведения',
       'Playback aborted' : 'Воспроизведение прервано',
       'Network or communication error' : 'Ошибка соединения',
       'Decoding failed. Corruption or unsupported media' : 'Не удалось декодировать файл. Файл поврежден или данынй формат не поддерживается',
-      'Media source not supported' : 'Медиа этого типа не поддерживается',
+      'Media source not supported' : 'Тип файла не поддерживается',
       'Failed to play file' : 'Ошибка воспроизведения',
       'Artist' : 'Артист',
       'Album' : 'Альбом',
@@ -112,35 +186,51 @@
       'seek unavailable in format' : 'Перемотка недоступна в этом формате',
       'The audio type is not supported: {0}' : 'Тип аудио не поддерживается: {0}'
     },
-    nl_NL : {
-      'Playlist' : 'Afspeel lijst',
-      'Playback aborted' : 'Spelen onderbroken',
-      'Network or communication error' : 'Netwerk communicatie fout',
-      'Decoding failed. Corruption or unsupported media' : 'Dekoderen lukt niet: bestandstype wordt niet ondersteund',
-      'Media source not supported' : 'Media bron wordt niet ondersteund',
-      'Failed to play file' : 'Afspelen lukt niet',
-      'Artist' : 'Artiest',
+    sk_SK : {
+      'Playlist' : 'Zoznam skladieb',
+      'Playback aborted' : 'Prehrávanie prerušené',
+      'Network or communication error' : 'Chyba v sieťovej komunikácii',
+      'Decoding failed. Corruption or unsupported media' : 'Dekódovanie sa nepodarilo alebo médium je nepodporované',
+      'Media source not supported' : 'Zdrojové médium nie je podporované',
+      'Failed to play file' : 'Chyba pri prehrávaní súboru',
+      'Artist' : 'Umelec',
       'Album' : 'Album',
-      'Track' : 'Naam',
-      'Time' : 'Tijd',
-      'Media information query failed' : 'Zoeken naar media is niet gelukt',
-      'seek unavailable in format' : 'Voor/acteruit spoelen is niet beschikbaar in dit formaat',
-      'The audio type is not supported: {0}' : 'Audio type {0} wordt niet ondersteund',
+      'Track' : 'Skladba',
+      'Time' : 'Čas',
+      'Media information query failed' : 'Chyba pri získavaní informácii o médiu',
+      'seek unavailable in format' : 'Formát média nepodporuje preskakovanie (seek)',
+      'The audio type is not supported: {0}' : 'Nepodporovaný formát: {0}'
+    },
+
+    tr_TR : {
+      'Playlist' : 'Oynatma listesi',
+      'Playback aborted' : 'kayıt çalma/dinleme durduruldu',
+      'Network or communication error' : 'ağ veya iletişim hatası',
+      'Decoding failed. Corruption or unsupported media' : 'çözümleme hatası. Bozuk veya çalışmıyor.',
+      'Media source not supported' : 'medya kaynağı bulunamadı',
+      'Failed to play file' : 'Oynatma hatası',
+      'Artist' : 'Artist',
+      'Album' : 'Album',
+      'Track' : 'Parça',
+      'Time' : 'zaman',
+      'Media information query failed' : 'medya bilgisini elde etmede hata oluştu',
+      'seek unavailable in format' : 'bu formatta ileri saramazsınız',
+      'The audio type is not supported: {0}' : 'Bu format desteklenmiyor: {0}'
     },
     vi_VN : {
       'Playlist' : 'Danh sách phát',
       'Playback aborted' : 'Phát lại bị hủy',
-      'Network or communication error' : 'Mạng lưới hoặc thông tin liên lạc bị lỗi',
-      'Decoding failed. Corruption or unsupported media' : 'Giải mã thất bại. Phương tiện truyền thông bị hỏng hoặc không được hỗ trợ',
+      'Network or communication error' : 'Mạng hoặc thông tin liên lạc bị lỗi',
+      'Decoding failed. Corruption or unsupported media' : 'Giải mã thất bại. Tập tin bị hỏng hoặc không được hỗ trợ',
       'Media source not supported' : 'Nguồn phương tiện không được hỗ trợ',
       'Failed to play file' : 'Không thể chơi tập tin',
       'Artist' : 'Ca sĩ',
       'Album' : 'Album',
       'Track' : 'Bài hát',
       'Time' : 'Thời gian',
-      'Media information query failed' : 'Truy vấn phương tiện thông tin thất bại',
+      'Media information query failed' : 'Truy vấn thông tin tập tin thất bại',
       'seek unavailable in format' : 'không tua được trong định dạng này',
-      'The audio type is not supported: {0}' : 'Loại âm thanh {0} không được hỗ trợ',
+      'The audio type is not supported: {0}' : 'Loại âm thanh {0} không được hỗ trợ'
     }
   };
 

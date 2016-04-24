@@ -7,14 +7,13 @@
   "ignore": [
     "src/build.js",
 
-    "src/client/javascript/handlers/**",
     "src/client/stylesheets/**",
     "src/client/themes/**",
     "src/templates/**",
     "src/installer/**",
     "src/packages/**",
     "src/locales/**",
-    "src/server/**",
+    "src/server/php",
     "src/conf/**",
     "src/x11/**",
     "vendor/*",

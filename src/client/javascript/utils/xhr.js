@@ -1,7 +1,7 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,15 +46,18 @@
    * @option args String     url                  The URL
    * @option args String     method               HTTP Call method: (POST/GET, default = GET)
    * @option args Mixed      body                 Optional body to send (for POST)
+   * @option args integer    timeout              Optional timeout (in milliseconds)
    * @option args String     responseType         HTTP Response type (default = null)
    * @option args Object     requestHeaders       Tuple with headers (default = null)
    * @option args boolean    json                 Handle as a JSON request/response (default = false)
    * @option args boolean    jsonp                Handle as a JSONP request (default = false)
-   * @option args Function   onerror              onerror callback
-   * @option args Function   onsuccess            onsuccess callback
-   * @option args Function   oncreated            oncreated callback
-   * @option args Function   onfailed             onfailed callback
-   * @option args Function   oncanceled           oncanceled callback
+   * @option args Array      acceptcodes          Array of accepted status codes for success signal [arraybuffer] (Optional)
+   * @option args Function   onerror              onerror callback => fn(error, evt, request, url)
+   * @option args Function   onsuccess            onsuccess callback => fn(result, request, url)
+   * @option args Function   oncreated            oncreated callback => fn(request)
+   * @option args Function   onfailed             onfailed callback => fn(evt)
+   * @option args Function   oncanceled           oncanceled callback => fn(evt)
+   * @option args Function   ontimeout            ontimeout callback => fn(evt)
    *
    * @return  void
    *
@@ -69,10 +72,13 @@
       oncreated        : function() {},
       onfailed         : function() {},
       oncanceled       : function() {},
+      ontimeout        : function() {},
+      acceptcodes      : [200, 201, 304],
       method           : 'GET',
       responseType     : null,
       requestHeaders   : {},
       body             : null,
+      timeout          : 0,
       json             : false,
       url              : '',
       jsonp            : false
@@ -83,7 +89,7 @@
       if ( args.json && ctype.match(/^application\/json/) ) {
         try {
           response = JSON.parse(response);
-        } catch(ex) {
+        } catch (ex) {
           console.warn('Utils::ajax()', 'handleResponse()', ex);
         }
       }
@@ -134,17 +140,25 @@
       request.onerror = null;
       request.onload = null;
       request.onreadystatechange = null;
+      request.ontimeut = null;
       request = null;
     }
 
     function requestJSON() {
       request = new XMLHttpRequest();
+      try {
+        request.timeout = args.timeout;
+      } catch ( e ) {}
 
       if ( request.upload ) {
         request.upload.addEventListener('progress', args.onprogress, false);
       } else {
         request.addEventListener('progress', args.onprogress, false);
       }
+
+      request.ontimeout = function(evt) {
+        args.ontimeout(evt);
+      };
 
       if ( args.responseType === 'arraybuffer' ) { // Binary
         request.onerror = function(evt) {
@@ -154,8 +168,8 @@
           cleanup();
         };
         request.onload = function(evt) {
-          if ( request.status === 200 || request.status === 201 || request.status === 304 ) {
-            args.onsuccess(request.response, request);
+          if ( args.acceptcodes.indexOf(request.status) >= 0 ) {
+            args.onsuccess(request.response, request, args.url);
           } else {
             OSjs.VFS.abToText(request.response, 'text/plain', function(err, txt) {
               var error = txt || err || OSjs.API._('ERR_UTILS_XHR_FATAL');
@@ -183,8 +197,8 @@
       request.send(args.body);
     }
 
-    if ( window.location.href.match(/^file\:\/\//) ) {
-      args.onerror('You are currently running locally and cannot perform this operation!');
+    if ( (OSjs.API.getConfig('Connection.Type') === 'standalone') ) {
+      args.onerror('You are currently running locally and cannot perform this operation!', null, request, args.url);
       return;
     }
 
@@ -246,7 +260,6 @@
       opts.interval = opts.interval || 50;
       opts.maxTries = opts.maxTries || 10;
 
-
       function _finished(result) {
         _LOADED[src] = result;
         console.info('Stylesheet', src, result);
@@ -279,7 +292,7 @@
       }, opts.interval);
     }
 
-     function createScript(src, callback) {
+    function createScript(src, callback) {
       var _finished = function(result) {
         _LOADED[src] = result;
         console.info('JavaScript', src, result);
@@ -303,53 +316,45 @@
       });
     }
 
-    return function(list, callback, callbackProgress) {
+    return function(list, callback, callbackProgress, args) {
       list = (list || []).slice();
+      args = args || {};
 
       var successes  = [];
       var failed     = [];
-      var index      = 0;
 
       console.group('Utils::preload()', list);
 
-      function finished() {
-        console.groupEnd();
-
-        (callback || function() {})(list.length, failed, successes);
-      }
-
-      (function _next() {
-        if ( index >= list.length ) {
-          finished();
-          return;
-        }
-
+      OSjs.Utils.asyncs(list, function(item, index, next) {
         function _loaded(success, src) {
-          index++;
-
           (callbackProgress || function() {})(index, list.length);
           (success ? successes : failed).push(src);
-          _next();
+          next();
         }
 
-        var item = list[index];
         if ( item ) {
-          if ( (item.force !== true) && _LOADED[item.src] === true ) {
+          if ( _LOADED[item.src] === true && (item.force !== true && args.force !== true) ) {
             _loaded(true);
             return;
           }
 
           var src = item.src;
+          if ( src.substr(0, 1) !== '/' && !src.match(/^(https?|ftp)/) ) {
+            src = window.location.href + src;
+          }
+
           if ( item.type.match(/^style/) ) {
             createStyle(src, _loaded);
           } else if ( item.type.match(/script$/) ) {
             createScript(src, _loaded);
           }
         } else {
-          _next();
+          next();
         }
-
-      })();
+      }, function() {
+        console.groupEnd();
+        (callback || function() {})(list.length, failed, successes);
+      });
     };
   })();
 

@@ -1,7 +1,7 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -75,6 +75,56 @@
                .replace(/\>[\t ]+$/g, '>');
   };
 
+  /**
+   * Parses url into a dictionary (supports modification)
+   *
+   * @param     String        url       Input URL
+   * @param     Object        modify    (Optional) Modify URL with these options
+   *
+   * @return    Object                  Object with {protocol, host, path}
+   *
+   * @api       OSjs.Utils.parseurl()
+   */
+  OSjs.Utils.parseurl = function(url, modify) {
+    modify = modify || {};
+
+    if ( !url.match(/^(\w+\:)\/\//) ) {
+      url = '//' + url;
+    }
+
+    var protocol = url.split(/^(\w+\:)?\/\//);
+
+    var splitted = (function() {
+      var tmp = protocol[2].replace(/^\/\//, '').split('/');
+      return {
+        proto: (modify.protocol || protocol[1] || window.location.protocol || '').replace(/\:$/, ''),
+        host: modify.host || tmp.shift(),
+        path: modify.path || '/' + tmp.join('/')
+      };
+    })();
+
+    function _parts() {
+      var parts = [splitted.proto, '://'];
+
+      if ( modify.username ) {
+        var authstr = String(modify.username) + ':' + String(modify.password);
+        parts.push(authstr);
+        parts.push('@');
+      }
+
+      parts.push(splitted.host);
+      parts.push(splitted.path);
+      return parts.join('');
+    }
+
+    return {
+      protocol: splitted.proto,
+      host: splitted.host,
+      path: splitted.path,
+      url: _parts()
+    };
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // OBJECT HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -128,7 +178,7 @@
           } else {
             obj1[p] = obj2[p];
           }
-        } catch(e) {
+        } catch (e) {
           obj1[p] = obj2[p];
         }
       }
@@ -168,7 +218,7 @@
       if ( response.match(/^\{|\[/) ) {
         try {
           response = JSON.parse(response);
-        } catch ( e  ){
+        } catch ( e  ) {
           console.warn('FAILED TO FORCE JSON MIME TYPE', e);
         }
       }
@@ -255,6 +305,44 @@
     color = color.toString(16);
     color = ('000000' + color).slice(-6);
     return '#' + color;
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // ASYNC
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Run an async queue in series
+   *
+   * @param   Array       queue     The queue
+   * @param   Function    onentry   Callback on step => fn(entry, index, fnNext)
+   * @param   Function    ondone    Callback on done => fn()
+   *
+   * @return  void
+   *
+   * @api     OSjs.Utils.asyncs()
+   */
+  OSjs.Utils.asyncs = function(queue, onentry, ondone) {
+    onentry = onentry || function(e, i, n) { n(); };
+    ondone  = ondone  || function() {};
+
+    function next(i) {
+      if ( i >= queue.length ) {
+        ondone();
+        return;
+      }
+
+      try {
+        onentry(queue[i], i, function() {
+          next(i + 1);
+        });
+      } catch ( e ) {
+        console.warn('Utils::async()', 'Exception while stepping', e.stack, e);
+        next(i + 1);
+      }
+    }
+
+    next(0);
   };
 
 })();

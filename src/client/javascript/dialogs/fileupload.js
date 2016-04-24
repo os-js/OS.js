@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -84,6 +84,7 @@
 
   FileUploadDialog.prototype.setFile = function(file, input) {
     var self = this;
+    var progressDialog;
 
     function error(msg, ev) {
       API.error(
@@ -112,7 +113,7 @@
 
       var desc = OSjs.API._('DIALOG_UPLOAD_MSG_FMT', file.name, file.type, fileSize, this.dest);
 
-      var progressDialog = API.createDialog('FileProgress', {
+      progressDialog = API.createDialog('FileProgress', {
         message: desc,
         dest: this.args.dest,
         filename: file.name,
@@ -122,26 +123,23 @@
         // Dialog closed
       }, this);
 
-
       if ( this._wmref ) {
         this._wmref.createNotificationIcon(this.notificationId, {className: 'BusyNotification', tooltip: desc, image: false});
       }
 
-      OSjs.VFS.internalUpload(file, this.args.dest, function(type, ev) {
-        if ( type === 'success' ) {
-          progressDialog._close();
-          self.onClose(ev, 'ok', file);
-        } else if ( type === 'failed' ) {
-          error(ev.toString(), ev);
-        } else if ( type === 'canceled' ) {
-          error(OSjs.API._('DIALOG_UPLOAD_FAILED_CANCELLED'), ev);
-        } else if ( type === 'progress' ) {
+      OSjs.VFS.upload({files: [file], destination: this.args.dest}, function(err, result, ev) {
+        if ( err ) {
+          error(err, ev);
+          return;
+        }
+        progressDialog._close();
+        self.onClose(ev, 'ok', file);
+      }, {
+        onprogress: function(ev) {
           if ( ev.lengthComputable ) {
             var p = Math.round(ev.loaded * 100 / ev.total);
             progressDialog.setProgress(p);
           }
-        } else {
-          error(ev.toString(), ev);
         }
       });
 
@@ -150,7 +148,6 @@
       }, 100);
     }
   };
-
 
   FileUploadDialog.prototype.onClose = function(ev, button, result) {
     result = result || null;

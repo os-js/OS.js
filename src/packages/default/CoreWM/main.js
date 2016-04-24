@@ -1,7 +1,7 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,17 +43,22 @@
   var CoreWM = function(args, metadata) {
     var ds = OSjs.Applications.CoreWM.DefaultSettings;
 
-    WindowManager.apply(this, ['CoreWM', this, args, metadata, ds(args.defaults || {})]);
+    var importSettings = args.defaults || {};
 
-    this.scheme         = null;
-    this.panels         = [];
-    this.switcher       = null;
-    this.iconView       = null;
-    this.$themeLink     = null;
-    this.$themeScript   = null;
-    this.$animationLink = null;
+    WindowManager.apply(this, ['CoreWM', this, args, metadata, ds(importSettings)]);
+
+    this.scheme           = null;
+    this.panels           = [];
+    this.switcher         = null;
+    this.iconView         = null;
+    this.$themeLink       = null;
+    this.$themeScript     = null;
+    this.$animationLink   = null;
+    this.importedSettings = importSettings;
 
     this._$notifications    = document.createElement('corewm-notifications');
+    this._$notifications.setAttribute('role', 'log');
+
     document.body.appendChild(this._$notifications);
   };
 
@@ -153,6 +158,8 @@
       return false;
     }
 
+    this.removeNotificationIcon('_HandlerUserNotification');
+
     if ( this.iconView ) {
       this.iconView.destroy();
     }
@@ -164,9 +171,12 @@
     }
 
     // Reset
-    var ds = OSjs.Applications.CoreWM.DefaultSettings;
     this.destroyPanels();
-    this.applySettings(ds(this._defaults), true);
+    var settings = this.importedSettings;
+    try {
+      settings.background = 'color';
+    } catch ( e ) {}
+    this.applySettings(OSjs.Applications.CoreWM.DefaultSettings(settings), true);
 
     // Clear DOM
     this._$notifications = Utils.$remove(this._$notifications);
@@ -227,7 +237,7 @@
     var self = this;
 
     // Enable dropping of new wallpaper if no iconview is enabled
-    OSjs.API.createDroppable(document.body, {
+    GUI.Helpers.createDroppable(document.body, {
       onOver: function(ev, el, args) {
         self.onDropOver(ev, el, args);
       },
@@ -335,6 +345,10 @@
         this.iconView.resize(this);
       }
     }
+
+    setTimeout(function() {
+      self.setStyles(self._settings);
+    }, 1000);
   };
 
   CoreWM.prototype.initIconView = function() {
@@ -361,7 +375,7 @@
   // Events
   //
 
-  CoreWM.prototype.resize = function(ev, rect) {
+  CoreWM.prototype.resize = function(ev, rect, wasInited) {
     if ( !this.getSetting('moveOnResize') ) { return; }
 
     var space = this.getWindowSpace();
@@ -397,7 +411,7 @@
       }
 
       // Restore maximized windows (FIXME: Better solution?)
-      if ( iter._state.maximized ) {
+      if ( iter._state.maximized && (wasInited ? iter._restored : true) ) {
         iter._restore(true, false);
       }
     }
@@ -467,12 +481,11 @@
     var self = this;
 
     VFS.upload({
-      app: self,
       destination: API.getDefaultPath(),
       files: files
     }, function(error, file) {
       if ( !error && file && self.iconView ) {
-        self.iconView.addShortcut(file, self);
+        self.iconView.addShortcut(file, self, true);
       }
     });
   };
@@ -495,7 +508,7 @@
   CoreWM.prototype.onKeyUp = function(ev, win) {
     if ( !ev ) { return; }
 
-    if ( !ev.shiftKey ) {
+    if ( !ev.altKey ) {
       if ( this.switcher ) {
         this.switcher.hide(ev, win, this);
       }
@@ -506,7 +519,7 @@
     if ( !ev ) { return; }
 
     var keys = Utils.Keys;
-    if ( ev.shiftKey && ev.keyCode === keys.TILDE ) { // Toggle Window switcher
+    if ( ev.altKey && ev.keyCode === keys.TILDE ) { // Toggle Window switcher
       if ( !this.getSetting('enableSwitcher') ) { return; }
 
       if ( this.switcher ) {
@@ -578,7 +591,7 @@
 
       console.log('OSjs::Core::WindowManager::notification()', opts);
 
-      var container  = document.createElement('corewm-notification-entry');
+      var container  = document.createElement('corewm-notification');
       var classNames = [''];
       var self       = this;
       var timeout    = null;
@@ -632,7 +645,13 @@
       if ( opts.message ) {
         var message = document.createElement('div');
         message.className = 'Message';
-        message.appendChild(document.createTextNode(opts.message));
+        var lines = opts.message.split('\n');
+        lines.forEach(function(line, idx) {
+          message.appendChild(document.createTextNode(line));
+          if ( idx < (lines.length - 1) ) {
+            message.appendChild(document.createElement('br'));
+          }
+        });
         classNames.push('HasMessage');
         container.appendChild(message);
       }
@@ -641,6 +660,9 @@
       if ( _visible > 0 ) {
         this._$notifications.style.display = 'block';
       }
+
+      container.setAttribute('aria-label', String(opts.title));
+      container.setAttribute('role', 'alert');
 
       container.className = classNames.join(' ');
       container.onclick = function(ev) {
@@ -716,14 +738,14 @@
       menu.push({
         title: OSjs.Applications.CoreWM._('Hide Icons'),
         onClick: function(ev) {
-         self.applySettings({enableIconView: false}, false, true);
+          self.applySettings({enableIconView: false}, false, true);
         }
       });
     } else {
       menu.push({
         title: OSjs.Applications.CoreWM._('Show Icons'),
         onClick: function(ev) {
-         self.applySettings({enableIconView: true}, false, true);
+          self.applySettings({enableIconView: true}, false, true);
         }
       });
     }
@@ -746,6 +768,7 @@
       if ( settings ) {
         if ( settings.language ) {
           OSjs.Core.getSettingsManager().set('Core', 'Locale', settings.language);
+          API.setLocale(settings.language);
         }
         this._settings.set(null, settings, save);
       }
@@ -789,10 +812,10 @@
     if ( name && type.match(/^image/) ) {
       back = name;
       switch ( type ) {
-        case     'image' :        className = 'normal';   break;
-        case     'image-center':  className = 'center';   break;
-        case     'image-fill' :   className = 'fill';     break;
-        case     'image-strech':  className = 'strech';   break;
+        case 'image' :        className = 'normal';   break;
+        case 'image-center':  className = 'center';   break;
+        case 'image-fill' :   className = 'fill';     break;
+        case 'image-strech':  className = 'strech';   break;
         default:                  className = 'default';  break;
       }
     }
@@ -853,12 +876,15 @@
   };
 
   CoreWM.prototype.setStyles = function(settings) {
+    /*jshint sub:true*/
     var styles = {};
+    var raw = '';
+
     if ( settings.panels ) {
       settings.panels.forEach(function(p, i) {
         styles['corewm-panel'] = {};
-        styles['corewm-notification-entry'] = {};
-        styles['corewm-notification-entry:before'] = {
+        styles['corewm-notification'] = {};
+        styles['corewm-notification:before'] = {
           'opacity': p.options.opacity / 100
         };
         styles['corewm-panel:before'] = {
@@ -866,15 +892,31 @@
         };
         if ( p.options.background ) {
           styles['corewm-panel:before']['background-color'] = p.options.background;
-          styles['corewm-notification-entry:before']['background-color'] = p.options.background;
+          styles['corewm-notification:before']['background-color'] = p.options.background;
         }
         if ( p.options.foreground ) {
           styles['corewm-panel']['color'] = p.options.foreground;
-          styles['corewm-notification-entry']['color'] = p.options.foreground;
+          styles['corewm-notification']['color'] = p.options.foreground;
         }
-
       });
     }
+
+    raw += '@media all and (max-width: 800px) {\n';
+    raw += 'application-window {\n';
+
+    var borderSize = 0;
+    var space = this.getWindowSpace(true);
+    var theme = this.getStyleTheme(true);
+    if ( theme && theme.style && theme.style.window ) {
+      borderSize = theme.style.window.border;
+    }
+
+    raw += 'top:' + String(space.top + borderSize) + 'px !important;\n';
+    raw += 'left:' + String(space.left + borderSize) + 'px !important;\n';
+    raw += 'right:' + String(borderSize) + 'px !important;\n';
+    raw += 'bottom:' + String(space.bottom + borderSize) + 'px !important;\n';
+    raw += '\n}';
+    raw += '\n}';
 
     styles['#CoreWMDesktopIconView'] = {};
     if ( settings.invertIconViewColor && settings.backgroundColor ) {
@@ -882,7 +924,7 @@
     }
 
     if ( Object.keys(styles).length ) {
-      this.createStylesheet(styles);
+      this.createStylesheet(styles, raw);
     }
   };
 
@@ -921,6 +963,8 @@
     var s = WindowManager.prototype.getWindowSpace.apply(this, arguments);
     var d = this.getSetting('desktopMargin');
 
+    s.bottom = 0;
+
     this.panels.forEach(function(p) {
       if ( p && p.getOntop() ) {
         var ph = p.getHeight();
@@ -932,6 +976,10 @@
           s.height -= ph;
         } else {
           s.height -= ph;
+        }
+
+        if ( p._options.position === 'bottom' ) {
+          p.bottom += ph;
         }
       }
     });
@@ -973,14 +1021,14 @@
     var val = WindowManager.prototype.getSetting.apply(this, arguments);
     if ( typeof val === 'undefined' || val === null ) {
       var ds = OSjs.Applications.CoreWM.DefaultSettings;
-      return ds(this._defaults)[k];
+      return ds(this.importedSettings)[k];
     }
     return val;
   };
 
   CoreWM.prototype.getDefaultSetting = function(k) {
     var ds = OSjs.Applications.CoreWM.DefaultSettings;
-    var settings = ds(this._defaults);
+    var settings = ds(this.importedSettings);
     if ( typeof k !== 'undefined' ) {
       return settings[k];
     }

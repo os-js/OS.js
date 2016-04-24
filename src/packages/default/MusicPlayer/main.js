@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -34,13 +34,13 @@
 
   function formatTime(secs) {
     var hr  = Math.floor(secs / 3600);
-    var min = Math.floor((secs - (hr * 3600))/60);
+    var min = Math.floor((secs - (hr * 3600)) / 60);
     var sec = Math.floor(secs - (hr * 3600) -  (min * 60));
 
     if (min < 10) {
       min = '0' + min;
     }
-    if (sec < 10){
+    if (sec < 10) {
       sec  = '0' + sec;
     }
 
@@ -95,19 +95,28 @@
     var buttonEnd = scheme.find(this, 'ButtonEnd').set('disabled', true);
 
     seeker.on('change', function(ev) {
-      audio.pause();
-      audio.currentTime = ev.detail;
-      audio.play();
+      if ( audio && !audio.paused ) {
+        try {
+          audio.pause();
+          if ( ev ) {
+            audio.currentTime = ev.detail || 0;
+          }
+          audio.play();
+        } catch ( e ) {}
+      }
     });
 
     player.on('play', function(ev) {
+      seeker.set('disabled', false);
       buttonPause.set('disabled', false);
       buttonPlay.set('disabled', true);
     });
     player.on('ended', function(ev) {
+      seeker.set('disabled', true);
       buttonPause.set('disabled', true);
     });
     player.on('pause', function(ev) {
+      seeker.set('disabled', true);
       buttonPause.set('disabled', false);
       buttonPlay.set('disabled', false);
     });
@@ -120,6 +129,7 @@
       if ( !player.$element.src ) {
         return;
       }
+
       var msg = null;
       try {
         switch ( ev.target.error.code ) {
@@ -174,8 +184,7 @@
     this.updated = false;
 
     function getInfo() {
-      self._app._call('info', {filename: file.path}, function(res) {
-        var info = (res && res.result) ? res.result : null;
+      self._app._api('info', {filename: file.path}, function(err, info) {
         if ( info ) {
           if ( info.Artist ) { labelArtist.set('value', info.Artist); }
           if ( info.Album ) { labelAlbum.set('value', info.Album); }
@@ -238,9 +247,9 @@
     return DefaultApplication.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationMusicPlayer.prototype.init = function(settings, metadata, onInited) {
+  ApplicationMusicPlayer.prototype.init = function(settings, metadata) {
     var self = this;
-    DefaultApplication.prototype.init.call(this, settings, metadata, onInited, function(scheme, file) {
+    DefaultApplication.prototype.init.call(this, settings, metadata, function(scheme, file) {
       self._addWindow(new ApplicationMusicPlayerWindow(self, metadata, scheme, file));
     });
   };

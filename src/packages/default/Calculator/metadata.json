@@ -1,0 +1,29 @@
+{
+  "className": "ApplicationCalculator",
+  "name": "Calculator",
+  "names": {
+    "bg_Bg": "Клакулатор",
+    "fr_FR": "Calculatrice",
+    "it_IT": "Calcolatrice",
+    "ko_KR": "계산기",
+    "nl_NL": "Rekenmachine",
+    "no_NO": "Kalkulator",
+    "pl_PL": "Kalkulator",
+    "ru_RU": "Калькулятор",
+    "sk_SK": "Kalkulačka",
+    "tr_TR": "Hesap Makinesi",
+    "vi_VN": "Máy tính"
+  },
+  "icon": "apps/calc.png",
+  "category": "office",
+  "preload": [
+    {
+      "src": "main.js",
+      "type": "javascript"
+    },
+    {
+      "src": "main.css",
+      "type": "stylesheet"
+    }
+  ]
+}

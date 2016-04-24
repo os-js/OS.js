@@ -1,7 +1,7 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -105,12 +105,12 @@
     }
 
     this.$switcher.style.height    = height + 'px';
-    this.$switcher.style.marginTop = (height ? -((height/2) << 0) : 0) + 'px';
+    this.$switcher.style.marginTop = (height ? -((height / 2) << 0) : 0) + 'px';
 
     // Select
     if ( this.showing ) {
       this.index++;
-      if ( this.index > (items.length-1) ) {
+      if ( this.index > (items.length - 1) ) {
         this.index = -1;
       }
     } else {

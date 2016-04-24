@@ -1,21 +1,21 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
  * PAM Handler: Login screen and session/settings handling via database
  * PLEASE NOTE THAT THIS AN EXAMPLE ONLY, AND SHOUD BE MODIFIED BEFORE USAGE
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -32,7 +32,7 @@
  */
 
 //
-// See doc/pam-handler.txt
+// See doc/handler-pam.txt
 //
 
 (function(API, Utils, VFS) {
@@ -49,21 +49,20 @@
    * @extends OSjs.Core._Handler
    * @class
    */
-  var PAMHandler = function() {
+  function PAMHandler() {
     OSjs.Core._Handler.apply(this, arguments);
-    this._saveTimeout = null;
-  };
+  }
 
   PAMHandler.prototype = Object.create(OSjs.Core._Handler.prototype);
+  PAMHandler.constructor = OSjs.Core._Handler;
 
   /**
    * Override default init() method
    */
   PAMHandler.prototype.init = function(callback) {
-    // Located in src/client/javasript/hander.js
     var self = this;
-    this.initLoginScreen(function() {
-      OSjs.Core._Handler.prototype.init.call(self, callback);
+    return OSjs.Core._Handler.prototype.init.call(this, function() {
+      self.initLoginScreen(callback);
     });
   };
 
@@ -71,72 +70,21 @@
    * PAM login api call
    */
   PAMHandler.prototype.login = function(username, password, callback) {
-    console.debug('OSjs::Handlers::PAMHandler::login()');
-    var opts = {username: username, password: password};
-    this.callAPI('login', opts, function(response) {
-      if ( response.result ) { // This contains an object with user data
-        callback(response.result);
-      } else {
-        callback(false, response.error ? ('Error while logging in: ' + response.error) : 'Invalid login');
-      }
-
-    }, function(error) {
-      callback(false, 'Login error: ' + error);
-    });
+    return OSjs.Core._Handler.prototype.login.apply(this, arguments);
   };
 
   /**
    * PAM logout api call
    */
   PAMHandler.prototype.logout = function(save, callback) {
-    console.debug('OSjs::Handlers::PAMHandler::logout()', save);
-    var self = this;
-
-    function _finished() {
-      var opts = {};
-      self.callAPI('logout', opts, function(response) {
-        if ( response.result ) {
-          callback(true);
-        } else {
-          callback(false, 'An error occured: ' + (response.error || 'Unknown error'));
-        }
-      }, function(error) {
-        callback(false, 'Logout error: ' + error);
-      });
-    }
-
-
-    OSjs.Core._Handler.prototype.logout.call(this, save, _finished);
+    return OSjs.Core._Handler.prototype.logout.apply(this, arguments);
   };
 
   /**
-   * Override default settings saving
+   * PAM settings api call
    */
   PAMHandler.prototype.saveSettings = function(pool, storage, callback) {
-    console.debug('OSjs::Handlers::PAMHandler::saveSettings()');
-
-    var self = this;
-    var opts = {settings: storage};
-
-    function _save() {
-      self.callAPI('settings', opts, function(response) {
-        console.debug('PAMHandler::syncSettings()', response);
-        if ( response.result ) {
-          callback.call(self, true);
-        } else {
-          callback.call(self, false);
-        }
-      }, function(error) {
-        console.warn('PAMHandler::syncSettings()', 'Call error', error);
-        callback.call(self, false);
-      });
-    }
-
-    if ( this._saveTimeout ) {
-      clearTimeout(this._saveTimeout);
-      this._saveTimeout = null;
-    }
-    setTimeout(_save, 100);
+    return OSjs.Core._Handler.prototype.saveSettings.apply(this, arguments);
   };
 
   /////////////////////////////////////////////////////////////////////////////

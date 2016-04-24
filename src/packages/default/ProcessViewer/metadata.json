@@ -1,0 +1,46 @@
+{
+  "className": "ApplicationProcessViewer",
+  "name": "Process Viewer",
+  "description": "View running processes",
+  "names": {
+    "bg_BG": "Процеси",
+    "de_DE": "Prozess-Manager",
+    "fr_FR": "Gestionnaire de processus",
+    "it_IT": "Gestore Attività",
+    "ko_KR": "프로세스 관리자",
+    "nl_NL": "Proces manager",
+    "no_NO": "Prosess oversikt",
+    "pl_PL": "Procesy",
+    "ru_RU": "Менеджер процессов",
+    "sk_SK": "Správca procesov",
+    "tr_TR": "İşlemleri Görüntüle",
+    "vi_VN": "Xem tiến trình"
+  },
+  "descriptions": {
+    "bg_BG": "Преглед на процеси",
+    "de_DE": "Laufende Prozesse verwalten",
+    "fr_FR": "Visualiser les processus en cours",
+    "it_IT": "Mostri processi attivi",
+    "ko_KR": "실행 중인 프로세스를 관리합니다",
+    "nl_NL": "Bekijk de lopende processen",
+    "no_NO": "Se oversikt over kjørende prosesser",
+    "pl_PL": "Zobacz działające procesy",
+    "ru_RU": "Менеджер запущенных процессов",
+    "sk_SK": "Spravovanie bežiacich procesov",
+    "tr_TR": "çalışan işlemleri görüntüle",
+    "vi_VN": "Xem các tiến trình đang chạy"
+  },
+  "singular": true,
+  "category": "system",
+  "icon": "apps/gnome-monitor.png",
+  "preload": [
+    {
+      "src": "main.js",
+      "type": "javascript"
+    },
+    {
+      "src": "main.css",
+      "type": "stylesheet"
+    }
+  ]
+}

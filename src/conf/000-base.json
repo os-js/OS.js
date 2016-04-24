@@ -2,10 +2,15 @@
   "handler": "demo",
   "connection": "http",
 
+  "client" : {
+    "Version" : "2.0-alpha74"
+  },
+
   "repositories": ["default"],
 
-  "client" : {
-    "Version" : "2.0-alpha70"
+  "packages": {
+    "ForceEnable": [],
+    "ForceDisable": []
   },
 
   "mime": {

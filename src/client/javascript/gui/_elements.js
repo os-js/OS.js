@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -72,6 +72,27 @@
   }
 
   /**
+   * Removes element from the DOM
+   *
+   * @method Element::remove()
+   * @return void
+   */
+  UIElement.prototype.remove = function() {
+    this.$element = Utils.$remove(this.$element);
+  };
+
+  /**
+   * Empties the DOM element
+   *
+   * @method Element::empty()
+   * @return Element this
+   */
+  UIElement.prototype.empty = function() {
+    Utils.$empty(this.$element);
+    return this;
+  };
+
+  /**
    * Blur (unfocus)
    *
    * @method Element::blur()
@@ -110,11 +131,13 @@
    * @return Element this
    */
   UIElement.prototype.show = function() {
-    if ( OSjs.GUI.Elements[this.tagName] && OSjs.GUI.Elements[this.tagName].show ) {
-      OSjs.GUI.Elements[this.tagName].show.apply(this, arguments);
-    } else {
-      if ( this.$element ) {
-        this.$element.style.display = this.oldDisplay || '';
+    if ( this.$element && !this.$element.offsetParent ) {
+      if ( OSjs.GUI.Elements[this.tagName] && OSjs.GUI.Elements[this.tagName].show ) {
+        OSjs.GUI.Elements[this.tagName].show.apply(this, arguments);
+      } else {
+        if ( this.$element ) {
+          this.$element.style.display = this.oldDisplay || '';
+        }
       }
     }
     return this;
@@ -127,7 +150,7 @@
    * @return Element this
    */
   UIElement.prototype.hide = function() {
-    if ( this.$element ) {
+    if ( this.$element && this.$element.offsetParent ) {
       if ( !this.oldDisplay ) {
         this.oldDisplay = this.$element.style.display;
       }
@@ -135,7 +158,6 @@
     }
     return this;
   };
-
 
   /**
    * Register Event
@@ -225,35 +247,91 @@
    * @param   Mixed     el        DOMEelement or UIElement
    *
    * @method Element::append()
-   * @return void
+   * @return Element this
    */
   UIElement.prototype.append = function(el) {
     if ( el instanceof UIElement ) {
       el = el.$element;
+    } else if ( typeof el === 'string' || typeof el === 'number' ) {
+      el = document.createTextNode(String(el));
     }
-    this.$element.appendChild(el);
+
+    var outer = document.createElement('div');
+    outer.appendChild(el);
+
+    this._append(outer);
+    outer = null;
+
+    return this;
+  };
+
+  /**
+   * Appends (and builds) HTML into the node
+   *
+   * @param   String              html        HTML code
+   * @param   OSjs.GUI.Scheme     scheme      (Optional) Reference to the Scheme
+   * @param   OSjs.Core.Window    win         (Optional) Reference to the Window
+   * @param   Object              args        (Optional) List of arguments to send to the parser
+   *
+   * @method Element::appendHTML()
+   * @return Element this
+   */
+  UIElement.prototype.appendHTML = function(html, scheme, win, args) {
+    var el = document.createElement('div');
+    el.innerHTML = html;
+
+    return this._append(el, scheme, win, args);
+  };
+
+  UIElement.prototype._append = function(el, scheme, win, args) {
+    if ( el instanceof Element ) {
+      OSjs.GUI.Scheme.parseNode(scheme, win, el, null, args);
+    }
+
+    // Move elements over
+    while ( el.childNodes.length ) {
+      this.$element.appendChild(el.childNodes[0]);
+    }
+
+    el = null;
+
+    return this;
   };
 
   /**
    * Perform `querySelector`
    *
    * @param     String      q     Query
+   * @param     boolean     rui   Return UI Element if possible (default=false)
+   *
    * @return    DOMElement
    * @method    Element::querySelector()
    */
-  UIElement.prototype.querySelector = function(q) {
-    return this.$element.querySelector(q);
+  UIElement.prototype.querySelector = function(q, rui) {
+    var el = this.$element.querySelector(q);
+    if ( rui ) {
+      return OSjs.GUI.Scheme.getElementInstance(el, q);
+    }
+    return el;
   };
 
   /**
    * Perform `querySelectorAll`
    *
    * @param     String      q     Query
+   * @param     boolean     rui   Return UI Element if possible (default=false)
+   *
    * @return    DOMElementCollection
    * @method    Element::querySelectorAll()
    */
-  UIElement.prototype.querySelectorAll = function(q) {
-    return this.$element.querySelectorAll(q);
+  UIElement.prototype.querySelectorAll = function(q, rui) {
+    var el = this.$element.querySelectorAll(q);
+    if ( rui ) {
+      el = el.map(function(i) {
+        return OSjs.GUI.Scheme.getElementInstance(i, q);
+      });
+    }
+    return el;
   };
 
   UIElement.prototype._call = function(method, args) {

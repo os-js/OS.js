@@ -15,7 +15,12 @@
       "application/json"        : "JSON Document",
       "application/x-python"    : "Python Document",
       "application/x-lua"       : "Lua Document",
+      "application/x-shellscript": "Shell Script",
 
+      "text/x-c"                : "C Document",
+      "text/x-cplusplus"        : "C++ Document",
+
+      "application/pdf"         : "PDF Document",
       "application/zip"         : "ZIP Archive",
 
       "audio/aac"               : "AAC Audio",
@@ -35,7 +40,8 @@
       "application/x-ipkg"      : "Itsy Package",
 
       "osjs/document"           : "OS.js Document",
-      "osjs/draw"               : "OS.js Image"
+      "osjs/draw"               : "OS.js Image",
+      "osjs/project"            : "OS.js Project"
     },
     "mapping" : {
       ".bmp"    : "image/bmp",
@@ -48,6 +54,10 @@
       ".js"     : "application/javascript",
       ".json"   : "application/json",
       ".lua"    : "application/x-lua",
+      ".sh"     : "application/x-shellscript",
+      ".c"      : "text/x-c",
+      ".cpp"    : "text/x-cplusplus",
+      ".cc"     : "text/x-cplusplus",
       ".otf"    : "font/opentype",
       ".ttf"    : "font/opentype",
       ".png"    : "image/png",
@@ -80,10 +90,12 @@
       ".xml"    : "text/xml",
       ".js"     : "application/javascript",
       ".css"    : "text/css",
+      ".md"     : "text/plain",
 
       ".txt"    : "text/plain",
       ".log"    : "text/plain",
       ".doc"    : "text/plain",
+      ".pdf"    : "application/pdf",
 
       ".ipk"    : "application/x-ipkg",
 
@@ -91,6 +103,7 @@
       ".oplist" : "osjs/playlist",
       ".odoc"   : "osjs/document",
       ".odraw"  : "osjs/draw",
+      ".oproj"  : "osjs/project",
 
       "default" : "application/octet-stream"
     }

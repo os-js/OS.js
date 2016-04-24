@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -149,18 +149,18 @@
           VFS.url(result, function(error, url) {
             text._call('command', ['insertImage', false, url]);
           });
-        });
+        }, self);
       },
       'MenuInsertLink': function() {
         API.createDialog('Input', {
           message: _('Insert URL'),
-          placeholder: 'http://os.js.org'
+          placeholder: 'https://os.js.org'
         }, function(ev, button, result) {
           if ( button !== 'ok' || !result ) {
             return;
           }
           text._call('command', ['createLink', false, result]);
-        });
+        }, self);
       }
     };
 
@@ -180,7 +180,7 @@
 
       var style = {
         fontName: ((_call('fontName') || '').split(',')[0]).replace(/^'/, '').replace(/'$/, ''),
-        fontSize: parseInt(_call('fontSize'), 10),
+        fontSize: parseInt(_call('fontSize'), 10) || self.font.size,
         foreColor: _call('foreColor'),
         hiliteColor: _call('hiliteColor')
       };
@@ -204,7 +204,7 @@
         if ( button === 'ok' && result ) {
           cb(result.hex);
         }
-      });
+      }, self);
     }
 
     function createFontDialog(current, cb) {
@@ -220,7 +220,7 @@
         if ( button === 'ok' && result ) {
           cb(result);
         }
-      });
+      }, self);
     }
 
     var back = scheme.find(this, 'Background').on('click', function() {
@@ -300,9 +300,10 @@
   ApplicationWriterWindow.prototype.updateFile = function(file) {
     DefaultApplicationWindow.prototype.updateFile.apply(this, arguments);
 
-    var self = this;
-    var el = this._scheme.find(this, 'Text');
-    el.$element.focus();
+    try {
+      var el = this._scheme.find(this, 'Text');
+      el.$element.focus();
+    } catch ( e ) {}
 
     this.checkChangeLength = -1;
   };
@@ -314,6 +315,14 @@
 
   ApplicationWriterWindow.prototype.getFileData = function() {
     return this._scheme.find(this, 'Text').get('value');
+  };
+
+  ApplicationWriterWindow.prototype._focus = function(file, content) {
+    if ( DefaultApplicationWindow.prototype._focus.apply(this, arguments) ) {
+      this._scheme.find(this, 'Text').focus();
+      return true;
+    }
+    return false;
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -335,9 +344,9 @@
     return DefaultApplication.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationWriter.prototype.init = function(settings, metadata, onInited) {
+  ApplicationWriter.prototype.init = function(settings, metadata) {
     var self = this;
-    DefaultApplication.prototype.init.call(this, settings, metadata, onInited, function(scheme, file) {
+    DefaultApplication.prototype.init.call(this, settings, metadata, function(scheme, file) {
       self._addWindow(new ApplicationWriterWindow(self, metadata, scheme, file));
     });
   };

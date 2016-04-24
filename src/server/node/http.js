@@ -1,19 +1,19 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
@@ -27,374 +27,463 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
+(function(_osjs, _http, _path, _url, _fs, _qs, _multipart, _sessions) {
+  'use strict';
 
-(function(OSJS, _vfs, _http, _path, _url, _fs, _qs, _multipart, _cookies, _request) {
-  /**
-   * Globals and default settings etc.
-   */
-  var _NOLOG = false;
-  var HTTP = {};
-  var CONFIG = OSJS.CONFIG;
-  var API = OSJS.API;
-  var HANDLER = OSJS.HANDLER;
-  var ISWIN = OSJS.ISWIN;
-  var ROOTDIR = OSJS.ROOTDIR;
-  var DISTDIR = OSJS.DISTDIR;
+  var instance, server, proxy, httpProxy;
 
-  function log() {
-    if ( !_NOLOG ) {
-      console.log.apply(console, arguments);
-    }
-  }
+  var colored = (function() {
+    var colors;
 
-  function warn() {
-    if ( !_NOLOG ) {
-      console.warn.apply(console, arguments);
-    }
-  }
+    try {
+      colors = require('colors');
+    } catch ( e ) {}
+
+    return function() {
+      var args = Array.prototype.slice.call(arguments);
+      var str = args.shift();
+
+      if ( colors ) {
+        var ref = colors;
+        args.forEach(function(a) {
+          ref = ref[a];
+        });
+        return ref(str);
+      } else {
+        return str;
+      }
+    };
+  })();
+
+  try {
+    httpProxy = require('http-proxy');
+    proxy = httpProxy.createProxyServer({});
+    proxy.on('error', function(err) {
+      console.warn(err);
+    });
+  } catch ( e ) {}
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
   /**
-   * HTTP Output
+   * Respond to HTTP Call
    */
-  var respond = function(data, mime, response, headers, code, pipeFile) {
-    data    = data    || '';
-    headers = headers || [];
-    mime    = mime    || "text/html; charset=utf-8";
-    code    = code    || 200;
+  function respond(data, mime, response, headers, code, pipeFile) {
+    if ( instance.config.logging ) {
+      var okCodes = [200, 301, 302, 304];
 
-    //log(">>>", 'respond()', mime, data.length);
+      log(timestamp(), colored('>>>', 'grey', 'bold'), colored(String(code) + ' ' + mime, okCodes.indexOf(code) >= 0 ? 'green' : 'red'), (pipeFile ? '=> ' + colored(pipeFile.replace(instance.setup.root, '/'), 'magenta') : typeof data));
+    }
 
-    function _end() {
-      if ( HANDLER && HANDLER.onRequestEnd ) {
-        HANDLER.onRequestEnd(null, response);
+    function done() {
+      if ( instance.handler && instance.handler.onRequestEnd ) {
+        instance.handler.onRequestEnd(null, response);
       }
-
       response.end();
     }
 
-    for ( var i = 0; i < headers.length; i++ ) {
-      response.writeHead.apply(response, headers[i]);
+    if ( pipeFile ) {
+      var isdir = false;
+      try {
+        isdir = _fs.lstatSync(pipeFile).isDirectory();
+      } catch ( e ) {}
+
+      if ( isdir ) {
+        respondError('Invalid request', response);
+        return;
+      }
     }
 
-    response.writeHead(code, {"Content-Type": mime});
+    headers.forEach(function(h) {
+      response.writeHead.apply(response, h);
+    });
+
+    response.writeHead(code, {
+      'Content-Type': mime
+    });
 
     if ( pipeFile ) {
       var stream = _fs.createReadStream(pipeFile, {bufferSize: 64 * 1024});
-      stream.on('end', function() {
-        _end();
-      });
+      stream.on('end', done);
       stream.pipe(response);
     } else {
       response.write(data);
-      _end();
+      done();
+    }
+  }
+
+  /**
+   * Respond with a file
+   */
+  function respondFile(path, request, response, realPath) {
+    if ( !realPath && path.match(/^(ftp|https?)\:\/\//) ) {
+      if ( instance.config.vfs.proxy ) {
+        try {
+          require('request')(path).pipe(response);
+        } catch ( e ) {
+          console.error('!!! Caught exception', e);
+          console.warn(e.stack);
+          respondError(e, response);
+        }
+      } else {
+        respondError('VFS Proxy is disabled', response);
+      }
+      return;
     }
 
-  };
+    try {
+      var fullPath = realPath ? path : instance.vfs.getRealPath(path, instance.config, request).root;
+      _fs.exists(fullPath, function(exists) {
+        if ( exists ) {
+          var mime = instance.vfs.getMime(fullPath, instance.config);
+          respond(null, mime, response, [], 200, fullPath);
+        } else {
+          respondNotFound(null, response, fullPath);
+        }
+      });
+    } catch ( e ) {
+      console.error('!!! Caught exception', e);
+      console.warn(e.stack);
+      respondError(e, response, true);
+    }
+  }
 
-  var respondJSON = function(data, response, headers) {
-    data = JSON.stringify(data);
-    log(">>>", 'application/json', data.length || 0);
-    respond(data, 'application/json', response, headers);
+  /**
+   * Respond with JSON data
+   */
+  function respondJSON(data, response, headers, code) {
+    respond(JSON.stringify(data), 'application/json', response, headers || [], code || 200);
+  }
+
+  /**
+   * Respond with an error
+   */
+  function respondError(message, response, json, code) {
+    code = code || 500;
+
+    if ( json ) {
+      message = 'Internal Server Error (HTTP 500): ' + message.toString();
+      respondJSON({result: null, error: message}, response, [], code);
+    } else {
+      respond(message.toString(), 'text/plain', response, [], code);
+    }
+  }
+
+  /**
+   * Respond with text
+   */
+  function respondText(response, message) {
+    respond(message, 'text/plain', response, [], 200);
+  }
+
+  /**
+   * Respond with 404
+   */
+  function respondNotFound(message, response, fullPath) {
+    message = message || '404 Not Found';
+    respond(message, null, response, [], 404, false);
+  }
+
+  /**
+   * Gets timestamp
+   */
+  function timestamp() {
+    var now = new Date();
+    return now.toISOString();
+  }
+
+  /**
+   * Logs a line
+   */
+  function log() {
+    console.log(Array.prototype.slice.call(arguments).join(' '));
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // HTTP
+  /////////////////////////////////////////////////////////////////////////////
+
+  function proxyCall(request, response) {
+
+    function _getMatcher(k) {
+      var matcher = k;
+      if ( matcher.substr(0, 1) !== '/' ) {
+        matcher = '/' + matcher;
+      } else {
+        var check = k.match(/\/(.*)\/([a-z]+)?/);
+        if ( !check || !check[1] ) {
+          console.warn('Invalid proxy route', k);
+        }
+        matcher = new RegExp(check[1], check[2] || '');
+      }
+      return matcher;
+    }
+
+    function _getOptions(durl, matcher, pots) {
+      if ( typeof pots === 'string' ) {
+        if ( typeof matcher === 'string' ) {
+          request.url = durl.substr(matcher.length) || '/';
+        } else {
+          request.url = durl.replace(matcher, '') || '/';
+        }
+        pots = {target: pots};
+      }
+      return pots;
+    }
+
+    function isStringMatch(m, u) {
+      var rm = m.replace(/^\//, '').replace(/\/$/, '');
+      var um = u.replace(/^\//, '').replace(/\/$/, '');
+      return rm === um;
+    }
+
+    if ( proxy ) {
+      var proxies = instance.config.proxies;
+      var stop = false;
+
+      Object.keys(proxies).every(function(k) {
+        var matcher = _getMatcher(k);
+
+        if ( typeof matcher === 'string' ? isStringMatch(matcher, request.url) : matcher.test(request.url) ) {
+          var pots = _getOptions(request.url, matcher, proxies[k]);
+
+          stop = true;
+
+          log(timestamp(), colored('<<<', 'bold'), request.url);
+          log(timestamp(), colored('>>>', 'grey', 'bold'), colored(('PROXY ' + k + ' => ' + pots.target), 'yellow'));
+
+          proxy.web(request, response, pots);
+        }
+        return !stop;
+      });
+
+      if ( stop ) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
+   * Handles a HTTP Request
+   */
+  function httpCall(request, response) {
+
+    function handleCall(rp, isVfs) {
+      var body = '';
+
+      request.on('data', function(data) {
+        body += data;
+      });
+
+      request.on('end', function() {
+        try {
+          var args = JSON.parse(body);
+          instance.request(isVfs, rp, args, function(error, result) {
+            respondJSON({result: result, error: error}, response);
+          }, request, response, instance.handler);
+        } catch ( e ) {
+          console.error('!!! Caught exception', e);
+          console.warn(e.stack);
+          respondError(e, response, true, 200);
+        }
+      });
+    }
+
+    function handleUpload() {
+      var form = new _multipart.IncomingForm({
+        uploadDir: instance.config.tmpdir
+      });
+
+      form.parse(request, function(err, fields, files) {
+        if ( err ) {
+          if ( instance.config.logging ) {
+            respondError(err, response);
+          }
+        } else {
+          instance.handler.checkAPIPrivilege(request, response, 'upload', function(err) {
+            if ( err ) {
+              respondError(err, response);
+              return;
+            }
+
+            instance.vfs.upload({
+              src: files.upload.path,
+              name: files.upload.name,
+              path: fields.path,
+              overwrite: String(fields.overwrite) === 'true'
+            }, function(err, result) {
+              if ( err ) {
+                respondError(err, response);
+                return;
+              }
+              respondText(response, '1');
+            }, request, response);
+          });
+        }
+      });
+    }
+
+    function handleVFSFile(p) {
+      var dpath = p.replace(/^\/(FS|API)(\/get\/)?/, '');
+      instance.handler.checkAPIPrivilege(request, response, 'fs', function(err) {
+        if ( err ) {
+          respondError(err, response);
+          return;
+        }
+        respondFile(unescape(dpath), request, response, false);
+      });
+    }
+
+    function handleDistFile(p) {
+      var rpath = p.replace(/^\/+/, '');
+      var dpath = _path.join(instance.config.distdir, rpath);
+
+      // Checks if the request was a package resource
+      var pmatch = rpath.match(/^packages\/(.*\/.*)\/(.*)/);
+      if ( pmatch && pmatch.length === 3 ) {
+        instance.handler.checkPackagePrivilege(request, response, pmatch[1], function(err) {
+          if ( err ) {
+            respondError(err, response);
+            return;
+          }
+          respondFile(unescape(dpath), request, response, true);
+        });
+        return;
+      }
+
+      // Everything else
+      respondFile(unescape(dpath), request, response, true);
+    }
+
+    if ( !proxyCall(request, response) ) {
+      return;
+    }
+
+    var url       = _url.parse(request.url, true);
+    var path      = decodeURIComponent(url.pathname);
+    var sid       = _sessions.init(request, response);
+
+    request.session = {
+      set: function(k, v) {
+        return _sessions.set(sid, k, v === null ? null : String(v));
+      },
+      get: function(k) {
+        var v = _sessions.get(sid, k);
+        if ( v !== false ) {
+          return v[0];
+        }
+        return false;
+      }
+    };
+
+    if ( path === '/' ) {
+      path += 'index.html';
+    }
+
+    if ( instance.config.logging ) {
+      log(timestamp(), colored('<<<', 'bold'), path);
+    }
+
+    if ( instance.handler && instance.handler.onRequestStart ) {
+      instance.handler.onRequestStart(request, response);
+    }
+
+    (function() {
+      var isVfsCall = path.match(/^\/FS/) !== null;
+      var relPath   = path.replace(/^\/(FS|API)\/?/, '');
+
+      if ( request.method === 'POST' ) {
+        if ( isVfsCall ) {
+          if ( relPath === 'upload') {
+            handleUpload();
+          } else {
+            handleCall(relPath, true);
+          }
+        } else {
+          handleCall(relPath, false);
+        }
+      } else {
+        if ( isVfsCall ) {
+          handleVFSFile(path);
+        } else { // dist files
+          handleDistFile(path);
+        }
+      }
+    })();
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Create HTTP server and listen
+   *
+   * @param   Object    setup       Configuration (see osjs.js)
+   *
+   * @option  setup     int       port        Listening port (default=null/auto)
+   * @option  setup     String    dirname     Server running dir (ex: /osjs/src/server/node)
+   * @option  setup     String    root        Installation root directory (ex: /osjs)
+   * @option  setup     String    dist        Build root directory (ex: /osjs/dist)
+   * @option  setup     boolean   nw          NW build (default=false)
+   * @option  setup     boolean   logging     Enable logging (default=true)
+   *
+   * @api     http.listen
+   */
+  module.exports.listen = function(setup) {
+    instance = _osjs.init(setup);
+    server = _http.createServer(httpCall);
+
+    instance.handler.onServerStart(function() {
+      var port = setup.port || instance.config.port;
+      if ( instance.config.logging ) {
+        console.log('\n\n***');
+        console.log('***', 'OS.js is listening on http://localhost:' + port + ' (handler:' + instance.config.handler + ' dir:' + instance.setup.dist + ')');
+        console.log('***\n\n');
+      }
+
+      server.listen(port);
+    });
+
   };
 
   /**
-   * File Output
+   * Closes the active HTTP server
+   *
+   * @param   Function  cb          Callback function
+   *
+   * @api     http.close
    */
-  var respondFile = function(path, request, response, jpath) {
-    var fullPath = jpath ? _path.join(CONFIG.directory, path) : _vfs.getRealPath(path, CONFIG, request).root;
-    _fs.exists(fullPath, function(exists) {
-      if ( exists ) {
+  module.exports.close = function(cb) {
+    cb = cb || function() {};
 
-        var mime = _vfs.getMime(fullPath, CONFIG);
-        respond(null, mime, response, null, null, fullPath);
-        /*
+    instance.handler.onServerEnd(function() {
+      if ( proxy ) {
+        proxy.close();
+      }
 
+      instance.down();
 
-        _fs.readFile(fullPath, function(error, data) {
-          if ( error ) {
-            log(">>>", '500', fullPath);
-            warn(error);
-            respond("500 Internal Server Error", null, response, null, 500);
-          } else {
-            var mime = _vfs.getMime(fullPath, CONFIG);
-            log(">>>", '200', mime, fullPath, data.length);
-            respond(data, mime, response);
-          }
-        });
-        */
+      if ( server ) {
+        server.close(cb);
       } else {
-        log('!!!', '404', fullPath);
-        respond("404 Not Found", null, response, null, 404);
+        cb();
       }
     });
-  };
 
-  /////////////////////////////////////////////////////////////////////////////
-  // HTTP WRAPPER METHODS
-  /////////////////////////////////////////////////////////////////////////////
-
-  HTTP.FileGET = function(path, request, response, arg) {
-    if ( !arg ) {
-      log('---', 'FileGET', path);
-      if ( !HANDLER.checkPrivilege(request, response, 'vfs', respond) ) {
-        return;
-      }
-    }
-
-    respondFile(unescape(path), request, response, arg);
-  };
-
-  HTTP.FilePOST = function(fields, files, request, response) {
-    if ( !HANDLER.checkPrivilege(request, response, 'upload', respond) ) {
-      return;
-    }
-
-    var srcPath = files.upload.path;
-    var tmpPath = (fields.path + '/' + files.upload.name).replace('////', '///'); // FIXME
-    var dstPath = _vfs.getRealPath(tmpPath, CONFIG, request).root;
-    var overwrite = false;
-
-    if ( fields.overwrite ) {
-      overwrite = String(fields.overwrite) === 'true';
-    }
-
-    _fs.exists(srcPath, function(exists) {
-      if ( exists ) {
-        _fs.exists(dstPath, function(exists) {
-          if ( exists && !overwrite ) {
-            respond('Target already exist!', "text/plain", response, null, 500);
-          } else {
-            _fs.rename(srcPath, dstPath, function(error, data) {
-              if ( error ) {
-                respond('Error renaming/moving: ' + error, "text/plain", response, null, 500);
-              } else {
-                respond("1", "text/plain", response);
-              }
-            });
-          }
-        });
-      } else {
-        respond('Source does not exist!', "text/plain", response, null, 500);
-      }
-    });
-  };
-
-  HTTP.CoreAPI = function(url, path, POST, request, response) {
-              /*
-    if ( !HANDLER.checkPrivilege(request, response, 'upload', respond) ) {
-      return;
-    }
-    */
-
-    if ( path.match(/^\/API/) ) {
-      try {
-        var data   = JSON.parse(POST);
-        var method = data.method;
-        var args   = data['arguments'] || {}
-
-        log('---', 'CoreAPI', method, args);
-        if ( API[method] ) {
-          API[method](args, function(error, result) {
-            respondJSON({result: result, error: error}, response);
-          }, request, response, POST);
-        } else {
-          throw "Invalid method: " + method;
-        }
-      } catch ( e ) {
-        console.error("!!! Caught exception", e);
-        warn(e.stack);
-
-        respondJSON({result: null, error: "500 Internal Server Error: " + e}, response);
-      }
-      return true;
-    }
-    return false;
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // DEFAULT API METHODS
-  /////////////////////////////////////////////////////////////////////////////
-
-  API.application = function(args, callback, request, response) {
-    if ( !HANDLER.checkPrivilege(request, response, 'application', respond) ) {
-      return;
-    }
-
-    var apath = args.path || null;
-    var ameth = args.method || null;
-    var aargs = args['arguments'] || [];
-
-    var aroot = _path.join(CONFIG.repodir, apath);
-    var fpath = _path.join(aroot, "api.js");
-
-    try {
-      require(fpath)[ameth](aargs, function(error, result) {
-        callback(error, result);
-      }, request, response);
-    } catch ( e ) {
-      callback("Application API error or missing: " + e.toString(), null);
-
-      warn(e.stack, e.trace);
-    }
-  };
-
-  API.fs = function(args, callback, request, response) {
-    if ( !HANDLER.checkPrivilege(request, response, 'vfs', respond) ) {
-      return;
-    }
-
-    var m = args.method;
-    var a = args['arguments'] || [];
-
-    if ( _vfs[m] ) {
-      _vfs[m](a, request, function(json) {
-        if ( !json ) json = { error: 'No data from response' };
-        callback(json.error, json.result);
-      }, CONFIG);
-    } else {
-      throw "Invalid VFS method: " + m;
-    }
-  };
-
-  API.curl = function(args, callback, request, response) {
-    if ( !HANDLER.checkPrivilege(request, response, 'curl', respond) ) {
-      return;
-    }
-
-    var url = args.url;
-    var method = args.method || 'GET';
-    var query = args.query || {};
-    var timeout = args.timeout || 0;
-    var binary = args.binary === true;
-    var mime = args.mime || null;
-
-    if ( !mime && binary ) {
-      mime = 'application/octet-stream';
-    }
-
-    if ( !url ) {
-      callback('cURL expects an "url"');
-      return;
-    }
-
-    var opts = {
-      url: url,
-      method: method,
-      timeout: timeout * 1000
-    };
-
-    if ( method === 'POST' ) {
-      opts.json = true;
-      opts.body = query;
-    }
-
-    _request(opts, function(error, response, body) {
-      if ( error ) {
-        callback(error);
-        return;
-      }
-
-      if ( binary && body ) {
-        body = "data:" + mime + ";base64," + (new Buffer(body).toString('base64'));
-      }
-
-      var data = {
-        httpCode: response.statusCode,
-        body: body
-      };
-
-      callback(false, data);
-    });
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // MAIN
-  /////////////////////////////////////////////////////////////////////////////
-
-  var server = _http.createServer(function(request, response) {
-
-      var url     = _url.parse(request.url, true),
-          path    = decodeURIComponent(url.pathname),
-          cookies = new _cookies(request, response);
-
-      request.cookies = cookies;
-
-      if ( path === "/" ) path += "index.html";
-      log('<<<', path);
-
-      if ( HANDLER && HANDLER.onRequestStart ) {
-        HANDLER.onRequestStart(request, response);
-      }
-
-      if ( request.method == 'POST' ) 
-      {
-        // File Uploads
-        if ( path.match(/^\/FS$/) ) {
-          var form = new _multipart.IncomingForm({
-            uploadDir: CONFIG.tmpdir
-          });
-          form.parse(request, function(err, fields, files) {
-            HTTP.FilePOST(fields, files, request, response);
-          });
-        }
-
-        // API Calls
-        else {
-          var body = '';
-          request.on('data', function (data) {
-            body += data;
-          });
-
-          request.on('end', function () {
-            if ( !HTTP.CoreAPI(url, path, body, request, response) ) {
-              log(">>>", '404', path);
-              respond("404 Not Found", null, response, [[404, {}]]);
-            }
-          });
-        }
-      }
-
-      // File Gets
-      else {
-        if ( path.match(/^\/FS/) ) {
-          HTTP.FileGET(path.replace(/^\/FS/, ''), request, response, false);
-        } else {
-          HTTP.FileGET(_path.join(DISTDIR, path), request, response, true);
-        }
-      }
-  });
-
-  module.exports = {
-    API: API,
-    CONFIG: CONFIG,
-    HANDLER: HANDLER,
-
-    logging: function(l) {
-      _NOLOG = !l;
-    },
-
-    listen: function(port) {
-      return server.listen(port || CONFIG.port);
-    },
-
-    close: function(cb) {
-      return server.close(cb);
-    }
   };
 
 })(
-  require("./osjs.js"),
-  require("./vfs.js"),
-  require("http"),
-  require("path"),
-  require("url"),
-  require("node-fs-extra"),
-  require("querystring"),
-  require("formidable"),
-  require("cookies"),
-  require("request")
+  require('osjs'),
+  require('http'),
+  require('path'),
+  require('url'),
+  require('node-fs-extra'),
+  require('querystring'),
+  require('formidable'),
+  require('simple-session')
 );

@@ -1,7 +1,7 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,7 @@
 
     GUI.Elements['gui-icon-view'].build(this.$element);
 
-    API.createDroppable(this.$element, {
+    GUI.Helpers.createDroppable(this.$element, {
       onOver: function(ev, el, args) {
         wm.onDropOver(ev, el, args);
       },
@@ -98,7 +98,6 @@
     });
 
     cel.add(defaults);
-
 
     var icons = wm.getSetting('desktopIcons') || [];
     icons.forEach(function(icon) {
@@ -156,8 +155,9 @@
     }
 
     var wm = OSjs.Core.getWindowManager();
-    wm.setSetting('desktopIcons', icons);
-    wm.saveSettings();
+    wm.applySettings({
+      desktopIcons: icons
+    }, false, true);
   };
 
   DesktopIconView.prototype.addShortcut = function(data, wm, save) {
@@ -167,13 +167,13 @@
     // TODO: Check for duplicates
 
     try {
-      if ( data.mime === 'osjs/application' ) {
-        var appname = Utils.filename(data.path);
+      if ( data.mime === 'osjs/application' || data.launch ) {
+        var appname = data.launch || Utils.filename(data.path);
         var apps = OSjs.Core.getPackageManager().getPackages();
         var meta = apps[appname];
 
         iter = {
-          icon: API.getIcon(meta.icon, '32x32', data.launch),
+          icon: API.getIcon(meta.icon, '32x32', appname),
           id: appname,
           label: meta.name,
           value: {

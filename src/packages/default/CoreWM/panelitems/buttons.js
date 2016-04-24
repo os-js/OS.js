@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(CoreWM, Panel, PanelItem, Utils, API, VFS) {
+(function(CoreWM, Panel, PanelItem, Utils, API, GUI, VFS) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -61,6 +61,7 @@
     var root = PanelItem.prototype.init.apply(this, arguments);
 
     this.$container = document.createElement('ul');
+    this.$container.setAttribute('role', 'toolbar');
     root.appendChild(this.$container);
 
     this.renderButtons();
@@ -110,7 +111,7 @@
       self.$container.style.paddingRight = '16px';
     }
 
-    API.createDroppable(this.$container, {
+    GUI.Helpers.createDroppable(this.$container, {
       onOver: function(ev, el, args) {
         if ( ev.target && !Utils.$hasClass(ev.target, 'Ghost') ) {
           createGhost(ev.target);
@@ -123,9 +124,7 @@
           clearGhost();
         }, 1000);
 
-
-
-//        clearGhost();
+        //        clearGhost();
       },
 
       onDrop : function() {
@@ -226,6 +225,8 @@
     sel.className = 'Button';
     sel.title = title;
     sel.innerHTML = '<img alt="" src="' + API.getIcon(icon) + '" />';
+    sel.setAttribute('role', 'button');
+    sel.setAttribute('aria-label', title);
 
     Utils.$bind(sel, 'click', callback);
     Utils.$bind(sel, 'contextmenu', function(ev) {
@@ -248,4 +249,4 @@
   OSjs.Applications.CoreWM.PanelItems                  = OSjs.Applications.CoreWM.PanelItems || {};
   OSjs.Applications.CoreWM.PanelItems.Buttons          = PanelItemButtons;
 
-})(OSjs.Applications.CoreWM.Class, OSjs.Applications.CoreWM.Panel, OSjs.Applications.CoreWM.PanelItem, OSjs.Utils, OSjs.API, OSjs.VFS);
+})(OSjs.Applications.CoreWM.Class, OSjs.Applications.CoreWM.Panel, OSjs.Applications.CoreWM.PanelItem, OSjs.Utils, OSjs.API, OSjs.GUI, OSjs.VFS);

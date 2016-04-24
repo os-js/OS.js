@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -386,7 +386,6 @@
     return fmt ? format(fmt, date) : new ExtendedDate(date);
   };
 
-
   ExtendedDate.getDaysInMonth = function(y, m, now) {
     now = _now(now);
     y = _y(y, now);
@@ -402,8 +401,8 @@
 
     var d = new Date(+now);
     d.setHours(0,0,0);
-    d.setDate(d.getDate()+4-(d.getDay()||7));
-    return Math.ceil((((d-new Date(d.getFullYear(),0,1))/8.64e7)+1)/7);
+    d.setDate(d.getDate() + 4 - (d.getDay() || 7));
+    return Math.ceil((((d - new Date(d.getFullYear(),0,1)) / 8.64e7) + 1) / 7);
   };
 
   ExtendedDate.getDayName = function(index, shrt) {
@@ -533,7 +532,7 @@
       M: function(s) { return ExtendedDate.monthNames[(utc ? date.getUTCMonth() : date.getMonth())]; },
 
       // Numeric representation of a month, without leading zeros (1 through 12)
-      n: function(s) { return (utc ? date.getUTCMonth() : date.getMonth())+1; },
+      n: function(s) { return (utc ? date.getUTCMonth() : date.getMonth()) + 1; },
 
       // Number of days in the given month (28 through 31)
       t: function(s) { return date.getDaysInMonth(); },
@@ -608,7 +607,7 @@
       //
 
       // Seconds since the Unix Epoch (January 1 1970 00:00:00 GMT)
-      U: function(s) { return date.getTime(); },
+      U: function(s) { return date.getTime(); }
     };
 
     var result = [];

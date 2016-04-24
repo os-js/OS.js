@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -49,15 +49,13 @@
    * @param   Object    settings  Application settings
    *
    * @api     OSjs.Core.Application
-   * @link    http://os.js.org/doc/tutorials/create-application.html
-   * @link    http://os.js.org/doc/tutorials/application-with-server-api.html
+   * @link    https://os.js.org/doc/tutorials/create-application.html
+   * @link    https://os.js.org/doc/tutorials/application-with-server-api.html
    * @extends Process
    * @class
    */
   var Application = function(name, args, metadata, settings) {
     console.group('Application::constructor()');
-    this.__destroyed  = false;
-    this.__running    = true;
     this.__inited     = false;
     this.__mainwindow = null;
     this.__scheme     = null;
@@ -91,27 +89,36 @@
    * @method  Application::init()
    */
   Application.prototype.init = function(settings, metadata) {
-    console.debug('Application::init()', this.__pname);
 
-    this.__settings.set(null, settings);
+    var wm = OSjs.Core.getWindowManager();
+    var self = this;
 
-    if ( this.__windows.length ) {
-      var wm = OSjs.Core.getWindowManager();
+    function focusLastWindow() {
+      var last;
+
       if ( wm ) {
-        var last = null;
-
-        this.__windows.forEach(function(win, i) {
+        self.__windows.forEach(function(win, i) {
           if ( win ) {
             wm.addWindow(win);
             last = win;
           }
         });
+      }
 
-        if ( last ) { last._focus(); }
+      if ( last ) {
+        last._focus();
       }
     }
 
-    this.__inited = true;
+    if ( !this.__inited ) {
+      console.debug('Application::init()', this.__pname);
+
+      this.__settings.set(null, settings);
+
+      focusLastWindow();
+
+      this.__inited = true;
+    }
   };
 
   /**
@@ -122,14 +129,11 @@
    * @method    Application::destroy()
    */
   Application.prototype.destroy = function(kill) {
-    if ( this.__destroyed ) { return true; }
-    this.__destroyed = true;
+    if ( this.__destroyed ) { // From 'process.js'
+      return true;
+    }
 
     console.debug('Application::destroy()', this.__pname);
-
-    if ( this.__scheme ) {
-      this.__scheme.destroy();
-    }
 
     this.__windows.forEach(function(w) {
       if ( w ) {
@@ -140,6 +144,10 @@
     this.__mainwindow = null;
     this.__settings = {};
     this.__windows = [];
+
+    if ( this.__scheme ) {
+      this.__scheme.destroy();
+    }
     this.__scheme = null;
 
     return Process.prototype.destroy.apply(this, arguments);
@@ -152,12 +160,12 @@
    * @param   String    msg       Name of message
    * @param   Object    args      Message arguments
    *
-   * @return  void
+   * @return  boolean
    *
    * @method  Application::_onMessage()
    */
   Application.prototype._onMessage = function(obj, msg, args) {
-    if ( !msg ) { return; }
+    if ( !msg ) { return false; }
 
     if ( msg === 'destroyWindow' ) {
       this._removeWindow(obj);
@@ -171,6 +179,26 @@
         this.__windows[0]._focus();
       }
     }
+
+    return true;
+  };
+
+  /**
+   * Default method for loading a Scheme file
+   *
+   * @param   String        s       Scheme filename
+   * @param   Function      cb      Callback => fn(scheme)
+   *
+   * @return  void
+   *
+   * @method Application::_loadScheme()
+   */
+  Application.prototype._loadScheme = function(s, cb) {
+    var scheme = OSjs.GUI.createScheme(this._getResource(s));
+    scheme.load(function(error, result) {
+      cb(scheme);
+    });
+    this._setScheme(scheme);
   };
 
   /**
@@ -268,7 +296,7 @@
     }
 
     var result = key === 'tag' ? [] : null;
-    this.__windows.forEach(function(win, i) {
+    this.__windows.every(function(win, i) {
       if ( win ) {
         if ( win['_' + key] === value ) {
           if ( key === 'tag' ) {
@@ -288,9 +316,11 @@
   /**
    * Get a Window by Name
    *
+   * @param String  name      Window Name
+   *
    * @see Application::_getWindow()
    *
-   * @method Application::_getWindowsByName()
+   * @method Application::_getWindowByName()
    */
   Application.prototype._getWindowByName = function(name) {
     return this._getWindow(name);
@@ -298,6 +328,8 @@
 
   /**
    * Get Windows(!) by Tag
+   *
+   * @param String  tag       Tag name
    *
    * @see Application::_getWindow()
    * @return Array
@@ -332,12 +364,40 @@
   /**
    * Get the sessions JSON
    *
+   * @param   String    k       The settings key
+   *
    * @return  Object    the current settings
    *
    * @method  Application::_getSettings()
    */
   Application.prototype._getSetting = function(k) {
     return this.__settings.get(k);
+  };
+
+  /**
+   * Get the current application session data
+   *
+   * @return  Object    the current session data
+   *
+   * @method  Application::_getSessionData()
+   */
+  Application.prototype._getSessionData = function() {
+    var args = this.__args;
+    var wins = this.__windows;
+    var data = {name: this.__pname, args: args, windows: []};
+
+    wins.forEach(function(win, i) {
+      if ( win && win._properties.allow_session ) {
+        data.windows.push({
+          name      : win._name,
+          dimension : win._dimension,
+          position  : win._position,
+          state     : win._state
+        });
+      }
+    });
+
+    return data;
   };
 
   /**
@@ -367,42 +427,6 @@
    */
   Application.prototype._setScheme = function(s) {
     this.__scheme = s;
-  };
-
-  /**
-   * Get a launch/session argument
-   *
-   * @return  Mixed     Argument value or null
-   *
-   * @method  Application::_getArgument()
-   */
-  Application.prototype._getArgument = function(k) {
-    return typeof this.__args[k] === 'undefined' ? null : this.__args[k];
-  };
-
-  /**
-   * Get all launch/session argument
-   *
-   * @return  Array
-   *
-   * @method  Application::_getArguments()
-   */
-  Application.prototype._getArguments = function() {
-    return this.__args;
-  };
-
-  /**
-   * Set a launch/session argument
-   *
-   * @param   String    k             Key
-   * @param   String    v             Value
-   *
-   * @return  void
-   *
-   * @method  Application::_setArgument()
-   */
-  Application.prototype._setArgument = function(k, v) {
-    this.__args[k] = v;
   };
 
   /////////////////////////////////////////////////////////////////////////////

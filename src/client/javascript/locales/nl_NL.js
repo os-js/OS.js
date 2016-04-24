@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -29,6 +29,7 @@
  * Dutch translation by Imre Biacsics
  */
 (function() {
+  // jscs:disable validateQuoteMarks
   'use strict';
 
   OSjs.Locales = OSjs.Locales || {};
@@ -38,9 +39,9 @@
     // CORE
     //
 
-    'ERR_FILE_OPEN'             : 'Er is een probleem opgetreden tijdens het starten',
+    'ERR_FILE_OPEN'             : 'Fout bij openen bestand',
     'ERR_WM_NOT_RUNNING'        : 'Window manager is niet gestart',
-    'ERR_FILE_OPEN_FMT'         : 'Het bestand \'<span>{0}</span>\' kon niet worden geopend',
+    'ERR_FILE_OPEN_FMT'         : 'Het bestand \'**{0}**\' kon niet worden geopend',
     'ERR_APP_MIME_NOT_FOUND_FMT': 'Kon geen programma vinden die \'{0}\' kan openen',
     'ERR_APP_LAUNCH_FAILED'     : 'Starten van het programma is mislukt',
     'ERR_APP_LAUNCH_FAILED_FMT' : 'Er is een probleem opgetreden tijden het starten van: {0}',
@@ -57,17 +58,22 @@
     'ERR_CORE_INIT_FAILED_DESC' : 'Er is een fout opgetreden tijdens de initialisatie van OS.js',
     'ERR_CORE_INIT_NO_WM'       : 'Kan OS.js niet starten: Geen window manager gedefineerd!',
     'ERR_CORE_INIT_WM_FAILED_FMT'   : 'Kan OS.js niet starten: Window manager: {0} wil niet starten',
-    'ERR_CORE_INIT_PRELOAD_FAILED'  : 'Kan OS.js niet starten: Fout bij de preload van bronnen...',
-    'ERR_JAVASCRIPT_EXCEPTION'      : 'JavaScript Error Report',
+    'ERR_CORE_INIT_PRELOAD_FAILED'  : 'Kan OS.js niet starten: Fout bij het voorladen van bronnen...',
+    'ERR_JAVASCRIPT_EXCEPTION'      : 'JavaScript Fout Rapportage',
     'ERR_JAVACSRIPT_EXCEPTION_DESC' : 'Een onverwachte fout opgetreden, mogelijk een bug.',
 
-    'ERR_APP_API_ERROR'           : 'Application API error',
-    'ERR_APP_API_ERROR_DESC_FMT'  : 'Application {0} Kan actie \'{1}\' niet uitvoeren',
+    'ERR_APP_API_ERROR'           : 'Applicatie API fout',
+    'ERR_APP_API_ERROR_DESC_FMT'  : 'Applicatie {0} Kan actie \'{1}\' niet uitvoeren',
     'ERR_APP_MISSING_ARGUMENT_FMT': 'Missend argument: {0}',
     'ERR_APP_UNKNOWN_ERROR'       : 'Onbekende fout',
 
+    'ERR_OPERATION_TIMEOUT'       : 'Operatie Timeout',
+    'ERR_OPERATION_TIMEOUT_FMT'   : 'Operatie Timeout ({0})',
+
+    'ERR_ARGUMENT_FMT'    : '\'{0}\' verwacht dat \'{1}\' een \'{2}\' is, niet \'{3}\'',
+
     // Window
-    'ERR_WIN_DUPLICATE_FMT' : 'Er bestaat al een venster met de naam: \'{0}\'',
+    'ERR_WIN_DUPLICATE_FMT' : 'Er is al een venster met de naam: \'{0}\'',
     'WINDOW_MINIMIZE' : 'Minimaliseren',
     'WINDOW_MAXIMIZE' : 'Maximaliseren',
     'WINDOW_RESTORE'  : 'Herstellen',
@@ -78,16 +84,21 @@
     // Handler
     'TITLE_SIGN_OUT' : 'Afmelden',
     'TITLE_SIGNED_IN_AS_FMT' : 'Aangemeld als: {0}',
+    'ERR_LOGIN_FMT' : 'Login fout: {0}',
+    'ERR_LOGIN_INVALID' : 'Onjuiste aanmelding',
+
+    // SESSION
+    'MSG_SESSION_WARNING' : 'Weet je zeker dat je OS.js wilt verlaten? Alle niet opgeslagen instellingen en applicatie data zal verloren gaan!',
 
     // Service
-    'BUGREPORT_MSG' : 'Vriendelijk verzoek dit probleem te rapporteren.\nVoeg een korte omschrijving toe en als het lukt; Hoe we dit kunnen na bootsen',
+    'BUGREPORT_MSG' : 'Vriendelijk verzoek dit probleem te rapporteren.\nVoeg een korte omschrijving toe en als het lukt; Hoe we dit kunnen nabootsen',
 
     // API
     'SERVICENOTIFICATION_TOOLTIP' : 'Aangemeld bij externe service: {0}',
 
     // Utils
-    'ERR_UTILS_XHR_FATAL' : 'Fatale Error',
-    'ERR_UTILS_XHR_FMT' : 'AJAX/XHR Error: {0}',
+    'ERR_UTILS_XHR_FATAL' : 'Fatale Fout',
+    'ERR_UTILS_XHR_FMT' : 'AJAX/XHR Fout: {0}',
 
     //
     // DIALOGS
@@ -103,12 +114,12 @@
     'DIALOG_ALERT_TITLE' : 'Waarschuwing',
 
     'DIALOG_COLOR_TITLE' : 'Kleuren',
-    'DIALOG_COLOR_R' : 'Red: {0}',
-    'DIALOG_COLOR_G' : 'Green: {0}',
-    'DIALOG_COLOR_B' : 'Blue: {0}',
+    'DIALOG_COLOR_R' : 'Rood: {0}',
+    'DIALOG_COLOR_G' : 'Groen: {0}',
+    'DIALOG_COLOR_B' : 'Blauw: {0}',
     'DIALOG_COLOR_A' : 'Alpha: {0}',
 
-    'DIALOG_CONFIRM_TITLE' : 'Bevestigen',
+    'DIALOG_CONFIRM_TITLE' : 'Bevestiging',
 
     'DIALOG_ERROR_MESSAGE'   : 'Bericht',
     'DIALOG_ERROR_SUMMARY'   : 'Opsomming',
@@ -118,21 +129,21 @@
     'DIALOG_FILE_SAVE'      : 'Opslaan',
     'DIALOG_FILE_OPEN'      : 'Openen',
     'DIALOG_FILE_MKDIR'     : 'Nieuwe map',
-    'DIALOG_FILE_MKDIR_MSG' : 'Maak nieuwe map in <span>{0}</span>',
-    'DIALOG_FILE_OVERWRITE' : 'Weet u zeker dat het bestand overschreven moet worden \'{0}\'?',
+    'DIALOG_FILE_MKDIR_MSG' : 'Maak nieuwe map in **{0}**',
+    'DIALOG_FILE_OVERWRITE' : 'Weet u zeker dat het bestand \'{0}\' overschreven moet worden?',
     'DIALOG_FILE_MNU_VIEWTYPE' : 'Weergave',
     'DIALOG_FILE_MNU_LISTVIEW' : 'Lijst weergave',
     'DIALOG_FILE_MNU_TREEVIEW' : 'Boom weergave',
     'DIALOG_FILE_MNU_ICONVIEW' : 'Icoontje',
-    'DIALOG_FILE_ERROR'        : 'Bestands Error',
+    'DIALOG_FILE_ERROR'        : 'BestandsDialoog Fout',
     'DIALOG_FILE_ERROR_SCANDIR': 'Kan de map niet doorzoeken \'{0}\' Er is een storing opgetreden',
     'DIALOG_FILE_MISSING_FILENAME' : 'Selecteer een bestand of geef een naam op!',
     'DIALOG_FILE_MISSING_SELECTION': 'Selecteer een bestand!',
 
     'DIALOG_FILEINFO_TITLE'   : 'Bestands informatie',
     'DIALOG_FILEINFO_LOADING' : 'Bestands informatie laden van: {0}',
-    'DIALOG_FILEINFO_ERROR'   : 'Bestanda informatie Error',
-    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Ophalen van informatie van <span>{0}</span> is mislukt',
+    'DIALOG_FILEINFO_ERROR'   : 'Bestanda informatie Fout',
+    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Ophalen van informatie van **{0}** is mislukt',
     'DIALOG_FILEINFO_ERROR_LOOKUP_FMT' : 'Ophalen van informatie van: {0} is mislukt',
 
     'DIALOG_INPUT_TITLE' : 'Input Dialoog',
@@ -141,22 +152,22 @@
     'DIALOG_FILEPROGRESS_LOADING' : 'Laden...',
 
     'DIALOG_UPLOAD_TITLE'   : 'Upload Dialoog',
-    'DIALOG_UPLOAD_DESC'    : 'Upload bestand naar <span>{0}</span>.<br />Maximum grootte: {1} bytes',
+    'DIALOG_UPLOAD_DESC'    : 'Upload bestand naar **{0}**.<br />Maximum grootte: {1} bytes',
     'DIALOG_UPLOAD_MSG_FMT' : 'Bezig met uploaden \'{0}\' ({1} {2}) to {3}',
     'DIALOG_UPLOAD_MSG'     : 'Bezig met uploaden...',
-    'DIALOG_UPLOAD_FAILED'  : 'Uploaden is niet geslaagd',
-    'DIALOG_UPLOAD_FAILED_MSG'      : 'Uploaden is niet geslaagd',
-    'DIALOG_UPLOAD_FAILED_UNKNOWN'  : 'Met onbekende oorzaak...',
-    'DIALOG_UPLOAD_FAILED_CANCELLED': 'Onderbroeken door de gebruiker...',
+    'DIALOG_UPLOAD_FAILED'  : 'Uploaden is niet gelukt',
+    'DIALOG_UPLOAD_FAILED_MSG'      : 'Uploaden is niet gelukt',
+    'DIALOG_UPLOAD_FAILED_UNKNOWN'  : 'Oorzaak onbekend...',
+    'DIALOG_UPLOAD_FAILED_CANCELLED': 'Geannuleerd door de gebruiker...',
     'DIALOG_UPLOAD_TOO_BIG': 'Het bestand is te groot',
-    'DIALOG_UPLOAD_TOO_BIG_FMT': 'Het bestand is te groot, overschrijding {0}',
+    'DIALOG_UPLOAD_TOO_BIG_FMT': 'Het bestand is te groot, overschrijdt {0}',
 
     'DIALOG_FONT_TITLE' : 'Lettertype',
 
     'DIALOG_APPCHOOSER_TITLE' : 'Kies een programma',
     'DIALOG_APPCHOOSER_MSG'   : 'Kies een programma om te openen',
     'DIALOG_APPCHOOSER_NO_SELECTION' : 'U moet een programma kiezen',
-    'DIALOG_APPCHOOSER_SET_DEFAULT'  : 'Instellen als standaard toepassing voor {0}',
+    'DIALOG_APPCHOOSER_SET_DEFAULT'  : 'Instellen als standaard programma voor {0}',
 
     //
     // HELPERS
@@ -185,7 +196,7 @@
     //
     // VFS
     //
-    'ERR_VFS_FATAL'           : 'fatale Error',
+    'ERR_VFS_FATAL'           : 'Fatale Fout',
     'ERR_VFS_UNAVAILABLE'     : 'Niet beschikbaar',
     'ERR_VFS_FILE_ARGS'       : 'Bestand verwacht tenminste 1 optie',
     'ERR_VFS_NUM_ARGS'        : 'Onjuist aantal opties',
@@ -193,17 +204,34 @@
     'ERR_VFS_EXPECT_SRC_FILE' : 'Dit is geen bronbestand',
     'ERR_VFS_EXPECT_DST_FILE' : 'Verwacht een bestemmings bestand',
     'ERR_VFS_FILE_EXISTS'     : 'Bestemming bestaat al',
-    'ERR_VFS_TRANSFER_FMT'    : 'Er is een erroropgetreden bij het overzetten tussen opslag: {0}',
+    'ERR_VFS_TRANSFER_FMT'    : 'Er is een fout opgetreden bij het omzetten van opslag: {0}',
     'ERR_VFS_UPLOAD_NO_DEST'  : 'Kan het bestand niet uploaden zonder bestemming',
     'ERR_VFS_UPLOAD_NO_FILES' : 'Geen bestand gedefineerd om te uploaden',
     'ERR_VFS_UPLOAD_FAIL_FMT' : 'Bestand uploaden is mislukt: {0}',
     'ERR_VFS_UPLOAD_CANCELLED': 'Bestands upload is geannuleerd',
     'ERR_VFS_DOWNLOAD_NO_FILE': 'Kan niet downloaden zonder pad',
-    'ERR_VFS_DOWNLOAD_FAILED' : 'Er is een error opgetreden tijdens downloaden: {0}',
+    'ERR_VFS_DOWNLOAD_FAILED' : 'Er is een fout opgetreden tijdens het downloaden: {0}',
     'ERR_VFS_REMOTEREAD_EMPTY': 'De reactie was leeg',
+
+    'ERR_VFSMODULE_INVALID'            : 'Ongeldige VFS Module',
+    'ERR_VFSMODULE_INVALID_FMT'        : 'Ongeldige VFS Module: {0}',
+    'ERR_VFSMODULE_INVALID_METHOD'     : 'Ongeldige VFS Methode',
+    'ERR_VFSMODULE_INVALID_METHOD_FMT' : 'Ongeldige VFS Methode: {0}',
+    'ERR_VFSMODULE_INVALID_TYPE'       : 'Ongeldige VFS Module type',
+    'ERR_VFSMODULE_INVALID_TYPE_FMT'   : 'Ongeldige VFS Module type: {0}',
+    'ERR_VFSMODULE_INVALID_CONFIG'     : 'Ongeldige VFS Module configuratie',
+    'ERR_VFSMODULE_INVALID_CONFIG_FMT' : 'Ongeldige VFS Module configuratie: {0}',
+    'ERR_VFSMODULE_ALREADY_MOUNTED'    : 'VFS Module reeds gekoppeld',
+    'ERR_VFSMODULE_ALREADY_MOUNTED_FMT': 'VFS Module \'{0}\' reeds gekoppeld',
+    'ERR_VFSMODULE_NOT_MOUNTED'        : 'VFS Module niet gekoppeld',
+    'ERR_VFSMODULE_NOT_MOUNTED_FMT'    : 'VFS Module \'{0}\' niet gekoppeld',
+    'ERR_VFSMODULE_EXCEPTION'          : 'VFS Module Exceptie',
+    'ERR_VFSMODULE_EXCEPTION_FMT'      : 'VFS Module Exceptie: {0}',
+    'ERR_VFSMODULE_NOT_FOUND_FMT'      : 'Geen VFS Module komt overeen met {0}. Verkeerd pad or formaat ?',
+
     'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Bestand downloaden',
 
-    'ERR_VFSMODULE_XHR_ERROR'      : 'XHR Error',
+    'ERR_VFSMODULE_XHR_ERROR'      : 'XHR Fout',
     'ERR_VFSMODULE_ROOT_ID'        : 'ID van root map niet gevonden',
     'ERR_VFSMODULE_NOSUCH'         : 'Het bestand bestaat niet',
     'ERR_VFSMODULE_PARENT'         : 'Ouder bestaat niet',
@@ -242,6 +270,18 @@
     // VFS -> OneDrive
     'ONEDRIVE_ERR_RESOLVE'      : 'Kan het pad niet oplossen: item niet gevonden',
 
+    // ZIP
+    'ZIP_PRELOAD_FAIL'  : 'Laden van zip.js mislukt',
+    'ZIP_VENDOR_FAIL'   : 'zip.js niet gevonden. Is het correct geladen?',
+    'ZIP_NO_RESOURCE'   : 'Geen zip bestand opgegeven',
+    'ZIP_NO_PATH'       : 'Geen pad opgegeven',
+
+    //
+    // PackageManager
+    //
+
+    'ERR_PACKAGE_EXISTS': 'Pakket installatie map bestaat al. Kan niet verder gaan!',
+
     //
     // DefaultApplication
     //
@@ -249,11 +289,11 @@
     'ERR_FILE_APP_OPEN_FMT'     : 'Het bestand {0} kan niet worden geopend {1} wordt niet ondersteund',
     'ERR_FILE_APP_OPEN_ALT_FMT' : 'Het bestand {0} kan niet worden geopend',
     'ERR_FILE_APP_SAVE_ALT_FMT' : 'Het bestand {0} kan niet worden opgeslagen',
-    'ERR_GENERIC_APP_FMT'       : '{0} toepassing Error',
+    'ERR_GENERIC_APP_FMT'       : '{0} Toepassing Fout',
     'ERR_GENERIC_APP_ACTION_FMT': 'Kan de actie \'{0}\' niet voltooien',
-    'ERR_GENERIC_APP_UNKNOWN'   : 'Onbekende fout',
+    'ERR_GENERIC_APP_UNKNOWN'   : 'Onbekende Fout',
     'ERR_GENERIC_APP_REQUEST'   : 'Er is een fout opgetreden tijdens het afhandelen van dit verzoek',
-    'ERR_GENERIC_APP_FATAL_FMT' : 'Fatale fout: {0}',
+    'ERR_GENERIC_APP_FATAL_FMT' : 'Fatale Fout: {0}',
     'MSG_GENERIC_APP_DISCARD'   : 'Wijzigingen ongedaan maken?',
     'MSG_FILE_CHANGED'          : 'Het bestand is gewijzigd. Opnieuw laden?',
     'MSG_APPLICATION_WARNING'   : 'Waarschuwing',
@@ -351,7 +391,30 @@
     'LBL_BACKGROUND_COLOR' : 'Achtergrond kleur',
     'LBL_UNORDERED_LIST'   : 'Ongesorteerde lijst',
     'LBL_STATUS'   : 'Status',
-    'LBL_READONLY' : 'Alleen lezen'
+    'LBL_READONLY' : 'Alleen lezen',
+    'LBL_CREATED' : 'Aangemaakt',
+    'LBL_MODIFIED' : 'Gewijzigd',
+    'LBL_SHOW_COLUMNS' : 'Kolommen tonen',
+    'LBL_MOVE' : 'Verplaats',
+    'LBL_OPTIONS' : 'Opties',
+    'LBL_OK' : 'OK',
+    'LBL_DIRECTORY' : 'Map',
+    'LBL_CREATE' : 'Aanmaken',
+    'LBL_BUGREPORT' : 'Bugreport',
+    'LBL_INSTALL' : 'Installeer',
+    'LBL_UPDATE' : 'Update',
+    'LBL_REMOVE' : 'Verwijder',
+    'LBL_SHOW_SIDEBAR' : 'Zijbar tonen',
+    'LBL_SHOW_NAVIGATION' : 'Navigatie tonen',
+    'LBL_SHOW_HIDDENFILES' : 'Laat verborgen bestanden zien',
+    'LBL_SHOW_FILEEXTENSIONS' : 'Toon bestandsextensies',
+    'LBL_MOUNT': 'Koppelen',
+    'LBL_DESCRIPTION': 'Omschrijving',
+    'LBL_USERNAME': 'Gebruikersnaam',
+    'LBL_PASSWORD': 'Wachtwoord',
+    'LBL_HOST': 'Host',
+    'LBL_NAMESPACE': 'Namespace'
+
   };
 
 })();

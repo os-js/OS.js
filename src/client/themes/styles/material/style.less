@@ -1,0 +1,367 @@
+@import 'src/client/stylesheets/theme.less';
+@import 'src/client/themes/styles/material/materialColors.less';
+
+@base_background_color  : @clr-blue-700;
+@base_foreground_color  : #242424;
+@base_shadow_unfocused  : 0px 0px 10px 1px rgba(0, 0, 0, .3);
+@base_shadow_focused    : 0px 0px 10px 1px rgba(0, 0, 0, .6);
+
+@scrollbar_button_background : #cdcdcd;
+@scrollbar_button_foreground : #f0f0f0;
+@scrollbar_track_background  : #f0f0f0;
+
+@window_top_height  : 34px;
+@window_border_size : 0;
+
+@menu_background_color : #fff;
+
+@gui_selected_background_color       : rgb(45, 115, 210);
+@gui_selected_blur_background_color  : rgba(45, 115, 210, .8);
+@gui_selected_foreground_color       : #ffffff;
+
+@gui_border_color                    : #dbdbdb;
+@gui_background_color                : #f5f6f8;
+
+@gui_input_border_color              : #dbdbdb;
+@gui_input_background_color          : #ffffff;
+@gui_input_foreground_color          : @base_foreground_color;
+
+@gui_input_disabled_border_color     : #d9d9d9;
+@gui_input_disabled_background_color : #e6e6e6;
+@gui_input_disabled_foreground_color : #727272;
+
+@gui_button_border_color             : #ababab;
+@gui_button_background_color         : #f8f8f8;
+@gui_button_foreground_color         : @base_foreground_color;
+@gui_button_background               : linear-gradient(to bottom, #f1f1f1 0%, #e5e5e5 100%);
+
+@gui_button_active_border_color      : #242424;
+@gui_button_active_background_color  : @gui_button_background_color;
+@gui_button_active_foreground_color  : @base_foreground_color;
+@gui_button_active_background        : linear-gradient(to bottom, #f8f8f8 0%, #f4f4f4 100%);
+
+@gui_button_disabled_border_color    : @gui_input_disabled_border_color;
+@gui_button_disabled_background_color: @gui_input_disabled_background_color;
+@gui_button_disabled_foreground_color: @base_foreground_color;
+@gui_button_disabled_background      : @gui_input_disabled_background_color;
+
+
+/*
+* Material Theme
+*/
+
+@fadedWhite: rgba(255, 255, 255, 0.7);
+
+gui-progress-bar{
+  > div {
+    background: #fff;
+  }
+  > span {
+    color: #000;
+  }
+}
+application-window{
+  &:before {
+    background: @clr-blue-700;
+  }
+  application-window-content {
+    background: #fff;
+    padding-top: 0;
+
+    &[data-focused="false"] {
+      border: 1px solid @clr-blue-500;
+    }
+    &[data-focused="true"] {
+      border: 1px solid #dadada;
+    }
+    gui-menu-bar {
+      background: @clr-blue-600;
+      color: #fff;
+
+      gui-menu-bar-entry{
+        padding: 8px 6px;
+      }
+      gui-menu-bar-entry:hover,
+      .gui-active {
+        background: @clr-blue-700;
+      }
+      gui-menu {
+        min-width: 100px;
+        background: @clr-blue-600;
+
+        gui-menu-entry{
+          &:hover {
+            background-color: @clr-blue-700;
+          }
+          > * {
+            color: #fff;
+          }
+          label{
+            padding: 6px;
+          }
+          &[data-disabled="true"] > * {
+            color: rgba(255, 255, 255, 0.5) !important;
+          }
+        }
+      }
+    }
+  }
+  application-window-top{
+    application-window-icon {
+      width: 30px;
+    }
+    application-window-title {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .application-window-button-entry {
+      height: 100%;
+      width: 30px;
+      line-height: 20px;
+      text-align: center;
+      font-family: Arial;
+      font-size: 10px;
+      z-index: 0;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+      &:after,
+      &:before {
+        z-index: 1;
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+      }
+    }
+    application-window-button-close:before,
+    application-window-button-close:after {
+      width: 15px;
+      height: 2px;
+      background-color: @fadedWhite;
+      transition: background-color 0.2s;
+    }
+    application-window-button-close{
+      &:before {
+        transform: translate(-50%, -50%) rotate(45deg);
+      }
+      &:after {
+        transform: translate(-50%, -50%) rotate(-45deg);
+      }
+      &:hover{
+        &:after,
+        &:before {
+          background-color: #fff;
+        }
+      }
+    }
+    application-window-button-maximize{
+      &:before,
+      &:after {
+        width: 11px;
+        height: 9px;
+        background: @clr-blue-700;
+        border: 1px solid @fadedWhite;
+        border-top-width: 2px;
+        transform: translate(-50%, -50%);
+        transition: border-color 0.2s;
+      }
+      &:before{
+        opacity: 0;
+        margin: -3px 0 0 3px;
+        transition: margin 0.3s, opacity 0.3s;
+      }
+      &:hover{
+        &:before,
+        &:after{
+          border-color: #fff;
+          background: #468FD8;
+        }
+      }
+    }
+    application-window-button-minimize{
+      &:after {
+        width: 11px;
+        height: 9px;
+        border-bottom: 2px solid @fadedWhite;
+        transform: translate(-50%, -50%);
+        transition: border-color 0.2s;
+      }
+      &:hover:after{
+        border-color: #fff;
+      }
+    }
+  }
+  &[data-maximized="true"]{
+    application-window-button-maximize:before{
+      opacity: 1;
+    }
+  }
+}
+application-splash{
+  > span {
+    color: #fff;
+  }
+}
+gui-menu {
+  background: @clr-blue-500;
+
+  gui-menu-entry {
+    &:after{
+      color: #fff;
+    }
+    > div,
+    > label {
+      color: #fff;
+    }
+    &:hover {
+      background-color: @clr-blue-700;
+    }
+  }
+}
+gui-tabs > ul {
+  height : 32px;
+}
+gui-tabs > ul > li {
+  padding: 3px 6px;
+}
+gui-tabs .gui-active:after {
+  border: 1px solid @clr-pink-500 !important;
+}
+gui-list-view gui-list-view-row.gui-active {
+  background-color: @clr-blue-700 !important;
+}
+gui-icon-view-entry.gui-active {
+  background-color: @clr-blue-700 !important;
+  > div > span {
+    background: rgba(0, 0, 0, 0) !important;
+  }
+}
+gui-switch > div {
+  width : 64px;
+}
+gui-switch button.gui-active {
+  margin-left: calc(50% - 1px);
+}
+
+gui-select,
+gui-password,
+gui-text {
+  height: 36px;
+}
+
+gui-input-modal,
+gui-switch,
+gui-button {
+  height: 36px;
+
+  button {
+    position: relative;
+    font-size: 16px;
+    padding: 5px 16px;
+    color: rgba(0, 0, 0, 0.9);
+    border-radius: 3px;
+    border: 0;
+    background: #fff;
+    overflow: hidden;
+    outline: 0 !important;
+    text-decoration: none !important;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.3s;
+
+    img{
+      pointer-events: none;
+    }
+    .drop{
+      background: rgba(0, 0, 0, 0.16);
+    }
+    &[disabled="disabled"]{
+      background: #fff;
+      color: rgba(0, 0, 0, 0.26);
+      &:active {
+        color: rgba(0, 0, 0, 0.26);
+      }
+    }
+    &:hover {
+      background: rgba(153, 153, 153, 0.1);
+    }
+    &:active {
+      background: rgba(153, 153, 153, 0.2);
+    }
+  }
+}
+
+gui-tabs > div {
+  height : ~"calc(100% - 32px)";
+}
+
+gui-select:after {
+  top : 10px;
+}
+
+corewm-notification-entry:before {
+  background: @clr-blue-700 !important;
+}
+corewm-panel{
+  &:before {
+    background: @clr-blue-700 !important;
+  }
+  .PanelItemWindowList .Button {
+    opacity: 1 !important;
+
+    span {
+      color: @fadedWhite;
+    }
+    img {
+      opacity: 0.7;
+    }
+    &.Focused {
+      span {
+        color: #fff;
+      }
+      img {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.drop {
+  display: block;
+  position: absolute;
+  background: #CCC;
+  border-radius: 100%;
+  transform: scale(0);
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+
+  &.animate {
+    animation: drop 1s ease-out;
+  }
+}
+
+@keyframes drop {
+  100% {
+    opacity: 0;
+    transform: scale(2.5);
+  }
+}
+a{
+  color: rgba(0, 0, 0, 0.9);
+  padding: 5px;
+}
+application-window-loading{
+  background: rgba(0, 0, 0, 0);
+}
+
+/* Application styles */
+.ApplicationCalculatorWindow{
+  button{
+    padding: 0;
+  }
+}

@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function() {
+  // jscs:disable validateQuoteMarks
   'use strict';
 
   OSjs.Locales = OSjs.Locales || {};
@@ -35,7 +36,7 @@
   OSjs.Locales.de_DE = {
     'ERR_FILE_OPEN'     : 'Fehler beim Öffnen der Datei',
     'ERR_WM_NOT_RUNNING': 'Fenster-Manager wird nicht ausgeführt',
-    'ERR_FILE_OPEN_FMT' : 'Die Datei \'<span>{0}</span>\' kann nicht geöffnet werden',
+    'ERR_FILE_OPEN_FMT' : 'Die Datei \'**{0}**\' kann nicht geöffnet werden',
     'ERR_APP_MIME_NOT_FOUND_FMT': 'Keine Anwendung gefunden, die den Datentyp \'{0}\' unterstützt',
     'ERR_APP_LAUNCH_FAILED'    : 'Fehler beim Starten der Anwendung',
     'ERR_APP_LAUNCH_FAILED_FMT': 'Ein Fehler ist aufgetreten, während des Versuchs \'{0}\' zu starten',
@@ -101,7 +102,7 @@
     'DIALOG_FILE_SAVE'      : 'Speichern',
     'DIALOG_FILE_OPEN'      : 'Öffnen',
     'DIALOG_FILE_MKDIR'     : 'Verzeichnis erstellen',
-    'DIALOG_FILE_MKDIR_MSG' : 'Erstelle ein neues Verzeichnis in <span>{0}</span>',
+    'DIALOG_FILE_MKDIR_MSG' : 'Erstelle ein neues Verzeichnis in **{0}**',
     'DIALOG_FILE_OVERWRITE' : 'Sind Sie sicher, dass Sie die Datei \'{0}\' überschreiben wollen?',
     'DIALOG_FILE_MNU_VIEWTYPE' : 'Ansichtstyp',
     'DIALOG_FILE_MNU_LISTVIEW' : 'Liste',
@@ -115,7 +116,7 @@
     'DIALOG_FILEINFO_TITLE'   : 'Dateiinformationen',
     'DIALOG_FILEINFO_LOADING' : 'Laster fil-informasjon for: {0}',
     'DIALOG_FILEINFO_ERROR'   : 'Dateiinformationen Dialog Fehler',
-    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Fehler beim bekommen von Dateiinformationen für <span>{0}</span>',
+    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Fehler beim bekommen von Dateiinformationen für **{0}**',
     'DIALOG_FILEINFO_ERROR_LOOKUP_FMT' : 'Fehler beim bekommen von Dateiinformationen für: {0}',
 
     'DIALOG_INPUT_TITLE' : 'Eingabedialog',
@@ -124,7 +125,7 @@
     'DIALOG_FILEPROGRESS_LOADING' : 'Lade...',
 
     'DIALOG_UPLOAD_TITLE'   : 'Upload-Dialog',
-    'DIALOG_UPLOAD_DESC'    : 'Upload nach <span>{0}</span>.<br />Maximale Größe: {1} bytes',
+    'DIALOG_UPLOAD_DESC'    : 'Upload nach **{0}**.<br />Maximale Größe: {1} bytes',
     'DIALOG_UPLOAD_MSG_FMT' : 'Hochladen von \'{0}\' ({1} {2}) von {3}',
     'DIALOG_UPLOAD_MSG'     : 'Datei-Upload...',
     'DIALOG_UPLOAD_FAILED'  : 'Upload fehlgeschlagen',
@@ -271,7 +272,8 @@
     'LBL_ORDERED_LIST'  : 'Sortierte Liste',
     'LBL_BACKGROUND_IMAGE' : 'Hintergrundbild',
     'LBL_BACKGROUND_COLOR' : 'Hintergrundfarbe',
-    'LBL_UNORDERED_LIST'   : 'Unsortierte Liste'
+    'LBL_UNORDERED_LIST'   : 'Unsortierte Liste',
+    'LBL_SHOW_SIDEBAR' : 'Seitenleiste anzeigen'
   };
 
 })();

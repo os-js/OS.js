@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -53,10 +53,12 @@
    *
    * @api OSjs.Helpers.IFrameApplicationWindow
    * @see OSjs.Core.Window
-   * @link http://os.js.org/doc/tutorials/iframe-application.html
+   * @link https://os.js.org/doc/tutorials/iframe-application.html
    * @extends Window
    * @class
    */
+  var IFRAME_COUNT = 0;
+
   var IFrameApplicationWindow = function(name, opts, app) {
     opts = Utils.argumentDefaults(opts, {
       src: 'about:blank',
@@ -89,21 +91,33 @@
     var root = Window.prototype.init.apply(this, arguments);
     root.style.overflow = 'visible';
 
+    var id = 'IframeApplicationWindow' + IFRAME_COUNT.toString();
     var iframe = document.createElement('iframe');
     iframe.setAttribute('border', 0);
+    iframe.id = id;
     iframe.className = 'IframeApplicationFrame';
     iframe.addEventListener('load', function() {
+      self._iwin = iframe.contentWindow;
       self.postMessage('Window::init');
     });
-    iframe.src = this._opts.src;
+
+    this.setLocation(this._opts.src, iframe);
     root.appendChild(iframe);
 
     this._frame = iframe;
-    this._iwin = iframe.contentWindow;
 
-    this._iwin.focus();
+    try {
+      this._iwin = iframe.contentWindow;
+    } catch ( e ) {}
+
+    if ( this._iwin ) {
+      this._iwin.focus();
+    }
+
     this._frame.focus();
     this._opts.focus(this._frame, this._iwin);
+
+    IFRAME_COUNT++;
 
     return root;
   };
@@ -169,6 +183,23 @@
     console.debug('IFrameApplicationWindow::onPostMessage()', message);
   };
 
+  /**
+   * Set Iframe source
+   *
+   * @param   String      src       Source
+   * @return  void
+   *
+   * @method IFrameApplicationWindow::setLocation()
+   */
+  IFrameApplicationWindow.prototype.setLocation = function(src, iframe) {
+    iframe = iframe || this._frame;
+
+    var oldbefore = window.onbeforeunload;
+    window.onbeforeunload = null;
+    iframe.src = src;
+    window.onbeforeunload = oldbefore;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // IFrame Application Helper
   /////////////////////////////////////////////////////////////////////////////
@@ -212,6 +243,29 @@
     Application.prototype.init.apply(this, arguments);
     var name = this.__pname + 'Window';
     this._addWindow(new IFrameApplicationWindow(name, this.options, this), null, true);
+  };
+
+  /**
+   * When Application receives a message from IFrame Application
+   *
+   * @param   Mixed       message     The message
+   * @param   DOMEvent    ev          DOM Event
+   * @return  void
+   *
+   * @method IFrameApplication::onPostMessage()
+   */
+  IFrameApplication.prototype.onPostMessage = function(message, ev) {
+    console.debug('IFrameApplication::onPostMessage()', message);
+  };
+
+  /**
+   * @see IFrameApplicationWindow::postMessage()
+   */
+  IFrameApplication.prototype.postMessage = function(message) {
+    var win = this._getMainWindow();
+    if ( win ) {
+      win.postMessage(message);
+    }
   };
 
   /////////////////////////////////////////////////////////////////////////////

@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -147,7 +147,7 @@
       return _PROCS[name];
     }
 
-    _PROCS.forEach(function(p, i) {
+    _PROCS.every(function(p, i) {
       if ( p ) {
         if ( p.__pname === name ) {
           if ( first ) {
@@ -187,37 +187,26 @@
    * @api     OSjs.Core.Process
    * @class
    */
-  var Process = (function() {
-    var _PID = 0;
+  function Process(name, args, metadata) {
+    this.__pid        = _PROCS.push(this) - 1;
+    this.__pname      = name;
+    this.__args       = args || {};
+    this.__metadata   = metadata || {};
+    this.__started    = new Date();
+    this.__destroyed  = false;
 
-    return function(name, args, metadata) {
-      metadata = metadata || {};
-      args = args || {};
+    this.__label    = this.__metadata.name;
+    this.__path     = this.__metadata.path;
+    this.__scope    = this.__metadata.scope || 'system';
+    this.__iter     = this.__metadata.className;
 
-      this.__pid      = _PID;
-      this.__pname    = name;
-      this.__sname    = name; // Used internall only
-      this.__args     = args;
-      this.__metadata = metadata;
-      this.__state    = 0;
-      this.__started  = new Date();
-      this.__index    = _PROCS.push(this) - 1;
-
-      this.__label    = metadata.name;
-      this.__path     = metadata.path;
-      this.__scope    = metadata.scope || 'system';
-      this.__iter     = metadata.className;
-
-      console.group('Process::constructor()');
-      console.log('pid',    this.__pid);
-      console.log('pname',  this.__pname);
-      console.log('started',this.__started);
-      console.log('args',   this.__args);
-      console.groupEnd();
-
-      _PID++;
-    };
-  })();
+    console.group('Process::constructor()');
+    console.log('pid', this.__pid);
+    console.log('pname', this.__pname);
+    console.log('started', this.__started);
+    console.log('args', this.__args);
+    console.groupEnd();
+  }
 
   /**
    * Destroys the process
@@ -230,14 +219,21 @@
    */
   Process.prototype.destroy = function(kill) {
     kill = (typeof kill === 'undefined') ? true : (kill === true);
-    this.__state = -1;
-    console.log('OSjs::Core::Process::destroy()', this.__pid, this.__pname);
-    if ( kill ) {
-      if ( this.__index >= 0 ) {
-        _PROCS[this.__index] = null;
+    if ( !this.__destroyed ) {
+
+      console.log('OSjs::Core::Process::destroy()', this.__pid, this.__pname);
+
+      if ( kill ) {
+        if ( this.__pid >= 0 ) {
+          _PROCS[this.__pid] = null;
+        }
       }
+
+      this.__destroyed = true;
+
+      return true;
     }
-    return true;
+    return false;
   };
 
   /**
@@ -259,6 +255,43 @@
    *
    * @param   String      method      Name of method
    * @param   Object      args        Arguments in JSON
+   * @param   Function    callback    Callback method => fn(error, result)
+   * @param   boolean     showLoading Show loading indication (default=true)
+   *
+   * @return  boolean
+   *
+   * @method  Process::_api()
+   */
+  Process.prototype._api = function(method, args, callback, showLoading) {
+    var self = this;
+
+    function cb(err, res) {
+      if ( self.__destroyed ) {
+        console.warn('Process::_api()', 'INGORED RESPONSE: Process was closed');
+        return;
+      }
+      callback(err, res);
+    }
+
+    return OSjs.API.call('application', {
+      application: this.__iter,
+      path: this.__path,
+      method: method,
+      'arguments': args, __loading: showLoading
+    }, cb);
+  };
+
+  /**
+   * Call the ApplicationAPI
+   *
+   * This is used for calling 'api.php' or 'api.js' in your Application.
+   *
+   * On Lua or Arduino it is called 'server.lua'
+   *
+   * WARNING: THIS METHOD WILL BE DEPRECATED
+   *
+   * @param   String      method      Name of method
+   * @param   Object      args        Arguments in JSON
    * @param   Function    onSuccess   When request is done callback fn(result)
    * @param   Function    onError     When an error occured fn(error)
    * @param   boolean     showLoading Show loading indication (default=true)
@@ -269,14 +302,78 @@
    */
   Process.prototype._call = function(method, args, onSuccess, onError, showLoading) {
     var self = this;
-    onSuccess = onSuccess || function() {};
-    onError = onError || function(err) {
+
+    function _defaultError(err) {
       err = err || 'Unknown error';
       OSjs.API.error(OSjs.API._('ERR_APP_API_ERROR'),
                      OSjs.API._('ERR_APP_API_ERROR_DESC_FMT', self.__pname, method),
                      err);
-    };
-    return OSjs.API.call('application', {'application': this.__iter, 'path': this.__path, 'method': method, 'arguments': args, __loading: showLoading}, onSuccess, onError);
+    }
+
+    console.warn('********************************* WARNING *********************************');
+    console.warn('THE METHOD Process:_call() IS DEPRECATED AND WILL BE REMOVED IN THE FUTURE');
+    console.warn('PLEASE USE Process::_api() INSTEAD!');
+    console.warn('***************************************************************************');
+
+    this._api(method, args, function(err, res) {
+      if ( err ) {
+        (onError || _defaultError)(err);
+      } else {
+        (onSuccess || function() {})(res);
+      }
+    }, showLoading);
+  };
+
+  /**
+   * Get a launch/session argument
+   *
+   * @return  Mixed     Argument value or null
+   *
+   * @method  Process::_getArgument()
+   */
+  Process.prototype._getArgument = function(k) {
+    return typeof this.__args[k] === 'undefined' ? null : this.__args[k];
+  };
+
+  /**
+   * Get all launch/session argument
+   *
+   * @return  Array
+   *
+   * @method  Process::_getArguments()
+   */
+  Process.prototype._getArguments = function() {
+    return this.__args;
+  };
+
+  /**
+   * Get full path to a resorce belonging to this process (package)
+   *
+   * This is a shortcut for API.getApplicationResource()
+   *
+   * @param   String      src       Resource name (path)
+   *
+   * @return  String
+   *
+   * @method  Process::_getResource()
+   * @see     API::getApplicationResource()
+   */
+  Process.prototype._getResource = function(src) {
+    return API.getApplicationResource(this, src);
+  };
+
+  /**
+   * Set a launch/session argument
+   *
+   * @param   String    k             Key
+   * @param   String    v             Value
+   *
+   * @return  void
+   *
+   * @method  Process::_setArgument()
+   */
+  Process.prototype._setArgument = function(k, v) {
+    this.__args[k] = v;
   };
 
   /////////////////////////////////////////////////////////////////////////////

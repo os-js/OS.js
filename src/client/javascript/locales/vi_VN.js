@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function() {
+  // jscs:disable validateQuoteMarks
   'use strict';
 
   OSjs.Locales = OSjs.Locales || {};
@@ -39,7 +40,7 @@
 
     'ERR_FILE_OPEN'             : 'Lỗi khi mở tệp',
     'ERR_WM_NOT_RUNNING'        : 'Trình quản lí cửa sổ không hoạt động',
-    'ERR_FILE_OPEN_FMT'         : 'Tập tin \'<span>{0}</span>\' không mở được',
+    'ERR_FILE_OPEN_FMT'         : 'Tập tin \'**{0}**\' không mở được',
     'ERR_APP_MIME_NOT_FOUND_FMT': 'Không thể tìm thấy bất kỳ ứng dụng hỗ trợ cho \'{0}\' files',
     'ERR_APP_LAUNCH_FAILED'     : 'Không thể khởi động ứng dụng',
     'ERR_APP_LAUNCH_FAILED_FMT' : 'Có lỗi xảy ra trong khi cố gắng khởi động: {0}',
@@ -65,6 +66,11 @@
     'ERR_APP_MISSING_ARGUMENT_FMT': 'Thiếu đối số: {0}',
     'ERR_APP_UNKNOWN_ERROR'       : 'Lỗi không xác định',
 
+    'ERR_OPERATION_TIMEOUT'       : 'Hết thời gian phản hồi',
+    'ERR_OPERATION_TIMEOUT_FMT'   : 'Hết thời gian phản hồi trong ({0})',
+
+    'ERR_ARGUMENT_FMT'    : '\'{0}\' dự kiến \'{1}\' là một \'{2}\',cho \'{3}\'',
+
     // Window
     'ERR_WIN_DUPLICATE_FMT' : 'Bạn đã có một cửa sổ có tên \'{0}\'',
     'WINDOW_MINIMIZE' : 'Giảm thiểu',
@@ -77,9 +83,11 @@
     // Handler
     'TITLE_SIGN_OUT' : 'Đăng xuất',
     'TITLE_SIGNED_IN_AS_FMT' : 'Đăng nhập như: {0}',
+    'ERR_LOGIN_FMT' : 'Đăng nhập thất bại: {0}',
+    'ERR_LOGIN_INVALID' : 'Đăng nhập không hợp lệ',
 
     // Service
-    'BUGREPORT_MSG' : 'Xin báo lỗi này nếu bạn nghĩ rằng đây là một bug.\nBao gồm một mô tả ngắn gọn về các lỗi xảy ra như thế nào, và nếu có thể; làm thế nào để làm lại nó',
+    'BUGREPORT_MSG' : 'Xin hãy báo lỗi này nếu bạn nghĩ rằng đây là một lỗi.\nHãy viết một mô tả ngắn gọn về lỗi đã xảy ra như thế nào, và nếu có thể, làm cách nào để tái hiện lại nó!',
 
     // API
     'SERVICENOTIFICATION_TOOLTIP' : 'Đăng nhập vào các dịch vụ bên ngoài: {0}',
@@ -117,7 +125,7 @@
     'DIALOG_FILE_SAVE'      : 'Lưu',
     'DIALOG_FILE_OPEN'      : 'Mở',
     'DIALOG_FILE_MKDIR'     : 'Thư mục mới',
-    'DIALOG_FILE_MKDIR_MSG' : 'Tạo một thư mục mới trong <span>{0}</span>',
+    'DIALOG_FILE_MKDIR_MSG' : 'Tạo một thư mục mới trong **{0}**',
     'DIALOG_FILE_OVERWRITE' : 'Bạn có chắc muốn ghi đè lên tập tin \'{0}\'?',
     'DIALOG_FILE_MNU_VIEWTYPE' : 'Kiểu xem',
     'DIALOG_FILE_MNU_LISTVIEW' : 'Danh sách',
@@ -131,7 +139,7 @@
     'DIALOG_FILEINFO_TITLE'   : 'Thông tin file',
     'DIALOG_FILEINFO_LOADING' : 'Đang tải thông tin tập tin cho: {0}',
     'DIALOG_FILEINFO_ERROR'   : 'Lỗi FileInformationDialog',
-    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Không thể có được thông tin file cho <span>{0}</span>',
+    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Không thể có được thông tin file cho **{0}**',
     'DIALOG_FILEINFO_ERROR_LOOKUP_FMT' : 'Không thể có được thông tin file cho: {0}',
 
     'DIALOG_INPUT_TITLE' : 'Nhập liệu',
@@ -140,7 +148,7 @@
     'DIALOG_FILEPROGRESS_LOADING' : 'Đang nạp...',
 
     'DIALOG_UPLOAD_TITLE'   : 'Tải lên',
-    'DIALOG_UPLOAD_DESC'    : 'Tải tập tin lên đến <span>{0}</span>.<br />Kích thước tối đa: {1} byte',
+    'DIALOG_UPLOAD_DESC'    : 'Tải tập tin lên đến **{0}**.<br />Kích thước tối đa: {1} byte',
     'DIALOG_UPLOAD_MSG_FMT' : 'Đang tải lên \'{0}\' ({1} {2}) đến {3}',
     'DIALOG_UPLOAD_MSG'     : 'Đang tải lên file...',
     'DIALOG_UPLOAD_FAILED'  : 'Tải lên thất bại',
@@ -178,7 +186,7 @@
     'WLAPI_INIT_FAILED_FMT'   : 'Windows Live API gửi lại {0} status',
 
     // IndexedDB
-    'IDB_MISSING_DBNAME' : 'Không thể tạo IndexedDB mà không có Database Name',
+    'IDB_MISSING_DBNAME' : 'Không thể tạo IndexedDB mà không có Tên cơ sở dữ liệu',
     'IDB_NO_SUCH_ITEM'   : 'Không có item',
 
     //
@@ -200,6 +208,20 @@
     'ERR_VFS_DOWNLOAD_NO_FILE': 'Không thể tải về một đường dẫn mà không có một đường dẫn',
     'ERR_VFS_DOWNLOAD_FAILED' : 'Một lỗi đã xảy ra trong khi tải về: {0}',
     'ERR_VFS_REMOTEREAD_EMPTY': 'Trả lời là rỗng',
+
+    'ERR_VFSMODULE_EXCEPTION'          : 'Lỗi mô-đun VFS',
+    'ERR_VFSMODULE_EXCEPTION_FMT'      : 'Lỗi mô-đun VFS: {0}',
+    'ERR_VFSMODULE_INVALID_METHOD'     : 'Sai phương thức VFS',
+    'ERR_VFSMODULE_INVALID_METHOD_FMT' : 'Sai phương thức VFS: {0}',
+    'ERR_VFSMODULE_INVALID_TYPE'       : 'Sai kiểu mô-đun VFS',
+    'ERR_VFSMODULE_INVALID_TYPE_FMT'   : 'Sai kiểu mô-đun VFS: {0}',
+    'ERR_VFSMODULE_INVALID_CONFIG'     : 'Sai thiết lập mô-đun VFS',
+    'ERR_VFSMODULE_INVALID_CONFIG_FMT' : 'Sai thiết lập mô-đun VFS: {0}',
+    'ERR_VFSMODULE_ALREADY_MOUNTED'    : 'Mô-đun VFS đã được gắn',
+    'ERR_VFSMODULE_ALREADY_MOUNTED_FMT': 'Mô-đun VFS \'{0}\' đã được gắn',
+    'ERR_VFSMODULE_NOT_MOUNTED'        : 'Mô-đun VFS chưa được gắn',
+    'ERR_VFSMODULE_NOT_MOUNTED_FMT'    : 'Mô-đun VFS \'{0}\' chưa được gắn',
+
     'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Đang tải xuống tập tin',
 
     'ERR_VFSMODULE_XHR_ERROR'      : 'Lỗi XHR',
@@ -208,7 +230,7 @@
     'ERR_VFSMODULE_PARENT'         : 'Không có thư mục cha nào như vậy',
     'ERR_VFSMODULE_PARENT_FMT'     : 'Không thể tìm thư mục cha : {0}',
     'ERR_VFSMODULE_SCANDIR'        : 'Không thể quét thư mục',
-    'ERR_VFSMODULE_SCANDIR_FMT'    : 'Failed to scan directory: {0}',
+    'ERR_VFSMODULE_SCANDIR_FMT'    : 'Không thể quét thư mục: {0}',
     'ERR_VFSMODULE_READ'           : 'Không thể đọc tập tin',
     'ERR_VFSMODULE_READ_FMT'       : 'Không thể đọc tập tin: {0}',
     'ERR_VFSMODULE_WRITE'          : 'Không thể ghi tập tin',
@@ -236,10 +258,22 @@
 
     // VFS -> Dropbox
     'DROPBOX_NOTIFICATION_TITLE' : 'Bạn đã đăng nhập vào Dropbox API',
-    'DROPBOX_SIGN_OUT'           : 'Đăng xuất khỏi Google API Services',
+    'DROPBOX_SIGN_OUT'           : 'Đăng xuất khỏi dịch vụ Google API',
 
     // VFS -> OneDrive
     'ONEDRIVE_ERR_RESOLVE'      : 'Không thể giải quyết đường dẫn: mục không tìm thấy',
+
+    // ZIP
+    'ZIP_PRELOAD_FAIL'  : 'Không thể tải zip.js',
+    'ZIP_VENDOR_FAIL'   : 'Không tìm thấy zip.js, bạn có chắc chắn đã thiết lập nó chưa?',
+    'ZIP_NO_RESOURCE'   : 'Không có nguồn zip đã được đưa ra',
+    'ZIP_NO_PATH'       : 'Không có đường dẫn',
+
+    //
+    // PackageManager
+    //
+
+    'ERR_PACKAGE_EXISTS': 'Thư mục cài đặt gói phần mềm đã tồn tại. Không thể tiếp tục!',
 
     //
     // DefaultApplication
@@ -267,19 +301,19 @@
     'LBL_USER'         : 'Người dùng',
     'LBL_NAME'         : 'Tên',
     'LBL_APPLY'        : 'Áp dụng',
-    'LBL_FILENAME'     : 'Tên file',
+    'LBL_FILENAME'     : 'Tên tệp',
     'LBL_PATH'         : 'Đường dẫn',
     'LBL_SIZE'         : 'Kích cỡ',
     'LBL_TYPE'         : 'Kiểu',
     'LBL_MIME'         : 'MIME',
     'LBL_LOADING'      : 'Đang tải',
     'LBL_SETTINGS'     : 'Cài đặt',
-    'LBL_ADD_FILE'     : 'Thêm file',
+    'LBL_ADD_FILE'     : 'Thêm tệp',
     'LBL_COMMENT'      : 'Chú thích',
     'LBL_ACCOUNT'      : 'Tài khoản',
     'LBL_CONNECT'      : 'Kết nối',
-    'LBL_ONLINE'       : 'Online',
-    'LBL_OFFLINE'      : 'Offline',
+    'LBL_ONLINE'       : 'Trực tuyến',
+    'LBL_OFFLINE'      : 'Ngoại tuyến',
     'LBL_AWAY'         : 'Ở xa',
     'LBL_BUSY'         : 'Bận',
     'LBL_CHAT'         : 'Chat',
@@ -325,18 +359,18 @@
     'LBL_ITALIC'       : 'Ngiêng',
     'LBL_UNDERLINE'    : 'Gạch dưới',
     'LBL_REGULAR'      : 'Bình thường',
-    'LBL_STRIKE'       : 'Strike',
+    'LBL_STRIKE'       : 'Gạch giữa',
     'LBL_INDENT'       : 'Thụt về',
     'LBL_OUTDENT'      : 'Quá hạn',
     'LBL_UNDO'         : 'Trở lại',
     'LBL_REDO'         : 'Làm lại',
     'LBL_CUT'          : 'Cắt',
-    'LBL_UNLINK'       : 'Bở link',
+    'LBL_UNLINK'       : 'Bỏ địa chỉ',
     'LBL_COPY'         : 'Sao chép',
     'LBL_PASTE'        : 'Dán',
     'LBL_INSERT'       : 'Thêm',
     'LBL_IMAGE'        : 'Ảnh',
-    'LBL_LINK'         : 'Link',
+    'LBL_LINK'         : 'Địa chỉ',
     'LBL_DISCONNECT'    : 'Mất kết nối',
     'LBL_APPLICATIONS'  : 'Các ứng dụng',
     'LBL_ADD_FOLDER'    : 'Thêm thư mục',
@@ -355,7 +389,25 @@
     'LBL_MODIFIED' : 'Sửa lúc',
     'LBL_SHOW_COLUMNS' : 'Hiện các cột',
     'LBL_MOVE' : 'Di chuyển',
-    'LBL_OPTIONS' : 'Cài đặt'
+    'LBL_OPTIONS' : 'Tùy chỉnh',
+    'LBL_OK' : 'OK',
+    'LBL_DIRECTORY' : 'Thư mục',
+    'LBL_CREATE' : 'Tạo',
+    'LBL_BUGREPORT' : 'Báo lỗi',
+    'LBL_INSTALL' : 'Cài đặt',
+    'LBL_UPDATE' : 'Cập nhật',
+    'LBL_REMOVE' : 'Xóa',
+    'LBL_SHOW_SIDEBAR' : 'Hiện Sidebar',
+    'LBL_SHOW_NAVIGATION' : 'Hiện nút điều hướng',
+    'LBL_SHOW_HIDDENFILES' : 'Hiện tập tin ẩn',
+    'LBL_SHOW_FILEEXTENSIONS' : 'Hiện đuôi tập tin',
+    'LBL_MOUNT': 'Gắn',
+    'LBL_DESCRIPTION': 'Thông tin thêm',
+    'LBL_USERNAME': 'Tên đăng nhập',
+    'LBL_PASSWORD': 'Mật khẩu',
+    'LBL_HOST': 'Host',
+    'LBL_NAMESPACE': 'Namespace'
+
   };
 
 })();

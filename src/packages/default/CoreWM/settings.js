@@ -1,7 +1,7 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,7 @@
       animations          : compability.css.animation,
       fullscreen          : true,
       desktopMargin       : 5,
-      wallpaper           : 'osjs:///themes/wallpapers/wallpaper.jpg',
+      wallpaper           : 'osjs:///themes/wallpapers/wallpaper.png',
       icon                : 'osjs-white.png',
       backgroundColor     : '#572a79',
       fontFamily          : 'Karla',
@@ -89,7 +89,6 @@
 
     return cfg;
   }
-
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS

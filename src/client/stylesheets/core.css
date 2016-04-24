@@ -1,8 +1,8 @@
 @charset "UTF-8";
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -52,18 +52,19 @@ body, input, button, textarea, label, select {
 #Login {
   background : #fff;
   width : 400px;
-  height : 180px;
+  height : 230px;
   padding : 20px;
   position : absolute;
   left : 50%;
   top : 50%;
   z-index : 9999;
-  margin-left : -224px;
-  margin-top : -114px;
+  margin-left : -200px;
+  margin-top : -155px; /* -40 because of loading bar*/
   border : 4px solid rgba(0, 0, 0, .1);
-  -webkit-box-shadow: 0px 0px 5px 4px rgba(0,0,0,0.15);
-  -moz-box-shadow: 0px 0px 5px 4px rgba(0,0,0,0.15);
-  box-shadow: 0px 0px 5px 4px rgba(0,0,0,0.15);
+  -webkit-box-shadow: 0 0 5px 4px rgba(0,0,0,0.15);
+  -moz-box-shadow: 0 0 5px 4px rgba(0,0,0,0.15);
+  box-shadow: 0 0 5px 4px rgba(0,0,0,0.15);
+  box-sizing : border-box;
 
   display : none;
 }
@@ -108,10 +109,10 @@ body, input, button, textarea, label, select {
 #LoadingScreen {
   position : absolute;
   width : 320px;
-  height : 434px;
+  height : 182px;
   top : 50%;
   left : 50%;
-  margin-top : -217px;
+  margin-top : -91px;
   margin-left : -160px;
   z-index : 999;
 }
@@ -137,7 +138,7 @@ application-splash {
   height : 55px;
   margin-left : -150px;
   margin-top : -28px;
-  z-index : 99999999;
+  z-index : 99999998;
 }
   application-splash > img {
     display : block;
@@ -162,6 +163,39 @@ application-splash {
     right : 5px;
   }
 
+#LoadingScreen application-splash {
+  position : absolute;
+  height : 30px;
+  width : auto;
+  top : auto;
+  left : 0;
+  right : 0;
+  bottom : -40px;
+  margin : 0;
+  background : #fff;
+  z-index : 99999999;
+}
+  #LoadingScreen application-splash > span {
+    display : none;
+  }
+  #LoadingScreen application-splash > gui-progress-bar {
+    top : 5px;
+    left : 5px;
+    right : 5px;
+    bottom : 5px;
+    height : auto;
+  }
+    #LoadingScreen application-splash > gui-progress-bar:before {
+      border : 1px solid #ccc;
+      background : #ddd;
+    }
+    #LoadingScreen application-splash > gui-progress-bar > span {
+      display : none;
+    }
+    #LoadingScreen application-splash > gui-progress-bar > div {
+      background : rgb(87, 42, 121);
+    }
+
 /**
  * ===========================================================================
  *                                 MISC
@@ -172,10 +206,10 @@ body[data-attention="true"]:after {
   content : '';
   display : block;
   position : fixed;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
+  top : 0;
+  left : 0;
+  right : 0;
+  bottom : 0;
   z-index : 1;
 }
 
@@ -191,17 +225,25 @@ body[data-attention="true"]:after {
   right : 5px;
   font-size : 12px;
   color : #fff;
-  text-shadow: 0px 0px 2px rgba(34, 34, 34, .5);
+  text-shadow: 0 0 2px rgba(34, 34, 34, .5);
   text-align : right;
   line-height : 20px;
   z-index : 2;
   opacity : .7;
+  cursor : default;
+
+  -webkit-user-select : none;
+     -moz-user-select : none;
+      -ms-user-select : none;
+       -o-user-select : none;
+          user-select : none;
 }
 
   #DebugNotice a {
     color : #fff;
     text-decoration : underline;
     font-weight : normal;
+    cursor : pointer;
   }
 
 /**
@@ -218,128 +260,143 @@ application-window-icon,
 application-window-title,
 application-window-loading,
 application-window-disabled,
-application-window-loading-indicator,
-application-window-buttons {
+application-window-loading-indicator {
   display : block;
 }
 
 application-window {
   position : absolute;
-  top : 0px;
-  left : 0px;
+  top : 0;
+  left : 0;
   overflow : visible;
 }
 application-window:before {
   content : '';
   position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
+  top : 0;
+  left : 0;
+  right : 0;
+  bottom : 0;
 }
 
 application-window-top {
   position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
+  top : 0;
+  left : 0;
+  right : 0;
   height : 20px;
   z-index : 5;
+
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+
+  -webkit-flex-wrap: nowrap;
+     -moz-flex-wrap: nowrap;
+      -ms-flex-wrap: nowrap;
+       -o-flex-wrap: nowrap;
+          flex-wrap: nowrap;
 }
   application-window-top,
   application-window-top > * {
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+    -webkit-user-select : none;
+       -moz-user-select : none;
+        -ms-user-select : none;
+         -o-user-select : none;
+            user-select : none;
+  }
+
+  application-window-top > * {
+    min-width : 16px;
+    min-height : 16px;
+
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+
+    -webkit-flex: 0 0 auto;
+       -moz-flex: 0 0 auto;
+        -ms-flex: 0 0 auto;
+         -o-flex: 0 0 auto;
+            flex: 0 0 auto;
   }
 
 application-window-icon {
-  position : absolute;
-  top : 50%;
-  left : 4px;
-  width : 16px;
-  height : 16px;
-  z-index : 2;
-  margin-top : -8px;
   text-align : center;
+  position : relative;
+  background-position : center center;
+  background-repeat : no-repeat;
+  background-size : 16px;
 }
-  application-window-icon > img {
-    margin : 0;
-    padding : 0;
-    padding : 0px;
-    border : 0 none;
-    pointer-events: none;
-    vertical-align : middle;
-  }
 
 application-window-title {
-  position : absolute;
-  top : 0px;
-  left : 20px;
-  right : 0px; /* Calculated in script */
   height : 100%;
   z-index : 1;
   overflow : hidden;
   white-space : nowrap;
   line-height : 20px;
-
   display : block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  -o-text-overflow: ellipsis;
+
+  -webkit-text-overflow: ellipsis;
+     -moz-text-overflow: ellipsis;
+      -ms-text-overflow: ellipsis;
+       -o-text-overflow: ellipsis;
+          text-overflow: ellipsis;
+
+  -webkit-flex: 1 1 auto;
+     -moz-flex: 1 1 auto;
+      -ms-flex: 1 1 auto;
+       -o-flex: 1 1 auto;
+          flex: 1 1 auto;
 }
 
-application-window-buttons {
-  position : absolute;
-  top : 0px;
-  right : 0px;
-  z-index : 3;
+.application-window-button-entry {
+  padding : 0;
+  margin : 0;
   height : 100%;
+  text-align : center;
+  display : inline-block;
+  position : relative;
 }
-  application-window-buttons > .application-window-button-entry {
-    padding : 0;
-    margin : 0;
-    height : 100%;
-    text-align : center;
-    display : inline-block;
-    position : relative;
-  }
 
 application-window-content {
   position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
+  top : 0;
+  left : 0;
+  right : 0;
+  bottom : 0;
   overflow : hidden;
   z-index : 1;
 }
 
 application-window-resize {
   position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
+  top : 0;
+  left : 0;
+  right : 0;
+  bottom : 0;
   z-index : -1;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+  -webkit-user-select : none;
+     -moz-user-select : none;
+      -ms-user-select : none;
+       -o-user-select : none;
+          user-select : none;
 }
-application-window-outer[data-allow-resize="false"] window-resize {
+application-window[data-allow-resize="false"] > application-window-resize {
   display : none;
+  cursor : default !important;
 }
 
 application-window-loading {
   position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
+  top : 0;
+  left : 0;
+  right : 0;
+  bottom : 0;
   z-index : 999999;
 }
 
@@ -351,20 +408,20 @@ application-window-loading {
 
 application-window-disabled {
   position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
+  top : 0;
+  left : 0;
+  right : 0;
+  bottom : 0;
   z-index : 999998;
 }
 
 application-window[data-dnd-state="true"]:after {
   content : '';
   position : absolute;
-  top : 0px;
-  left : 0px;
-  bottom : 0px;
-  right : 0px;
+  top : 0;
+  left : 0;
+  bottom : 0;
+  right : 0;
   /*z-index : 10;*/
 }
 
@@ -375,30 +432,33 @@ application-window[data-hint="moving"] iframe {
 
 application-window-warning  {
   position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
+  top : 0;
+  left : 0;
+  right : 0;
   height : 30px;
   line-height : 20px;
   margin : 4px;
   border : 1px solid transparent;
   z-index : 99999;
+  box-sizing : border-box;
 }
   application-window-warning > div:nth-child(1) {
     position : absolute;
-    top : 0px;
-    right : 0px;
-    bottom : 0px;
+    top : 0;
+    right : 0;
+    bottom : 0;
     padding : 4px;
+    box-sizing : border-box;
   }
   application-window-warning > div:nth-child(2) {
     position : absolute;
-    top : 0px;
-    left : 0px;
+    top : 0;
+    left : 0;
     right : 20px;
-    bottom : 0px;
+    bottom : 0;
     padding : 4px;
     overflow : hidden;
+    box-sizing : border-box;
   }
 
 /**
@@ -420,7 +480,7 @@ application-window.DialogWindow gui-button-bar gui-button {
 .IFrameApplicationWindow application-window-content {
   background : #000;
 }
-iframe.IframeApplicationFrame {
+.IframeApplicationFrame {
   box-sizing : border-box;
   margin : 0;
   padding : 0;
@@ -429,8 +489,44 @@ iframe.IframeApplicationFrame {
   border : 0 none;
   outline : 0 none;
   position : absolute;
-  top : 0px;
-  left : 0px;
-  right : 0px;
-  bottom : 0px;
+  top : 0;
+  left : 0;
+  right : 0;
+  bottom : 0;
+}
+
+application-window[data-focused="false"] iframe {
+  pointer-events : none;
+}
+
+/**
+ * ===========================================================================
+ *                               RESPONSIVE
+ * ===========================================================================
+ */
+
+@media all and (max-width: 800px) {
+
+  body {
+    overflow : hidden;
+  }
+
+  application-window {
+    width : auto !important;
+    height : auto !important;
+    left : 0 !important;
+    right : 0 !important;
+    bottom : 0 !important;
+    top : 0 !important;
+  }
+
+  application-window-button-maximize,
+  application-window-button-minimize {
+    display : none !important;
+  }
+
+  application-window-content {
+    overflow : auto !important;
+  }
+
 }

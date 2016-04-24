@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -30,7 +30,73 @@
 (function(Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
+  function getSelected(view) {
+    var selected = [];
+    (view.get('value') || []).forEach(function(sub) {
+      selected.push(sub.data);
+    });
+    return selected;
+  }
+
   var notificationWasDisplayed = {};
+
+  function MountWindow(app, metadata, scheme) {
+    Window.apply(this, ['ApplicationFileManagerMountWindow', {
+      icon: metadata.icon,
+      title: metadata.name,
+      width: 400,
+      height: 440
+    }, app, scheme]);
+  }
+
+  MountWindow.prototype = Object.create(Window.prototype);
+  MountWindow.constructor = Window.prototype;
+
+  MountWindow.prototype.init = function(wm, app, scheme) {
+    var root = Window.prototype.init.apply(this, arguments);
+    var self = this;
+    var view;
+
+    // Load and set up scheme (GUI) here
+    scheme.render(this, 'MountWindow', root, null, null, {
+      _: OSjs.Applications.ApplicationFileManager._
+    });
+
+    scheme.find(this, 'ButtonClose').on('click', function() {
+      self._close();
+    });
+
+    scheme.find(this, 'ButtonOK').on('click', function() {
+      var conn = {
+        type: scheme.find(self, 'MountType').get('value'),
+        name: scheme.find(self, 'MountName').get('value'),
+        description: scheme.find(self, 'MountDescription').get('value'),
+        options: {
+          host: scheme.find(self, 'MountHost').get('value'),
+          ns: scheme.find(self, 'MountNamespace').get('value'),
+          username: scheme.find(self, 'MountUsername').get('value'),
+          password: scheme.find(self, 'MountPassword').get('value'),
+          cors: scheme.find(self, 'MountCORS').get('value')
+        }
+      };
+
+      try {
+        VFS.createMountpoint(conn);
+      } catch ( e ) {
+        API.error(self._title, 'An error occured while trying to mount', e);
+        console.warn(e.stack, e);
+        return;
+      }
+
+      self._close();
+    });
+
+    return root;
+  };
+
+  MountWindow.prototype.destroy = function() {
+    return Window.prototype.destroy.apply(this, arguments);
+  };
 
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
@@ -85,7 +151,7 @@
       _: OSjs.Applications.ApplicationFileManager._
     });
 
-    if ( window.location.protocol.match(/^file/) ) { // FIXME: Translation
+    if ( (API.getConfig('Connection.Type') !== 'nw') && window.location.protocol.match(/^file/) ) { // FIXME: Translation
       this._setWarning('VFS does not work when in standalone mode');
     }
 
@@ -93,24 +159,17 @@
     // Menus
     //
 
-    function getSelected() {
-      var selected = [];
-      (view.get('value') || []).forEach(function(sub) {
-        selected.push(sub.data);
-      });
-      return selected;
-    }
-
     var menuMap = {
       MenuClose:          function() { self._close(); },
       MenuCreateFile:     function() { app.mkfile(self.currentPath, self); },
       MenuCreateDirectory:function() { app.mkdir(self.currentPath, self); },
+      MenuMount:          function() { app.mount(self); },
       MenuUpload:         function() { app.upload(self.currentPath, null, self); },
-      MenuRename:         function() { app.rename(getSelected(), self); },
-      MenuDelete:         function() { app.rm(getSelected(), self); },
-      MenuInfo:           function() { app.info(getSelected()); },
-      MenuOpen:           function() { app.open(getSelected()); },
-      MenuDownload:       function() { app.download(getSelected()); },
+      MenuRename:         function() { app.rename(getSelected(view), self); },
+      MenuDelete:         function() { app.rm(getSelected(view), self); },
+      MenuInfo:           function() { app.info(getSelected(view), self); },
+      MenuOpen:           function() { app.open(getSelected(view), self); },
+      MenuDownload:       function() { app.download(getSelected(view), self); },
       MenuRefresh:        function() { self.changePath(); },
       MenuViewList:       function() { self.changeView('gui-list-view', true); },
       MenuViewTree:       function() { self.changeView('gui-tree-view', true); },
@@ -123,7 +182,7 @@
       MenuColumnMIME:     function() { self.toggleColumn('mime', true); },
       MenuColumnCreated:  function() { self.toggleColumn('ctime', true); },
       MenuColumnModified: function() { self.toggleColumn('mtime', true); },
-      MenuColumnSize:     function() { self.toggleColumn('size', true); },
+      MenuColumnSize:     function() { self.toggleColumn('size', true); }
     };
 
     function menuEvent(ev) {
@@ -208,18 +267,34 @@
   };
 
   ApplicationFileManagerWindow.prototype.checkSelection = function(files) {
-    // FIXME: Locales
-    var statusbar = this._scheme.find(this, 'Statusbar');
-    var content = '';
     var scheme = this._scheme;
+
+    if ( !scheme ) {
+      return;
+    }
+
     var self = this;
+    var content = '';
+    var statusbar = scheme.find(this, 'Statusbar');
+    var doTranslate = OSjs.Applications.ApplicationFileManager._;
 
     var sum, label;
 
-    function toggleMenuItems(isFile) {
-      scheme.find(self, 'MenuInfo').set('disabled', !isFile);
-      scheme.find(self, 'MenuDownload').set('disabled', !isFile);
-      scheme.find(self, 'MenuOpen').set('disabled', !isFile);
+    function toggleMenuItems(isFile, isDirectory) {
+      /*
+       * Toggling MenuItems with the bit MODE_F or MODE_FD set by type of selected items
+       * MODE_F : Selected items consist of ONLY files
+       * MODE_FD : One or many items are selected (type doesn't matter)
+       */
+
+      var MODE_F = !isFile || !!isDirectory;
+      var MODE_FD = !(isFile || isDirectory);
+
+      scheme.find(self, 'MenuRename').set('disabled', MODE_FD);
+      scheme.find(self, 'MenuDelete').set('disabled', MODE_FD);
+      scheme.find(self, 'MenuInfo').set('disabled', MODE_FD);  // TODO: Directory info must be supported
+      scheme.find(self, 'MenuDownload').set('disabled', MODE_F);
+      scheme.find(self, 'MenuOpen').set('disabled', MODE_F);
     }
 
     if ( files && files.length ) {
@@ -234,17 +309,17 @@
       });
 
       label = 'Selected {0} files, {1} dirs, {2}';
-      content = Utils.format(label, sum.files, sum.directories, Utils.humanFileSize(sum.size));
+      content = doTranslate(label, sum.files, sum.directories, Utils.humanFileSize(sum.size));
 
-      toggleMenuItems(sum.files && !sum.directories);
+      toggleMenuItems(sum.files, sum.directories);
     } else {
       sum = this.currentSummary;
       if ( sum ) {
         label = 'Showing {0} files ({1} hidden), {2} dirs, {3}';
-        content = Utils.format(label, sum.files, sum.hidden, sum.directories, Utils.humanFileSize(sum.size));
+        content = doTranslate(label, sum.files, sum.hidden, sum.directories, Utils.humanFileSize(sum.size));
       }
 
-      toggleMenuItems(false);
+      toggleMenuItems(false, false);
     }
 
     statusbar.set('value', content);
@@ -265,6 +340,10 @@
   };
 
   ApplicationFileManagerWindow.prototype.updateSideView = function(updateModule) {
+    if ( this._destroyed || !this._scheme ) {
+      return;
+    }
+
     var found = null;
     var path = this.currentPath || '/';
 
@@ -283,8 +362,16 @@
   };
 
   ApplicationFileManagerWindow.prototype.renderSideView = function() {
+    if ( this._destroyed || !this._scheme ) {
+      return;
+    }
+
     var sideViewItems = [];
     VFS.getModules({special: true}).forEach(function(m, i) {
+      if ( m.module.dynamic && !m.module.mounted() ) {
+        return;
+      }
+
       var classNames = [m.module.mounted() ? 'mounted' : 'unmounted'];
       if ( m.module.readOnly ) {
         classNames.push('readonly gui-has-emblem');
@@ -323,12 +410,13 @@
               this.changePath(path);
             }
           }
-
           this.updateSideView(m);
         }
       }
     } else {
       if ( args.file && this.currentPath === Utils.dirname(args.file.path) ) {
+        this.changePath(null);
+      } else if ( args.dir && this.currentPath === args.dir ) {
         this.changePath(null);
       }
     }
@@ -351,6 +439,10 @@
   };
 
   ApplicationFileManagerWindow.prototype.changePath = function(dir, selectFile, isNav, isInput) {
+    if ( this._destroyed || !this._scheme ) {
+      return;
+    }
+
     //if ( dir === this.currentPath ) { return; }
     dir = dir || this.currentPath;
 
@@ -393,10 +485,16 @@
     view._call('chdir', {
       path: dir,
       done: function(error, summary) {
+        if ( self._destroyed || !self._scheme ) {
+          return;
+        }
+
         if ( dir && !error ) {
           self.currentPath = dir;
           self.currentSummary = summary;
-          self._app._setArgument('path', dir);
+          if ( self._app ) {
+            self._app._setArgument('path', dir);
+          }
           updateHistory(dir);
         }
         self._toggleLoading(false);
@@ -404,7 +502,7 @@
         self.checkSelection([]);
         self.updateSideView();
 
-        if ( selectFile ) {
+        if ( selectFile && view ) {
           view.set('selected', selectFile.filename, 'filename');
         }
 
@@ -415,6 +513,10 @@
   };
 
   ApplicationFileManagerWindow.prototype.changeView = function(viewType, set) {
+    if ( this._destroyed || !this._scheme ) {
+      return;
+    }
+
     var view = this._scheme.find(this, 'FileView');
     view.set('type', viewType, !!set);
 
@@ -424,6 +526,10 @@
   };
 
   ApplicationFileManagerWindow.prototype.toggleSidebar = function(toggle, set) {
+    if ( this._destroyed || !this._scheme ) {
+      return;
+    }
+
     this.viewOptions.ViewSide = toggle;
 
     var container = this._scheme.find(this, 'SideContainer');
@@ -442,6 +548,10 @@
   };
 
   ApplicationFileManagerWindow.prototype.toggleVFSOption = function(opt, key, toggle, set) {
+    if ( this._destroyed || !this._scheme ) {
+      return;
+    }
+
     var self = this;
     var view = this._scheme.find(this, 'FileView');
     var vfsOptions = OSjs.Core.getSettingsManager().instance('VFS');
@@ -454,21 +564,35 @@
 
     if ( set ) {
       vfsOptions.save(function() {
-        self.changePath(null);
+        setTimeout(function() {
+          self.changePath(null);
+        }, 10);
       });
     }
     return toggle;
   };
 
   ApplicationFileManagerWindow.prototype.toggleHidden = function(toggle, set) {
+    if ( this._destroyed || !this._scheme ) {
+      return;
+    }
+
     return this.toggleVFSOption('showHiddenFiles', 'dotfiles', toggle, set);
   };
 
   ApplicationFileManagerWindow.prototype.toggleExtension = function(toggle, set) {
+    if ( this._destroyed || !this._scheme ) {
+      return;
+    }
+
     return this.toggleVFSOption('showFileExtensions', 'extensions', toggle, set);
   };
 
   ApplicationFileManagerWindow.prototype.toggleNavbar = function(toggle, set) {
+    if ( this._destroyed || !this._scheme ) {
+      return;
+    }
+
     this.viewOptions.ViewNavigation = toggle;
 
     var viewNav  = this._scheme.find(this, 'ToolbarContainer');
@@ -486,6 +610,10 @@
   };
 
   ApplicationFileManagerWindow.prototype.toggleColumn = function(col, set) {
+    if ( this._destroyed || !this._scheme ) {
+      return;
+    }
+
     var vfsOptions     = Utils.cloneObject(OSjs.Core.getSettingsManager().get('VFS') || {});
     var scandirOptions = vfsOptions.scandir || {};
     var viewColumns    = scandirOptions.columns || ['filename', 'mime', 'size'];
@@ -547,6 +675,36 @@
     Window.prototype.destroy.apply(this, arguments);
   };
 
+  ApplicationFileManagerWindow.prototype._onKeyEvent = function(ev, type) {
+    var self = this;
+
+    function paste() {
+      var clip = API.getClipboard();
+      if ( clip && (clip instanceof Array) ) {
+        clip.forEach(function(c) {
+          if ( c && (c instanceof VFS.File) ) {
+            var dst = new VFS.File((self.currentPath + '/' + c.filename));
+            self._app.copy(c, dst, self);
+          }
+        });
+      }
+    }
+
+    if ( Window.prototype._onKeyEvent.apply(this, arguments) ) {
+      if ( type === 'keydown' ) {
+        if ( ev.keyCode === Utils.Keys.V && ev.ctrlKey ) {
+          paste();
+        } else if ( ev.keyCode === Utils.Keys.DELETE ) {
+          var view = this._scheme.find(this, 'FileView');
+          self._app.rm(getSelected(view), self);
+        }
+      }
+
+      return true;
+    }
+    return false;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
@@ -562,7 +720,7 @@
     return Application.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationFileManager.prototype.init = function(settings, metadata, onInited) {
+  ApplicationFileManager.prototype.init = function(settings, metadata) {
     Application.prototype.init.apply(this, arguments);
 
     var self = this;
@@ -572,8 +730,6 @@
     var scheme = GUI.createScheme(url);
     scheme.load(function(error, result) {
       self._addWindow(new ApplicationFileManagerWindow(self, metadata, scheme, path, settings));
-
-      onInited();
     });
 
     this._setScheme(scheme);
@@ -624,16 +780,16 @@
           win.changePath(null);
         });
       });
-    });
+    }, win);
 
   };
 
-  ApplicationFileManager.prototype.info = function(items) {
+  ApplicationFileManager.prototype.info = function(items, win) {
     items.forEach(function(item) {
       if ( item.type === 'file' ) {
         API.createDialog('FileInfo', {
           file: new VFS.File(item)
-        });
+        }, null, win);
       }
     });
   };
@@ -672,7 +828,7 @@
         if ( button === 'ok' && result ) {
           rename(item, result);
         }
-      });
+      }, win);
       dialog.setRange(Utils.getFilenameRange(item.filename));
     });
   };
@@ -695,7 +851,10 @@
       value: 'My new File',
       message: OSjs.Applications.ApplicationFileManager._('Create a new file in <span>{0}</span>', dir)
     }, function(ev, button, result) {
-      if ( !result ) { return; }
+      if ( !result ) {
+        win._toggleDisabled(false);
+        return;
+      }
 
       var item = new VFS.File(dir + '/' + result);
       VFS.exists(item, function(error, result) {
@@ -712,19 +871,24 @@
           finished(true, item);
         }
       });
-    });
+    }, win);
   };
 
   ApplicationFileManager.prototype.mkdir = function(dir, win) {
     var self = this;
 
+    win._toggleDisabled(true);
     API.createDialog('Input', {
       message: OSjs.Applications.ApplicationFileManager._('Create a new directory in <span>{0}</span>', dir)
     }, function(ev, button, result) {
-      if ( !result ) { return; }
+      if ( !result ) {
+        win._toggleDisabled(false);
+        return;
+      }
 
       var item = new VFS.File(dir + '/' + result);
       self._action('mkdir', [item], function() {
+        win._toggleDisabled(false);
         win.changePath(null, item);
       });
     }, win);
@@ -735,7 +899,7 @@
     var dialog = API.createDialog('FileProgress', {
       message: OSjs.Applications.ApplicationFileManager._('Copying <span>{0}</span> to <span>{1}</span>', src.filename, dest.path)
     }, function() {
-    });
+    }, win);
 
     win._toggleLoading(true);
 
@@ -778,13 +942,23 @@
       upload();
     } else {
       API.createDialog('FileUpload', {
-        dest: dest,
+        dest: dest
       }, function(ev, button, result) {
         if ( result ) {
           win.changePath(null, result.filename);
         }
-      });
+      }, win);
     }
+  };
+
+  ApplicationFileManager.prototype.mount = function(win) {
+    var found = this._getWindowByName('ApplicationFileManagerMountWindow');
+    if ( found ) {
+      found._focus();
+      return;
+    }
+
+    this._addWindow(new MountWindow(this, this.__metadata, this.__scheme));
   };
 
   ApplicationFileManager.prototype.showStorageNotification = function(type) {

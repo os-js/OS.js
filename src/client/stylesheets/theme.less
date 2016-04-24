@@ -1,8 +1,8 @@
 @charset "UTF-8";
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -49,7 +49,7 @@
 @gui_base_padding : 4px;
 
 @gui_selected_background_color       : rgb(45, 115, 210);
-@gui_selected_blur_background_color  : rgba(45, 115, 210, .8);
+@gui_selected_blur_background_color  : rgba(45, 115, 210, .2);
 @gui_selected_foreground_color       : #ffffff;
 
 @gui_zebra_foreground_color          : inherit;
@@ -82,6 +82,8 @@
 @gui_button_disabled_background      : @gui_input_disabled_background_color;
 
 @gui_progress_bar_background : @gui_selected_background_color url('/themes/styles/default/gui/progressbar.png') repeat-x center;
+
+@gui_focus_outline : 0 none transparent;
 
 /**
  * ===========================================================================
@@ -221,7 +223,8 @@ corewm-panel:before {
   }
 
 corewm-panel .PanelItemClock {
-  font-weight : bold;
+  font-family : Monospace, Courier New;
+  font-weight : normal;
   text-align : right;
   line-height : 26px;
 }
@@ -312,17 +315,6 @@ application-window-top {
 
   application-window-icon {
     width: @window_top_height;
-    height: @window_top_height;
-    top: 0;
-    left: 0;
-    margin: 0;
-
-    img {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      margin: -8px 0 0 -8px;
-    }
   }
 }
 application-window-content {
@@ -347,7 +339,9 @@ application-window-title:active {
 application-window[data-focused="true"] application-window-title {
   opacity : 1;
 }
-application-window-buttons > .application-window-button-entry {
+.application-window-button-entry {
+  width : 22px;
+  text-align : center;
   cursor : pointer;
 }
 application-window-resize {
@@ -450,6 +444,76 @@ gui-container[data-borders="true"] {
       height : calc(~"100% - "@gui_base_padding * 2);
     }
 
+    gui-hbox-container > .perc-100 {
+      height : calc(~"100% - "@gui_base_padding * 2);
+    }
+    gui-vbox-container > .perc-100 {
+      width : calc(~"100% - "@gui_base_padding * 2);
+    }
+
+    gui-hbox-container > .perc-90 {
+      height : calc(~"90% - "@gui_base_padding * 2);
+    }
+    gui-vbox-container > .perc-90 {
+      width : calc(~"90% - "@gui_base_padding * 2);
+    }
+
+    gui-hbox-container > .perc-80 {
+      height : calc(~"80% - "@gui_base_padding * 2);
+    }
+    gui-vbox-container > .perc-80 {
+      width : calc(~"80% - "@gui_base_padding * 2);
+    }
+
+    gui-hbox-container > .perc-70 {
+      height : calc(~"70% - "@gui_base_padding * 2);
+    }
+    gui-vbox-container > .perc-70 {
+      width : calc(~"70% - "@gui_base_padding * 2);
+    }
+
+    gui-hbox-container > .perc-60 {
+      height : calc(~"60% - "@gui_base_padding * 2);
+    }
+    gui-vbox-container > .perc-60 {
+      width : calc(~"60% - "@gui_base_padding * 2);
+    }
+
+    gui-hbox-container > .perc-50 {
+      height : calc(~"50% - "@gui_base_padding * 2);
+    }
+    gui-vbox-container > .perc-50 {
+      width : calc(~"50% - "@gui_base_padding * 2);
+    }
+
+    gui-hbox-container > .perc-40 {
+      height : calc(~"40% - "@gui_base_padding * 2);
+    }
+    gui-vbox-container > .perc-40 {
+      width : calc(~"40% - "@gui_base_padding * 2);
+    }
+
+    gui-hbox-container > .perc-30 {
+      height : calc(~"30% - "@gui_base_padding * 2);
+    }
+    gui-vbox-container > .perc-30 {
+      width : calc(~"30% - "@gui_base_padding * 2);
+    }
+
+    gui-hbox-container > .perc-20 {
+      height : calc(~"20% - "@gui_base_padding * 2);
+    }
+    gui-vbox-container > .perc-20 {
+      width : calc(~"20% - "@gui_base_padding * 2);
+    }
+
+    gui-hbox-container > .perc-10 {
+      height : calc(~"10% - "@gui_base_padding * 2);
+    }
+    gui-vbox-container > .perc-10 {
+      width : calc(~"10% - "@gui_base_padding * 2);
+    }
+
 /* Paned View */
 gui-paned-view > gui-paned-view-handle {
   min-width : 8px;
@@ -535,14 +599,11 @@ gui-expander {
         bottom : -1px;
         border-bottom : 1px solid @base_background_color;
       }
-  gui-tabs > div {
+  gui-tabs > gui-tab-container {
     height : ~"calc(100% - 25px)";
     border : 1px solid @gui_border_color;
+    padding : @gui_base_padding;
   }
-
-    gui-tab-container {
-      padding : @gui_base_padding;
-    }
 
 /* Button Bar */
 
@@ -573,6 +634,9 @@ gui-button[data-icon-size="32"] {
 }
   gui-button button {
     .theme_button();
+  }
+  gui-button button:focus {
+    outline: @gui_focus_outline;
   }
   gui-button button.gui-active,
   gui-button button:active {
@@ -616,6 +680,10 @@ gui-checkbox {
     line-height: 12px;
     color : @gui_input_foreground_color;
     font-family: Arial;
+  }
+  gui-radio input:focus,
+  gui-checkbox input:focus {
+    outline: @gui_focus_outline;
   }
 
   gui-radio input {
@@ -666,6 +734,9 @@ gui-select {
   gui-select select:disabled {
     .theme_text_input_disabled();
   }
+  gui-select select:focus {
+    outline: @gui_focus_outline;
+  }
 
   gui-select:before {
     right: 1px;
@@ -696,6 +767,9 @@ gui-select {
 gui-select-list select {
   .theme_text_input();
 }
+  gui-select-list select:focus {
+    outline: @gui_focus_outline;
+  }
 gui-select-list select:disabled {
   .theme_text_input_disabled();
 }
@@ -794,6 +868,9 @@ gui-switch {
   gui-switch button {
     .theme_button();
   }
+  gui-switch button:focus {
+    outline: @gui_focus_outline;
+  }
 
   gui-switch > label > div {
     margin-left : @gui_base_padding;
@@ -834,6 +911,10 @@ gui-text {
   gui-text input:disabled {
     .theme_text_input_disabled();
   }
+  gui-password input:focus,
+  gui-text input:focus {
+    outline: @gui_focus_outline;
+  }
 
   gui-password[data-disabled="true"] label,
   gui-text[data-disabled="true"] label {
@@ -844,6 +925,9 @@ gui-text {
 /* Text Area */
   gui-textarea textarea {
     .theme_text_input();
+  }
+  gui-textarea textarea:focus {
+    outline: @gui_focus_outline;
   }
   gui-textarea textarea:disabled {
     .theme_text_input_disabled();
@@ -879,6 +963,9 @@ gui-input-modal button {
   padding-left : 8px;
   padding-right : 8px;
 }
+  gui-input-modal button:focus {
+    outline: @gui_focus_outline;
+  }
 
 /**
  * ===========================================================================
@@ -969,7 +1056,6 @@ gui-menu-bar {
 /* Progressbar */
 gui-progress-bar {
   display : block;
-  line-height : 26px;
   height : 26px;
 }
   gui-progress-bar:before {
@@ -1002,6 +1088,9 @@ gui-icon-view {
   border : 1px solid @gui_input_border_color;
   padding : @gui_base_padding;
 }
+  gui-icon-view.gui-element-focused {
+    outline: @gui_focus_outline;
+  }
   gui-icon-view-entry {
     cursor : pointer;
     margin : 2px;
@@ -1030,6 +1119,9 @@ gui-list-view {
   background-color : @gui_input_background_color;
   border : 1px solid @gui_input_border_color;
 }
+  gui-list-view.gui-element-focused {
+    outline: @gui_focus_outline;
+  }
   gui-list-view-head {
     background-color : @gui_background_color;
   }
@@ -1051,8 +1143,8 @@ gui-list-view {
       }
 
     gui-list-view-row.gui-active {
-      background-color: @gui_selected_blur_background_color !important;
-      color: @gui_selected_foreground_color !important;
+      background-color: @gui_selected_blur_background_color;
+      color: @gui_selected_foreground_color;
     }
     gui-list-view.gui-element-focused gui-list-view-row.gui-active {
       background-color: @gui_selected_background_color;
@@ -1073,6 +1165,13 @@ gui-tree-view {
   background-color : @gui_input_background_color;
   border : 1px solid @gui_input_border_color;
 }
+    gui-tree-view.gui-element-focused {
+      outline: @gui_focus_outline;
+    }
+    gui-tree-view-entry.dnd-over > div {
+      font-weight : bold;
+      text-decoration : underline;
+    }
     gui-tree-view-entry > div {
       padding : @gui_base_padding;
     }

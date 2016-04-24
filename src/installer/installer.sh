@@ -3,12 +3,12 @@
 # OS.js automated installer
 #
 # Simply run this command and you're ready to go
-#   curl -sS http://andersevenrud.github.io/OS.js-v2/installer | sh
+#   curl -sS http://os-js.github.io/OS.js/installer | sh
 #
 
 
-REPO="https://github.com/andersevenrud/OS.js-v2.git"
-DEST="OS.js-v2"
+REPO="https://github.com/os-js/OS.js.git"
+DEST="OS.js"
 
 if [ -d "$DEST" ]; then
   echo "Destination already exists"
@@ -54,7 +54,7 @@ git clone --recursive $REPO $DEST
 
 echo "Building"
 cd $DEST
-npm install
+npm install --production
 grunt
 
 echo "INSTALLATION COMPLETE :-)"

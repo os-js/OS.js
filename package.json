@@ -1,7 +1,8 @@
 {
   "name": "OS.js",
+  "version": "2.0.0-alpha.74",
   "description": "JavaScript Cloud/Web Desktop Platform",
-  "url": "http://andersevenrud.github.io/OS.js-v2/",
+  "url": "http://os.js.org",
   "email": "andersevenrud@gmail.com",
   "license": "BSD-2-Clause",
   "contributors": [
@@ -10,30 +11,39 @@
       "email": "andersevenrud@gmail.com"
     }
   ],
-  "keywords": ["os.js"],
+  "keywords": [
+    "os.js",
+    "web desktop",
+    "cloud desktop"
+  ],
   "bugs": {
-    "url": "https://github.com/andersevenrud/OS.js-v2/issues"
+    "url": "https://github.com/os-js/OS.js/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/andersevenrud/OS.js-v2.git"
+    "url": "https://github.com/os-js/OS.js.git"
   },
   "scripts": {
     "test": "grunt test"
   },
   "dependencies": {
-    "grunt":                ">=0.4.5",
-    "grunt-mocha-test":     ">=0.12.7",
-    "grunt-contrib-watch":  ">=0.6.1",
-    "grunt-contrib-jshint": ">=0.11.3",
-    "time-grunt":           ">=1.2.1",
-    "clean-css":            ">=3.4.5",
-    "uglify-js":            ">=2.4.24",
-    "less":                 ">=2.5.3",
-    "cookies":              ">=0.5.1",
-    "node-fs-extra":        ">=0.8.1",
-    "formidable":           ">=1.0.17",
-    "request":              ">=2.64.0"
+    "grunt": ">=1.0.1",
+    "less": ">=2.6.1",
+    "simple-session": ">=0.0.1",
+    "node-fs-extra": ">=0.8.1",
+    "formidable": ">=1.0.17",
+    "request": ">=2.70.0"
+  },
+  "devDependencies": {
+    "clean-css": ">=3.4.12",
+    "uglify-js": ">=2.6.2",
+    "colors": ">=1.1.2",
+    "time-grunt": ">=1.3.0",
+    "grunt-mocha-test": ">=0.12.7",
+    "grunt-contrib-watch": ">=1.0.0",
+    "grunt-contrib-jshint": ">=1.0.0",
+    "grunt-jscs": ">=2.8.0",
+    "grunt-contrib-csslint": "1.0.0",
+    "grunt-contrib-validate-xml": ">=0.0.1"
   }
-
 }

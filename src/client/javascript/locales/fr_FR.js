@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -26,16 +26,23 @@
  *
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @author  Emersion <contact@emersion.fr>
+ * @author  Emilien Raffaëlli <emilienraffaelli@hotmail.com>
  * @licence Simplified BSD License
  */
 (function() {
+  // jscs:disable validateQuoteMarks
   'use strict';
 
   OSjs.Locales = OSjs.Locales || {};
 
   OSjs.Locales.fr_FR = {
+    //
+    // CORE
+    //
+
     'ERR_FILE_OPEN'             : 'Erreur lors de l\'ouverture du fichier',
-    'ERR_FILE_OPEN_FMT'         : 'Le fichier \'<span>{0}</span>\' n\'a pas pu être ouvert',
+    'ERR_WM_NOT_RUNNING'        : 'Le gestionnaire de fenêtre n\'est pas en cours d\'execution',
+    'ERR_FILE_OPEN_FMT'         : 'Le fichier \'**{0}**\' n\'a pas pu être ouvert',
     'ERR_APP_MIME_NOT_FOUND_FMT': 'Impossible de trouver une application supportant les fichiers \'{0}\'',
     'ERR_APP_LAUNCH_FAILED'     : 'Impossible de lancer l\'application',
     'ERR_APP_LAUNCH_FAILED_FMT' : 'Une erreur est survenue lors du lancement de : {0}',
@@ -61,6 +68,11 @@
     'ERR_APP_MISSING_ARGUMENT_FMT': 'Argument manquant: {0}',
     'ERR_APP_UNKNOWN_ERROR'       : 'Erreur inconnue',
 
+    'ERR_OPERATION_TIMEOUT'       : 'Operation Expirée',
+    'ERR_OPERATION_TIMEOUT_FMT'   : 'Operation Expirée ({0})',
+
+    'ERR_ARGUMENT_FMT'    : '\'{0}\' attends \'{1}\' d\'être \'{2}\', \'{3}\' fournie',
+
     // Window
     'ERR_WIN_DUPLICATE_FMT' : 'Une autre fenêtre porte déjà le nom \'{0}\'',
     'WINDOW_MINIMIZE' : 'Minimiser',
@@ -73,8 +85,25 @@
     // Handler
     'TITLE_SIGN_OUT' : 'Déconnexion',
     'TITLE_SIGNED_IN_AS_FMT' : 'Connecté en tant que: {0}',
+    'ERR_LOGIN_FMT' : 'Erreur de connexion : {0}',
+    'ERR_LOGIN_INVALID' : 'Identification invalide',
 
-    // Dialogs
+    // SESSION
+    'MSG_SESSION_WARNING' : 'Êtes-vous sûr de vouloir quitter OS.js? Tous vos paramètres et vos données seront perdues!',
+
+    // Service
+    'BUGREPORT_MSG' : 'Veuillez reporter cela si vous pensez que c\'est un bug.\n Incluez une brève description de comment cela est arrivé et si vous le pouvez; comment le reproduire',
+
+    // API
+    'SERVICENOTIFICATION_TOOLTIP' : 'Loggué dans un service externe: {0}',
+
+    // Utils
+    'ERR_UTILS_XHR_FATAL' : 'Erreur Fatale',
+    'ERR_UTILS_XHR_FMT' : 'Erreure AJAX/XHR: {0}',
+
+    //
+    // DIALOGS
+    //
     'DIALOG_LOGOUT_TITLE' : 'Déconnexion (quitter)', // Actually located in session.js
     'DIALOG_LOGOUT_MSG_FMT' : 'Déconnexion de l\'utilisateur \'{0}\'.\nVoulez-vous enregistrer votre session courante ?',
 
@@ -101,7 +130,7 @@
     'DIALOG_FILE_SAVE'      : 'Enregistrer',
     'DIALOG_FILE_OPEN'      : 'Ouvrir',
     'DIALOG_FILE_MKDIR'     : 'Nouveau dossier',
-    'DIALOG_FILE_MKDIR_MSG' : 'Créer un nouveau dossier dans <span>{0}</span>',
+    'DIALOG_FILE_MKDIR_MSG' : 'Créer un nouveau dossier dans **{0}**',
     'DIALOG_FILE_OVERWRITE' : 'Êtes-vous sûr de vouloir écraser le fichier \'{0}\'?',
     'DIALOG_FILE_MNU_VIEWTYPE' : 'Type de vue',
     'DIALOG_FILE_MNU_LISTVIEW' : 'Vue en liste',
@@ -115,7 +144,7 @@
     'DIALOG_FILEINFO_TITLE'   : 'Informations sur le fichier',
     'DIALOG_FILEINFO_LOADING' : 'Chargement des informations sur le fichier: {0}',
     'DIALOG_FILEINFO_ERROR'   : 'Erreur FileInformationDialog',
-    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Impossible de récupérer les informations sur : <span>{0}</span>',
+    'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Impossible de récupérer les informations sur : **{0}**',
     'DIALOG_FILEINFO_ERROR_LOOKUP_FMT' : 'FImpossible de récupérer les informations sur : {0}',
 
     'DIALOG_INPUT_TITLE' : 'Fenêtre de saisie',
@@ -124,36 +153,52 @@
     'DIALOG_FILEPROGRESS_LOADING' : 'Chargement...',
 
     'DIALOG_UPLOAD_TITLE'   : 'Fenêtre d\'envoi de fichier',
-    'DIALOG_UPLOAD_DESC'    : 'Envoyer un fichier vers <span>{0}</span>.<br />Taille maximum: {1} octets',
+    'DIALOG_UPLOAD_DESC'    : 'Envoyer un fichier vers **{0}**.\nTaille maximum: {1} octets',
     'DIALOG_UPLOAD_MSG_FMT' : 'Envoi de \'{0}\' ({1} {2}) vers {3}',
     'DIALOG_UPLOAD_MSG'     : 'Envoi du fichier...',
     'DIALOG_UPLOAD_FAILED'  : 'L\'envoi a échoué!',
     'DIALOG_UPLOAD_FAILED_MSG'      : 'L\'envoi a échoué',
     'DIALOG_UPLOAD_FAILED_UNKNOWN'  : 'Raison inconnue...',
     'DIALOG_UPLOAD_FAILED_CANCELLED': 'Annulé pas l\'utilisateur...',
+    'DIALOG_UPLOAD_TOO_BIG': 'Le fichier est trop gros',
+    'DIALOG_UPLOAD_TOO_BIG_FMT': 'Le fichier est trop gros, sa taille éxcède {0}',
 
     'DIALOG_FONT_TITLE' : 'Fenêtre de police',
-
 
     'DIALOG_APPCHOOSER_TITLE' : 'Choisir une application',
     'DIALOG_APPCHOOSER_MSG'   : 'Choisir une application pour ouvrir',
     'DIALOG_APPCHOOSER_NO_SELECTION' : 'Vous devez sélectionner une application',
     'DIALOG_APPCHOOSER_SET_DEFAULT'  : 'Utiliser comme application par défaut pour {0}',
 
+    //
+    // HELPERS
+    //
+
     // GoogleAPI
-    'GAPI_DISABLED'           : 'Module GoogleAPI non configuré ou désactivé',
+    'GAPI_DISABLED'           : 'Module Google API non configuré ou désactivé',
     'GAPI_SIGN_OUT'           : 'Déconnexion de l\'API Google',
     'GAPI_REVOKE'             : 'Révoquer les permissions et déconnecter',
-    'GAPI_AUTH_FAILURE'       : 'L\'authentification Google API a échoué ou ne s\'est pas déroulée',
+    'GAPI_AUTH_FAILURE'       : 'L\'authentification Google API a échouer ou ne s\'est pas déroulée',
     'GAPI_AUTH_FAILURE_FMT'   : 'Impossible d\'authentifier: {0}:{1}',
     'GAPI_LOAD_FAILURE'       : 'Impossible de charger l\'API Google',
+
+    // Windows Live API
+    'WLAPI_DISABLED'          : 'Module Live API non configuré ou désactivé',
+    'WLAPI_SIGN_OUT'          : 'Déconnexion de l\'API Live',
+    'WLAPI_LOAD_FAILURE'      : 'Impossible de charger Windows Live API',
+    'WLAPI_LOGIN_FAILED'      : 'Impossible de s\'authentifier dans Windows Live API',
+    'WLAPI_LOGIN_FAILED_FMT'  : 'Impossible de s\'authentifier dans Windows Live API: {0}',
+    'WLAPI_INIT_FAILED_FMT'   : 'Windows Live API a retourné le status {0}',
 
     // IndexedDB
     'IDB_MISSING_DBNAME' : 'Impossible de créer une base IndexedDB sans nom de base',
     'IDB_NO_SUCH_ITEM'   : 'Aucun item correspondant',
 
+    //
     // VFS
+    //
     'ERR_VFS_FATAL'           : 'Erreur fatale',
+    'ERR_VFS_UNAVAILABLE'     : 'Non disponible',
     'ERR_VFS_FILE_ARGS'       : 'Le fichier attend au moins un argument',
     'ERR_VFS_NUM_ARGS'        : 'Pas assez d\'arguments',
     'ERR_VFS_EXPECT_FILE'     : 'Un objet "fichier" est attendu',
@@ -167,9 +212,80 @@
     'ERR_VFS_UPLOAD_CANCELLED': 'L\'envoi du fichier a été annulé',
     'ERR_VFS_DOWNLOAD_NO_FILE': 'Impossible de télécharger un chemin sans chemin',
     'ERR_VFS_DOWNLOAD_FAILED' : 'Une erreur est survenue lors du téléchargement: {0}',
+    'ERR_VFS_REMOTEREAD_EMPTY': 'La réponse est vide',
+
+    'ERR_VFSMODULE_INVALID'            : 'Module VFS invalide',
+    'ERR_VFSMODULE_INVALID_FMT'        : 'Module VFS invalide: {0}',
+    'ERR_VFSMODULE_INVALID_METHOD'     : 'Méthode VFS invalide',
+    'ERR_VFSMODULE_INVALID_METHOD_FMT' : 'Méthode VFS invalide: {0}',
+    'ERR_VFSMODULE_INVALID_TYPE'       : 'Type de module VFS invalide',
+    'ERR_VFSMODULE_INVALID_TYPE_FMT'   : 'Type de module VFS invalide: {0}',
+    'ERR_VFSMODULE_INVALID_CONFIG'     : 'Configuration VFS Module ',
+    'ERR_VFSMODULE_INVALID_CONFIG_FMT' : 'Configuration VFS Module non valide : {0}',
+    'ERR_VFSMODULE_ALREADY_MOUNTED'    : 'Module VFS déjà monté',
+    'ERR_VFSMODULE_ALREADY_MOUNTED_FMT': 'Module VFS \'{0}\' déjà monté',
+    'ERR_VFSMODULE_NOT_MOUNTED'        : 'Module VFS non monté',
+    'ERR_VFSMODULE_NOT_MOUNTED_FMT'    : 'Module VFS \'{0}\' non monté',
+    'ERR_VFSMODULE_EXCEPTION'          : 'Exception du module VFS',
+    'ERR_VFSMODULE_EXCEPTION_FMT'      : 'Exception du module VFS: {0}',
+    'ERR_VFSMODULE_NOT_FOUND_FMT'      : 'Aucun Module VFS ne correspond {0}. Mauvais chemin ou Mauvais formats ?',
+
     'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Téléchargement du fichier',
 
+    'ERR_VFSMODULE_XHR_ERROR'      : 'Erreur XHR',
+    'ERR_VFSMODULE_ROOT_ID'        : 'Impossible de trouver l\'id du répertoire racine',
+    'ERR_VFSMODULE_NOSUCH'         : 'Le fichier n\'existe pas',
+    'ERR_VFSMODULE_PARENT'         : 'Pas de parent',
+    'ERR_VFSMODULE_PARENT_FMT'     : 'Impossible de trouver un parent: {0}',
+    'ERR_VFSMODULE_SCANDIR'        : 'Impossible de scanner le répertoire',
+    'ERR_VFSMODULE_SCANDIR_FMT'    : 'Impossible de scanner le répertoire: {0}',
+    'ERR_VFSMODULE_READ'           : 'Impossible de lire le fichier',
+    'ERR_VFSMODULE_READ_FMT'       : 'Impossible de lire le fichier: {0}',
+    'ERR_VFSMODULE_WRITE'          : 'Impossible d\'écrire dans le fichier',
+    'ERR_VFSMODULE_WRITE_FMT'      : 'Impossible d\'écrire dans le fichier: {0}',
+    'ERR_VFSMODULE_COPY'           : 'Impossible de copier',
+    'ERR_VFSMODULE_COPY_FMT'       : 'Impossible de copier: {0}',
+    'ERR_VFSMODULE_UNLINK'         : 'Impossible de détacher le fichier',
+    'ERR_VFSMODULE_UNLINK_FMT'     : 'Impossible de détacher le fichier: {0}',
+    'ERR_VFSMODULE_MOVE'           : 'Impossible de déplacer le fichier',
+    'ERR_VFSMODULE_MOVE_FMT'       : 'Impossible de déplacer le fichier: {0}',
+    'ERR_VFSMODULE_EXIST'          : 'Impossible de vérifier l\'existance du fichier',
+    'ERR_VFSMODULE_EXIST_FMT'      : 'Impossible de vérifier l\'existance du fichier: {0}',
+    'ERR_VFSMODULE_FILEINFO'       : 'Impossible de récuperer les informations du fichier',
+    'ERR_VFSMODULE_FILEINFO_FMT'   : 'Impossible de récuperer les informations du fichier: {0}',
+    'ERR_VFSMODULE_MKDIR'          : 'Impossible de créer un répertoire',
+    'ERR_VFSMODULE_MKDIR_FMT'      : 'Impossible de créer un répertoire: {0}',
+    'ERR_VFSMODULE_URL'            : 'Impossible de récuperer l\'URL du fichier',
+    'ERR_VFSMODULE_URL_FMT'        : 'Impossible de récuperer l\'URL du fichier: {0}',
+    'ERR_VFSMODULE_TRASH'          : 'Impossible de déplacer le fichier dans la corbeille',
+    'ERR_VFSMODULE_TRASH_FMT'      : 'Impossible de déplacer le fichier dans la corbeille: {0}',
+    'ERR_VFSMODULE_UNTRASH'        : 'Impossible de sortir le fichier de la corbeille',
+    'ERR_VFSMODULE_UNTRASH_FMT'    : 'Impossible de sortir le fichier de la corbeille: {0}',
+    'ERR_VFSMODULE_EMPTYTRASH'     : 'Impossible de vider la corbeille',
+    'ERR_VFSMODULE_EMPTYTRASH_FMT' : 'Impossible de vider la corbeille: {0}',
+
+    // VFS -> Dropbox
+    'DROPBOX_NOTIFICATION_TITLE' : 'Vous êtes connectés dans l\'API Dropbox',
+    'DROPBOX_SIGN_OUT'           : 'Déconnexion des services Google API',
+
+    // VFS -> OneDrive
+    'ONEDRIVE_ERR_RESOLVE'      : 'Impossible de résoudre le chemin: objet non trouvé',
+
+    // ZIP
+    'ZIP_PRELOAD_FAIL'  : 'LE chargement de zip.js a échoué',
+    'ZIP_VENDOR_FAIL'   : 'La bibliothèque zip.js n\'a pas été trouvée. A-t-elle été chargée correctement?',
+    'ZIP_NO_RESOURCE'   : 'Aucune archive zip n\'a été fournie',
+    'ZIP_NO_PATH'       : 'Aucun chemin fourni',
+
+    //
+    // PackageManager
+    //
+
+    'ERR_PACKAGE_EXISTS': 'Le répertoire d\'installation des paquêts existe déjà. L\'opération est interrompue!',
+
+    //
     // DefaultApplication
+    //
     'ERR_FILE_APP_OPEN'         : 'Impossible d\'ouvrir le fichier',
     'ERR_FILE_APP_OPEN_FMT'     : 'Le fichier {0} n\'a pas pu être ouvert car le type mime {1} m\'est pas supporté',
     'ERR_FILE_APP_OPEN_ALT_FMT' : 'Le fichier {0} n\'a pas pu être ouvert',
@@ -184,7 +300,9 @@
     'MSG_APPLICATION_WARNING'   : 'Avertissement de l\'application',
     'MSG_MIME_OVERRIDE'         : 'Le type de fichier "{0}" n\'est pas supporté, utilisation de "{1}" à la place.',
 
+    //
     // General
+    //
 
     'LBL_UNKNOWN'      : 'Inconnu',
     'LBL_APPEARANCE'   : 'Appearance',
@@ -214,7 +332,7 @@
     'LBL_THEME'        : 'Thème',
     'LBL_COLOR'        : 'Couleur',
     'LBL_PID'          : 'PID',
-    'LBL_KILL'         : 'Tuer',
+    'LBL_KILL'         : 'Fin de tâche',
     'LBL_ALIVE'        : 'Vivant',
     'LBL_INDEX'        : 'Index',
     'LBL_ADD'          : 'Ajouter',
@@ -272,7 +390,31 @@
     'LBL_ORDERED_LIST'  : 'Liste ordonnée',
     'LBL_BACKGROUND_IMAGE' : 'Image d\'arrière-plan',
     'LBL_BACKGROUND_COLOR' : 'Couleur d\'arrière-plan',
-    'LBL_UNORDERED_LIST'   : 'Liste désordonnée'
+    'LBL_UNORDERED_LIST'   : 'Liste désordonnée',
+    'LBL_STATUS'   : 'Status',
+    'LBL_READONLY' : 'Lecture seule',
+    'LBL_CREATED' : 'Crée',
+    'LBL_MODIFIED' : 'Modifié',
+    'LBL_SHOW_COLUMNS' : 'Montrer les colonnes',
+    'LBL_MOVE' : 'Déplacer',
+    'LBL_OPTIONS' : 'Options',
+    'LBL_OK' : 'OK',
+    'LBL_DIRECTORY' : 'Repertoire',
+    'LBL_CREATE' : 'Créer',
+    'LBL_BUGREPORT' : 'Report de bug',
+    'LBL_INSTALL' : 'Installer',
+    'LBL_UPDATE' : 'Mettre à jour',
+    'LBL_REMOVE' : 'Enlever',
+    'LBL_SHOW_SIDEBAR' : 'Afficher la barre de côté',
+    'LBL_SHOW_NAVIGATION' : 'Afficher la navigation',
+    'LBL_SHOW_HIDDENFILES' : 'Afficher les fichiers cachés',
+    'LBL_SHOW_FILEEXTENSIONS' : 'Afficher les extensions de fichier',
+    'LBL_MOUNT': 'Monter',
+    'LBL_DESCRIPTION': 'Description',
+    'LBL_USERNAME': 'Nom d\'utilisateur',
+    'LBL_PASSWORD': 'Mot de passe',
+    'LBL_HOST': 'Hôte',
+    'LBL_NAMESPACE': 'Espace de nom'
   };
 
 })();

@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -46,6 +46,8 @@
     this.onDestroy      = opts.onDestroy     || function() {};
     this.onClick        = opts.onClick       || function() {};
     this.onContextMenu  = opts.onContextMenu || function() {};
+    this.evClick        = null;
+    this.evMenu         = null;
 
     this._build(name);
     this.onCreated.call(this);
@@ -59,18 +61,22 @@
     }
 
     this.$container.className = classNames.join(' ');
+    this.$container.setAttribute('role', 'button');
+    this.$container.setAttribute('aria-label', this.opts.title);
+
     if ( this.opts.tooltip ) {
       this.$container.title = this.opts.tooltip;
     }
 
-    this.$container.addEventListener('click', function(ev) {
+    this.evClick = Utils.$bind(this.$container, 'click', function(ev) {
       ev.stopPropagation();
       ev.preventDefault();
       OSjs.API.blurMenu();
       self.onClick.apply(self, arguments);
       return false;
     });
-    this.$container.addEventListener('contextmenu', function(ev) {
+
+    this.evMenu = Utils.$bind(this.$container, 'contextmenu', function(ev) {
       ev.stopPropagation();
       ev.preventDefault();
       OSjs.API.blurMenu();
@@ -83,6 +89,8 @@
       this.$image.src   = (this.opts.image || this.opts.icon || 'about:blank');
       this.$container.appendChild(this.$image);
     }
+
+    this.$container.appendChild(document.createElement('div'));
   };
 
   NotificationAreaItem.prototype.init = function(root) {
@@ -115,17 +123,24 @@
   };
 
   NotificationAreaItem.prototype.destroy = function() {
+    if ( this.evClick ) {
+      this.evClick = Utils.$unbind(this.evClick);
+    }
+    if ( this.evMenu ) {
+      this.evMenu = Utils.$unbind(this.evMenu);
+    }
     this.onDestroy.call(this);
 
     this.$image     = Utils.$remove(this.$image);
     this.$container = Utils.$remove(this.$container);
   };
 
+  // NOTE: This is a workaround for resetting items on panel change
+  var _restartFix = {};
+
   /**
    * PanelItem: NotificationArea
    */
-  var _restartFix = {}; // FIXME: This is a workaround for resetting items on panel change
-
   var PanelItemNotificationArea = function() {
     PanelItem.apply(this, ['PanelItemNotificationArea PanelItemFill PanelItemRight']);
     this.notifications = {};
@@ -138,6 +153,7 @@
 
   PanelItemNotificationArea.prototype.init = function() {
     var root = PanelItem.prototype.init.apply(this, arguments);
+    root.setAttribute('role', 'toolbar');
 
     var fix = Object.keys(_restartFix);
     var self = this;
@@ -149,7 +165,6 @@
 
     return root;
   };
-
 
   PanelItemNotificationArea.prototype.createNotification = function(name, opts) {
     if ( this._$root ) {

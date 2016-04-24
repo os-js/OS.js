@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -55,6 +55,7 @@
 
     GUI.Elements._dataview.bindEntryEvents(el, cel, 'gui-icon-view-entry');
 
+    cel.setAttribute('role', 'listitem');
     cel.appendChild(dicon);
     cel.appendChild(dlabel);
   }
@@ -68,16 +69,18 @@
    *
    * A container for displaying icons with labels
    *
-   * Parameters:
-   *  icon-size     int         Icon size (default=16)
-   *
    * Format for add():
-   *
+   * ```
    * {
    *    label: "Label",
    *    icon: "Optional icon path",
    *    value: "something or JSON or whatever"
    * }
+   * ```
+   *
+   * For more properties and events etc, see 'dataview'
+   *
+   * @property  icon-size   integer       Icon size (default=16)
    *
    * @api OSjs.GUI.Elements.gui-icon-view
    * @see OSjs.GUI.Elements._dataview
@@ -105,6 +108,8 @@
         }
         initEntry(el, cel);
       });
+
+      el.setAttribute('role', 'list');
 
       GUI.Elements._dataview.build(el, applyArgs);
     },

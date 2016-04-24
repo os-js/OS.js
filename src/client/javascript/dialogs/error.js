@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -70,7 +70,7 @@
       title: args.title || API._('DIALOG_CONFIRM_TITLE'),
       icon: 'status/dialog-error.png',
       width: 400,
-      height: error ? 400 : 200,
+      height: error ? 400 : 200
     }, args, callback]);
 
     this._sound = 'dialog-warning';
@@ -83,10 +83,14 @@
   ErrorDialog.constructor = DialogWindow;
 
   ErrorDialog.prototype.init = function() {
-    var root = DialogWindow.prototype.init.apply(this, arguments);
     var self = this;
 
-    this.scheme.find(this, 'Message').set('value', this.args.message, true);
+    var root = DialogWindow.prototype.init.apply(this, arguments);
+    root.setAttribute('role', 'alertdialog');
+
+    var msg = Utils.$escape(this.args.message || '').replace(/\*\*(\w+)\*\*/, '<span>$1</span>');
+
+    this.scheme.find(this, 'Message').set('value', msg, true);
     this.scheme.find(this, 'Summary').set('value', this.args.error);
     this.scheme.find(this, 'Trace').set('value', this.traceMessage);
     if ( !this.traceMessage ) {
@@ -104,7 +108,7 @@
         if ( self.traceMessage ) {
           body.push('\n```\n' + self.traceMessage + '\n```');
         }
-        window.open('//github.com/andersevenrud/OS.js-v2/issues/new?title=' + title + '&body=' + encodeURIComponent(body.join('\n')));
+        window.open('//github.com/os-js/OS.js/issues/new?title=' + title + '&body=' + encodeURIComponent(body.join('\n')));
       });
     } else {
       this.scheme.find(this, 'ButtonBugReport').hide();

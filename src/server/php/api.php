@@ -2,7 +2,7 @@
 /*!
  * OS.js - JavaScript Operating System
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,10 @@
  */
 abstract class APIHandler
 {
+  public static function checkVFSPrivilege($method, $arguments) {
+    return true;
+  }
+
   /**
    * This function will check for privileges
    */
@@ -68,7 +72,7 @@ abstract class APIHandler
  */
 class APIUser
 {
-  const GROUP_VFS = 'vfs';
+  const GROUP_VFS = 'fs';
   const GROUP_API = 'api';
   const GROUP_APPLICATION = 'application';
   const GROUP_CURL = 'curl';
@@ -150,6 +154,11 @@ class APIRequest
     $this->method = empty($_SERVER['REQUEST_METHOD']) ? 'GET' : $_SERVER['REQUEST_METHOD'];
     $this->uri    = isset($_SERVER["REQUEST_URI"]) ? $_SERVER["REQUEST_URI"] : "/";
     $this->data   = $this->method === 'POST' ? file_get_contents("php://input") : (empty($_SERVER['REQUEST_URI']) ? '' : $this->uri);
+
+    $settings = Settings::get();
+    if ( !empty($settings["basedir"]) ) {
+      $this->uri = str_replace($this->uri, $settings["basedir"], "");
+    }
   }
 
   /**
@@ -158,11 +167,11 @@ class APIRequest
   public static function call() {
     $request = new APIRequest();
 
-    if ( preg_match('/API$/', $request->uri) ) {
-      $response = API::CoreAPI($request);
-    } else if ( preg_match('/FS$/', $request->uri) ) {
+    if ( $request->method == "POST" && preg_match("/^\/FS\/upload$/", $request->uri) ) {
       $response = API::FilePOST($request);
-    } else if ( preg_match('/\/(([^\/]+\/)+)?(FS)(.*)/', $request->uri) ) {
+    } else if ( $request->method === "POST" && preg_match("/^\/(FS|API)/", $request->uri) ) {
+      $response = API::CoreAPI($request);
+    } else if ( preg_match("/^\/FS(.*)/", $request->uri) ) {
       $response = API::FileGET($request);
     } else {
       $response = null;
@@ -324,25 +333,35 @@ class API
     $error    = false;
     $headers  = Array();
     $code     = 0;
+    $settings = Settings::get();
 
-    $url = preg_replace('/\/(([^\/]+\/)+)?(FS)/', "", urldecode($req->data));
+    $url = preg_replace("/^\/FS(\/get\/)?/", "", urldecode($req->data));
 
     call_user_func_array(Array(API::$Handler, 'checkPrivilege'), Array(APIUser::GROUP_VFS));
 
     try {
       if ( $url ) {
-        list($dirname, $req->uri, $protocol, $file) = getRealPath($url);
-        if ( file_exists($file) ) {
-          session_write_close();
-          if ( FS::read($url, Array("raw" => true)) ) {
-            exit;
-          } else {
+        if ( preg_match('/^(ftp|https?)\:\/\//', $url) ) {
+          if ( empty($settings['vfs']['proxy']) || $settings['vfs']['proxy'] == false ) {
+            $error = "VFS Proxy is disabled";
             $code = 500;
-            $error = "File read error";
+          } else {
+            $result = file_get_contents($url);
           }
         } else {
-          $code = 404;
-          $error = "File not found";
+          list($dirname, $req->uri, $protocol, $file) = getRealPath($url);
+          if ( file_exists($file) ) {
+            session_write_close();
+            if ( FS::read($url, Array("raw" => true)) ) {
+              exit;
+            } else {
+              $code = 500;
+              $error = "File read error";
+            }
+          } else {
+            $code = 404;
+            $error = "File not found";
+          }
         }
       }
     } catch ( Exception $e ) {
@@ -381,26 +400,45 @@ class API
    * Core API Requests
    */
   public static function CoreAPI(APIRequest $req) {
-    $data = json_decode($req->data, true);
+    $arguments = json_decode($req->data, true);
+    $isVfsCall = preg_match("/^\/(([^\/]+\/)+)?FS/", $req->uri);
+    $method = preg_replace("/^\/(([^\/]+\/)+)?(FS|API)\/?/", "", $req->uri);
     $error = false;
     $result = false;
 
-    if ( empty($data) ) {
-      $error = "No call given";
+    if ( !$method ) {
+      $error = "No call data given";
     } else {
-      if ( empty($data['method']) ) {
-        $error = "No call data given";
-      } else {
-        $method = $data['method'];
-        $arguments = empty($data['arguments']) ? Array() : $data['arguments'];
+      if ( $isVfsCall ) {
+        $method = preg_replace("/^\/(([^\/]+\/)+)?FS\:/", "", $method);
 
         try {
+          call_user_func_array(Array(API::$Handler, 'checkPrivilege'), Array(APIUser::GROUP_VFS));
 
+          if ( !method_exists('FS', $method) ) {
+            $error = "Invalid FS operation: {$method}";
+          } else {
+            if ( !$arguments ) {
+              $error = "Supply argument for FS operation: {$method}";
+            } else {
+              call_user_func_array(Array(API::$Handler, 'checkVFSPrivilege'), Array($method, $arguments));
+
+              try {
+                $result = call_user_func_array(Array("FS", $method), $arguments);
+              } catch ( Exception $e ) {
+                $error = "FS operation error: {$e->getMessage()}";
+              }
+            }
+          }
+        } catch ( Exception $e ) {
+          $error = $e->getMessage();
+        }
+      } else {
+        try {
           if ( isset(self::$Methods[$method]["method"]) ) {
             if ( !empty(self::$Methods[$method]["privileges"]) && ($p = self::$Methods[$method]["privileges"]) ) {
               call_user_func_array(Array(API::$Handler, 'checkPrivilege'), Array($p));
             }
-
             list($error, $result) = call_user_func_array(self::$Methods[$method]["method"], Array($arguments));
           } else {
             $error = "No such API method: {$method}";
@@ -463,37 +501,6 @@ class CoreAPIHandler
       }
     }
 
-    return Array($error, $result);
-  }
-
-  public static function fs(Array $arguments) {
-    $error = null;
-    $result = null;
-
-    try {
-      call_user_func_array(Array(API::$Handler, 'checkPrivilege'), Array(APIUser::GROUP_VFS));
-    } catch ( Exception $e ) {
-      $error = $e->getMessage();
-    }
-
-    if ( !$error ) {
-      $m = $arguments['method'];
-      $a = empty($arguments['arguments']) ? Array() : $arguments['arguments'];
-
-      if ( !method_exists('FS', $m) ) {
-        $error = "Invalid FS operation: {$m}";
-      } else {
-        if ( !$a ) {
-          $error = "Supply argument for FS operaion: {$m}";
-        } else {
-          try {
-            $result = call_user_func_array(Array("FS", $m), $a);
-          } catch ( Exception $e ) {
-            $error = "FS operaion error: {$e->getMessage()}";
-          }
-        }
-      }
-    }
     return Array($error, $result);
   }
 
@@ -570,7 +577,6 @@ class CoreAPIHandler
 }
 
 API::AddHandler('application', Array('CoreAPIHandler', 'application'));
-API::AddHandler('fs', Array('CoreAPIHandler', 'fs'));
 API::AddHandler('curl', Array('CoreAPIHandler', 'curl'));
 
 ?>

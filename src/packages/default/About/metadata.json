@@ -1,0 +1,46 @@
+{
+  "className": "ApplicationAbout",
+  "name": "About OS.js",
+  "description": "About OS.js",
+  "names": {
+    "bg_BG": " За OS.js",
+    "de_DE": "Über OS.js",
+    "fr_FR": "À propos d'OS.js",
+    "it_IT": "Informazioni su OS.js",
+    "ko_KR": "OS.js에 대하여",
+    "nl_NL": "Over OS.js",
+    "no_NO": "Om OS.js",
+    "pl_PL": "o OS.js",
+    "ru_RU": "Об OS.js",
+    "sk_SK": "o OS.js",
+    "tr_TR": "hakkında OS.js",
+    "vi_VN": "Thông tin về OS.js"
+  },
+  "descriptions": {
+    "bg_BG": "За OS.js",
+    "de_DE": "Über OS.js",
+    "fr_FR": "À propos d'OS.js",
+    "it_IT": "Informazioni su OS.js",
+    "ko_KR": "OS.js에 대하여",
+    "nl_NL": "Over OS.js",
+    "no_NO": "Om OS.js",
+    "pl_PL": "o OS.js",
+    "ru_RU": "Об OS.js",
+    "sk_SK": "o OS.js",
+    "tr_TR": "hakkında OS.js",
+    "vi_VN": "Thông tin về OS.js"
+  },
+  "singular": true,
+  "category": "system",
+  "icon": "apps/help-browser.png",
+  "preload": [
+    {
+      "src": "main.js",
+      "type": "javascript"
+    },
+    {
+      "src": "main.css",
+      "type": "stylesheet"
+    }
+  ]
+}

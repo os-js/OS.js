@@ -1,5 +1,5 @@
 ############################################
-## Docker Image for the  OS.js-v2 Project ##
+## Docker Image for the  OS.js Project ##
 ## Dockerfile created by junland (Github) ##
 ############################################
 
@@ -12,22 +12,20 @@ USER root
 RUN apt-get -y update
 
 ## Install dependencies and build tools. ##
-RUN apt-get install -y git
-RUN apt-get install -y npm
-RUN apt-get install -y nodejs-legacy
+RUN apt-get -y install git npm nodejs-legacy
 
 ## Clone the Repo and install grunt ##
-RUN git clone https://github.com/andersevenrud/OS.js-v2.git
-RUN npm install -g grunt-cli
-RUN cd OS.js-v2/
+RUN git clone https://github.com/os-js/OS.js.git
+RUN npm install -g grunt-cli supervisor
+RUN cd OS.js/
 
 ## Install and Compile OS.js ##
-WORKDIR OS.js-v2/
-RUN npm install
+WORKDIR OS.js/
+RUN npm install --production
 RUN grunt
 
 ## Start Application and Expose Port ##
-## Note: you can change 'start-node-dev.sh' (Development Version) to 'start-node-dist.sh' (Production Version) ##
+## Note: you can change 'start-dev.sh' (Development Version) to 'start-dist.sh' (Production Version) ##
 
-CMD ./bin/start-node-dev.sh
+CMD ./bin/start-dev.sh
 EXPOSE 8000

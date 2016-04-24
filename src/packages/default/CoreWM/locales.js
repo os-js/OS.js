@@ -1,7 +1,7 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(WindowManager, GUI, Utils, API, VFS) {
+  // jscs:disable validateQuoteMarks
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -35,43 +36,24 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var _Locales = {
-    no_NO : {
-      'Killing this process will stop things from working!' : 'Dreping av denne prosessen vil få konsekvenser!',
-      'Open settings' : 'Åpne instillinger',
-      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Ditt panel har ingen objekter. Gå til instillinger for å nullstille eller modifisere manuelt\n(Denne feilen kan oppstå etter en oppdatering av OS.js)',
-      'Create shortcut' : 'Lag snarvei',
-      'Set as wallpaper' : 'Sett som bakgrunn',
-      'An error occured while creating PanelItem: {0}' : 'En feil oppstod under lasting av PanelItem: {0}',
-      'Show Icons' : 'Vis Ikoner',
-      'Hide Icons' : 'Skjul Ikoner',
+    bg_BG : {
+      'Killing this process will stop things from working!' : 'Прекратяването на този процес ще спре някой приложения!',
+      'Open settings' : 'Отвори настойки',
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Вашият панел няма обекти. Отидете в настойки за да върнете по подразбиране или да модифицирате ръчно\n(Тази грешка може да се появи след актуализация на OS.js)',
+      'Create shortcut' : 'Създай пряк път',
+      'Set as wallpaper' : 'Направи изображение за фон',
+      'An error occured while creating PanelItem: {0}' : 'Появи се грешка докато се създаваше панелен обект: {0}',
 
-      'Development' : 'Utvikling',
-      'Education' : 'Utdanning',
-      'Games' : 'Spill',
-      'Graphics' : 'Grafikk',
-      'Network' : 'Nettverk',
-      'Multimedia' : 'Multimedia',
-      'Office' : 'Kontor',
-      'System' : 'System',
-      'Utilities' : 'Verktøy',
-      'Other' : 'Andre'
-    },
-    pl_PL : {
-      'Open settings' : 'Otwórz ustawienia',
-      'Create shortcut' : 'Utwórz skrót',
-      'Set as wallpaper' : 'Ustaw jako tapete',
-      'An error occured while creating PanelItem: {0}' : 'Błąd podczas tworzenia panelu: {0}',
-
-      'Development' : 'Development',
-      'Education' : 'Edukacja',
-      'Games' : 'Gry',
-      'Graphics' : 'Grafika',
-      'Network' : 'Internet',
-      'Multimedia' : 'Multimedia',
-      'Office' : 'Office',
-      'System' : 'System',
-      'Utilities' : 'Dodatki',
-      'Other' : 'Inne'
+      'Development' : 'Разработка',
+      'Education' : 'Образование',
+      'Games' : 'Игри',
+      'Graphics' : 'Графика',
+      'Network' : 'Мрежа',
+      'Multimedia' : 'Мултимедия',
+      'Office' : 'Офис',
+      'System' : 'Система',
+      'Utilities' : 'Инструменти',
+      'Other' : 'Други'
     },
     de_DE : {
       'Killing this process will stop things from working!' : 'Das Beenden dieses Prozesses wird Konsequenzen haben!',
@@ -112,7 +94,126 @@
       'Other' : 'Otros'
     },
     fr_FR : {
-      // TODO
+      'Killing this process will stop things from working!' : 'Tuer ce processus va arrêter d\'autres éléments de fonctionner !',
+      'Open settings' : 'Ouvrir les paramètres',
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Votre panneau n\'a aucun objet. Rendez-vous dans les paramètres pour remettre à zéro ou modifier manuellement\n(Cette erreur peut survenir après avori mis à jour OS.js)',
+      'Create shortcut' : 'Créer un raccourci',
+      'Set as wallpaper' : 'Définir un fond d\'écran',
+      'An error occured while creating PanelItem: {0}' : 'Une erreur est survenue pendant la création du PanelItem: {0}',
+      'Show Icons' : 'Afficher les icônes',
+      'Hide Icons' : 'Cacher les icônes',
+
+      'Development' : 'Développement',
+      'Education' : 'Éducation',
+      'Games' : 'Jeux',
+      'Graphics' : 'Graphique',
+      'Network' : 'Réseau',
+      'Multimedia' : 'Multimédia',
+      'Office' : 'Bureautique',
+      'System' : 'Système',
+      'Utilities' : 'Utilitaires',
+      'Other' : 'Autre'
+    },
+    it_IT : {
+      'Killing this process will stop things from working!' : 'Terminare questo processo bloccherà altre funzionalità!',
+      'Open settings' : 'Apri settaggi',
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Il tuo pannello non ha elementi. Vai nei settaggi per resettare ai valori predefiniti o modificarli manualmente\n(Questo errore può accadere dopo un aggiornamento di OS.js)',
+      'Create shortcut' : 'Crea colelgamento',
+      'Set as wallpaper' : 'Imposta come sfondo desktop',
+      'An error occured while creating PanelItem: {0}' : 'Si è verificato un errore nella creazione del PanelItem: {0}',
+      'Show Icons' : 'Mostra icone',
+      'Hide Icons' : 'Nascondi icone',
+
+      'Development' : 'Sviluppo',
+      'Education' : 'Educazione',
+      'Games' : 'Giochi',
+      'Graphics' : 'Grafica',
+      'Network' : 'Reti',
+      'Multimedia' : 'Multimedia',
+      'Office' : 'Ufficio',
+      'System' : 'Sistema',
+      'Utilities' : 'Utilità',
+      'Other' : 'Altro'
+    },
+    ko_KR : {
+      'Killing this process will stop things from working!' : '이 프로세스를 종료 할 시 작업 중인 것들이 종료됩니다!',
+      'Open settings' : '환경설정 열기',
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : '패널에 항목이 없습니다. 환경설정에서 초기화하거나 직접 수정하여 주십시오.\n(이 오류는 OS.js의 업그레이드 후 발생하는 문제일 수도 있습니다)',
+      'Create shortcut' : '단축키 생성',
+      'Set as wallpaper' : '바탕화면으로 지정',
+      'An error occured while creating PanelItem: {0}' : '해당 패널 항목 생성 중 오류가 발생 하였습니다: {0}',
+
+      'Development' : '개발',
+      'Education' : '교육',
+      'Games' : '게임',
+      'Graphics' : '그래픽',
+      'Network' : '네트워크',
+      'Multimedia' : '멀티미디어',
+      'Office' : '오피스',
+      'System' : '시스템',
+      'Utilities' : '유틸리티',
+      'Other' : '기타'
+    },
+    nl_NL : {
+      'Killing this process will stop things from working!' : 'Het stoppen van dit proces zal er voor zorgen dat dingen niet meer werken!',
+      'Open settings' : 'Instellingen openen',
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Het paneel bevat geen items. Ga naar instellingen om te herstellen naar de standaard of om handmatig te wijzigen\n(Deze fout kan het gevolg zijn van een update van OS.js)',
+      'Create shortcut' : 'Maak een link',
+      'Set as wallpaper' : 'Als achtergrond gebruiken',
+      'An error occured while creating PanelItem: {0}' : 'Er is een fout opgetreden tijdens het maken van paneel item: {0}',
+
+      'Development' : 'Ontwikkeling',
+      'Education' : 'Educatie',
+      'Games' : 'Spellen',
+      'Graphics' : 'Grafisch',
+      'Network' : 'Netwerk',
+      'Multimedia' : 'Multimedia',
+      'Office' : 'Kantoor',
+      'System' : 'Systeem',
+      'Utilities' : 'Toebehoren',
+      'Other' : 'Overig'
+    },
+    no_NO : {
+      'Killing this process will stop things from working!' : 'Dreping av denne prosessen vil få konsekvenser!',
+      'Open settings' : 'Åpne instillinger',
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Ditt panel har ingen objekter. Gå til instillinger for å nullstille eller modifisere manuelt\n(Denne feilen kan oppstå etter en oppdatering av OS.js)',
+      'Create shortcut' : 'Lag snarvei',
+      'Set as wallpaper' : 'Sett som bakgrunn',
+      'An error occured while creating PanelItem: {0}' : 'En feil oppstod under lasting av PanelItem: {0}',
+      'Show Icons' : 'Vis Ikoner',
+      'Hide Icons' : 'Skjul Ikoner',
+
+      'Development' : 'Utvikling',
+      'Education' : 'Utdanning',
+      'Games' : 'Spill',
+      'Graphics' : 'Grafikk',
+      'Network' : 'Nettverk',
+      'Multimedia' : 'Multimedia',
+      'Office' : 'Kontor',
+      'System' : 'System',
+      'Utilities' : 'Verktøy',
+      'Other' : 'Andre'
+    },
+    pl_PL : {
+      'Killing this process will stop things from working!' : 'Zabicie tego procesu zatrzyma wykonywanie działań!',
+      'Open settings' : 'Otwórz ustawienia',
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Twój panel nie ma elementów. Idź do ustawień aby przywrócić domyślne lub zmień ręcznie\n(Ten błąd może wystąpić po aktualizacji OS.js)',
+      'Create shortcut' : 'Utwórz skrót',
+      'Set as wallpaper' : 'Ustaw jako tapetę',
+      'An error occured while creating PanelItem: {0}' : 'Wystąpił błąd podczas tworzenia PanelItem: {0}',
+      'Show Icons' : 'Pokaż Ikony',
+      'Hide Icons' : 'Ukryj Ikony',
+
+      'Development' : 'Development',
+      'Education' : 'Edukacja',
+      'Games' : 'Gry',
+      'Graphics' : 'Graficzne',
+      'Network' : 'Sieć',
+      'Multimedia' : 'Multimedia',
+      'Office' : 'Biuro',
+      'System' : 'System',
+      'Utilities' : 'Użytkowe',
+      'Other' : 'Inne'
     },
     ru_RU : {
       'Killing this process will stop things from working!' : 'Завершение этого процесса остановит работу системы!',
@@ -133,32 +234,47 @@
       'Utilities' : 'Утилиты',
       'Other' : 'Другое'
     },
-    nl_NL : {
-      'Killing this process will stop things from working!' : 'Het stoppen van dit proces zal er voor zorgen dat dingen niet meer werken!',
-      'Open settings' : 'Instellingen openen',
-      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Het paneel bevat geen items. Ga naar instellingen om te hertsellen naar de standaard of om handmatig te wijzigen (Deze fout kan het gevolg zijn van een update)',
-      'Create shortcut' : 'Maak een link',
-      'Set as wallpaper' : 'Als achtegrond gebruiken',
-      'An error occured while creating PanelItem: {0}' : 'Er is een fout opgetreden tijdens het maken van een paneel item: {0}',
+    sk_SK : {
+      'Open settings' : 'Otvor nastavenia',
+      'Create shortcut' : 'Vytvor linku',
+      'Set as wallpaper' : 'Nastav ako tapetu',
+      'An error occured while creating PanelItem: {0}' : 'Chyba pri vytváraní položky: {0}',
 
-      'Development' : 'Ontwikkeling',
-      'Education' : 'Educatie',
-      'Games' : 'Spellem',
-      'Graphics' : 'Grafisch',
-      'Network' : 'Netwerk',
+      'Development' : 'Vývoj',
+      'Education' : 'Vzdelávanie',
+      'Games' : 'Hry',
+      'Graphics' : 'Grafika',
+      'Network' : 'Sieť',
+      'Multimedia' : 'Multimédiá',
+      'Office' : 'Kancelária',
+      'System' : 'Systém',
+      'Utilities' : 'Pomôcky',
+      'Other' : 'Ostatné'
+    },
+    tr_TR : {
+      'Open settings' : 'Ayarları Aç',
+      'Create shortcut' : 'Kısayol Oluştur',
+      'Set as wallpaper' : 'Arkaplan olarak ayarla',
+      'An error occured while creating PanelItem: {0}' : '{0} oluşturulurken bir hata meydana geldi',
+
+      'Development' : 'Geliştirici',
+      'Education' : 'Eğitim',
+      'Games' : 'Oyunlar',
+      'Graphics' : 'Grafikler',
+      'Network' : 'Ağ',
       'Multimedia' : 'Multimedia',
-      'Office' : 'Kantoor',
-      'System' : 'Systeem',
-      'Utilities' : 'Toebehoor',
-      'Other' : 'Overig'
+      'Office' : 'Ofis',
+      'System' : 'Sistem',
+      'Utilities' : 'Yan Gereksinimler',
+      'Other' : 'Diğer'
     },
     vi_VN : {
-      'Killing this process will stop things from working!' : 'Đóng quá trình này sẽ làm mọi thứ dừng làm việc!',
+      'Killing this process will stop things from working!' : 'Đóng quá trình này sẽ làm mọi thứ bị tắt!',
       'Open settings' : 'Mở cài đặt',
       'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'Bảng điều khiển của bạn không có mục nào. Vào cài đặt để thiết lập lại mặc định hoặc sửa đổi bằng tay\n(Lỗi này có thể xảy ra sau khi nâng cấp OS.js)',
       'Create shortcut' : 'Tạo lối tắt',
       'Set as wallpaper' : 'Đặt làm hình nền',
-      'An error occured while creating PanelItem: {0}' : 'Có lỗi xảy ra trong khi tạo ra PanelItem: {0}',
+      'An error occured while creating PanelItem: {0}' : 'Có lỗi xảy ra trong khi tạo PanelItem: {0}',
       'Show Icons' : 'Hiện các biểu tượng',
       'Hide Icons' : 'Ẩn các biểu tượng',
 

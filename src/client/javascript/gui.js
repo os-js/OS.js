@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -207,8 +207,10 @@
         if ( tagName === 'gui-radio' || tagName === 'gui-checkbox' ) {
           if ( value ) {
             firstChild.setAttribute('checked', 'checked');
+            firstChild.checked = true;
           } else {
             firstChild.removeAttribute('checked');
+            firstChild.checked = false;
           }
         }
 
@@ -220,6 +222,7 @@
         } else {
           firstChild.removeAttribute('disabled');
         }
+        el.setAttribute('aria-disabled', String(value === true));
         return;
       }
 
@@ -473,11 +476,294 @@
     Utils.$bind(el, 'mousedown', _onMouseDown, false);
   }
 
+  /**
+   * Method for getting the next (or previous) element in sequence
+   *
+   * If you don't supply a current element, the first one will be taken!
+   *
+   * @param   boolean           prev        Get previous element instead of next
+   * @param   DOMElement        el          The current element
+   * @param   DOMElement        root        The root container
+   *
+   * @api OSjs.GUI.Helpers.getNextElement()
+   */
+  function getNextElement(prev, current, root) {
+    function getElements() {
+      var ignore_roles = ['menu', 'menuitem', 'grid', 'gridcell', 'listitem'];
+      var list = [];
+
+      root.querySelectorAll('.gui-element').forEach(function(e) {
+        // Ignore focused and disabled elements, and certain aria roles
+        if ( Utils.$hasClass(e, 'gui-focus-element') || ignore_roles.indexOf(e.getAttribute('role')) >= 0 || e.getAttribute('data-disabled') === 'true' ) {
+          return;
+        }
+
+        // Elements without offsetParent are invisible
+        if ( e.offsetParent ) {
+          list.push(e);
+        }
+      });
+      return list;
+    }
+
+    function getCurrentIndex(els, m) {
+      var found = -1;
+
+      // Simply get index from array, it seems indexOf is a bit iffy here ?!
+      if ( m ) {
+        els.every(function(e, idx) {
+          if ( e === m ) {
+            found = idx;
+          }
+          return found === -1;
+        });
+      }
+
+      return found;
+    }
+
+    function getCurrentParent(els, m) {
+      if ( m ) {
+        var cur = m;
+        while ( cur.parentNode ) {
+          if ( Utils.$hasClass(cur, 'gui-element') ) {
+            return cur;
+          }
+          cur = cur.parentNode;
+        }
+
+        return null;
+      }
+
+      // When we dont have a initial element, take the first one
+      return els[0];
+    }
+
+    function getNextIndex(els, p, i) {
+      // This could probably be prettier, but it does the job
+      if ( prev ) {
+        i = (i <= 0) ? (els.length) - 1 : (i - 1);
+      } else {
+        i = (i >= (els.length - 1)) ? 0 : (i + 1);
+      }
+      return i;
+    }
+
+    function getNextElement(els, i) {
+      var next = els[i];
+
+      // Get "real" elements from input wrappers
+      if ( next.tagName.match(/^GUI\-(BUTTON|TEXT|PASSWORD|SWITCH|CHECKBOX|RADIO|SELECT)/) ) {
+        next = next.querySelectorAll('input, textarea, button')[0];
+      }
+
+      // Special case for elements that wraps
+      if ( next.tagName === 'GUI-FILE-VIEW' ) {
+        next = next.children[0];
+      }
+
+      return next;
+    }
+
+    if ( root ) {
+      var elements = getElements();
+      if ( elements.length ) {
+        var currentParent = getCurrentParent(elements, current);
+        var currentIndex = getCurrentIndex(elements, currentParent);
+
+        if ( currentIndex >= 0 ) {
+          var nextIndex = getNextIndex(elements, currentParent, currentIndex);
+          return getNextElement(elements, nextIndex);
+        }
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Create a draggable DOM element
+   *
+   * @param   DOMElement    el      DOMElement
+   * @param   Object        args    JSON of draggable params
+   *
+   * @return  void
+   *
+   * @api     OSjs.GUI.Helpers.createDraggable()
+   */
+  function createDraggable(el, args) {
+    args = OSjs.Utils.argumentDefaults(args, {
+      type       : null,
+      effect     : 'move',
+      data       : null,
+      mime       : 'application/json',
+      dragImage  : null,
+      onStart    : function() { return true; },
+      onEnd      : function() { return true; }
+    });
+
+    if ( OSjs.Utils.isIE() ) {
+      args.mime = 'text';
+    }
+
+    function _toString(mime) {
+      return JSON.stringify({
+        type:   args.type,
+        effect: args.effect,
+        data:   args.data,
+        mime:   args.mime
+      });
+    }
+
+    function _dragStart(ev) {
+      try {
+        ev.dataTransfer.effectAllowed = args.effect;
+        if ( args.dragImage && (typeof args.dragImage === 'function') ) {
+          if ( ev.dataTransfer.setDragImage ) {
+            var dragImage = args.dragImage(ev, el);
+            if ( dragImage ) {
+              var dragEl    = dragImage.element;
+              var dragPos   = dragImage.offset;
+
+              document.body.appendChild(dragEl);
+              ev.dataTransfer.setDragImage(dragEl, dragPos.x, dragPos.y);
+            }
+          }
+        }
+        ev.dataTransfer.setData(args.mime, _toString(args.mime));
+      } catch ( e ) {
+        console.warn('Failed to dragstart: ' + e);
+        console.warn(e.stack);
+      }
+    }
+
+    el.setAttribute('draggable', 'true');
+    el.setAttribute('aria-grabbed', 'false');
+
+    el.addEventListener('dragstart', function(ev) {
+      this.setAttribute('aria-grabbed', 'true');
+
+      this.style.opacity = '0.4';
+      if ( ev.dataTransfer ) {
+        _dragStart(ev);
+      }
+      return args.onStart(ev, this, args);
+    }, false);
+
+    el.addEventListener('dragend', function(ev) {
+      this.setAttribute('aria-grabbed', 'false');
+      this.style.opacity = '1.0';
+      return args.onEnd(ev, this, args);
+    }, false);
+  }
+
+  /**
+   * Create a droppable DOM element
+   *
+   * @param   DOMElement    el      DOMElement
+   * @param   Object        args    JSON of droppable params
+   *
+   * @return  void
+   *
+   * @api     OSjs.GUI.Helpers.createDroppable()
+   */
+  function createDroppable(el, args) {
+    args = OSjs.Utils.argumentDefaults(args, {
+      accept         : null,
+      effect         : 'move',
+      mime           : 'application/json',
+      files          : true,
+      onFilesDropped : function() { return true; },
+      onItemDropped  : function() { return true; },
+      onEnter        : function() { return true; },
+      onOver         : function() { return true; },
+      onLeave        : function() { return true; },
+      onDrop         : function() { return true; }
+    });
+
+    if ( OSjs.Utils.isIE() ) {
+      args.mime = 'text';
+    }
+
+    function getParent(start, matcher) {
+      if ( start === matcher ) { return true; }
+      var i = 10;
+
+      while ( start && i > 0 ) {
+        if ( start === matcher ) {
+          return true;
+        }
+        start = start.parentNode;
+        i--;
+      }
+      return false;
+    }
+
+    function _onDrop(ev, el) {
+      ev.stopPropagation();
+      ev.preventDefault();
+
+      args.onDrop(ev, el);
+      if ( !ev.dataTransfer ) { return true; }
+
+      if ( args.files ) {
+        var files = ev.dataTransfer.files;
+        if ( files && files.length ) {
+          return args.onFilesDropped(ev, el, files, args);
+        }
+      }
+
+      var data;
+      try {
+        data = ev.dataTransfer.getData(args.mime);
+      } catch ( e ) {
+        console.warn('Failed to drop: ' + e);
+      }
+      if ( data ) {
+        var item = JSON.parse(data);
+        if ( args.accept === null || args.accept === item.type ) {
+          return args.onItemDropped(ev, el, item, args);
+        }
+      }
+
+      return false;
+    }
+
+    el.setAttribute('aria-dropeffect', args.effect);
+
+    el.addEventListener('drop', function(ev) {
+      //Utils.$removeClass(el, 'onDragEnter');
+      return _onDrop(ev, this);
+    }, false);
+
+    el.addEventListener('dragenter', function(ev) {
+      //Utils.$addClass(el, 'onDragEnter');
+      return args.onEnter.call(this, ev, this, args);
+    }, false);
+
+    el.addEventListener('dragover', function(ev) {
+      ev.preventDefault();
+      if ( !getParent(ev.target, el) ) {
+        return false;
+      }
+
+      ev.stopPropagation();
+      ev.dataTransfer.dropEffect = args.effect;
+      return args.onOver.call(this, ev, this, args);
+    }, false);
+
+    el.addEventListener('dragleave', function(ev) {
+      //Utils.$removeClass(el, 'onDragEnter');
+      return args.onLeave.call(this, ev, this, args);
+    }, false);
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.GUI.Helpers = {
+    getNextElement: getNextElement,
     getProperty: getProperty,
     getValueLabel: getValueLabel,
     getViewNodeValue: getViewNodeValue,
@@ -488,7 +774,9 @@
     createElement: createElement,
     createDrag: createDrag,
     setProperty: setProperty,
-    setFlexbox: setFlexbox
+    setFlexbox: setFlexbox,
+    createDraggable: createDraggable,
+    createDroppable: createDroppable
   };
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS);

@@ -1,18 +1,18 @@
 /*!
- * OS.js - JavaScript Operating System
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
- * Copyright (c) 2011-2015, Anders Evenrud <andersevenrud@gmail.com>
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -74,8 +74,20 @@
         data: GUI.Helpers.getViewNodeValue(root)
       };
 
+      root.setAttribute('data-expanded', String(expanded));
+      root.setAttribute('aria-expanded', String(expanded));
+
       el.dispatchEvent(new CustomEvent('_expand', {detail: {entries: [selected], expanded: expanded, element: root}}));
     } // handleItemExpand()
+
+    function onDndEnter(ev) {
+      ev.stopPropagation();
+      Utils.$addClass(sel, 'dnd-over');
+    }
+
+    function onDndLeave(ev) {
+      Utils.$removeClass(sel, 'dnd-over');
+    }
 
     if ( icon ) {
       dspan.style.backgroundImage = 'url(' + icon + ')';
@@ -103,6 +115,46 @@
       sel.appendChild(container);
     }
 
+    if ( String(sel.getAttribute('data-draggable')) === 'true' ) {
+      GUI.Helpers.createDraggable(container, (function() {
+        var data = {};
+        try {
+          data = JSON.parse(sel.getAttribute('data-value'));
+        } catch ( e ) {}
+
+        return {data: data};
+      })());
+    }
+
+    if ( String(sel.getAttribute('data-droppable')) === 'true' ) {
+      var timeout;
+      GUI.Helpers.createDroppable(container, {
+        onEnter: onDndEnter,
+        onOver: onDndEnter,
+        onLeave: onDndLeave,
+        onDrop: onDndLeave,
+        onItemDropped: function(ev, eel, item) {
+          ev.stopPropagation();
+          ev.preventDefault();
+
+          timeout = clearTimeout(timeout);
+          timeout = setTimeout(function() {
+            Utils.$removeClass(sel, 'dnd-over');
+          }, 10);
+
+          var dval = {};
+          try {
+            dval = JSON.parse(eel.parentNode.getAttribute('data-value'));
+          } catch ( e ) {}
+
+          el.dispatchEvent(new CustomEvent('_drop', {detail: {
+            src: item.data,
+            dest: dval
+          }}));
+        }
+      });
+    }
+
     handleItemExpand(null, sel, expanded);
 
     GUI.Elements._dataview.bindEntryEvents(el, sel, 'gui-tree-view-entry');
@@ -118,13 +170,16 @@
    * A tree view for nested content
    *
    * Format for add():
-   *
+   * ```
    * {
    *    label: "Label",
    *    icon: "Optional icon path",
    *    value: "something or JSON or whatever",
    *    entries: [] // Recurse :)
    * }
+   * ```
+   *
+   * For more properties and events etc, see 'dataview'
    *
    * @api OSjs.GUI.Elements.gui-tree-view
    * @see OSjs.GUI.Elements._dataview
@@ -140,16 +195,24 @@
     build: function(el, applyArgs) {
       var body = el.querySelector('gui-tree-view-body');
       var found = !!body;
+
       if ( !body ) {
         body = document.createElement('gui-tree-view-body');
         el.appendChild(body);
       }
 
+      body.setAttribute('role', 'group');
+      el.setAttribute('role', 'tree');
+      el.setAttribute('aria-multiselectable', body.getAttribute('data-multiselect') || 'false');
+
       el.querySelectorAll('gui-tree-view-entry').forEach(function(sel, idx) {
+        sel.setAttribute('aria-expanded', 'false');
+
         if ( !found ) {
           body.appendChild(sel);
         }
 
+        sel.setAttribute('role', 'treeitem');
         initEntry(el, sel);
       });
 
@@ -204,7 +267,6 @@
           entries = [args[0].entries || []];
           parentNode = args[0].parentNode || body;
         }
-
 
         recurse(entries, parentNode, 0);
       }
