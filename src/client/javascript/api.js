@@ -856,8 +856,8 @@
       var appname = getName();
       var path = '';
 
+      var root, sub;
       if ( appname ) {
-        var root, sub;
         if ( appname.match(/^(.*)\/(.*)$/) ) {
           root = OSjs.API.getConfig('Connection.PackageURI');
           path = root + '/' + appname + '/' + name;
