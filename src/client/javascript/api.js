@@ -808,12 +808,13 @@
    * @param   Process   app     Application instance reference
    *                            You can also specify a name by String
    * @param   String    name    Resource Name
+   * @param   boolean   vfspath Return a valid VFS path
    *
    * @return  String            The absolute URL of resource
    *
    * @api     OSjs.API.getApplicationResource()
    */
-  function doGetApplicationResource(app, name) {
+  function doGetApplicationResource(app, name, vfspath) {
     if ( name.match(/^\//) ) {
       return name;
     }
@@ -837,23 +838,37 @@
       return appname;
     }
 
+    function getResultPath(path, userpkg) {
+      path = OSjs.Utils.checkdir(path);
+
+      if ( vfspath ) {
+        if ( userpkg ) {
+          path = path.substr(OSjs.API.getConfig('Connection.FSURI').length);
+        } else {
+          path = 'osjs:///' + path;
+        }
+      }
+
+      return path;
+    }
+
     function getResourcePath() {
       var appname = getName();
       var path = '';
 
       if ( appname ) {
-        var root;
+        var root, sub;
         if ( appname.match(/^(.*)\/(.*)$/) ) {
           root = OSjs.API.getConfig('Connection.PackageURI');
           path = root + '/' + appname + '/' + name;
         } else {
           root = OSjs.API.getConfig('Connection.FSURI');
-          var sub = OSjs.API.getConfig('PackageManager.UserPackages');
+          sub = OSjs.API.getConfig('PackageManager.UserPackages');
           path = root + OSjs.Utils.pathJoin(sub, appname, name);
         }
       }
 
-      return OSjs.Utils.checkdir(path);
+      return getResultPath(path, !!sub);
     }
 
     return getResourcePath();
