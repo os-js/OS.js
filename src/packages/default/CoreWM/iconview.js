@@ -283,7 +283,8 @@
 
   DesktopIconView.prototype.createContextMenu = function(item, ev) {
     var self = this;
-    API.createMenu([{
+
+    var menu = [{
       title: OSjs.Applications.CoreWM._('Remove shortcut'),
       disabled: item.data.restricted,
       onClick: function() {
@@ -291,15 +292,23 @@
           self.removeShortcut(item);
         }
       }
-    }, {
-      title: OSjs.Applications.CoreWM._('Edit shortcut'),
-      disabled: item.data.restricted,
-      onClick: function() {
-        if ( !item.data.restricted ) {
-          self.openShortcutEdit(item);
+    }];
+
+    if ( item.data.launch ) {
+      menu.push({
+        title: OSjs.Applications.CoreWM._('Edit shortcut'),
+        disabled: item.data.restricted,
+        onClick: function() {
+          if ( !item.data.restricted ) {
+            self.openShortcutEdit(item);
+          }
         }
-      }
-    }], ev);
+      });
+    }
+
+    if ( menu.length )  {
+      API.createMenu(menu, ev);
+    }
   };
 
   DesktopIconView.prototype.removeShortcut = function(data, wm) {
