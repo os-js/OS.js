@@ -224,6 +224,6 @@
 
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationFirefoxMarketplace = OSjs.Applications.ApplicationFirefoxMarketplace || {};
-  OSjs.Applications.ApplicationFirefoxMarketplace.Class = ApplicationFirefoxMarketplace;
+  OSjs.Applications.ApplicationFirefoxMarketplace.Class = Object.seal(ApplicationFirefoxMarketplace);
 
 })(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

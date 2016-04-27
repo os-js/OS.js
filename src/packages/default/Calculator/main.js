@@ -253,6 +253,6 @@
 
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationCalculator = OSjs.Applications.ApplicationCalculator || {};
-  OSjs.Applications.ApplicationCalculator.Class = ApplicationCalculator;
+  OSjs.Applications.ApplicationCalculator.Class = Object.seal(ApplicationCalculator);
 
 })(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

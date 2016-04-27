@@ -1074,7 +1074,7 @@
 
   OSjs.Applications                          = OSjs.Applications || {};
   OSjs.Applications.CoreWM                   = OSjs.Applications.CoreWM || {};
-  OSjs.Applications.CoreWM.Class             = CoreWM;
+  OSjs.Applications.CoreWM.Class             = Object.seal(CoreWM);
   OSjs.Applications.CoreWM.PanelItems        = OSjs.Applications.CoreWM.PanelItems || {};
   OSjs.Applications.CoreWM.CurrentTheme      = OSjs.Applications.CoreWM.CurrentTheme || null;
 

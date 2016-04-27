@@ -260,6 +260,6 @@
 
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationMusicPlayer = OSjs.Applications.ApplicationMusicPlayer || {};
-  OSjs.Applications.ApplicationMusicPlayer.Class = ApplicationMusicPlayer;
+  OSjs.Applications.ApplicationMusicPlayer.Class = Object.seal(ApplicationMusicPlayer);
 
 })(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

@@ -55,6 +55,6 @@
 
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationEXAMPLE = OSjs.Applications.ApplicationEXAMPLE || {};
-  OSjs.Applications.ApplicationEXAMPLE.Class = ApplicationEXAMPLE;
+  OSjs.Applications.ApplicationEXAMPLE.Class = Object.seal(ApplicationEXAMPLE);
 
 })(OSjs.Helpers.IFrameApplication, OSjs.GUI, OSjs.Dialogs, OSjs.Utils, OSjs.API, OSjs.VFS);

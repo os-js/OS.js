@@ -102,6 +102,6 @@
 
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationPreview = OSjs.Applications.ApplicationPreview || {};
-  OSjs.Applications.ApplicationPreview.Class = ApplicationPreview;
+  OSjs.Applications.ApplicationPreview.Class = Object.seal(ApplicationPreview);
 
 })(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

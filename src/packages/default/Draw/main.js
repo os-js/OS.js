@@ -510,6 +510,6 @@
 
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationDraw = OSjs.Applications.ApplicationDraw || {};
-  OSjs.Applications.ApplicationDraw.Class = ApplicationDraw;
+  OSjs.Applications.ApplicationDraw.Class = Object.seal(ApplicationDraw);
 
 })(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

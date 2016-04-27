@@ -685,6 +685,6 @@
 
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationSettings = OSjs.Applications.ApplicationSettings || {};
-  OSjs.Applications.ApplicationSettings.Class = ApplicationSettings;
+  OSjs.Applications.ApplicationSettings.Class = Object.seal(ApplicationSettings);
 
 })(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

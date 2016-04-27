@@ -1001,6 +1001,6 @@
 
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationFileManager = OSjs.Applications.ApplicationFileManager || {};
-  OSjs.Applications.ApplicationFileManager.Class = ApplicationFileManager;
+  OSjs.Applications.ApplicationFileManager.Class = Object.seal(ApplicationFileManager);
 
 })(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

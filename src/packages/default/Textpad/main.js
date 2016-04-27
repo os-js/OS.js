@@ -115,6 +115,6 @@
 
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationTextpad = OSjs.Applications.ApplicationTextpad || {};
-  OSjs.Applications.ApplicationTextpad.Class = ApplicationTextpad;
+  OSjs.Applications.ApplicationTextpad.Class = Object.seal(ApplicationTextpad);
 
 })(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

@@ -90,6 +90,6 @@
 
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationEXAMPLE = OSjs.Applications.ApplicationEXAMPLE || {};
-  OSjs.Applications.ApplicationEXAMPLE.Class = ApplicationEXAMPLE;
+  OSjs.Applications.ApplicationEXAMPLE.Class = Object.seal(ApplicationEXAMPLE);
 
 })(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);
