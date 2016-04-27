@@ -551,6 +551,7 @@
     var config = OSjs.Core.getConfig();
     var splash = document.getElementById('LoadingScreen');
     var loading = OSjs.API.createSplash('OS.js', null, null, splash);
+    var freeze = ['API', 'Core', 'Config', 'Dialogs', 'GUI', 'Locales', 'VFS'];
 
     initLayout();
 
@@ -575,6 +576,10 @@
 
                 OSjs.GUI.DialogScheme.init(function() {
                   loading.update(7, 8);
+
+                  freeze.forEach(function(f) {
+                    Object.freeze(OSjs[f]);
+                  });
 
                   initWindowManager(config, function() {
                     loading = loading.destroy();

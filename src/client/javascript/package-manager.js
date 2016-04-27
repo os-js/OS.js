@@ -52,7 +52,7 @@
     var packages = [];
     var uri = Utils.checkdir(API.getConfig('Connection.MetadataURI'));
 
-    return {
+    return Object.seal({
 
       /**
        * Load Metadata from server and set packages
@@ -489,7 +489,7 @@
 
         OSjs.Applications[n] = fn;
       }
-    }
+    });
   })();
 
   /////////////////////////////////////////////////////////////////////////////
