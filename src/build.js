@@ -735,7 +735,7 @@
     Object.keys(packages).forEach(function(n) {
       var meta = packages[n];
       if ( meta.autostart === true ) {
-        autostart.push(n.split('/')[1]);
+        autostart.push(meta.className);
       }
     });
 
