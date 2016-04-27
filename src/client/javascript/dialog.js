@@ -161,6 +161,6 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Core.DialogWindow      = DialogWindow;
+  OSjs.Core.DialogWindow = Object.seal(DialogWindow);
 
 })(OSjs.Utils, OSjs.API, OSjs.Core.Window);

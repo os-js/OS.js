@@ -380,7 +380,7 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Core.Process          = Process;
+  OSjs.Core.Process          = Object.seal(Process);
 
   OSjs.API.killAll           = doKillAllProcesses;
   OSjs.API.kill              = doKillProcess;

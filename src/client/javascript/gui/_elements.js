@@ -375,7 +375,7 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.GUI.Element = UIElement;
-  OSjs.GUI.ElementDataView = UIElementDataView;
+  OSjs.GUI.Element = Object.seal(UIElement);
+  OSjs.GUI.ElementDataView = Object.seal(UIElementDataView);
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS);

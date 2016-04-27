@@ -389,6 +389,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Dialogs = OSjs.Dialogs || {};
-  OSjs.Dialogs.File = FileDialog;
+  OSjs.Dialogs.File = Object.seal(FileDialog);
 
 })(OSjs.API, OSjs.VFS, OSjs.Utils, OSjs.Core.DialogWindow);

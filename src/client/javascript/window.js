@@ -1895,6 +1895,6 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Core.Window = Window;
+  OSjs.Core.Window = Object.seal(Window);
 
 })(OSjs.Utils, OSjs.API, OSjs.GUI, OSjs.Core.Process);

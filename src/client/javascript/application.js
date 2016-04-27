@@ -433,6 +433,6 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Core.Application       = Application;
+  OSjs.Core.Application = Object.seal(Application);
 
 })(OSjs.Utils, OSjs.API, OSjs.Core.Process);

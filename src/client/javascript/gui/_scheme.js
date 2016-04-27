@@ -631,7 +631,7 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.GUI.Scheme = UIScheme;
+  OSjs.GUI.Scheme = Object.seal(UIScheme);
   OSjs.GUI.DialogScheme = DialogScheme;
   OSjs.GUI.createScheme = createScheme;
 
