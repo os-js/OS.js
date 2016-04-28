@@ -385,7 +385,7 @@
        */
       getPackage: function(name) {
         if ( typeof packages[name] !== 'undefined' ) {
-          return Utils.cloneObject(packages)[name];
+          return Object.freeze(Utils.cloneObject(packages)[name]);
         }
         return false;
       },
@@ -429,10 +429,10 @@
             }
           });
 
-          return result;
+          return Object.freeze(result);
         }
 
-        return p;
+        return Object.freeze(p);
       },
 
       /**
@@ -451,7 +451,7 @@
             var a = p[i];
             if ( a && a.mime ) {
               if ( Utils.checkAcceptMime(mime, a.mime) ) {
-                list.push(i);
+                list.push(Object.freeze(Utils.cloneObject(i)));
               }
             }
           }
@@ -477,7 +477,7 @@
           throw new TypeError('You need to specify a function/callback!');
         }
 
-        packages[n] = {
+        packages[n] = Object.seal({
           type: 'application',
           className: n,
           description: title,
@@ -485,7 +485,7 @@
           icon: icon,
           cateogry: 'other',
           scope: 'system'
-        };
+        });
 
         OSjs.Applications[n] = fn;
       }

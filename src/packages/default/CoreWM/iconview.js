@@ -245,8 +245,7 @@
     try {
       if ( data.mime === 'osjs/application' || data.launch ) {
         var appname = data.launch || Utils.filename(data.path);
-        var apps = OSjs.Core.getPackageManager().getPackages();
-        var meta = apps[appname];
+        var meta = OSjs.Core.getPackageManager().getPackage(appname);
 
         iter = {
           icon: API.getIcon(meta.icon, '32x32', appname),

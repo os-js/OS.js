@@ -1742,7 +1742,7 @@
     s.width -= (borderSize * 2);
     s.height -= topMargin + (borderSize * 2);
 
-    return s;
+    return Object.freeze(s);
   };
 
   /**
@@ -1753,7 +1753,7 @@
    * @method  Window::_getViewRect()
    */
   Window.prototype._getViewRect = function() {
-    return this._$element ? Utils.$position(this._$element) : null;
+    return this._$element ? Object.freeze(Utils.$position(this._$element)) : null;
   };
 
   /**
