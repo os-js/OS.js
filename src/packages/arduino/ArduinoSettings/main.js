@@ -74,12 +74,17 @@
 
     function callAPI(fn, args, cb) {
       self._toggleLoading(true);
-      API.call(fn, args, function(response) {
+      API.call(fn, args, function(error, result) {
+        if ( error && typeof error !== 'string' ) {
+          error = 'Error while communicating with device: ' + error;
+        }
+
+        if ( error ) {
+          wm.notification({title: 'Arduino Settings', message: error, icon: 'status/error.png' });
+        }
+
         self._toggleLoading(false);
-        return cb(response.error, response.result);
-      }, function(err) {
-        err = 'Error while communicating with device: ' + (err || 'Unkown error (no response)');
-        wm.notification({title: 'Arduino Settings', message: err, icon: 'status/error.png' });
+        return cb(error, result);
       }, {
         timeout: 20000,
         ontimeout: function() {

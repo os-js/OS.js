@@ -243,15 +243,10 @@
   ApplicationArduinoPackageManager.prototype.callAPI = function(fn, args, cb) {
     var win = this._getMainWindow();
     win._toggleLoading(true);
-    API.call(fn, args, function(response) {
+    API.call(fn, args, function(error, result) {
       win._toggleLoading(false);
-      return cb(response.error, response.result);
-    },
-      function(error) {
-        win._toggleLoading(false);
-        alert("Problem || " + error);
-        return cb(error);
-      });
+      return cb(error, result);
+    });
   };
 
   ApplicationArduinoPackageManager.prototype.callOpkg = function(name, args, cb) {
