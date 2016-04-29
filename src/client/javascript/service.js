@@ -67,6 +67,6 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Core.Service           = Service;
+  OSjs.Core.Service = Object.seal(Service);
 
 })(OSjs.Utils, OSjs.API, OSjs.Core.Process);

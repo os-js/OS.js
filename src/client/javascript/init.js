@@ -59,7 +59,7 @@
 
   // Compability
   (function() {
-    var compability = ['forEach', 'every'];
+    var compability = ['forEach', 'every', 'map'];
 
     compability.forEach(function(n) {
       if ( window.HTMLCollection ) {
@@ -432,27 +432,20 @@
     var manifest =  OSjs.Core.getMetadata();
 
     console.group('initExtensions()', exts);
-
-    function next(i) {
-      if ( i >= exts.length ) {
-        console.groupEnd();
-        callback();
-        return;
-      }
-
+    OSjs.Utils.asyncs(exts, function(entry, idx, next) {
       try {
-        var m = manifest[exts[i]];
-
-        OSjs.Extensions[exts[i]].init(m, function() {
-          next(i + 1);
+        var m = manifest[entry];
+        OSjs.Extensions[entry].init(m, function() {
+          next();
         });
       } catch ( e ) {
         console.warn('Extension init failed', e.stack, e);
-        next(i + 1);
+        next();
       }
-    }
-
-    next(0);
+    }, function() {
+      console.groupEnd();
+      callback();
+    });
   }
 
   /**
@@ -558,6 +551,7 @@
     var config = OSjs.Core.getConfig();
     var splash = document.getElementById('LoadingScreen');
     var loading = OSjs.API.createSplash('OS.js', null, null, splash);
+    var freeze = ['API', 'Core', 'Config', 'Dialogs', 'GUI', 'Locales', 'VFS'];
 
     initLayout();
 
@@ -582,6 +576,10 @@
 
                 OSjs.GUI.DialogScheme.init(function() {
                   loading.update(7, 8);
+
+                  freeze.forEach(function(f) {
+                    Object.freeze(OSjs[f]);
+                  });
 
                   initWindowManager(config, function() {
                     loading = loading.destroy();

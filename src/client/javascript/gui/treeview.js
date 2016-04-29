@@ -80,6 +80,15 @@
       el.dispatchEvent(new CustomEvent('_expand', {detail: {entries: [selected], expanded: expanded, element: root}}));
     } // handleItemExpand()
 
+    function onDndEnter(ev) {
+      ev.stopPropagation();
+      Utils.$addClass(sel, 'dnd-over');
+    }
+
+    function onDndLeave(ev) {
+      Utils.$removeClass(sel, 'dnd-over');
+    }
+
     if ( icon ) {
       dspan.style.backgroundImage = 'url(' + icon + ')';
       Utils.$addClass(dspan, 'gui-has-image');
@@ -106,6 +115,46 @@
       sel.appendChild(container);
     }
 
+    if ( String(sel.getAttribute('data-draggable')) === 'true' ) {
+      GUI.Helpers.createDraggable(container, (function() {
+        var data = {};
+        try {
+          data = JSON.parse(sel.getAttribute('data-value'));
+        } catch ( e ) {}
+
+        return {data: data};
+      })());
+    }
+
+    if ( String(sel.getAttribute('data-droppable')) === 'true' ) {
+      var timeout;
+      GUI.Helpers.createDroppable(container, {
+        onEnter: onDndEnter,
+        onOver: onDndEnter,
+        onLeave: onDndLeave,
+        onDrop: onDndLeave,
+        onItemDropped: function(ev, eel, item) {
+          ev.stopPropagation();
+          ev.preventDefault();
+
+          timeout = clearTimeout(timeout);
+          timeout = setTimeout(function() {
+            Utils.$removeClass(sel, 'dnd-over');
+          }, 10);
+
+          var dval = {};
+          try {
+            dval = JSON.parse(eel.parentNode.getAttribute('data-value'));
+          } catch ( e ) {}
+
+          el.dispatchEvent(new CustomEvent('_drop', {detail: {
+            src: item.data,
+            dest: dval
+          }}));
+        }
+      });
+    }
+
     handleItemExpand(null, sel, expanded);
 
     GUI.Elements._dataview.bindEntryEvents(el, sel, 'gui-tree-view-entry');
@@ -121,13 +170,16 @@
    * A tree view for nested content
    *
    * Format for add():
-   *
+   * ```
    * {
    *    label: "Label",
    *    icon: "Optional icon path",
    *    value: "something or JSON or whatever",
    *    entries: [] // Recurse :)
    * }
+   * ```
+   *
+   * For more properties and events etc, see 'dataview'
    *
    * @api OSjs.GUI.Elements.gui-tree-view
    * @see OSjs.GUI.Elements._dataview

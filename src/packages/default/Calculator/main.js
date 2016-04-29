@@ -209,7 +209,7 @@
         output = String(0);
       }
 
-      if ( output === 'NaN' || isNaN(output) ) {
+      if ( output === 'NaN' || output === 'Infinity' || isNaN(output) || !isFinite(output) ) {
         Utils.$addClass(this._$element, 'NaN');
 
         setTimeout(function() {
@@ -219,6 +219,8 @@
 
       this._scheme.find(this, 'Output').set('value', String(output));
     }
+
+    this._scheme.find(this, 'Output').focus();
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -251,6 +253,6 @@
 
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationCalculator = OSjs.Applications.ApplicationCalculator || {};
-  OSjs.Applications.ApplicationCalculator.Class = ApplicationCalculator;
+  OSjs.Applications.ApplicationCalculator.Class = Object.seal(ApplicationCalculator);
 
 })(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

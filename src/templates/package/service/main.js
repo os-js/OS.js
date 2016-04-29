@@ -55,6 +55,6 @@
 
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.EXAMPLEService = OSjs.Applications.EXAMPLEService || {};
-  OSjs.Applications.EXAMPLEService.Class = EXAMPLEService;
+  OSjs.Applications.EXAMPLEService.Class = Object.seal(EXAMPLEService);
 
 })(OSjs.Core.Service, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

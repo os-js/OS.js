@@ -93,10 +93,10 @@
     nl_NL : {
       'Copying file...' : 'Bestand kopieren...',
       "Copying <span>{0}</span> to <span>{1}</span>" : "Kopieer <span>{0}</span> naar <span>{1}</span>",
-      "Refreshing..." : "Aktualiseren...",
+      "Refreshing..." : "Vernieuwen...",
       "Loading..." : "Laden...",
-      "Create a new directory in <span>{0}</span>" : "Maak een neiuwe map in <span>{0}</span>",
-      "Rename <span>{0}</span>" : "<span>{0}</span> hernoemen",
+      "Create a new directory in <span>{0}</span>" : "Maak een nieuwe map in <span>{0}</span>",
+      "Rename <span>{0}</span>" : "Hernoem <span>{0}</span>",
       "Delete <span>{0}</span> ?" : "<span>{0}</span> verwijderen?"
     },
     no_NO : {

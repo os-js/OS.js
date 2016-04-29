@@ -1,5 +1,11 @@
 # OS.js on Intel Edison
 
+## Dependencies
+
+```
+$ npm install -g userid
+```
+
 ## Manual installation
 
 Just follow the manual installation docs and you should be able to run without any problems.
@@ -50,3 +56,9 @@ Currently there is no automatic startup, so you have to do this manually
 mkdir /home/demo
 /osjs/bin/start-edison.sh
 ```
+
+## Managing users
+
+Authentication is done via the system, but OS.js runs with its own group setup.
+
+See [https://github.com/os-js/OS.js/blob/master/doc/handler-shadow.md](shadow handler documentation) for more information.

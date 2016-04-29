@@ -70,6 +70,32 @@
     }, false);
   }
 
+  /**
+   * This function makes menus pop out to the left instead of right
+   *
+   * Does not work for gui-menu-bar atm
+   */
+  function clampSubmenuPositions(r) {
+    function _clamp(rm) {
+      rm.querySelectorAll('gui-menu-entry').forEach(function(srm) {
+        var sm = srm.querySelector('gui-menu');
+        if ( sm ) {
+          sm.style.left = String(-parseInt(sm.offsetWidth, 10)) + 'px';
+          _clamp(sm);
+        }
+      });
+    }
+
+    var pos = Utils.$position(r);
+    if ( (window.innerWidth - pos.right) < r.offsetWidth ) {
+      Utils.$addClass(r, 'gui-overflowing');
+      _clamp(r);
+    }
+
+    // this class is used in caclulations (DOM needs to be visible for that)
+    Utils.$addClass(r, 'gui-showing');
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
@@ -109,7 +135,7 @@
         var i = Utils.$index(label.parentNode);
         bindSelectionEvent(label.parentNode, label, i, expand, el.querySelector('label'));
       });
-      OSjs.API.createMenu(null, ev, newNode);
+      OSjs.GUI.Helpers.createMenu(null, ev, newNode);
     },
     set: function(el, param, value, arg) {
       if ( param === 'checked' ) {
@@ -154,35 +180,31 @@
       }
 
       function runChildren(pel, level) {
-        var children = pel.children;
-        var child, span, label, expand, icon;
 
-        for ( var i = 0; i < children.length; i++ ) {
-          child = children[i];
-          expand = false;
+        function _checkExpand(child) {
+          if ( child.children && child.children.length ) {
+            Utils.$addClass(child, 'gui-menu-expand');
+            child.setAttribute('aria-haspopup', 'true');
+            return true;
+          } else {
+            child.setAttribute('aria-haspopup', 'false');
+          }
+
+          return false;
+        }
+
+        function createChild(child, i) {
 
           if ( child && child.tagName.toLowerCase() === 'gui-menu-entry') {
-            if ( child.children && child.children.length ) {
-              Utils.$addClass(child, 'gui-menu-expand');
-              expand = true;
-
-              child.setAttribute('aria-haspopup', 'true');
-            } else {
-              child.setAttribute('aria-haspopup', 'false');
-            }
-
-            var vlevel = level + 1;
-            if ( isMenuBarChild ) {
-              vlevel++;
-            }
+            var expand = _checkExpand(child);
 
             child.setAttribute('role', 'menuitem' + (child.getAttribute('data-type') || ''));
 
-            label = GUI.Helpers.getLabel(child);
-            icon = GUI.Helpers.getIcon(child, winRef);
+            var label = GUI.Helpers.getLabel(child);
+            var icon = GUI.Helpers.getIcon(child, winRef);
             child.setAttribute('aria-label', label);
 
-            span = document.createElement('label');
+            var span = document.createElement('label');
             if ( icon ) {
               child.style.backgroundImage = 'url(' + icon + ')';
               Utils.$addClass(span, 'gui-has-image');
@@ -207,6 +229,8 @@
             }
           }
         }
+
+        (pel.children || []).forEach(createChild);
       }
 
       el.setAttribute('role', 'menu');
@@ -220,8 +244,7 @@
    *
    * A menubar with sub-menus
    *
-   * Events:
-   *  select        When an entry was selected (click) => fn(ev)
+   * @event     select               When an entry was selected (click) => fn(ev)
    *
    * @api OSjs.GUI.Elements.gui-menu-bar
    * @class
@@ -268,6 +291,9 @@
         mel.insertBefore(span, mel.firstChild);
 
         var submenu = mel.querySelector('gui-menu');
+
+        clampSubmenuPositions(submenu);
+
         mel.setAttribute('aria-haspopup', String(!!submenu));
         updateChildren(submenu, 2);
 
@@ -307,14 +333,15 @@
    * Blur the currently open menu (aka hiding)
    *
    * @return void
-   * @api OSjs.API.blurMenu()
+   * @api OSjs.GUI.Helpers.blurMenu()
    */
-  OSjs.API.blurMenu = blurMenu;
+  OSjs.GUI.Helpers.blurMenu = blurMenu;
 
   /**
    * Create and show a new menu
    *
    * Format:
+   * ```
    * [
    *  {
    *    title: "Title",
@@ -324,15 +351,16 @@
    *  }
    *  ...
    * ]
+   * ```
    *
    * @param   Array       items             Array of items
    * @param   Event       ev                DOM Event or dict with x/y
    * @param   Mixed       customInstance    Show a custom created menu
    *
    * @return void
-   * @api OSjs.API.createMenu()
+   * @api OSjs.GUI.Helpers.createMenu()
    */
-  OSjs.API.createMenu = function(items, ev, customInstance) {
+  OSjs.GUI.Helpers.createMenu = function(items, ev, customInstance) {
     items = items || [];
     blurMenu();
 
@@ -404,6 +432,8 @@
         var newTop = Math.round(space.height - pos.height);
         root.style.top = Math.max(0, newTop) + 'px';
       }
+
+      clampSubmenuPositions(root);
     }, 1);
 
     lastMenu = function() {

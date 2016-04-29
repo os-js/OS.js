@@ -1049,7 +1049,7 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Core.WindowManager     = WindowManager;
+  OSjs.Core.WindowManager     = Object.seal(WindowManager);
 
   /**
    * Get the current WindowManager instance

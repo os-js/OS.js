@@ -50,9 +50,8 @@
    *
    * A container with tabs for displaying content.
    *
-   * Events:
-   *  select        When tab has changed => fn(ev)
-   *  activat       Alias of 'select'
+   * @event     select                    When tab has changed => fn(ev)
+   * @event     activate                  Alias of 'select'
    *
    * @api OSjs.GUI.Elements.gui-tabs
    * @class
@@ -69,7 +68,6 @@
     },
     build: function(el) {
       var tabs = document.createElement('ul');
-      var contents = document.createElement('div');
 
       var lastTab;
       function selectTab(ev, idx, tab) {
@@ -77,11 +75,11 @@
           Utils.$removeClass(lastTab, 'gui-active');
         }
 
-        tabs.querySelectorAll('li').forEach(function(el, eidx) {
-          toggleActive(el, eidx, idx);
+        tabs.querySelectorAll('li').forEach(function(tel, eidx) {
+          toggleActive(tel, eidx, idx);
         });
-        contents.querySelectorAll('gui-tab-container').forEach(function(el, eidx) {
-          toggleActive(el, eidx, idx);
+        el.querySelectorAll('gui-tab-container').forEach(function(tel, eidx) {
+          toggleActive(tel, eidx, idx);
         });
 
         lastTab = tab;
@@ -90,9 +88,9 @@
         el.dispatchEvent(new CustomEvent('_change', {detail: {index: idx}}));
       }
 
-      el.querySelectorAll('gui-tab-container').forEach(function(el, idx) {
+      el.querySelectorAll('gui-tab-container').forEach(function(tel, idx) {
         var tab = document.createElement('li');
-        var label = GUI.Helpers.getLabel(el);
+        var label = GUI.Helpers.getLabel(tel);
 
         Utils.$bind(tab, 'click', function(ev) {
           selectTab(ev, idx, tab);
@@ -100,16 +98,18 @@
 
         tab.setAttribute('role', 'tab');
         tab.setAttribute('aria-label', label);
-        el.setAttribute('role', 'tabpanel');
+        tel.setAttribute('role', 'tabpanel');
         tab.appendChild(document.createTextNode(label));
         tabs.appendChild(tab);
-        contents.appendChild(el);
       });
 
       tabs.setAttribute('role', 'tablist');
       el.setAttribute('role', 'navigation');
-      el.appendChild(tabs);
-      el.appendChild(contents);
+      if ( el.children.length ) {
+        el.insertBefore(tabs, el.children[0]);
+      } else {
+        el.appendChild(tabs);
+      }
 
       var currentTab = parseInt(el.getAttribute('data-selected-index'), 10) || 0;
       selectTab(null, currentTab);

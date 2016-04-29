@@ -290,6 +290,6 @@
 
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationPackageManager = OSjs.Applications.ApplicationPackageManager || {};
-  OSjs.Applications.ApplicationPackageManager.Class = ApplicationPackageManager;
+  OSjs.Applications.ApplicationPackageManager.Class = Object.seal(ApplicationPackageManager);
 
 })(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

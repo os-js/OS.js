@@ -141,6 +141,6 @@
 
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationProcessViewer = OSjs.Applications.ApplicationProcessViewer || {};
-  OSjs.Applications.ApplicationProcessViewer.Class = ApplicationProcessViewer;
+  OSjs.Applications.ApplicationProcessViewer.Class = Object.seal(ApplicationProcessViewer);
 
 })(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

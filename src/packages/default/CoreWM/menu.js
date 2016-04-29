@@ -56,7 +56,7 @@
 
     function createEvent(iter) {
       return function(el) {
-        OSjs.API.createDraggable(el, {
+        OSjs.GUI.Helpers.createDraggable(el, {
           type   : 'application',
           data   : {
             launch: iter.name
@@ -79,7 +79,7 @@
 
     Object.keys(apps).forEach(function(a) {
       var iter = apps[a];
-      if ( iter.type === 'application' ) {
+      if ( iter.type === 'application' && iter.visible !== false ) {
         var cat = iter.category && cats[iter.category] ? iter.category : 'unknown';
         cats[cat].push({name: a, data: iter});
       }
@@ -143,7 +143,7 @@
 
     Object.keys(apps).forEach(function(a) {
       var iter = apps[a];
-      if ( iter.type === 'application' ) {
+      if ( iter.type === 'application' && iter.visible !== false ) {
         createEntry(a, iter);
       }
     });

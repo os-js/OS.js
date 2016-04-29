@@ -30,6 +30,14 @@
 (function(Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
+  function getSelected(view) {
+    var selected = [];
+    (view.get('value') || []).forEach(function(sub) {
+      selected.push(sub.data);
+    });
+    return selected;
+  }
+
   var notificationWasDisplayed = {};
 
   function MountWindow(app, metadata, scheme) {
@@ -151,25 +159,17 @@
     // Menus
     //
 
-    function getSelected() {
-      var selected = [];
-      (view.get('value') || []).forEach(function(sub) {
-        selected.push(sub.data);
-      });
-      return selected;
-    }
-
     var menuMap = {
       MenuClose:          function() { self._close(); },
       MenuCreateFile:     function() { app.mkfile(self.currentPath, self); },
       MenuCreateDirectory:function() { app.mkdir(self.currentPath, self); },
       MenuMount:          function() { app.mount(self); },
       MenuUpload:         function() { app.upload(self.currentPath, null, self); },
-      MenuRename:         function() { app.rename(getSelected(), self); },
-      MenuDelete:         function() { app.rm(getSelected(), self); },
-      MenuInfo:           function() { app.info(getSelected(), self); },
-      MenuOpen:           function() { app.open(getSelected(), self); },
-      MenuDownload:       function() { app.download(getSelected(), self); },
+      MenuRename:         function() { app.rename(getSelected(view), self); },
+      MenuDelete:         function() { app.rm(getSelected(view), self); },
+      MenuInfo:           function() { app.info(getSelected(view), self); },
+      MenuOpen:           function() { app.open(getSelected(view), self); },
+      MenuDownload:       function() { app.download(getSelected(view), self); },
       MenuRefresh:        function() { self.changePath(); },
       MenuViewList:       function() { self.changeView('gui-list-view', true); },
       MenuViewTree:       function() { self.changeView('gui-tree-view', true); },
@@ -675,6 +675,36 @@
     Window.prototype.destroy.apply(this, arguments);
   };
 
+  ApplicationFileManagerWindow.prototype._onKeyEvent = function(ev, type) {
+    var self = this;
+
+    function paste() {
+      var clip = API.getClipboard();
+      if ( clip && (clip instanceof Array) ) {
+        clip.forEach(function(c) {
+          if ( c && (c instanceof VFS.File) ) {
+            var dst = new VFS.File((self.currentPath + '/' + c.filename));
+            self._app.copy(c, dst, self);
+          }
+        });
+      }
+    }
+
+    if ( Window.prototype._onKeyEvent.apply(this, arguments) ) {
+      if ( type === 'keydown' ) {
+        if ( ev.keyCode === Utils.Keys.V && ev.ctrlKey ) {
+          paste();
+        } else if ( ev.keyCode === Utils.Keys.DELETE ) {
+          var view = this._scheme.find(this, 'FileView');
+          self._app.rm(getSelected(view), self);
+        }
+      }
+
+      return true;
+    }
+    return false;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
@@ -971,6 +1001,6 @@
 
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationFileManager = OSjs.Applications.ApplicationFileManager || {};
-  OSjs.Applications.ApplicationFileManager.Class = ApplicationFileManager;
+  OSjs.Applications.ApplicationFileManager.Class = Object.seal(ApplicationFileManager);
 
 })(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

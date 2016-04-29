@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API, Process) {
+(function(Utils, API, GUI, Process) {
   'use strict';
 
   window.OSjs = window.OSjs || {};
@@ -382,31 +382,31 @@
     function _initMaxButton() {
       buttonMaximize            = document.createElement('application-window-button-maximize');
       buttonMaximize.className  = 'application-window-button-entry';
-      if ( self._properties.allow_maximize ) {
-        Utils.$bind(buttonMaximize, 'click', function(ev) {
-          ev.preventDefault();
-          ev.stopPropagation();
-          self._onWindowButtonClick(ev, this, 'maximize');
-          return false;
-        });
-      } else {
+      if ( !self._properties.allow_maximize ) {
         buttonMaximize.style.display = 'none';
       }
+
+      Utils.$bind(buttonMaximize, 'click', function(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        self._onWindowButtonClick(ev, this, 'maximize');
+        return false;
+      });
     }
 
     function _initCloseButton() {
       buttonClose           = document.createElement('application-window-button-close');
       buttonClose.className = 'application-window-button-entry';
-      if ( self._properties.allow_close ) {
-        Utils.$bind(buttonClose, 'click', function(ev) {
-          ev.preventDefault();
-          ev.stopPropagation();
-          self._onWindowButtonClick(ev, this, 'close');
-          return false;
-        });
-      } else {
+      if ( !self._properties.allow_close ) {
         buttonClose.style.display = 'none';
       }
+
+      Utils.$bind(buttonClose, 'click', function(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        self._onWindowButtonClick(ev, this, 'close');
+        return false;
+      });
     }
 
     function _initDnD() {
@@ -414,7 +414,7 @@
         var border = document.createElement('div');
         border.className = 'WindowDropRect';
 
-        OSjs.API.createDroppable(main, {
+        OSjs.GUI.Helpers.createDroppable(main, {
           onOver: function(ev, el, args) {
             main.setAttribute('data-dnd-state', 'true');
           },
@@ -580,7 +580,7 @@
       API.playSound(this._sound, this._soundVolume);
     }
 
-    this._checkAria();
+    this._updateMarkup();
 
     console.groupEnd();
 
@@ -698,6 +698,32 @@
   //
   // GUI And Event Hooks
   //
+
+  /**
+   * Finds a GUI Element by ID from Scheme.
+   *
+   * THIS IS JUST A SHORTCUT METHOD FROM THE UI SCHEME CLASS
+   *
+   * @param     String      id        The value of element 'data-id' parameter
+   *
+   * @see Scheme::find()
+   * @method Window::_find()
+   */
+  Window.prototype._find = function(id) {
+    return this._scheme ? this._scheme.find(this, id) : null;
+  };
+
+  /**
+   * Finds a GUI Element by ID from Scheme.
+   *
+   * THIS IS JUST A SHORTCUT METHOD FROM THE UI SCHEME CLASS
+   *
+   * @see Scheme::findByQuery()
+   * @method Window::_findByQuery()
+   */
+  Window.prototype._findByQuery = function(q, root, all) {
+    return this._scheme ? this._scheme.findByQuery(this, q, root, all) : null;
+  };
 
   /**
    * Adds a hook (internal events)
@@ -935,7 +961,7 @@
       wm.setCurrentWindow(null);
     }
 
-    this._checkAria();
+    this._updateMarkup();
 
     return true;
   };
@@ -987,7 +1013,7 @@
 
     this._onChange('maximize');
 
-    this._checkAria();
+    this._updateMarkup();
 
     return true;
   };
@@ -1042,7 +1068,7 @@
 
     this._focus();
 
-    this._checkAria();
+    this._updateMarkup();
   };
 
   /**
@@ -1084,7 +1110,7 @@
 
     this._state.focused = true;
 
-    this._checkAria();
+    this._updateMarkup();
 
     return true;
   };
@@ -1120,7 +1146,7 @@
       wm.setCurrentWindow(null);
     }
 
-    this._checkAria();
+    this._updateMarkup();
 
     return true;
   };
@@ -1349,7 +1375,7 @@
 
     this._disabled = t ? true : false;
 
-    this._checkAria();
+    this._updateMarkup();
   };
 
   /**
@@ -1369,26 +1395,46 @@
 
     this._loading = t ? true : false;
 
-    this._checkAria();
+    this._updateMarkup();
   };
 
   /**
-   * Check for ARIA updates
+   * Updates window markup with attributes etc
    *
    * @return void
+   *
+   * @method Window::_updateMarkup()
    */
-  Window.prototype._checkAria = function() {
-    if ( this._$element ) {
-      var t = this._loading || this._disabled;
-      var d = this._disabled;
-      var h = this._state.minimized;
-      var f = !this._state.focused;
-
-      this._$element.setAttribute('aria-busy', String(t));
-      this._$element.setAttribute('aria-hidden', String(h));
-      this._$element.setAttribute('aria-disabled', String(d));
-      this._$root.setAttribute('aria-hidden', String(f));
+  Window.prototype._updateMarkup = function(ui) {
+    if ( !this._$element ) {
+      return;
     }
+
+    var t = this._loading || this._disabled;
+    var d = this._disabled;
+    var h = this._state.minimized;
+    var f = !this._state.focused;
+
+    this._$element.setAttribute('aria-busy', String(t));
+    this._$element.setAttribute('aria-hidden', String(h));
+    this._$element.setAttribute('aria-disabled', String(d));
+    this._$root.setAttribute('aria-hidden', String(f));
+
+    if ( !ui ) {
+      return;
+    }
+
+    var dmax   = this._properties.allow_maximize === true ? 'inline-block' : 'none';
+    var dmin   = this._properties.allow_minimize === true ? 'inline-block' : 'none';
+    var dclose = this._properties.allow_close === true ? 'inline-block' : 'none';
+
+    this._$top.querySelector('application-window-button-maximize').style.display = dmax;
+    this._$top.querySelector('application-window-button-minimize').style.display = dmin;
+    this._$top.querySelector('application-window-button-close').style.display = dclose;
+
+    var dres   = this._properties.allow_resize === true;
+
+    this._$element.setAttribute('data-allow-resize', String(dres));
   };
 
   /**
@@ -1696,7 +1742,7 @@
     s.width -= (borderSize * 2);
     s.height -= topMargin + (borderSize * 2);
 
-    return s;
+    return Object.freeze(s);
   };
 
   /**
@@ -1707,7 +1753,7 @@
    * @method  Window::_getViewRect()
    */
   Window.prototype._getViewRect = function() {
-    return this._$element ? Utils.$position(this._$element) : null;
+    return this._$element ? Object.freeze(Utils.$position(this._$element)) : null;
   };
 
   /**
@@ -1770,7 +1816,7 @@
 
     this._onChange('title');
 
-    this._checkAria();
+    this._updateMarkup();
   };
 
   /**
@@ -1825,10 +1871,30 @@
     this._$root.appendChild(this._$warning);
   };
 
+  /**
+   * Set a window property
+   *
+   * @param   String    p     Key
+   * @param   String    v     Value
+   *
+   * @return  void
+   *
+   * @method Window::_setProperty()
+   */
+  Window.prototype._setProperty = function(p, v) {
+    if ( (v === '' || v === null) || !this._$element || (typeof this._properties[p] === 'undefined') ) {
+      return;
+    }
+
+    this._properties[p] = String(v) === 'true';
+
+    this._updateMarkup(true);
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Core.Window = Window;
+  OSjs.Core.Window = Object.seal(Window);
 
-})(OSjs.Utils, OSjs.API, OSjs.Core.Process);
+})(OSjs.Utils, OSjs.API, OSjs.GUI, OSjs.Core.Process);

@@ -119,11 +119,17 @@
       ButtonNo:     'no'
     };
 
+    var focusButtons = ['ButtonCancel', 'ButtonNo'];
+
     Object.keys(buttonMap).forEach(function(id) {
       if ( self.scheme.findDOM(self, id) ) {
-        self.scheme.find(self, id).on('click', function(ev) {
+        var btn = self.scheme.find(self, id);
+        btn.on('click', function(ev) {
           self.onClose(ev, buttonMap[id]);
         });
+        if ( focusButtons.indexOf(id) >= 0 ) {
+          btn.focus();
+        }
       }
     });
 
@@ -155,6 +161,6 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Core.DialogWindow      = DialogWindow;
+  OSjs.Core.DialogWindow = Object.seal(DialogWindow);
 
 })(OSjs.Utils, OSjs.API, OSjs.Core.Window);

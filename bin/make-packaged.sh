@@ -44,8 +44,16 @@ fi
 
 echo "[image] Updating sources..."
 
+rm -rf node_modules
+
 git checkout -- dist &>/dev/null
 npm install --production &>/dev/null
+
+if [ "$TEMPLATE" == "intel-edison" ]; then
+#  npm install mraa
+  npm install wireless-tools
+  npm install git+https://github.com/andersevenrud/passwd-linux
+fi
 
 echo "[image] Building..."
 

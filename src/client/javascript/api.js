@@ -50,6 +50,7 @@
     'onSessionLoaded':       [],
     'onLogout':              [],
     'onShutdown':            [],
+    'onApplicationPreload':  [],
     'onApplicationLaunch':   [],
     'onApplicationLaunched': []
   };
@@ -288,15 +289,7 @@
       opts = args;
     }
 
-    doAPICall('curl', opts, function(response) {
-      if ( response && response.error ) {
-        callback(response.error);
-        return;
-      }
-      callback(false, response ? (response.result || null) : null);
-    }, function(error) {
-      callback(error);
-    }, args.options);
+    doAPICall('curl', opts, callback, args.options);
   }
 
   /**
@@ -304,12 +297,9 @@
    *
    * You can call VFS functions by prefixing your method name with "FS:"
    *
-   * Response is in form of: {error, result}
-   *
    * @param   String    m       Method name
    * @param   Object    a       Method arguments
-   * @param   Function  cok     Callback on success => fn(response)
-   * @param   Function  cerror  (Optional) Callback on HTTP error => fn(error)
+   * @param   Function  cb      Callback on success => fn(err, res)
    * @param   Object    options (Optional) Options to send to the XHR request
    *
    * @see     OSjs.Core.Handler.callAPI()
@@ -319,7 +309,7 @@
    * @api     OSjs.API.call()
    */
   var _CALL_INDEX = 1;
-  function doAPICall(m, a, cok, cerror, options) {
+  function doAPICall(m, a, cb, options) {
     a = a || {};
 
     var lname = 'APICall_' + _CALL_INDEX;
@@ -328,25 +318,23 @@
       createLoading(lname, {className: 'BusyNotification', tooltip: 'API Call'});
     }
 
-    if ( typeof cok !== 'function' ) {
+    if ( typeof cb !== 'function' ) {
       throw new TypeError('call() expects a function as callback');
     }
 
-    if ( typeof cerror !== 'function' ) {
-      cerror = function() {
-        console.warn('API::call()', 'no error handler assigned', arguments);
-      };
+    if ( options && typeof options !== 'object' ) {
+      throw new TypeError('call() expects an object as options');
     }
 
     _CALL_INDEX++;
 
     var handler = OSjs.Core.getHandler();
-    return handler.callAPI(m, a, function() {
+    return handler.callAPI(m, a, function(response) {
       destroyLoading(lname);
-      cok.apply(this, arguments);
-    }, function() {
-      destroyLoading(lname);
-      cerror.apply(this, arguments);
+      response = response || {};
+      cb(response.error || false, response.result);
+    }, function(err) {
+      cb(err);
     }, options);
   }
 
@@ -509,8 +497,6 @@
 
     if ( !n ) { throw new Error('Cannot doLaunchProcess() witout a application name'); }
 
-    console.group('doLaunchProcess()', n, arg);
-
     var splash = null;
     var pargs = {};
     var handler = OSjs.Core.getHandler();
@@ -529,6 +515,56 @@
         });
       }
       return result;
+    }
+
+    function getPreloads(data) {
+      var preload = (data.preload || []).slice(0);
+      var additions = [];
+
+      function _add(chk) {
+        if ( chk && chk.preload ) {
+          chk.preload.forEach(function(p) {
+            additions.push(p);
+          });
+        }
+      }
+
+      if ( data.depends && data.depends instanceof Array ) {
+        data.depends.forEach(function(k) {
+          if ( !OSjs.Applications[k] ) {
+            console.info('Using dependency', k);
+            _add(packman.getPackage(k));
+          }
+        });
+      }
+
+      var pkgs = packman.getPackages(false);
+      Object.keys(pkgs).forEach(function(pn) {
+        var p = pkgs[pn];
+        if ( p.type === 'extension' && p.uses === n ) {
+          console.info('Using extension', pn);
+          _add(p);
+        }
+      });
+
+      preload = additions.concat(preload);
+      additions = [];
+
+      if ( data.scope === 'user' ) {
+        preload = preload.map(function(p) {
+          if ( p.src.substr(0, 1) !== '/' && !p.src.match(/^(https?|ftp)/) ) {
+            OSjs.VFS.url(p.src, function(error, url) {
+              if ( !error ) {
+                p.src = url;
+              }
+            });
+          }
+
+          return p;
+        });
+      }
+
+      return preload;
     }
 
     function _done() {
@@ -652,34 +688,58 @@
         delete arg.__preload__;
       }
 
-      // Preload
       if ( !OSjs.Applications[n] ) {
         if ( data.splash !== false ) {
           splash = OSjs.API.createSplash(data.name, data.icon);
         }
       }
 
+      console.info('Manifest', data);
+
+      // Preload
       createLoading(n, {className: 'StartupNotification', tooltip: 'Starting ' + n});
 
-      OSjs.Utils.preload(data.preload, function(total, failed) {
-        destroyLoading(n);
+      var preload = getPreloads(data);
 
-        if ( failed.length ) {
-          _error(OSjs.API._('ERR_APP_PRELOAD_FAILED_FMT', n, failed.join(',')));
-          return;
-        }
+      function _onLaunchPreload() {
 
-        setTimeout(function() {
-          _callback(data);
-        }, 0);
-      }, function(progress, count) {
-        if ( splash ) {
-          splash.update(progress, count);
-        }
-      }, pargs);
+        OSjs.Utils.preload(preload, function(total, failed) {
+          destroyLoading(n);
+
+          if ( failed.length ) {
+            _error(OSjs.API._('ERR_APP_PRELOAD_FAILED_FMT', n, failed.join(',')));
+            return;
+          }
+
+          setTimeout(function() {
+            _callback(data);
+          }, 0);
+        }, function(progress, count) {
+          if ( splash ) {
+            splash.update(progress, count);
+          }
+        }, pargs);
+      }
+
+      OSjs.Utils.asyncs(_hooks.onApplicationPreload, function(qi, i, n) {
+        qi(n, arg, preload, function(p) {
+          if ( p && (p instanceof Array) ) {
+            preload = p;
+          }
+
+          n();
+        });
+      }, function() {
+        _onLaunchPreload();
+      });
+
+      doTriggerHook('onApplicationLaunch', [n, arg]);
 
       return true;
     }
+
+    console.group('doLaunchProcess()', n);
+    console.info('Arguments', arg);
 
     return launch();
   }
@@ -701,30 +761,7 @@
     onError     = onError     || function() {};
     onFinished  = onFinished  || function() {};
 
-    function _onSuccess(app, metadata, appName, appArgs) {
-      onSuccess(app, metadata, appName, appArgs);
-      _onNext();
-    }
-
-    function _onError(err, appName, appArgs, exc) {
-      console.warn('doLaunchProcessList() _onError()', err);
-      if ( exc ) {
-        console.warn(exc, exc.stack);
-      }
-      onError(err, appName, appArgs);
-      _onNext();
-    }
-
-    var current = 0;
-    function _onNext() {
-      if ( current >= list.length ) {
-        onFinished();
-        return;
-      }
-
-      var s = list[current];
-      current++;
-
+    OSjs.Utils.asyncs(list, function(s, current, next) {
       if ( typeof s === 'string' ) {
         var args = {};
         var spl = s.split('@');
@@ -745,18 +782,20 @@
       var aargs = (typeof s.args === 'undefined') ? {} : (s.args || {});
 
       if ( !aname ) {
-        console.warn('doLaunchProcessList() _onNext()', 'No application name defined');
+        console.warn('doLaunchProcessList() next()', 'No application name defined');
+        next();
         return;
       }
 
       OSjs.API.launch(aname, aargs, function(app, metadata) {
-        _onSuccess(app, metadata, aname, aargs);
+        onSuccess(app, metadata, aname, aargs);
+        next();
       }, function(err, name, args) {
-        _onError(err, name, args);
+        console.warn('doLaunchProcessList() _onError()', err);
+        onError(err, name, args);
+        next();
       });
-    }
-
-    _onNext();
+    }, onFinished);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -769,12 +808,13 @@
    * @param   Process   app     Application instance reference
    *                            You can also specify a name by String
    * @param   String    name    Resource Name
+   * @param   boolean   vfspath Return a valid VFS path
    *
    * @return  String            The absolute URL of resource
    *
    * @api     OSjs.API.getApplicationResource()
    */
-  function doGetApplicationResource(app, name) {
+  function doGetApplicationResource(app, name, vfspath) {
     if ( name.match(/^\//) ) {
       return name;
     }
@@ -798,23 +838,37 @@
       return appname;
     }
 
+    function getResultPath(path, userpkg) {
+      path = OSjs.Utils.checkdir(path);
+
+      if ( vfspath ) {
+        if ( userpkg ) {
+          path = path.substr(OSjs.API.getConfig('Connection.FSURI').length);
+        } else {
+          path = 'osjs:///' + path;
+        }
+      }
+
+      return path;
+    }
+
     function getResourcePath() {
       var appname = getName();
       var path = '';
 
+      var root, sub;
       if ( appname ) {
-        var root;
         if ( appname.match(/^(.*)\/(.*)$/) ) {
           root = OSjs.API.getConfig('Connection.PackageURI');
           path = root + '/' + appname + '/' + name;
         } else {
           root = OSjs.API.getConfig('Connection.FSURI');
-          var sub = OSjs.API.getConfig('PackageManager.UserPackages');
+          sub = OSjs.API.getConfig('PackageManager.UserPackages');
           path = root + OSjs.Utils.pathJoin(sub, appname, name);
         }
       }
 
-      return OSjs.Utils.checkdir(path);
+      return getResultPath(path, !!sub);
     }
 
     return getResourcePath();
@@ -1145,183 +1199,6 @@
     }, 10);
 
     return win;
-  }
-
-  /**
-   * Create a draggable DOM element
-   *
-   * @param   DOMElement    el      DOMElement
-   * @param   Object        args    JSON of draggable params
-   *
-   * @return  void
-   *
-   * @api     OSjs.API.createDraggable()
-   */
-  function doCreateDraggable(el, args) {
-    args = OSjs.Utils.argumentDefaults(args, {
-      type       : null,
-      effect     : 'move',
-      data       : null,
-      mime       : 'application/json',
-      dragImage  : null,
-      onStart    : function() { return true; },
-      onEnd      : function() { return true; }
-    });
-
-    if ( OSjs.Utils.isIE() ) {
-      args.mime = 'text';
-    }
-
-    function _toString(mime) {
-      return JSON.stringify({
-        type:   args.type,
-        effect: args.effect,
-        data:   args.data,
-        mime:   args.mime
-      });
-    }
-
-    function _dragStart(ev) {
-      try {
-        ev.dataTransfer.effectAllowed = args.effect;
-        if ( args.dragImage && (typeof args.dragImage === 'function') ) {
-          if ( ev.dataTransfer.setDragImage ) {
-            var dragImage = args.dragImage(ev, el);
-            if ( dragImage ) {
-              var dragEl    = dragImage.element;
-              var dragPos   = dragImage.offset;
-
-              document.body.appendChild(dragEl);
-              ev.dataTransfer.setDragImage(dragEl, dragPos.x, dragPos.y);
-            }
-          }
-        }
-        ev.dataTransfer.setData(args.mime, _toString(args.mime));
-      } catch ( e ) {
-        console.warn('Failed to dragstart: ' + e);
-        console.warn(e.stack);
-      }
-    }
-
-    el.setAttribute('draggable', 'true');
-    el.setAttribute('aria-grabbed', 'false');
-
-    el.addEventListener('dragstart', function(ev) {
-      this.setAttribute('aria-grabbed', 'true');
-
-      this.style.opacity = '0.4';
-      if ( ev.dataTransfer ) {
-        _dragStart(ev);
-      }
-      return args.onStart(ev, this, args);
-    }, false);
-
-    el.addEventListener('dragend', function(ev) {
-      this.setAttribute('aria-grabbed', 'false');
-      this.style.opacity = '1.0';
-      return args.onEnd(ev, this, args);
-    }, false);
-  }
-
-  /**
-   * Create a droppable DOM element
-   *
-   * @param   DOMElement    el      DOMElement
-   * @param   Object        args    JSON of droppable params
-   *
-   * @return  void
-   *
-   * @api     OSjs.API.createDroppable()
-   */
-  function doCreateDroppable(el, args) {
-    args = OSjs.Utils.argumentDefaults(args, {
-      accept         : null,
-      effect         : 'move',
-      mime           : 'application/json',
-      files          : true,
-      onFilesDropped : function() { return true; },
-      onItemDropped  : function() { return true; },
-      onEnter        : function() { return true; },
-      onOver         : function() { return true; },
-      onLeave        : function() { return true; },
-      onDrop         : function() { return true; }
-    });
-
-    if ( OSjs.Utils.isIE() ) {
-      args.mime = 'text';
-    }
-
-    function getParent(start, matcher) {
-      if ( start === matcher ) { return true; }
-      var i = 10;
-
-      while ( start && i > 0 ) {
-        if ( start === matcher ) {
-          return true;
-        }
-        start = start.parentNode;
-        i--;
-      }
-      return false;
-    }
-
-    function _onDrop(ev, el) {
-      ev.stopPropagation();
-      ev.preventDefault();
-
-      args.onDrop(ev, el);
-      if ( !ev.dataTransfer ) { return true; }
-
-      if ( args.files ) {
-        var files = ev.dataTransfer.files;
-        if ( files && files.length ) {
-          return args.onFilesDropped(ev, el, files, args);
-        }
-      }
-
-      var data;
-      try {
-        data = ev.dataTransfer.getData(args.mime);
-      } catch ( e ) {
-        console.warn('Failed to drop: ' + e);
-      }
-      if ( data ) {
-        var item = JSON.parse(data);
-        if ( args.accept === null || args.accept === item.type ) {
-          return args.onItemDropped(ev, el, item, args);
-        }
-      }
-
-      return false;
-    }
-
-    el.setAttribute('aria-dropeffect', args.effect);
-
-    el.addEventListener('drop', function(ev) {
-      //Utils.$removeClass(el, 'onDragEnter');
-      return _onDrop(ev, this);
-    }, false);
-
-    el.addEventListener('dragenter', function(ev) {
-      //Utils.$addClass(el, 'onDragEnter');
-      return args.onEnter.call(this, ev, this, args);
-    }, false);
-
-    el.addEventListener('dragover', function(ev) {
-      ev.preventDefault();
-      if ( !getParent(ev.target, el) ) {
-        return false;
-      }
-
-      ev.stopPropagation();
-      ev.dataTransfer.dropEffect = args.effect;
-      return args.onOver.call(this, ev, this, args);
-    }, false);
-
-    el.addEventListener('dragleave', function(ev) {
-      //Utils.$removeClass(el, 'onDragEnter');
-      return args.onLeave.call(this, ev, this, args);
-    }, false);
   }
 
   /**
@@ -1696,10 +1573,22 @@
 
   OSjs.API.getDefaultPath         = doGetDefaultPath;
 
-  OSjs.API.createDraggable        = doCreateDraggable;
-  OSjs.API.createDroppable        = doCreateDroppable;
-  OSjs.API.createMenu             = function() {}; // gui.js
-  OSjs.API.blurMenu               = function() {}; // gui.js
+  /**
+   * @api OSjs.API.createMenu()
+   * @see OSjs.GUI.Helpers.createMenu()
+   */
+  OSjs.API.createMenu             = function() {
+    return OSjs.GUI.Helpers.createMenu.apply(null, arguments);
+  };
+
+  /**
+   * @api OSjs.API.blurMenu()
+   * @see OSjs.GUI.Helpers.blurMenu()
+   */
+  OSjs.API.blurMenu               = function() {
+    return OSjs.GUI.Helpers.blurMenu.apply(null, arguments);
+  };
+
   OSjs.API.createLoading          = createLoading;
   OSjs.API.destroyLoading         = destroyLoading;
   OSjs.API.createSplash           = doCreateSplash;

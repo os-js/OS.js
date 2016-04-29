@@ -190,7 +190,7 @@
    */
   function warning(grunt, str) {
     str = 'WARN: ' + str;
-    grunt.log.writeln(str['yellow'].bold);
+    grunt.log.writeln(str.yellow.bold);
   }
 
   /**
@@ -321,7 +321,7 @@
         return false;
       } else if ( value === 'null' ) {
         return null;
-      } else if ( value.match(/^\d+$/) ) {
+      } else if ( value.match(/^\d+$/) && !String(value).match(/^0/) ) {
         return parseInt(value, 10);
       } else if ( value.match(/^\d{0,2}(\.\d{0,2}){0,1}$/) ) {
         return parseFloat(value);
@@ -397,72 +397,6 @@
       return current;
     };
   })();
-
-  /**
-   * Enable/Disable given package
-   */
-  function togglePackage(grunt, packageName, enable) {
-    var packages = readPackageMetadata(grunt, PATHS.packages, true);
-    var found;
-
-    Object.keys(packages).forEach(function(iter) {
-      if ( packageName.match(/\//) ) {
-        if ( packageName === iter ) {
-          found = packages[iter];
-        }
-      } else {
-        if ( iter.split('/')[1] === packageName ) {
-          found = packages[iter];
-        }
-      }
-      return !!found;
-    });
-
-    if ( found ) {
-      var src = _path.join(PATHS.packages, found.path, 'metadata.json');
-      if ( _fs.existsSync(src) ) {
-        console.log(enable ? 'Enabling' : 'Disabling', 'package', found.path);
-
-        var jsn = JSON.parse(_fs.readFileSync(src));
-        jsn.enabled = enable ? null : false;
-        removeNulls(jsn);
-
-        _fs.writeFileSync(src, JSON.stringify(jsn, null, 2));
-
-        return;
-      }
-    }
-
-    grunt.fail.fatal('Package ' + packageName + ' not found!');
-
-    console.log(found);
-  }
-
-  /**
-   * Adds repository to config
-   */
-  function addRepository(grunt, name) {
-    var current = getConfigPath(grunt, 'repositories') || [];
-    current.push(name);
-    setConfigPath(grunt, 'repositories', {repositories: current}, true);
-    return current;
-  }
-
-  /**
-   * Removes repository from config
-   */
-  function removeRepository(grunt, name) {
-    var current = getConfigPath(grunt, 'repositories') || [];
-    var found = current.indexOf(name);
-    if ( found >= 0 ) {
-      current.splice(found, 1);
-    }
-    if ( current.length === 1 && current[0] === 'default' ) {
-      current = null;
-    }
-    setConfigPath(grunt, 'repositories', {repositories: current}, true);
-    return current;
-  }
 
   /**
    * Compile `src/conf` into an object
@@ -560,13 +494,26 @@
     PackageException.prototype = Object.create(Error.prototype);
     PackageException.constructor = Error;
 
-    function check(json, all) {
+    function check(grunt, json, all, pn) {
       if ( !json || !Object.keys(json).length ) {
         throw new PackageException('Package manifest is empty');
       }
-      if ( !all && json.enabled === false || json.enabled === 'false' ) {
-        throw new PackageException('Package is disabled');
+
+      if ( !all ) {
+        var currentEnabled = getConfigPath(grunt, 'packages.ForceEnable') || [];
+        var currentDisabled = getConfigPath(grunt, 'packages.ForceDisable') || [];
+
+        if ( String(json.enabled) === 'false' ) {
+          if ( currentEnabled.indexOf(pn) < 0 ) {
+            throw new PackageException('Package is disabled');
+          }
+        } else {
+          if ( currentDisabled.indexOf(pn) >= 0 ) {
+            throw new PackageException('Package is disabled (by user config)');
+          }
+        }
       }
+
       if ( !json.className ) {
         throw new PackageException('Package is missing className');
       }
@@ -574,7 +521,7 @@
       return true;
     }
 
-    function read(grunt, srcDir, all) {
+    function read(grunt, srcDir) {
       var list = {};
       var cfg = generateBuildConfig(grunt);
       (cfg.repositories || []).forEach(function(r) {
@@ -586,24 +533,15 @@
           if ( _fs.existsSync(mpath) ) {
             var raw = _fs.readFileSync(mpath);
             var name = r + '/' + p;
-            try {
-              var json = JSON.parse(raw);
 
-              if ( check(json, all) ) {
-                list[name] = json;
-              }
+            var json = JSON.parse(raw);
 
-              json.type = json.type || 'application';
-              json.path = name;
-              json.build = json.build || {};
+            json.type = json.type || 'application';
+            json.path = name;
+            json.build = json.build || {};
+            json.repo = r;
 
-            } catch ( e ) {
-              if ( e instanceof PackageException ) {
-                console.warn('!!!', p, e.message);
-              } else {
-                console.warn('readPackageMetadata()', e, e.stack);
-              }
-            }
+            list[name] = json;
           }
 
         });
@@ -613,13 +551,41 @@
 
     var _cache = null;
     return function(grunt, dir, all) {
-      if ( dir ) {
-        return read(grunt, dir, all);
+
+      function f(r, a) {
+        if ( a ) {
+          return r;
+        }
+
+        var filtered = [];
+        Object.keys(r).forEach(function(k) {
+          var p = k.split('/')[1];
+          try {
+            if ( check(grunt, r[k], a, p) ) {
+              filtered[k] = r[k];
+              filtered[k].enabled = true;
+            }
+          } catch ( e ) {
+            if ( e instanceof PackageException ) {
+              console.warn('!!!', p, e.message);
+            } else {
+              console.warn('readPackageMetadata()', e, e.stack);
+            }
+          }
+        });
+        return filtered;
       }
+
+      if ( dir ) {
+        return f(read(grunt, dir), all);
+      }
+
       if ( _cache === null ) {
         _cache = read(grunt);
       }
-      return clone(_cache);
+
+      var result = clone(_cache);
+      return all ? result : f(result);
     };
   })();
 
@@ -769,7 +735,7 @@
     Object.keys(packages).forEach(function(n) {
       var meta = packages[n];
       if ( meta.autostart === true ) {
-        autostart.push(n.split('/')[1]);
+        autostart.push(meta.className);
       }
     });
 
@@ -942,11 +908,18 @@
    */
   function createApacheHtaccess(grunt, dist, outfile) {
     var mimes = [];
-    var mime = generateBuildConfig(grunt).mime;
+    var cfg = generateBuildConfig(grunt);
+    var proxies = [];
 
-    Object.keys(mime.mapping).forEach(function(i) {
+    Object.keys(cfg.mime.mapping).forEach(function(i) {
       if ( i.match(/^\./) ) {
-        mimes.push('  AddType ' + mime.mapping[i] + ' ' + i);
+        mimes.push('  AddType ' + cfg.mime.mapping[i] + ' ' + i);
+      }
+    });
+
+    Object.keys(cfg.server.proxies).forEach(function(k) {
+      if ( k.substr(0, 1) !== '/' && typeof cfg.server.proxies[k] === 'string' ) {
+        proxies.push('     RewriteRule ' + k + ' ' + cfg.server.proxies[k] + ' [P]');
       }
     });
 
@@ -955,6 +928,7 @@
       var dst = _path.join(ROOT, d, '.htaccess');
       var tpl = _fs.readFileSync(src).toString();
       tpl = tpl.replace(/%MIMES%/, mimes.join('\n'));
+      tpl = tpl.replace(/%PROXIES%/, proxies.join('\n'));
       writeFile(dst, tpl);
     }
 
@@ -1002,6 +976,69 @@
   /////////////////////////////////////////////////////////////////////////////
   // PACKAGES
   /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Enable/Disable given package
+   */
+  function togglePackage(grunt, packageName, enable) {
+    var currentEnabled = getConfigPath(grunt, 'packages.ForceEnable') || [];
+    var currentDisabled = getConfigPath(grunt, 'packages.ForceDisable') || [];
+
+    var idx;
+    if ( enable ) {
+      if ( currentEnabled.indexOf(packageName) < 0 ) {
+        currentEnabled.push(packageName);
+      }
+
+      idx = currentDisabled.indexOf(packageName);
+      if ( idx >= 0 ) {
+        currentDisabled.splice(idx, 1);
+      }
+    } else {
+      idx = currentEnabled.indexOf(packageName);
+      if ( idx >= 0 ) {
+        currentEnabled.splice(idx, 1);
+      }
+
+      idx = currentDisabled.indexOf(packageName);
+      if ( idx < 0 ) {
+        currentDisabled.push(packageName);
+      }
+    }
+
+    setConfigPath(grunt, 'packages', {
+      packages: {
+        ForceEnable: currentEnabled,
+        ForceDisable: currentDisabled
+      }
+    }, true);
+  }
+
+  /**
+   * Adds repository to config
+   */
+  function addRepository(grunt, name) {
+    var current = getConfigPath(grunt, 'repositories') || [];
+    current.push(name);
+    setConfigPath(grunt, 'repositories', {repositories: current}, true);
+    return current;
+  }
+
+  /**
+   * Removes repository from config
+   */
+  function removeRepository(grunt, name) {
+    var current = getConfigPath(grunt, 'repositories') || [];
+    var found = current.indexOf(name);
+    if ( found >= 0 ) {
+      current.splice(found, 1);
+    }
+    if ( current.length === 1 && current[0] === 'default' ) {
+      current = null;
+    }
+    setConfigPath(grunt, 'repositories', {repositories: current}, true);
+    return current;
+  }
 
   /**
    * Creates a package
@@ -1097,6 +1134,61 @@
       _path.join(PATHS.templates, 'handler', 'node.js'),
       _path.join(PATHS.server_node, 'handlers', uname, 'handler.js')
     );
+  }
+
+  function listPackages(grunt) {
+    var packages = readPackageMetadata(grunt, null, true);
+    var epackages = readPackageMetadata(grunt, null, false);
+    var currentEnabled = getConfigPath(grunt, 'packages.ForceEnable') || [];
+    var currentDisabled = getConfigPath(grunt, 'packages.ForceDisable') || [];
+
+    function pl(str, s) {
+      if ( str.length > s ) {
+        str = str.substr(0, s - 3) + '...';
+      }
+
+      while ( str.length <= s ) {
+        str += ' ';
+      }
+
+      return str;
+    }
+
+    grunt.log.subhead('Listing all packages...');
+    Object.keys(packages).forEach(function(pn) {
+      var p = packages[pn];
+      var es = p.enabled !== false;
+      var esc = es ? 'green' : 'red';
+      var prn = pn.split('/', 2)[1];
+      if ( es ) {
+        if ( currentDisabled.indexOf(prn) !== -1 ) {
+          es = false;
+          esc = 'yellow';
+        }
+      } else {
+        if ( currentEnabled.indexOf(prn) !== -1 ) {
+          es = true;
+          esc = 'blue';
+        }
+      }
+
+      var lblenabled = (es ? 'Enabled' : 'Disabled')[esc];
+      var lblname = prn[es ? 'white' : 'grey'];
+      var lblrepo = p.repo[es ? 'white' : 'grey'];
+      var lbltype = p.type[es ? 'white' : 'grey'];
+
+      console.log(pl(lblenabled, 20), pl(lblrepo, 30), pl(lbltype, 25), lblname);
+    });
+  }
+
+  function addMountpoint(grunt, name, desc, path) {
+    var current = getConfigPath(grunt, 'client.VFS.Mountpoints') || {};
+    current[name] = {description: desc};
+    setConfigPath(grunt, 'client.VFS.Mountpoints', {client: {VFS: { Mountpoints: current}}}, true);
+
+    current = getConfigPath(grunt, 'server.vfs.mounts') || {};
+    current[name] = path;
+    setConfigPath(grunt, 'server.vfs.mounts', {server: {vfs: {mounts: current}}}, true);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1449,16 +1541,36 @@
       copyFile(_path.join(PATHS.themes, 'wallpapers'),
                _path.join(PATHS.dist, 'themes', 'wallpapers'));
 
-      mkdir(_path.join(PATHS.dist, 'themes', 'icons'));
-      cfg.themes.icons.forEach(function(i) {
-        copyFile(_path.join(PATHS.themes, 'icons', i),
-                 _path.join(PATHS.dist, 'themes', 'icons', i));
-      });
-
       mkdir(_path.join(PATHS.dist, 'themes', 'sounds'));
       cfg.themes.sounds.forEach(function(i) {
         copyFile(_path.join(PATHS.themes, 'sounds', i),
                  _path.join(PATHS.dist, 'themes', 'sounds', i));
+      });
+    }
+
+    function buildIcons() {
+      grunt.log.subhead('Icon packs');
+
+      mkdir(_path.join(PATHS.dist, 'themes', 'icons'));
+
+      cfg.themes.icons.forEach(function(i) {
+        grunt.log.subhead(i + ':');
+
+        var src = _path.join(PATHS.themes, 'icons', i);
+        var dst = _path.join(PATHS.dist, 'themes', 'icons', i);
+        var met = {};
+
+        try {
+          met = JSON.parse(readFile(_path.join(src, 'metadata.json')));
+        } catch ( e ) {}
+
+        if ( met && met.parent ) {
+          console.log('+++', 'Uses parent theme', met.parent);
+          var psrc = _path.join(PATHS.themes, 'icons', met.parent);
+          copyFile(psrc, dst);
+        }
+
+        copyFile(src, dst);
       });
     }
 
@@ -1488,9 +1600,13 @@
     if ( !arg || arg === 'all' ) {
       buildFonts();
       buildStatic();
+      buildIcons();
       buildStyles(null, done);
       return;
+    } else if ( arg === 'icons' ) {
+      buildIcons();
     } else if ( arg === 'resources' ) {
+      buildIcons();
       buildStatic();
     } else if ( arg === 'fonts' ) {
       buildFonts();
@@ -1587,7 +1703,11 @@
     generate(PATHS.out_client_dev_manifest, 'dist-dev');
 
     var packages = readPackageMetadata(grunt);
-    writeFile(PATHS.out_server_manifest, JSON.stringify(packages, null, 4));
+    var pout = {};
+    Object.keys(packages).forEach(function(k) {
+      pout[k] = packages[k];
+    });
+    writeFile(PATHS.out_server_manifest, JSON.stringify(pout, null, 4));
   }
 
   /**
@@ -1684,6 +1804,8 @@
     togglePackage: togglePackage,
     addRepository: addRepository,
     removeRepository: removeRepository,
+    listPackages: listPackages,
+    addMountpoint: addMountpoint,
 
     buildCore:        buildCore,
     buildStandalone:  buildStandalone,

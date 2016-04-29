@@ -31,6 +31,10 @@
  * @licence Simplified BSD License
  */
 
+//
+// See doc/handler-mysql.txt
+//
+
 (function(API, Utils, VFS) {
   'use strict';
 
@@ -57,7 +61,7 @@
    */
   MysqlHandler.prototype.init = function(callback) {
     var self = this;
-    OSjs.Core._Handler.prototype.init.call(this, function() {
+    return OSjs.Core._Handler.prototype.init.call(this, function() {
       self.initLoginScreen(callback);
     });
   };

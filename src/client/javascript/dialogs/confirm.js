@@ -64,7 +64,7 @@
     var self = this;
     var root = DialogWindow.prototype.init.apply(this, arguments);
 
-    this.scheme.find(this, 'Message').set('value', this.args.message, true);
+    this.scheme.find(this, 'Message').set('value', this.args.message);
 
     var buttonMap = {
       yes: 'ButtonYes',
@@ -91,6 +91,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Dialogs = OSjs.Dialogs || {};
-  OSjs.Dialogs.Confirm = ConfirmDialog;
+  OSjs.Dialogs.Confirm = Object.seal(ConfirmDialog);
 
 })(OSjs.API, OSjs.Utils, OSjs.Core.DialogWindow);

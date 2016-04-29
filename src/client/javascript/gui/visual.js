@@ -81,11 +81,9 @@
    *
    * HTML5 Audio Element.
    *
-   * Parameters:
-   *  src       String        The source
-   *
-   * Setters:
-   *  src                     Sets the source
+   * @getter    src   String        The source (src)
+   * @setter    src   String        The source (src)
+   * @property  src   String        The source (src)
    *
    * @api OSjs.GUI.Elements.gui-audio
    * @class
@@ -105,11 +103,9 @@
    *
    * HTML5 Video Element.
    *
-   * Parameters:
-   *  src       String        The source
-   *
-   * Setters:
-   *  src                     Sets the source
+   * @getter    src   String        The source (src)
+   * @setter    src   String        The source (src)
+   * @property  src   String        The source (src)
    *
    * @api OSjs.GUI.Elements.gui-video
    * @class
@@ -129,11 +125,9 @@
    *
    * Normal Image Element.
    *
-   * Parameters:
-   *  src       String        The source
-   *
-   * Setters:
-   *  src                     Sets the source
+   * @getter    src   String        The source (src)
+   * @setter    src   String        The source (src)
+   * @property  src   String        The source (src)
    *
    * @api OSjs.GUI.Elements.gui-image
    * @class
@@ -153,11 +147,9 @@
    *
    * Canvas Element.
    *
-   * Parameters:
-   *  src       String        The source
-   *
-   * Setters:
-   *  src                     Sets the source
+   * @getter    src   String        The source (src)
+   * @setter    src   String        The source (src)
+   * @property  src   String        The source (src)
    *
    * @api OSjs.GUI.Elements.gui-canvas
    * @class

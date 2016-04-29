@@ -88,6 +88,6 @@
 
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationAbout = OSjs.Applications.ApplicationAbout || {};
-  OSjs.Applications.ApplicationAbout.Class = ApplicationAbout;
+  OSjs.Applications.ApplicationAbout.Class = Object.seal(ApplicationAbout);
 
 })(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

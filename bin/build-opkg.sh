@@ -45,11 +45,17 @@ echo "[opkg] Building..."
 # Create package files
 #
 mkdir -p $OUTDIR/ipkg/CONTROL
-mkdir -p $OUTDIR/data/osjs
+mkdir -p $OUTDIR/data/osjs/templates
+
 if [ "$TEMPLATE" == "arduino" ]; then
   mkdir -p $OUTDIR/data/usr/lib/lua/osjs
 fi
+
 cp -r $SRCDIR/* $OUTDIR/data/osjs/
+
+if [ "$TEMPLATE" == "intel-edison" ]; then
+  cp -r src/templates/misc/etc $OUTDIR/data/osjs/templates/etc
+fi
 
 echo "[opkg] Packing..."
 

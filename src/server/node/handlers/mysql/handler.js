@@ -27,6 +27,11 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
+
+//
+// See doc/handler-mysql.txt
+//
+
 (function(mysql, bcrypt) {
   'use strict';
 
@@ -157,7 +162,7 @@
   };
 
   APIUser.updateSettings = function(settings, request, response, callback) {
-    var uname = request.cookies.get('username');
+    var uname = request.session.get('username');
 
     var q = 'UPDATE `users` SET `settings` = ? WHERE `username` = ?;';
     var a = [JSON.stringify(settings), uname];

@@ -543,7 +543,15 @@
 
       var dst = new VFS.File({path: destination, type: 'dir'});
       VFS.mkdir(dst, function(error, result) {
+        if ( error ) {
+          console.warn('ZipArchiver::extract()', '_checkDirectory()', 'VFS::mkdir()', error);
+        }
+
         VFS.exists(dst, function(err, result) {
+          if ( err ) {
+            console.warn('ZipArchiver::extract()', '_checkDirectory()', 'VFS::exists()', err);
+          }
+
           if ( result ) {
             cb(false);
           } else {

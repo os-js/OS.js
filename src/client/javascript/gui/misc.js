@@ -43,11 +43,8 @@
    *
    * A box that displays a color.
    *
-   * Getters:
-   *  value         Gets the input value
-   *
-   * Setters:
-   *  value         Sets the input value
+   * @getter    value   String        The value (color)
+   * @setter    value   String        The value (color)
    *
    * @api OSjs.GUI.Elements.gui-color-box
    * @class
@@ -75,8 +72,11 @@
    *
    * A box for selecting color(s) in the rainbow.
    *
-   * Events:
-   *  change        When input has changed => fn(ev)
+   * See `ev.detail` for data on events (like on 'change').
+   *
+   * @getter    value   String        The value (color)
+   * @setter    value   String        The value (color)
+   * @event     change                When input has changed => fn(ev)
    *
    * @api OSjs.GUI.Elements.gui-color-swatch
    * @class
@@ -149,34 +149,43 @@
   /**
    * Element: 'gui-iframe'
    *
-   * IFrame container.
+   * IFrame container. On NW/Electron/X11 this is a "webview"
    *
-   * Parameters:
-   *  src       String        The URL/location
+   * @property  src     String        The source (src)
    *
    * @api OSjs.GUI.Elements.gui-iframe
    * @class
    */
-  GUI.Elements['gui-iframe'] = {
-    build: function(el) {
-      var src = el.getAttribute('data-src') || 'about:blank';
-      var iframe = document.createElement('iframe');
-      iframe.src = src;
-      iframe.setAttribute('border', 0);
-      el.appendChild(iframe);
+  GUI.Elements['gui-iframe'] = (function() {
+    var tagName = 'iframe';
+    if ( (['nw', 'electron', 'x11']).indexOf(API.getConfig('Connection.Type')) >= 0 ) {
+      tagName = 'webview';
     }
-  };
+
+    return {
+      set: function(el, key, val) {
+        if ( key === 'src' ) {
+          el.querySelector(tagName).src = val;
+        }
+      },
+
+      build: function(el) {
+        var src = el.getAttribute('data-src') || 'about:blank';
+        var iframe = document.createElement(tagName);
+        iframe.src = src;
+        iframe.setAttribute('border', 0);
+        el.appendChild(iframe);
+      }
+    };
+  })();
 
   /**
    * Element: 'gui-progress-bar'
    *
    * Progress bar element.
    *
-   * Parameters:
-   *  progress  int           Progress
-   *
-   * Setters:
-   *  progress                Progress
+   * @setter    progress    integer     Progress value (percentage)
+   * @property  progress    integer     Progress value (percentage)
    *
    * @api OSjs.GUI.Elements.gui-progress-bar
    * @class
@@ -225,9 +234,8 @@
    *
    * Status bar element.
    *
-   * Setters:
-   *  value                   Sets the text value
-   *  label                   Alias for 'value'
+   * @setter    value       String      Content to set
+   * @setter    label       String      Alias of 'value'
    *
    * @api OSjs.GUI.Elements.gui-statusbar
    * @class

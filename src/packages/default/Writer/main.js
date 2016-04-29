@@ -357,6 +357,6 @@
 
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationWriter = OSjs.Applications.ApplicationWriter || {};
-  OSjs.Applications.ApplicationWriter.Class = ApplicationWriter;
+  OSjs.Applications.ApplicationWriter.Class = Object.seal(ApplicationWriter);
 
 })(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

@@ -247,7 +247,7 @@
     var self = this;
 
     // Enable dropping of new wallpaper if no iconview is enabled
-    OSjs.API.createDroppable(document.body, {
+    GUI.Helpers.createDroppable(document.body, {
       onOver: function(ev, el, args) {
         self.onDropOver(ev, el, args);
       },
@@ -518,7 +518,7 @@
   CoreWM.prototype.onKeyUp = function(ev, win) {
     if ( !ev ) { return; }
 
-    if ( !ev.shiftKey ) {
+    if ( !ev.altKey ) {
       if ( this.switcher ) {
         this.switcher.hide(ev, win, this);
       }
@@ -529,7 +529,7 @@
     if ( !ev ) { return; }
 
     var keys = Utils.Keys;
-    if ( ev.shiftKey && ev.keyCode === keys.TILDE ) { // Toggle Window switcher
+    if ( ev.altKey && ev.keyCode === keys.TILDE ) { // Toggle Window switcher
       if ( !this.getSetting('enableSwitcher') ) { return; }
 
       if ( this.switcher ) {
@@ -601,7 +601,7 @@
 
       console.log('OSjs::Core::WindowManager::notification()', opts);
 
-      var container  = document.createElement('corewm-notification-entry');
+      var container  = document.createElement('corewm-notification');
       var classNames = [''];
       var self       = this;
       var timeout    = null;
@@ -778,6 +778,7 @@
       if ( settings ) {
         if ( settings.language ) {
           OSjs.Core.getSettingsManager().set('Core', 'Locale', settings.language);
+          API.setLocale(settings.language);
         }
         this._settings.set(null, settings, save);
       }
@@ -892,8 +893,8 @@
     if ( settings.panels ) {
       settings.panels.forEach(function(p, i) {
         styles['corewm-panel'] = {};
-        styles['corewm-notification-entry'] = {};
-        styles['corewm-notification-entry:before'] = {
+        styles['corewm-notification'] = {};
+        styles['corewm-notification:before'] = {
           'opacity': p.options.opacity / 100
         };
         styles['corewm-panel:before'] = {
@@ -901,11 +902,11 @@
         };
         if ( p.options.background ) {
           styles['corewm-panel:before']['background-color'] = p.options.background;
-          styles['corewm-notification-entry:before']['background-color'] = p.options.background;
+          styles['corewm-notification:before']['background-color'] = p.options.background;
         }
         if ( p.options.foreground ) {
           styles['corewm-panel']['color'] = p.options.foreground;
-          styles['corewm-notification-entry']['color'] = p.options.foreground;
+          styles['corewm-notification']['color'] = p.options.foreground;
         }
       });
     }
@@ -1083,7 +1084,7 @@
 
   OSjs.Applications                          = OSjs.Applications || {};
   OSjs.Applications.CoreWM                   = OSjs.Applications.CoreWM || {};
-  OSjs.Applications.CoreWM.Class             = CoreWM;
+  OSjs.Applications.CoreWM.Class             = Object.seal(CoreWM);
   OSjs.Applications.CoreWM.PanelItems        = OSjs.Applications.CoreWM.PanelItems || {};
   OSjs.Applications.CoreWM.CurrentTheme      = OSjs.Applications.CoreWM.CurrentTheme || null;
 

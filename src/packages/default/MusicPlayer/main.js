@@ -184,8 +184,7 @@
     this.updated = false;
 
     function getInfo() {
-      self._app._call('info', {filename: file.path}, function(res) {
-        var info = (res && res.result) ? res.result : null;
+      self._app._api('info', {filename: file.path}, function(err, info) {
         if ( info ) {
           if ( info.Artist ) { labelArtist.set('value', info.Artist); }
           if ( info.Album ) { labelAlbum.set('value', info.Album); }
@@ -261,6 +260,6 @@
 
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationMusicPlayer = OSjs.Applications.ApplicationMusicPlayer || {};
-  OSjs.Applications.ApplicationMusicPlayer.Class = ApplicationMusicPlayer;
+  OSjs.Applications.ApplicationMusicPlayer.Class = Object.seal(ApplicationMusicPlayer);
 
 })(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

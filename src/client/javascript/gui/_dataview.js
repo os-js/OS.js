@@ -34,6 +34,14 @@
   GUI.Elements = OSjs.GUI.Elements || {};
 
   /////////////////////////////////////////////////////////////////////////////
+  // ABSTRACTION HELPERS
+  /////////////////////////////////////////////////////////////////////////////
+
+  var _classMap = { // Defaults to (foo-bar)-entry
+    'gui-list-view': 'gui-list-view-row'
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
@@ -68,16 +76,15 @@
   }
 
   function handleKeyPress(el, ev) {
-    var classMap = {
-      'gui-list-view': 'gui-list-view-row',
-      'gui-tree-view': 'gui-tree-view-entry',
-      'gui-icon-view': 'gui-icon-view-entry'
-    };
-
     var map = {};
     var key = ev.keyCode;
     var type = el.tagName.toLowerCase();
-    var className = classMap[type];
+
+    var className = _classMap[type];
+    if ( !className ) {
+      className = type + '-entry';
+    }
+
     var root = el.querySelector(type + '-body');
     var entries = root.querySelectorAll(className);
     var count = entries.length;
@@ -88,6 +95,24 @@
       el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected(el)}}));
       return;
     }
+
+    map[Utils.Keys.C] = function(ev) {
+      if ( ev.ctrlKey ) {
+        var selected = getSelected(el);
+        if ( selected && selected.length ) {
+          var data = [];
+
+          selected.forEach(function(s) {
+            if ( s && s.data ) {
+              data.push(new VFS.File(s.data.path, s.data.mime));
+            }
+          });
+
+          API.setClipboard(data);
+        }
+        console.warn();
+      }
+    };
 
     var selected = el._selected.concat() || [];
     var first = selected.length ? selected[0] : 0;
@@ -162,18 +187,16 @@
   }
 
   function matchValueByKey(r, val, key, idx) {
-    if ( val || val === 0 ) {
-      var value = r.getAttribute('data-value');
-      if ( !key && (val === idx || val === value) ) {
-        return r;
-      } else {
-        try {
-          var json = JSON.parse(value);
-          if ( typeof json[key] === 'object' ? json[key] === val : String(json[key]) === String(val) ) {
-            return r;
-          }
-        } catch ( e ) {}
-      }
+    var value = r.getAttribute('data-value');
+    if ( !key && (val === idx || val === value) ) {
+      return r;
+    } else {
+      try {
+        var json = JSON.parse(value);
+        if ( typeof json[key] === 'object' ? json[key] === val : String(json[key]) === String(val) ) {
+          return r;
+        }
+      } catch ( e ) {}
     }
     return false;
   }
@@ -187,27 +210,19 @@
    *
    * This is an abstraction layer for Icon, Tree and List views.
    *
-   * Events:
-   *  select        When an entry was selected (click) => fn(ev)
-   *  activate      When an entry was activated (doubleclick) => fn(ev)
+   * See `ev.detail` for data on events (like on 'change').
    *
-   * Parameters:
-   *  multiple  boolean     Multiple selection (default=true)
-   *
-   * Setters:
-   *  value         Sets the selected entry(es)
-   *  selected      Alias for 'value'
-   *
-   * Getters:
-   *  entry         Gets an entry by value, key
-   *  value         Gets the selected entry(es)
-   *  selected      Alias for 'value'
-   *
-   * Actions:
-   *  add(arg)      Adds en entry (or from array)
-   *  remove(arg)   Removes an entry
-   *  patch(arg)    Patch/Update entries from array
-   *  clear()
+   * @getter    value     Mixed         The value/currently selected
+   * @getter    selected  Mixed         Alias of 'value'
+   * @getter    entry     Mixed         Gets an etnry by value, key
+   * @setter    value     Mixed         The value/currently selected
+   * @property  multiple  boolean       If multiple elements are selectable
+   * @event     select                  When entry was selected => fn(ev)
+   * @event     activate                When entry was activated => fn(ev)
+   * @action    add                     Add elements(s) => fn(entries)
+   * @action    patch                   Patch/Update elements => fn(entries)
+   * @action    remove                  Removes element => fn(arg)
+   * @action    clear                   Clear elements => fn()
    *
    * @api OSjs.GUI.Elements._dataview
    * @class
@@ -379,7 +394,7 @@
           }
         }
 
-        API.createDraggable(row, {
+        GUI.Helpers.createDraggable(row, {
           type   : el.getAttribute('data-draggable-type') || row.getAttribute('data-draggable-type'),
           source : source,
           data   : value
@@ -463,6 +478,7 @@
           sel(r, idx);
         }
       });
+
       el._selected = select;
     },
 
@@ -531,7 +547,7 @@
     },
 
     bind: function(el, evName, callback, params) {
-      if ( (['activate', 'select', 'expand', 'contextmenu', 'render']).indexOf(evName) !== -1 ) {
+      if ( (['activate', 'select', 'expand', 'contextmenu', 'render', 'drop']).indexOf(evName) !== -1 ) {
         evName = '_' + evName;
       }
       Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);

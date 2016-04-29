@@ -184,6 +184,24 @@
   };
 
   /**
+   * Default method for loading a Scheme file
+   *
+   * @param   String        s       Scheme filename
+   * @param   Function      cb      Callback => fn(scheme)
+   *
+   * @return  void
+   *
+   * @method Application::_loadScheme()
+   */
+  Application.prototype._loadScheme = function(s, cb) {
+    var scheme = OSjs.GUI.createScheme(this._getResource(s));
+    scheme.load(function(error, result) {
+      cb(scheme);
+    });
+    this._setScheme(scheme);
+  };
+
+  /**
    * Add a window to the application
    *
    * This will automatically add it to the WindowManager and show it to you
@@ -415,6 +433,6 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Core.Application       = Application;
+  OSjs.Core.Application = Object.seal(Application);
 
 })(OSjs.Utils, OSjs.API, OSjs.Core.Process);

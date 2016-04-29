@@ -122,6 +122,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Dialogs = OSjs.Dialogs || {};
-  OSjs.Dialogs.Error = ErrorDialog;
+  OSjs.Dialogs.Error = Object.seal(ErrorDialog);
 
 })(OSjs.API, OSjs.Utils, OSjs.Core.DialogWindow);

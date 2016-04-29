@@ -312,14 +312,11 @@
    * Perform default VFS call via backend
    */
   function internalCall(name, args, callback) {
-    API.call('FS:' + name, args, function(res) {
-      if ( !res || (typeof res.result === 'undefined') || res.error ) {
-        callback((res ? res.error : null) || API._('ERR_VFS_FATAL'));
-      } else {
-        callback(false, res.result);
+    API.call('FS:' + name, args, function(err, res) {
+      if ( !err && typeof res === 'undefined' ) {
+        err = API._('ERR_VFS_FATAL');
       }
-    }, function(error) {
-      callback(error);
+      callback(err, res);
     });
   }
 
@@ -379,7 +376,7 @@
 
     addFormFile(fd, 'upload', file);
 
-    OSjs.Core.getHandler().callAPI('FS:upload', fd, callback, options);
+    OSjs.Core.getHandler().callAPI('FS:upload', fd, callback, null, options);
   }
 
   /**
@@ -610,6 +607,11 @@
    * @param   OSjs.VFS.File   item      File Metadata
    * @param   Function        callback  Callback function => fn(error, result)
    * @param   Object          options   Optional set of options
+   *
+   * @option  options     String      typeFilter      (Optional) Filter by 'file' or 'dir'
+   * @option  options     Array       mimeFilter      (Optional) Array of mime regex matchers
+   * @option  options     boolean     showHiddenFiles (Optional) Show hidden files (default=true)
+   * @option  options     boolean     backlink        (Optional) Return '..' when applicable (default=true)
    *
    * @return  void
    * @api     OSjs.VFS.scandir()
@@ -1533,21 +1535,23 @@
       var points = Object.keys(config);
       points.forEach(function(key) {
         var iter = config[key];
-        console.info('VFS', 'Registering mountpoint', key, iter);
+        if ( iter.enabled !== false ) {
+          console.info('VFS', 'Registering mountpoint', key, iter);
 
-        OSjs.VFS.Modules[key] = _createMountpoint({
-          readOnly: (typeof iter.readOnly === 'undefined') ? false : (iter.readOnly === true),
-          description: iter.description || key,
-          icon: iter.icon || 'devices/harddrive.png',
-          root: key + ':///',
-          visible: true,
-          internal: true,
-          match: createMatch(key + '://'),
-          request: function mountpointRequest() {
-            // This module uses the same API as public
-            OSjs.VFS.Transports.Internal.request.apply(null, arguments);
-          }
-        });
+          OSjs.VFS.Modules[key] = _createMountpoint({
+            readOnly: (typeof iter.readOnly === 'undefined') ? false : (iter.readOnly === true),
+            description: iter.description || key,
+            icon: iter.icon || 'devices/harddrive.png',
+            root: key + ':///',
+            visible: true,
+            internal: true,
+            match: createMatch(key + '://'),
+            request: function mountpointRequest() {
+              // This module uses the same API as public
+              OSjs.VFS.Transports.Internal.request.apply(null, arguments);
+            }
+          });
+        }
       });
     }
   }
