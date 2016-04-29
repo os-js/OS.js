@@ -246,7 +246,12 @@
     API.call(fn, args, function(response) {
       win._toggleLoading(false);
       return cb(response.error, response.result);
-    });
+    },
+      function(error) {
+        win._toggleLoading(false);
+        alert("Problem || " + error);
+        return cb(error);
+      });
   };
 
   ApplicationArduinoPackageManager.prototype.callOpkg = function(name, args, cb) {

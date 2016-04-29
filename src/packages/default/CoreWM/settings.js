@@ -66,7 +66,7 @@
         {
           options: {
             position: 'top',
-            ontop:    true,
+            ontop:    false,
             autohide: false,
             background: '#101010',
             foreground: '#ffffff',
