@@ -1,3 +1,57 @@
+# 2.0.0-alpha75
+
+Bugfixes, Locale updates, Security and general improvements.
+
+* API: Prevent error when preload list is empty
+* API: Fixed dependencies being loaded in wrong order
+* API: Added 'onApplicationPreload' hook
+* API: getApplicationResource can now return VFS path
+* GUI: Improved error handling in FileView
+* GUI: Menu now opens subitems to the left if they escape the viewport
+* GUI: gui-iframe now has automatic webview detection
+* VFS: registerMountpoint now respects the 'enabled' property
+* VFS: Fix upload problems in #364
+* VFS: Fixed error handling where some code lead to false-positives
+* Utils: Added 'asyncs' method
+* Utild: 'dirname' no longer throws error on empty input
+* Core: Added lots of freezing/sealing of object to make things immutable
+* CoreWM: Update locale properly on saving of settings (visual bug)
+* CoreWM: Application list generation now uses 'visible' metadata property
+* CoreWM: Moved window switcher to 'ALT+TILDE'
+* CoreWM: Added support for modifying shortcuts on desktop (via dialog)
+* Calculator: Added Infinity check
+* FileManager: Fixed . triggering DELETE key
+* package-manager: Added support for adding dummy packages on runtime
+* package-manager: Immutable getters
+* process: Added _getResource(str) shortcut
+* application: Added _loadScheme() shortcut
+* Locales: Updated vi_VN
+* Locales: Updated fa_FA
+* Locales: Updated fr_FR
+* Locales: Updated nl_NL
+* server-node: Added system login abstraction to handler
+* server-node: Updated PAM handler
+* server-node: Added 'Shadow' handler
+* server-node: Default Handler can now handle directory formatting properly
+* server-node: Added colored logging output
+* server-node: Updated internal proxy support
+* server-node: Now uses tmpdir defined in config
+* server-node: Improved file uploading support
+* intel-edison: Now uses the shadow handler
+* intel-edison: Updated support and filesystem
+* build: Updated intel-edison support
+* build: Updated package build support (ex, arduino, edison, raspi)
+* build: opkg templates updated
+* build: Now using grunt-contrib-validate-xml for Scheme validation
+* build: Icon Packs now support 'parent' theme
+* build: Added 'grunt packages:list' task
+* build: Fixed usage on wrong identifier for autostart generation
+* doc: Updated documentation
+* doc: Updated README
+* doc: Updated INSTALL
+* doc: New Screenshot in README
+* misc: Updated dependencies
+
 # 2.0.0-alpha74
 
 New wallpaper, UI improvements, bugfixes and many improvements to the build system(s). Also new developer features!
