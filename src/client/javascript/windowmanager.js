@@ -45,6 +45,7 @@
   function BehaviourState(win, action, mousePosition) {
     var self = this;
 
+    this.win      = win;
     this.$element = win._$element;
     this.$top     = win._$top;
     this.$handle  = win._$resize;
@@ -54,7 +55,9 @@
       x: win._position.x,
       y: win._position.y,
       w: win._dimension.w,
-      h: win._dimension.h
+      h: win._dimension.h,
+      r: win._dimension.w + win._position.x,
+      b: win._dimension.h + win._position.y
     };
 
     var theme = _WM.getStyleTheme(true);
@@ -98,6 +101,17 @@
     this.snapRects = windowRects;
   }
 
+  BehaviourState.prototype.getRect = function() {
+    var win = this.win;
+
+    return {
+      left: win._position.x,
+      top: win._position.y,
+      width: win._dimension.w,
+      height: win._dimension.h
+    };
+  };
+
   BehaviourState.prototype.calculateDirection = function() {
     var dir = Utils.$position(this.$handle);
     var dirX = this.startX - dir.left;
@@ -130,6 +144,7 @@
   function createWindowBehaviour(win, wm) {
 
     var current = null;
+    var newRect = {};
 
     /**
      * When mouse button is pressed
@@ -142,6 +157,8 @@
       }
 
       current = new BehaviourState(win, action, mousePosition);
+      newRect = {};
+
       win._focus();
 
       if ( action === 'move' ) {
@@ -149,6 +166,8 @@
       } else {
         current.calculateDirection();
         current.$element.setAttribute('data-hint', 'resizing');
+
+        newRect = current.getRect();
       }
 
       win._fireHook('preop');
@@ -215,7 +234,7 @@
           win._fireHook('move');
         }
         if ( result.width !== null && result.height !== null ) {
-          win._resize(result.width, result.height);
+          win._resize(result.width, result.height, true);
           win._fireHook('resize');
         }
       }
@@ -229,78 +248,106 @@
     function onWindowResize(ev, mousePosition, dx, dy) {
       if ( !current || !current.direction ) { return; }
 
-      var newLeft = null;
-      var newTop = null;
-      var newWidth = null;
-      var newHeight = null;
-
-      function clampSizeAllowed() {
-        if ( current.minHeight && newHeight < current.minHeight ) {
-          newHeight = current.minHeight;
-        }
-        if ( current.minWidth && newWidth < current.minWidth ) {
-          newWidth = current.minWidth;
-        }
-      }
-
       var resizeMap = {
         s: function() {
-          newWidth = current.rectWindow.w;
-          newHeight = current.rectWindow.h + dy;
+          var nh = current.rectWindow.h + dy;
+
+          newRect.height = Math.max(current.minHeight, nh);
         },
         se: function() {
-          newWidth = current.rectWindow.w + dx;
-          newHeight = current.rectWindow.h + dy;
+          var nw = current.rectWindow.w + dx;
+          var nh = current.rectWindow.h + dy;
+
+          newRect.width = Math.max(current.minWidth, nw);
+          newRect.height = Math.max(current.minHeight, nh);
         },
         e: function() {
-          newWidth = current.rectWindow.w + dx;
-          newHeight = current.rectWindow.h;
+          var nw = current.rectWindow.w + dx;
+          newRect.width = Math.max(current.minWidth, nw);
         },
         sw: function() {
-          newWidth = current.rectWindow.w - dx;
-          newHeight = current.rectWindow.h + dy;
-          newLeft = current.rectWindow.x + dx;
-          newTop = current.rectWindow.y;
+          var nw = current.rectWindow.w - dx;
+          var nl = current.rectWindow.x + dx;
+          var nh = current.rectWindow.h + dy;
+          var nt = current.rectWindow.y;
+
+          if ( nw < current.minWidth ) {
+            nl = current.rectWindow.r - current.minWidth;
+          }
+
+          newRect.width = Math.max(current.minWidth, nw);
+          newRect.height = Math.max(current.minHeight, nh);
+          newRect.left = nl;
+          newRect.top = nt;
         },
         w: function() {
-          newWidth = current.rectWindow.w - dx;
-          newHeight = current.rectWindow.h;
-          newLeft = current.rectWindow.x + dx;
-          newTop = current.rectWindow.y;
+          var nw = current.rectWindow.w - dx;
+          var nl = current.rectWindow.x + dx;
+
+          if ( nw < current.minWidth ) {
+            nl = current.rectWindow.r - current.minWidth;
+          }
+
+          newRect.width = Math.max(current.minWidth, nw);
+          newRect.left = nl;
         },
         n: function() {
-          newTop = current.rectWindow.y + dy;
-          newLeft = current.rectWindow.x;
+          var nh = current.rectWindow.h - dy;
+          var nt = current.rectWindow.y + dy;
 
-          newHeight = current.rectWindow.h - dy;
-          newWidth = current.rectWindow.w;
+          if ( nh < current.minHeight ) {
+            nt = current.rectWindow.b - current.minHeight;
+          }
+
+          newRect.height = Math.max(current.minHeight, nh);
+          newRect.top = nt;
         },
         nw: function() {
-          newTop = current.rectWindow.y + dy;
-          newLeft = current.rectWindow.x + dx;
-          newHeight = current.rectWindow.h - dy;
-          newWidth = current.rectWindow.w - dx;
+          var nt = current.rectWindow.y + dy;
+          var nl = current.rectWindow.x + dx;
+          var nh = current.rectWindow.h - dy;
+          var nw = current.rectWindow.w - dx;
+
+          if ( nw < current.minWidth ) {
+            nl = current.rectWindow.r - current.minWidth;
+          }
+
+          if ( nh < current.minHeight ) {
+            nt = current.rectWindow.b - current.minHeight;
+          }
+
+          newRect.top = nt;
+          newRect.left = nl;
+          newRect.width = Math.max(current.minWidth, nw);
+          newRect.height = Math.max(current.minHeight, nh);
         },
         ne: function() {
-          newTop = current.rectWindow.y + dy;
-          newLeft = current.rectWindow.x;
-          newHeight = current.rectWindow.h - dy;
-          newWidth = current.rectWindow.w + dx;
+          var nt = current.rectWindow.y + dy;
+          var nh = current.rectWindow.h - dy;
+          var nw = current.rectWindow.w + dx;
+
+          if ( nh < current.minHeight ) {
+            nt = current.rectWindow.b - current.minHeight;
+          }
+
+          newRect.top = nt;
+          newRect.width = Math.max(current.minWidth, nw);
+          newRect.height = Math.max(current.minHeight, nh);
         }
       };
 
       if ( resizeMap[current.direction] ) {
         resizeMap[current.direction]();
+
+        if ( newRect.top < current.rectWorkspace.top ) { // FIXME: Not 100% precice
+          newRect.top = current.rectWorkspace.top;
+          newRect.height -= current.rectWorkspace.top - mousePosition.y;
+        }
+
+        return newRect;
       }
 
-      if ( newTop < current.rectWorkspace.top && newTop !== null ) {
-        newTop = current.rectWorkspace.top;
-        newHeight -= current.rectWorkspace.top - mousePosition.y;
-      }
-
-      clampSizeAllowed();
-
-      return {left: newLeft, top: newTop, width: newWidth, height: newHeight};
+      return false;
     }
 
     /**
