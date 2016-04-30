@@ -37,12 +37,14 @@
   /**
    * PanelItem: AppMenu
    */
-  var PanelItemAppMenu = function(settings) {
+  function PanelItemAppMenu(settings) {
     PanelItem.apply(this, ['PanelItemAppMenu PanelItemFill', 'AppMenu', settings, {}]);
     this.$container = null;
-  };
+  }
 
   PanelItemAppMenu.prototype = Object.create(PanelItem.prototype);
+  PanelItemAppMenu.constructor = PanelItem;
+
   PanelItemAppMenu.Name = 'AppMenu'; // Static name
   PanelItemAppMenu.Description = 'Application Menu'; // Static description
   PanelItemAppMenu.Icon = 'actions/stock_about.png'; // Static icon

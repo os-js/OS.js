@@ -37,7 +37,7 @@
   /**
    * PanelItem: Buttons
    */
-  var PanelItemButtons = function(settings) {
+  function PanelItemButtons(settings) {
     PanelItem.apply(this, ['PanelItemButtons PanelItemFill', 'Buttons', settings, {
       buttons: [
         {
@@ -49,9 +49,11 @@
     }]);
 
     this.$container = null;
-  };
+  }
 
   PanelItemButtons.prototype = Object.create(PanelItem.prototype);
+  PanelItemButtons.constructor = PanelItem;
+
   PanelItemButtons.Name = 'Buttons'; // Static name
   PanelItemButtons.Description = 'Button Bar'; // Static description
   PanelItemButtons.Icon = 'actions/stock_about.png'; // Static icon

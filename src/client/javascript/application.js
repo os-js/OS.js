@@ -54,7 +54,7 @@
    * @extends Process
    * @class
    */
-  var Application = function(name, args, metadata, settings) {
+  function Application(name, args, metadata, settings) {
     console.group('Application::constructor()');
     this.__inited     = false;
     this.__mainwindow = null;
@@ -73,7 +73,7 @@
     Process.apply(this, arguments);
 
     console.groupEnd();
-  };
+  }
 
   Application.prototype = Object.create(Process.prototype);
   Application.constructor = Process;

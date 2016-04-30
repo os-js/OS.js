@@ -84,7 +84,7 @@
   var PANEL_SHOW_TIMEOUT = 150;
   var PANEL_HIDE_TIMEOUT = 600;
 
-  var Panel = function(name, options, wm) {
+  function Panel(name, options, wm) {
     options = options || {};
 
     this._name = name;
@@ -99,7 +99,7 @@
     });
 
     console.debug('Panel::construct()', this._name, this._options.get());
-  };
+  }
 
   Panel.prototype.init = function(root) {
     var self = this;

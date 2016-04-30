@@ -37,7 +37,7 @@
   /**
    * PanelItem: Weather
    */
-  var PanelItemWeather = function() {
+  function PanelItemWeather() {
     var self = this;
 
     PanelItem.apply(this, ['PanelItemWeather PanelItemFill PanelItemRight']);
@@ -54,9 +54,11 @@
         }, 100);
       });
     }
-  };
+  }
 
   PanelItemWeather.prototype = Object.create(PanelItem.prototype);
+  PanelItemWeather.constructor = PanelItem;
+
   PanelItemWeather.Name = 'Weather'; // Static name
   PanelItemWeather.Description = 'Weather notification'; // Static description
   PanelItemWeather.Icon = 'status/weather-few-clouds.png'; // Static icon

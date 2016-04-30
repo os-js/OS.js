@@ -69,7 +69,7 @@
   /**
    * PanelItem: Clock
    */
-  var PanelItemClock = function(settings) {
+  function PanelItemClock(settings) {
     PanelItem.apply(this, ['PanelItemClock PanelItemFill PanelItemRight', 'Clock', settings, {
       utc: false,
       interval: 1000,
@@ -78,9 +78,11 @@
     }]);
     this.clockInterval  = null;
     this.$clock = null;
-  };
+  }
 
   PanelItemClock.prototype = Object.create(PanelItem.prototype);
+  PanelItemClock.constructor = PanelItem;
+
   PanelItemClock.Name = 'Clock'; // Static name
   PanelItemClock.Description = 'View the time'; // Static description
   PanelItemClock.Icon = 'status/appointment-soon.png'; // Static icon

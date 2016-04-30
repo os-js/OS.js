@@ -397,7 +397,7 @@
    * @extends Process
    * @class
    */
-  var WindowManager = function(name, ref, args, metadata, settings) {
+  function WindowManager(name, ref, args, metadata, settings) {
     console.group('WindowManager::constructor()');
     console.log('Name', name);
     console.log('Arguments', args);
@@ -422,7 +422,7 @@
     _WM = (ref || this);
 
     console.groupEnd();
-  };
+  }
 
   WindowManager.prototype = Object.create(Process.prototype);
 

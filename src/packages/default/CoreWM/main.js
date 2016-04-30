@@ -63,6 +63,7 @@
   };
 
   CoreWM.prototype = Object.create(WindowManager.prototype);
+  CoreWM.constructor = WindowManager;
 
   CoreWM.prototype.init = function() {
     var link = (OSjs.Core.getConfig().Connection.RootURI || '/') + 'blank.css';

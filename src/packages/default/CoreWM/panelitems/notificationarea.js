@@ -34,7 +34,7 @@
   // ITEM
   /////////////////////////////////////////////////////////////////////////////
 
-  var NotificationAreaItem = function(name, opts) {
+  function NotificationAreaItem(name, opts) {
     opts = opts || {};
 
     this.name           = name;
@@ -51,7 +51,7 @@
 
     this._build(name);
     this.onCreated.call(this);
-  };
+  }
 
   NotificationAreaItem.prototype._build = function(name) {
     var self = this;
@@ -141,12 +141,14 @@
   /**
    * PanelItem: NotificationArea
    */
-  var PanelItemNotificationArea = function() {
+  function PanelItemNotificationArea() {
     PanelItem.apply(this, ['PanelItemNotificationArea PanelItemFill PanelItemRight']);
     this.notifications = {};
-  };
+  }
 
   PanelItemNotificationArea.prototype = Object.create(PanelItem.prototype);
+  PanelItemNotificationArea.constructor = PanelItem;
+
   PanelItemNotificationArea.Name = 'NotificationArea'; // Static name
   PanelItemNotificationArea.Description = 'View notifications'; // Static description
   PanelItemNotificationArea.Icon = 'apps/gnome-panel-notification-area.png'; // Static icon

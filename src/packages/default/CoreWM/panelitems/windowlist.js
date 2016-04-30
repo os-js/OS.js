@@ -187,6 +187,8 @@
   }
 
   PanelItemWindowList.prototype = Object.create(PanelItem.prototype);
+  PanelItemWindowList.constructor = PanelItem;
+
   PanelItemWindowList.Name = 'Window List'; // Static name
   PanelItemWindowList.Description = 'Toggle between open windows'; // Static description
   PanelItemWindowList.Icon = 'apps/xfwm4.png'; // Static icon
