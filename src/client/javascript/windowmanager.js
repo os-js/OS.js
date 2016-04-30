@@ -246,108 +246,54 @@
      * Resizing action
      */
     function onWindowResize(ev, mousePosition, dx, dy) {
-      if ( !current || !current.direction ) { return; }
-
-      var resizeMap = {
-        s: function() {
-          var nh = current.rectWindow.h + dy;
-
-          newRect.height = Math.max(current.minHeight, nh);
-        },
-        se: function() {
-          var nw = current.rectWindow.w + dx;
-          var nh = current.rectWindow.h + dy;
-
-          newRect.width = Math.max(current.minWidth, nw);
-          newRect.height = Math.max(current.minHeight, nh);
-        },
-        e: function() {
-          var nw = current.rectWindow.w + dx;
-          newRect.width = Math.max(current.minWidth, nw);
-        },
-        sw: function() {
-          var nw = current.rectWindow.w - dx;
-          var nl = current.rectWindow.x + dx;
-          var nh = current.rectWindow.h + dy;
-          var nt = current.rectWindow.y;
-
-          if ( nw < current.minWidth ) {
-            nl = current.rectWindow.r - current.minWidth;
-          }
-
-          newRect.width = Math.max(current.minWidth, nw);
-          newRect.height = Math.max(current.minHeight, nh);
-          newRect.left = nl;
-          newRect.top = nt;
-        },
-        w: function() {
-          var nw = current.rectWindow.w - dx;
-          var nl = current.rectWindow.x + dx;
-
-          if ( nw < current.minWidth ) {
-            nl = current.rectWindow.r - current.minWidth;
-          }
-
-          newRect.width = Math.max(current.minWidth, nw);
-          newRect.left = nl;
-        },
-        n: function() {
-          var nh = current.rectWindow.h - dy;
-          var nt = current.rectWindow.y + dy;
-
-          if ( nh < current.minHeight ) {
-            nt = current.rectWindow.b - current.minHeight;
-          }
-
-          newRect.height = Math.max(current.minHeight, nh);
-          newRect.top = nt;
-        },
-        nw: function() {
-          var nt = current.rectWindow.y + dy;
-          var nl = current.rectWindow.x + dx;
-          var nh = current.rectWindow.h - dy;
-          var nw = current.rectWindow.w - dx;
-
-          if ( nw < current.minWidth ) {
-            nl = current.rectWindow.r - current.minWidth;
-          }
-
-          if ( nh < current.minHeight ) {
-            nt = current.rectWindow.b - current.minHeight;
-          }
-
-          newRect.top = nt;
-          newRect.left = nl;
-          newRect.width = Math.max(current.minWidth, nw);
-          newRect.height = Math.max(current.minHeight, nh);
-        },
-        ne: function() {
-          var nt = current.rectWindow.y + dy;
-          var nh = current.rectWindow.h - dy;
-          var nw = current.rectWindow.w + dx;
-
-          if ( nh < current.minHeight ) {
-            nt = current.rectWindow.b - current.minHeight;
-          }
-
-          newRect.top = nt;
-          newRect.width = Math.max(current.minWidth, nw);
-          newRect.height = Math.max(current.minHeight, nh);
-        }
-      };
-
-      if ( resizeMap[current.direction] ) {
-        resizeMap[current.direction]();
-
-        if ( newRect.top < current.rectWorkspace.top ) { // FIXME: Not 100% precice
-          newRect.top = current.rectWorkspace.top;
-          newRect.height -= current.rectWorkspace.top - mousePosition.y;
-        }
-
-        return newRect;
+      if ( !current || !current.direction ) {
+        return false;
       }
 
-      return false;
+      var nw, nh, nl, nt;
+
+      (function() { // North/South
+        if ( current.direction.indexOf('s') !== -1 ) {
+          nh = current.rectWindow.h + dy;
+
+          newRect.height = Math.max(current.minHeight, nh);
+        } else if ( current.direction.indexOf('n') !== -1 ) {
+          nh = current.rectWindow.h - dy;
+          nt = current.rectWindow.y + dy;
+
+          if ( nt < current.rectWorkspace.top ) {
+            nt = current.rectWorkspace.top;
+            nh = newRect.height; // FIXME: Not 100% precice
+          } else {
+            if ( nh < current.minHeight ) {
+              nt = current.rectWindow.b - current.minHeight;
+            }
+          }
+
+          newRect.height = Math.max(current.minHeight, nh);
+          newRect.top = nt;
+        }
+      })();
+
+      (function() { // East/West
+        if ( current.direction.indexOf('e') !== -1 ) {
+          nw = current.rectWindow.w + dx;
+
+          newRect.width = Math.max(current.minWidth, nw);
+        } else if ( current.direction.indexOf('w') !== -1 ) {
+          nw = current.rectWindow.w - dx;
+          nl = current.rectWindow.x + dx;
+
+          if ( nw < current.minWidth ) {
+            nl = current.rectWindow.r - current.minWidth;
+          }
+
+          newRect.width = Math.max(current.minWidth, nw);
+          newRect.left = nl;
+        }
+      })();
+
+      return newRect;
     }
 
     /**
