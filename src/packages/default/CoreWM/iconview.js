@@ -36,10 +36,10 @@
 
   function IconViewShortcutDialog(item, scheme, closeCallback) {
     Window.apply(this, ['IconViewShortcutDialog', {
-      title: 'Clock Settings',
+      title: 'Edit Launcher',
       icon: 'status/appointment-soon.png',
       width: 400,
-      height: 200,
+      height: 220,
       allow_maximize: false,
       allow_resize: false,
       allow_minimize: false
@@ -59,6 +59,7 @@
     this.scheme.render(this, this._name);
 
     this.scheme.find(this, 'InputShortcutLaunch').set('value', this.item.data.launch);
+    this.scheme.find(this, 'InputShortcutLabel').set('value', this.item.data.label);
     this.scheme.find(this, 'InputTooltipFormatString').set('value', JSON.stringify(this.item.data.args || {}));
 
     this.scheme.find(this, 'ButtonApply').on('click', function() {
@@ -75,6 +76,7 @@
 
   IconViewShortcutDialog.prototype.applySettings = function() {
     this.item.data.launch = this.scheme.find(this, 'InputShortcutLaunch').get('value');
+    this.item.data.label = this.scheme.find(this, 'InputShortcutLabel').get('value');
     this.item.data.args = JSON.parse(this.scheme.find(this, 'InputTooltipFormatString').get('value') || null);
   };
 
@@ -246,13 +248,15 @@
       if ( data.mime === 'osjs/application' || data.launch ) {
         var appname = data.launch || Utils.filename(data.path);
         var meta = OSjs.Core.getPackageManager().getPackage(appname);
+        var lbl = data.label || meta.name;
 
         iter = {
           icon: API.getIcon(meta.icon, '32x32', appname),
           id: appname,
-          label: meta.name,
+          label: lbl,
           value: {
             launch: appname,
+            label: lbl,
             args: data.args || {}
           }
         };
