@@ -487,6 +487,14 @@
   }
 
   /**
+   * Initializes the Search Engine
+   */
+  function initSearch(config, callback) {
+    console.debug('initSearch()');
+    callback();
+  }
+
+  /**
    * Initializes the Window Manager
    */
   function initWindowManager(config, callback) {
@@ -555,56 +563,50 @@
 
     initLayout();
 
-    initPreload(config, function() {
-      OSjs.API.triggerHook('onInitialize');
+    OSjs.Utils.asyncs([
+      initPreload,
+      initHandler,
+      initPackageManager,
+      initExtensions,
+      initSettingsManager,
+      initVFS,
+      initSearch
+    ], function(entry, index, next) {
+      if ( index < 1 ) {
+        OSjs.API.triggerHook('onInitialize');
+      }
 
-      initHandler(config, function() {
+      loading.update(index + 1, 8);
 
-        initPackageManager(config, function() {
-          loading.update(3, 8);
+      entry(config, next);
+    }, function() {
+      OSjs.API.triggerHook('onInited');
 
-          initExtensions(config, function() {
-            loading.update(4, 8);
+      OSjs.GUI.DialogScheme.init(function() {
+        loading.update(7, 8);
 
-            initSettingsManager(config, function() {
-              loading.update(5, 8);
+        freeze.forEach(function(f) {
+          Object.freeze(OSjs[f]);
+        });
 
-              initVFS(config, function() {
-                loading.update(6, 8);
+        initWindowManager(config, function() {
+          loading = loading.destroy();
+          splash = OSjs.Utils.$remove(splash);
 
-                OSjs.API.triggerHook('onInited');
+          OSjs.API.triggerHook('onWMInited');
 
-                OSjs.GUI.DialogScheme.init(function() {
-                  loading.update(7, 8);
+          initEvents();
+          var wm = OSjs.Core.getWindowManager();
+          wm._fullyLoaded = true;
 
-                  freeze.forEach(function(f) {
-                    Object.freeze(OSjs[f]);
-                  });
+          console.groupEnd();
 
-                  initWindowManager(config, function() {
-                    loading = loading.destroy();
-                    splash = OSjs.Utils.$remove(splash);
-
-                    OSjs.API.triggerHook('onWMInited');
-
-                    initEvents();
-                    var wm = OSjs.Core.getWindowManager();
-                    wm._fullyLoaded = true;
-
-                    console.groupEnd();
-
-                    initSession(config, function() {
-                      OSjs.API.triggerHook('onSessionLoaded');
-                    });
-                  }); // wm
-                });
-
-              }); // vfs
-            }); // settings
-          }); // extensions
-        }); // packages
-      }); // handler
-    }); // preload
+          initSession(config, function() {
+            OSjs.API.triggerHook('onSessionLoaded');
+          });
+        });
+      });
+    });
   }
 
   /////////////////////////////////////////////////////////////////////////////
