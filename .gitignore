@@ -8,39 +8,27 @@ twistd.*
 .vagrant/*
 *.pyc
 
+# Misc
 .nightly
 .standalone
 .debian
 .nw
 
+# Storage
 vfs/*/*
 
+# Config files
 src/conf/999-*
 src/conf/900-custom.json
 src/server/settings.json
 src/server/packages.json
 src/installer/installer.exe
 
-dist/test*
-dist/settings.js
-dist/locales.js
-dist/osjs.js
-dist/osjs.css
-dist/packages.json
-dist/packages.js
-dist/themes.json
-dist/themes
-dist/packages
-dist/dialogs.html
-dist/schemes.js
+# Builds
+dist/*
+dist-dev/*
 
-dist-dev/test.*
-dist-dev/locales.js
-dist-dev/settings.js
-dist-dev/packages.json
-dist-dev/packages.js
-dist-dev/themes.json
-
+# Vendor
 vendor/dropbox*
 vendor/zip.js
 vendor/html2canvas

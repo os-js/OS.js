@@ -69,6 +69,8 @@
     'ERR_OPERATION_TIMEOUT'       : '시간초과',
     'ERR_OPERATION_TIMEOUT_FMT'   : '시간초과 ({0})',
 
+    'ERR_ARGUMENT_FMT'    : '\'{0}\'에서 \'{1}\'는 \'{2}\'이 되어야 하나 \'{3}\'가 주어졌습니다',
+
     // Window
     'ERR_WIN_DUPLICATE_FMT' : '이미 \'{0}\' 창이 있습니다',
     'WINDOW_MINIMIZE' : '최소화',
@@ -81,6 +83,8 @@
     // Handler
     'TITLE_SIGN_OUT' : '로그아웃',
     'TITLE_SIGNED_IN_AS_FMT' : '{0}(으)로 로그인',
+    'ERR_LOGIN_FMT' : '로그인 오류: {0}',
+    'ERR_LOGIN_INVALID' : '비정상 로그인',
 
     // SESSION
     'MSG_SESSION_WARNING' : 'OS.js를 정말 종료하시겠습니까? 저장하지 않은 설정과 응용 프로그램 데이터가 손실될 수 있습니다!',
@@ -222,6 +226,7 @@
     'ERR_VFSMODULE_NOT_MOUNTED_FMT'    : 'VFS 모듈 \'{0}\' 이(가) 마운트 되지 않았습니다',
     'ERR_VFSMODULE_EXCEPTION'          : 'VFS 모듈 예외 발생',
     'ERR_VFSMODULE_EXCEPTION_FMT'      : 'VFS 모듈 예외 발생: {0}',
+    'ERR_VFSMODULE_NOT_FOUND_FMT'      : '{0}와 같은 VFS 모듈이 존재하지 않습니다. 잘못된 경로나 형식일 수 있습니다',
 
     'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': '파일 다운로드',
 
@@ -229,7 +234,7 @@
     'ERR_VFSMODULE_ROOT_ID'        : '최상위 디렉토리 id를 찾을 수 없습니다',
     'ERR_VFSMODULE_NOSUCH'         : '파일이 존재하지 않습니다',
     'ERR_VFSMODULE_PARENT'         : '부모를 찾을 수 없습니다',
-    'ERR_VFSMODULE_PARENT_FMT'     : '부모를찾을 수 없습니다: {0}',
+    'ERR_VFSMODULE_PARENT_FMT'     : '부모를 찾을 수 없습니다: {0}',
     'ERR_VFSMODULE_SCANDIR'        : '디렉토리 불러오기 실패',
     'ERR_VFSMODULE_SCANDIR_FMT'    : '디렉토리를 불러올 수 없습니다: {0}',
     'ERR_VFSMODULE_READ'           : '파일 읽기 실패',
@@ -401,7 +406,14 @@
     'LBL_SHOW_SIDEBAR' : '사이드바 보이기',
     'LBL_SHOW_NAVIGATION' : '네비게이션 보이기',
     'LBL_SHOW_HIDDENFILES' : '숨긴 파일 보이기',
-    'LBL_SHOW_FILEEXTENSIONS' : '파일 확장자 보이기'
+    'LBL_SHOW_FILEEXTENSIONS' : '파일 확장자 보이기',
+    'LBL_MOUNT': '마운트',
+    'LBL_DESCRIPTION': '설명',
+    'LBL_USERNAME': '사용자 이름',
+    'LBL_PASSWORD': '비밀번호',
+    'LBL_HOST': '호스트',
+    'LBL_NAMESPACE': '네임스페이스'
+
   };
 
 })();

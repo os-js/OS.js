@@ -55,6 +55,7 @@
 
     GUI.Elements._dataview.bindEntryEvents(el, cel, 'gui-icon-view-entry');
 
+    cel.setAttribute('role', 'listitem');
     cel.appendChild(dicon);
     cel.appendChild(dlabel);
   }
@@ -68,16 +69,18 @@
    *
    * A container for displaying icons with labels
    *
-   * Parameters:
-   *  icon-size     int         Icon size (default=16)
-   *
    * Format for add():
-   *
+   * ```
    * {
    *    label: "Label",
    *    icon: "Optional icon path",
    *    value: "something or JSON or whatever"
    * }
+   * ```
+   *
+   * For more properties and events etc, see 'dataview'
+   *
+   * @property  icon-size   integer       Icon size (default=16)
    *
    * @api OSjs.GUI.Elements.gui-icon-view
    * @see OSjs.GUI.Elements._dataview
@@ -105,6 +108,8 @@
         }
         initEntry(el, cel);
       });
+
+      el.setAttribute('role', 'list');
 
       GUI.Elements._dataview.build(el, applyArgs);
     },

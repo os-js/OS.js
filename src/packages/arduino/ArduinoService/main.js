@@ -58,7 +58,7 @@
     return Service.prototype.destroy.apply(this, arguments);
   };
 
-  ArduinoService.prototype.init = function(settings, metadata, onInited) {
+  ArduinoService.prototype.init = function(settings, metadata) {
     Service.prototype.init.apply(this, arguments);
 
     var self = this;
@@ -166,8 +166,6 @@
     }, ((60 * 1000) * 60) * 2);
 
     pollUpdate();
-
-    onInited();
   };
 
   ArduinoService.prototype._onMessage = function(obj, msg, args) {

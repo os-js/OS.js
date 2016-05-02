@@ -60,6 +60,8 @@
     sel.className = 'Button';
     sel.title = API._('LBL_APPLICATIONS');
     sel.innerHTML = '<img alt="" src="' + API.getIcon(wm.getSetting('icon') || 'osjs-white.png') + '" />';
+    sel.setAttribute('role', 'button');
+    sel.setAttribute('data-label', 'OS.js Application Menu');
 
     Utils.$bind(sel, 'click', function(ev) {
       ev.preventDefault();

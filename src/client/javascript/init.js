@@ -42,7 +42,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   // Make sure these namespaces exist
-  (['API', 'GUI', 'Core', 'Dialogs', 'Helpers', 'Applications', 'Locales', 'VFS']).forEach(function(ns) {
+  (['API', 'GUI', 'Core', 'Dialogs', 'Helpers', 'Applications', 'Locales', 'VFS', 'Extensions']).forEach(function(ns) {
     OSjs[ns] = OSjs[ns] || {};
   });
 
@@ -59,15 +59,21 @@
 
   // Compability
   (function() {
-    if ( window.HTMLCollection ) {
-      window.HTMLCollection.prototype.forEach = Array.prototype.forEach;
-    }
-    if ( window.NodeList ) {
-      window.NodeList.prototype.forEach = Array.prototype.forEach;
-    }
-    if ( window.FileList ) {
-      window.FileList.prototype.forEach = Array.prototype.forEach;
-    }
+    var compability = ['forEach', 'every', 'map'];
+
+    compability.forEach(function(n) {
+      if ( window.HTMLCollection ) {
+        window.HTMLCollection.prototype[n] = Array.prototype[n];
+      }
+
+      if ( window.NodeList ) {
+        window.NodeList.prototype[n] = Array.prototype[n];
+      }
+
+      if ( window.FileList ) {
+        window.FileList.prototype[n] = Array.prototype[n];
+      }
+    });
 
     (function() {
       function CustomEvent(event, params) {
@@ -106,8 +112,16 @@
       if ( ev && ev.data && typeof ev.data.wid !== 'undefined' && typeof ev.data.pid !== 'undefined' ) {
         console.debug('window::message()', ev.data);
         var proc = OSjs.API.getProcess(ev.data.pid);
-        var win  = proc._getWindow(ev.data.wid, 'wid');
-        win.onPostMessage(ev.data.message, ev);
+        if ( proc ) {
+          if ( typeof proc.onPostMessage === 'function' ) {
+            proc.onPostMessage(ev.data.message, ev);
+          }
+
+          var win  = proc._getWindow(ev.data.wid, 'wid');
+          if ( win ) {
+            win.onPostMessage(ev.data.message, ev);
+          }
+        }
       }
     },
 
@@ -224,13 +238,13 @@
     resize: (function() {
       var _timeout;
 
-      function _resize(ev) {
+      function _resize(ev, wasInited) {
         var wm = OSjs.Core.getWindowManager();
         if ( !wm ) { return; }
-        wm.resize(ev, wm.getWindowSpace());
+        wm.resize(ev, wm.getWindowSpace(), wasInited);
       }
 
-      return function(ev) {
+      return function(ev, wasInited) {
         if ( _timeout ) {
           clearTimeout(_timeout);
           _timeout = null;
@@ -238,7 +252,7 @@
 
         var self = this;
         _timeout = setTimeout(function() {
-          _resize.call(self, ev);
+          _resize.call(self, ev, wasInited);
         }, 100);
       };
     })(),
@@ -253,6 +267,36 @@
       document.body.scrollTop = 0;
       document.body.scrollLeft = 0;
       return true;
+    },
+
+    hashchange: function(ev) {
+      var hash = window.location.hash.substr(1);
+      var spl = hash.split(/^([\w\.\-_]+)\:(.*)/);
+
+      function getArgs(q) {
+        var args = {};
+        q.split('&').forEach(function(a) {
+          var b = a.split('=');
+          var k = decodeURIComponent(b[0]);
+          args[k] = decodeURIComponent(b[1] || '');
+        });
+        return args;
+      }
+
+      if ( spl.length === 4 ) {
+        var root = spl[1];
+        var args = getArgs(spl[2]);
+
+        if ( root ) {
+          OSjs.API.getProcess(root).forEach(function(p) {
+            p._onMessage(null, 'hashchange', {
+              source: null,
+              hash: hash,
+              args: args
+            });
+          });
+        }
+      }
     }
   };
 
@@ -278,11 +322,13 @@
     var ver = OSjs.API.getConfig('Version', 'unknown version');
     var cop = 'Copyright © 2011-2016 ';
     var lnk = document.createElement('a');
+    lnk.setAttribute('aria-hidden', 'true');
     lnk.href = 'mailto:andersevenrud@gmail.com';
     lnk.appendChild(document.createTextNode('Anders Evenrud'));
 
     var el = document.createElement('div');
     el.id = 'DebugNotice';
+    el.setAttribute('aria-hidden', 'true');
     el.appendChild(document.createTextNode(OSjs.Utils.format('OS.js {0}', ver)));
     el.appendChild(document.createElement('br'));
     el.appendChild(document.createTextNode(cop));
@@ -315,14 +361,7 @@
         return;
       }
 
-      handler.boot(function(result, error) {
-        if ( error ) {
-          onError(error);
-          return;
-        }
-
-        callback();
-      });
+      callback();
     });
   }
 
@@ -338,6 +377,7 @@
     document.addEventListener('keypress', events.keypress, true);
     document.addEventListener('keyup', events.keyup, true);
     document.addEventListener('mousedown', events.mousedown, false);
+    window.addEventListener('hashchange', events.hashchange, false);
     window.addEventListener('resize', events.resize, false);
     window.addEventListener('scroll', events.scroll, false);
     window.addEventListener('fullscreenchange', events.fullscreen, false);
@@ -385,6 +425,30 @@
   }
 
   /**
+   * Loads all extensions
+   */
+  function initExtensions(config, callback) {
+    var exts = Object.keys(OSjs.Extensions);
+    var manifest =  OSjs.Core.getMetadata();
+
+    console.group('initExtensions()', exts);
+    OSjs.Utils.asyncs(exts, function(entry, idx, next) {
+      try {
+        var m = manifest[entry];
+        OSjs.Extensions[entry].init(m, function() {
+          next();
+        });
+      } catch ( e ) {
+        console.warn('Extension init failed', e.stack, e);
+        next();
+      }
+    }, function() {
+      console.groupEnd();
+      callback();
+    });
+  }
+
+  /**
    * Initializes the SettingsManager pools
    * from configuration file(s)
    */
@@ -399,6 +463,15 @@
     });
 
     callback();
+  }
+
+  /**
+   * Initializes the PackageManager
+   */
+  function initPackageManager(cfg, callback) {
+    OSjs.Core.getPackageManager().load(function(result, error) {
+      callback(error, result);
+    });
   }
 
   /**
@@ -455,7 +528,7 @@
     function session() {
       handler.loadSession(function() {
         setTimeout(function() {
-          events.resize();
+          events.resize(null, true);
         }, 500);
 
         callback();
@@ -476,6 +549,9 @@
     console.group('init()');
 
     var config = OSjs.Core.getConfig();
+    var splash = document.getElementById('LoadingScreen');
+    var loading = OSjs.API.createSplash('OS.js', null, null, splash);
+    var freeze = ['API', 'Core', 'Config', 'Dialogs', 'GUI', 'Locales', 'VFS'];
 
     initLayout();
 
@@ -484,33 +560,51 @@
 
       initHandler(config, function() {
 
-        initSettingsManager(config, function() {
+        initPackageManager(config, function() {
+          loading.update(3, 8);
 
-          initVFS(config, function() {
-            OSjs.API.triggerHook('onInited');
+          initExtensions(config, function() {
+            loading.update(4, 8);
 
-            initWindowManager(config, function() {
-              OSjs.API.triggerHook('onWMInited');
+            initSettingsManager(config, function() {
+              loading.update(5, 8);
 
-              OSjs.Utils.$remove(document.getElementById('LoadingScreen'));
+              initVFS(config, function() {
+                loading.update(6, 8);
 
-              initEvents();
-              var wm = OSjs.Core.getWindowManager();
-              wm._fullyLoaded = true;
+                OSjs.API.triggerHook('onInited');
 
-              console.groupEnd();
+                OSjs.GUI.DialogScheme.init(function() {
+                  loading.update(7, 8);
 
-              initSession(config, function() {
-                OSjs.API.triggerHook('onSessionLoaded');
-              });
-            }); // wm
-          }); // vfs
+                  freeze.forEach(function(f) {
+                    Object.freeze(OSjs[f]);
+                  });
 
-        }); // settings
+                  initWindowManager(config, function() {
+                    loading = loading.destroy();
+                    splash = OSjs.Utils.$remove(splash);
 
-      }); // preload
+                    OSjs.API.triggerHook('onWMInited');
 
-    }); // handler
+                    initEvents();
+                    var wm = OSjs.Core.getWindowManager();
+                    wm._fullyLoaded = true;
+
+                    console.groupEnd();
+
+                    initSession(config, function() {
+                      OSjs.API.triggerHook('onSessionLoaded');
+                    });
+                  }); // wm
+                });
+
+              }); // vfs
+            }); // settings
+          }); // extensions
+        }); // packages
+      }); // handler
+    }); // preload
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -535,6 +629,7 @@
     document.removeEventListener('keypress', events.keypress, true);
     document.removeEventListener('keyup', events.keyup, true);
     document.removeEventListener('mousedown', events.mousedown, false);
+    window.removeEventListener('hashchange', events.hashchange, false);
     window.removeEventListener('resize', events.resize, false);
     window.removeEventListener('scroll', events.scroll, false);
     window.removeEventListener('message', events.message, false);
@@ -544,6 +639,7 @@
 
     OSjs.API.blurMenu();
     OSjs.API.killAll();
+    OSjs.GUI.DialogScheme.destroy();
 
     var ring = OSjs.API.getServiceNotificationIcon();
     if ( ring ) {

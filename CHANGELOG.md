@@ -1,4 +1,248 @@
-# 2.0.0
+# 2.0.0-alpha74
+
+New wallpaper, UI improvements, bugfixes and many improvements to the build system(s). Also new developer features!
+
+**API CHANGE**: http://community.os.js.org/t/notice-updated-gui-methods/33
+
+**API CHANGE**: http://community.os.js.org/t/notice-recent-api-changes/31
+
+* UI: New Wallpaper
+* UI: Added loading bar to boot
+* UI: Added WAI-ARIA support
+* UI: Schemes can now change window properties (like dimensions)
+* GUI: Fixed menu not disappearing in certain cases
+* GUI: Added `getNextElement()` helper method
+* GUI: Better `show()` and `hide()` methods for GUI Elements
+* GUI: GUI Elements now has `appendHTML()` method
+* GUI: GUI Elements now has `remove()` and `empty()` methods
+* GUI: `append()` in GUI Elements now builds items correctly (when doing it dynamically)
+* GUI: Added minimum sizes to some containers where missing
+* GUI: gui-image src checked if null
+* GUI: Fixed radios not getting unselected properly
+* GUI: Better Scheme APIs
+* GUI: Added DnD support to TreeView
+* GUI: Updated gui-richtext error handling
+* GUI: Updated gui-paned-view resize events to be more precise
+* GUI: All elements now support clipboard
+* GUI: Better DataView abstractions for ease of development (extensions)
+* API: Updated cURL method with new functionality
+* API: Added onhashchange support for application messaging
+* API: Deprecated `Application::_call()` in favour of `Application::_api()`
+* API: `API.call()` now has pattern `=> fn(err, res)`
+* API: Moved `API::createDraggable()` to `GUI::Helpers::createDraggable()`
+* API: Moved `API::createDroppable()` to `GUI::Helpers::createDroppable()`
+* Dialogs: Prevent HTML injection in confirm dialog
+* Dialogs: Focus the 'abort' button by default
+* Windows: Updated next tab support
+* Windows: Added `_find()` shortcut for scheme
+* Windows: Added `_findByQuery()` shortcut for scheme
+* Utils: Better $hasClass
+* ProcessViewer: Remaned forgotten file
+* MusicPlayer: Updated compability
+* FileManager: Now has clipboard support
+* FileManager: Added new keyboard shortcuts
+* Calculator: Focus is now always on the input field
+* locales: Added missing it_IT translations
+* locales: Improved ru_RU translations
+* package-manager: Better extension support
+* package-manager: Updated user-installed package support
+* platform: Updated edison support
+* build: Updated NW support
+* build: Removed all dist files, now generated from template
+* build: Updated config generation and setting
+* build: Updated manifest generation
+* build: Fixed setting configs with leading zeroes
+* build: Metadata now supports `uses` property
+* build: Metadata now supports `depends` property
+* build: Apache files now generated with proxies from config
+* build: Enabling/Disabling packages now happends in config, not manifest
+* server-node: Added 'rawtype' option to `VFS::write()`
+* server-node: Prevent crash when loading of extension fails
+* server-node: Added support for proxies
+* server-node: Now supports spawning child processes
+* server-node: Now uses proper sessions via cookie
+* config: Updated to relative paths
+* misc: Updated Travis support
+* misc: Updated Vagrant support
+* misc: Updated Docker support
+* misc: Updated packages.json dependencies
+* misc: Updated MIME database
+* misc: Cleanups
+* doc: Updated CONTRIBUTING
+* doc: Updated README
+* doc: Updated INSTALL
+* doc: Updated homepage
+* doc: Updated docs
+
+# 2.0.0-alpha73
+
+A ton of fixes, improvements and developer support updates!
+
+Now also supports Intel Edison platforms.
+
+* GUI: Better touch support
+* GUI: Better scaling support
+* GUI: Added media-queries for devices <800px
+* GUI: gui-grid now dynamic
+* GUI: Added some more generics to CSS (like % containers)
+* API: Added relaunc() to relaunch/reload apps
+* API: getIcon() should now always return proper file icons
+* VFS: General improvements
+* VFS: WebDAV implementation complete
+* VFS: Better handling of copy/move between identical transports
+* VFS: General improvements
+* About: Rewritten
+* Preview: Fixed video position
+* Calculator: Refactored completely
+* Settings: Package Management moved to its own app
+* Settings: Now only shows physically loaded languages
+* CoreWM: Updated weather panel item
+* CoreWM: Updated windowlist panel item
+* CoreWM: Cleaned up CSS
+* CoreWM: Fixed loading indicators
+* CoreWM: Updated touch menu
+* CoreWM: Improved notification area
+* CoreWM: No longer shows handles on non-resizable windows
+* CoreWM: Improved resize clamping
+* CoreWM: Simplified Window HTML markup a bit
+* FileManager: Added create connection dialog
+* iframe-application: Better initialization
+* iframe-application: Better bi-directional communications support
+* dialogs: Support for creating from custom callback and scheme
+* utils: Added `acceptcodes` to XHR call
+* handlers: Updated init() patterns
+* handlers: Updated NW support
+* handlers: Simplified integration
+* handlers: Now supports blacklisting of apps
+* handlers: Now reads settings from src/conf
+* handlers: Better mysql handler
+* handlers: bcrypt in mysql handler
+* handlers: Demo handler fixes for PHP
+* locales: Updated en_EN
+* locales: Updated fr_FR
+* locales: Updated ko_KR
+* server-node: Updated APIs
+* server-node: Better extension support
+* server-node: Fixed where curl would returned garbled binaries
+* server-node: Bugfixes
+* server-node: Updated HTTP return codes
+* server-node: Deny deletion of protocol root dirs
+* server-node: Better logging
+* server-php: Deny deletion of protocol root dirs
+* build: Added support for generating Handlers
+* build: Grunt now handles extensions better
+* build: Renamed `package.json` to `metadata.json` for apps
+* build: Better package extension support
+* build: Added `autostart` parameter to package metadata
+* build: Better feedback on grunt create-package tasks
+* build: Now supports making opkg dists
+* build: Better deb dist support
+* build: Includes a "packaging" script
+* doc: Updated INSTALL
+* doc: Updated README
+* doc: Updated CONTRIBUTING
+* doc: Updated all platform docs
+* doc: Updated all installation docs
+* doc: Updated code docs
+* misc: Added .github (new) features
+* misc: Updated templates
+* misc: Removed deprecated methods
+* misc: Updated browser compabilty
+* misc: Fixed some possible vulnerabilities
+* platform: Now fully supports Intel Edison
+
+# 2.0.0-alpha72
+
+New Logo, Moved repo to organization, Better privilege and group support, a ton of bugfixes and improvements!
+
+* Calculator: Updates
+* Writer: Updates
+* FileManager: Locale updates
+* FileManager: UI improvements and better VFS triggers
+* CoreWM: Improved notifications
+* CoreWM: When shut down, settings are reset to defaults
+* CoreWM: Fixed desktop shortcuts
+* CoreWM: Fixed loading indicators
+* Draw: Locale updates and bugfixes
+* dialogs: Updated File dialog, bugfixes
+* dialogs: API::createDialog() now has default callback
+* windowmanager: Bugfixes
+* windownanager: Clamp resize values when resizing
+* gui: StatusBar improvements
+* gui: PanedView improvements
+* gui: FileView improvements and fixes
+* gui: Updated login screen look
+* scheme: Bugfixes
+* handler: Improved API
+* handler: Updated NW support
+* handler: Included server handlers now use bcrypt
+* settings-manager: Improved saving
+* application: _onMessage() now returns boolean
+* application: Moved get/set Argument functions down to process
+* iframe-application: IE/Edge improvements
+* default-application: Added CTRL+S shortcut
+* default-application: Added CTRL+O shortcut
+* zip-archiver: Added removal support and many fixes and improvements
+* vfs: Added 'Blob' support
+* vfs: Added support for custom mountpoints via client API
+* vfs: Added WebDAV support
+* vfs: Overhault of apis
+* vfs: Support for HTTP reads over general api
+* vfs: Better handling of datauri data transfers
+* vfs: File upload abstraction improvements
+* api: HTTP API URI overhalut (entirely new and improved)
+* server-node: Now has checkserver-nodePrivilege
+* server-node: Now has checkVFSPrivilege
+* server-node: Now has checkPackagePrivilege
+* server-node: Added exif info in fileinfo()
+* server-node: Added permission info in fileinfo()
+* server-node: General improvements and cleanups
+* server: Reworked handler server integration
+* themes: Some Firefox related fixes
+* themes: updated Wallpaper
+* themes: updated favicon
+* themes: Updated 'Material' theme
+* locales: Added Portuguese (pt_BR)
+* locales: Added Korean (ko_KR)
+* locales: Updated French (fr_FR)
+* locales: Updated Polish (pl_PL)
+* utils: XHR call now has timeout argument
+* utils: XHR IE/Edge updates
+* utils: Added parseurl() function
+* build: Added 'ReloadOnShutdown' client config
+* build: Updated Windows symlinks script
+* build: Grunt compress task now also does core files
+* build: Improved Windows support
+* build: Added support for creating dummy packages
+* build: Updated Gruntfile
+* build: Improved 'dist' file generation
+* build: Updated unit-tests
+* build: CSS is now also linted
+* build: Code style check improvements
+* build: Now places manifest in server dir for backend as well
+* build: Support for custom server src/conf entries
+* misc: Added .editorconfig
+* misc: Updated installer scripts
+* misc: Updated locales overall
+* misc: Code file-tree updates
+* misc: Removed deprecated code
+* misc: Cleaned up a lot of stuff
+* misc: Improved error logging
+* misc: Updated Vagrantfile
+* misc: Added new error handling to async functions
+* misc: jshint
+* misc: Updated MIME database
+* misc: Moved some dependencies to devDependencies
+* doc: Updated README
+* doc: Updated INSTALL
+* doc: Added logo SVG sources
+* doc: Added complete node backend documentation
+* doc: Cleaned up all documentation
+* doc: Updated bithoundrc
+* doc: Updated package.json
+* doc: Updated badges
+
+# 2.0.0-alpha71
 
 OS.js exploded on social media and there was a lot of activity. This is just a digest of all the changes.
 
@@ -422,7 +666,7 @@ Bugfixes, build system updates, size reduction, new API helpers, touch event com
 Also features the new IFrame Applications which help developers EASILY create applications that not
 relies on OS.js APIs. You can convert your existing JavaScript application in no-time :)
 
-http://os.js.org/doc/tutorials/iframe-application.html
+https://os.js.org/doc/tutorials/iframe-application.html
 
 * API: Added IFrameApplication helper
 * API: Added IFrameApplicationWindow helper

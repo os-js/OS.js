@@ -10,12 +10,15 @@
 
 @window_border_size   : 5px;
 
-application-window-buttons > .application-window-button-entry {
-  margin : 2px;
-  width : 10px;
-  height : 18px;
-  padding : 4px;
-  text-align : center;
+application-window-top {
+  height : 25px;
+}
+application-window-title {
+  line-height : 25px;
+}
+
+.application-window-button-entry {
+  width : 20px;
 }
 
 application-window-content {
@@ -27,17 +30,6 @@ application-window:before {
   border : 1px solid @base_background_color;
 }
 
-application-window-buttons {
-  height : 10px;
-  top : 50%;
-  margin-top : -6px;
-}
-application-window-buttons > .application-window-button-entry {
-  height : 10px;
-  width : 20px;
-  padding : 0;
-}
-
 /* Max */
 application-window-button-maximize,
 application-window-button-maximize:hover,
@@ -45,7 +37,7 @@ application-window-button-maximize:active,
 application-window[data-focused="true"] application-window-button-maximize,
 application-window[data-focused="true"] application-window-button-maximize:hover,
 application-window[data-focused="true"] application-window-button-maximize:active {
-  background : url('glass/wm/maximize.png') no-repeat bottom center;
+  background : url('glass/wm/maximize.png') no-repeat center center;
 }
 
 /* Min */
@@ -55,7 +47,7 @@ application-window-button-minimize:active,
 application-window[data-focused="true"] application-window-button-minimize,
 application-window[data-focused="true"] application-window-button-minimize:hover,
 application-window[data-focused="true"] application-window-button-minimize:active {
-  background : url('glass/wm/minimize.png') no-repeat bottom center;
+  background : url('glass/wm/minimize.png') no-repeat center 70%;
 }
 
 /* Close */
@@ -65,6 +57,6 @@ application-window-button-close:active,
 application-window[data-focused="true"] application-window-button-close,
 application-window[data-focused="true"] application-window-button-close:hover,
 application-window[data-focused="true"] application-window-button-close:active {
-  background : url('glass/wm/close.png') no-repeat bottom center;
+  background : url('glass/wm/close.png') no-repeat center center;
 }
 

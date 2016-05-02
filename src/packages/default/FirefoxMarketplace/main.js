@@ -163,7 +163,7 @@
     return Application.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationFirefoxMarketplace.prototype.init = function(settings, metadata, onInited) {
+  ApplicationFirefoxMarketplace.prototype.init = function(settings, metadata) {
     Application.prototype.init.apply(this, arguments);
 
     var self = this;
@@ -171,8 +171,6 @@
     var scheme = GUI.createScheme(url);
     scheme.load(function(error, result) {
       self._addWindow(new ApplicationFirefoxMarketplaceWindow(self, metadata, scheme));
-
-      onInited();
     });
     this._setScheme(scheme);
   };
@@ -226,6 +224,6 @@
 
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationFirefoxMarketplace = OSjs.Applications.ApplicationFirefoxMarketplace || {};
-  OSjs.Applications.ApplicationFirefoxMarketplace.Class = ApplicationFirefoxMarketplace;
+  OSjs.Applications.ApplicationFirefoxMarketplace.Class = Object.seal(ApplicationFirefoxMarketplace);
 
 })(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

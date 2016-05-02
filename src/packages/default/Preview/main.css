@@ -30,15 +30,19 @@
 
 .ApplicationPreviewWindow gui-container {
   overflow : hidden;
+  font-size : 0;
+  text-align : center;
 }
 .ApplicationPreviewWindow gui-video {
-  text-align : center;
   vertical-align : middle;
   display : inline-block;
   background : #000;
   height : 100%;
+  width : 100%;
 }
 
 .ApplicationPreviewWindow gui-video > video {
   height : 100%;
+  width : 100%;
+  display : inline-block;
 }

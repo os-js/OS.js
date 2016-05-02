@@ -83,7 +83,7 @@
    *
    * @api OSjs.VFS.Modules.Apps
    */
-  OSjs.VFS.Modules.Apps = OSjs.VFS.Modules.Apps || {
+  OSjs.VFS.Modules.Apps = OSjs.VFS.Modules.Apps || OSjs.VFS._createMountpoint({
     readOnly: true,
     description: 'Applications',
     root: 'applications:///',
@@ -92,16 +92,7 @@
     special: true,
     visible: true,
     internal: true,
-    unmount: function(cb) {
-      (cb || function() {})(API._('ERR_VFS_UNAVAILABLE'), false);
-    },
-    mounted: function() {
-      return true;
-    },
-    enabled: function() {
-      return true;
-    },
     request: makeRequest
-  };
+  });
 
 })(OSjs.Utils, OSjs.API);

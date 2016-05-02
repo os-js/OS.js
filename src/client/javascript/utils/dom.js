@@ -94,10 +94,6 @@
     LSUPER:     91,
     RSUPER:     92,
 
-    H: 72,
-    M: 77,
-    R: 82,
-
     DELETE:     46,
     INSERT:     45,
     HOME:       36,
@@ -119,6 +115,15 @@
     UP:         38,
     DOWN:       40
   };
+
+  (function() {
+    for ( var n = 48; n <= 57; n++ ) {
+      OSjs.Utils.Keys[String.fromCharCode(n).toUpperCase()] = n;
+    }
+    for ( var c = 65; c <= 90; c++ ) {
+      OSjs.Utils.Keys[String.fromCharCode(c).toUpperCase()] = c;
+    }
+  })();
 
   /**
    * Get the mouse button pressed
@@ -359,10 +364,7 @@
    */
   OSjs.Utils.$hasClass = function(el, name) {
     if ( el && name ) {
-      var re = new RegExp('\\s?' + name);
-      if ( re.test(el.className) !== false ) {
-        return true;
-      }
+      return el.className.replace(/\s+/, ' ').split(' ').indexOf(name) >= 0;
     }
     return false;
   };
@@ -477,9 +479,6 @@
    */
   OSjs.Utils.$bind = (function() {
 
-    var DBLCLICK_THRESHOLD = 200;
-    var CONTEXTMENU_THRESHOLD = 600;
-
     function pos(ev, touchDevice) {
       return {
         x: (touchDevice ? (ev.changedTouches[0] || {}) : ev).clientX,
@@ -487,139 +486,99 @@
       };
     }
 
-    function _bindTouch(el, param, onStart, onMove, onEnd, collection) {
-      var wasMoved = false;
-      var startPos = {x: -1, y: -1};
-      onStart = onStart || function() {};
-      onMove = onMove || function() {};
-      onEnd = onEnd || function() {};
+    function createTouchHandler(el, evName, collection, callback, signal) {
+      var holdTimeout = null;
+      var whenFinished = false;
+      var isDone = false;
 
-      function touchStart(ev) {
-        startPos = pos(ev, true);
-        onStart(ev, startPos, false);
-      }
+      function cbs(ev) {
+        isDone = false;
+        signal();
 
-      function touchMove(ev) {
-        var curPos = pos(ev, true);
-        if ( curPos.x !== startPos.x || curPos.y !== startPos.y ) {
-          wasMoved = true;
-        }
-        onMove(ev, curPos, wasMoved);
-      }
+        if ( evName === 'click' ) {
+          whenFinished = function() {
+            if ( !isDone ) {
+              isDone = true;
+              callback.call(el, ev, pos(ev, true), true);
+            }
+          };
 
-      function touchEnd(ev) {
-        onEnd(ev, pos(ev, true), wasMoved);
-      }
+          holdTimeout = setTimeout(function() {
+            whenFinished = false;
+          }, 300);
+        } else if ( evName === 'contextmenu' ) {
+          holdTimeout = setTimeout(function() {
+            if ( !isDone ) {
+              isDone = true;
+              ev.stopPropagation();
+              ev.preventDefault();
+              callback.call(el, ev, pos(ev, true), true);
+            }
+          }, 450);
+        } else if ( evName === 'dblclick' ) {
+          if ( el.getAttribute('data-tmp-clicked') !== 'true' ) {
+            el.setAttribute('data-tmp-clicked', 'true');
 
-      collection.add(el, ['touchstart', touchStart, param === true]);
-      collection.add(el, ['touchmove', touchMove, param === true]);
-      collection.add(el, ['touchend', touchEnd, param === true]);
-    }
-
-    function bindTouchDblclick(ev, el, param, callback, collection) {
-
-      var clickCount = 0;
-      var timeout;
-
-      function ct() {
-        timeout = clearTimeout(timeout);
-      }
-
-      _bindTouch(el, param, function(ev, pos) {
-        ct();
-        clickCount++;
-      }, null, function(ev, pos, wasMoved) {
-        ct();
-
-        if ( !wasMoved ) {
-          if ( clickCount >= 2 ) {
-            clickCount = 0;
-            callback(ev, pos, true);
-            return;
-          }
-        }
-
-        timeout = setTimeout(function() {
-          clickCount = 0;
-          ct();
-        }, DBLCLICK_THRESHOLD);
-      }, collection);
-    }
-
-    var timeout;
-    var wasClicked;
-    var wasContextMenu;
-
-    function bindTouchClick(ev, el, param, callback, collection) {
-      _bindTouch(el, param, function(ev) {
-        ev.stopPropagation();
-
-        wasClicked = false;
-        wasContextMenu = false;
-      }, null, function(ev, pos, wasMoved) {
-        timeout = clearTimeout(timeout);
-
-        if ( !wasContextMenu ) {
-          if ( wasClicked !== wasMoved ) {
+            setTimeout(function() {
+              el.removeAttribute('data-tmp-clicked');
+            }, 500);
+          } else {
             ev.stopPropagation();
-            callback(ev, pos, true);
-          }
-
-        }
-      }, collection);
-    }
-
-    function bindTouchContextMenu(ev, el, param, callback, collection) {
-      _bindTouch(el, param, function(ev, pos) {
-        wasClicked = false;
-        wasContextMenu = false;
-
-        timeout = setTimeout(function() {
-          if ( !wasClicked ) {
-            wasContextMenu = true;
-
             ev.preventDefault();
-            callback(ev, pos, true);
+            callback.call(el, ev, pos(ev, true), true);
           }
-        }, CONTEXTMENU_THRESHOLD);
-      }, null, function(ev, pos, wasMoved) {
-        timeout = clearTimeout(timeout);
-        wasClicked = false;
-      }, collection);
+        }
+      }
+
+      function cbe(ev) {
+        signal();
+
+        if ( typeof whenFinished === 'function' ) {
+          whenFinished();
+        }
+
+        holdTimeout = clearTimeout(holdTimeout);
+        whenFinished = false;
+      }
+
+      collection.add(el, ['touchstart', cbs, true]);
+      collection.add(el, ['touchend', cbe, true]);
     }
 
-    return function(el, ev, callback, param) {
-      param = param || false;
+    return function(el, evName, callback, param) {
 
-      var compability = OSjs.Utils.getCompability();
-      var isTouch = compability.touch;
       var touchMap = {
-        click: bindTouchClick,
-        dblclick: bindTouchDblclick,
-        contextmenu: bindTouchContextMenu,
+        click: createTouchHandler,
+        contextmenu: createTouchHandler,
+        dblclick: createTouchHandler,
         mouseup: 'touchend',
         mousemove: 'touchmove',
         mousedown: 'touchstart'
       };
 
-      var cbNormal = function(ev) {
-        callback.call(el, ev, pos(ev), false);
-      };
-
-      var cbTouch = function(ev) {
-        callback.call(el, ev, pos(ev, true), true);
-      };
-
       var collection = new EventCollection();
-      collection.add(el, [ev, cbNormal, param === true]);
+      var tev = touchMap[evName];
+      var wasTouch = false;
 
-      if ( touchMap[ev] ) {
-        if ( typeof touchMap[ev] === 'function' ) {
-          touchMap[ev](ev, el, param, callback, collection);
-        } else {
-          collection.add(el, [touchMap[ev], cbTouch, param === true]);
+      function cbTouch(ev) {
+        callback.call(el, ev, pos(ev, true), true);
+      }
+
+      function cbNormal(ev) {
+        if ( !wasTouch ) {
+          callback.call(el, ev, pos(ev), false);
         }
       }
+
+      if ( typeof tev === 'function' ) {
+        tev(el, evName, collection, callback, function() {
+          wasTouch = true;
+        });
+      } else if ( typeof tev === 'string' ) {
+        collection.add(el, [tev, cbTouch, param === true]);
+      }
+
+      collection.add(el, [evName, cbNormal, param === true]);
 
       return collection;
     };

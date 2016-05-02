@@ -28,10 +28,13 @@
  * @licence Simplified BSD License
  */
 (function(API, Utils, VFS) {
+  /*jshint latedef: false */
   'use strict';
 
   window.OSjs = window.OSjs || {};
   OSjs.GUI = OSjs.GUI || {};
+
+  var dialogScheme;
 
   /////////////////////////////////////////////////////////////////////////////
   // INTERNAL HELPERS
@@ -104,14 +107,31 @@
       return false;
     }
 
-    var resolving = true;
-    while ( resolving ) {
-      resolving = _resolve();
+    if ( scheme ) {
+      var resolving = true;
+      while ( resolving ) {
+        resolving = _resolve();
+      }
     }
   }
 
   /////////////////////////////////////////////////////////////////////////////
   // API
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Shortcut for creating a new UIScheme class
+   *
+   * @param String    url     URL to scheme file
+   * @return UIScheme
+   * @api OSjs.GUI.createScheme()
+   */
+  function createScheme(url) {
+    return new UIScheme(url);
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // SCHEME
   /////////////////////////////////////////////////////////////////////////////
 
   /**
@@ -220,8 +240,13 @@
       return;
     }
 
+    var src = this.url;
+    if ( src.substr(0, 1) !== '/' && !src.match(/^(https?|ftp)/) ) {
+      src = window.location.href + src;
+    }
+
     Utils.ajax({
-      url: this.url,
+      url: src,
       onsuccess: function(html) {
         self._load(html);
         cb(false, self.scheme);
@@ -273,49 +298,16 @@
     console.debug('UIScheme::parse()', id);
 
     if ( !content ) {
-      console.error('UIScheme::parse()', 'No fragment found', id, type);
+      console.error('UIScheme::parse()', 'No fragment found', id + '@' + type);
       return null;
     }
 
     type = type || content.tagName.toLowerCase();
-    onparse = onparse || function() {};
-    args = args || {};
 
     if ( content ) {
       var node = content.cloneNode(true);
 
-      // Resolve fragment includes before dynamic rendering
-      resolveFragments(this, node);
-
-      // Apply a default className to non-containers
-      node.querySelectorAll('*').forEach(function(el) {
-        var lcase = el.tagName.toLowerCase();
-        if ( lcase.match(/^gui\-/) && !lcase.match(/(\-container|\-(h|v)box|\-columns?|\-rows?|(status|tool)bar|(button|menu)\-bar|bar\-entry)$/) ) {
-          Utils.$addClass(el, 'gui-element');
-        }
-      });
-
-      // Go ahead and parse dynamic elements (like labels)
-      parseDynamic(this, node, win, args);
-
-      // Lastly render elements
-      onparse(node);
-
-      Object.keys(OSjs.GUI.Elements).forEach(function(key) {
-        node.querySelectorAll(key).forEach(function(pel) {
-          if ( pel._wasParsed ) {
-            return;
-          }
-
-          try {
-            OSjs.GUI.Elements[key].build(pel);
-          } catch ( e ) {
-            console.warn('UIScheme::parse()', id, type, win, 'exception');
-            console.warn(e, e.stack);
-          }
-          pel._wasParsed = true;
-        });
-      });
+      UIScheme.parseNode(this, win, node, type, args, onparse, id);
 
       return node;
     }
@@ -346,10 +338,19 @@
       if ( frag ) {
         var width = parseInt(frag.getAttribute('data-width'), 10) || 0;
         var height = parseInt(frag.getAttribute('data-height'), 10) || 0;
+        var allow_maximize = frag.getAttribute('data-allow_maximize');
+        var allow_minimize = frag.getAttribute('data-allow_minimize');
+        var allow_close = frag.getAttribute('data-allow_close');
+        var allow_resize = frag.getAttribute('data-allow_resize');
 
         if ( (!isNaN(width) && width > 0) || (!isNaN(height) && height > 0) ) {
           win._resize(width, height);
         }
+
+        win._setProperty('allow_maximize', allow_maximize);
+        win._setProperty('allow_minimize', allow_minimize);
+        win._setProperty('allow_close', allow_close);
+        win._setProperty('allow_resize', allow_resize);
       }
     }
 
@@ -415,6 +416,33 @@
   };
 
   /**
+   * Returns given UIElement by query
+   *
+   * @param   Window      win       OS.js Window
+   * @param   String      id        Element ID (data-id)
+   * @param   DOMElement  root      (Optional) Root Node
+   * @param   boolean     all       (Optional) Perform `querySelectorAll`
+   *
+   * @return  UIElement
+   * @method  Scheme::find()
+   */
+  UIScheme.prototype.findByQuery = function(win, query, root, all) {
+    root = this._findRoot(win, root);
+
+    var el;
+    var self = this;
+
+    if ( all ) {
+      el = root.querySelectorAll(query).map(function(e) {
+        return self.get(e, query);
+      });
+    }
+
+    el = root.querySelector(query);
+    return this.get(el, query);
+  };
+
+  /**
    * Returns given DOMElement by ID
    *
    * @param   Window      win       OS.js Window
@@ -453,13 +481,7 @@
    * @method  Scheme::get()
    */
   UIScheme.prototype.get = function(el, q) {
-    if ( el ) {
-      var tagName = el.tagName.toLowerCase();
-      if ( tagName.match(/^gui\-(list|tree|icon|file)\-view$/) || tagName.match(/^gui\-select/) ) {
-        return new OSjs.GUI.ElementDataView(el, q);
-      }
-    }
-    return new OSjs.GUI.Element(el, q);
+    return UIScheme.getElementInstance(el, q);
   };
 
   /**
@@ -472,21 +494,145 @@
     return this.scheme.firstChild.innerHTML;
   };
 
+  /**
+   * Parses the given HTML node and makes OS.js compatible markup
+   *
+   * PLEASE NOTE THAT THIS METHOD IS STATIC!
+   *
+   * @param   OSjs.GUI.Scheme     scheme      Reference to the Scheme
+   * @param   OSjs.Core.Window    win         Reference to the Window
+   * @param   DOMElement          node        The HTML node to parse
+   * @param   Object              args        List of arguments to send to the parser
+   * @param   Function            onparse     Method to signal when parsing has started
+   * @param   Mixed               id          (Optional) The id of the source (for debugging)
+   *
+   * @return  String
+   * @method  Scheme::parseNode()
+   */
+  UIScheme.parseNode = function(scheme, win, node, type, args, onparse, id) {
+    onparse = onparse || function() {};
+    args = args || {};
+    type = type || 'snipplet';
+
+    // Resolve fragment includes before dynamic rendering
+    if ( args.resolve !== false ) {
+      resolveFragments(scheme, node);
+    }
+
+    // Apply a default className to non-containers
+    node.querySelectorAll('*').forEach(function(el) {
+      var lcase = el.tagName.toLowerCase();
+      if ( lcase.match(/^gui\-/) && !lcase.match(/(\-container|\-(h|v)box|\-columns?|\-rows?|(status|tool)bar|(button|menu)\-bar|bar\-entry)$/) ) {
+        Utils.$addClass(el, 'gui-element');
+      }
+    });
+
+    // Go ahead and parse dynamic elements (like labels)
+    parseDynamic(scheme, node, win, args);
+
+    // Lastly render elements
+    onparse(node);
+
+    Object.keys(OSjs.GUI.Elements).forEach(function(key) {
+      node.querySelectorAll(key).forEach(function(pel) {
+        if ( pel._wasParsed ) {
+          return;
+        }
+
+        try {
+          OSjs.GUI.Elements[key].build(pel);
+        } catch ( e ) {
+          console.warn('parseNode()', id, type, win, 'exception');
+          console.warn(e, e.stack);
+        }
+        pel._wasParsed = true;
+      });
+    });
+  };
+
+  /**
+   * @see UIScheme::get()
+   */
+  UIScheme.getElementInstance = function(el, q) {
+    if ( el ) {
+      var tagName = el.tagName.toLowerCase();
+      if ( tagName.match(/^gui\-(list|tree|icon|file)\-view$/) || tagName.match(/^gui\-select/) ) {
+        return new OSjs.GUI.ElementDataView(el, q);
+      }
+    }
+    return new OSjs.GUI.Element(el, q);
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // DialogScheme
+  /////////////////////////////////////////////////////////////////////////////
+
+  var DialogScheme = (function() {
+    var dialogScheme;
+
+    return {
+
+      /**
+       * Get the Dialog scheme
+       *
+       * @return UIScheme
+       * @api OSjs.GUI.DialogScheme.get()
+       */
+      get: function() {
+        return dialogScheme;
+      },
+
+      /**
+       * Destroy the Dialog scheme
+       *
+       * @return void
+       * @api OSjs.GUI.DialogScheme.destroy()
+       */
+      destroy: function() {
+        if ( dialogScheme ) {
+          dialogScheme.destroy();
+        }
+        dialogScheme = null;
+      },
+
+      /**
+       * Initialize the Dialog scheme
+       *
+       * @param   Function    cb      Callback function
+       * @return void
+       * @api OSjs.GUI.DialogScheme.init()
+       */
+      init: function(cb) {
+        if ( dialogScheme ) {
+          cb();
+          return;
+        }
+
+        var root = API.getConfig('Connection.RootURI');
+        var url = root + 'client/dialogs.html';
+        if ( API.getConfig('Connection.Dist') === 'dist' ) {
+          url = root + 'dialogs.html';
+        }
+
+        dialogScheme = OSjs.GUI.createScheme(url);
+        dialogScheme.load(function(error) {
+          if ( error ) {
+            console.warn('OSjs.GUI.initDialogScheme()', 'error loading dialog schemes', error);
+          }
+          cb();
+        });
+      }
+
+    };
+
+  })();
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.GUI.Scheme = UIScheme;
-
-  /**
-   * Shortcut for creating a new UIScheme class
-   *
-   * @param String    url     URL to scheme file
-   * @return UIScheme
-   * @api OSjs.GUI.createScheme()
-   */
-  OSjs.GUI.createScheme = function(url) {
-    return new UIScheme(url);
-  };
+  OSjs.GUI.Scheme = Object.seal(UIScheme);
+  OSjs.GUI.DialogScheme = DialogScheme;
+  OSjs.GUI.createScheme = createScheme;
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS);

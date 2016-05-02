@@ -83,8 +83,10 @@
   ErrorDialog.constructor = DialogWindow;
 
   ErrorDialog.prototype.init = function() {
-    var root = DialogWindow.prototype.init.apply(this, arguments);
     var self = this;
+
+    var root = DialogWindow.prototype.init.apply(this, arguments);
+    root.setAttribute('role', 'alertdialog');
 
     var msg = Utils.$escape(this.args.message || '').replace(/\*\*(\w+)\*\*/, '<span>$1</span>');
 
@@ -120,6 +122,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Dialogs = OSjs.Dialogs || {};
-  OSjs.Dialogs.Error = ErrorDialog;
+  OSjs.Dialogs.Error = Object.seal(ErrorDialog);
 
 })(OSjs.API, OSjs.Utils, OSjs.Core.DialogWindow);

@@ -147,7 +147,7 @@
       return _PROCS[name];
     }
 
-    _PROCS.forEach(function(p, i) {
+    _PROCS.every(function(p, i) {
       if ( p ) {
         if ( p.__pname === name ) {
           if ( first ) {
@@ -255,6 +255,43 @@
    *
    * @param   String      method      Name of method
    * @param   Object      args        Arguments in JSON
+   * @param   Function    callback    Callback method => fn(error, result)
+   * @param   boolean     showLoading Show loading indication (default=true)
+   *
+   * @return  boolean
+   *
+   * @method  Process::_api()
+   */
+  Process.prototype._api = function(method, args, callback, showLoading) {
+    var self = this;
+
+    function cb(err, res) {
+      if ( self.__destroyed ) {
+        console.warn('Process::_api()', 'INGORED RESPONSE: Process was closed');
+        return;
+      }
+      callback(err, res);
+    }
+
+    return OSjs.API.call('application', {
+      application: this.__iter,
+      path: this.__path,
+      method: method,
+      'arguments': args, __loading: showLoading
+    }, cb);
+  };
+
+  /**
+   * Call the ApplicationAPI
+   *
+   * This is used for calling 'api.php' or 'api.js' in your Application.
+   *
+   * On Lua or Arduino it is called 'server.lua'
+   *
+   * WARNING: THIS METHOD WILL BE DEPRECATED
+   *
+   * @param   String      method      Name of method
+   * @param   Object      args        Arguments in JSON
    * @param   Function    onSuccess   When request is done callback fn(result)
    * @param   Function    onError     When an error occured fn(error)
    * @param   boolean     showLoading Show loading indication (default=true)
@@ -266,35 +303,25 @@
   Process.prototype._call = function(method, args, onSuccess, onError, showLoading) {
     var self = this;
 
-    function cbSuccess() {
-      if ( self.__destroyed ) {
-        console.warn('Process::_call()', 'INGORED RESPONSE: Process was closed');
-        return;
-      }
-      (onSuccess || function() {}).apply(null, arguments);
+    function _defaultError(err) {
+      err = err || 'Unknown error';
+      OSjs.API.error(OSjs.API._('ERR_APP_API_ERROR'),
+                     OSjs.API._('ERR_APP_API_ERROR_DESC_FMT', self.__pname, method),
+                     err);
     }
 
-    function cbError() {
-      function _defaultError(err) {
-        err = err || 'Unknown error';
-        OSjs.API.error(OSjs.API._('ERR_APP_API_ERROR'),
-                       OSjs.API._('ERR_APP_API_ERROR_DESC_FMT', self.__pname, method),
-                       err);
-      }
+    console.warn('********************************* WARNING *********************************');
+    console.warn('THE METHOD Process:_call() IS DEPRECATED AND WILL BE REMOVED IN THE FUTURE');
+    console.warn('PLEASE USE Process::_api() INSTEAD!');
+    console.warn('***************************************************************************');
 
-      if ( self.__destroyed ) {
-        console.warn('Process::_call()', 'INGORED RESPONSE: Process was closed');
-        return;
+    this._api(method, args, function(err, res) {
+      if ( err ) {
+        (onError || _defaultError)(err);
+      } else {
+        (onSuccess || function() {})(res);
       }
-      (onError || _defaultError).apply(null, arguments);
-    }
-
-    return OSjs.API.call('application', {
-      application: this.__iter,
-      path: this.__path,
-      method: method,
-      'arguments': args, __loading: showLoading
-    }, cbSuccess, cbError);
+    }, showLoading);
   };
 
   /**
@@ -320,6 +347,22 @@
   };
 
   /**
+   * Get full path to a resorce belonging to this process (package)
+   *
+   * This is a shortcut for API.getApplicationResource()
+   *
+   * @param   String      src       Resource name (path)
+   *
+   * @return  String
+   *
+   * @method  Process::_getResource()
+   * @see     API::getApplicationResource()
+   */
+  Process.prototype._getResource = function(src) {
+    return API.getApplicationResource(this, src);
+  };
+
+  /**
    * Set a launch/session argument
    *
    * @param   String    k             Key
@@ -337,7 +380,7 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Core.Process          = Process;
+  OSjs.Core.Process          = Object.seal(Process);
 
   OSjs.API.killAll           = doKillAllProcesses;
   OSjs.API.kill              = doKillProcess;
