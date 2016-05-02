@@ -59,9 +59,9 @@
 
     function callAPI(fn, args, cb) {
       self._toggleLoading(true);
-      API.call(fn, args, function(response) {
+      API.call(fn, args, function(error, result) {
         self._toggleLoading(false);
-        return cb(response.error, response.result);
+        return cb(error, result);
       });
     }
 

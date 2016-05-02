@@ -56,14 +56,14 @@
     var input = scheme.find(this, 'LogOutput');
     function refresh() {
       self._toggleLoading(true);
-      API.call('syslog', {}, function(response) {
+      API.call('syslog', {}, function(error, result) {
         self._toggleLoading(false);
 
-        if (response.error) {
-          var err = response.error || (response.result ? 'Unknown error' : 'No data recieved');
+        if (error) {
+          var err = error || (result ? 'Unknown error' : 'No data recieved');
           input.set('value', 'ERROR: ' + err);
         } else {
-          input.set('value', response.result);
+          input.set('value', result);
         }
       });
     }
