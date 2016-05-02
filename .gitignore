@@ -32,3 +32,6 @@ dist-dev/*
 vendor/dropbox*
 vendor/zip.js
 vendor/html2canvas
+
+# Arduino
+.arduino
