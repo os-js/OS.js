@@ -38,7 +38,7 @@ then
 	ARCH="ar71xx"
 fi
 
-VERSION="2.0.2-$REV"
+VERSION="2.0.1-$REV"
 
 PKGNAME="arduinoos_${VERSION}_${ARCH}.ipk"
 SRCDIR=".arduino/build"
