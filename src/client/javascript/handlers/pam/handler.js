@@ -32,7 +32,7 @@
  */
 
 //
-// See doc/pam-handler.txt
+// See doc/handler-pam.txt
 //
 
 (function(API, Utils, VFS) {
@@ -60,10 +60,9 @@
    * Override default init() method
    */
   PAMHandler.prototype.init = function(callback) {
-    // Located in src/client/javasript/hander.js
     var self = this;
-    this.initLoginScreen(function() {
-      OSjs.Core._Handler.prototype.init.call(self, callback);
+    return OSjs.Core._Handler.prototype.init.call(this, function() {
+      self.initLoginScreen(callback);
     });
   };
 

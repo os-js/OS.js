@@ -36,9 +36,10 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
-  function blurMenu() {
-    if ( !lastMenu ) { return; }
-    lastMenu();
+  function blurMenu(ev) {
+    if ( lastMenu ) {
+      lastMenu(ev);
+    }
     lastMenu = null;
   }
 
@@ -64,9 +65,35 @@
       }
 
       if ( !isExpander ) {
-        blurMenu();
+        blurMenu(ev);
       }
     }, false);
+  }
+
+  /**
+   * This function makes menus pop out to the left instead of right
+   *
+   * Does not work for gui-menu-bar atm
+   */
+  function clampSubmenuPositions(r) {
+    function _clamp(rm) {
+      rm.querySelectorAll('gui-menu-entry').forEach(function(srm) {
+        var sm = srm.querySelector('gui-menu');
+        if ( sm ) {
+          sm.style.left = String(-parseInt(sm.offsetWidth, 10)) + 'px';
+          _clamp(sm);
+        }
+      });
+    }
+
+    var pos = Utils.$position(r);
+    if ( (window.innerWidth - pos.right) < r.offsetWidth ) {
+      Utils.$addClass(r, 'gui-overflowing');
+      _clamp(r);
+    }
+
+    // this class is used in caclulations (DOM needs to be visible for that)
+    Utils.$addClass(r, 'gui-showing');
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -108,7 +135,7 @@
         var i = Utils.$index(label.parentNode);
         bindSelectionEvent(label.parentNode, label, i, expand, el.querySelector('label'));
       });
-      OSjs.API.createMenu(null, ev, newNode);
+      OSjs.GUI.Helpers.createMenu(null, ev, newNode);
     },
     set: function(el, param, value, arg) {
       if ( param === 'checked' ) {
@@ -129,6 +156,8 @@
     },
     build: function(el, customMenu, winRef) {
 
+      var isMenuBarChild =  el.parentNode ? el.parentNode.tagName === 'GUI-MENU-BAR-ENTRY' : false;
+
       function createTyped(child, par) {
         var type = child.getAttribute('data-type');
         var value = child.getAttribute('data-checked') === 'true';
@@ -144,27 +173,38 @@
           input.addEventListener('click', function(ev) {
             blurMenu();
           }, true);
+
+          par.setAttribute('role', 'menuitem' + type);
           par.appendChild(input);
         }
       }
 
       function runChildren(pel, level) {
-        var children = pel.children;
-        var child, span, label, expand, icon;
 
-        for ( var i = 0; i < children.length; i++ ) {
-          child = children[i];
-          expand = false;
+        function _checkExpand(child) {
+          if ( child.children && child.children.length ) {
+            Utils.$addClass(child, 'gui-menu-expand');
+            child.setAttribute('aria-haspopup', 'true');
+            return true;
+          } else {
+            child.setAttribute('aria-haspopup', 'false');
+          }
+
+          return false;
+        }
+
+        function createChild(child, i) {
 
           if ( child && child.tagName.toLowerCase() === 'gui-menu-entry') {
-            if ( child.children && child.children.length ) {
-              Utils.$addClass(child, 'gui-menu-expand');
-              expand = true;
-            }
-            label = GUI.Helpers.getLabel(child);
-            icon = GUI.Helpers.getIcon(child, winRef);
+            var expand = _checkExpand(child);
 
-            span = document.createElement('label');
+            child.setAttribute('role', 'menuitem' + (child.getAttribute('data-type') || ''));
+
+            var label = GUI.Helpers.getLabel(child);
+            var icon = GUI.Helpers.getIcon(child, winRef);
+            child.setAttribute('aria-label', label);
+
+            var span = document.createElement('label');
             if ( icon ) {
               child.style.backgroundImage = 'url(' + icon + ')';
               Utils.$addClass(span, 'gui-has-image');
@@ -189,7 +229,11 @@
             }
           }
         }
+
+        (pel.children || []).forEach(createChild);
       }
+
+      el.setAttribute('role', 'menu');
 
       runChildren(el, 0);
     }
@@ -200,8 +244,7 @@
    *
    * A menubar with sub-menus
    *
-   * Events:
-   *  select        When an entry was selected (click) => fn(ev)
+   * @event     select               When an entry was selected (click) => fn(ev)
    *
    * @api OSjs.GUI.Elements.gui-menu-bar
    * @class
@@ -216,6 +259,26 @@
       });
     },
     build: function(el) {
+      el.setAttribute('role', 'menubar');
+
+      function updateChildren(sm, level) {
+        if ( !sm ) {
+          return;
+        }
+
+        var children = sm.children;
+        var child;
+
+        for ( var i = 0; i < children.length; i++ ) {
+          child = children[i];
+          if ( child.tagName === 'GUI-MENU-ENTRY' ) {
+
+            child.setAttribute('aria-haspopup', String(!!child.firstChild));
+            updateChildren(child.firstChild, level + 1);
+          }
+        }
+      }
+
       el.querySelectorAll('gui-menu-bar-entry').forEach(function(mel, idx) {
         var label = GUI.Helpers.getLabel(mel);
         var id = mel.getAttribute('data-id');
@@ -223,14 +286,28 @@
         var span = document.createElement('span');
         span.appendChild(document.createTextNode(label));
 
+        mel.setAttribute('role', 'menuitem');
+
         mel.insertBefore(span, mel.firstChild);
 
         var submenu = mel.querySelector('gui-menu');
-        Utils.$bind(mel, 'click', function(ev) {
+
+        clampSubmenuPositions(submenu);
+
+        mel.setAttribute('aria-haspopup', String(!!submenu));
+        updateChildren(submenu, 2);
+
+        Utils.$bind(mel, 'mousedown', function(ev) {
           blurMenu();
 
+          ev.preventDefault();
+          ev.stopPropagation();
+
           if ( submenu ) {
-            lastMenu = function() {
+            lastMenu = function(ev) {
+              if ( ev ) {
+                ev.stopPropagation();
+              }
               Utils.$removeClass(mel, 'gui-active');
             };
           }
@@ -256,14 +333,15 @@
    * Blur the currently open menu (aka hiding)
    *
    * @return void
-   * @api OSjs.API.blurMenu()
+   * @api OSjs.GUI.Helpers.blurMenu()
    */
-  OSjs.API.blurMenu = blurMenu;
+  OSjs.GUI.Helpers.blurMenu = blurMenu;
 
   /**
    * Create and show a new menu
    *
    * Format:
+   * ```
    * [
    *  {
    *    title: "Title",
@@ -273,15 +351,16 @@
    *  }
    *  ...
    * ]
+   * ```
    *
    * @param   Array       items             Array of items
    * @param   Event       ev                DOM Event or dict with x/y
    * @param   Mixed       customInstance    Show a custom created menu
    *
    * @return void
-   * @api OSjs.API.createMenu()
+   * @api OSjs.GUI.Helpers.createMenu()
    */
-  OSjs.API.createMenu = function(items, ev, customInstance) {
+  OSjs.GUI.Helpers.createMenu = function(items, ev, customInstance) {
     items = items || [];
     blurMenu();
 
@@ -347,12 +426,14 @@
       var pos = Utils.$position(root);
       if ( pos.right > space.width ) {
         var newLeft = Math.round(space.width - pos.width);
-        root.style.left = newLeft + 'px';
+        root.style.left = Math.max(0, newLeft) + 'px';
       }
       if ( pos.bottom > space.height ) {
         var newTop = Math.round(space.height - pos.height);
-        root.style.top = newTop + 'px';
+        root.style.top = Math.max(0, newTop) + 'px';
       }
+
+      clampSubmenuPositions(root);
     }, 1);
 
     lastMenu = function() {

@@ -218,6 +218,10 @@ class FS
     list($dirname, $root, $protocol, $fname) = getRealPath($fname);
     if ( $protocol === "osjs://" ) throw new Exception("Not allowed");
 
+    if ( ($dirname ?: '/') === '/' ) {
+      throw new Exception('Permission denied!');
+    }
+
     if ( is_file($fname) ) {
       if ( !is_writeable($fname) ) throw new Exception("Read permission denied");
     } else if ( is_dir($fname) ) {

@@ -69,6 +69,8 @@
     'ERR_OPERATION_TIMEOUT'       : 'Operation Timeout',
     'ERR_OPERATION_TIMEOUT_FMT'   : 'Operation Timeout ({0})',
 
+    'ERR_ARGUMENT_FMT'    : '\'{0}\' expects \'{1}\' to be a \'{2}\', \'{3}\' given',
+
     // Window
     'ERR_WIN_DUPLICATE_FMT' : 'You already have a Window named \'{0}\'',
     'WINDOW_MINIMIZE' : 'Minimize',
@@ -224,6 +226,7 @@
     'ERR_VFSMODULE_NOT_MOUNTED_FMT'    : 'VFS Module \'{0}\' not mounted',
     'ERR_VFSMODULE_EXCEPTION'          : 'VFS Module Exception',
     'ERR_VFSMODULE_EXCEPTION_FMT'      : 'VFS Module Exception: {0}',
+    'ERR_VFSMODULE_NOT_FOUND_FMT'      : 'No VFS Module matches {0}. Wrong path or format ?',
 
     'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Downloading file',
 
@@ -406,7 +409,14 @@
     'LBL_SHOW_SIDEBAR' : 'Show sidebar',
     'LBL_SHOW_NAVIGATION' : 'Show navigation',
     'LBL_SHOW_HIDDENFILES' : 'Show hidden files',
-    'LBL_SHOW_FILEEXTENSIONS' : 'Show file extensions'
+    'LBL_SHOW_FILEEXTENSIONS' : 'Show file extensions',
+    'LBL_MOUNT': 'Mount',
+    'LBL_DESCRIPTION': 'Description',
+    'LBL_USERNAME': 'Username',
+    'LBL_PASSWORD': 'Password',
+    'LBL_HOST': 'Host',
+    'LBL_NAMESPACE': 'Namespace'
+
   };
 
 })();

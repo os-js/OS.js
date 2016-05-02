@@ -47,12 +47,10 @@
 
   function apiCall(url, callback) {
     API.curl({
-      body: {
-        url: url,
-        binary: false,
-        mime: 'application/json',
-        method: 'GET'
-      }
+      url: url,
+      binary: false,
+      mime: 'application/json',
+      method: 'GET'
     }, function(error, response) {
       if ( error ) {
         callback(error);

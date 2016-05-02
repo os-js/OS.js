@@ -130,6 +130,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Dialogs = OSjs.Dialogs || {};
-  OSjs.Dialogs.ApplicationChooser = ApplicationChooserDialog;
+  OSjs.Dialogs.ApplicationChooser = Object.seal(ApplicationChooserDialog);
 
 })(OSjs.API, OSjs.Utils, OSjs.Core.DialogWindow);

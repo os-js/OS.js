@@ -31,9 +31,9 @@
  * @licence Simplified BSD License
  */
 
-/*
-See doc/mysql-handler.txt
-*/
+//
+// See doc/handler-mysql.txt
+//
 
 (function(API, Utils, VFS) {
   'use strict';
@@ -60,10 +60,9 @@ See doc/mysql-handler.txt
    * Override default init() method
    */
   MysqlHandler.prototype.init = function(callback) {
-    // Located in src/client/javasript/hander.js
     var self = this;
-    this.initLoginScreen(function() {
-      OSjs.Core._Handler.prototype.init.call(self, callback);
+    return OSjs.Core._Handler.prototype.init.call(this, function() {
+      self.initLoginScreen(callback);
     });
   };
 

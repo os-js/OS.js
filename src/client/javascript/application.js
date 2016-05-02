@@ -49,8 +49,8 @@
    * @param   Object    settings  Application settings
    *
    * @api     OSjs.Core.Application
-   * @link    http://os.js.org/doc/tutorials/create-application.html
-   * @link    http://os.js.org/doc/tutorials/application-with-server-api.html
+   * @link    https://os.js.org/doc/tutorials/create-application.html
+   * @link    https://os.js.org/doc/tutorials/application-with-server-api.html
    * @extends Process
    * @class
    */
@@ -184,6 +184,24 @@
   };
 
   /**
+   * Default method for loading a Scheme file
+   *
+   * @param   String        s       Scheme filename
+   * @param   Function      cb      Callback => fn(scheme)
+   *
+   * @return  void
+   *
+   * @method Application::_loadScheme()
+   */
+  Application.prototype._loadScheme = function(s, cb) {
+    var scheme = OSjs.GUI.createScheme(this._getResource(s));
+    scheme.load(function(error, result) {
+      cb(scheme);
+    });
+    this._setScheme(scheme);
+  };
+
+  /**
    * Add a window to the application
    *
    * This will automatically add it to the WindowManager and show it to you
@@ -278,7 +296,7 @@
     }
 
     var result = key === 'tag' ? [] : null;
-    this.__windows.forEach(function(win, i) {
+    this.__windows.every(function(win, i) {
       if ( win ) {
         if ( win['_' + key] === value ) {
           if ( key === 'tag' ) {
@@ -298,9 +316,11 @@
   /**
    * Get a Window by Name
    *
+   * @param String  name      Window Name
+   *
    * @see Application::_getWindow()
    *
-   * @method Application::_getWindowsByName()
+   * @method Application::_getWindowByName()
    */
   Application.prototype._getWindowByName = function(name) {
     return this._getWindow(name);
@@ -308,6 +328,8 @@
 
   /**
    * Get Windows(!) by Tag
+   *
+   * @param String  tag       Tag name
    *
    * @see Application::_getWindow()
    * @return Array
@@ -342,12 +364,40 @@
   /**
    * Get the sessions JSON
    *
+   * @param   String    k       The settings key
+   *
    * @return  Object    the current settings
    *
    * @method  Application::_getSettings()
    */
   Application.prototype._getSetting = function(k) {
     return this.__settings.get(k);
+  };
+
+  /**
+   * Get the current application session data
+   *
+   * @return  Object    the current session data
+   *
+   * @method  Application::_getSessionData()
+   */
+  Application.prototype._getSessionData = function() {
+    var args = this.__args;
+    var wins = this.__windows;
+    var data = {name: this.__pname, args: args, windows: []};
+
+    wins.forEach(function(win, i) {
+      if ( win && win._properties.allow_session ) {
+        data.windows.push({
+          name      : win._name,
+          dimension : win._dimension,
+          position  : win._position,
+          state     : win._state
+        });
+      }
+    });
+
+    return data;
   };
 
   /**
@@ -383,6 +433,6 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Core.Application       = Application;
+  OSjs.Core.Application = Object.seal(Application);
 
 })(OSjs.Utils, OSjs.API, OSjs.Core.Process);

@@ -99,6 +99,7 @@
         var d = OSjs.Helpers.Date.format(now, tooltipFmt);
         Utils.$empty(clock);
         clock.appendChild(document.createTextNode(t));
+        clock.setAttribute('aria-label', String(t));
         clock.title = d;
       }
     }
@@ -110,22 +111,6 @@
       }, interval);
     }
 
-    // Forces width of the element by calculating the length of the string in pixels
-    // It is not perfect, but works in most cases.
-    /*
-    var tst = OSjs.Helpers.Date.format(new Date(), fmt).replace(/[A-z0-9]/g, '8');
-    var tstEl = document.createElement('span');
-    tstEl.style.visibility = 'hidden';
-    tstEl.appendChild(document.createTextNode(tst));
-    document.body.appendChild(tstEl);
-    if ( tstEl.offsetWidth ) {
-      clock.style.width = tstEl.offsetWidth.toString() + 'px';
-    } else {
-      clock.style.width = '';
-    }
-    tstEl = Utils.$remove(tstEl);
-    */
-
     create(this._settings.get('interval'));
     update();
   };
@@ -135,6 +120,7 @@
 
     this.$clock = document.createElement('div');
     this.$clock.innerHTML = '00:00:00';
+    root.setAttribute('role', 'button');
     root.appendChild(this.$clock);
 
     this.createInterval();

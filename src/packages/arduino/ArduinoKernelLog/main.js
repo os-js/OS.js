@@ -94,7 +94,7 @@
   ApplicationArduinoKernelLog.prototype = Object.create(Application.prototype);
   ApplicationArduinoKernelLog.constructor = Application;
 
-  ApplicationArduinoKernelLog.prototype.init = function(settings, metadata, onInited) {
+  ApplicationArduinoKernelLog.prototype.init = function(settings, metadata) {
     Application.prototype.init.apply(this, arguments);
 
     var self = this;
@@ -102,7 +102,6 @@
     var scheme = GUI.createScheme(url);
     scheme.load(function(error, result) {
       self._addWindow(new ApplicationArduinoKernelLogWindow(self, metadata, scheme));
-      onInited();
     });
 
     this._setScheme(scheme);

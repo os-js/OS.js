@@ -1,0 +1,11 @@
+#!/bin/sh
+
+mkdir -p /etc/osjs
+
+if [ ! -e "/etc/osjs/groups.json" ]; then
+  cp /osjs/templates/etc/osjs/groups.json /etc/osjs/groups.json
+fi
+
+if [ ! -e "/etc/osjs/blacklist.json" ]; then
+  cp /osjs/templates/etc/osjs/blacklist.json /etc/osjs/blacklist.json
+fi

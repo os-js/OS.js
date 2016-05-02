@@ -2,10 +2,15 @@
   "handler": "demo",
   "connection": "http",
 
-  "repositories": ["default"],
-
   "client" : {
     "Version" : "2.0.0"
+  },
+
+  "repositories": ["default"],
+
+  "packages": {
+    "ForceEnable": [],
+    "ForceDisable": []
   },
 
   "mime": {

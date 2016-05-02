@@ -12,18 +12,16 @@ USER root
 RUN apt-get -y update
 
 ## Install dependencies and build tools. ##
-RUN apt-get install -y git
-RUN apt-get install -y npm
-RUN apt-get install -y nodejs-legacy
+RUN apt-get -y install git npm nodejs-legacy
 
 ## Clone the Repo and install grunt ##
 RUN git clone https://github.com/os-js/OS.js.git
-RUN npm install -g grunt-cli
+RUN npm install -g grunt-cli supervisor
 RUN cd OS.js/
 
 ## Install and Compile OS.js ##
 WORKDIR OS.js/
-RUN npm install
+RUN npm install --production
 RUN grunt
 
 ## Start Application and Expose Port ##

@@ -1,0 +1,11 @@
+Package: osjs
+Version: VER
+Depends: nodejs
+Priority: optional
+Source: opkg/edison/ARCH
+Section: misc
+Architecture: ARCH
+Maintainer: Anders Evenrud <andersevenrud@gmail.com>
+Description: OS.js Cloud/Web Desktop http://os.js.org
+Suggests:
+Conflicts:

@@ -357,7 +357,7 @@
    *
    * @api OSjs.VFS.Modules.Dropbox
    */
-  OSjs.VFS.Modules.Dropbox = OSjs.VFS.Modules.Dropbox || {
+  OSjs.VFS.Modules.Dropbox = OSjs.VFS.Modules.Dropbox || OSjs.VFS._createMountpoint({
     readOnly: false,
     description: 'Dropbox',
     visible: true,
@@ -381,7 +381,7 @@
     icon: 'places/dropbox.png',
     match: /^dropbox\:\/\//,
     request: makeRequest
-  };
+  });
 
 })(OSjs.Utils, OSjs.API);
 

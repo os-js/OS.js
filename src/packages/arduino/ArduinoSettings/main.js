@@ -366,7 +366,7 @@
     return Application.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationArduinoSettings.prototype.init = function(settings, metadata, onInited) {
+  ApplicationArduinoSettings.prototype.init = function(settings, metadata) {
     Application.prototype.init.apply(this, arguments);
 
     var self = this;
@@ -374,7 +374,6 @@
     var scheme = GUI.createScheme(url);
     scheme.load(function(error, result) {
       self._addWindow(new ApplicationArduinoSettingsWindow(self, metadata, scheme));
-      onInited();
     });
 
     this._setScheme(scheme);

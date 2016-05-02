@@ -78,26 +78,30 @@
    * @api     OSjs.Utils.dirname()
    */
   OSjs.Utils.dirname = function(f) {
-    f = f.replace(/\/$/, '');
 
-    var pstr   = f.split(/^(.*)\:\/\/(.*)/).filter(function(n) { return n !== ''; });
-    var args   = pstr.pop();
-    var prot   = pstr.pop();
-    var result = '';
+    function _parentDir(p) {
+      var pstr   = p.split(/^(.*)\:\/\/(.*)/).filter(function(n) { return n !== ''; });
+      var args   = pstr.pop();
+      var prot   = pstr.pop();
+      var result = '';
 
-    var tmp = args.split('/').filter(function(n) { return n !== ''; });
-    if ( tmp.length ) {
-      tmp.pop();
-    }
-    result = tmp.join('/');
+      var tmp = args.split('/').filter(function(n) { return n !== ''; });
+      if ( tmp.length ) {
+        tmp.pop();
+      }
+      result = tmp.join('/');
 
-    if ( !result.match(/^\//) ) {
-      result = '/' + result;
+      if ( !result.match(/^\//) ) {
+        result = '/' + result;
+      }
+      if ( prot ) {
+        result = prot + '://' + result;
+      }
+
+      return result;
     }
-    if ( prot ) {
-      result = prot + '://' + result;
-    }
-    return result;
+
+    return f === '/' ? f : _parentDir(f.replace(/\/$/, ''));
   };
 
   /**

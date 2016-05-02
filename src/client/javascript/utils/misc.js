@@ -124,6 +124,7 @@
       url: _parts()
     };
   };
+
   /////////////////////////////////////////////////////////////////////////////
   // OBJECT HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -304,6 +305,44 @@
     color = color.toString(16);
     color = ('000000' + color).slice(-6);
     return '#' + color;
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // ASYNC
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Run an async queue in series
+   *
+   * @param   Array       queue     The queue
+   * @param   Function    onentry   Callback on step => fn(entry, index, fnNext)
+   * @param   Function    ondone    Callback on done => fn()
+   *
+   * @return  void
+   *
+   * @api     OSjs.Utils.asyncs()
+   */
+  OSjs.Utils.asyncs = function(queue, onentry, ondone) {
+    onentry = onentry || function(e, i, n) { n(); };
+    ondone  = ondone  || function() {};
+
+    function next(i) {
+      if ( i >= queue.length ) {
+        ondone();
+        return;
+      }
+
+      try {
+        onentry(queue[i], i, function() {
+          next(i + 1);
+        });
+      } catch ( e ) {
+        console.warn('Utils::async()', 'Exception while stepping', e.stack, e);
+        next(i + 1);
+      }
+    }
+
+    next(0);
   };
 
 })();

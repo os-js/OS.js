@@ -39,25 +39,18 @@
 
   var API = {
     login: function(args, callback, request, response, config, handler) {
-      var data = {
-        id: 0,
-        username: 'demo',
-        name: 'Demo User',
-        groups: ['admin']
-      };
-
-      handler.setUserData(request, response, data, function() {
-        callback(false, {
-          userData: data,
-          userSettings: {}
-        });
-      });
+      handler.onLogin(request, response, {
+        userData: {
+          id: 0,
+          username: 'demo',
+          name: 'Demo User',
+          groups: ['admin']
+        }
+      }, callback);
     },
 
     logout: function(args, callback, request, response, config, handler) {
-      handler.setUserData(request, response, null, function() {
-        callback(false, true);
-      });
+      handler.onLogout(request, response, callback);
     }
   };
 
@@ -83,7 +76,7 @@
      * This overrides and leaves no checks (full access)
      */
     DemoHandler.prototype.checkAPIPrivilege = function(request, response, privilege, callback) {
-      this._checkDefaultPrivilege(request, response, callback);
+      this._checkHasSession(request, response, callback);
     };
 
     /**
@@ -91,7 +84,7 @@
      * This overrides and leaves no checks (full access)
      */
     DemoHandler.prototype.checkVFSPrivilege = function(request, response, path, args, callback) {
-      this._checkDefaultPrivilege(request, response, callback);
+      this._checkHasSession(request, response, callback);
     };
 
     /**
@@ -99,7 +92,7 @@
      * This overrides and leaves no checks (full access)
      */
     DemoHandler.prototype.checkPackagePrivilege = function(request, response, packageName, callback) {
-      this._checkDefaultPrivilege(request, response, callback);
+      this._checkHasSession(request, response, callback);
     };
 
     return new DemoHandler();
