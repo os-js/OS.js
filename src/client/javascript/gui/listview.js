@@ -276,7 +276,7 @@
           cbCreated(row);
         });
       } else if ( method === 'remove' ) {
-        GUI.Elements._dataview.remove(el, args, 'gui-list-view-row');
+        GUI.Elements._dataview.remove(el, args, 'gui-list-view-row', null, body);
       } else if ( method === 'clear' ) {
         GUI.Elements._dataview.clear(el, el.querySelector('gui-list-view-body'));
       } else if ( method === 'patch' ) {

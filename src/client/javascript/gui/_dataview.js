@@ -310,22 +310,24 @@
       return this;
     },
 
-    remove: function(el, args, className, target) {
+    remove: function(el, args, className, target, parentEl) {
       function remove(cel) {
         Utils.$remove(cel);
       }
+
+      parentEl = parentEl || el;
 
       if ( target ) {
         remove(target);
         return;
       }
       if ( typeof args[1] === 'undefined' && typeof args[0] === 'number' ) {
-        remove(el.querySelectorAll(className)[args[0]]);
+        remove(parentEl.querySelectorAll(className)[args[0]]);
       } else {
         var findId = args[0];
         var findKey = args[1] || 'id';
         var q = 'data-' + findKey + '="' + findId + '"';
-        el.querySelectorAll(className + '[' + q + ']').forEach(remove);
+        parentEl.querySelectorAll(className + '[' + q + ']').forEach(remove);
       }
 
       this.updateActiveSelection(el, className);
