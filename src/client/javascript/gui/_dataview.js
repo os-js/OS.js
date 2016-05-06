@@ -186,6 +186,15 @@
     handleKey();
   }
 
+  function getValueParameter(r) {
+    var value = r.getAttribute('data-value');
+    try {
+      return JSON.parse(value);
+    } catch ( e ) {}
+
+    return value;
+  }
+
   function matchValueByKey(r, val, key, idx) {
     var value = r.getAttribute('data-value');
     if ( !key && (val === idx || val === value) ) {
@@ -445,15 +454,21 @@
       return selected;
     },
 
-    getEntry: function(el, entries, val, key) {
-      var result = null;
-      entries.forEach(function(r, idx) {
-        if ( matchValueByKey(r, val, key, idx) ) {
-          result = r;
-        }
-        return !!result;
+    getEntry: function(el, entries, val, key, asValue) {
+      if ( val ) {
+        var result = null;
+        entries.forEach(function(r, idx) {
+          if ( !result && matchValueByKey(r, val, key, idx) ) {
+            result = r;
+          }
+        });
+
+        return (asValue && result) ? getValueParameter(result) : result;
+      }
+
+      return !asValue ? entries : (entries || []).map(function(iter) {
+        return getValueParameter(iter);
       });
-      return result;
     },
 
     setSelected: function(el, body, entries, val, key, opts) {

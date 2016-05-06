@@ -114,10 +114,11 @@
       GUI.Elements._dataview.build(el, applyArgs);
     },
 
-    get: function(el, param, value, arg) {
+    get: function(el, param, value, arg, asValue) {
       if ( param === 'entry' ) {
         var body = el.querySelector('gui-icon-view-body');
-        return GUI.Elements._dataview.getEntry(el, body.querySelectorAll('gui-icon-view-entry'), value, arg);
+        var rows = body.querySelectorAll('gui-icon-view-entry');
+        return GUI.Elements._dataview.getEntry(el, rows, value, arg, asValue);
       }
       return GUI.Helpers.getProperty(el, param);
     },

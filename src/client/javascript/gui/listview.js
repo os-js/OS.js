@@ -217,10 +217,11 @@
       return GUI.Elements._dataview.getSelected(el, body.querySelectorAll('gui-list-view-row'));
     },
 
-    get: function(el, param, value, arg) {
+    get: function(el, param, value, arg, asValue) {
       if ( param === 'entry' ) {
         var body = el.querySelector('gui-list-view-body');
-        return GUI.Elements._dataview.getEntry(el, body.querySelectorAll('gui-list-view-row'), value, arg);
+        var rows = body.querySelectorAll('gui-list-view-row');
+        return GUI.Elements._dataview.getEntry(el, rows, value, arg, asValue);
       }
       return GUI.Helpers.getProperty(el, param);
     },
