@@ -112,9 +112,11 @@
 
     try {
       var css = readFile(src).toString();
+      var opt = {sourceMap: {}};
 
-      _less.render(css).then(function(result) {
+      _less.render(css, opt).then(function(result) {
         writeFile(dest, result.css);
+        writeFile(dest + '.map', result.map);
         cb();
       }, function(error) {
         console.warn(error);
