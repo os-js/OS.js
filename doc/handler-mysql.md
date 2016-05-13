@@ -15,6 +15,9 @@ $ grunt config:set:server.handlers.mysql.user:osjsuser
 $ grunt config:set:server.handlers.mysql.password:osjspassword
 $ grunt config:set:server.handlers.mysql.database:osjs
 
+# Make OS.js reload after you log out
+$ grunt config:set:client.ReloadOnShutdown:true
+
 # Update configurations
 $ grunt config
 
