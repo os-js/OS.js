@@ -66,3 +66,9 @@ node bin/mysql-user.js add myadminaccount admin
 mkdir vfs/home/myadminaccount
 
 ```
+
+# displays the user's login window to the disconnection
+grunt config:set:client.ReloadOnShutdown:true
+grunt config
+
+```
