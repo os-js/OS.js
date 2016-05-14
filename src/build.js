@@ -507,11 +507,13 @@
 
         if ( String(json.enabled) === 'false' ) {
           if ( currentEnabled.indexOf(pn) < 0 ) {
-            throw new PackageException('Package is disabled');
+            return false;
+            //throw new PackageException('Package is disabled');
           }
         } else {
           if ( currentDisabled.indexOf(pn) >= 0 ) {
-            throw new PackageException('Package is disabled (by user config)');
+            return false;
+            //throw new PackageException('Package is disabled (by user config)');
           }
         }
       }
@@ -683,7 +685,7 @@
   }
 
   function readAndMerge(grunt, iter, config) {
-    console.log('+++', iter);
+    //console.log('+++', iter);
     try {
       if ( _fs.existsSync(iter) ) {
         var json = JSON.parse(_fs.readFileSync(iter));
