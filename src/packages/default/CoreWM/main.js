@@ -348,7 +348,7 @@
     }
 
     setTimeout(function() {
-      self.setStyles(self._settings);
+      self.setStyles(self._settings.get());
     }, 1000);
   };
 
