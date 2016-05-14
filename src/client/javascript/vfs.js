@@ -952,13 +952,25 @@
 
     item = checkMetadataArgument(item);
 
+    function _checkPath() {
+      var chkdir = new OSjs.VFS.File(API.getConfig('PackageManager.UserPackages'));
+      var idir = Utils.dirname(item.path);
+
+      if ( idir === chkdir.path ) {
+        OSjs.Core.getPackageManager().generateUserMetadata(function() {});
+      }
+    }
+
     function _finished(error, result) {
       if ( error ) {
         error = API._('ERR_VFSMODULE_UNLINK_FMT', error);
       } else {
         API.message('vfs', {type: 'delete', file: item, source: appRef ? appRef.__pid : null});
       }
+
       callback(error, result);
+
+      _checkPath();
     }
     request(item.path, 'unlink', [item], _finished, options);
   };
