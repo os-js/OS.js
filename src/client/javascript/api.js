@@ -1354,13 +1354,24 @@
    * @api     OSjs.API.error()
    */
   function doErrorDialog(title, message, error, exception, bugreport) {
-    if ( OSjs.API.getConfig('BugReporting') ) {
-      bugreport = typeof bugreport === 'undefined' ? false : (bugreport ? true : false);
-    } else {
-      bugreport = false;
-    }
+    bugreport = (function() {
+      if ( OSjs.API.getConfig('BugReporting') ) {
+        return typeof bugreport === 'undefined' ? false : (bugreport ? true : false);
+      }
+      return false;
+    })();
 
     OSjs.API.blurMenu();
+
+    if ( exception && (exception.message.match(/^Script Error/i) && String(exception.lineNumber).match(/^0/)) ) {
+      console.error('VENDOR ERROR', {
+        title: title,
+        message: message,
+        error: error,
+        exception: exception
+      });
+      return;
+    }
 
     var wm = OSjs.Core.getWindowManager();
     if ( wm && wm._fullyLoaded ) {
