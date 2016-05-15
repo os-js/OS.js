@@ -457,13 +457,16 @@
       var list = [];
       self.panelItems.forEach(function(i, idx) {
         var name = i.name;
-        list.push({
-          value: idx,
-          columns: [{
-            icon: API.getIcon(items[name].Icon),
-            label: Utils.format('{0} ({1})', items[name].Name, items[name].Description)
-          }]
-        });
+
+        if ( items[name] ) {
+          list.push({
+            value: idx,
+            columns: [{
+              icon: API.getIcon(items[name].Icon),
+              label: Utils.format('{0} ({1})', items[name].Name, items[name].Description)
+            }]
+          });
+        }
       });
       max = self.panelItems.length - 1;
 
