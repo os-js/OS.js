@@ -754,7 +754,7 @@
     API.createMenu(menu, ev);
   };
 
-  CoreWM.prototype.applySettings = function(settings, force, save) {
+  CoreWM.prototype.applySettings = function(settings, force, save, triggerWatch) {
     console.group('OSjs::Applications::CoreWM::applySettings');
 
     settings = force ? settings : Utils.mergeObject(this._settings.get(), settings);
@@ -768,10 +768,10 @@
       this.initPanels(true);
       if ( settings ) {
         if ( settings.language ) {
-          OSjs.Core.getSettingsManager().set('Core', 'Locale', settings.language);
+          OSjs.Core.getSettingsManager().set('Core', 'Locale', settings.language, triggerWatch);
           API.setLocale(settings.language);
         }
-        this._settings.set(null, settings, save);
+        this._settings.set(null, settings, save, triggerWatch);
       }
     }
 

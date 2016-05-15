@@ -88,16 +88,17 @@
   /**
    * Sets either full tree or a tree entry by key
    *
-   * @param  String     pool      Name of settings pool
-   * @param  String     key       (Optional) Key entry of tree
-   * @param  Mixed      value     The value (or entire tree if no key given)
-   * @param  Mixed      save      (Optional) boolean or callback function for saving
+   * @param  String     pool          Name of settings pool
+   * @param  String     key           (Optional) Key entry of tree
+   * @param  Mixed      value         The value (or entire tree if no key given)
+   * @param  Mixed      save          (Optional) boolean or callback function for saving
+   * @param  boolean    triggerWatch  (Optional) trigger change event for watchers (default=true)
    *
    * @return  boolean
    *
    * @method  SettingsManager::set()
    */
-  SettingsManager.set = function(pool, key, value, save) {
+  SettingsManager.set = function(pool, key, value, save, triggerWatch) {
     try {
       if ( key ) {
         if ( typeof this.storage[pool] === 'undefined' ) {
@@ -119,7 +120,9 @@
       this.save(pool, save);
     }
 
-    this.changed(pool);
+    if ( typeof triggerWatch === 'undefined' || triggerWatch === true ) {
+      this.changed(pool);
+    }
 
     return true;
   };
@@ -257,6 +260,8 @@
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
+
+  Object.seal(SettingsManager);
 
   /**
    * Get the current SettingsManager  instance

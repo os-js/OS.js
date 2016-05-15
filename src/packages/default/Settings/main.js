@@ -631,8 +631,8 @@
           showHiddenFiles: showHiddenFiles,
           showFileExtensions: showFileExtensions
         }
-      }, true);
-    });
+      }, true, false);
+    }, false);
   };
 
   /////////////////////////////////////////////////////////////////////////////
