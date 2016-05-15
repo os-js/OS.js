@@ -36,8 +36,8 @@ local sys = require "luci.sys"
 --local init = require "luci.init"
 
 local curl = nil
-if pcall(require, "curl") then
-  curl = require "curl"
+if pcall(require, "cURL") then
+  curl = require "cURL"
 end
 
 require "base64"
