@@ -324,29 +324,47 @@ function curl_request(request, response, args)
   local response = {}
   local url = args["url"] or nil
   local method = args["method"] or "GET"
-  local query = args["query"] or nil
+  local query = args["body"] or args["query"] or nil
   local timeout = args["timeout"] or 0
   local binary = args["binary"] or false
   local mime = args["mime"] or nil
+  local headers = args["headers"] or nil
+  local responseCode = 0
+  local responseHeaders = {}
 
   local function WriteMemoryCallback(s)
     response[#response+1] = s
     return string.len(s)
   end
 
-  if method == "POST" then
-    curl.easy()
-      :setopt_url(url)
-      :setopt_writefunction(WriteMemoryCallback)
-      :setopt_httppost(query)
-      :perform()
-    :close()
-  else
-    curl.easy()
-      :setopt_url(url)
-      :setopt_writefunction(WriteMemoryCallback)
-      :perform()
-    :close()
+  local function WriteHeaders(str)
+    local s = str:split(": ", 1)
+    responseHeaders[s[1]:lower()] = s[2]
+  end
+
+  if url ~= nil then
+    local c = curl.easy()
+
+    c:setopt_url(url)
+
+    if method ~= "GET" then
+      if query ~= nil then
+        c:setopt_httppost(query)
+      end
+
+      c:setopt_customrequest(method)
+    end
+
+    if headers ~= nil then
+      c:setopt_httpheader(headers)
+    end
+
+    c:setopt_writefunction(WriteMemoryCallback)
+    c:setopt_headerfunction(WriteHeaders)
+
+    c:perform()
+    responseCode = c:getinfo_response_code()
+    c:close()
   end
 
   if binary then
@@ -354,7 +372,12 @@ function curl_request(request, response, args)
     return false, "data:" .. mime .. ";base64," .. to_base64(table.concat(response, ""))
   end
 
-  return false, table.concat(response, "")
+  return false, {
+    body = table.concat(response, ""),
+    headers = responseHeaders,
+    httpCode = responseCode,
+    httpVersion = "unknown"
+  }
 end
 
 function login_request(request, response, username, password)
