@@ -52,7 +52,8 @@
     'onShutdown':            [],
     'onApplicationPreload':  [],
     'onApplicationLaunch':   [],
-    'onApplicationLaunched': []
+    'onApplicationLaunched': [],
+    'onBlurMenu':            []
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1548,13 +1549,33 @@
    * @param   String    name    Hook name
    * @param   Function  fn      Callback => fn()
    *
-   * @return  void
+   * @return  int       The index of hook
    * @api     OSjs.API.addHook()
    */
   function doAddHook(name, fn) {
     if ( typeof _hooks[name] !== 'undefined' ) {
-      _hooks[name].push(fn);
+      return _hooks[name].push(fn) - 1;
     }
+    return -1;
+  }
+
+  /**
+   * Method for removing a hook
+   *
+   * @param   String    name    Hook name
+   * @param   integer   index     Hook index
+   *
+   * @return  bool
+   * @api     OSjs.API.removeHook()
+   */
+  function doRemoveHook(name, index) {
+    if ( typeof _hooks[name] !== 'undefined' ) {
+      if ( _hooks[name][index] ) {
+        _hooks[name][index] = null;
+        return true;
+      }
+    }
+    return false;
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1611,6 +1632,7 @@
   OSjs.API.shutdown                   = OSjs.API.shutdown || function() {}; // init.js
   OSjs.API.triggerHook                = doTriggerHook;
   OSjs.API.addHook                    = doAddHook;
+  OSjs.API.removeHook                 = doRemoveHook;
   OSjs.API.signOut                    = doSignOut;
   OSjs.API.playSound                  = doPlaySound;
   OSjs.API.setClipboard               = doSetClipboard;

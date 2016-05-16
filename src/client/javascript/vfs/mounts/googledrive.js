@@ -899,6 +899,7 @@
     readOnly: false,
     description: 'Google Drive',
     visible: true,
+    searchable: false,
     unmount: function(cb) {
       // FIXME: Should we sign out here too ?
       cb = cb || function() {};

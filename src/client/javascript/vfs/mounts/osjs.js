@@ -87,6 +87,7 @@
     icon: 'devices/harddrive.png',
     visible: true,
     internal: true,
+    searchable: true,
     request: makeRequest
   });
 

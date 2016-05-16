@@ -891,13 +891,21 @@
         styles['corewm-panel:before'] = {
           'opacity': p.options.opacity / 100
         };
+
+        styles['.custom-notification'] = {};
+        styles['.custom-notification:before'] = {
+          'opacity': p.options.opacity / 100
+        };
+
         if ( p.options.background ) {
           styles['corewm-panel:before']['background-color'] = p.options.background;
           styles['corewm-notification:before']['background-color'] = p.options.background;
+          styles['.custom-notification:before']['background-color'] = p.options.background;
         }
         if ( p.options.foreground ) {
           styles['corewm-panel']['color'] = p.options.foreground;
           styles['corewm-notification']['color'] = p.options.foreground;
+          styles['.custom-notification']['color'] = p.options.foreground;
         }
       });
     }

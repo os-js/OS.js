@@ -279,7 +279,8 @@
       'Enable Hotkeys' : 'Skru på Hurtigtaster',
       'Enable Icon View' : 'Skru på Ikonvisning',
       'Remove shortcut' : 'Fjern snarvei',
-      'General' : 'Generelt'
+      'General' : 'Generelt',
+      'Search path \'{0}\' is already handled by another entry': 'Søkestien \'{0}\' er allrede håndtert av en annen oppføring'
     },
     pl_PL : {
       'Theme' : 'Temat',

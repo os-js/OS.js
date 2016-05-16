@@ -92,6 +92,7 @@
     special: true,
     visible: true,
     internal: true,
+    searchable: true,
     request: makeRequest
   });
 

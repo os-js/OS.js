@@ -318,6 +318,7 @@
     'LBL_BACKGROUND_IMAGE' : 'Bakgrunnsbilde',
     'LBL_BACKGROUND_COLOR' : 'Bakgrunnsfarge',
     'LBL_UNORDERED_LIST'   : 'Uordnet Liste',
-    'LBL_SHOW_SIDEBAR' : 'Vis Sidebar'
+    'LBL_SHOW_SIDEBAR' : 'Vis Sidebar',
+    'LBL_SEARCH': 'Søk'
   };
 })();

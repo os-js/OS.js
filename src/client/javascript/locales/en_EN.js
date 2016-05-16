@@ -136,6 +136,7 @@
     'DIALOG_FILE_MNU_ICONVIEW' : 'Icon View',
     'DIALOG_FILE_ERROR'        : 'FileDialog Error',
     'DIALOG_FILE_ERROR_SCANDIR': 'Failed listing directory \'{0}\' because an error occured',
+    'DIALOG_FILE_ERROR_FIND': 'Failed searching directory \'{0}\' because an error occured',
     'DIALOG_FILE_MISSING_FILENAME' : 'You need to select a file or enter new filename!',
     'DIALOG_FILE_MISSING_SELECTION': 'You need to select a file!',
 
@@ -261,6 +262,8 @@
     'ERR_VFSMODULE_UNTRASH_FMT'    : 'Failed to move file out of trash: {0}',
     'ERR_VFSMODULE_EMPTYTRASH'     : 'Failed to empty trash',
     'ERR_VFSMODULE_EMPTYTRASH_FMT' : 'Failed to empty trash: {0}',
+    'ERR_VFSMODULE_FIND'           : 'Failed to search',
+    'ERR_VFSMODULE_FIND_FMT'       : 'Failed to search: {0}',
 
     // VFS -> Dropbox
     'DROPBOX_NOTIFICATION_TITLE' : 'You are signed in to Dropbox API',
@@ -274,6 +277,12 @@
     'ZIP_VENDOR_FAIL'   : 'zip.js library was not found. Did it load properly?',
     'ZIP_NO_RESOURCE'   : 'No zip resource was given',
     'ZIP_NO_PATH'       : 'No path given',
+
+    //
+    // SearchEngine
+    //
+    'SEARCH_LOADING': 'Searching...',
+    'SEARCH_NO_RESULTS': 'No results found',
 
     //
     // PackageManager
@@ -412,7 +421,8 @@
     'LBL_USERNAME': 'Username',
     'LBL_PASSWORD': 'Password',
     'LBL_HOST': 'Host',
-    'LBL_NAMESPACE': 'Namespace'
+    'LBL_NAMESPACE': 'Namespace',
+    'LBL_SEARCH': 'Search'
 
   };
 

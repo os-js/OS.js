@@ -52,6 +52,7 @@
     match: /^home\:\/\//,
     visible: true,
     internal: true,
+    searchable: true,
     request: OSjs.VFS.Transports.Internal.request
   });
 

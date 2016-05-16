@@ -23,6 +23,9 @@
               <gui-list-view-row data-value="packages">
                 <gui-list-view-column data-icon="stock://32x32/places/folder.png">File View</gui-list-view-column>
               </gui-list-view-row>
+              <gui-list-view-row data-value="search">
+                <gui-list-view-column data-icon="stock://32x32/actions/find.png">Search</gui-list-view-column>
+              </gui-list-view-row>
 
             </gui-list-view-body>
           </gui-list-view>
@@ -41,6 +44,7 @@
               <gui-fragment data-fragment-id="TabsPanel"></gui-fragment>
               <gui-fragment data-fragment-id="TabsUser"></gui-fragment>
               <gui-fragment data-fragment-id="TabsFileView"></gui-fragment>
+              <gui-fragment data-fragment-id="TabsSearch"></gui-fragment>
             </gui-vbox-container>
           </gui-vbox>
 
@@ -359,6 +363,43 @@
     <gui-vbox-container data-shrink="1" data-expand="true">
       <gui-label>LBL_SHOW_FILEEXTENSIONS</gui-label>
       <gui-switch data-id="ShowFileExtensions"></gui-switch>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
+
+<!-- ****************************************************************** -->
+<!--                           SEARCH                                   -->
+<!-- ****************************************************************** -->
+
+<application-fragment data-id="TabsSearch">
+  <gui-tabs data-id="TabsSearch">
+    <gui-tab-container data-id="TabSearchOptions" data-label="Search Options">
+      <gui-fragment data-fragment-id="TabSearchOptions"></gui-fragment>
+    </gui-tab-container>
+  </gui-tabs>
+</application-fragment>
+
+<application-fragment data-id="TabSearchOptions">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Enable Application Search</gui-label>
+      <gui-switch data-id="SearchEnableApplications"></gui-switch>
+    </gui-vbox-container>
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Enable File Search</gui-label>
+      <gui-switch data-id="SearchEnableFiles"></gui-switch>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-grow="1" data-fill="true">
+      <gui-label>Search Paths</gui-label>
+      <gui-list-view data-id="SearchPaths" data-multiple="false"></gui-list-view>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-button-bar>
+        <gui-button data-id="SearchAdd" data-icon="stock://16x16/actions/add.png"></gui-button>
+        <gui-button data-id="SearchRemove" data-icon="stock://16x16/actions/remove.png"></gui-button>
+      </gui-button-bar>
     </gui-vbox-container>
   </gui-vbox>
 </application-fragment>

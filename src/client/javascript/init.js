@@ -491,7 +491,8 @@
    */
   function initSearch(config, callback) {
     console.debug('initSearch()');
-    callback();
+
+    OSjs.Core.getSearchEngine().init(callback);
   }
 
   /**

@@ -1,0 +1,74 @@
+
+/**
+ * PanelItemSearch
+ */
+corewm-panel .PanelItemSearch {
+  text-align : center;
+}
+  corewm-panel .PanelItemSearch > div {
+    min-width : 26px;
+    min-height : 26px;
+    position : relative;
+  }
+    corewm-panel .PanelItemSearch > div > img {
+      display : inline-block;
+      position : absolute;
+      top : 50%;
+      left : 50%;
+      margin-top : -8px;
+      margin-left : -8px;
+      cursor : pointer;
+    }
+
+corewm-search {
+  position : absolute;
+  display : none;
+  padding : 5px;
+  z-index : 99999;
+  min-width : 200px;
+  max-width : 40%;
+}
+corewm-search:before {
+  position : absolute;
+  top : 0;
+  left : 0;
+  bottom : 0;
+  right : 0;
+  z-index : -1;
+}
+corewm-search[data-visible=true] {
+  display : block;
+}
+  corewm-search > div {
+    margin-top : 5px;
+  }
+  corewm-search gui-text {
+    width : 100%;
+  }
+
+  corewm-search > ul {
+    cursor : pointer;
+    list-style-type : none;
+    margin : 0;
+    padding : 0;
+    margin-top : 5px;
+  }
+    corewm-search > ul > li {
+      position : relative;
+      margin : 0;
+      padding : 5px;
+      padding-left : 26px;
+    }
+      corewm-search > ul > li > * {
+        pointer-events : none;
+      }
+      corewm-search > ul > li > img {
+        position : absolute;
+        top : 5px;
+        left : 5px;
+      }
+    corewm-search > ul > li.active,
+    corewm-search > ul > li:hover {
+      background : #fff;
+      color : #000;
+    }

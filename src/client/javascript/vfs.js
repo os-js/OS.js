@@ -602,6 +602,35 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
+   * Find file(s)
+   *
+   * @param   OSjs.VFS.File   item      Root path
+   * @param   Object          args      Search query
+   * @param   Function        callback  Callback function => fn(error, result)
+   * @param   Object          options   Optional set of options
+   *
+   * @option  args   String    query     The search query string
+   * @option  args   integer   limit     (Optional) Limit results to this amount
+   *
+   * @return  void
+   * @api     OSjs.VFS.find()
+   */
+  OSjs.VFS.find = function(item, args, callback, options) {
+    console.info('VFS::find()', item, args, options);
+    if ( arguments.length < 3 ) {
+      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+    }
+
+    item = checkMetadataArgument(item);
+    request(item.path, 'find', [item, args], function(error, response) {
+      if ( error ) {
+        error = API._('ERR_VFSMODULE_FIND_FMT', error);
+      }
+      callback(error, response);
+    }, options);
+  };
+
+  /**
    * Scandir
    *
    * @param   OSjs.VFS.File   item      File Metadata
@@ -1432,7 +1461,8 @@
       description: 'My VFS Module',
       type: 'internal',
       name: 'MyModule',
-      icon: 'places/server.png'
+      icon: 'places/server.png',
+      searchable: false
     });
 
     if ( OSjs.VFS.Modules[opts.name] ) {
@@ -1557,6 +1587,7 @@
             root: key + ':///',
             visible: true,
             internal: true,
+            searchable: true,
             match: createMatch(key + '://'),
             request: function mountpointRequest() {
               // This module uses the same API as public

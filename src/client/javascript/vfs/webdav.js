@@ -274,6 +274,10 @@
     });
   };
 
+  davTransport.find = function(item, args, callback) {
+    callback(API._('ERR_VFS_UNAVAILABLE'));
+  };
+
   davTransport.fileinfo = function(item, callback, options) {
     callback(API._('ERR_VFS_UNAVAILABLE'));
   };

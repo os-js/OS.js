@@ -42,6 +42,13 @@
           "showFileExtensions": true,
           "columns": ["filename", "mime", "size"]
         }
+      },
+      "SearchEngine": {
+        "applications": true,
+        "files": true,
+        "paths": [
+          "home:///"
+        ]
       }
     },
 

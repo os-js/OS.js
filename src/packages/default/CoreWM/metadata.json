@@ -66,6 +66,10 @@
       "type": "javascript"
     },
     {
+      "src": "panelitems/search.js",
+      "type": "javascript"
+    },
+    {
       "src": "main.js",
       "type": "javascript"
     },
@@ -87,6 +91,10 @@
     },
     {
       "src": "panelitems/windowlist.css",
+      "type": "stylesheet"
+    },
+    {
+      "src": "panelitems/search.css",
       "type": "stylesheet"
     },
     {

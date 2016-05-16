@@ -31,6 +31,7 @@
     "less": ">=2.6.1",
     "simple-session": ">=0.0.1",
     "node-fs-extra": ">=0.8.1",
+    "findit": ">=2.0.0",
     "formidable": ">=1.0.17",
     "request": ">=2.70.0"
   },

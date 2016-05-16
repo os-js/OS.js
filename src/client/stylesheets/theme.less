@@ -248,65 +248,77 @@ application-splash {
   opacity : .85;
   cursor : pointer;
 }
+
+.custom-notification {
+  color : #fff; /* Window Manager manages this */
+}
+
 corewm-notification {
   color : #fff; /* Window Manager manages this */
   cursor : pointer;
 }
-corewm-notification:before {
-  background : #101010; /* Window Manager manages this */
-  box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
-  opacity : .85;
-}
-corewm-notification .Title {
-  font-weight : bold;
-}
 
-corewm-notification .Title,
-corewm-notification .Message {
-  line-height : 16px;
-}
+  .custom-notification:before,
+  corewm-notification:before {
+    content : '';
+    background : #101010; /* Window Manager manages this */
+    box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
+    opacity : .85;
+  }
 
-/* Desktop drop wallpaper effect */
-#Background.Blinking {
-  background : #fff;
-}
+  .custom-notification .Title,
+  corewm-notification .Title {
+    font-weight : bold;
+  }
 
-/* Window Switcher */
-corewm-window-switcher {
-  box-shadow : @base_shadow_focused;
-  background : @base_background_color;
-}
-corewm-window-switcher > div.Active {
-  background : @gui_selected_background_color;
-}
-corewm-window-switcher > div.Active > span {
-  color : @gui_selected_foreground_color;
-}
+  .custom-notification .Title,
+  .custom-notification .Message,
+  corewm-notification .Title,
+  corewm-notification .Message {
+    line-height : 16px;
+  }
 
-/**
- * ===========================================================================
- *                                WINDOW
- * ===========================================================================
- */
-application-window {
-  opacity : 0.8;
-  margin-top : @window_top_height;
-}
-application-window:before {
-  box-shadow : @base_shadow_unfocused;
-  background : @base_background_color;
-  top : calc(-@window_top_height - @window_border_size);
-  left : -@window_border_size;
-  right : -@window_border_size;
-  bottom : -@window_border_size;
-}
-application-window[data-focused="true"] {
-  opacity : 1.0;
-}
-application-window[data-focused="true"]:before {
-  box-shadow : @base_shadow_focused;
-}
-application-window[data-dnd-state="true"]:after {
+  /* Desktop drop wallpaper effect */
+  #Background.Blinking {
+    background : #fff;
+  }
+
+  /* Window Switcher */
+  corewm-window-switcher {
+    box-shadow : @base_shadow_focused;
+    background : @base_background_color;
+  }
+  corewm-window-switcher > div.Active {
+    background : @gui_selected_background_color;
+  }
+  corewm-window-switcher > div.Active > span {
+    color : @gui_selected_foreground_color;
+  }
+
+  /**
+   * ===========================================================================
+   *                                WINDOW
+   * ===========================================================================
+   */
+  application-window {
+    opacity : 0.8;
+    margin-top : @window_top_height;
+  }
+  application-window:before {
+    box-shadow : @base_shadow_unfocused;
+    background : @base_background_color;
+    top : calc(-@window_top_height - @window_border_size);
+    left : -@window_border_size;
+    right : -@window_border_size;
+    bottom : -@window_border_size;
+  }
+  application-window[data-focused="true"] {
+    opacity : 1.0;
+  }
+  application-window[data-focused="true"]:before {
+    box-shadow : @base_shadow_focused;
+  }
+  application-window[data-dnd-state="true"]:after {
   top : -@window_top_height;
 }
 application-window-top {

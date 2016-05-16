@@ -126,6 +126,10 @@
     OSjs.VFS.internalCall('fileinfo', {path: item.path}, callback);
   };
 
+  internalTransport.find = function(item, args, callback) {
+    OSjs.VFS.internalCall('find', {path: item.path, args: args}, callback);
+  };
+
   internalTransport.url = function(item, callback) {
     callback(false, OSjs.VFS.Transports.Internal.path(item));
   };

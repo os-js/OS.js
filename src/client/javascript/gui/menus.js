@@ -41,6 +41,8 @@
       lastMenu(ev);
     }
     lastMenu = null;
+
+    API.triggerHook('onBlurMenu');
   }
 
   function bindSelectionEvent(child, span, idx, expand, dispatcher) {

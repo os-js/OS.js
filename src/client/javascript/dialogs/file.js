@@ -45,6 +45,7 @@
    * @option    args    extension   String      (Optional) Default file extension
    * @option    args    mime        String      (Optional) Default file MIME
    * @option    args    filter      Array       (Optional) Array of MIMIE filters
+   * @option    args    mfilter     Array       (Optional) Array of function to filter module list
    * @option    args    select      String      (Optional) Selection type (file/dir)
    *
    * @extends DialogWindow
@@ -61,6 +62,7 @@
       extension:  '',
       mime:       'application/octet-stream',
       filter:     [],
+      mfilter:    [],
       select:     null,
       multiple:   false
     });
@@ -210,13 +212,26 @@
     }
 
     var rootPath = VFS.getRootFromPath(this.path);
-    var modules = [];
-    VFS.getModules().forEach(function(m) {
-      modules.push({
+    var modules = VFS.getModules().filter(function(m) {
+      if ( self.args.mfilter.length ) {
+        var success = false;
+
+        self.args.mfilter.forEach(function(fn) {
+          if ( !success ) {
+            success = fn(m);
+          }
+        });
+
+        return success;
+      }
+      return true;
+    }).map(function(m) {
+      return {
         label: m.name + (m.module.readOnly ? Utils.format(' ({0})', API._('LBL_READONLY')) : ''),
         value: m.module.root
-      });
+      };
     });
+
     mlist.clear().add(modules).set('value', rootPath);
     mlist.on('change', function(ev) {
       self.changePath(ev.detail, true);
