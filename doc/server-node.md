@@ -22,3 +22,16 @@ sudo a2enmod proxy_http
 ```
 
 See the included [apache-node](https://github.com/os-js/OS.js/blob/master/doc/configs/apache-node.conf) configuration file (for a very basic example)
+
+## HTTP/2
+
+Create your certificates and place them in `src/server/` (as ex "server.key" and "server.crt"):
+
+```
+
+npm install http2
+grunt config:set:server.http.mode:http2
+grunt config:set:server.http.cert.name:server
+grunt config
+
+```

@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(_osjs, _http, _path, _url, _fs, _qs, _multipart, _sessions) {
+(function(_osjs, _path, _url, _fs, _qs, _multipart, _sessions) {
   'use strict';
 
   var instance, server, proxy, httpProxy;
@@ -436,13 +436,27 @@
    */
   module.exports.listen = function(setup) {
     instance = _osjs.init(setup);
-    server = _http.createServer(httpCall);
+
+    var httpConfig = instance.config.http || {};
+
+    if ( httpConfig.mode === 'http2' || httpConfig.mode === 'https' ) {
+      var rdir = httpConfig.cert.path || _path.dirname(setup.dirname);
+      var cname = httpConfig.cert.name || 'localhost';
+      var copts = httpConfig.cert.options || {};
+
+      copts.key = _fs.readFileSync(_path.join(rdir, cname + '.key'));
+      copts.cert = _fs.readFileSync(_path.join(rdir, cname + '.crt'));
+
+      server = require(httpConfig.mode).createServer(copts, httpCall);
+    } else {
+      server = require('http').createServer(httpCall);
+    }
 
     instance.handler.onServerStart(function() {
       var port = setup.port || instance.config.port;
       if ( instance.config.logging ) {
         console.log('\n\n***');
-        console.log('***', 'OS.js is listening on http://localhost:' + port + ' (handler:' + instance.config.handler + ' dir:' + instance.setup.dist + ')');
+        console.log('***', 'OS.js is listening on http://localhost:' + port + ' (handler:' + instance.config.handler + ' dir:' + instance.setup.dist + ' mode:' + httpConfig.mode + ')');
         console.log('***\n\n');
       }
 
@@ -479,7 +493,6 @@
 
 })(
   require('osjs'),
-  require('http'),
   require('path'),
   require('url'),
   require('node-fs-extra'),

@@ -22,6 +22,17 @@
     "proxies": {
       "http-bind-jabber/": "http://localhost:5280/http-bind/"
     },
+    "http": {
+      "mode": "http",
+      "cert": {
+        "path": null,
+        "name": "localhost",
+        "options": {
+          "requestCert": false,
+          "rejectUnauthorized": false
+        }
+      }
+    },
     "handler" : "%HANDLER%",
     "port" : 8000,
     "basedir": ""
