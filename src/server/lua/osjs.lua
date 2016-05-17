@@ -331,6 +331,7 @@ function curl_request(request, response, args)
   local headers = args["headers"] or nil
   local responseCode = 0
   local responseHeaders = {}
+  local isJson = false
 
   local function WriteMemoryCallback(s)
     response[#response+1] = s
@@ -340,6 +341,13 @@ function curl_request(request, response, args)
   local function WriteHeaders(str)
     local s = str:split(": ", 1)
     responseHeaders[s[1]:lower()] = s[2]
+  end
+
+  if query ~= nil then
+    if type(query) == "table" or args["json"] then
+      query = json.encode(query)
+      isJson = true
+    end
   end
 
   if url ~= nil then
@@ -369,13 +377,19 @@ function curl_request(request, response, args)
     c:close()
   end
 
+  local responseData = nil
   if binary then
     mime = mime or "application/octet-stream"
-    return false, "data:" .. mime .. ";base64," .. to_base64(table.concat(response, ""))
+    responseData = "data:" .. mime .. ";base64," .. to_base64(table.concat(response, ""))
+  else
+    responseData = table.concat(response, "")
+    if isJson then
+      responseData = json.decode(responseData)
+    end
   end
 
   return false, {
-    body = table.concat(response, ""),
+    body = responseData,
     headers = responseHeaders,
     httpCode = responseCode,
     httpVersion = "unknown"
