@@ -349,7 +349,9 @@ function curl_request(request, response, args)
 
     if method ~= "GET" then
       if query ~= nil then
-        c:setopt_httppost(query)
+        -- c:setopt_httppost(query)
+        c:setopt_post(true)
+        c:setopt_postfields(query)
       end
 
       c:setopt_customrequest(method)
