@@ -30,6 +30,7 @@
 (function(Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
+  var tmp_connector_filename;
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
@@ -150,11 +151,9 @@
       }
     });
 
-    scheme.find(this, 'editConnectorCoreConfButton').on('click', function (evClick) {
+    scheme.find(this, 'editConfigurationButton').on('click', function (evClick) {
+      var confFile = new VFS.File("root://"+tmp_connector_filename, "text/plain");
 
-      var confFile = new VFS.File (ciaoPathRoot + "/connectors/" + scheme.find(self, 'SelectConnectorView').get("value") + "/" + scheme.find(self, 'SelectConnectorView').get("value") + ".json.conf", "text/plain");
-
-      console.log("@"+confFile)
       if(scheme.find(self, 'SelectConnectorView').get("value") != "null") {
         scheme.find(self, 'SelectConnectorView').get("value");
 
@@ -164,9 +163,9 @@
       }
     });
 
-    scheme.find(this, 'editConfigurationButton').on('click', function (evClick) {
+    scheme.find(this, 'editConnectorCoreConfButton').on('click', function (evClick) {
 
-      var confFile = new VFS.File (ciaoPathRoot + "/conf/" + scheme.find(self, 'SelectConnectorView').get("value") + ".json.conf", "text/plain");
+      var confFile = new VFS.File (ciaoPathRoot + "/conf/" + scheme.find(self, 'SelectConnectorView').get("value") + ".ciao.json.conf", "text/plain");   //edit
 
       if(scheme.find(self, 'SelectConnectorView').get("value") != "null") {
         scheme.find(self, 'SelectConnectorView').get("value");
@@ -174,15 +173,12 @@
         API.createDialog("Alert", {title: "Alert", message: "To apply changes reset MCU or upload a new Ciao sketch." }, function() {});
 
         API.launch('ApplicationCodeMirror', {file: confFile});
-        //API.launch('ApplicationTextpad', {file: confFile});
       }
     });
   };
 
   function callAPI(fn, args, cb) {
-    //self._toggleLoading(true);
     API.call(fn, args, function(response) {
-      //self._toggleLoading(false);
       return cb(response.error, response.result);
     });
   }
@@ -195,7 +191,8 @@
     var coreConfObj = {}, connectorConfObj = {}, paramsConnectorConfObj = {}, connectorConfFile;
     var conf = [], confCore = [], thisScheme = this._scheme, thisWindow = Window;
 
-    VFS.read(ciaoPath + "/conf/" + selection + ".json.conf", function (err, res){
+    //Read CORE configuration
+    VFS.read(ciaoPath + "/conf/" + selection + ".ciao.json.conf", function (err, res){   //edit
       if(err) {
         console.log("Error in connector conf file opening : " + err);
         API.createDialog("Error", {
@@ -210,7 +207,7 @@
             console.log("Error in file reading : " + e);
             API.createDialog("Error", {
               title : "Ciao Error",
-              message : "Problem in conf file ellaboration",
+              message : "Problem in conf file elaboration",
               error : err
             });
           }
@@ -238,8 +235,9 @@
               }
             }
 
+            //Read CONNECTOR configuration
             connectorConfFile = (coreConfObj.commands.start[0].split(coreConfObj.name)[0]) + coreConfObj.name + "/" + coreConfObj.name + ".json.conf";
-            console.log(connectorConfFile);
+            tmp_connector_filename = connectorConfFile;
             VFS.read("root://" + connectorConfFile, function (err, res) {
               if (err){
                 console.log("Error in core conf file opening : " + err);
