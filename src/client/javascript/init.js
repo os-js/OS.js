@@ -59,9 +59,7 @@
 
   // Compability
   (function() {
-    var compability = ['forEach', 'every', 'map'];
-
-    compability.forEach(function(n) {
+    (['forEach', 'every', 'map']).forEach(function(n) {
       if ( window.HTMLCollection ) {
         window.HTMLCollection.prototype[n] = Array.prototype[n];
       }
@@ -587,7 +585,9 @@
         loading.update(7, 8);
 
         freeze.forEach(function(f) {
-          Object.freeze(OSjs[f]);
+          if ( typeof OSjs[f] === 'object' ) {
+            Object.freeze(OSjs[f]);
+          }
         });
 
         initWindowManager(config, function() {
