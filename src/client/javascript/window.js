@@ -105,6 +105,32 @@
     }
   }
 
+  /**
+   * Checks window dimensions and makes media queries dynamic
+   */
+  function checkMediaQueries(win) {
+    if ( !win._$element ) {
+      return;
+    }
+
+    var qs = win._properties.media_queries || {};
+    var w = win._dimension.w;
+    var h = win._dimension.h;
+    var n = '';
+    var k;
+
+    for ( k in qs ) {
+      if ( qs.hasOwnProperty(k) ) {
+        if ( qs[k](w, h, win) ) {
+          n = k;
+          break;
+        }
+      }
+    }
+
+    win._$element.setAttribute('data-media', n);
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // WINDOW
   /////////////////////////////////////////////////////////////////////////////
@@ -141,6 +167,7 @@
    * @option  opts     boolean         min_height        (Optional) Minimum allowed height
    * @option  opts     boolean         max_width         (Optional) Maximum allowed width
    * @option  opts     boolean         max_height        (Optional) Maximum allowed height
+   * @options opts     Object          media_queries     (Optional) Media queries to apply CSS attribute => {name: fn(w,h,win) => Boolean }
    *
    * @api     OSjs.Core.Window
    * @class
@@ -213,6 +240,7 @@
       this._sound         = null;                           // Play this sound when window opens
       this._soundVolume   = _DEFAULT_SND_VOLUME;            // ... using this volume
       this._blinkTimer    = null;
+      this._queryTimer    = null;
 
       this._properties    = {                               // Window Properties
         gravity           : null,
@@ -232,7 +260,15 @@
         min_width         : _DEFAULT_MIN_HEIGHT,
         min_height        : _DEFAULT_MIN_WIDTH,
         max_width         : null,
-        max_height        : null
+        max_height        : null,
+        media_queries     : {
+          mobile: function(w, h) {
+            return w <= 320;
+          },
+          tablet: function(w, h) {
+            return w <= 800;
+          }
+        }
       };
 
       this._state     = {                         // Window State
@@ -590,6 +626,8 @@
   Window.prototype._inited = function() {
     this._loaded = true;
 
+    this._onResize();
+
     if ( !this._restored ) {
       if ( this._state.maximized ) {
         this._maximize(true);
@@ -689,6 +727,7 @@
     this._app = null;
     this._hooks = {};
     this._args = {};
+    this._queryTimer = clearTimeout(this._queryTimer);
 
     console.groupEnd();
 
@@ -1564,6 +1603,12 @@
    * @method  Window::_onResize()
    */
   Window.prototype._onResize = function() {
+    clearTimeout(this._queryTimer);
+
+    var self = this;
+    this._queryTimer = setTimeout(function() {
+      checkMediaQueries(self);
+    }, 20);
   };
 
   /**
