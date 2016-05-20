@@ -10,7 +10,6 @@ corewm-panel .PanelItemNotificationArea > div {
   min-width : 26px;
   min-height : 26px;
   display : inline-block;
-  vertical-align : middle;
   text-align : center;
   position : relative;
   cursor : pointer;

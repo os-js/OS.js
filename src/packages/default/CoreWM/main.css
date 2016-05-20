@@ -120,6 +120,7 @@ corewm-panel-item {
   display: flex;
   min-width : 26px;
   min-height : 26px;
+  padding : 2px;
 }
 corewm-panel[data-ontop="true"] {
   z-index : 9999998;
@@ -142,7 +143,7 @@ corewm-panel ul {
   z-index : 10;
 }
 corewm-panel-container {
-  height : 26px;
+  height : 100%;
   position : relative;
   z-index : 10;
 
@@ -152,20 +153,33 @@ corewm-panel-container {
   display: -webkit-flex;
   display: flex;
 
+  box-sizing : border-box;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  justify-content: center;
+
   -webkit-flex-wrap: nowrap;
      -moz-flex-wrap: nowrap;
       -ms-flex-wrap: nowrap;
        -o-flex-wrap: nowrap;
           flex-wrap: nowrap;
 }
+corewm-panel-item > ul {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  justify-content: center;
+}
 corewm-panel-item .Button {
   margin : 0;
   padding : 0;
-  padding-left : 5px;
-  padding-right : 5px;
-  margin-left : 5px;
-  height : 26px;
-  line-height : 26px;
   max-width : 150px;
 
   white-space : nowrap;
@@ -209,11 +223,11 @@ corewm-panel .PanelItemWide {
 }
 
 corewm-panel .PanelItemRight {
-  -webkit-align-self : flex-end;
-     -moz-align-self : flex-end;
-      -ms-align-self : flex-end;
-       -o-align-self : flex-end;
-          align-self : flex-end;
+  -webkit-justify-content : flex-end;
+     -moz-justify-content : flex-end;
+      -ms-justify-content : flex-end;
+       -o-justify-content : flex-end;
+          justify-content : flex-end;
 }
 
 
