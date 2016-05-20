@@ -677,6 +677,71 @@
     _restore();
   };
 
+  /**
+   * Apply certain traits for given class
+   *
+   * Available traits are: defaults, init, login, logout, settings
+   *
+   * Usage: _Handler.use.<trait>(obj)
+   *
+   * @method  Class   obj     Class reference
+   *
+   * @api   OSjs.Core._Handler.use
+   */
+  _Handler.use = (function() {
+
+    //
+    // Traits
+    //
+    var traits = {
+      init: function defaultInit(callback) {
+        var self = this;
+        return OSjs.Core._Handler.prototype.init.call(this, function() {
+          self.initLoginScreen(callback);
+        });
+      },
+
+      login: function defaultLogin(username, password, callback) {
+        return OSjs.Core._Handler.prototype.login.apply(this, arguments);
+      },
+
+      logout: function defaultLogout(save, callback) {
+        return OSjs.Core._Handler.prototype.logout.apply(this, arguments);
+      },
+
+      settings: function defaultSettings(pool, storage, callback) {
+        return OSjs.Core._Handler.prototype.saveSettings.apply(this, arguments);
+      }
+    };
+
+    //
+    // Helpers
+    //
+
+    function applyTraits(obj, add) {
+      add.forEach(function(fn) {
+        obj.prototype[fn] = traits[fn];
+      });
+    }
+
+    //
+    // Exports
+    //
+    var exports = {
+      defaults: function(obj) {
+        applyTraits(obj, Object.keys(traits));
+      }
+    };
+
+    Object.keys(traits).forEach(function(k) {
+      exports[k] = function(obj) {
+        applyTraits(obj, [k]);
+      };
+    });
+
+    return exports;
+  })();
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////

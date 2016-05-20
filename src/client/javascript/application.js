@@ -195,7 +195,10 @@
    */
   Application.prototype._loadScheme = function(s, cb) {
     var scheme = OSjs.GUI.createScheme(this._getResource(s));
-    scheme.load(function(error, result) {
+    scheme.load(function __onApplicationLoadScheme(error, result) {
+      if ( error ) {
+        console.error('Application::_loadScheme()', error);
+      }
       cb(scheme);
     });
     this._setScheme(scheme);

@@ -56,36 +56,7 @@
   MysqlHandler.prototype = Object.create(OSjs.Core._Handler.prototype);
   MysqlHandler.constructor = OSjs.Core._Handler;
 
-  /**
-   * Override default init() method
-   */
-  MysqlHandler.prototype.init = function(callback) {
-    var self = this;
-    return OSjs.Core._Handler.prototype.init.call(this, function() {
-      self.initLoginScreen(callback);
-    });
-  };
-
-  /**
-   * Mysql login api call
-   */
-  MysqlHandler.prototype.login = function(username, password, callback) {
-    return OSjs.Core._Handler.prototype.login.apply(this, arguments);
-  };
-
-  /**
-   * Mysql logout api call
-   */
-  MysqlHandler.prototype.logout = function(save, callback) {
-    return OSjs.Core._Handler.prototype.logout.apply(this, arguments);
-  };
-
-  /**
-   * Mysql settings api call
-   */
-  MysqlHandler.prototype.saveSettings = function(pool, storage, callback) {
-    return OSjs.Core._Handler.prototype.saveSettings.apply(this, arguments);
-  };
+  OSjs.Core._Handler.use.defaults(MysqlHandler);
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS

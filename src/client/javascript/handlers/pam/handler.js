@@ -56,36 +56,7 @@
   PAMHandler.prototype = Object.create(OSjs.Core._Handler.prototype);
   PAMHandler.constructor = OSjs.Core._Handler;
 
-  /**
-   * Override default init() method
-   */
-  PAMHandler.prototype.init = function(callback) {
-    var self = this;
-    return OSjs.Core._Handler.prototype.init.call(this, function() {
-      self.initLoginScreen(callback);
-    });
-  };
-
-  /**
-   * PAM login api call
-   */
-  PAMHandler.prototype.login = function(username, password, callback) {
-    return OSjs.Core._Handler.prototype.login.apply(this, arguments);
-  };
-
-  /**
-   * PAM logout api call
-   */
-  PAMHandler.prototype.logout = function(save, callback) {
-    return OSjs.Core._Handler.prototype.logout.apply(this, arguments);
-  };
-
-  /**
-   * PAM settings api call
-   */
-  PAMHandler.prototype.saveSettings = function(pool, storage, callback) {
-    return OSjs.Core._Handler.prototype.saveSettings.apply(this, arguments);
-  };
+  OSjs.Core._Handler.use.defaults(PAMHandler);
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
