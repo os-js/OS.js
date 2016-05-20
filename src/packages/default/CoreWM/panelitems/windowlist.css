@@ -9,6 +9,9 @@ corewm-panel .PanelItemWindowList {
 corewm-panel .PanelItemWindowList img {
   width : 16px;
 }
+corewm-panel .PanelItemWindowList .Button {
+  margin-right : 12px;
+}
 
 @media all and (max-width: 800px) {
 
