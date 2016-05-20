@@ -1051,6 +1051,7 @@
     });
 
     this._onChange('maximize');
+    this._onResize();
 
     this._updateMarkup();
 
@@ -1104,6 +1105,7 @@
     });
 
     this._onChange('restore');
+    this._onResize();
 
     this._focus();
 
