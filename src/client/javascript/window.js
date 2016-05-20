@@ -106,6 +106,36 @@
   }
 
   /**
+   * Creates media queries from configuration file
+   */
+  var createMediaQueries = (function() {
+    var queries;
+
+    function _createQueries() {
+      var wm = OSjs.Core.getWindowManager();
+      var qs = wm._settings.get('mediaQueries') || {};
+      var result = {};
+
+      Object.keys(qs).forEach(function(k) {
+        if ( qs[k] ) {
+          result[k] = function(w, h, ref) {
+            return w <= qs[k];
+          };
+        }
+      });
+
+      return result;
+    }
+
+    return function() {
+      if ( !queries ) {
+        queries = _createQueries();
+      }
+      return queries;
+    };
+  })();
+
+  /**
    * Checks window dimensions and makes media queries dynamic
    */
   function checkMediaQueries(win) {
@@ -261,14 +291,7 @@
         min_height        : _DEFAULT_MIN_WIDTH,
         max_width         : null,
         max_height        : null,
-        media_queries     : {
-          mobile: function(w, h) {
-            return w <= 320;
-          },
-          tablet: function(w, h) {
-            return w <= 800;
-          }
-        }
+        media_queries     : createMediaQueries()
       };
 
       this._state     = {                         // Window State
