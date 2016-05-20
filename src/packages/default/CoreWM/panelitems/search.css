@@ -67,7 +67,7 @@ corewm-search[data-visible=true] {
         top : 5px;
         left : 5px;
       }
-    corewm-search > ul > li.active,
+    corewm-search > ul > .active,
     corewm-search > ul > li:hover {
       background : #fff;
       color : #000;

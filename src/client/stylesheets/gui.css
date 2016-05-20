@@ -1234,7 +1234,7 @@ gui-menu.gui-root-menu {
     position : absolute;
     z-index : 99999;
   }
-  gui-menu.gui-showing > gui-menu-entry > gui-menu {
+  .gui-showing > gui-menu-entry > gui-menu {
     display : none;
   }
 
@@ -1243,7 +1243,7 @@ gui-menu.gui-root-menu {
     left : 100%;
     top : 0;
   }
-  gui-menu.gui-overflowing > gui-menu-entry:hover > gui-menu {
+  .gui-overflowing > gui-menu-entry:hover > gui-menu {
     left : auto;
     top : 0;
   }
