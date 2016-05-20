@@ -77,6 +77,7 @@
             {name: 'Buttons', settings: {}},
             {name: 'WindowList', settings: {}},
             {name: 'NotificationArea', settings: {}},
+            {name: 'Search', settings: {}},
             {name: 'Clock', settings: {}}
           ]
         }
