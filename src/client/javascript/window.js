@@ -168,6 +168,24 @@
   /**
    * Window Class
    *
+   * Events:
+   *  focus         When window gets focus                    => ()
+   *  blur          When window loses focus                   => ()
+   *  destroy       When window is closed                     => ()
+   *  maximize      When window is maxmimized                 => ()
+   *  minimize      When window is minimized                  => ()
+   *  restore       When window is restored                   => ()
+   *  resize        When window is resized                    => (w, h)
+   *  resized       Triggers after window is resized          => (w, h)
+   *  move          When window is moved                      => (x, y)
+   *  moved         Triggers after window is moved            => (x, y)
+   *  keydown       When keydown                              => (ev, keyCode, shiftKey, ctrlKey, altKey)
+   *  keyup         When keyup                                => (ev, keyCode, shiftKey, ctrlKey, altKey)
+   *  keypress      When keypress                             => (ev, keyCode, shiftKey, ctrlKey, altKey)
+   *  drop          When a drop event occurs                  => (ev, type, item, args)
+   *  drop:upload   When a upload file was dropped            => (ev, <File>, args)
+   *  drop:file     When a internal file object was dropped   => (ev, VFS.File, args)
+   *
    * @param   String                    name        Window name (unique)
    * @param   Object                    opts        List of options
    * @param   OSjs.Core.Application     appRef      Application Reference
@@ -723,7 +741,7 @@
     }
 
     this._onChange('close');
-    this._fireHook('destroy');
+    this._emit('destroy');
 
     _destroyDOM();
     _destroyWin();
@@ -788,46 +806,88 @@
   };
 
   /**
-   * Adds a hook (internal events)
+   * Adds a hook to internal event
    *
-   * @param   String    k       Hook name: focus, blur, destroy
-   * @param   Function  func    Callback function
+   * DEPRECATED
    *
-   * @return  void
-   *
+   * @see Window::_on()
    * @method  Window::_addHook()
    */
   Window.prototype._addHook = function(k, func) {
-    if ( typeof func === 'function' && this._hooks[k] ) {
-      this._hooks[k].push(func);
-    }
+    console.warn('DEPRECATION WARNING', 'Window::_addHook', 'will be replaced with', 'Window::_on');
+    return this._on(k, func);
   };
 
   /**
-   * Fire a hook (internal event)
+   * Fire a hook to internal event
    *
-   * @param   String    k       Hook name: focus, blur, destroy, maximize, minimize, restore, resize, resized
+   * DEPRECATED
    *
-   * @return  void
-   *
+   * @see Window::_emit()
    * @method  Window::_fireHook()
    */
   Window.prototype._fireHook = function(k, args) {
-    args = args || {};
+    console.warn('DEPRECATION WARNING', 'Window::_fireHook', 'will be replaced with', 'Window::_emit');
+    return this._emit(k, args);
+  };
+
+  /**
+   * Fire a hook to internal event
+   *
+   * @param   String    k       Event name
+   * @param   Array     args    Send these arguments (fn.apply)
+   *
+   * @return  void
+   *
+   * @see Window::_on()
+   * @method  Window::_emit()
+   */
+  Window.prototype._emit = function(k, args) {
     var self = this;
-    if ( this._hooks[k] ) {
-      this._hooks[k].forEach(function(hook, i) {
-        if ( hook ) {
-          try {
-            hook.apply(self, args);
-          } catch ( e ) {
-            console.warn('Window::_fireHook() failed to run hook', k, i, e);
-            console.warn(e.stack);
-            //console.log(e, e.prototype);
-            //throw e;
-          }
-        }
-      });
+    (this._hooks[k] || []).forEach(function(hook, i) {
+      try {
+        hook.apply(self, args || []);
+      } catch ( e ) {
+        console.warn('Window::_fireHook() failed to run hook', k, i, e);
+        console.warn(e.stack);
+      }
+    });
+  };
+
+  /**
+   * Adds a hook to internal event
+   *
+   * @param   String    k       Event name
+   * @param   Function  func    Callback function
+   *
+   * @return  integer
+   *
+   * @method  Window::_on()
+   */
+  Window.prototype._on = function(k, func) {
+    if ( typeof func === 'function' ) {
+      if ( typeof this._hooks[k] === 'undefined' ) {
+        this._hooks[k] = [];
+      }
+      return this._hooks[k].push(func);
+    }
+    return null;
+  };
+
+  /**
+   * Adds a hook to internal event
+   *
+   * @param   String    k       Event name
+   * @param   integer   idx     The hook index returned from _on()
+   *
+   * @return  void
+   *
+   * @see Window::_on()
+   * @method  Window::_off()
+   */
+  Window.prototype._off = function(k, idx) {
+    if ( this._hooks[k] && this._hooks[k][idx] ) {
+      this._hooks[k][idx] = null;
     }
   };
 
@@ -1012,7 +1072,7 @@
 
     waitForAnimation(function() {
       self._$element.style.display = 'none';
-      self._fireHook('minimize');
+      self._emit('minimize');
     });
 
     this._onChange('minimize');
@@ -1070,7 +1130,7 @@
     this._focus();
 
     waitForAnimation(function() {
-      self._fireHook('maximize');
+      self._emit('maximize');
     });
 
     this._onChange('maximize');
@@ -1124,7 +1184,7 @@
     restoreMinimized();
 
     waitForAnimation(function() {
-      self._fireHook('restore');
+      self._emit('restore');
     });
 
     this._onChange('restore');
@@ -1169,7 +1229,7 @@
 
     if ( !this._state.focused || force) {
       this._onChange('focus');
-      this._fireHook('focus');
+      this._emit('focus');
     }
 
     this._state.focused = true;
@@ -1199,7 +1259,7 @@
     this._state.focused = false;
 
     this._onChange('blur');
-    this._fireHook('blur');
+    this._emit('blur');
 
     // Force all standard HTML input elements to loose focus
     this._blurGUI();
@@ -1305,10 +1365,10 @@
       var anim = wm ? wm.getSetting('animations') : false;
       if ( anim ) {
         setTimeout(function() {
-          self._fireHook('resized');
+          self._emit('resized');
         }, getAnimDuration());
       } else {
-        self._fireHook('resized');
+        self._emit('resized');
       }
     }
 
@@ -1589,12 +1649,22 @@
    *
    * @method  Window::_onDndEvent()
    */
-  Window.prototype._onDndEvent = function(ev, type) {
+  Window.prototype._onDndEvent = function(ev, type, item, args) {
     if ( this._disabled || this._destroyed ) {
       return false;
     }
 
-    console.debug('OSjs::Core::Window::_onDndEvent()', type);
+    console.debug('OSjs::Core::Window::_onDndEvent()', type, item, args);
+
+    this._emit('drop', [ev, type, item, args]);
+
+    if ( item ) {
+      if ( type === 'filesDrop' ) {
+        this._emit('drop:upload', [ev, item, args]);
+      } else if ( type === 'itemDrop' && item.type === 'file' && item.data ) {
+        this._emit('drop:file', [ev, new OSjs.VFS.File(item.data || {}), args]);
+      }
+    }
 
     return true;
   };
@@ -1617,6 +1687,8 @@
     if ( type === 'keydown' && ev.keyCode === Utils.Keys.TAB ) {
       this._nextTabIndex(ev);
     }
+
+    this._emit(type, [ev, ev.keyCode, ev.shiftKey, ev.ctrlKey, ev.altKey]);
 
     return true;
   };

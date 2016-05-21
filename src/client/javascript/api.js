@@ -1185,7 +1185,7 @@
       var wm = OSjs.Core.getWindowManager();
       wm.addWindow(win, true);
     } else if ( parentObj instanceof OSjs.Core.Window ) {
-      win._addHook('destroy', function() {
+      win._on('destroy', function() {
         if ( parentObj ) {
           parentObj._focus();
         }

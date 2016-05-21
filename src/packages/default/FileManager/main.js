@@ -126,6 +126,39 @@
         self.changePath();
       }
     });
+
+    this._on('drop:upload', function(ev, item) {
+      app.upload(self.currentPath, item, self);
+    });
+
+    this._on('drop:file', function(ev, src) {
+      if ( Utils.dirname(src.path) !== self.currentPath ) {
+        var dst = new VFS.File((self.currentPath + '/' + src.filename));
+        app.copy(src, dst, self);
+      }
+    });
+
+    this._on('keydown', function(ev, keyCode, shiftKey, ctrlKey, altKey) {
+      if ( keyCode === Utils.Keys.V && ev.ctrlKey ) {
+        var clip = API.getClipboard();
+        if ( clip && (clip instanceof Array) ) {
+          clip.forEach(function(c) {
+            if ( c && (c instanceof VFS.File) ) {
+              var dst = new VFS.File((self.currentPath + '/' + c.filename));
+              app.copy(c, dst, self);
+            }
+          });
+        }
+      } else if ( ev.keyCode === Utils.Keys.DELETE ) {
+        app.rm(getSelected(self._find('FileView')), self);
+      }
+    });
+
+    this._on('destroy', function() {
+      try {
+        OSjs.Core.getSettingsManager().unwatch(self.settingsWatch);
+      } catch ( e ) {}
+    });
   }
 
   ApplicationFileManagerWindow.prototype = Object.create(Window.prototype);
@@ -637,72 +670,6 @@
     viewMenu.set('checked', 'MenuColumnCreated', viewColumns.indexOf('ctime') >= 0);
     viewMenu.set('checked', 'MenuColumnModified', viewColumns.indexOf('mtime') >= 0);
     viewMenu.set('checked', 'MenuColumnSize', viewColumns.indexOf('size') >= 0);
-  };
-
-  ApplicationFileManagerWindow.prototype._onDndEvent = function(ev, type, item, args) {
-    if ( !Window.prototype._onDndEvent.apply(this, arguments) ) {
-      return false;
-    }
-
-    if ( type === 'filesDrop' && item ) {
-      return this.onDropUpload(ev, item);
-    } else if ( type === 'itemDrop' && item && item.type === 'file' && item.data ) {
-      return this.onDropItem(ev, item);
-    }
-
-    return true;
-  };
-
-  ApplicationFileManagerWindow.prototype.onDropItem = function(ev, item) {
-    if ( Utils.dirname(item.data.path) === this.currentPath ) {
-      return;
-    }
-
-    var src = new VFS.File(item.data);
-    var dst = new VFS.File((this.currentPath + '/' + src.filename));
-    this._app.copy(src, dst, this);
-  };
-
-  ApplicationFileManagerWindow.prototype.onDropUpload = function(ev, files) {
-    this._app.upload(this.currentPath, files, this);
-    return true;
-  };
-
-  ApplicationFileManagerWindow.prototype.destroy = function() {
-    try {
-      OSjs.Core.getSettingsManager().unwatch(this.settingsWatch);
-    } catch ( e ) {}
-    Window.prototype.destroy.apply(this, arguments);
-  };
-
-  ApplicationFileManagerWindow.prototype._onKeyEvent = function(ev, type) {
-    var self = this;
-
-    function paste() {
-      var clip = API.getClipboard();
-      if ( clip && (clip instanceof Array) ) {
-        clip.forEach(function(c) {
-          if ( c && (c instanceof VFS.File) ) {
-            var dst = new VFS.File((self.currentPath + '/' + c.filename));
-            self._app.copy(c, dst, self);
-          }
-        });
-      }
-    }
-
-    if ( Window.prototype._onKeyEvent.apply(this, arguments) ) {
-      if ( type === 'keydown' ) {
-        if ( ev.keyCode === Utils.Keys.V && ev.ctrlKey ) {
-          paste();
-        } else if ( ev.keyCode === Utils.Keys.DELETE ) {
-          var view = this._scheme.find(this, 'FileView');
-          self._app.rm(getSelected(view), self);
-        }
-      }
-
-      return true;
-    }
-    return false;
   };
 
   /////////////////////////////////////////////////////////////////////////////

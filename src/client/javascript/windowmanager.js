@@ -170,7 +170,7 @@
         newRect = current.getRect();
       }
 
-      win._fireHook('preop');
+      win._emit('preop');
 
       var boundMove = Utils.$bind(document, 'mousemove', _onMouseMove, false);
       var boundUp = Utils.$bind(document, 'mouseup', _onMouseUp, false);
@@ -196,16 +196,16 @@
       if ( current.moved ) {
         if ( action === 'move' ) {
           win._onChange('move', true);
-          win._fireHook('moved');
+          win._emit('moved', [win._position.x, win._position.y]);
         } else if ( action === 'resize' ) {
           win._onChange('resize', true);
-          win._fireHook('resized');
+          win._emit('resized', [win._dimension.w, win._dimension.h]);
         }
       }
 
       current.$element.setAttribute('data-hint', '');
 
-      win._fireHook('postop');
+      win._emit('postop');
 
       current = null;
     }
@@ -231,11 +231,11 @@
       if ( result ) {
         if ( result.left !== null && result.top !== null ) {
           win._move(result.left, result.top);
-          win._fireHook('move');
+          win._emit('move', [result.left, result.top]);
         }
         if ( result.width !== null && result.height !== null ) {
           win._resize(result.width, result.height, true);
-          win._fireHook('resize');
+          win._emit('resize', [result.width, result.height]);
         }
       }
 
