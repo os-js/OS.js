@@ -1,3 +1,42 @@
+# 2.0.0-alpha76
+
+Search Engine, HTTP/2 support, bugfixes, improvements
+
+- http://community.os.js.org/t/quick-tips-window-events/47/1
+- http://community.os.js.org/t/feature-search-engine/43
+- http://community.os.js.org/t/feature-http-v2/44/2
+
+This update brings you a new Search Engine implementation, HTTP/2 support, lots of bugfixes
+and general impreovements. Also a new HTML Viewer application.
+
+* Core: Implemented Search Engine
+* API: Prevent `Script Error Line 0` error
+* GUI: Fixed a bug in ListView where wrong element was removed
+* GUI: DataView now has `get('entry')` for getting all entries
+* HTMLViewer: New application
+* CoreWM: Added support for custom labels on desktop iconview entires
+* CoreWM: Better resizing of windows
+* CoreWM: Cleanups
+* CoreWM: Fixed a case where custom CSS was not generated properly
+* CoreWM: Prevent applySetting from triggering on watches
+* CoreWM: Added search panel item
+* CoreWM: Support dynamic CSS media queries
+* CoreWM: Better panel scaling
+* Settings: Prevent errors when selecting non-existing category
+* VFS: Regenerate user metadata when you remove a user-installed package
+* VFS: Added 'searhable' mountpoint attribute
+* VFS: Added 'find()' method
+* windows: Better hooks API
+* server-node: Now supports HTTP/2
+* handlers: Reduce codesize with traits
+* misc: Cleanups and general code improvements
+* misc: Some fixes for IE
+* build: Support CSS map files
+* build: Remove some deprecated stuff
+* build: Configurable media queries
+* doc: Updated handler docs
+* doc: Updated API docs
+
 # 2.0.0-alpha75
 
 Bugfixes, Locale updates, Security and general improvements.
