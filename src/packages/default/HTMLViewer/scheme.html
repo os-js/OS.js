@@ -1,0 +1,17 @@
+<application-window data-id="HTMLViewerWindow">
+  <gui-vbox>
+    <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto">
+      <gui-menu-bar>
+        <gui-menu-bar-entry data-label="LBL_FILE">
+          <gui-menu data-id="SubmenuFile">
+            <gui-menu-entry data-id="MenuOpen" data-label="LBL_OPEN"></gui-menu-entry>
+            <gui-menu-entry data-id="MenuClose" data-label="LBL_CLOSE"></gui-menu-entry>
+          </gui-menu>
+        </gui-menu-bar-entry>
+      </gui-menu-bar>
+    </gui-vbox-container>
+    <gui-vbox-container data-grow="1" data-shrink="0" data-basis="auto" data-fill="true">
+      <gui-iframe data-id="iframe" />
+    </gui-vbox-container>
+  </gui-vbox>
+</application-window>

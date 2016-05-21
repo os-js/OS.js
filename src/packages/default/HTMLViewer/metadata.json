@@ -1,0 +1,17 @@
+{
+  "className":  "ApplicationHTMLViewer",
+  "name":       "HTML Viewer",
+  "mime":       null,
+  "icon":       "mimetypes/html.png",
+  "mime": [
+    "text\\/html"
+  ],
+  "category": "utilities",
+  "preload":    [
+    {"src": "main.js", "type": "javascript"},
+    {"src": "main.css", "type": "stylesheet"}
+  ]
+}
+
+
+
