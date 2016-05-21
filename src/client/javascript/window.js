@@ -182,9 +182,9 @@
    *  keydown       When keydown                              => (ev, keyCode, shiftKey, ctrlKey, altKey)
    *  keyup         When keyup                                => (ev, keyCode, shiftKey, ctrlKey, altKey)
    *  keypress      When keypress                             => (ev, keyCode, shiftKey, ctrlKey, altKey)
-   *  drop          When a drop event occurs                  => (ev, type, item, args)
+   *  drop          When a drop event occurs                  => (ev, type, item, args, srcEl)
    *  drop:upload   When a upload file was dropped            => (ev, <File>, args)
-   *  drop:file     When a internal file object was dropped   => (ev, VFS.File, args)
+   *  drop:file     When a internal file object was dropped   => (ev, VFS.File, args, srcEl)
    *
    * @param   String                    name        Window name (unique)
    * @param   Object                    opts        List of options
@@ -506,11 +506,11 @@
 
           onItemDropped: function(ev, el, item, args) {
             main.setAttribute('data-dnd-state', 'false');
-            return self._onDndEvent(ev, 'itemDrop', item, args);
+            return self._onDndEvent(ev, 'itemDrop', item, args, el);
           },
           onFilesDropped: function(ev, el, files, args) {
             main.setAttribute('data-dnd-state', 'false');
-            return self._onDndEvent(ev, 'filesDrop', files, args);
+            return self._onDndEvent(ev, 'filesDrop', files, args, el);
           }
         });
       }
@@ -1649,20 +1649,20 @@
    *
    * @method  Window::_onDndEvent()
    */
-  Window.prototype._onDndEvent = function(ev, type, item, args) {
+  Window.prototype._onDndEvent = function(ev, type, item, args, el) {
     if ( this._disabled || this._destroyed ) {
       return false;
     }
 
     console.debug('OSjs::Core::Window::_onDndEvent()', type, item, args);
 
-    this._emit('drop', [ev, type, item, args]);
+    this._emit('drop', [ev, type, item, args, el]);
 
     if ( item ) {
       if ( type === 'filesDrop' ) {
-        this._emit('drop:upload', [ev, item, args]);
+        this._emit('drop:upload', [ev, item, args, el]);
       } else if ( type === 'itemDrop' && item.type === 'file' && item.data ) {
-        this._emit('drop:file', [ev, new OSjs.VFS.File(item.data || {}), args]);
+        this._emit('drop:file', [ev, new OSjs.VFS.File(item.data || {}), args, el]);
       }
     }
 
