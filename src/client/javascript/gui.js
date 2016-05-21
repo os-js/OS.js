@@ -587,6 +587,7 @@
    * @param   DOMElement    el      DOMElement
    * @param   Object        args    JSON of draggable params
    *
+   * @option  args     Object          data       The data (JSON by default)
    * @option  args     String          type       (Optional) A custom drag event 'type'
    * @option  args     String          effect     (Optional) The draggable effect (cursor) (Default=move)
    * @option  args     String          mime       (Optional) The mime type of content (Default=application/json)
