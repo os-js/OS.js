@@ -587,6 +587,12 @@
    * @param   DOMElement    el      DOMElement
    * @param   Object        args    JSON of draggable params
    *
+   * @option  args     String          type       (Optional) A custom drag event 'type'
+   * @option  args     String          effect     (Optional) The draggable effect (cursor) (Default=move)
+   * @option  args     String          mime       (Optional) The mime type of content (Default=application/json)
+   * @option  args     Function        onStart    Callback when drag started => fn(ev, el, args)
+   * @option  args     Function        onEnd      Callback when drag ended => fn(ev, el, args)
+   *
    * @return  void
    *
    * @api     OSjs.GUI.Helpers.createDraggable()
@@ -662,6 +668,17 @@
    *
    * @param   DOMElement    el      DOMElement
    * @param   Object        args    JSON of droppable params
+   *
+   * @option  args     String          accept             (Optional) Accept given drag event 'type'
+   * @option  args     String          effect             (Optional) The draggable effect (cursor) (Default=move)
+   * @option  args     String          mime               (Optional) The mime type of content (Default=application/json)
+   * @option  args     boolean         files              (Optional) Support file drops from OS (Default=true)
+   * @option  args     Function        onEnter            Callback when drag entered => fn(ev, el)
+   * @option  args     Function        onOver             Callback when drag over => fn(ev, el)
+   * @option  args     Function        onLeave            Callback when drag leave => fn(ev, el)
+   * @option  args     Function        onDrop             Callback when drag drop all => fn(ev, el)
+   * @option  args     Function        onFilesDropped     Callback when drag drop file => fn(ev, el, files, args)
+   * @option  args     Function        onItemDropped      Callback when drag drop internal object => fn(ev, el, item, args)
    *
    * @return  void
    *
