@@ -156,15 +156,15 @@
   /**
    * Application has received a message
    *
-   * @param   Object    obj       Where it came from
    * @param   String    msg       Name of message
+   * @param   Object    obj       Where it came from
    * @param   Object    args      Message arguments
    *
    * @return  boolean
    *
    * @method  Application::_onMessage()
    */
-  Application.prototype._onMessage = function(obj, msg, args) {
+  Application.prototype._onMessage = function(msg, obj, args) {
     if ( msg === 'destroyWindow' ) {
       this._removeWindow(obj);
 
