@@ -763,8 +763,16 @@
     var url = API.getApplicationResource(this, './scheme.html');
     var scheme = GUI.createScheme(url);
     var category = this._getArgument('category') || settings.category;
+
     scheme.load(function(error, result) {
-      self._addWindow(new ApplicationSettingsWindow(self, metadata, scheme, category));
+      var win = self._addWindow(new ApplicationSettingsWindow(self, metadata, scheme, category));
+
+      self._on('attention', function(args) {
+        if ( win && args.category ) {
+          win.setContainer(args.category, true);
+          win._focus();
+        }
+      });
     });
 
     this._setScheme(scheme);
@@ -773,18 +781,6 @@
   ApplicationSettings.prototype.panelItemsDialog = function(callback) {
     if ( this.__scheme ) {
       this._addWindow(new PanelItemDialog(this, this.__metadata, this.__scheme, callback));
-    }
-  };
-
-  ApplicationSettings.prototype._onMessage = function(obj, msg, args) {
-    Application.prototype._onMessage.apply(this, arguments);
-
-    if ( this.__mainwindow ) {
-      var win = this._getWindow(null);
-      if ( msg === 'attention' && args.category ) {
-        win.setContainer(args.category, true);
-        win._focus();
-      }
     }
   };
 

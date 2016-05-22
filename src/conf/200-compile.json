@@ -25,6 +25,7 @@
     "src/client/dialogs.html": "dist/dialogs.html"
   },
   "javascript": [
+    "src/client/javascript/polyfill.js",
     "src/client/javascript/init.js",
     "src/client/javascript/utils/compability.js",
     "src/client/javascript/utils/misc.js",
@@ -80,6 +81,7 @@
     "src/client/javascript/vfs/mounts/dropbox.js",
     "src/client/javascript/vfs/mounts/onedrive.js",
     "src/client/javascript/helpers/date.js",
+    "src/client/javascript/helpers/event-handler.js",
     "src/client/javascript/helpers/iframe-application.js",
     "src/client/javascript/helpers/default-application.js",
     "src/client/javascript/helpers/default-application-window.js",

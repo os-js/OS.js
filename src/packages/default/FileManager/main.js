@@ -432,26 +432,21 @@
     side.add(sideViewItems);
   };
 
-  ApplicationFileManagerWindow.prototype.vfsEvent = function(args) {
-    if ( args.type === 'mount' || args.type === 'unmount' ) {
-      if ( args.module ) {
-        var m = OSjs.VFS.Modules[args.module];
-        if ( m ) {
-          if ( args.type === 'unmount' ) {
-            if ( this.currentPath.match(m.match) ) {
-              var path = API.getDefaultPath();
-              this.changePath(path);
-            }
-          }
-          this.updateSideView(m);
+  ApplicationFileManagerWindow.prototype.onMountEvent = function(module, msg) {
+    var m = OSjs.VFS.Modules[module];
+    if ( m ) {
+      if ( msg === 'vfs:unmount' ) {
+        if ( this.currentPath.match(m.match) ) {
+          this.changePath(API.getDefaultPath());
         }
       }
-    } else {
-      if ( args.file && this.currentPath === Utils.dirname(args.file.path) ) {
-        this.changePath(null);
-      } else if ( args.dir && this.currentPath === args.dir ) {
-        this.changePath(null);
-      }
+      this.updateSideView(m);
+    }
+  };
+
+  ApplicationFileManagerWindow.prototype.onFileEvent = function(chk) {
+    if ( (this.currentPath === Utils.dirname(chk.path)) || (this.currentPath === chk.path) ) {
+      this.changePath(null);
     }
   };
 
@@ -695,22 +690,27 @@
 
     var url = API.getApplicationResource(this, './scheme.html');
     var scheme = GUI.createScheme(url);
+
     scheme.load(function(error, result) {
-      self._addWindow(new ApplicationFileManagerWindow(self, metadata, scheme, path, settings));
+      var win = self._addWindow(new ApplicationFileManagerWindow(self, metadata, scheme, path, settings));
+
+      self._on('vfs', function(msg, obj) {
+        if ( win ) {
+          if ( msg === 'vfs:mount' || msg === 'vfs:unmount' ) {
+            win.onMountEvent(obj, msg);
+          } else {
+            if ( obj.destination ) {
+              win.onFileEvent(obj.destination);
+              win.onFileEvent(obj.source);
+            } else {
+              win.onFileEvent(obj);
+            }
+          }
+        }
+      });
     });
 
     this._setScheme(scheme);
-  };
-
-  ApplicationFileManager.prototype._onMessage = function(obj, msg, args) {
-    Application.prototype._onMessage.apply(this, arguments);
-
-    // If any outside VFS actions were performed, refresh!
-
-    var win = this._getWindow('ApplicationFileManagerWindow');
-    if ( win && msg === 'vfs' && args.source !== this.__pid ) {
-      win.vfsEvent(args);
-    }
   };
 
   ApplicationFileManager.prototype.download = function(items) {
@@ -881,7 +881,7 @@
         API.error(API._('ERR_GENERIC_APP_FMT', self.__label), API._('ERR_GENERIC_APP_REQUEST'), error);
         return;
       }
-    }, {dialog: dialog});
+    }, {dialog: dialog}, this._app);
   };
 
   ApplicationFileManager.prototype.upload = function(dest, files, win) {

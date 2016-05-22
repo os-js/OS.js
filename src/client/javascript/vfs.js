@@ -686,7 +686,7 @@
       if ( error ) {
         error = API._('ERR_VFSMODULE_WRITE_FMT', error);
       } else {
-        API.message('vfs', {type: 'write', file: item, source: appRef ? appRef.__pid : null});
+        API.message('vfs:write', item, {source: appRef ? appRef.__pid : null});
       }
 
       callback(error, result);
@@ -835,7 +835,7 @@
     function doRequest() {
       function _finished(error, result) {
         if ( !error ) {
-          API.message('vfs', {type: 'mkdir', file: dest, source: appRef ? appRef.__pid : null});
+          API.message('vfs:copy', {source: src, destination: dest}, {source: appRef ? appRef.__pid : null});
         }
         callback(error, result);
       }
@@ -913,7 +913,7 @@
     function doRequest() {
       function _finished(error, result) {
         if ( !error ) {
-          API.message('vfs', {type: 'move', file: dest, source: appRef ? appRef.__pid : null});
+          API.message('vfs:move', dest, {source: appRef ? appRef.__pid : null});
         }
         callback(error, result);
       }
@@ -994,7 +994,7 @@
       if ( error ) {
         error = API._('ERR_VFSMODULE_UNLINK_FMT', error);
       } else {
-        API.message('vfs', {type: 'delete', file: item, source: appRef ? appRef.__pid : null});
+        API.message('vfs:unlink', item, {source: appRef ? appRef.__pid : null});
       }
 
       callback(error, result);
@@ -1033,7 +1033,7 @@
         if ( error ) {
           error = API._('ERR_VFSMODULE_MKDIR_FMT', error);
         } else {
-          API.message('vfs', {type: 'mkdir', file: item, source: appRef ? appRef.__pid : null});
+          API.message('vfs:mkdir', item, {source: appRef ? appRef.__pid : null});
         }
         callback(error, result);
       }
@@ -1164,7 +1164,7 @@
       }
 
       var file = _createFile(filename, mime, size);
-      API.message('vfs', {type: 'upload', file: file, source: args.app.__pid});
+      API.message('vfs:upload', file, {source: args.app.__pid});
       callback(false, file);
     }
 
@@ -1489,7 +1489,7 @@
         unmount: function(cb) {
           isMounted = false;
 
-          API.message('vfs', {type: 'unmount', module: opts.name, source: null});
+          API.message('vfs:unmount', opts.name, {source: null});
           (cb || function() {})(false, true);
 
           delete OSjs.VFS.Modules[opts.name];
@@ -1528,7 +1528,7 @@
     }
 
     OSjs.VFS.Modules[opts.name] = module;
-    API.message('vfs', {type: 'mount', module: opts.name, source: null});
+    API.message('vfs:mount', opts.name, {source: null});
 
     (cb || function() {})(false, true);
   }

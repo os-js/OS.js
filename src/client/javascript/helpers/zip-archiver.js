@@ -241,7 +241,7 @@
           writer = null;
 
           if ( type !== 'error' ) {
-            API.message('vfs', {type: 'upload', file: appRef ? appRef.__pid : null});
+            API.message('vfs:upload', file, {source: appRef ? appRef.__pid : null});
           }
 
           cb(type === 'error' ? ev : false, type !== 'error');
@@ -454,7 +454,7 @@
 
     function finished(error, warnings, result) {
       if ( !error ) {
-        API.message('vfs', {type: 'updated', dir: destination, source: args.app ? args.app.__pid : null});
+        API.message('vfs:update', destination, {source: args.app ? args.app.__pid : null});
       }
 
       console.groupEnd();

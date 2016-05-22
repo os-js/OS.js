@@ -115,17 +115,20 @@
    * Example: VFS uses this to signal file changes etc.
    *
    * @param   String    msg     Message name
+   * @param   Object    obj     Message object
    * @param   Object    opts    Options
+   *
+   * @option  opts    integer   source   (Optional) Source Process ID
    *
    * @return  void
    * @see     Process::_onMessage()
    * @api     OSjs.API.message()
    */
-  function doProcessMessage(msg, opts) {
+  function doProcessMessage(msg, obj, opts) {
     console.info('doProcessMessage', msg, opts);
     _PROCS.forEach(function(p, i) {
       if ( p && (p instanceof OSjs.Core.Application || p instanceof Process) ) {
-        p._onMessage(null, msg, opts);
+        p._onMessage(msg, obj, opts);
       }
     });
   }
@@ -182,8 +185,26 @@
   /**
    * Process Template Class
    *
+   * Events:
+   *  message       All events                               => (msg, object, options)
+   *  attention     When application gets attention signal   => (args)
+   *  hashchange    When URL hash has changed                => (args)
+   *  api           API event                                => (method)
+   *  destroy       Destruction event                        => (killed)
+   *  destroyWindow Attached window destruction event        => (win)
+   *  vfs           For all VFS events                       => (msg, object, options)
+   *  vfs:mount     VFS mount event                          => (module, options, msg)
+   *  vfs:unmount   VFS unmount event                        => (module, options, msg)
+   *  vfs:write     VFS write event                          => (dest, options, msg)
+   *  vfs:mkdir     VFS mkdir event                          => (dest, options, msg)
+   *  vfs:move      VFS move event                           => ({src,dest}, options, msg)
+   *  vfs:delete    VFS delete event                         => (dest, options, msg)
+   *  vfs:upload    VFS upload event                         => (file, options, msg)
+   *  vfs:update    VFS update event                         => (dir, options, msg)
+   *
    * @param   String    name    Process Name
    *
+   * @see     OSjs.Helpers.EventHandler
    * @api     OSjs.Core.Process
    * @class
    */
@@ -194,6 +215,11 @@
     this.__metadata   = metadata || {};
     this.__started    = new Date();
     this.__destroyed  = false;
+    this.__evHandler  = new OSjs.Helpers.EventHandler(name, [
+      'message', 'attention', 'hashchange', 'api', 'destroy', 'destroyWindow', 'vfs',
+      'vfs:mount', 'vfs:unmount', 'vfs:mkdir', 'vfs:write', 'vfs:move',
+      'vfs:copy', 'vfs:delete', 'vfs:upload', 'vfs:update'
+    ]);
 
     this.__label    = this.__metadata.name;
     this.__path     = this.__metadata.path;
@@ -219,9 +245,15 @@
    */
   Process.prototype.destroy = function(kill) {
     kill = (typeof kill === 'undefined') ? true : (kill === true);
-    if ( !this.__destroyed ) {
 
+    if ( !this.__destroyed ) {
       console.log('OSjs::Core::Process::destroy()', this.__pid, this.__pname);
+
+      this._emit('destroy', [kill]);
+
+      if ( this.__evHandler ) {
+        this.__evHandler = this.__evHandler.destroy();
+      }
 
       if ( kill ) {
         if ( this.__pid >= 0 ) {
@@ -237,13 +269,71 @@
   };
 
   /**
-   * Placeholder for messages sendt via API
+   * Method for handling internal messaging system
    *
    * @return  void
    *
    * @method  Process::_onMessage()
    */
-  Process.prototype._onMessage = function(obj, msg, args) {
+  Process.prototype._onMessage = function(msg, obj, opts) {
+    opts = opts || {};
+
+    if ( this.__evHandler && opts.source !== this.__pid ) {
+      console.info('Process::_onMessage()', msg, obj, opts, this.__pid, this.__pname);
+
+      this.__evHandler.emit('message', [msg, obj, opts]);
+      if ( msg.substr(0, 3) === 'vfs' ) {
+        this.__evHandler.emit('vfs', [msg, obj, opts]);
+      }
+      this.__evHandler.emit(msg, [obj, opts, msg]);
+    }
+  };
+
+  /**
+   * Fire a hook to internal event
+   *
+   * @param   String    k       Event name
+   * @param   Array     args    Send these arguments (fn.apply)
+   *
+   * @return  void
+   *
+   * @see Process::_on()
+   * @see EventHandler::emit()
+   * @method  Process::_emit()
+   */
+  Process.prototype._emit = function(k, args) {
+    return this.__evHandler.emit(k, args);
+  };
+
+  /**
+   * Adds a hook to internal event
+   *
+   * @param   String    k       Event name
+   * @param   Function  func    Callback function
+   *
+   * @return  integer
+   *
+   * @see EventHandler::on()
+   * @method  Process::_on()
+   */
+  Process.prototype._on = function(k, func) {
+    return this.__evHandler.on(k, func, this);
+  };
+
+  /**
+   * Adds a hook to internal event
+   *
+   * @param   String    k       Event name
+   * @param   integer   idx     The hook index returned from _on()
+   *
+   * @return  void
+   *
+   * @see Process::_on()
+   * @see EventHandler::off()
+   * @method  Process::_off()
+   */
+  Process.prototype._off = function(k, idx) {
+    return this.__evHandler.off(k, idx);
   };
 
   /**
@@ -272,6 +362,8 @@
       }
       callback(err, res);
     }
+
+    this._emit('api', [method]);
 
     return OSjs.API.call('application', {
       application: this.__iter,

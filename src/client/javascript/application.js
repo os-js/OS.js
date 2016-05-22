@@ -165,22 +165,19 @@
    * @method  Application::_onMessage()
    */
   Application.prototype._onMessage = function(obj, msg, args) {
-    if ( !msg ) { return false; }
-
     if ( msg === 'destroyWindow' ) {
       this._removeWindow(obj);
 
       if ( obj && obj._name === this.__mainwindow ) {
         this.destroy();
       }
-
     } else if ( msg === 'attention' ) {
       if ( this.__windows.length && this.__windows[0] ) {
         this.__windows[0]._focus();
       }
     }
 
-    return true;
+    return Process.prototype._onMessage.apply(this, arguments);
   };
 
   /**

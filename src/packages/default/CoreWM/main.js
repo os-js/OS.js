@@ -66,9 +66,17 @@
   CoreWM.constructor = WindowManager;
 
   CoreWM.prototype.init = function() {
+    var self = this;
     var link = (OSjs.Core.getConfig().Connection.RootURI || '/') + 'blank.css';
+
     this.setThemeLink(Utils.checkdir(link));
     this.setAnimationLink(Utils.checkdir(link));
+
+    this._on(/^vfs\:(?!(un)?mount)/, function(file, options, msg) {
+      if ( (msg === 'vfs:unlink' || msg === 'vfs:delete') && file.path ) {
+        self.iconView.removeShortcutByPath(file.path);
+      }
+    });
 
     WindowManager.prototype.init.apply(this, arguments);
   };
@@ -196,17 +204,6 @@
       p.destroy();
     });
     this.panels = [];
-  };
-
-  // Copy from Application
-  CoreWM.prototype._onMessage = function(obj, msg, args) {
-    if ( this.iconView ) {
-      if ( msg === 'vfs' ) {
-        if ( args && args.type === 'delete' && args.file ) {
-          this.iconView.removeShortcutByPath(args.file.path);
-        }
-      }
-    }
   };
 
   // Copy from Application

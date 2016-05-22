@@ -217,6 +217,7 @@
    * @option  opts     boolean         max_height        (Optional) Maximum allowed height
    * @options opts     Object          media_queries     (Optional) Media queries to apply CSS attribute => {name: fn(w,h,win) => Boolean }
    *
+   * @see     OSjs.Helpers.EventHandler
    * @api     OSjs.Core.Window
    * @class
    */
@@ -289,6 +290,12 @@
       this._soundVolume   = _DEFAULT_SND_VOLUME;            // ... using this volume
       this._blinkTimer    = null;
       this._queryTimer    = null;
+      this._evHandler     = new OSjs.Helpers.EventHandler(name, [
+                              'focus', 'blur', 'destroy', 'maximize', 'minimize', 'restore',
+                              'move', 'moved', 'resize', 'resized',
+                              'keydown', 'keyup', 'keypress',
+                              'drop', 'drop:upload', 'drop:file'
+                            ]);
 
       this._properties    = {                               // Window Properties
         gravity           : null,
@@ -312,28 +319,13 @@
         media_queries     : createMediaQueries()
       };
 
-      this._state     = {                         // Window State
+      this._state = { // Window State
         focused   : false,
         modal     : false,
         minimized : false,
         maximized : false,
         ontop     : false,
         onbottom  : false
-      };
-
-      this._hooks     = {                         // Window Hooks (Events)
-        focus     : [],
-        blur      : [],
-        destroy   : [],
-        maximize  : [],
-        minimize  : [],
-        restore   : [],
-        preop     : [], // Called on "mousedown" for resize and move
-        postop    : [], // Called on "mouseup" for resize and move
-        move      : [], // Called inside the mosuemove event
-        moved     : [], // Called inside the mouseup event
-        resize    : [], // Called inside the mousemove event
-        resized   : []  // Called inside the mouseup event
       };
 
       Object.keys(opts).forEach(function(k) {
@@ -347,8 +339,8 @@
 
       // Internals for restoring previous state (session)
       if ( appRef && appRef.__args && appRef.__args.__windows__ ) {
-        appRef.__args.__windows__.every(function(restore) {
-          if ( restore.name && restore.name === self._name ) {
+        appRef.__args.__windows__.forEach(function(restore) {
+          if ( !self._restored && restore.name && restore.name === self._name ) {
             self._position.x = restore.position.x;
             self._position.y = restore.position.y;
             if ( self._properties.allow_resize ) {
@@ -358,10 +350,7 @@
 
             console.info('RESTORED FROM SESSION', restore);
             self._restored = true;
-            return false;
           }
-
-          return true;
         });
       }
 
@@ -761,12 +750,16 @@
 
     // App messages
     if ( this._app ) {
-      this._app._onMessage(this, 'destroyWindow', {});
+      this._app._onMessage('destroyWindow', this, {});
+    }
+
+    if ( this._evHandler ) {
+      this._evHandler.destroy();
     }
 
     this._scheme = null;
     this._app = null;
-    this._hooks = {};
+    this._evHandler = null;
     this._args = {};
     this._queryTimer = clearTimeout(this._queryTimer);
 
@@ -840,18 +833,11 @@
    * @return  void
    *
    * @see Window::_on()
+   * @see OSjs.Helpers.EventHandler::emit()
    * @method  Window::_emit()
    */
   Window.prototype._emit = function(k, args) {
-    var self = this;
-    (this._hooks[k] || []).forEach(function(hook, i) {
-      try {
-        hook.apply(self, args || []);
-      } catch ( e ) {
-        console.warn('Window::_fireHook() failed to run hook', k, i, e);
-        console.warn(e.stack);
-      }
-    });
+    return this._evHandler.emit(k, args);
   };
 
   /**
@@ -862,16 +848,11 @@
    *
    * @return  integer
    *
+   * @see OSjs.Helpers.EventHandler::on()
    * @method  Window::_on()
    */
   Window.prototype._on = function(k, func) {
-    if ( typeof func === 'function' ) {
-      if ( typeof this._hooks[k] === 'undefined' ) {
-        this._hooks[k] = [];
-      }
-      return this._hooks[k].push(func);
-    }
-    return null;
+    return this._evHandler.on(k, func, this);
   };
 
   /**
@@ -883,12 +864,11 @@
    * @return  void
    *
    * @see Window::_on()
+   * @see OSjs.Helpers.EventHandler::off()
    * @method  Window::_off()
    */
   Window.prototype._off = function(k, idx) {
-    if ( this._hooks[k] && this._hooks[k][idx] ) {
-      this._hooks[k][idx] = null;
-    }
+    return this._evHandler.off(k, idx);
   };
 
   //

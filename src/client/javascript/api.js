@@ -592,7 +592,7 @@
         if ( sproc ) {
           console.debug('doLaunchProcess()', 'detected that this application is a singular and already running...');
           if ( sproc instanceof OSjs.Core.Application ) {
-            sproc._onMessage(null, 'attention', arg);
+            sproc._onMessage('attention', arg);
           } else {
             _error(OSjs.API._('ERR_APP_LAUNCH_ALREADY_RUNNING_FMT', n));
           }

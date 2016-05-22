@@ -37,56 +37,10 @@
   var inited     = false;
   var signingOut = false;
 
-  /////////////////////////////////////////////////////////////////////////////
-  // COMPABILITY
-  /////////////////////////////////////////////////////////////////////////////
-
   // Make sure these namespaces exist
   (['API', 'GUI', 'Core', 'Dialogs', 'Helpers', 'Applications', 'Locales', 'VFS', 'Extensions']).forEach(function(ns) {
     OSjs[ns] = OSjs[ns] || {};
   });
-
-  // For browsers without "console" for some reason
-  (function() {
-    window.console    = window.console    || {};
-    console.log       = console.log       || function() {};
-    console.debug     = console.debug     || console.log;
-    console.error     = console.error     || console.log;
-    console.warn      = console.warn      || console.log;
-    console.group     = console.group     || console.log;
-    console.groupEnd  = console.groupEnd  || console.log;
-  })();
-
-  // Compability
-  (function() {
-    (['forEach', 'every', 'map']).forEach(function(n) {
-      if ( window.HTMLCollection ) {
-        window.HTMLCollection.prototype[n] = Array.prototype[n];
-      }
-
-      if ( window.NodeList ) {
-        window.NodeList.prototype[n] = Array.prototype[n];
-      }
-
-      if ( window.FileList ) {
-        window.FileList.prototype[n] = Array.prototype[n];
-      }
-    });
-
-    (function() {
-      function CustomEvent(event, params) {
-        params = params || { bubbles: false, cancelable: false, detail: undefined };
-        var evt = document.createEvent( 'CustomEvent' );
-        evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
-        return evt;
-      }
-
-      if ( window.navigator.userAgent.match(/MSIE|Edge|Trident/) ) {
-        CustomEvent.prototype = window.Event.prototype;
-        window.CustomEvent = CustomEvent;
-      }
-    })();
-  })();
 
   /////////////////////////////////////////////////////////////////////////////
   // GLOBAL EVENTS
@@ -287,11 +241,10 @@
 
         if ( root ) {
           OSjs.API.getProcess(root).forEach(function(p) {
-            p._onMessage(null, 'hashchange', {
-              source: null,
+            p._onMessage('hashchange', {
               hash: hash,
               args: args
-            });
+            }, {source: null});
           });
         }
       }
