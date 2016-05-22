@@ -203,30 +203,38 @@
     function _setInputProperty() {
       var firstChild = el.querySelector('textarea, input, select, button');
 
-      if ( param === 'value' ) {
-        if ( tagName === 'gui-radio' || tagName === 'gui-checkbox' ) {
-          if ( value ) {
-            firstChild.setAttribute('checked', 'checked');
-            firstChild.checked = true;
-          } else {
-            firstChild.removeAttribute('checked');
-            firstChild.checked = false;
+      var inpMap = {
+        value: function() {
+          if ( tagName === 'gui-radio' || tagName === 'gui-checkbox' ) {
+            if ( value ) {
+              firstChild.setAttribute('checked', 'checked');
+              firstChild.checked = true;
+            } else {
+              firstChild.removeAttribute('checked');
+              firstChild.checked = false;
+            }
           }
+          firstChild.value = value;
+        },
+
+        disabled: function() {
+          if ( value ) {
+            firstChild.setAttribute('disabled', 'disabled');
+          } else {
+            firstChild.removeAttribute('disabled');
+          }
+          el.setAttribute('aria-disabled', String(value === true));
+        }
+      };
+
+      if ( firstChild ) {
+        if ( inpMap[param] ) {
+          inpMap[param]();
+          return;
         }
 
-        firstChild.value = value;
-        return;
-      } else if ( param === 'disabled' ) {
-        if ( value ) {
-          firstChild.setAttribute('disabled', 'disabled');
-        } else {
-          firstChild.removeAttribute('disabled');
-        }
-        el.setAttribute('aria-disabled', String(value === true));
-        return;
+        firstChild.setAttribute(param, value || '');
       }
-
-      firstChild.setAttribute(param, value || '');
     }
 
     function _setElementProperty() {
