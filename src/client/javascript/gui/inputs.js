@@ -54,6 +54,10 @@
       name: group ? group + '[]' : null
     };
 
+    (['autocomplete', 'autocorrect', 'autocapitalize', 'spellcheck']).forEach(function(a) {
+      attribs[a] = el.getAttribute('data-' + a) || 'false';
+    });
+
     function _bindDefaults() {
       if ( ['range', 'slider'].indexOf(type) >= 0 ) {
         attribs.min = el.getAttribute('data-min');
@@ -69,7 +73,11 @@
 
       Object.keys(attribs).forEach(function(a) {
         if ( attribs[a] !== null ) {
-          input.setAttribute(a, attribs[a]);
+          if ( a === 'value' ) {
+            input.value = attribs[a];
+          } else {
+            input.setAttribute(a, attribs[a]);
+          }
         }
       });
     }
@@ -321,6 +329,16 @@
     bind: bindInputEvents,
     build: function(el) {
       createInputOfType(el, 'textarea');
+    },
+    set: function(el, param, value) {
+      if ( el && param === 'scrollTop' ) {
+        if ( typeof value !== 'number' ) {
+          value = el.firstChild.scrollHeight;
+        }
+        el.firstChild.scrollTop = value;
+        return true;
+      }
+      return false;
     }
   };
 
