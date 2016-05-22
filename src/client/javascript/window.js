@@ -169,6 +169,7 @@
    * Window Class
    *
    * Events:
+   *  inited        When window has been inited and rendered  => ()
    *  focus         When window gets focus                    => ()
    *  blur          When window loses focus                   => ()
    *  destroy       When window is closed                     => ()
@@ -665,6 +666,8 @@
         this._minimize(true);
       }
     }
+
+    this._emit('inited');
 
     console.debug('OSjs::Core::Window::_inited()', this._name);
   };
