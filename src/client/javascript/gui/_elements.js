@@ -177,6 +177,27 @@
   };
 
   /**
+   * Register Event with scope
+   *
+   * This is the same as on() except that you can proxy your callback.
+   * Useful for binding UI events directly to a Window.
+   *
+   * The callback produced from the event will the same as original, except
+   * **the first parameter is always the GUI element**
+   *
+   * @see Element::on()
+   * @method Element::pon()
+   * @return Element this
+   */
+  UIElement.prototype.son = function(evName, thisArg, callback, args) {
+    return this.on(evName, function() {
+      var args = Array.prototype.slice.call(arguments);
+      args.unshift(this);
+      callback.apply(thisArg, args);
+    }, args);
+  };
+
+  /**
    * Sets a parameter/property by name
    *
    * @param   String    param     Parameter name
