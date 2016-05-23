@@ -282,9 +282,12 @@
    */
   OSjs.Utils.$index = function(el, parentEl) {
     parentEl = parentEl || el.parentNode;
-    var nodeList = Array.prototype.slice.call(parentEl.children);
-    var nodeIndex = nodeList.indexOf(el, parentEl);
-    return nodeIndex;
+    if ( parentEl ) {
+      var nodeList = Array.prototype.slice.call(parentEl.children);
+      var nodeIndex = nodeList.indexOf(el, parentEl);
+      return nodeIndex;
+    }
+    return -1;
   };
 
   /**
