@@ -66,6 +66,13 @@
       }
       Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
     },
+    get: function(el, param, value) {
+      if ( param === 'current' || param === 'selected' ) {
+        var cur = el.querySelector('ul > li[class="gui-active"]');
+        return Utils.$index(cur);
+      }
+      return GUI.Helpers.getProperty(el, param);
+    },
     build: function(el) {
       var tabs = document.createElement('ul');
 
