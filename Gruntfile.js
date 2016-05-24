@@ -117,7 +117,7 @@
       },
       mochaTest: {
         test: {
-          src: ['test/server/*.js']
+          src: ['src/server/test/node/*.js']
         }
       },
       watch: {

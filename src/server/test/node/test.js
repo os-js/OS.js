@@ -1,9 +1,12 @@
 var _path = require('path');
-var rootDir = _path.dirname(_path.dirname(__dirname));
+var _fs = require('fs');
+
+var rootDir = _fs.realpathSync(__dirname + '/../../../../');
+var serverRoot = _path.join(rootDir, 'src', 'server', 'node');
+
 var assert = require('assert');
-var osjs = require(rootDir + '/src/server/node/core/index.js');
-var osjsServer = require(rootDir + '/src/server/node/http.js');
-var serverRoot = _path.join(_path.dirname(_path.dirname(__dirname)), 'src', 'server', 'node');
+var osjs = require(_path.join(serverRoot, 'core', 'index.js'));
+var osjsServer = require(_path.join(serverRoot, 'http.js'));
 
 var instance = osjs.init({
   dirname: serverRoot,
