@@ -57,7 +57,7 @@
 
   function getFileSize(iter) {
     var filesize = '';
-    if ( iter.type !== 'dir' && iter.size ) {
+    if ( iter.type !== 'dir' && iter.size >= 0 ) {
       filesize = Utils.humanFileSize(iter.size);
     }
     return filesize;
