@@ -316,6 +316,25 @@
       });
     }
 
+    function checkType(item) {
+      if ( typeof item === 'string' ) {
+        item = {src: item};
+      }
+
+      if ( !item.type ) {
+        item.type = (function(src) {
+          if ( src.match(/\.js$/i) ) {
+            return 'javascript';
+          } else if ( src.match(/\.css$/i) ) {
+            return 'stylesheet';
+          }
+          return 'unknown';
+        })(item.src);
+      }
+
+      return item;
+    }
+
     return function(list, callback, callbackProgress, args) {
       list = (list || []).slice();
       args = args || {};
@@ -333,6 +352,8 @@
         }
 
         if ( item ) {
+          item = checkType(item);
+
           if ( _LOADED[item.src] === true && (item.force !== true && args.force !== true) ) {
             _loaded(true);
             return;

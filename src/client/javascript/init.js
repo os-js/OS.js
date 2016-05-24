@@ -358,13 +358,26 @@
    */
   function initPreload(config, callback) {
     console.debug('initPreload()');
+    var list = [];
 
-    var preloads = config.Preloads;
-    preloads.forEach(function(val, index) {
-      val.src = OSjs.Utils.checkdir(val.src);
-    });
+    function flatten(a) {
+      a.forEach(function(i) {
+        if ( i instanceof Array ) {
+          flatten(i);
+        } else {
+          if ( typeof i === 'string' ) {
+            i = OSjs.Utils.checkdir(i);
+          } else {
+            i.src = OSjs.Utils.checkdir(i.src);
+          }
+          list.push(i);
+        }
+      });
+    }
 
-    OSjs.Utils.preload(preloads, function(total, failed) {
+    flatten(config.Preloads);
+
+    OSjs.Utils.preload(list, function(total, failed) {
       if ( failed.length ) {
         console.warn('doInitialize()', 'some preloads failed to load:', failed);
       }
