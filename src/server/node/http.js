@@ -492,7 +492,7 @@
   };
 
 })(
-  require('osjs'),
+  require('./core'),
   require('path'),
   require('url'),
   require('node-fs-extra'),
