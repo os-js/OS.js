@@ -855,7 +855,7 @@
         gapi.client.load('drive', 'v2', function() {
           _isMounted = true;
 
-          API.message('vfs', {type: 'mount', module: 'GoogleDrive', source: null});
+          API.message('vfs:mount', 'GoogleDrive', {source: null});
 
           callback(GoogleDriveStorage);
         });
@@ -904,7 +904,7 @@
       // FIXME: Should we sign out here too ?
       cb = cb || function() {};
       _isMounted = false;
-      API.message('vfs', {type: 'unmount', module: 'GoogleDrive', source: null});
+      API.message('vfs:unmount', 'GoogleDrive', {source: null});
       cb(false, true);
     },
     mounted: function() {

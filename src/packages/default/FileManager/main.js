@@ -691,23 +691,25 @@
     var url = API.getApplicationResource(this, './scheme.html');
     var scheme = GUI.createScheme(url);
 
-    scheme.load(function(error, result) {
-      var win = self._addWindow(new ApplicationFileManagerWindow(self, metadata, scheme, path, settings));
-
-      self._on('vfs', function(msg, obj) {
-        if ( win ) {
-          if ( msg === 'vfs:mount' || msg === 'vfs:unmount' ) {
-            win.onMountEvent(obj, msg);
+    this._on('vfs', function(msg, obj) {
+      var win = self._getMainWindow();
+      console.warn('xxx', msg, obj);
+      if ( win ) {
+        if ( msg === 'vfs:mount' || msg === 'vfs:unmount' ) {
+          win.onMountEvent(obj, msg);
+        } else {
+          if ( obj.destination ) {
+            win.onFileEvent(obj.destination);
+            win.onFileEvent(obj.source);
           } else {
-            if ( obj.destination ) {
-              win.onFileEvent(obj.destination);
-              win.onFileEvent(obj.source);
-            } else {
-              win.onFileEvent(obj);
-            }
+            win.onFileEvent(obj);
           }
         }
-      });
+      }
+    });
+
+    scheme.load(function(error, result) {
+      self._addWindow(new ApplicationFileManagerWindow(self, metadata, scheme, path, settings));
     });
 
     this._setScheme(scheme);
