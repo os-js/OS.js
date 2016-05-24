@@ -979,6 +979,9 @@
     type = type || null;
 
     var root = OSjs.API.getConfig('Connection.ThemeURI');
+    if ( !root.match(/^\//) ) {
+      root = window.location.pathname + root;
+    }
 
     function getName(str, theme) {
       if ( !str.match(/^\//) ) {
