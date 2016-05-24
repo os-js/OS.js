@@ -386,6 +386,24 @@
     return new RegExp('^' + name.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&'));
   }
 
+  /**
+   * Wrapper for converting data
+   */
+  function _abToSomething(m, arrayBuffer, mime, callback) {
+    mime = mime || 'application/octet-stream';
+
+    try {
+      var blob    = new Blob([arrayBuffer], {type: mime});
+      var r       = new FileReader();
+      r.onerror   = function(e) { callback(e);               };
+      r.onloadend = function()  { callback(false, r.result); };
+      r[m](blob);
+    } catch ( e ) {
+      console.warn(e, e.stack);
+      callback(e);
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // CONVERSION HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -460,18 +478,7 @@
    * @api     OSjs.VFS.textToAb()
    */
   function textToAb(data, mime, callback) {
-    mime = mime || 'application/octet-stream';
-
-    try {
-      var blob    = new Blob([data], {type: mime});
-      var r       = new FileReader();
-      r.onerror   = function(e) { callback(e);               };
-      r.onloadend = function()  { callback(false, r.result); };
-      r.readAsArrayBuffer(blob);
-    } catch ( e ) {
-      console.warn(e, e.stack);
-      callback(e);
-    }
+    _abToSomething('readAsArrayBuffer', data, mime, callback);
   }
 
   /**
@@ -486,18 +493,7 @@
    * @api     OSjs.VFS.abToDataSource()
    */
   function abToDataSource(arrayBuffer, mime, callback) {
-    mime = mime || 'application/octet-stream';
-
-    try {
-      var blob    = new Blob([arrayBuffer], {type: mime});
-      var r       = new FileReader();
-      r.onerror   = function(e) { callback(e);               };
-      r.onloadend = function()  { callback(false, r.result); };
-      r.readAsDataURL(blob);
-    } catch ( e ) {
-      console.warn(e, e.stack);
-      callback(e);
-    }
+    _abToSomething('readAsDataURL', arrayBuffer, mime, callback);
   }
 
   /**
@@ -512,18 +508,7 @@
    * @api     OSjs.VFS.abToText()
    */
   function abToText(arrayBuffer, mime, callback) {
-    mime = mime || 'application/octet-stream';
-
-    try {
-      var blob    = new Blob([arrayBuffer], {type: mime});
-      var r       = new FileReader();
-      r.onerror   = function(e) { callback(e);               };
-      r.onloadend = function()  { callback(false, r.result); };
-      r.readAsText(blob);
-    } catch ( e ) {
-      console.warn(e, e.stack);
-      callback(e);
-    }
+    _abToSomething('readAsText', arrayBuffer, mime, callback);
   }
 
   /**
@@ -538,18 +523,7 @@
    * @api     OSjs.VFS.abToBinaryString()
    */
   function abToBinaryString(arrayBuffer, mime, callback) {
-    mime = mime || 'application/octet-stream';
-
-    try {
-      var blob    = new Blob([arrayBuffer], {type: mime});
-      var r       = new FileReader();
-      r.onerror   = function(e) { callback(e);               };
-      r.onloadend = function()  { callback(false, r.result); };
-      r.readAsBinaryString(blob);
-    } catch ( e ) {
-      console.warn(e, e.stack);
-      callback(e);
-    }
+    _abToSomething('readAsBinaryString', arrayBuffer, mime, callback);
   }
 
   /**
