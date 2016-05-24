@@ -693,7 +693,6 @@
 
     this._on('vfs', function(msg, obj) {
       var win = self._getMainWindow();
-      console.warn('xxx', msg, obj);
       if ( win ) {
         if ( msg === 'vfs:mount' || msg === 'vfs:unmount' ) {
           win.onMountEvent(obj, msg);

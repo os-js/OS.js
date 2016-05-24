@@ -264,6 +264,8 @@
     'ERR_VFSMODULE_EMPTYTRASH_FMT' : 'Failed to empty trash: {0}',
     'ERR_VFSMODULE_FIND'           : 'Failed to search',
     'ERR_VFSMODULE_FIND_FMT'       : 'Failed to search: {0}',
+    'ERR_VFSMODULE_FREESPACE'      : 'Failed to get free space',
+    'ERR_VFSMODULE_FREESPACE_FMT'  : 'Failed to get free space: {0}',
 
     // VFS -> Dropbox
     'DROPBOX_NOTIFICATION_TITLE' : 'You are signed in to Dropbox API',

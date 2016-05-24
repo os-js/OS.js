@@ -277,6 +277,12 @@ class FS
     return true;
   }
 
+  public static function freeSpace($fname) {
+    list($dirname, $root, $protocol, $fname) = getRealPath($fname);
+    if ( $protocol === "osjs://" ) throw new Exception("Not allowed");
+    return disk_free_space($fname);
+  }
+
   public static function find($path, $args) {
     list($dirname, $root, $protocol, $dname) = getRealPath($path);
 

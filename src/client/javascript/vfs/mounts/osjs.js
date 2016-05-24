@@ -57,7 +57,7 @@
     args = args || [];
     callback = callback || {};
 
-    var restricted = ['write', 'copy', 'move', 'unlink', 'mkdir', 'exists', 'fileinfo', 'trash', 'untrash', 'emptyTrash'];
+    var restricted = ['write', 'copy', 'move', 'unlink', 'mkdir', 'exists', 'fileinfo', 'trash', 'untrash', 'emptyTrash', 'freeSpace'];
     if ( OSjsStorage[name] ) {
       var fargs = args;
       fargs.push(callback);

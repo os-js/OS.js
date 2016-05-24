@@ -1340,6 +1340,34 @@
   };
 
   /**
+   * Checks for free space in given protocol from file
+   *
+   * Result is -1 when unavailable
+   *
+   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
+   * @param   Function        callback  Callback function => fn(error, result)
+   *
+   * @return  void
+   * @api     OSjs.VFS.freeSpace()
+   */
+  OSjs.VFS.freeSpace = function(item, callback) {
+    console.info('VFS::freeSpace()', item);
+    if ( arguments.length < 2 ) {
+      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+    }
+    item = checkMetadataArgument(item);
+
+    var m = getModuleFromPath(item.path, false);
+    m = OSjs.VFS.Modules[m];
+    request(item.path, 'freeSpace', [m.root], function(error, response) {
+      if ( error ) {
+        error = API._('ERR_VFSMODULE_FREESPACE_FMT', error);
+      }
+      callback(error, response);
+    });
+  };
+
+  /**
    * Read a remote file with URL (CORS)
    *
    * This function basically does a cURL call and downloads
