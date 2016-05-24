@@ -37,7 +37,7 @@
       try {
         var CR = require('exif').ExifImage;
         new CR({image: path}, function(err, result) {
-          cb(null, JSON.stringify(result, null, 4));
+          cb(err, JSON.stringify(result, null, 4));
         });
         return;
       } catch ( e ) {
@@ -334,25 +334,22 @@
     var realPath = getRealPath(args.path, config, request);
     var path = realPath.path;
 
-    if ( opts.raw ) {
-      _fs.writeFile(realPath.root, data, opts.rawtype || 'binary', function(error, data) {
+    function writeFile(d, e) {
+      _fs.writeFile(realPath.root, d, e || 'utf8', function(error, data) {
         if ( error ) {
           callback('Error writing file: ' + error);
         } else {
           callback(false, true);
         }
       });
+    }
+
+    if ( opts.raw ) {
+      writeFile(data, opts.rawtype || 'binary');
     } else {
       data = unescape(data.substring(data.indexOf(',') + 1));
       data = new Buffer(data, 'base64');
-
-      _fs.writeFile(realPath.root, data, function(error, data) {
-        if ( error ) {
-          callback('Error writing file: ' + error);
-        } else {
-          callback(false, true);
-        }
-      });
+      writeFile(data);
     }
   };
 

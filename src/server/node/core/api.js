@@ -159,16 +159,16 @@
    */
   module.exports.curl = function(args, callback, request, response, config) {
     var url = args.url;
-    var method = args.method || 'GET';
-    var query = args.body || args.query || {}; // 'query' was the old name, but kept for compability
-    var binary = args.binary === true;
-    var mime = args.mime || (binary ? 'application/octet-stream' : null);
 
     if ( !url ) {
       callback('cURL expects an \'url\'');
       return;
     }
 
+    var method = args.method || 'GET';
+    var query = args.body || args.query || {}; // 'query' was the old name, but kept for compability
+    var binary = args.binary === true;
+    var mime = args.mime || (binary ? 'application/octet-stream' : null);
     var opts = {
       url: url,
       method: method,
@@ -177,26 +177,30 @@
     };
 
     if ( method === 'POST' ) {
-      if ( args.contentType === 'application/x-www-form-urlencoded' ) {
-        opts.form = query;
-      } else if ( args.contentType === 'multipart/form-data' ) {
-        opts.formData = query;
-      } else {
-        if ( query && typeof query !== 'string' ) {
-          opts.json = typeof opts.json === 'undefined' ? true : opts.json;
+      (function _applyPOST() {
+        if ( args.contentType === 'application/x-www-form-urlencoded' ) {
+          opts.form = query;
+        } else if ( args.contentType === 'multipart/form-data' ) {
+          opts.formData = query;
+        } else {
+          if ( query && typeof query !== 'string' ) {
+            opts.json = typeof opts.json === 'undefined' ? true : opts.json;
+          }
+          opts.body = query;
         }
-        opts.body = query;
-      }
+      })();
     } else {
-      if ( typeof query === 'object' && url.indexOf('?') === '1' ) {
-        try {
-          url += '?' + Object.keys(query).map(function(k) {
-            return encodeURIComponent(k) + '=' + encodeURIComponent(query[k]);
-          }).join('&');
-        } catch ( e ) {
-          console.warn('Failed to transform curl query', e.stack, e);
+      (function _applyMETHOD() {
+        if ( typeof query === 'object' && url.indexOf('?') === '1' ) {
+          try {
+            url += '?' + Object.keys(query).map(function(k) {
+              return encodeURIComponent(k) + '=' + encodeURIComponent(query[k]);
+            }).join('&');
+          } catch ( e ) {
+            console.warn('Failed to transform curl query', e.stack, e);
+          }
         }
-      }
+      })();
     }
 
     if ( binary ) {

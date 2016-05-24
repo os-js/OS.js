@@ -112,11 +112,13 @@
    * @api     osjs.init
    */
   module.exports.init = function(setup) {
-    setup.dist     = setup.dist     || 'dist';
-    setup.settings = setup.settings || _path.join(_path.dirname(setup.dirname), 'settings.json');
-    setup.repodir  = setup.repodir  || _path.join(setup.root, 'src', 'packages');
-    setup.distdir  = setup.distdir  || _path.join(setup.root, setup.dist);
-    setup.logging  = typeof setup.logging === 'undefined' || setup.logging === true;
+    (function _setDefaultInitParams() {
+      setup.dist     = setup.dist     || 'dist';
+      setup.settings = setup.settings || _path.join(_path.dirname(setup.dirname), 'settings.json');
+      setup.repodir  = setup.repodir  || _path.join(setup.root, 'src', 'packages');
+      setup.distdir  = setup.distdir  || _path.join(setup.root, setup.dist);
+      setup.logging  = typeof setup.logging === 'undefined' || setup.logging === true;
+    })();
 
     if ( setup.nw ) {
       setup.repodir = _path.join(setup.root, 'packages');
@@ -156,8 +158,7 @@
     instance.handler = require('./handler.js').init(instance);
 
     // Register package extensions
-    if ( config.extensions ) {
-      var exts = config.extensions;
+    (function(exts) {
       exts.forEach(function(f) {
         if ( f.match(/\.js$/) ) {
           if ( setup.logging ) {
@@ -168,8 +169,9 @@
           }
         }
       });
-    }
+    })(config.extensions || []);
 
+    // Package spawners
     Object.keys(metadata).forEach(function(pn) {
       var p = metadata[pn];
       if ( p.type === 'extension' && p.enabled !== false && p.spawn && p.spawn.enabled ) {
@@ -184,11 +186,14 @@
       }
     });
 
-    if ( config.proxies && setup.logging ) {
-      Object.keys(config.proxies).forEach(function(k) {
-        console.info('---', k, 'is a proxy!');
-      });
-    }
+    // Proxies
+    (function() {
+      if ( config.proxies && setup.logging ) {
+        Object.keys(config.proxies).forEach(function(k) {
+          console.info('---', k, 'is a proxy!');
+        });
+      }
+    })();
 
     return instance;
   };
