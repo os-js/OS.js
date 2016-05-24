@@ -1,7 +1,7 @@
 var _path = require('path');
 var rootDir = _path.dirname(_path.dirname(__dirname));
 var assert = require('assert');
-var osjs = require(rootDir + '/src/server/node/node_modules/osjs/osjs.js');
+var osjs = require(rootDir + '/src/server/node/core/index.js');
 var osjsServer = require(rootDir + '/src/server/node/http.js');
 var serverRoot = _path.join(_path.dirname(_path.dirname(__dirname)), 'src', 'server', 'node');
 
