@@ -108,6 +108,10 @@
       throw new TypeError(err || API._('ERR_VFS_EXPECT_FILE'));
     }
 
+    if ( !getModuleFromPath(item.path, false) ) {
+      throw new Error(API._('ERR_VFSMODULE_NOT_FOUND_FMT', item.path));
+    }
+
     return item;
   }
 
