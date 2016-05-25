@@ -61,6 +61,10 @@
     };
 
     var theme = _WM.getStyleTheme(true);
+    if ( !theme.style ) {
+      theme.style = {'window': {margin: 0, border: 0}};
+    }
+
     this.theme = {
       topMargin : theme.style.window.margin || 0,
       borderSize: theme.style.window.border || 0
@@ -533,7 +537,12 @@
     }
     console.debug('WindowManager::addWindow()');
 
-    w.init(this, w._app, w._scheme);
+    try {
+      w.init(this, w._app, w._scheme);
+    } catch ( e ) {
+      console.error('WindowManager::addWindow()', '=>', 'Window::init()', e, e.stack);
+    }
+
     //attachWindowEvents(w, this);
     createWindowBehaviour(w, this);
 
