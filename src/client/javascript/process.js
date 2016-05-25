@@ -41,15 +41,15 @@
   var _PROCS = [];        // Running processes
 
   function _kill(pid, force) {
-    if ( pid >= 0 ) {
-      if ( _PROCS[pid] ) {
-        console.warn('Killing application', pid);
-        if ( _PROCS[pid].destroy(true, force) === false ) {
-          return;
-        }
+    if ( pid >= 0 && _PROCS[pid] ) {
+      var res = _PROCS[pid].destroy(force);
+      console.warn('Killing application', pid, force, res);
+      if ( res !== false ) {
         _PROCS[pid] = null;
+        return true;
       }
     }
+    return false;
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -102,11 +102,11 @@
    *
    * @param   int     pid       Process ID
    *
-   * @return  void
+   * @return  boolean           Success or not
    * @api     OSjs.API.kill()
    */
   function doKillProcess(pid) {
-    _kill(pid, false);
+    return _kill(pid, true);
   }
 
   /**
@@ -192,6 +192,7 @@
    *  api           API event                                => (method)
    *  destroy       Destruction event                        => (killed)
    *  destroyWindow Attached window destruction event        => (win)
+   *  initedWindow  Attached window event                    => (win)
    *  vfs           For all VFS events                       => (msg, object, options)
    *  vfs:mount     VFS mount event                          => (module, options, msg)
    *  vfs:unmount   VFS unmount event                        => (module, options, msg)
@@ -247,6 +248,8 @@
     kill = (typeof kill === 'undefined') ? true : (kill === true);
 
     if ( !this.__destroyed ) {
+      this.__destroyed = true;
+
       console.log('OSjs::Core::Process::destroy()', this.__pid, this.__pname);
 
       this._emit('destroy', [kill]);
@@ -261,10 +264,9 @@
         }
       }
 
-      this.__destroyed = true;
-
       return true;
     }
+
     return false;
   };
 
