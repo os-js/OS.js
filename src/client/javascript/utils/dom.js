@@ -281,11 +281,13 @@
    * @api     OSjs.Utils.$index()
    */
   OSjs.Utils.$index = function(el, parentEl) {
-    parentEl = parentEl || el.parentNode;
-    if ( parentEl ) {
-      var nodeList = Array.prototype.slice.call(parentEl.children);
-      var nodeIndex = nodeList.indexOf(el, parentEl);
-      return nodeIndex;
+    if ( el ) {
+      parentEl = parentEl || el.parentNode;
+      if ( parentEl ) {
+        var nodeList = Array.prototype.slice.call(parentEl.children);
+        var nodeIndex = nodeList.indexOf(el, parentEl);
+        return nodeIndex;
+      }
     }
     return -1;
   };
