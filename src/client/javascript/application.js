@@ -61,6 +61,7 @@
     this.__scheme     = null;
     this.__windows    = [];
     this.__settings   = {};
+    this.__destroying = false;
 
     try {
       this.__settings = OSjs.Core.getSettingsManager().instance(name, settings || {});
@@ -129,9 +130,10 @@
    * @method    Application::destroy()
    */
   Application.prototype.destroy = function(kill) {
-    if ( this.__destroyed ) { // From 'process.js'
+    if ( this.__destroying || this.__destroyed ) { // From 'process.js'
       return true;
     }
+    this.__destroying = true;
 
     console.debug('Application::destroy()', this.__pname);
 
@@ -165,19 +167,23 @@
    * @method  Application::_onMessage()
    */
   Application.prototype._onMessage = function(msg, obj, args) {
-    if ( msg === 'destroyWindow' ) {
-      this._removeWindow(obj);
+    if ( !(this.__destroyed && this.__destroying) ) {
+      if ( msg === 'destroyWindow' ) {
+        this._removeWindow(obj);
 
-      if ( obj && obj._name === this.__mainwindow ) {
-        this.destroy();
+        if ( obj && obj._name === this.__mainwindow ) {
+          this.destroy();
+        }
+      } else if ( msg === 'attention' ) {
+        if ( this.__windows.length && this.__windows[0] ) {
+          this.__windows[0]._focus();
+        }
       }
-    } else if ( msg === 'attention' ) {
-      if ( this.__windows.length && this.__windows[0] ) {
-        this.__windows[0]._focus();
-      }
+
+      return Process.prototype._onMessage.apply(this, arguments);
     }
 
-    return Process.prototype._onMessage.apply(this, arguments);
+    return false;
   };
 
   /**
