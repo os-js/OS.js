@@ -112,17 +112,20 @@
     var queries;
 
     function _createQueries() {
-      var wm = OSjs.Core.getWindowManager();
-      var qs = wm._settings.get('mediaQueries') || {};
       var result = {};
 
-      Object.keys(qs).forEach(function(k) {
-        if ( qs[k] ) {
-          result[k] = function(w, h, ref) {
-            return w <= qs[k];
-          };
-        }
-      });
+      var wm = OSjs.Core.getWindowManager();
+      if ( wm ) {
+        var qs = wm._settings.get('mediaQueries') || {};
+
+        Object.keys(qs).forEach(function(k) {
+          if ( qs[k] ) {
+            result[k] = function(w, h, ref) {
+              return w <= qs[k];
+            };
+          }
+        });
+      }
 
       return result;
     }
@@ -668,6 +671,10 @@
     }
 
     this._emit('inited');
+
+    if ( this._app ) {
+      this._app._onMessage('initedWindow', this, {});
+    }
 
     console.debug('OSjs::Core::Window::_inited()', this._name);
   };
