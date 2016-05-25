@@ -175,9 +175,11 @@
     args = args || [];
 
     var self = this;
-    this.triggers[f].forEach(function(fn) {
-      fn.apply(self, args);
-    });
+    if ( this.triggers[f] ) {
+      this.triggers[f].forEach(function(fn) {
+        fn.apply(self, args);
+      });
+    }
   };
 
   UIScheme.prototype._load = function(html) {
