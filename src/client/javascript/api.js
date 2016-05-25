@@ -496,7 +496,9 @@
     onError       = onError       || function() {};
     onConstructed = onConstructed || function() {};
 
-    if ( !n ) { throw new Error('Cannot doLaunchProcess() witout a application name'); }
+    if ( !n ) {
+      throw new Error('Cannot doLaunchProcess() witout a application name');
+    }
 
     var splash = null;
     var pargs = {};
