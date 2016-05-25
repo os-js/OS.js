@@ -361,7 +361,7 @@
 
           var src = item.src;
           if ( src.substr(0, 1) !== '/' && !src.match(/^(https?|ftp)/) ) {
-            src = window.location.href + src;
+            src = window.location.pathname + src;
           }
 
           if ( item.type.match(/^style/) ) {
