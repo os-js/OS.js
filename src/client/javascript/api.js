@@ -1367,6 +1367,28 @@
       return false;
     })();
 
+    function _dialog() {
+      var wm = OSjs.Core.getWindowManager();
+      if ( wm && wm._fullyLoaded ) {
+        try {
+          OSjs.API.createDialog('Error', {
+            title: title,
+            message: message,
+            error: error,
+            exception: exception,
+            bugreport: bugreport
+          });
+
+          return true;
+        } catch ( e ) {
+          console.warn('An error occured while creating Dialogs.Error', e);
+          console.warn('stack', e.stack);
+        }
+      }
+
+      return false;
+    }
+
     OSjs.API.blurMenu();
 
     if ( exception && (exception.message.match(/^Script Error/i) && String(exception.lineNumber).match(/^0/)) ) {
@@ -1379,25 +1401,15 @@
       return;
     }
 
-    var wm = OSjs.Core.getWindowManager();
-    if ( wm && wm._fullyLoaded ) {
-      try {
-        return OSjs.API.createDialog('Error', {
-          title: title,
-          message: message,
-          error: error,
-          exception: exception,
-          bugreport: bugreport
-        });
-      } catch ( e ) {
-        console.warn('An error occured while creating Dialogs.Error', e);
-        console.warn('stack', e.stack);
+    if ( OSjs.API.getConfig('MOCHAMODE') ) {
+      console.error(title, message, error, exception);
+    } else {
+      if ( _dialog() ) {
+        return;
       }
+
+      window.alert(title + '\n\n' + message + '\n\n' + error);
     }
-
-    window.alert(title + '\n\n' + message + '\n\n' + error);
-
-    return null;
   }
 
   /**

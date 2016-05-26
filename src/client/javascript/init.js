@@ -516,6 +516,46 @@
   }
 
   /**
+   * Client-side unit-testing
+   */
+  function initTestEnvironment(config, callback) {
+    OSjs.Utils.preload([
+      '/vendor/mocha/mocha.js',
+      '/vendor/mocha/mocha.css',
+      '/vendor/chai/chai.js'
+    ], function() {
+      // Add basic layout
+      var h1 = document.createElement('h1');
+      h1.style.margin = '20px';
+      h1.appendChild(document.createTextNode('OS.js Mocha Client Test Suite'));
+      document.body.appendChild(h1);
+
+      var el = document.createElement('div');
+      el.id = 'mocha';
+      document.body.appendChild(el);
+
+      // Reset certain styles
+      document.body.style.background = '#fff';
+      document.body.style.overflow = 'auto';
+
+      // Init mocha interfaces
+      window.mocha.ui('bdd');
+      window.mocha.reporter('html');
+
+      // Create mock Window Manager
+      (new OSjs.Core.WindowManager('MochaWM', null, {}, {}, {})).init();
+
+      // Load default themes
+      OSjs.Utils.$createCSS(OSjs.API.getThemeCSS('default'));
+
+      // Load and run tests
+      OSjs.Utils.preload(['/client/test/test.js'], callback);
+    });
+
+    return true;
+  }
+
+  /**
    * Wrapper for initializing OS.js
    */
   function init() {
@@ -525,55 +565,76 @@
     var splash = document.getElementById('LoadingScreen');
     var loading = OSjs.API.createSplash('OS.js', null, null, splash);
     var freeze = ['API', 'Core', 'Config', 'Dialogs', 'GUI', 'Locales', 'VFS'];
-
-    initLayout();
-
-    OSjs.Utils.asyncs([
+    var queue = [
       initPreload,
       initHandler,
       initPackageManager,
       initExtensions,
       initSettingsManager,
       initVFS,
-      initSearch
-    ], function(entry, index, next) {
-      if ( index < 1 ) {
-        OSjs.API.triggerHook('onInitialize');
+      initSearch,
+      function(cfg, cb) {
+        return OSjs.GUI.DialogScheme.init(cb);
       }
+    ];
 
-      loading.update(index + 1, 8);
+    function _inited() {
+      loading = loading.destroy();
+      splash = OSjs.Utils.$remove(splash);
 
-      entry(config, next);
-    }, function() {
+      var wm = OSjs.Core.getWindowManager();
+      wm._fullyLoaded = true;
+
+      OSjs.API.triggerHook('onWMInited');
+
+      console.groupEnd();
+    }
+
+    function _done() {
       OSjs.API.triggerHook('onInited');
 
-      OSjs.GUI.DialogScheme.init(function() {
-        loading.update(7, 8);
+      loading.update(queue.length - 1, queue.length + 1);
 
-        freeze.forEach(function(f) {
-          if ( typeof OSjs[f] === 'object' ) {
-            Object.freeze(OSjs[f]);
-          }
-        });
+      freeze.forEach(function(f) {
+        if ( typeof OSjs[f] === 'object' ) {
+          Object.freeze(OSjs[f]);
+        }
+      });
 
+      if ( config.DEVMODE || config.MOCHAMODE ) {
+        _inited();
+      }
+
+      if ( config.MOCHAMODE ) {
+        window.mocha.run();
+      } else {
         initWindowManager(config, function() {
-          loading = loading.destroy();
-          splash = OSjs.Utils.$remove(splash);
-
-          OSjs.API.triggerHook('onWMInited');
-
           initEvents();
-          var wm = OSjs.Core.getWindowManager();
-          wm._fullyLoaded = true;
 
-          console.groupEnd();
+          _inited();
 
           initSession(config, function() {
             OSjs.API.triggerHook('onSessionLoaded');
           });
         });
-      });
-    });
+      }
+    }
+
+    initLayout();
+
+    if ( config.MOCHAMODE ) {
+      queue.push(initTestEnvironment);
+    }
+
+    OSjs.Utils.asyncs(queue, function(entry, index, next) {
+      if ( index < 1 ) {
+        OSjs.API.triggerHook('onInitialize');
+      }
+
+      loading.update(index + 1, queue.length + 1);
+
+      entry(config, next);
+    }, _done);
   }
 
   /////////////////////////////////////////////////////////////////////////////
