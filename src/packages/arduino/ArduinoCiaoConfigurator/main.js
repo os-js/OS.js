@@ -178,8 +178,8 @@
   };
 
   function callAPI(fn, args, cb) {
-    API.call(fn, args, function(response) {
-      return cb(response.error, response.result);
+    API.call(fn, args, function(error, result) {
+      return cb(error, result);
     });
   }
 
