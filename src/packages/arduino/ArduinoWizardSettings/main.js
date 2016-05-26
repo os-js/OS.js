@@ -523,18 +523,21 @@
         function callAPI(fn, args, cb) {
             cb = cb || function(){};
             self._toggleLoading(true);
-            API.call(fn, args, function (response) {
+            API.call(fn, args, function (error, result) {
+              if (error) {
+                error = 'Error while communicating with device: ' + (error || 'Unkown error (no response)');
+                wm.notification({title: 'Arduino Settings', message: error, icon: 'status/error.png'});
+              }
+              else {
                 self._toggleLoading(false);
-                return cb(response.error, response.result);
-            }, function (err) {
-                err = 'Error while communicating with device: ' + (err || 'Unkown error (no response)');
-                wm.notification({title: 'Arduino Settings', message: err, icon: 'status/error.png'});
+                return cb(error, result);
+              }
             }, {
-                timeout: 20000,
-                ontimeout: function () {
-                    self._toggleLoading(false);
-                    return cb('Request timed out');
-                }
+              timeout: 20000,
+              ontimeout: function () {
+                self._toggleLoading(false);
+                return cb('Request timed out');
+              }
             });
         }
 
