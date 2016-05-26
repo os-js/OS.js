@@ -10,6 +10,7 @@
     "src/client/stylesheets/**",
     "src/client/themes/**",
     "src/server/test/**",
+    "src/client/test/**",
     "src/templates/**",
     "src/installer/**",
     "src/packages/**",
