@@ -58,13 +58,12 @@
     var input = scheme.find(this, 'LogOutput');
     function refresh() {
       self._toggleLoading(true);
-      API.call('dmesg', {}, function(response) {
+      API.call('dmesg', {}, function(error, result) {
         self._toggleLoading(false);
-        if (response.error) {
-          var err = response.error || (response.result ? 'Unknown error' : 'No data recieved');
-          input.set('value', 'ERROR: ' + err);
+        if (error) {
+          input.set('value', 'ERROR: ' + error);
         } else {
-          input.set('value', response.result);
+          input.set('value', result);
         }
       });
     }

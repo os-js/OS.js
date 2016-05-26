@@ -75,22 +75,23 @@
     function callAPI(fn, args, cb) {
       self._toggleLoading(true);
       API.call(fn, args, function(error, result) {
-          if (error) {
-            error = 'Error while communicating with device: ' + (error || 'Unkown error (no response)');
-            wm.notification({title: 'Arduino Settings', message: error, icon: 'status/error.png' });
-          }
-          else {
-            self._toggleLoading(false);
-            return cb(error, result);
-          }
-        },
-        {
-          timeout: 20000,
-          ontimeout: function() {
-            self._toggleLoading(false);
-            return cb('Request timed out');
-          }
-        });
+        if ( error && typeof error !== 'string' ) {
+          error = 'Error while communicating with device: ' + error;
+        }
+
+        if ( error ) {
+          wm.notification({title: 'Arduino Settings', message: error, icon: 'status/error.png' });
+        }
+
+        self._toggleLoading(false);
+        return cb(error, result);
+      }, {
+        timeout: 20000,
+        ontimeout: function() {
+          self._toggleLoading(false);
+          return cb('Request timed out');
+        }
+      });
     }
 
     function renderDeviceInfo(cb) {

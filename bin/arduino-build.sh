@@ -120,6 +120,7 @@ rm $OUTDIR/dist/themes/.gitignore 2>/dev/null
 rm $OUTDIR/dist/packages/.gitignore 2>/dev/null
 rm $OUTDIR/dist/api.php 2>/dev/null
 rm $OUTDIR/dist/packages/*/*/package.json 2>/dev/null
+rm $OUTDIR/dist/packages/*/*/metadata.json 2>/dev/null
 rm $OUTDIR/dist/packages/*/*/api.js 2>/dev/null
 rm $OUTDIR/dist/packages/*/*/api.php 2>/dev/null
 rm $OUTDIR/dist/packages/*/*/server.lua 2>/dev/null

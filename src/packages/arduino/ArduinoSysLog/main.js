@@ -60,8 +60,7 @@
         self._toggleLoading(false);
 
         if (error) {
-          var err = error || (result ? 'Unknown error' : 'No data recieved');
-          input.set('value', 'ERROR: ' + err);
+          input.set('value', 'ERROR: ' + error);
         } else {
           input.set('value', result);
         }
