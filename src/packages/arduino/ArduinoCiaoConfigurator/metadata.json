@@ -1,0 +1,14 @@
+{
+  "className":  "ApplicationArduinoCiaoConfigurator",
+  "name":       "Arduino Ciao Configurator",
+  "mime":       null,
+  "icon":       "categories/applications-system.png",
+  "category":   "arduino",
+  "preload":    [
+    {"src": "main.js", "type": "javascript"},
+    {"src": "main.css", "type": "stylesheet"}
+  ]
+}
+
+
+
