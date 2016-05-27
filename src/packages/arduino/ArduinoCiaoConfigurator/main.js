@@ -164,7 +164,7 @@
       if(scheme.find(self, 'SelectConnectorView').get("value") != "null") {
         scheme.find(self, 'SelectConnectorView').get("value");
 
-        API.createDialog("Alert", {title: "Alert", message: "To apply changes reset MCU or upload a new Ciao sketch." }, function() {});
+        //API.createDialog("Alert", {title: "Alert", message: "To apply changes reset MCU or upload a new Ciao sketch." }, function() {});
 
         API.launch('ApplicationCodeMirror', {file: confFile});
       }
@@ -177,7 +177,7 @@
       if(scheme.find(self, 'SelectConnectorView').get("value") != "null") {
         scheme.find(self, 'SelectConnectorView').get("value");
 
-        API.createDialog("Alert", {title: "Alert", message: "To apply changes reset MCU or upload a new Ciao sketch." }, function() {});
+        //API.createDialog("Alert", {title: "Alert", message: "To apply changes reset MCU or upload a new Ciao sketch." }, function() {});
 
         API.launch('ApplicationCodeMirror', {file: confFile});
       }
