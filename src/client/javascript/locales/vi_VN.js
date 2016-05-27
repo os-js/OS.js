@@ -260,7 +260,7 @@
     'ERR_VFSMODULE_FIND_FMT'       : 'Lỗi khi tìm kiếm: {0}',
     'ERR_VFSMODULE_FREESPACE'      : 'Không thể làm sạch bộ nhớ',
     'ERR_VFSMODULE_FREESPACE_FMT'  : 'Lỗi khi làm sạch bộ nhớ: {0}',
-    
+
     // VFS -> Dropbox
     'DROPBOX_NOTIFICATION_TITLE' : 'Bạn đã đăng nhập vào Dropbox API',
     'DROPBOX_SIGN_OUT'           : 'Đăng xuất khỏi dịch vụ Google API',
