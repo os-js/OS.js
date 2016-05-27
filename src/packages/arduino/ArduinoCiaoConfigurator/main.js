@@ -103,8 +103,10 @@
     var connectorsSelectView = this._scheme.find(this, 'SelectConnectorView');
     var connectorsList = [{label: "Select connector", value: null}];
 
+    self._toggleLoading(true);
     VFS.scandir(ciaoPath, function(err,res){
       if(err) {
+        self._toggleLoading(false);
         console.log("Ciao err:" + err);
         API.createDialog("Error", {
           title : "Ciao Error",
@@ -116,6 +118,7 @@
 
       }
       connectorsSelectView.clear();
+
       res.forEach(function(item, index, array){
          //item = { filename:"ArduinoLuci" , id:null , mime:"" , path:"root:///osjs/dist/packages/target/ArduinoLuci" , size:0 , type:"dir" }
         var connectorName = item.filename.split(".")[0];
@@ -125,6 +128,9 @@
         });
       });
       connectorsSelectView.add(connectorsList);
+      connectorsSelectView.$element.firstElementChild[0].disabled = true;
+      connectorsSelectView.$element.firstElementChild[0].selected = true;
+      self._toggleLoading(false);
 
     }, {backlink:false});
 
@@ -135,19 +141,20 @@
 
 
     scheme.find(this, 'SelectConnectorView').on('change', function(evChange) {
-      if (evChange.detail != "null")
+      if (evChange.detail != "undefined")
       {
         editConfigurationButton.set('disabled', false);
         editConnectorCoreConfButton.set('disabled', false);
 
+        scheme.find(this, 'ConnectorConfView').clear();
+        scheme.find(this, 'ConnectorCoreConfView').clear();
         self.showConnectorConf(evChange.detail, ciaoPathRoot, self);
-
-
       }
       else {
         editConfigurationButton.set('disabled', true);
         editConnectorCoreConfButton.set('disabled', true);
         scheme.find(self, 'ConnectorConfView').clear();
+        scheme.find(self, 'ConnectorCoreConfView').clear();
       }
     });
 
@@ -175,6 +182,7 @@
         API.launch('ApplicationCodeMirror', {file: confFile});
       }
     });
+
   };
 
   function callAPI(fn, args, cb) {
@@ -229,7 +237,7 @@
                   value: coreConfObj[key],
                   columns: [
                     {label: key},
-                    {label: coreConfObj[key]}
+                    {label: JSON.stringify(coreConfObj[key])}
                   ]
                 });
               }
@@ -267,7 +275,7 @@
                         value: paramsConnectorConfObj[key],
                         columns: [
                           {label: key},
-                          {label: paramsConnectorConfObj[key]}
+                          {label: JSON.stringify(paramsConnectorConfObj[key])}
                         ]
                       });
                     }
@@ -292,7 +300,6 @@
       }
     });
   }
-
 
 
   ApplicationArduinoCiaoConfiguratorWindow.prototype.destroy = function() {
