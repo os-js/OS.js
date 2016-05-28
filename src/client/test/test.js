@@ -41,8 +41,8 @@
   ///////////////////////////////////////////////////////////////////////////////
 
   var run = {
-    utils: false,
-    vfs: false,
+    utils: true,
+    vfs: true,
     api: true,
     misc: true
   };
@@ -271,7 +271,16 @@
       });
 
       describe('preload', function() {
-        // TODO
+        it('should load files correctly', function(done) {
+          OSjs.Utils.preload([
+            '/packages/default/FileManager/main.js',
+            '/invalid/file.foo'
+          ], function(total, failed, successes) {
+            expect(failed.length).to.be.equal(1);
+            expect(successes.length).to.be.equal(1);
+            done();
+          });
+        });
       });
 
       // -- fs.js
@@ -752,11 +761,37 @@
       });
 
       describe('find()', function() {
-        // TODO
+        // FIXME: More tests
+        it('should find appropriate file', function(done) {
+          OSjs.VFS.find('home:///', {query: 'mocha-file-moved'}, function(e, r) {
+            var found = -1;
+            (r || []).forEach(function(i, idx) {
+              if ( found === -1 && i.filename === 'mocha-file-moved' ) {
+                found = idx;
+              }
+            });
+
+            expect(found).to.be.least(0);
+            done();
+          });
+        });
       });
 
       describe('scandir()', function() {
-        // TODO
+        // FIXME: More tests
+        it('should find appropriate file', function(done) {
+          OSjs.VFS.scandir('home:///', function(e, r) {
+            var found = -1;
+            (r || []).forEach(function(i, idx) {
+              if ( found === -1 && i.filename === 'mocha-file-moved' ) {
+                found = idx;
+              }
+            });
+
+            expect(found).to.be.least(0);
+            done();
+          });
+        });
       });
 
       describe('unlink()', function() {
