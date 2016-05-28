@@ -339,8 +339,8 @@
       list = (list || []).slice();
       args = args || {};
 
-      var successes  = [];
-      var failed     = [];
+      var successes = [];
+      var failed = [];
 
       console.group('Utils::preload()', list);
 
@@ -366,12 +366,16 @@
 
           if ( item.type.match(/^style/) ) {
             createStyle(src, _loaded);
+            return;
           } else if ( item.type.match(/script$/) ) {
             createScript(src, _loaded);
+            return;
+          } else {
+            failed.push(src);
           }
-        } else {
-          next();
         }
+
+        next();
       }, function() {
         console.groupEnd();
         (callback || function() {})(list.length, failed, successes);
