@@ -41,8 +41,8 @@
   ///////////////////////////////////////////////////////////////////////////////
 
   var run = {
-    utils: true,
-    vfs: true,
+    utils: false,
+    vfs: false,
     api: true,
     misc: true
   };
@@ -960,7 +960,40 @@
       });
 
       describe('curl()', function() {
-        // TODO
+        // FIXME: NEEDS ALL TESTS ON A CUSTOM LOCATION
+        it('should return 2XX', function(done) {
+          OSjs.API.curl({
+            url: 'https://os.js.org'
+          }, function(err, res) {
+            res = res || {};
+
+            expect(res.httpCode).to.be.equal(200);
+            done();
+          });
+        });
+
+        it('should return 404', function(done) {
+          OSjs.API.curl({
+            url: 'http://google.com/nothing'
+          }, function(err, res) {
+            res = res || {};
+
+            expect(res.httpCode).to.be.equal(404);
+            done();
+          });
+        });
+
+        it('should return 304', function(done) {
+          OSjs.API.curl({
+            url: 'http://www.dagbladet.no/',
+            method: 'POST'
+          }, function(err, res) {
+            res = res || {};
+
+            expect(res.httpCode).to.be.equal(403);
+            done();
+          });
+        });
       });
 
       describe('call()', function() {
@@ -991,36 +1024,52 @@
         // TODO
       });
 
-      describe('relaunch()', function() {
-        // TODO
-      });
-
       describe('getApplicationResource()', function() {
-        // TODO
+        it('should return correct string', function() {
+          expect(OSjs.API.getApplicationResource('App', 'foo.bar')).to.contain('.packages/App/foo.bar');
+        });
+        it('should return correct string', function() {
+          expect(OSjs.API.getApplicationResource('ApplicationAbout', 'foo.bar')).to.contain('packages/default/About/foo.bar');
+        });
       });
 
       describe('getThemeCSS()', function() {
-        // TODO
+        it('should return correct string', function() {
+          expect(OSjs.API.getThemeCSS('foo')).to.contain('styles/foo.css');
+        });
       });
 
       describe('getIcon()', function() {
-        // TODO
+        it('should return correct string', function() {
+          expect(OSjs.API.getIcon('foo/bar.baz')).to.contain('default/16x16/foo/bar.baz');
+        });
       });
 
       describe('getFileIcon()', function() {
-        // TODO
+        it('should return correct string', function() {
+          expect(OSjs.API.getFileIcon({
+            filename: 'foo.bar',
+            path: 'somewhere'
+          })).to.contain('default/16x16');
+        });
       });
 
       describe('getThemeResource()', function() {
-        // TODO
+        it('should return correct string', function() {
+          expect(OSjs.API.getThemeResource('foo.bar')).to.contain('styles/default/foo.bar');
+        });
       });
 
       describe('getSound()', function() {
-        // TODO
+        it('should return correct string', function() {
+          expect(OSjs.API.getSound('foo.bar')).to.contain('default/foo.bar');
+        });
       });
 
       describe('getConfig()', function() {
-        // TODO
+        it('should return correct string', function() {
+          expect(OSjs.API.getConfig('Connection.Handler')).to.be.equal('demo');
+        });
       });
 
       describe('setClipboard()', function() {
@@ -1036,7 +1085,17 @@
       });
 
       describe('message()', function() {
-        // TODO
+        it('should broadcast and trigger event', function(done) {
+          var proc = OSjs.API.getProcess(1);
+
+          proc._on('FOO', function(args, opts, msg) {
+            expect(msg).to.be.equal('FOO');
+            expect(args.bar).to.be.equal('baz');
+            done();
+          });
+
+          OSjs.API.message('FOO', {bar: 'baz'});
+        });
       });
 
       describe('getProcess()', function() {
