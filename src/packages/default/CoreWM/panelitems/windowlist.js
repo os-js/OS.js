@@ -57,7 +57,13 @@
     });
 
     this.evMenu = Utils.$bind(el, 'contextmenu', function(ev) {
+      ev.preventDefault();
       ev.stopPropagation();
+
+      if ( win ) {
+        win._onWindowIconClick(ev, this);
+      }
+
       return false;
     });
 

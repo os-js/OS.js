@@ -12,6 +12,9 @@ corewm-panel .PanelItemWindowList img {
 corewm-panel .PanelItemWindowList .Button {
   margin-right : 12px;
 }
+corewm-panel .PanelItemWindowList li * {
+  pointer-events: none;
+}
 
 @media all and (max-width: 800px) {
 
