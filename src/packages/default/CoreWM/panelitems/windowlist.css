@@ -4,7 +4,7 @@
  */
 corewm-panel .PanelItemWindowList {
   overflow : hidden;
-  min-width : 100px;
+  min-width : 32px;
 }
 corewm-panel .PanelItemWindowList img {
   width : 16px;

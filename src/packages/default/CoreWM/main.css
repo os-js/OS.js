@@ -92,7 +92,7 @@ corewm-panel {
   top : 0;
   left : 0;
   right : 0;
-  overflow : visible;
+  overflow : hidden;
   z-index : 2;
   margin : 0;
 
