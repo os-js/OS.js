@@ -244,7 +244,7 @@
 
     var src = this.url;
     if ( src.substr(0, 1) !== '/' && !src.match(/^(https?|ftp)/) ) {
-      src = window.location.href + src;
+      src = window.location.pathname + src;
     }
 
     Utils.ajax({
