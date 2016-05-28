@@ -199,7 +199,7 @@
        * @param   Function    cb        Callback => fn(error, result)
        * @return  void
        *
-       * @api SearchEgine::init()
+       * @api SearchEngine::init()
        */
       init: function(cb) {
         console.log('SearchEngine::init()');
@@ -221,7 +221,7 @@
        *
        * @return  void
        *
-       * @api SearchEgine::destroy()
+       * @api SearchEngine::destroy()
        */
       destroy: function() {
         console.log('SearchEngine::destroy()');
@@ -242,7 +242,7 @@
        * @param   Function    cb        Callback => fn(error, result)
        * @return  void
        *
-       * @api SearchEgine::search()
+       * @api SearchEngine::search()
        */
       search: function(q, args, cb) {
         var result = [];
@@ -290,7 +290,7 @@
        * @param   Function    cb        Callback => fn(error, result)
        * @return  void
        *
-       * @api SearchEgine::reindex()
+       * @api SearchEngine::reindex()
        */
       reindex: function(args, cb) {
         var errors = [];
@@ -316,7 +316,7 @@
        * @param   boolean     save        Save settings (default=true)
        * @return  void
        *
-       * @api SearchEgine::configure()
+       * @api SearchEngine::configure()
        */
       configure: function(opts, save) {
       }
