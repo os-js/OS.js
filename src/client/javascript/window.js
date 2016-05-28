@@ -847,7 +847,10 @@
    * @method  Window::_emit()
    */
   Window.prototype._emit = function(k, args) {
-    return this._evHandler.emit(k, args);
+    if ( this._evHandler ) {
+      return this._evHandler.emit(k, args);
+    }
+    return false;
   };
 
   /**
@@ -862,7 +865,10 @@
    * @method  Window::_on()
    */
   Window.prototype._on = function(k, func) {
-    return this._evHandler.on(k, func, this);
+    if ( this._evHandler ) {
+      return this._evHandler.on(k, func, this);
+    }
+    return false;
   };
 
   /**
@@ -878,7 +884,10 @@
    * @method  Window::_off()
    */
   Window.prototype._off = function(k, idx) {
-    return this._evHandler.off(k, idx);
+    if ( this._evHandler ) {
+      return this._evHandler.off(k, idx);
+    }
+    return false;
   };
 
   //
@@ -909,15 +918,13 @@
    */
   Window.prototype._removeChild = function(w) {
     var self = this;
-    this._children.every(function(child, i) {
+
+    this._children.forEach(function(child, i) {
       if ( child && child._wid === w._wid ) {
         console.debug('OSjs::Core::Window::_removeChild()');
-
         child.destroy();
         self._children[i] = null;
-        return false;
       }
-      return true;
     });
   };
 
