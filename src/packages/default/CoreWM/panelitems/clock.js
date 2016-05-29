@@ -120,11 +120,13 @@
   PanelItemClock.prototype.init = function() {
     var root = PanelItem.prototype.init.apply(this, arguments);
 
-    this.$clock = document.createElement('li');
+    this.$clock = document.createElement('span');
     this.$clock.innerHTML = '00:00:00';
+    this.$clock.setAttribute('role', 'button');
 
-    this._$container.setAttribute('role', 'button');
-    this._$container.appendChild(this.$clock);
+    var li = document.createElement('li');
+    li.appendChild(this.$clock);
+    this._$container.appendChild(li);
 
     this.createInterval();
 
