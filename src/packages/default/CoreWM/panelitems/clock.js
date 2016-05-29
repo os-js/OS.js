@@ -70,7 +70,7 @@
    * PanelItem: Clock
    */
   function PanelItemClock(settings) {
-    PanelItem.apply(this, ['PanelItemClock PanelItemFill PanelItemRight', 'Clock', settings, {
+    PanelItem.apply(this, ['PanelItemClock corewm-panel-right', 'Clock', settings, {
       utc: false,
       interval: 1000,
       format: 'H:i:s',
@@ -120,10 +120,11 @@
   PanelItemClock.prototype.init = function() {
     var root = PanelItem.prototype.init.apply(this, arguments);
 
-    this.$clock = document.createElement('div');
+    this.$clock = document.createElement('li');
     this.$clock.innerHTML = '00:00:00';
-    root.setAttribute('role', 'button');
-    root.appendChild(this.$clock);
+
+    this._$container.setAttribute('role', 'button');
+    this._$container.appendChild(this.$clock);
 
     this.createInterval();
 

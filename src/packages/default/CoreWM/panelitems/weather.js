@@ -40,7 +40,7 @@
   function PanelItemWeather() {
     var self = this;
 
-    PanelItem.apply(this, ['PanelItemWeather PanelItemFill PanelItemRight']);
+    PanelItem.apply(this, ['PanelItemWeather corewm-panel-right corewm-panel-dummy']);
 
     this.clockInterval  = null;
     this.position = null;
@@ -65,7 +65,7 @@
 
   PanelItemWeather.prototype.init = function() {
     var root = PanelItem.prototype.init.apply(this, arguments);
-    this.updateWeather(root);
+    this.updateWeather(this._$container);
     return root;
   };
 
@@ -76,7 +76,7 @@
 
   PanelItemWeather.prototype.updateWeather = function(root) {
     var self = this;
-    root = root || this._$element;
+    root = root || this._$container;
 
     if ( !root ) {
       return;

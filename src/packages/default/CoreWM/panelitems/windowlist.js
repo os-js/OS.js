@@ -187,8 +187,7 @@
    * PanelItem: WindowList
    */
   function PanelItemWindowList() {
-    PanelItem.apply(this, ['PanelItemWindowList PanelItemWide']);
-    this.$element = null;
+    PanelItem.apply(this, ['PanelItemWindowList corewm-panel-expand']);
     this.entries = [];
   }
 
@@ -201,10 +200,6 @@
 
   PanelItemWindowList.prototype.init = function() {
     var root = PanelItem.prototype.init.apply(this, arguments);
-
-    this.$element = document.createElement('ul');
-    this.$element.setAttribute('role', 'toolbar');
-    root.appendChild(this.$element);
 
     var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
@@ -234,20 +229,20 @@
 
   PanelItemWindowList.prototype.update = function(ev, win) {
     var self = this;
-    if ( !this.$element || (win && win._properties.allow_windowlist === false) ) {
+    if ( !this._$container || (win && win._properties.allow_windowlist === false) ) {
       return;
     }
 
     var entry = null;
     if ( ev === 'create' ) {
-      var className = 'Button WindowList_Window_' + win._wid;
-      if ( this.$element.getElementsByClassName(className).length ) {
+      var className = 'corewm-panel-ellipsis WindowList_Window_' + win._wid;
+      if ( this._$container.getElementsByClassName(className).length ) {
         return;
       }
 
       entry = new WindowListEntry(win, className);
       this.entries.push(entry);
-      this.$element.appendChild(entry.$element);
+      this._$container.appendChild(entry.$element);
     } else {
       var found = -1;
       this.entries.forEach(function(e, idx) {
@@ -259,7 +254,7 @@
 
       entry = this.entries[found];
       if ( entry ) {
-        if ( entry.event(ev, win, this.$element) === false ) {
+        if ( entry.event(ev, win, this._$container) === false ) {
           entry.destroy();
 
           this.entries.splice(found, 1);

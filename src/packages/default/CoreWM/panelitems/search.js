@@ -42,7 +42,7 @@
    * PanelItem: Search
    */
   function PanelItemSearch(settings) {
-    PanelItem.apply(this, ['PanelItemSearch PanelItemFill PanelItemRight', 'Search', settings, {
+    PanelItem.apply(this, ['PanelItemSearch corewm-panel-right', 'Search', settings, {
     }]);
 
     this.$box = null;
@@ -68,11 +68,6 @@
 
     var img = document.createElement('img');
     img.src = API.getIcon('actions/search.png');
-
-    var button = document.createElement('div');
-    button.appendChild(img);
-
-    root.appendChild(button);
 
     var input = document.createElement('input');
     input.setAttribute('type', 'text');
@@ -128,7 +123,7 @@
       }
     }));
 
-    this.events.push(Utils.$bind(button, 'click', function(ev) {
+    this.events.push(Utils.$bind(root, 'click', function(ev) {
       ev.stopPropagation();
 
       if ( self.visible ) {
@@ -167,6 +162,10 @@
         input.focus();
       }
     }));
+
+    var li = document.createElement('li');
+    li.appendChild(img);
+    this._$container.appendChild(li);
 
     document.body.appendChild(this.$box);
 

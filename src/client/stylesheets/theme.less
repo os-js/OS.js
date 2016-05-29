@@ -216,28 +216,30 @@ corewm-panel:before {
   box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
   opacity : .85;
 }
-  corewm-panel li.Button {
-    margin-top : -1px;
+  corewm-panel corewm-panel-item .corewm-panel-buttons > li {
     cursor : pointer;
     background : transparent !important;
+    padding : @gui_base_padding;
   }
+
+corewm-panel-container {
+  padding : @gui_base_padding;
+}
 
 corewm-panel .PanelItemClock {
   font-family : Monospace, Courier New;
   font-weight : normal;
   text-align : right;
-  line-height : 26px;
 }
 
-corewm-panel .PanelItemWindowList li.Button {
+corewm-panel .PanelItemWindowList li {
   opacity : .50;
 }
-corewm-panel .PanelItemWindowList li.Button.Focused {
+corewm-panel .PanelItemWindowList li.Focused {
   opacity : 1;
 }
-
-corewm-panel-container {
-  padding : @gui_base_padding;
+corewm-panel .PanelItemWindowList li img {
+  margin-right : @gui_base_padding;
 }
 
 /* Notifications */

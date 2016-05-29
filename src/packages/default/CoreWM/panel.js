@@ -297,6 +297,7 @@
 
   var PanelItem = function(className, itemName, settings, defaults) {
     this._$root = null;
+    this._$container = null;
     this._className = className || 'Unknown';
     this._itemName = itemName || className.split(' ')[0];
     this._settings = null;
@@ -318,6 +319,10 @@
     this._$root = document.createElement('corewm-panel-item');
     this._$root.className = this._className;
 
+    this._$container = document.createElement('ul');
+    this._$container.setAttribute('role', 'toolbar');
+    this._$container.className = 'corewm-panel-buttons';
+
     if ( this._settings ) {
       var title = 'Open ' + this._itemName + ' settings'; // FIXME: Locale
       Utils.$bind(this._$root, 'contextmenu', function(ev) {
@@ -333,6 +338,8 @@
       });
     }
 
+    this._$root.appendChild(this._$container);
+
     return this._$root;
   };
 
@@ -342,6 +349,7 @@
     }
     this._settingsDialog = null;
     this._$root = Utils.$remove(this._$root);
+    this._$container = Utils.$remove(this._$container);
   };
 
   PanelItem.prototype.applySettings = function() {
