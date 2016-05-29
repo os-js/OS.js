@@ -311,6 +311,8 @@ corewm-panel-item.corewm-panel-right {
       height : 100%;
       box-sizing : border-box;
       position : relative;
+      min-width : 16px;
+      min-height : 16px;
 
       display: -webkit-box;
       display: -moz-box;
