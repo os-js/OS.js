@@ -56,31 +56,39 @@
     build: function(el) {
       var orient = el.getAttribute('data-orientation') || 'horizontal';
 
-      function bindResizer(resizer, idx) {
+      function bindResizer(resizer, idx, cel) {
         var resizeEl = resizer.previousElementSibling;
         if ( !resizeEl ) { return; }
 
         var startWidth = resizeEl.offsetWidth;
         var startHeight = resizeEl.offsetHeight;
-        var maxWidth = el.offsetWidth;
-        var maxHeight = el.offsetHeight;
+        var minSize = 16;
+        var maxSize = Number.MAX_VALUE;
 
         GUI.Helpers.createDrag(resizer, function(ev) {
           startWidth = resizeEl.offsetWidth;
           startHeight = resizeEl.offsetHeight;
-          maxWidth = el.offsetWidth / 2;
-          maxHeight = el.offsetHeight / 2;
+          minSize = parseInt(cel.getAttribute('data-min-size'), 10) || minSize;
+
+          var max = parseInt(cel.getAttribute('data-max-size'), 10);
+          if ( !max ) {
+            var totalHeight = resizer.parentNode.offsetHeight;
+            var totalContainers = resizer.parentNode.querySelectorAll('gui-paned-view-container').length;
+            var totalSpacers = resizer.parentNode.querySelectorAll('gui-paned-view-handle').length;
+
+            maxSize = totalHeight - (totalContainers * 16) - (totalSpacers * 8);
+          }
         }, function(ev, diff) {
           var newWidth = startWidth + diff.x;
           var newHeight = startHeight + diff.y;
 
           var flex;
           if ( orient === 'horizontal' ) {
-            if ( !isNaN(newWidth) && newWidth > 0 && newWidth <= maxWidth ) {
+            if ( !isNaN(newWidth) && newWidth > 0 && newWidth >= minSize && newWidth <= maxSize ) {
               flex = newWidth.toString() + 'px';
             }
           } else {
-            if ( !isNaN(newHeight) && newHeight > 0 && newHeight <= maxHeight ) {
+            if ( !isNaN(newHeight) && newHeight > 0 && newHeight >= minSize && newHeight <= maxSize ) {
               flex = newHeight.toString() + 'px';
             }
           }
@@ -101,16 +109,94 @@
       el.querySelectorAll('gui-paned-view-container').forEach(function(cel, idx) {
         if ( idx % 2 ) {
           var resizer = document.createElement('gui-paned-view-handle');
+          resizer.setAttribute('role', 'separator');
           cel.parentNode.insertBefore(resizer, cel);
-          bindResizer(resizer, idx);
+          bindResizer(resizer, idx, cel);
         }
       });
     }
   };
 
+  /**
+   * Element: 'gui-paned-view-container'
+   *
+   * @property  base      String        CSS base flexbox property
+   * @property  grow      integer       CSS grow flexbox property
+   * @property  shrink    integer       CSS shrink flexbox property
+   * @property  min-size  integer       Minimum size in pixels
+   * @property  max-size  integer       Maxmimum size in pixels
+   *
+   * @api OSjs.GUI.Elements.gui-paned-view-container
+   * @class
+   */
   GUI.Elements['gui-paned-view-container'] = {
     build: function(el) {
       GUI.Helpers.setFlexbox(el);
+    }
+  };
+
+  /**
+   * Element: 'gui-button-bar'
+   *
+   * @api OSjs.GUI.Elements.gui-button-bar
+   * @class
+   */
+  GUI.Elements['gui-button-bar'] = {
+    build: function(el) {
+      el.setAttribute('role', 'toolbar');
+    }
+  };
+
+  /**
+   * Element: 'gui-toolbar'
+   *
+   * @api OSjs.GUI.Elements.gui-toolbar
+   * @class
+   */
+  GUI.Elements['gui-toolbar'] = {
+    build: function(el) {
+      el.setAttribute('role', 'toolbar');
+    }
+  };
+
+  /**
+   * Element: 'gui-grid'
+   *
+   * A grid-type container with equal-sized containers
+   *
+   * @api OSjs.GUI.Elements.gui-grid
+   * @class
+   */
+  GUI.Elements['gui-grid'] = {
+    build: function(el) {
+      var rows = el.querySelectorAll('gui-grid-row');
+      var p = 100 / rows.length;
+
+      rows.forEach(function(r) {
+        r.style.height = String(p) + '%';
+      });
+    }
+  };
+
+  /**
+   * Element: 'gui-grid-row'
+   *
+   * @api OSjs.GUI.Elements.gui-grid-row
+   * @class
+   */
+  GUI.Elements['gui-grid-row'] = {
+    build: function(el) {
+    }
+  };
+
+  /**
+   * Element: 'gui-grid-entry'
+   *
+   * @api OSjs.GUI.Elements.gui-grid-entry
+   * @class
+   */
+  GUI.Elements['gui-grid-entry'] = {
+    build: function(el) {
     }
   };
 
@@ -127,6 +213,20 @@
     }
   };
 
+  /**
+   * Element: 'gui-vbox-container'
+   *
+   * Vertical boxed layout container
+   *
+   * @property  base      String        CSS base flexbox property
+   * @property  grow      integer       CSS grow flexbox property
+   * @property  shrink    integer       CSS shrink flexbox property
+   * @property  expand    boolean       Make content expand to full width
+   * @property  fill      boolean       Make content fill up entire space
+   *
+   * @api OSjs.GUI.Elements.gui-vbox-container
+   * @class
+   */
   GUI.Elements['gui-vbox-container'] = {
     build: function(el) {
       GUI.Helpers.setFlexbox(el);
@@ -146,6 +246,20 @@
     }
   };
 
+  /**
+   * Element: 'gui-hbox-container'
+   *
+   * Horizontal boxed layout container
+   *
+   * @property  base      String        CSS base flexbox property
+   * @property  grow      integer       CSS grow flexbox property
+   * @property  shrink    integer       CSS shrink flexbox property
+   * @property  expand    boolean       Make content expand to full width
+   * @property  fill      boolean       Make content fill up entire space
+   *
+   * @api OSjs.GUI.Elements.gui-hbox-container
+   * @class
+   */
   GUI.Elements['gui-hbox-container'] = {
     build: function(el) {
       GUI.Helpers.setFlexbox(el);
@@ -157,9 +271,8 @@
    *
    * A expandable/collapsable container with label and indicator
    *
-   * Parameters:
-   *  String      label     The label
-   *  boolean     expanded  Expanded state (default=true)
+   * @property  label     String        The label
+   * @property  expanded  boolean       Expanded state (default=true)
    *
    * @api OSjs.GUI.Elements.gui-expander
    * @class
@@ -171,6 +284,7 @@
         expanded = !expanded;
       }
 
+      el.setAttribute('aria-expanded', String(expanded));
       el.setAttribute('data-expanded', String(expanded));
       return expanded;
     }
@@ -197,7 +311,15 @@
         }, false);
 
         label.appendChild(document.createTextNode(lbltxt));
-        el.appendChild(label);
+
+        el.setAttribute('role', 'toolbar');
+        el.setAttribute('aria-expanded', 'true');
+        el.setAttribute('data-expanded', 'true');
+        if ( el.children.length ) {
+          el.insertBefore(label, el.children[0]);
+        } else {
+          el.appendChild(label);
+        }
       }
     };
   })();

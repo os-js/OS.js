@@ -97,6 +97,6 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Dialogs.FileProgress       = FileProgressDialog;
+  OSjs.Dialogs.FileProgress = Object.seal(FileProgressDialog);
 
 })(OSjs.API, OSjs.Utils, OSjs.Core.DialogWindow);

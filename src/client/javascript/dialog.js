@@ -52,6 +52,7 @@
 
     opts = opts || {};
     args = args || {};
+
     callback = callback || function() {};
     if ( typeof callback !== 'function' ) {
       throw new TypeError('DialogWindow expects a callback Function, gave: ' + typeof callback);
@@ -70,8 +71,14 @@
     this._state.ontop                 = true;
     this._tag                         = 'DialogWindow';
 
+    if ( args.scheme && args.scheme instanceof OSjs.GUI.Scheme ) {
+      this.scheme = args.scheme;
+      delete args.scheme;
+    } else {
+      this.scheme = OSjs.GUI.DialogScheme.get();
+    }
+
     this.args = args;
-    this.scheme = OSjs.Core.getHandler().dialogs;
     this.className = className;
     this.buttonClicked = false;
 
@@ -91,7 +98,9 @@
 
   DialogWindow.prototype.init = function() {
     var self = this;
+
     var root = Window.prototype.init.apply(this, arguments);
+    root.setAttribute('role', 'dialog');
 
     this.scheme.render(this, this.className.replace(/Dialog$/, ''), root, 'application-dialog', function(node) {
       node.querySelectorAll('gui-label').forEach(function(el) {
@@ -110,11 +119,17 @@
       ButtonNo:     'no'
     };
 
+    var focusButtons = ['ButtonCancel', 'ButtonNo'];
+
     Object.keys(buttonMap).forEach(function(id) {
       if ( self.scheme.findDOM(self, id) ) {
-        self.scheme.find(self, id).on('click', function(ev) {
+        var btn = self.scheme.find(self, id);
+        btn.on('click', function(ev) {
           self.onClose(ev, buttonMap[id]);
         });
+        if ( focusButtons.indexOf(id) >= 0 ) {
+          btn.focus();
+        }
       }
     });
 
@@ -146,6 +161,6 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Core.DialogWindow      = DialogWindow;
+  OSjs.Core.DialogWindow = Object.seal(DialogWindow);
 
 })(OSjs.Utils, OSjs.API, OSjs.Core.Window);

@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(CoreWM, Panel, PanelItem, Utils, API, VFS) {
+(function(CoreWM, Panel, PanelItem, Utils, API, GUI, VFS) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -61,6 +61,7 @@
     var root = PanelItem.prototype.init.apply(this, arguments);
 
     this.$container = document.createElement('ul');
+    this.$container.setAttribute('role', 'toolbar');
     root.appendChild(this.$container);
 
     this.renderButtons();
@@ -110,7 +111,7 @@
       self.$container.style.paddingRight = '16px';
     }
 
-    API.createDroppable(this.$container, {
+    GUI.Helpers.createDroppable(this.$container, {
       onOver: function(ev, el, args) {
         if ( ev.target && !Utils.$hasClass(ev.target, 'Ghost') ) {
           createGhost(ev.target);
@@ -224,6 +225,8 @@
     sel.className = 'Button';
     sel.title = title;
     sel.innerHTML = '<img alt="" src="' + API.getIcon(icon) + '" />';
+    sel.setAttribute('role', 'button');
+    sel.setAttribute('aria-label', title);
 
     Utils.$bind(sel, 'click', callback);
     Utils.$bind(sel, 'contextmenu', function(ev) {
@@ -246,4 +249,4 @@
   OSjs.Applications.CoreWM.PanelItems                  = OSjs.Applications.CoreWM.PanelItems || {};
   OSjs.Applications.CoreWM.PanelItems.Buttons          = PanelItemButtons;
 
-})(OSjs.Applications.CoreWM.Class, OSjs.Applications.CoreWM.Panel, OSjs.Applications.CoreWM.PanelItem, OSjs.Utils, OSjs.API, OSjs.VFS);
+})(OSjs.Applications.CoreWM.Class, OSjs.Applications.CoreWM.Panel, OSjs.Applications.CoreWM.PanelItem, OSjs.Utils, OSjs.API, OSjs.GUI, OSjs.VFS);

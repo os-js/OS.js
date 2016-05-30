@@ -75,18 +75,13 @@
     return Application.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationEXAMPLE.prototype.init = function(settings, metadata, onInited) {
+  ApplicationEXAMPLE.prototype.init = function(settings, metadata) {
     Application.prototype.init.apply(this, arguments);
 
     var self = this;
-    var url = API.getApplicationResource(this, './scheme.html');
-    var scheme = GUI.createScheme(url);
-    scheme.load(function(error, result) {
+    this._loadScheme('./scheme.html', function(scheme) {
       self._addWindow(new ApplicationEXAMPLEWindow(self, metadata, scheme));
-      onInited();
     });
-
-    this._setScheme(scheme);
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -95,6 +90,6 @@
 
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationEXAMPLE = OSjs.Applications.ApplicationEXAMPLE || {};
-  OSjs.Applications.ApplicationEXAMPLE.Class = ApplicationEXAMPLE;
+  OSjs.Applications.ApplicationEXAMPLE.Class = Object.seal(ApplicationEXAMPLE);
 
 })(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

@@ -41,9 +41,10 @@
       gravity: 'center',
       allow_resize: false,
       allow_maximize: false,
-      width: 350,
-      height: 270,
-      min_height: 270
+      width: 320,
+      height: 320,
+      min_width: 320,
+      min_height: 320
     }, app, scheme]);
   }
 
@@ -53,6 +54,7 @@
   ApplicationAboutWindow.prototype.init = function(wm, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
     scheme.render(this, 'AboutWindow', root);
+    root.getElementsByTagName('img')[0].src = API.getApplicationResource(app, 'about.png');
     return root;
   };
 
@@ -67,7 +69,7 @@
   ApplicationAbout.prototype = Object.create(Application.prototype);
   ApplicationAbout.constructor = Application;
 
-  ApplicationAbout.prototype.init = function(settings, metadata, onInited) {
+  ApplicationAbout.prototype.init = function(settings, metadata) {
     Application.prototype.init.apply(this, arguments);
 
     var self = this;
@@ -75,8 +77,6 @@
     var scheme = GUI.createScheme(url);
     scheme.load(function(error, result) {
       self._addWindow(new ApplicationAboutWindow(self, metadata, scheme));
-
-      onInited();
     });
 
     this._setScheme(scheme);
@@ -88,6 +88,6 @@
 
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationAbout = OSjs.Applications.ApplicationAbout || {};
-  OSjs.Applications.ApplicationAbout.Class = ApplicationAbout;
+  OSjs.Applications.ApplicationAbout.Class = Object.seal(ApplicationAbout);
 
 })(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

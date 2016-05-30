@@ -32,14 +32,6 @@
  * @licence Simplified BSD License
  */
 
-/*
-See doc/example-handler.txt
-*/
-
-define("APIHANDLER_DSN", "mysql:host=localhost;dbname=osjs");
-define("APIHANDLER_USER", "root");
-define("APIHANDLER_PASS", "acca9pra");
-
 /**
  * MysqlAPIHandler for sessions via database
  */
@@ -47,8 +39,13 @@ class MysqlAPIHandler
   extends APIHandler
 {
   protected static function _initDB() {
+    $settings = Settings::get();
+    $mysqlSettings = $settings["handlers"]["mysql"];
+
     $args = Array(1002 => "SET NAMES 'utf8'");
-    if ( !($db = new PDO(APIHANDLER_DSN, APIHANDLER_USER, APIHANDLER_PASS, $args)) ) {
+
+    $dsn = sprintf("mysql:host=%s;dbname=%s", $mysqlSettings["host"], $mysqlSettings["database"]);
+    if ( !($db = new PDO($dsn, $mysqlSettings["user"], $mysqlSettings["password"], $args)) ) {
       throw "Could not set up database connection";
     }
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -60,14 +57,14 @@ class MysqlAPIHandler
 
     unset($_SESSION['user']);
 
-    $q = "SELECT `id`, `username`, `name`, `groups`, `settings` FROM `users` WHERE `username` = ? AND `password` = ? LIMIT 1;";
-    $a = Array($arguments['username'], $arguments['password']);
+    $q = "SELECT `id`, `username`, `password`, `name`, `groups`, `settings` FROM `users` WHERE `username` = ? LIMIT 1;";
+    $a = Array($arguments['username']);
 
     $response = false;
     if ( $stmt = $db->prepare($q) ) {
       $stmt->setFetchMode(PDO::FETCH_ASSOC);
       if ( $stmt->execute($a) ) {
-        if ( $row = $stmt->fetch() ) {
+        if ( ($row = $stmt->fetch()) && password_verify($arguments['password'], str_replace('$2y$', '$2a$', $row['password'])) ) {
           $response = Array(
             "userData" => Array(
               "id"        => (int) $row['id'],

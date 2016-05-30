@@ -52,9 +52,8 @@
 
   ApplicationTerminal.prototype = Object.create(Application.prototype);
 
-  ApplicationTerminal.prototype.init = function(settings, metadata, onInited) {
+  ApplicationTerminal.prototype.init = function(settings, metadata) {
     Application.prototype.init.apply(this, arguments);
-    onInited();
 
     var win = this._getMainWindow();
     win.setLocation(window.location.protocol + '//' + window.location.hostname + ':4200/');

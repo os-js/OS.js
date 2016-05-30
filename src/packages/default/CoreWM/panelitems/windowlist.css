@@ -9,3 +9,11 @@ corewm-panel .PanelItemWindowList {
 corewm-panel .PanelItemWindowList img {
   width : 16px;
 }
+
+@media all and (max-width: 800px) {
+
+  corewm-panel .PanelItemWindowList span {
+    display: none;
+  }
+
+}

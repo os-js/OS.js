@@ -1,6 +1,7 @@
 {
   "server" : {
     "tmpdir": "/tmp",
+    "srcdir": "src",
     "vfs": {
       "proxy": false,
       "homes":  "%DROOT%/vfs/home",
@@ -18,7 +19,11 @@
         "fs": "fs"
       }
     },
+    "proxies": {
+      "http-bind-jabber/": "http://localhost:5280/http-bind/"
+    },
     "handler" : "%HANDLER%",
-    "port" : 8000
+    "port" : 8000,
+    "basedir": ""
   }
 }

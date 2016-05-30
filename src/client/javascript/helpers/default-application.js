@@ -74,8 +74,8 @@
   /**
    * Initialize
    */
-  DefaultApplication.prototype.init = function(settings, metadata, onInited, onLoaded) {
-    Application.prototype.init.call(this, settings, metadata, onInited);
+  DefaultApplication.prototype.init = function(settings, metadata, onLoaded) {
+    Application.prototype.init.call(this, settings, metadata);
 
     var self = this;
     var url = API.getApplicationResource(this, './scheme.html');
@@ -88,8 +88,6 @@
       } else {
         onLoaded(scheme, file);
       }
-
-      onInited();
     });
 
     this._setScheme(scheme);

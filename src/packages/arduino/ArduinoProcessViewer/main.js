@@ -59,9 +59,9 @@
 
     function callAPI(fn, args, cb) {
       self._toggleLoading(true);
-      API.call(fn, args, function(response) {
+      API.call(fn, args, function(error, result) {
         self._toggleLoading(false);
-        return cb(response.error, response.result);
+        return cb(error, result);
       });
     }
 
@@ -140,7 +140,7 @@
   ApplicationArduinoProcessViewer.prototype = Object.create(Application.prototype);
   ApplicationArduinoProcessViewer.constructor = Application;
 
-  ApplicationArduinoProcessViewer.prototype.init = function(settings, metadata, onInited) {
+  ApplicationArduinoProcessViewer.prototype.init = function(settings, metadata) {
     Application.prototype.init.apply(this, arguments);
 
     var self = this;
@@ -148,7 +148,6 @@
     var scheme = GUI.createScheme(url);
     scheme.load(function(error, result) {
       self._addWindow(new ApplicationArduinoProcessViewerWindow(self, metadata, scheme));
-      onInited();
     });
 
     this._setScheme(scheme);

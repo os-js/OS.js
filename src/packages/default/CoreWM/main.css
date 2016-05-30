@@ -48,7 +48,7 @@ corewm-notifications {
   width : 400px;
 }
 
-corewm-notification-entry {
+corewm-notification {
   display : block;
   position : relative;
   min-height : 10px;
@@ -57,14 +57,14 @@ corewm-notification-entry {
   overflow : hidden;
   white-space : nowrap;
 }
-corewm-notification-entry.HasIcon {
+corewm-notification.HasIcon {
   min-height : 32px;
 }
-corewm-notification-entry.HasIcon img {
+corewm-notification.HasIcon img {
   position : absolute;
 }
-corewm-notification-entry.HasIcon .Title,
-corewm-notification-entry.HasIcon .Message {
+corewm-notification.HasIcon .Title,
+corewm-notification.HasIcon .Message {
   margin-left : 32px;
   padding-left : 5px;
   white-space: -moz-pre-wrap;
@@ -73,7 +73,7 @@ corewm-notification-entry.HasIcon .Message {
   white-space:      pre-wrap;
   word-wrap: break-word;
 }
-corewm-notification-entry:before {
+corewm-notification:before {
   content : '';
   position : absolute;
   top : 0;
@@ -240,6 +240,7 @@ corewm-window-switcher > div > img {
   vertical-align : middle;
   margin-right : 5px;
   margin-left : 5px;
+  width : 16px;
 }
 /*corewm-window-switcher > div > span {
 }
@@ -273,29 +274,43 @@ corewm-window-switcher > div.Active {
   position : absolute;
   min-width : 100px;
   min-height : 100px;
-  width : 480px;
+  width : 504px;
+  max-width : 100%;
+  max-height : 100%;
   overflow : hidden;
   padding : 0;
 }
 
 #CoreWMApplicationMenu gui-menu-entry {
-  width : 72px;
-  height : 72px;
+  width : 84px;
+  height : 84px;
   padding : 4px;
   display : inline-block;
   overflow : hidden;
-  text-align : center;
   line-height : 16px;
   position : relative;
   box-sizing : border-box;
+  text-align : center;
 }
 
 #CoreWMApplicationMenu gui-menu-entry img {
-  padding-top : 4px;
+  margin-top : 5px;
   width : 32px;
+  height : 32px;
 }
 #CoreWMApplicationMenu gui-menu-entry div {
   white-space : normal;
   max-height : 30px;
-  padding : 4px;
+  box-sizing : border-box;
+  margin-top : 5px;
 }
+
+@media all and (max-width: 800px) {
+
+  #CoreWMApplicationMenu {
+    overflow : auto;
+    text-align : center;
+  }
+
+}
+

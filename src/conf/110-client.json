@@ -4,15 +4,15 @@
       "Type": "%CONNECTION%",
       "Handler": "%HANDLER%",
 
-      "RootURI":      "/",
-      "APIURI":       "/API",
-      "FSURI":        "/FS",
-      "MetadataURI":  "/packages.js",
-      "ThemeURI":     "/themes/styles",
-      "SoundURI":     "/themes/sounds",
-      "IconURI":      "/themes/icons",
-      "FontURI":      "/themes/fonts",
-      "PackageURI":   "/packages"
+      "RootURI":      "",
+      "APIURI":       "API",
+      "FSURI":        "FS",
+      "MetadataURI":  "packages.js",
+      "ThemeURI":     "themes/styles",
+      "SoundURI":     "themes/sounds",
+      "IconURI":      "themes/icons",
+      "FontURI":      "themes/fonts",
+      "PackageURI":   "packages"
     },
 
     "Locale":           "en_EN",

@@ -147,6 +147,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Dialogs = OSjs.Dialogs || {};
-  OSjs.Dialogs.Color = ColorDialog;
+  OSjs.Dialogs.Color = Object.seal(ColorDialog);
 
 })(OSjs.API, OSjs.Utils, OSjs.Core.DialogWindow);

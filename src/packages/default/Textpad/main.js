@@ -102,9 +102,9 @@
   ApplicationTextpad.prototype = Object.create(DefaultApplication.prototype);
   ApplicationTextpad.constructor = DefaultApplication;
 
-  ApplicationTextpad.prototype.init = function(settings, metadata, onInited) {
+  ApplicationTextpad.prototype.init = function(settings, metadata) {
     var self = this;
-    DefaultApplication.prototype.init.call(this, settings, metadata, onInited, function(scheme, file) {
+    DefaultApplication.prototype.init.call(this, settings, metadata, function(scheme, file) {
       self._addWindow(new ApplicationTextpadWindow(self, metadata, scheme, file));
     });
   };
@@ -115,6 +115,6 @@
 
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationTextpad = OSjs.Applications.ApplicationTextpad || {};
-  OSjs.Applications.ApplicationTextpad.Class = ApplicationTextpad;
+  OSjs.Applications.ApplicationTextpad.Class = Object.seal(ApplicationTextpad);
 
 })(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

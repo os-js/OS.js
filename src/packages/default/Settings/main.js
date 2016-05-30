@@ -30,53 +30,7 @@
 (function(Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
-  var categories = ['theme', 'desktop', 'panel', 'user', 'fileview', 'packages'];
-
-  function fetchJSON(cb) {
-    var url = 'http://os-js.github.io/OS.js/store/packages.json';
-    API.curl({
-      body: {
-        url: url,
-        method: 'GET'
-      }
-    }, cb);
-  }
-
-  function installSelected(download, cb) {
-    var handler = OSjs.Core.getHandler();
-    var pacman = OSjs.Core.getPackageManager();
-
-    VFS.remoteRead(download, 'application/zip', function(error, ab) {
-      if ( error ) {
-        cb(error);
-        return;
-      }
-
-      var dest = new VFS.File({
-        filename: Utils.filename(download),
-        type: 'file',
-        path: 'home:///' + Utils.filename(download),
-        mime: 'application/zip'
-      });
-
-      VFS.write(dest, ab, function(error, success) {
-        if ( error ) {
-          cb('Failed to write package: ' + error); // FIXME
-          return;
-        }
-
-        OSjs.Core.getPackageManager().install(dest, function(error) {
-          if ( error ) {
-            cb('Failed to install package: ' + error); // FIXME
-            return;
-          }
-          pacman.generateUserMetadata(function() {
-            cb(false, true);
-          });
-        });
-      });
-    });
-  }
+  var categories = ['theme', 'desktop', 'panel', 'user', 'fileview'];
 
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
@@ -209,7 +163,7 @@
     }
 
     var found;
-    var indexes = ['TabsTheme', 'TabsDesktop', 'TabsPanel', 'TabsUser', 'TabsFileView', 'TabsPackages'];
+    var indexes = ['TabsTheme', 'TabsDesktop', 'TabsPanel', 'TabsUser', 'TabsFileView'];
     if ( typeof idx === 'string' ) {
       idx = Math.max(0, categories.indexOf(idx));
     }
@@ -248,7 +202,6 @@
     this.initDesktopTab(wm, scheme, init);
     this.initPanelTab(wm, scheme, init);
     this.initUserTab(wm, scheme, init);
-    //this.initPackagesTab(wm, scheme, init);
     this.initFileViewTab(wm, scheme, init);
   };
 
@@ -599,7 +552,9 @@
     if ( init ) {
       var langs = [];
       Object.keys(locales).forEach(function(l) {
-        langs.push({label: locales[l], value: l});
+        if ( OSjs.Locales[l] ) {
+          langs.push({label: locales[l], value: l});
+        }
       });
       scheme.find(this, 'UserLocale').add(langs);
     }
@@ -610,172 +565,6 @@
     scheme.find(this, 'UserUsername').set('value', user.username);
     scheme.find(this, 'UserGroups').set('value', user.groups);
     scheme.find(this, 'UserLocale').set('value', API.getLocale());
-  };
-
-  /**
-   * Packages
-   */
-  ApplicationSettingsWindow.prototype.initPackagesTab = function(wm, scheme, init) {
-    var self = this;
-    var handler = OSjs.Core.getHandler();
-    var pacman = OSjs.Core.getPackageManager();
-
-    if ( !init ) {
-      return; // TODO
-    }
-
-    //
-    // Installed
-    //
-    var view = scheme.find(this, 'InstalledPackages');
-
-    var sm = OSjs.Core.getSettingsManager();
-    var pool = sm.instance('Packages', {hidden: []});
-    var list, hidden;
-
-    function updateEnabledStates() {
-      list = pacman.getPackages(false);
-      hidden = pool.get('hidden');
-    }
-
-    function renderInstalled() {
-      updateEnabledStates();
-
-      var rows = [];
-      Object.keys(list).forEach(function(k, idx) {
-        rows.push({
-          index: idx,
-          value: k,
-          columns: [
-            {label: ''},
-            {label: k},
-            {label: list[k].scope},
-            {label: list[k].name}
-          ]
-        });
-      });
-
-      view.clear();
-      view.add(rows);
-
-      view.$element.querySelectorAll('gui-list-view-body > gui-list-view-row').forEach(function(row) {
-        var col = row.children[0];
-        var name = row.getAttribute('data-value');
-        var enabled = hidden.indexOf(name) >= 0;
-
-        scheme.create(self, 'gui-checkbox', {value: enabled}, col).on('change', function(ev) {
-          var idx = hidden.indexOf(name);
-
-          if ( ev.detail ) {
-            if ( idx < 0 ) {
-              hidden.push(name);
-            }
-          } else {
-            if ( idx >= 0 ) {
-              hidden.splice(idx, 1);
-            }
-          }
-        });
-      });
-    }
-
-    scheme.find(this, 'ButtonSaveHidden').on('click', function() {
-      self._toggleLoading(true);
-      pool.set('hidden', hidden, function() {
-        self._toggleLoading(false);
-      });
-    });
-
-    scheme.find(this, 'ButtonRegen').on('click', function() {
-      self._toggleLoading(true);
-      pacman.generateUserMetadata(function() {
-        self._toggleLoading(false);
-
-        renderInstalled();
-      });
-    });
-
-    scheme.find(this, 'ButtonZipInstall').on('click', function() {
-      self._toggleDisabled(true);
-
-      API.createDialog('File', {
-        mime: ['application/zip']
-      }, function(ev, button, result) {
-        if ( button !== 'ok' || !result ) {
-          self._toggleDisabled(false);
-        } else {
-          OSjs.Core.getPackageManager().install(result, function() {
-            self._toggleDisabled(false);
-            renderInstalled();
-          });
-        }
-      }, self);
-    });
-
-    //
-    // Store
-    //
-    var storeView = scheme.find(this, 'AppStorePackages');
-
-    function renderStore() {
-      self._toggleLoading(true);
-      fetchJSON(function(error, result) {
-        self._toggleLoading(false);
-
-        if ( error ) {
-          alert('Failed getting packages: ' + error); // FIXME
-          return;
-        }
-
-        var jsn = Utils.fixJSON(result.body);
-        var rows = [];
-        if ( jsn instanceof Array ) {
-          jsn.forEach(function(i, idx) {
-            rows.push({
-              index: idx,
-              value: i.download,
-              columns: [
-                {label: i.name},
-                {label: i.version},
-                {label: i.author}
-              ]
-            });
-          });
-        }
-
-        storeView.clear();
-        storeView.add(rows);
-      });
-    }
-
-    scheme.find(this, 'ButtonStoreRefresh').on('click', function() {
-      renderStore();
-    });
-
-    scheme.find(this, 'ButtonStoreInstall').on('click', function() {
-      var selected = storeView.get('selected');
-      if ( selected.length && selected[0].data ) {
-        self._toggleLoading(true);
-        installSelected(selected[0].data, function(error, result) {
-          self._toggleLoading(false);
-          if ( error ) {
-            alert(error); // FIXME
-            return;
-          }
-        });
-      }
-    });
-
-    //
-    // Init
-    //
-    renderInstalled();
-
-    scheme.find(this, 'TabsPackages').on('change', function(ev) {
-      if ( ev.detail && ev.detail.index === 1 ) {
-        renderStore();
-      }
-    });
   };
 
   /**
@@ -858,7 +647,7 @@
     return Application.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationSettings.prototype.init = function(settings, metadata, onInited) {
+  ApplicationSettings.prototype.init = function(settings, metadata) {
     Application.prototype.init.apply(this, arguments);
 
     var self = this;
@@ -867,8 +656,6 @@
     var category = this._getArgument('category') || settings.category;
     scheme.load(function(error, result) {
       self._addWindow(new ApplicationSettingsWindow(self, metadata, scheme, category));
-
-      onInited();
     });
 
     this._setScheme(scheme);
@@ -898,6 +685,6 @@
 
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationSettings = OSjs.Applications.ApplicationSettings || {};
-  OSjs.Applications.ApplicationSettings.Class = ApplicationSettings;
+  OSjs.Applications.ApplicationSettings.Class = Object.seal(ApplicationSettings);
 
 })(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

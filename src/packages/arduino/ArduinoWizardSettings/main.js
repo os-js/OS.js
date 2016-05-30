@@ -202,12 +202,9 @@
             }
         });
 
-        getCurrentBoardSettings();
-        getCurrentWifiSettings();
-        scanNetworks();
-
-        function getCurrentWifiSettings() {
+        function getCurrentWifiSettings(cb) {
             callAPI('iwinfo', {}, function (err, result) {
+              cb();
                 /*var info = (result || '').split(' ');
                 var keys = ['ap', 'ssid', 'security', 'signal'];
                 var list = {};
@@ -222,22 +219,26 @@
                 var secu = list['security'] !== '<none>' ? list['security'] : '';
                  */
 
-                var ssid = result['ssid'] !== '<none>' ? result['ssid'].trim() : '';
-                var secu = result['security'] !== '<none>' ? result['security'].trim() : '';
+                if ( !err && result ) {
+                  var ssid = result['ssid'] !== '<none>' ? result['ssid'].trim() : '';
+                  var secu = result['security'] !== '<none>' ? result['security'].trim() : '';
 
 
-                txtWifiSSID.set("value", ssid);
-                ddlWifiEncryption.set("value", secu); //FIXME at the moment the security is always <none>
+                  txtWifiSSID.set("value", ssid);
+                  ddlWifiEncryption.set("value", secu); //FIXME at the moment the security is always <none>
 
-                //set the current settings
-                self.currentSettings.encryption = secu;
-                self.currentSettings.ssid = ssid;
+                  //set the current settings
+                  self.currentSettings.encryption = secu;
+                  self.currentSettings.ssid = ssid;
+                }
 
             });
         }
 
-        function getCurrentBoardSettings() {
+        function getCurrentBoardSettings(cb) {
             callAPI('sysinfo', {}, function (err, result) {
+              cb();
+
                 if (err) {
                     alert(err);
                     return;
@@ -487,8 +488,11 @@
         });
         }
 
-        function scanNetworks(){
+        function scanNetworks(cb){
+          cb = cb || function() {};
+
             callAPI('iwscan', {device: 'radio0'}, function(err, result) {
+              cb();
                 ddlWifiSSID.clear();
 
                 if ( !err && result ) {
@@ -519,12 +523,17 @@
         function callAPI(fn, args, cb) {
             cb = cb || function(){};
             self._toggleLoading(true);
-            API.call(fn, args, function (response) {
+            API.call(fn, args, function (error, result) {
+                if ( error && typeof error !== 'string' ) {
+                  error = 'Error while communicating with device: ' + error;
+                }
+
+                if ( error ) {
+                  wm.notification({title: 'Arduino Settings', message: error, icon: 'status/error.png' });
+                }
+
                 self._toggleLoading(false);
-                return cb(response.error, response.result);
-            }, function (err) {
-                err = 'Error while communicating with device: ' + (err || 'Unkown error (no response)');
-                wm.notification({title: 'Arduino Settings', message: err, icon: 'status/error.png'});
+                return cb(error, result);
             }, {
                 timeout: 20000,
                 ontimeout: function () {
@@ -533,6 +542,17 @@
                 }
             });
         }
+
+        self._toggleLoading(true);
+        setTimeout(function() {
+          getCurrentBoardSettings(function() {
+            getCurrentWifiSettings(function() {
+              scanNetworks(function() {
+                self._toggleLoading(false);
+              });
+            });
+          });
+        }, 250);
 
     };
 
@@ -556,7 +576,7 @@
         return Application.prototype.destroy.apply(this, arguments);
     };
 
-    ApplicationArduinoWizardSettings.prototype.init = function (settings, metadata, onInited) {
+    ApplicationArduinoWizardSettings.prototype.init = function (settings, metadata) {
         Application.prototype.init.apply(this, arguments);
 
         var self = this;
@@ -564,7 +584,6 @@
         var scheme = GUI.createScheme(url);
         scheme.load(function (error, result) {
             self._addWindow(new ApplicationArduinoWizardSettingsWindow(self, metadata, scheme));
-            onInited();
         });
 
         this._setScheme(scheme);

@@ -484,6 +484,8 @@ gui-paned-view[data-orientation='vertical'] {
 gui-iframe {
   display : inline-block;
   position : relative;
+  min-width : 16px;
+  min-height : 16px;
 }
   gui-iframe > iframe {
     display : block;
@@ -504,6 +506,8 @@ gui-button-bar {
   overflow : hidden;
   /* NOTE: Fixes spacing errors in FF */
   font-size : 0;
+  min-width : 16px;
+  min-height : 16px;
 }
 gui-button-bar {
   white-space: nowrap;
@@ -558,18 +562,21 @@ gui-tabs {
         left : 0;
         right : 0;
         bottom : 0;
+        z-index : 999999999;
       }
-  gui-tabs > div {
+  gui-tabs > gui-tab-container {
     overflow : hidden;
+    display : none;
+    position : relative;
   }
-
-    gui-tab-container {
-      display : none;
-      height : 100%;
-    }
     gui-tab-container.gui-active {
       display : block;
     }
+
+application-window-content > gui-tabs {
+  width : 100%;
+  height : 100%;
+}
 
 /* Grid */
 gui-grid {
@@ -848,9 +855,9 @@ gui-slider {
    */
 
   gui-slider input::-moz-range-track {
+    /*csslint vendor-prefix:false */
+
     -moz-appearance: none;
-     -ms-appearance: none;
-      -o-appearance: none;
          appearance: none;
 
     background : transparent;
@@ -879,6 +886,8 @@ gui-slider {
    * RANGE THUMB
    */
   gui-slider input::-moz-range-thumb {
+    /*csslint vendor-prefix:false */
+
     -moz-appearance: none;
     -moz-border-radius : 0;
     border-radius : 0;
@@ -887,6 +896,8 @@ gui-slider {
   }*/
 
   gui-slider input::-webkit-slider-thumb {
+    /*csslint vendor-prefix:false */
+
     -webkit-appearance: none !important;
     -webkit-border-radius : 0;
     border-radius : 0;
@@ -895,6 +906,8 @@ gui-slider {
   }*/
 
   gui-slider input::-ms-thumb {
+    /*csslint vendor-prefix:false */
+
     -ms-appearance : none !important;
     -ms-border-radius : 0;
     border-radius : 0;
@@ -1114,6 +1127,8 @@ gui-audio {
 gui-video {
   display : inline-block;
   position : relative;
+  min-width : 16px;
+  min-height : 16px;
 }
   /*gui-video > video {
   }*/
@@ -1133,6 +1148,8 @@ gui-image {
 gui-canvas {
   display : inline-block;
   position : relative;
+  min-width : 16px;
+  min-height : 16px;
 }
 
 /* Color Swatch */
@@ -1214,14 +1231,20 @@ gui-menu.gui-root-menu {
     }*/
 
   gui-menu > gui-menu-entry > gui-menu {
-    display : none;
     position : absolute;
     z-index : 99999;
+  }
+  gui-menu.gui-showing > gui-menu-entry > gui-menu {
+    display : none;
   }
 
   gui-menu > gui-menu-entry:hover > gui-menu {
     display : inline-block;
     left : 100%;
+    top : 0;
+  }
+  gui-menu.gui-overflowing > gui-menu-entry:hover > gui-menu {
+    left : auto;
     top : 0;
   }
   gui-menu.gui-root-menu > gui-menu-entry:hover > gui-menu {
@@ -1235,6 +1258,7 @@ gui-menu.gui-root-menu {
 gui-menu-bar {
   position : relative;
   display : block;
+  min-height : 16px;
 }
   gui-menu-bar-entry {
     position : relative;
@@ -1331,6 +1355,8 @@ gui-icon-view {
   position : relative;
   display : inline-block;
   overflow : auto;
+  min-width : 16px;
+  min-height : 16px;
 }
   gui-icon-view-body {
     position : absolute;
@@ -1389,6 +1415,8 @@ gui-list-view {
   position : relative;
   display : inline-block;
   overflow : auto;
+  min-width : 16px;
+  min-height : 16px;
 }
   gui-list-view-body {
     display : block;
@@ -1530,6 +1558,8 @@ gui-tree-view {
   position : relative;
   display : inline-block;
   overflow : auto;
+  min-width : 16px;
+  min-height : 16px;
 }
   gui-tree-view-body {
     position : absolute;

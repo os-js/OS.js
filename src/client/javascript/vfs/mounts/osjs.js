@@ -79,7 +79,7 @@
    * @see OSjs.VFS.Transports.Internal
    * @api OSjs.VFS.Modules.OSjs
    */
-  OSjs.VFS.Modules.OSjs = OSjs.VFS.Modules.OSjs || {
+  OSjs.VFS.Modules.OSjs = OSjs.VFS.Modules.OSjs || OSjs.VFS._createMountpoint({
     readOnly: true,
     description: 'OS.js',
     root: 'osjs:///',
@@ -87,16 +87,7 @@
     icon: 'devices/harddrive.png',
     visible: true,
     internal: true,
-    unmount: function(cb) {
-      (cb || function() {})(API._('ERR_VFS_UNAVAILABLE'), false);
-    },
-    mounted: function() {
-      return true;
-    },
-    enabled: function() {
-      return true;
-    },
     request: makeRequest
-  };
+  });
 
 })(OSjs.Utils, OSjs.API);

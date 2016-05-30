@@ -184,8 +184,7 @@
     this.updated = false;
 
     function getInfo() {
-      self._app._call('info', {filename: file.path}, function(res) {
-        var info = (res && res.result) ? res.result : null;
+      self._app._api('info', {filename: file.path}, function(err, info) {
         if ( info ) {
           if ( info.Artist ) { labelArtist.set('value', info.Artist); }
           if ( info.Album ) { labelAlbum.set('value', info.Album); }
@@ -248,9 +247,9 @@
     return DefaultApplication.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationMusicPlayer.prototype.init = function(settings, metadata, onInited) {
+  ApplicationMusicPlayer.prototype.init = function(settings, metadata) {
     var self = this;
-    DefaultApplication.prototype.init.call(this, settings, metadata, onInited, function(scheme, file) {
+    DefaultApplication.prototype.init.call(this, settings, metadata, function(scheme, file) {
       self._addWindow(new ApplicationMusicPlayerWindow(self, metadata, scheme, file));
     });
   };
@@ -261,6 +260,6 @@
 
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationMusicPlayer = OSjs.Applications.ApplicationMusicPlayer || {};
-  OSjs.Applications.ApplicationMusicPlayer.Class = ApplicationMusicPlayer;
+  OSjs.Applications.ApplicationMusicPlayer.Class = Object.seal(ApplicationMusicPlayer);
 
 })(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

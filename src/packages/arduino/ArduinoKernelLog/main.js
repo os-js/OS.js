@@ -58,13 +58,12 @@
     var input = scheme.find(this, 'LogOutput');
     function refresh() {
       self._toggleLoading(true);
-      API.call('dmesg', {}, function(response) {
+      API.call('dmesg', {}, function(error, result) {
         self._toggleLoading(false);
-        if (response.error) {
-          var err = response.error || (response.result ? 'Unknown error' : 'No data recieved');
-          input.set('value', 'ERROR: ' + err);
+        if (error) {
+          input.set('value', 'ERROR: ' + error);
         } else {
-          input.set('value', response.result);
+          input.set('value', result);
         }
       });
     }
@@ -94,7 +93,7 @@
   ApplicationArduinoKernelLog.prototype = Object.create(Application.prototype);
   ApplicationArduinoKernelLog.constructor = Application;
 
-  ApplicationArduinoKernelLog.prototype.init = function(settings, metadata, onInited) {
+  ApplicationArduinoKernelLog.prototype.init = function(settings, metadata) {
     Application.prototype.init.apply(this, arguments);
 
     var self = this;
@@ -102,7 +101,6 @@
     var scheme = GUI.createScheme(url);
     scheme.load(function(error, result) {
       self._addWindow(new ApplicationArduinoKernelLogWindow(self, metadata, scheme));
-      onInited();
     });
 
     this._setScheme(scheme);

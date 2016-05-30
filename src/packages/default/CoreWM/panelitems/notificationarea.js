@@ -46,6 +46,8 @@
     this.onDestroy      = opts.onDestroy     || function() {};
     this.onClick        = opts.onClick       || function() {};
     this.onContextMenu  = opts.onContextMenu || function() {};
+    this.evClick        = null;
+    this.evMenu         = null;
 
     this._build(name);
     this.onCreated.call(this);
@@ -59,18 +61,22 @@
     }
 
     this.$container.className = classNames.join(' ');
+    this.$container.setAttribute('role', 'button');
+    this.$container.setAttribute('aria-label', this.opts.title);
+
     if ( this.opts.tooltip ) {
       this.$container.title = this.opts.tooltip;
     }
 
-    this.$container.addEventListener('click', function(ev) {
+    this.evClick = Utils.$bind(this.$container, 'click', function(ev) {
       ev.stopPropagation();
       ev.preventDefault();
       OSjs.API.blurMenu();
       self.onClick.apply(self, arguments);
       return false;
     });
-    this.$container.addEventListener('contextmenu', function(ev) {
+
+    this.evMenu = Utils.$bind(this.$container, 'contextmenu', function(ev) {
       ev.stopPropagation();
       ev.preventDefault();
       OSjs.API.blurMenu();
@@ -117,17 +123,24 @@
   };
 
   NotificationAreaItem.prototype.destroy = function() {
+    if ( this.evClick ) {
+      this.evClick = Utils.$unbind(this.evClick);
+    }
+    if ( this.evMenu ) {
+      this.evMenu = Utils.$unbind(this.evMenu);
+    }
     this.onDestroy.call(this);
 
     this.$image     = Utils.$remove(this.$image);
     this.$container = Utils.$remove(this.$container);
   };
 
+  // NOTE: This is a workaround for resetting items on panel change
+  var _restartFix = {};
+
   /**
    * PanelItem: NotificationArea
    */
-  var _restartFix = {}; // FIXME: This is a workaround for resetting items on panel change
-
   var PanelItemNotificationArea = function() {
     PanelItem.apply(this, ['PanelItemNotificationArea PanelItemFill PanelItemRight']);
     this.notifications = {};
@@ -140,6 +153,7 @@
 
   PanelItemNotificationArea.prototype.init = function() {
     var root = PanelItem.prototype.init.apply(this, arguments);
+    root.setAttribute('role', 'toolbar');
 
     var fix = Object.keys(_restartFix);
     var self = this;

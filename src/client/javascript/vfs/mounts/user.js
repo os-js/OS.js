@@ -44,7 +44,7 @@
    * @see OSjs.VFS.Transports.Internal
    * @api OSjs.VFS.Modules.User
    */
-  OSjs.VFS.Modules.User = OSjs.VFS.Modules.User || {
+  OSjs.VFS.Modules.User = OSjs.VFS.Modules.User || OSjs.VFS._createMountpoint({
     readOnly: false,
     description: 'Home',
     root: 'home:///',
@@ -52,16 +52,7 @@
     match: /^home\:\/\//,
     visible: true,
     internal: true,
-    unmount: function(cb) {
-      (cb || function() {})(API._('ERR_VFS_UNAVAILABLE'), false);
-    },
-    mounted: function() {
-      return true;
-    },
-    enabled: function() {
-      return true;
-    },
     request: OSjs.VFS.Transports.Internal.request
-  };
+  });
 
 })(OSjs.Utils, OSjs.API);

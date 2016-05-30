@@ -329,17 +329,17 @@
       'Toggle tools toolbar' : 'Toolbar gereedschappen',
       'Toggle layers toolbar' : 'Toolbar lagen',
       'Layer' : 'Laag',
-      'Effect' : 'Effekten',
+      'Effect' : 'Effecten',
       'Flip Horizontally' : 'Horizontaal spiegelen',
-      'Flip Vertically' : 'Vertikaal spiegelen',
+      'Flip Vertically' : 'Verticaal spiegelen',
       'Foreground' : 'Voorgrond',
-      'Bakgrunn' : 'Achtergrond',
+      'Background' : 'Achtergrond',
       'Foreground (Fill) Color' : 'Voorgrond (vul) kleur',
       'Background (Stroke) Color' : 'Achtergrond (penseel-) kleur',
       'Line join' : 'Lijnverbinding',
       'Line width' : 'Lijnbreedte',
       'Toggle Stroke' : 'Penseel streek',
-      'Enable stroke' : 'Penseel aktiveren',
+      'Enable stroke' : 'Penseel activeren',
       'Round' : 'Rond',
       'Miter' : 'Live',
       'Bevel' : 'Schuin',
@@ -347,30 +347,30 @@
       'No stroke' : 'Geen penseel streken',
 
       'Pointer' : 'Aanwijzer',
-      'Move active layer' : 'Verplaats de aktieve laag',
+      'Move active layer' : 'Verplaats de actieve laag',
 
       'Picker' : 'Kiezer',
       'LMB: Pick foreground-, RMB: Pick background color' : 'LMB: Kies voorgrond-kleur, RMB: Kies achtergrondkleur',
 
       'Pencil' : 'Penseel',
-      'LMB: Use foreground-, RMB: Use background color' : 'LMB/RMB: Teken met voor- en achtergrondkleur',
+      'LMB: Use foreground-, RMB: Use background color' : 'LMB: Teken met voorgrond-, RMB: Teken met achtergrond-kleur',
       'Path' : 'Pfad',
 
       'Square/Rectangle' : 'Vierkant/rechthoek',
-      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode' : 'LMB/RMB: Teken met voor- en achtergrondkleur, SHIFT: Rechnthoek tekenen',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode' : 'LMB/RMB: Teken met voor- en achtergrondkleur, SHIFT: Rechthoek tekenen',
 
       'Circle/Ellipse' : 'Cirkel/elipse',
       'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode' : 'LMB/RMB: Teken met voor- en achtergrondkleur, SHIFT: Elipse tekenen',
 
-      'Blur' : 'Vager maken (Blur)',
+      'Blur' : 'Vervagen (Blur)',
       'Noise' : 'Ruis',
       'Invert colors' : 'Kleuren inverteren',
       'Grayscale' : 'Grijstinten',
-      'Sharpen' : 'Scherper',
-      'Simple Blur' : 'Eenvoudig vager maken (Blur)',
+      'Sharpen' : 'Verscherpen',
+      'Simple Blur' : 'Eenvoudig vervagen (Blur)',
 
       'Radius' : 'Radius',
-      'Iterations' : 'Doorgangen'
+      'Iterations' : 'Herhalingen'
     },
     no_NO : {
       'Toggle tools toolbar' : 'Svitsj verktøylinje',
