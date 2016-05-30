@@ -209,6 +209,7 @@ body[data-attention="true"]:after {
 
 corewm-panel {
   color : #ffffff; /* Window Manager manages this */
+  font-size : 0;
   padding : @gui_base_padding;
 }
 corewm-panel:before {
@@ -216,14 +217,29 @@ corewm-panel:before {
   box-shadow : 0px 0px 10px 1px rgba(34, 34, 34, .3);
   opacity : .85;
 }
-  corewm-panel corewm-panel-item .corewm-panel-buttons > li {
-    cursor : pointer;
-    padding : @gui_base_padding;
-  }
 
 corewm-panel-container {
-  padding : @gui_base_padding;
+  padding : calc(@gui_base_padding * 2);
 }
+corewm-panel[data-orientation="horizontal"] corewm-panel-container {
+  width : calc(~"100% - "@gui_base_padding * 2);
+}
+corewm-panel[data-orientation="vertical"] corewm-panel-container {
+  height : calc(~"100% - "@gui_base_padding * 2);
+}
+
+  corewm-panel corewm-panel-item .corewm-panel-buttons > li {
+    cursor : pointer;
+    font-size : 12px;
+  }
+  corewm-panel[data-orientation="horizontal"] corewm-panel-item .corewm-panel-buttons > li {
+    margin-right : @gui_base_padding;
+    margin-left : @gui_base_padding;
+  }
+  corewm-panel[data-orientation="vertical"] corewm-panel-item .corewm-panel-buttons > li {
+    margin-top : @gui_base_padding;
+    margin-bottom : @gui_base_padding;
+  }
 
 corewm-panel .PanelItemClock {
   font-family : Monospace, Courier New;

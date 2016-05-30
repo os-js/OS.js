@@ -188,8 +188,8 @@ corewm-panel {
       -ms-user-select: none;
           user-select: none;
 
-  min-width : 26px;
-  min-height : 26px;
+  min-width : 16px;
+  min-height : 16px;
 }
 
 corewm-panel[data-orientation="horizontal"] {
@@ -197,21 +197,38 @@ corewm-panel[data-orientation="horizontal"] {
   left : 0;
   right : 0;
 }
+  corewm-panel[data-orientation="horizontal"] corewm-panel-item {
+    height : 100%;
+  }
   corewm-panel[data-orientation="horizontal"] corewm-panel-container {
     width : 100%;
+    min-height : 16px;
+    height : 16px;
   }
+  corewm-panel[data-orientation="horizontal"] .corewm-panel-buttons {
+    height : 100%;
+  }
+    corewm-panel[data-orientation="horizontal"] .corewm-panel-buttons > li {
+      height : 100%;
+    }
+
+    corewm-panel[data-orientation="horizontal"] .corewm-panel-buttons > li > img {
+      height : 100%;
+      width : auto;
+    }
 
 corewm-panel[data-orientation="vertical"] {
   left : 0;
   bottom : 0;
   top : 0;
-  width : 42px;
 }
   corewm-panel[data-orientation="vertical"] corewm-panel-item {
     width : 100%;
   }
   corewm-panel[data-orientation="vertical"] corewm-panel-container {
     height : 100%;
+    min-width : 16px;
+    width : 16px;
     flex-direction : column;
   }
   corewm-panel[data-orientation="vertical"] .corewm-panel-buttons {
@@ -220,9 +237,14 @@ corewm-panel[data-orientation="vertical"] {
   }
     corewm-panel[data-orientation="vertical"] .corewm-panel-buttons > li {
       max-width : 100%;
+      width : 100%;
     }
       corewm-panel[data-orientation="vertical"] .corewm-panel-buttons > li > span {
         transform : rotate(90deg);
+      }
+      corewm-panel[data-orientation="vertical"] .corewm-panel-buttons > li > img {
+        width : 100%;
+        height : auto;
       }
 
 corewm-panel:before {
@@ -259,8 +281,6 @@ corewm-panel-container {
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
-
-  box-sizing : border-box;
 
   justify-content: center;
 
@@ -363,8 +383,16 @@ corewm-panel-item.corewm-panel-right {
       -webkit-box-align: center;
          -moz-box-align: center;
     }
+    corewm-panel-item .corewm-panel-buttons:first-child {
+      margin-right : 0;
+      margin-top : 0;
+    }
+    corewm-panel-item .corewm-panel-buttons:last-child {
+      margin-right : 0;
+      margin-bottom : 0;
+    }
       corewm-panel-item .corewm-panel-buttons > li > img {
-        height : 16px;
+        display : inline-block;
       }
 
       corewm-panel-item .corewm-panel-buttons > li > img,
@@ -378,8 +406,8 @@ corewm-panel-item .Ghost {
 }
 
 .corewm-panel-dummy {
-  min-width : 26px;
-  min-height : 26px;
+  min-width : 16px;
+  min-height : 16px;
 }
 .corewm-panel-ellipsis span {
   display : inline-block;
@@ -493,6 +521,16 @@ corewm-panel[data-orientation="vertical"] .PanelItemWindowList li {
   -webkit-align-items: flex-start;
      -moz-align-items: flex-start;
           align-items: flex-start;
+}
+
+corewm-panel[data-orientation="vertical"] .PanelItemWindowList li > img {
+  transform : rotate(90deg);
+}
+corewm-panel[data-orientation="vertical"] .PanelItemWindowList li > span {
+  position: absolute;
+  left: .5em;
+  top: 20px;
+  transform-origin: left;
 }
 
 corewm-panel .PanelItemNotificationArea .BusyNotification > div,
