@@ -186,7 +186,7 @@
    * **the first parameter is always the GUI element**
    *
    * @see Element::on()
-   * @method Element::pon()
+   * @method Element::son()
    * @return Element this
    */
   UIElement.prototype.son = function(evName, thisArg, callback, args) {

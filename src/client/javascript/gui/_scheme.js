@@ -71,6 +71,14 @@
       var image = OSjs.GUI.Helpers.getIcon(el, win);
       el.setAttribute('data-icon', image);
     });
+
+    node.querySelectorAll('*[data-src]').forEach(function(el) {
+      var old = el.getAttribute('data-src') || '';
+      if ( win._app && old.match(/^app:\/\//) ) {
+        var source = API.getApplicationResource(win._app, old.replace('app://', ''));
+        el.setAttribute('data-src', source);
+      }
+    });
   }
 
   /**
