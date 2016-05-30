@@ -23,12 +23,6 @@
               <gui-list-view-row data-value="packages">
                 <gui-list-view-column data-icon="stock://32x32/places/folder.png">File View</gui-list-view-column>
               </gui-list-view-row>
-              <!--
-              <gui-list-view-row data-value="packages">
-                <gui-list-view-column data-icon="stock://32x32/apps/system-software-install.png">Packages</gui-list-view-column>
-              </gui-list-view-row>
-              -->
-
             </gui-list-view-body>
           </gui-list-view>
         </gui-hbox-container>
@@ -46,9 +40,6 @@
               <gui-fragment data-fragment-id="TabsPanel"></gui-fragment>
               <gui-fragment data-fragment-id="TabsUser"></gui-fragment>
               <gui-fragment data-fragment-id="TabsFileView"></gui-fragment>
-              <!--
-              <gui-fragment data-fragment-id="TabsPackages"></gui-fragment>
-              -->
             </gui-vbox-container>
           </gui-vbox>
 
@@ -82,70 +73,6 @@
     </gui-vbox-container>
   </gui-vbox>
 </application-window>
-
-<!-- ****************************************************************** -->
-<!--                             PACKAGES                               -->
-<!-- ****************************************************************** -->
-
-<application-fragment data-id="TabsPackages">
-  <gui-tabs data-id="TabsPackages">
-    <gui-tab-container data-id="TabPackagesLocal" data-label="Installed Packages">
-      <gui-fragment data-fragment-id="TabLocalPackages"></gui-fragment>
-    </gui-tab-container>
-
-    <gui-tab-container data-id="TabPackagesStore" data-label="App Store">
-      <gui-fragment data-fragment-id="TabAppStore"></gui-fragment>
-    </gui-tab-container>
-  </gui-tabs>
-</application-fragment>
-
-<application-fragment data-id="TabLocalPackages">
-  <gui-vbox class="block-label">
-    <gui-vbox-container data-shrink="1" data-grow="1" data-fill="true">
-      <gui-list-view data-id="InstalledPackages" data-multiple="false">
-        <gui-list-view-head>
-          <gui-list-view-row>
-            <gui-list-view-column data-basis="40px" data-grow="0" data-shrink="1">Hide</gui-list-view-column>
-            <gui-list-view-column data-basis="100px" data-grow="1" data-shrink="1">Application</gui-list-view-column>
-            <gui-list-view-column data-basis="50px" data-grow="0" data-shrink="1">Scope</gui-list-view-column>
-            <gui-list-view-column data-basis="100px" data-grow="1" data-shrink="1">Name</gui-list-view-column>
-          </gui-list-view-row>
-        </gui-list-view-head>
-      </gui-list-view>
-    </gui-vbox-container>
-
-    <gui-vbox-container data-shrink="1" data-expand="true">
-      <gui-button-bar>
-        <gui-button data-id="ButtonSaveHidden">Save</gui-button>
-        <gui-button data-id="ButtonRegen">Regenerate metadata</gui-button>
-        <gui-button data-id="ButtonZipInstall">Install from zip</gui-button>
-      </gui-button-bar>
-    </gui-vbox-container>
-  </gui-vbox>
-</application-fragment>
-
-<application-fragment data-id="TabAppStore">
-  <gui-vbox class="block-label">
-    <gui-vbox-container data-shrink="1" data-grow="1" data-fill="true">
-      <gui-list-view data-id="AppStorePackages" data-multiple="false">
-        <gui-list-view-head>
-          <gui-list-view-row>
-            <gui-list-view-column data-basis="100px" data-grow="1" data-shrink="1">Name</gui-list-view-column>
-            <gui-list-view-column data-basis="50px" data-grow="0" data-shrink="1">Version</gui-list-view-column>
-            <gui-list-view-column data-basis="100px" data-grow="1" data-shrink="1">Author</gui-list-view-column>
-          </gui-list-view-row>
-        </gui-list-view-head>
-      </gui-list-view>
-    </gui-vbox-container>
-
-    <gui-vbox-container data-shrink="1" data-expand="true">
-      <gui-button-bar>
-        <gui-button data-id="ButtonStoreRefresh">Refresh</gui-button>
-        <gui-button data-id="ButtonStoreInstall">Install selected</gui-button>
-      </gui-button-bar>
-    </gui-vbox-container>
-  </gui-vbox>
-</application-fragment>
 
 <!-- ****************************************************************** -->
 <!--                             USER                                   -->

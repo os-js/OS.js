@@ -44,7 +44,7 @@
       animations          : compability.css.animation,
       fullscreen          : true,
       desktopMargin       : 5,
-      wallpaper           : 'osjs:///themes/wallpapers/wallpaper.jpg',
+      wallpaper           : 'osjs:///themes/wallpapers/wallpaper.png',
       icon                : 'osjs-white.png',
       backgroundColor     : '#572a79',
       fontFamily          : 'Karla',

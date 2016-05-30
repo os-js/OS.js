@@ -50,6 +50,7 @@
     'onSessionLoaded':       [],
     'onLogout':              [],
     'onShutdown':            [],
+    'onApplicationPreload':  [],
     'onApplicationLaunch':   [],
     'onApplicationLaunched': []
   };
@@ -252,6 +253,11 @@
       CurrentLocale = DefaultLocale;
     }
 
+    var html = document.querySelector('html');
+    if ( html ) {
+      html.setAttribute('lang', l);
+    }
+
     console.log('doSetLocale()', CurrentLocale);
   }
 
@@ -268,23 +274,22 @@
    * @param   Function  callback  Callback function => fn(error, response)
    *
    * @return  void
-   * @link    http://os.js.org/doc/tutorials/using-curl.html
-   * @link    http://os.js.org/doc/server/srcservernodenode_modulesosjsapijs.html#api-curl
+   * @link    https://os.js.org/doc/tutorials/using-curl.html
+   * @link    https://os.js.org/doc/server/srcservernodenode_modulesosjsapijs.html#api-curl
    * @api     OSjs.API.curl()
    */
   function doCurl(args, callback) {
     args = args || {};
     callback = callback || {};
 
-    doAPICall('curl', args.body, function(response) {
-      if ( response && response.error ) {
-        callback(response.error);
-        return;
-      }
-      callback(false, response ? (response.result || null) : null);
-    }, function(error) {
-      callback(error);
-    }, args.options);
+    var opts = args.body;
+    if ( typeof opts === 'object' ) {
+      console.warn('DEPRECATION WARNING', 'The \'body\' wrapper is no longer needed');
+    } else {
+      opts = args;
+    }
+
+    doAPICall('curl', opts, callback, args.options);
   }
 
   /**
@@ -292,12 +297,9 @@
    *
    * You can call VFS functions by prefixing your method name with "FS:"
    *
-   * Response is in form of: {error, result}
-   *
    * @param   String    m       Method name
    * @param   Object    a       Method arguments
-   * @param   Function  cok     Callback on success => fn(response)
-   * @param   Function  cerror  (Optional) Callback on HTTP error => fn(error)
+   * @param   Function  cb      Callback on success => fn(err, res)
    * @param   Object    options (Optional) Options to send to the XHR request
    *
    * @see     OSjs.Core.Handler.callAPI()
@@ -307,32 +309,32 @@
    * @api     OSjs.API.call()
    */
   var _CALL_INDEX = 1;
-  function doAPICall(m, a, cok, cerror, options) {
+  function doAPICall(m, a, cb, options) {
+    a = a || {};
+
     var lname = 'APICall_' + _CALL_INDEX;
 
     if ( typeof a.__loading === 'undefined' || a.__loading === true ) {
       createLoading(lname, {className: 'BusyNotification', tooltip: 'API Call'});
     }
 
-    if ( typeof cok !== 'function' ) {
+    if ( typeof cb !== 'function' ) {
       throw new TypeError('call() expects a function as callback');
     }
 
-    if ( typeof cerror !== 'function' ) {
-      cerror = function() {
-        console.warn('API::call()', 'no error handler assigned', arguments);
-      };
+    if ( options && typeof options !== 'object' ) {
+      throw new TypeError('call() expects an object as options');
     }
 
     _CALL_INDEX++;
 
     var handler = OSjs.Core.getHandler();
-    return handler.callAPI(m, a, function() {
+    return handler.callAPI(m, a, function(response) {
       destroyLoading(lname);
-      cok.apply(this, arguments);
-    }, function() {
-      destroyLoading(lname);
-      cerror.apply(this, arguments);
+      response = response || {};
+      cb(response.error || false, response.result);
+    }, function(err) {
+      cb(err);
     }, options);
   }
 
@@ -438,6 +440,44 @@
   }
 
   /**
+   * Restarts all processes with the given name
+   *
+   * This also reloads any metadata preload items defined in the application.
+   *
+   * @param   String      n               Application Name
+   *
+   * @return  void
+   * @api     OSjs.API.relaunch()
+   */
+  function doReLaunchProcess(n) {
+    function relaunch(p) {
+      var data = null;
+      var args = {};
+      if ( p instanceof OSjs.Core.Application ) {
+        data = p._getSessionData();
+      }
+
+      try {
+        p.destroy(true); // kill
+      } catch ( e ) {
+        console.warn('OSjs.API.relaunch()', e.stack, e);
+      }
+
+      if ( data !== null ) {
+        args = data.args;
+        args.__resume__ = true;
+        args.__windows__ = data.windows || [];
+      }
+
+      args.__preload__ = {force: true};
+
+      OSjs.API.launch(n, args);
+    }
+
+    OSjs.API.getProcess(n).forEach(relaunch);
+  }
+
+  /**
    * Launch a Process
    *
    * @param   String      n               Application Name
@@ -457,58 +497,11 @@
 
     if ( !n ) { throw new Error('Cannot doLaunchProcess() witout a application name'); }
 
-    console.group('doLaunchProcess()', n, arg);
-
     var splash = null;
+    var pargs = {};
     var handler = OSjs.Core.getHandler();
     var packman = OSjs.Core.getPackageManager();
     var compability = OSjs.Utils.getCompability();
-
-    function createLaunchSplash(data, n) {
-      var splash = null;
-      var splashBar = null;
-
-      if ( data.splash === false ) { return; }
-
-      splash = document.createElement('application-splash');
-
-      var icon = document.createElement('img');
-      icon.alt = n;
-      icon.src = OSjs.API.getIcon(data.icon);
-
-      var titleText = document.createElement('b');
-      titleText.appendChild(document.createTextNode(data.name));
-
-      var title = document.createElement('span');
-      title.appendChild(document.createTextNode('Launching '));
-      title.appendChild(titleText);
-      title.appendChild(document.createTextNode('...'));
-
-      splashBar = document.createElement('gui-progress-bar');
-      OSjs.GUI.Elements['gui-progress-bar'].build(splashBar);
-
-      splash.appendChild(icon);
-      splash.appendChild(title);
-      splash.appendChild(splashBar);
-
-      document.body.appendChild(splash);
-
-      return {
-        destroy: function() {
-          OSjs.Utils.$remove(splash);
-          splash = null;
-          splashBar = null;
-        },
-        update: function(p, c) {
-          if ( !splash || !splashBar ) { return; }
-          var per = c ? 0 : 100;
-          if ( c ) {
-            per = (p / c) * 100;
-          }
-          (new OSjs.GUI.Element(splashBar)).set('value', per);
-        }
-      };
-    }
 
     function checkApplicationCompability(comp) {
       var result = [];
@@ -522,6 +515,56 @@
         });
       }
       return result;
+    }
+
+    function getPreloads(data) {
+      var preload = (data.preload || []).slice(0);
+      var additions = [];
+
+      function _add(chk) {
+        if ( chk && chk.preload ) {
+          chk.preload.forEach(function(p) {
+            additions.push(p);
+          });
+        }
+      }
+
+      if ( data.depends && data.depends instanceof Array ) {
+        data.depends.forEach(function(k) {
+          if ( !OSjs.Applications[k] ) {
+            console.info('Using dependency', k);
+            _add(packman.getPackage(k));
+          }
+        });
+      }
+
+      var pkgs = packman.getPackages(false);
+      Object.keys(pkgs).forEach(function(pn) {
+        var p = pkgs[pn];
+        if ( p.type === 'extension' && p.uses === n ) {
+          console.info('Using extension', pn);
+          _add(p);
+        }
+      });
+
+      preload = additions.concat(preload);
+      additions = [];
+
+      if ( data.scope === 'user' ) {
+        preload = preload.map(function(p) {
+          if ( p.src.substr(0, 1) !== '/' && !p.src.match(/^(https?|ftp)/) ) {
+            OSjs.VFS.url(p.src, function(error, url) {
+              if ( !error ) {
+                p.src = url;
+              }
+            });
+          }
+
+          return p;
+        });
+      }
+
+      return preload;
     }
 
     function _done() {
@@ -605,11 +648,7 @@
 
       try {
         var settings = OSjs.Core.getSettingsManager().get(a.__pname) || {};
-        a.init(settings, result, function() {
-          setTimeout(function() {
-            _done();
-          }, 100);
-        });
+        a.init(settings, result, function() {}); // NOTE: Empty function is for backward-compability
         onFinished(a, result);
 
         doTriggerHook('onApplicationLaunched', [{
@@ -626,10 +665,7 @@
         _error(OSjs.API._('ERR_APP_INIT_FAILED_FMT', n, ex.toString()), ex);
       }
 
-      // Just in case something goes wrong
-      setTimeout(function() {
-        _done();
-      }, 30 * 1000);
+      _done();
     }
 
     function launch() {
@@ -647,41 +683,63 @@
         return false;
       }
 
-      // Preload
-      if ( !OSjs.Applications[n] ) {
-        splash = createLaunchSplash(data, n);
+      if ( arg.__preload__ ) {
+        pargs = arg.__preload__;
+        delete arg.__preload__;
       }
+
+      if ( !OSjs.Applications[n] ) {
+        if ( data.splash !== false ) {
+          splash = OSjs.API.createSplash(data.name, data.icon);
+        }
+      }
+
+      console.info('Manifest', data);
+
+      // Preload
       createLoading(n, {className: 'StartupNotification', tooltip: 'Starting ' + n});
 
-      /*
-      if ( window.location.href.match(/^file\:\/\//) ) {
-        data.preload.forEach(function(file, idx) {
-          if ( file.src && file.src.match(/^\//) ) {
-            file.src = file.src.replace(/^\//, '');
+      var preload = getPreloads(data);
+
+      function _onLaunchPreload() {
+
+        OSjs.Utils.preload(preload, function(total, failed) {
+          destroyLoading(n);
+
+          if ( failed.length ) {
+            _error(OSjs.API._('ERR_APP_PRELOAD_FAILED_FMT', n, failed.join(',')));
+            return;
           }
-        });
+
+          setTimeout(function() {
+            _callback(data);
+          }, 0);
+        }, function(progress, count) {
+          if ( splash ) {
+            splash.update(progress, count);
+          }
+        }, pargs);
       }
-      */
 
-      OSjs.Utils.preload(data.preload, function(total, failed) {
-        destroyLoading(n);
+      OSjs.Utils.asyncs(_hooks.onApplicationPreload, function(qi, i, n) {
+        qi(n, arg, preload, function(p) {
+          if ( p && (p instanceof Array) ) {
+            preload = p;
+          }
 
-        if ( failed.length ) {
-          _error(OSjs.API._('ERR_APP_PRELOAD_FAILED_FMT', n, failed.join(',')));
-          return;
-        }
-
-        setTimeout(function() {
-          _callback(data);
-        }, 0);
-      }, function(progress, count) {
-        if ( splash ) {
-          splash.update(progress, count);
-        }
+          n();
+        });
+      }, function() {
+        _onLaunchPreload();
       });
+
+      doTriggerHook('onApplicationLaunch', [n, arg]);
 
       return true;
     }
+
+    console.group('doLaunchProcess()', n);
+    console.info('Arguments', arg);
 
     return launch();
   }
@@ -703,30 +761,7 @@
     onError     = onError     || function() {};
     onFinished  = onFinished  || function() {};
 
-    function _onSuccess(app, metadata, appName, appArgs) {
-      onSuccess(app, metadata, appName, appArgs);
-      _onNext();
-    }
-
-    function _onError(err, appName, appArgs, exc) {
-      console.warn('doLaunchProcessList() _onError()', err);
-      if ( exc ) {
-        console.warn(exc, exc.stack);
-      }
-      onError(err, appName, appArgs);
-      _onNext();
-    }
-
-    var current = 0;
-    function _onNext() {
-      if ( current >= list.length ) {
-        onFinished();
-        return;
-      }
-
-      var s = list[current];
-      current++;
-
+    OSjs.Utils.asyncs(list, function(s, current, next) {
       if ( typeof s === 'string' ) {
         var args = {};
         var spl = s.split('@');
@@ -747,18 +782,20 @@
       var aargs = (typeof s.args === 'undefined') ? {} : (s.args || {});
 
       if ( !aname ) {
-        console.warn('doLaunchProcessList() _onNext()', 'No application name defined');
+        console.warn('doLaunchProcessList() next()', 'No application name defined');
+        next();
         return;
       }
 
       OSjs.API.launch(aname, aargs, function(app, metadata) {
-        _onSuccess(app, metadata, aname, aargs);
+        onSuccess(app, metadata, aname, aargs);
+        next();
       }, function(err, name, args) {
-        _onError(err, name, args);
+        console.warn('doLaunchProcessList() _onError()', err);
+        onError(err, name, args);
+        next();
       });
-    }
-
-    _onNext();
+    }, onFinished);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -771,12 +808,13 @@
    * @param   Process   app     Application instance reference
    *                            You can also specify a name by String
    * @param   String    name    Resource Name
+   * @param   boolean   vfspath Return a valid VFS path
    *
    * @return  String            The absolute URL of resource
    *
    * @api     OSjs.API.getApplicationResource()
    */
-  function doGetApplicationResource(app, name) {
+  function doGetApplicationResource(app, name, vfspath) {
     if ( name.match(/^\//) ) {
       return name;
     }
@@ -800,23 +838,37 @@
       return appname;
     }
 
+    function getResultPath(path, userpkg) {
+      path = OSjs.Utils.checkdir(path);
+
+      if ( vfspath ) {
+        if ( userpkg ) {
+          path = path.substr(OSjs.API.getConfig('Connection.FSURI').length);
+        } else {
+          path = 'osjs:///' + path;
+        }
+      }
+
+      return path;
+    }
+
     function getResourcePath() {
       var appname = getName();
       var path = '';
 
+      var root, sub;
       if ( appname ) {
-        var root;
         if ( appname.match(/^(.*)\/(.*)$/) ) {
           root = OSjs.API.getConfig('Connection.PackageURI');
           path = root + '/' + appname + '/' + name;
         } else {
           root = OSjs.API.getConfig('Connection.FSURI');
-          var sub = OSjs.API.getConfig('PackageManager.UserPackages');
+          sub = OSjs.API.getConfig('PackageManager.UserPackages');
           path = root + OSjs.Utils.pathJoin(sub, appname, name);
         }
       }
 
-      return OSjs.Utils.checkdir(path);
+      return getResultPath(path, !!sub);
     }
 
     return getResourcePath();
@@ -866,8 +918,6 @@
 
     var map = [
       {match: 'application/pdf', icon: 'mimetypes/gnome-mime-application-pdf.png'},
-      {match: 'osjs/document', icon: 'mimetypes/gnome-mime-application-msword.png'},
-      {match: 'osjs/draw', icon: 'mimetypes/image.png'},
       {match: 'application/zip', icon: 'mimetypes/folder_tar.png'},
       {match: 'application/x-python', icon: 'mimetypes/stock_script.png'},
       {match: 'application/x-lua', icon: 'mimetypes/stock_script.png'},
@@ -875,6 +925,9 @@
       {match: 'text/html', icon: 'mimetypes/stock_script.png'},
       {match: 'text/xml', icon: 'mimetypes/stock_script.png'},
       {match: 'text/css', icon: 'mimetypes/stock_script.png'},
+
+      {match: 'osjs/document', icon: 'mimetypes/gnome-mime-application-msword.png'},
+      {match: 'osjs/draw', icon: 'mimetypes/image.png'},
 
       {match: /^text\//, icon: 'mimetypes/txt.png'},
       {match: /^audio\//, icon: 'mimetypes/sound.png'},
@@ -890,17 +943,19 @@
     } else {
       var mime = file.mime || 'application/octet-stream';
 
-      map.forEach(function(iter) {
+      map.every(function(iter) {
         var match = false;
         if ( typeof iter.match === 'string' ) {
           match = (mime === iter.match);
         } else {
           match = mime.match(iter.match);
         }
+
         if ( match ) {
           icon = iter.icon;
           return false;
         }
+
         return true;
       });
     }
@@ -1094,6 +1149,8 @@
   /**
    * Create a new dialog
    *
+   * You can also pass a function as `className` to return an instance of your own class
+   *
    * @param   String        className       Dialog Namespace Class Name
    * @param   Object        args            Arguments you want to send to dialog
    * @param   Function      callback        Callback on dialog action (close/ok etc) => fn(ev, button, result)
@@ -1121,7 +1178,7 @@
       callback.apply(null, arguments);
     }
 
-    var win = new OSjs.Dialogs[className](args, cb);
+    var win = typeof className === 'string' ? new OSjs.Dialogs[className](args, cb) : className(args, cb);
 
     if ( !parentObj ) {
       var wm = OSjs.Core.getWindowManager();
@@ -1142,176 +1199,6 @@
     }, 10);
 
     return win;
-  }
-
-  /**
-   * Create a draggable DOM element
-   *
-   * @param   DOMElement    el      DOMElement
-   * @param   Object        args    JSON of draggable params
-   *
-   * @return  void
-   *
-   * @api     OSjs.API.createDraggable()
-   */
-  function doCreateDraggable(el, args) {
-    args = OSjs.Utils.argumentDefaults(args, {
-      type       : null,
-      effect     : 'move',
-      data       : null,
-      mime       : 'application/json',
-      dragImage  : null,
-      onStart    : function() { return true; },
-      onEnd      : function() { return true; }
-    });
-
-    if ( OSjs.Utils.isIE() ) {
-      args.mime = 'text';
-    }
-
-    function _toString(mime) {
-      return JSON.stringify({
-        type:   args.type,
-        effect: args.effect,
-        data:   args.data,
-        mime:   args.mime
-      });
-    }
-
-    function _dragStart(ev) {
-      try {
-        ev.dataTransfer.effectAllowed = args.effect;
-        if ( args.dragImage && (typeof args.dragImage === 'function') ) {
-          if ( ev.dataTransfer.setDragImage ) {
-            var dragImage = args.dragImage(ev, el);
-            if ( dragImage ) {
-              var dragEl    = dragImage.element;
-              var dragPos   = dragImage.offset;
-
-              document.body.appendChild(dragEl);
-              ev.dataTransfer.setDragImage(dragEl, dragPos.x, dragPos.y);
-            }
-          }
-        }
-        ev.dataTransfer.setData(args.mime, _toString(args.mime));
-      } catch ( e ) {
-        console.warn('Failed to dragstart: ' + e);
-        console.warn(e.stack);
-      }
-    }
-
-    el.setAttribute('draggable', 'true');
-    el.addEventListener('dragstart', function(ev) {
-      this.style.opacity = '0.4';
-      if ( ev.dataTransfer ) {
-        _dragStart(ev);
-      }
-      return args.onStart(ev, this, args);
-    }, false);
-
-    el.addEventListener('dragend', function(ev) {
-      this.style.opacity = '1.0';
-      return args.onEnd(ev, this, args);
-    }, false);
-  }
-
-  /**
-   * Create a droppable DOM element
-   *
-   * @param   DOMElement    el      DOMElement
-   * @param   Object        args    JSON of droppable params
-   *
-   * @return  void
-   *
-   * @api     OSjs.API.createDroppable()
-   */
-  function doCreateDroppable(el, args) {
-    args = OSjs.Utils.argumentDefaults(args, {
-      accept         : null,
-      effect         : 'move',
-      mime           : 'application/json',
-      files          : true,
-      onFilesDropped : function() { return true; },
-      onItemDropped  : function() { return true; },
-      onEnter        : function() { return true; },
-      onOver         : function() { return true; },
-      onLeave        : function() { return true; },
-      onDrop         : function() { return true; }
-    });
-
-    if ( OSjs.Utils.isIE() ) {
-      args.mime = 'text';
-    }
-
-    function getParent(start, matcher) {
-      if ( start === matcher ) { return true; }
-      var i = 10;
-
-      while ( start && i > 0 ) {
-        if ( start === matcher ) {
-          return true;
-        }
-        start = start.parentNode;
-        i--;
-      }
-      return false;
-    }
-
-    function _onDrop(ev, el) {
-      ev.stopPropagation();
-      ev.preventDefault();
-
-      args.onDrop(ev, el);
-      if ( !ev.dataTransfer ) { return true; }
-
-      if ( args.files ) {
-        var files = ev.dataTransfer.files;
-        if ( files && files.length ) {
-          return args.onFilesDropped(ev, el, files, args);
-        }
-      }
-
-      var data;
-      try {
-        data = ev.dataTransfer.getData(args.mime);
-      } catch ( e ) {
-        console.warn('Failed to drop: ' + e);
-      }
-      if ( data ) {
-        var item = JSON.parse(data);
-        if ( args.accept === null || args.accept === item.type ) {
-          return args.onItemDropped(ev, el, item, args);
-        }
-      }
-
-      return false;
-    }
-
-    el.addEventListener('drop', function(ev) {
-      //Utils.$removeClass(el, 'onDragEnter');
-      return _onDrop(ev, this);
-    }, false);
-
-    el.addEventListener('dragenter', function(ev) {
-      //Utils.$addClass(el, 'onDragEnter');
-      return args.onEnter.call(this, ev, this, args);
-    }, false);
-
-    el.addEventListener('dragover', function(ev) {
-      ev.preventDefault();
-      if ( !getParent(ev.target, el) ) {
-        return false;
-      }
-
-      ev.stopPropagation();
-      ev.dataTransfer.dropEffect = args.effect;
-      return args.onOver.call(this, ev, this, args);
-    }, false);
-
-    el.addEventListener('dragleave', function(ev) {
-      //Utils.$removeClass(el, 'onDragEnter');
-      return args.onLeave.call(this, ev, this, args);
-    }, false);
   }
 
   /**
@@ -1372,7 +1259,7 @@
 
     var result = true;
     if ( userGroups.indexOf('admin') < 0 ) {
-      group.forEach(function(g) {
+      group.every(function(g) {
         if ( userGroups.indexOf(g) < 0 ) {
           result = false;
         }
@@ -1380,6 +1267,74 @@
       });
     }
     return result;
+  }
+
+  /**
+   * Checks the given permission (groups) against logged in user
+   *
+   * Returns an object with the methods `update(precentage)` and `destroy()`
+   *
+   * @param   String      name          The name to display
+   * @param   String      icon          The icon to display
+   * @param   String      label         (Optional) The label (default = 'Starting')
+   * @param   DOMElement  parentEl      (Optional) The parent element
+   *
+   * @return  Object
+   *
+   * @api     OSjs.API.createSplash()
+   */
+  function doCreateSplash(name, icon, label, parentEl) {
+    label = label || 'Starting';
+    parentEl = parentEl || document.body;
+
+    var splash = document.createElement('application-splash');
+    splash.setAttribute('role', 'dialog');
+
+    var img;
+    if ( icon ) {
+      img = document.createElement('img');
+      img.alt = name;
+      img.src = OSjs.API.getIcon(icon);
+    }
+
+    var titleText = document.createElement('b');
+    titleText.appendChild(document.createTextNode(name));
+
+    var title = document.createElement('span');
+    title.appendChild(document.createTextNode(label + ' '));
+    title.appendChild(titleText);
+    title.appendChild(document.createTextNode('...'));
+
+    var splashBar = document.createElement('gui-progress-bar');
+    OSjs.GUI.Elements['gui-progress-bar'].build(splashBar);
+
+    if ( img ) {
+      splash.appendChild(img);
+    }
+    splash.appendChild(title);
+    splash.appendChild(splashBar);
+
+    parentEl.appendChild(splash);
+
+    return {
+      destroy: function() {
+        splash = OSjs.Utils.$remove(splash);
+
+        img = null;
+        title = null;
+        titleText = null;
+        splashBar = null;
+      },
+
+      update: function(p, c) {
+        if ( !splash || !splashBar ) { return; }
+        var per = c ? 0 : 100;
+        if ( c ) {
+          per = (p / c) * 100;
+        }
+        (new OSjs.GUI.Element(splashBar)).set('value', per);
+      }
+    };
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1606,6 +1561,7 @@
   OSjs.API.open                   = doLaunchFile;
   OSjs.API.launch                 = doLaunchProcess;
   OSjs.API.launchList             = doLaunchProcessList;
+  OSjs.API.relaunch               = doReLaunchProcess;
 
   OSjs.API.getApplicationResource = doGetApplicationResource;
   OSjs.API.getThemeCSS            = doGetThemeCSS;
@@ -1617,12 +1573,25 @@
 
   OSjs.API.getDefaultPath         = doGetDefaultPath;
 
-  OSjs.API.createDraggable        = doCreateDraggable;
-  OSjs.API.createDroppable        = doCreateDroppable;
-  OSjs.API.createMenu             = function() {}; // gui.js
-  OSjs.API.blurMenu               = function() {}; // gui.js
+  /**
+   * @api OSjs.API.createMenu()
+   * @see OSjs.GUI.Helpers.createMenu()
+   */
+  OSjs.API.createMenu             = function() {
+    return OSjs.GUI.Helpers.createMenu.apply(null, arguments);
+  };
+
+  /**
+   * @api OSjs.API.blurMenu()
+   * @see OSjs.GUI.Helpers.blurMenu()
+   */
+  OSjs.API.blurMenu               = function() {
+    return OSjs.GUI.Helpers.blurMenu.apply(null, arguments);
+  };
+
   OSjs.API.createLoading          = createLoading;
   OSjs.API.destroyLoading         = destroyLoading;
+  OSjs.API.createSplash           = doCreateSplash;
   OSjs.API.createDialog           = doCreateDialog;
   OSjs.API.createNotification     = doCreateNotification;
   OSjs.API.checkPermission        = doCheckPermission;

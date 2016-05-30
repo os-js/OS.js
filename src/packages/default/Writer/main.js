@@ -154,7 +154,7 @@
       'MenuInsertLink': function() {
         API.createDialog('Input', {
           message: _('Insert URL'),
-          placeholder: 'http://os.js.org'
+          placeholder: 'https://os.js.org'
         }, function(ev, button, result) {
           if ( button !== 'ok' || !result ) {
             return;
@@ -344,9 +344,9 @@
     return DefaultApplication.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationWriter.prototype.init = function(settings, metadata, onInited) {
+  ApplicationWriter.prototype.init = function(settings, metadata) {
     var self = this;
-    DefaultApplication.prototype.init.call(this, settings, metadata, onInited, function(scheme, file) {
+    DefaultApplication.prototype.init.call(this, settings, metadata, function(scheme, file) {
       self._addWindow(new ApplicationWriterWindow(self, metadata, scheme, file));
     });
   };
@@ -357,6 +357,6 @@
 
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationWriter = OSjs.Applications.ApplicationWriter || {};
-  OSjs.Applications.ApplicationWriter.Class = ApplicationWriter;
+  OSjs.Applications.ApplicationWriter.Class = Object.seal(ApplicationWriter);
 
 })(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

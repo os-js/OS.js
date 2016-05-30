@@ -32,7 +32,7 @@
         });
       }
 
-      return _cache;
+      return Object.freeze(_cache);
     };
   })();
 })();

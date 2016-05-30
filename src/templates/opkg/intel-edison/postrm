@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ -d /osjs ]
+then
+  rm -rf /osjs
+fi
+
+exit 0

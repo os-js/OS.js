@@ -134,6 +134,9 @@
    *
    * "Richt text" input area.
    *
+   * @getter    value   String        The value/contents
+   * @setter    value   String        The value/contents
+   *
    * @api OSjs.GUI.Elements.gui-richtext
    * @class
    */
@@ -162,8 +165,12 @@
       el.appendChild(iframe);
 
       setTimeout(function() {
-        setDocumentData(el, text);
-      }, 0);
+        try {
+          setDocumentData(el, text);
+        } catch ( e ) {
+          console.warn('gui-richtext', 'build()', e);
+        }
+      }, 1);
     },
     call: function(el, method, args) {
       var doc = getDocument(el);

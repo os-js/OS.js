@@ -1,0 +1,22 @@
+{
+  "server": {
+    "handlers": {
+      "pam": {
+        "groups": "/etc/osjs/groups.json",
+        "blacklist": "/etc/osjs/blacklist.json",
+        "settings": "/home/%USERNAME%/.osjs/settings.json"
+      },
+      "shadow": {
+        "groups": "/etc/osjs/groups.json",
+        "blacklist": "/etc/osjs/blacklist.json",
+        "settings": "/home/%USERNAME%/.osjs/settings.json"
+      },
+      "mysql": {
+        "host": "localhost",
+        "user": "osjs",
+        "password": "osjs",
+        "database": "osjs"
+      }
+    }
+  }
+}

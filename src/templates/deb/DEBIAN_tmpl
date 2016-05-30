@@ -1,0 +1,7 @@
+Package: osjs
+Version: VER
+Section: base
+Priority: optional
+Architecture: ARCH
+Maintainer: Anders Evenrud <andersevenrud@gmail.com>
+Description: JavaScript Could/Web Desktop Platform

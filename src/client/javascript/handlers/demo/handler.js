@@ -79,23 +79,32 @@
   DemoHandler.prototype.init = function(callback) {
     console.info('OSjs::DemoHandler::init()');
 
-    if ( window.location.href.match(/^file\:\/\//) ) {
-      callback({
-        id: 0,
-        username: 'demo',
-        name: 'Local Server',
-        groups: ['admin']
-      });
-    }
-
-    // Use the 'demo' user
     var self = this;
-    this.login('demo', 'demo', function(error, result) {
-      if ( error ) {
-        callback(error);
-      } else {
-        self.onLogin(result.userData, getSettings(), function() {
+
+    OSjs.Core._Handler.prototype.init.call(this, function() {
+      function finished(result) {
+        result.userSettings = getSettings();
+        self.onLogin(result, function() {
           callback();
+        });
+      }
+
+      if ( window.location.href.match(/^file\:\/\//) ) { // NW
+        finished({
+          userData: {
+            id: 0,
+            username: 'demo',
+            name: 'Local Server',
+            groups: ['admin']
+          }
+        });
+      } else {
+        self.login('demo', 'demo', function(error, result) {
+          if ( error ) {
+            callback(error);
+          } else {
+            finished(result);
+          }
         });
       }
     });
@@ -120,8 +129,10 @@
     callback();
   };
 
-  //
-  // Exports
-  //
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
   OSjs.Core.Handler = DemoHandler;
+
 })(OSjs.API, OSjs.Utils, OSjs.VFS);

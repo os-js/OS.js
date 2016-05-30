@@ -58,6 +58,7 @@
 
   AlertDialog.prototype.init = function() {
     var root = DialogWindow.prototype.init.apply(this, arguments);
+    root.setAttribute('role', 'alertdialog');
     this.scheme.find(this, 'Message').set('value', this.args.message, true);
     return root;
   };
@@ -67,6 +68,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Dialogs = OSjs.Dialogs || {};
-  OSjs.Dialogs.Alert = AlertDialog;
+  OSjs.Dialogs.Alert = Object.seal(AlertDialog);
 
 })(OSjs.API, OSjs.Utils, OSjs.Core.DialogWindow);

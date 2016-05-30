@@ -140,6 +140,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Dialogs = OSjs.Dialogs || {};
-  OSjs.Dialogs.Font = FontDialog;
+  OSjs.Dialogs.Font = Object.seal(FontDialog);
 
 })(OSjs.API, OSjs.Utils, OSjs.Core.DialogWindow);

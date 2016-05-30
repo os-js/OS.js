@@ -159,6 +159,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Dialogs = OSjs.Dialogs || {};
-  OSjs.Dialogs.FileUpload = FileUploadDialog;
+  OSjs.Dialogs.FileUpload = Object.seal(FileUploadDialog);
 
 })(OSjs.API, OSjs.VFS, OSjs.Utils, OSjs.Core.DialogWindow);

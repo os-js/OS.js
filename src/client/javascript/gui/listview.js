@@ -148,6 +148,8 @@
       if ( el._columns[idx] && !el._columns[idx].visible ) {
         cel.style.display = 'none';
       }
+
+      cel.setAttribute('role', 'listitem');
     });
 
     GUI.Elements._dataview.bindEntryEvents(el, row, 'gui-list-view-row');
@@ -179,6 +181,7 @@
    *
    * Format for add():
    *
+   * ```
    * {
    *    value: "something or JSON or whatever",
    *    columns: [
@@ -186,13 +189,15 @@
    *      {label: "Value for column 2", icon: "Optional icon"}
    *    ]
    * }
+   * ```
    *
    * Format for columns (flexbox parameters are also usable):
+   * ```
    * [
    *    {label: "Column 1"},
    *    {label: "Column 2"}
-   *
    * ]
+   * ```
    *
    * Parameters:
    *  zebra     boolean       Enable zebra stripes
@@ -297,6 +302,10 @@
         head = document.createElement('gui-list-view-head');
         el.insertBefore(head, body);
       }
+
+      head.setAttribute('role', 'group');
+      body.setAttribute('role', 'group');
+      el.setAttribute('role', 'list');
 
       // Misc UI
       createResizers(el);

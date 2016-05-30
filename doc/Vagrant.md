@@ -6,4 +6,10 @@ Just use [this configuration file](https://raw.githubusercontent.com/os-js/OS.js
 
 ```shell
 $ vagrant up
+$ vagrant ssh
+
+  $ cd OS.js
+  $ ./bin/start-dev.sh
 ```
+
+Then simply navigate to [http://osjs.vagrant.dev:8000](http://osjs.vagrant.dev:8000), or [http://192.168.60.4:8000](http://192.168.60.4:8000).

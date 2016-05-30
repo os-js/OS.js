@@ -154,6 +154,11 @@ class APIRequest
     $this->method = empty($_SERVER['REQUEST_METHOD']) ? 'GET' : $_SERVER['REQUEST_METHOD'];
     $this->uri    = isset($_SERVER["REQUEST_URI"]) ? $_SERVER["REQUEST_URI"] : "/";
     $this->data   = $this->method === 'POST' ? file_get_contents("php://input") : (empty($_SERVER['REQUEST_URI']) ? '' : $this->uri);
+
+    $settings = Settings::get();
+    if ( !empty($settings["basedir"]) ) {
+      $this->uri = str_replace($this->uri, $settings["basedir"], "");
+    }
   }
 
   /**
@@ -161,16 +166,12 @@ class APIRequest
    */
   public static function call() {
     $request = new APIRequest();
-    $settings = Settings::get();
 
-    $fsPrefix = preg_quote($settings["uri"]["fs"], '/');
-    $apiPrefix = preg_quote($settings["uri"]["api"], '/');
-
-    if ( $request->method == "POST" && preg_match("/^$fsPrefix\/upload$/", $request->uri) ) {
+    if ( $request->method == "POST" && preg_match("/^\/FS\/upload$/", $request->uri) ) {
       $response = API::FilePOST($request);
-    } else if ( $request->method === "POST" && preg_match("/^(($fsPrefix)|($apiPrefix))/", $request->uri) ) {
+    } else if ( $request->method === "POST" && preg_match("/^\/(FS|API)/", $request->uri) ) {
       $response = API::CoreAPI($request);
-    } else if ( preg_match("/^$fsPrefix(.*)/", $request->uri) ) {
+    } else if ( preg_match("/^\/FS(.*)/", $request->uri) ) {
       $response = API::FileGET($request);
     } else {
       $response = null;
@@ -334,8 +335,7 @@ class API
     $code     = 0;
     $settings = Settings::get();
 
-    $fsPrefix = preg_quote($settings["uri"]["fs"], '/');
-    $url = preg_replace("/^$fsPrefix(\/get\/)?/", "", urldecode($req->data));
+    $url = preg_replace("/^\/FS(\/get\/)?/", "", urldecode($req->data));
 
     call_user_func_array(Array(API::$Handler, 'checkPrivilege'), Array(APIUser::GROUP_VFS));
 

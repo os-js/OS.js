@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API, Process) {
+(function(Utils, API, GUI, Process) {
   'use strict';
 
   window.OSjs = window.OSjs || {};
@@ -90,6 +90,9 @@
     return 301;
   }
 
+  /**
+   * Wrapper to wait for animations to finish
+   */
   function waitForAnimation(cb) {
     var wm = OSjs.Core.getWindowManager();
     var anim = wm ? wm.getSetting('animations') : false;
@@ -146,8 +149,8 @@
     var _WID                = 0;
     var _DEFAULT_WIDTH      = 200;
     var _DEFAULT_HEIGHT     = 200;
-    var _DEFAULT_MIN_HEIGHT = 100;
-    var _DEFAULT_MIN_WIDTH  = 100;
+    var _DEFAULT_MIN_HEIGHT = 150;
+    var _DEFAULT_MIN_WIDTH  = 150;
     var _DEFAULT_SND_VOLUME = 1.0;
     var _NAMES              = [];
 
@@ -206,6 +209,7 @@
       this._children      = [];                             // Child Windows
       this._parent        = null;                           // Parent Window reference
       this._disabled      = true;                           // If Window is currently disabled
+      this._loading       = false;                          // If Window is currently loading
       this._sound         = null;                           // Play this sound when window opens
       this._soundVolume   = _DEFAULT_SND_VOLUME;            // ... using this volume
       this._blinkTimer    = null;
@@ -266,7 +270,7 @@
 
       // Internals for restoring previous state (session)
       if ( appRef && appRef.__args && appRef.__args.__windows__ ) {
-        appRef.__args.__windows__.forEach(function(restore) {
+        appRef.__args.__windows__.every(function(restore) {
           if ( restore.name && restore.name === self._name ) {
             self._position.x = restore.position.x;
             self._position.y = restore.position.y;
@@ -319,18 +323,6 @@
           var np = wm ? wm.getWindowPosition() : {x:0, y:0};
           self._position.x = np.x;
           self._position.y = np.y;
-        }
-      }
-    }
-
-    function _initInitialState() {
-      if ( !self._restored ) {
-        if ( self._state.maximized ) {
-          self._state.maximized = false;
-          self._maximize();
-        } else if ( self._state.minimized ) {
-          self._state.minimized = false;
-          self._minimize();
         }
       }
     }
@@ -390,31 +382,31 @@
     function _initMaxButton() {
       buttonMaximize            = document.createElement('application-window-button-maximize');
       buttonMaximize.className  = 'application-window-button-entry';
-      if ( self._properties.allow_maximize ) {
-        Utils.$bind(buttonMaximize, 'click', function(ev) {
-          ev.preventDefault();
-          ev.stopPropagation();
-          self._onWindowButtonClick(ev, this, 'maximize');
-          return false;
-        });
-      } else {
+      if ( !self._properties.allow_maximize ) {
         buttonMaximize.style.display = 'none';
       }
+
+      Utils.$bind(buttonMaximize, 'click', function(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        self._onWindowButtonClick(ev, this, 'maximize');
+        return false;
+      });
     }
 
     function _initCloseButton() {
       buttonClose           = document.createElement('application-window-button-close');
       buttonClose.className = 'application-window-button-entry';
-      if ( self._properties.allow_close ) {
-        Utils.$bind(buttonClose, 'click', function(ev) {
-          ev.preventDefault();
-          ev.stopPropagation();
-          self._onWindowButtonClick(ev, this, 'close');
-          return false;
-        });
-      } else {
+      if ( !self._properties.allow_close ) {
         buttonClose.style.display = 'none';
       }
+
+      Utils.$bind(buttonClose, 'click', function(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        self._onWindowButtonClick(ev, this, 'close');
+        return false;
+      });
     }
 
     function _initDnD() {
@@ -422,7 +414,7 @@
         var border = document.createElement('div');
         border.className = 'WindowDropRect';
 
-        OSjs.API.createDroppable(main, {
+        OSjs.GUI.Helpers.createDroppable(main, {
           onOver: function(ev, el, args) {
             main.setAttribute('data-dnd-state', 'true');
           },
@@ -478,14 +470,8 @@
     var windowTop           = document.createElement('application-window-top');
     var windowIcon          = document.createElement('application-window-icon');
     var windowTitle         = document.createElement('application-window-title');
-    var windowButtons       = document.createElement('application-window-buttons');
 
-    var windowIconImage         = document.createElement('img');
-    windowIconImage.alt         = this._title;
-    windowIconImage.src         = this._icon;
-    windowIconImage.width       = 16;
-    windowIconImage.height      = 16;
-
+    windowTitle.setAttribute('role', 'heading');
     windowTitle.appendChild(document.createTextNode(this._title));
 
     Utils.$bind(windowTitle, 'dblclick', function() {
@@ -526,13 +512,6 @@
     Utils.$bind(windowLoading, 'mousedown', _noEvent);
     Utils.$bind(windowDisabled, 'mousedown', _noEvent);
 
-    if ( !isTouch ) {
-      Utils.$bind(windowButtons, 'mousedown', function(ev) {
-        ev.preventDefault();
-        return stopPropagation(ev);
-      });
-    }
-
     Utils.$bind(main, 'mousedown', function(ev) {
       self._focus();
       return stopPropagation(ev);
@@ -555,15 +534,24 @@
     main.style.left   = this._position.x + 'px';
     main.style.zIndex = getNextZindex(this._state.ontop);
 
-    windowIcon.appendChild(windowIconImage);
-
-    windowButtons.appendChild(buttonMinimize);
-    windowButtons.appendChild(buttonMaximize);
-    windowButtons.appendChild(buttonClose);
+    main.setAttribute('role', 'application');
+    main.setAttribute('aria-live', 'polite');
+    main.setAttribute('aria-hidden', 'false');
+    windowIcon.setAttribute('role', 'button');
+    windowIcon.setAttribute('aria-haspopup', 'true');
+    windowIcon.setAttribute('aria-label', 'Window Menu');
+    buttonClose.setAttribute('role', 'button');
+    buttonClose.setAttribute('aria-label', 'Close Window');
+    buttonMinimize.setAttribute('role', 'button');
+    buttonMinimize.setAttribute('aria-label', 'Minimize Window');
+    buttonMaximize.setAttribute('role', 'button');
+    buttonMaximize.setAttribute('aria-label', 'Maximize Window');
 
     windowTop.appendChild(windowIcon);
     windowTop.appendChild(windowTitle);
-    windowTop.appendChild(windowButtons);
+    windowTop.appendChild(buttonMinimize);
+    windowTop.appendChild(buttonMaximize);
+    windowTop.appendChild(buttonClose);
 
     windowLoading.appendChild(windowLoadingImage);
 
@@ -577,23 +565,22 @@
     this._$root     = windowWrapper;
     this._$top      = windowTop;
     this._$loading  = windowLoading;
-    this._$winicon  = windowIconImage;
+    this._$winicon  = windowIcon;
     this._$disabled = windowDisabled;
     this._$resize   = windowResize;
 
     document.body.appendChild(this._$element);
 
-    windowTitle.style.right = windowButtons.offsetWidth + 'px';
-
     this._onChange('create');
     this._toggleLoading(false);
     this._toggleDisabled(false);
-
-    _initInitialState();
+    this._setIcon(this._icon);
 
     if ( this._sound ) {
       API.playSound(this._sound, this._soundVolume);
     }
+
+    this._updateMarkup();
 
     console.groupEnd();
 
@@ -602,6 +589,15 @@
 
   Window.prototype._inited = function() {
     this._loaded = true;
+
+    if ( !this._restored ) {
+      if ( this._state.maximized ) {
+        this._maximize(true);
+      } else if ( this._state.minimized ) {
+        this._minimize(true);
+      }
+    }
+
     console.debug('OSjs::Core::Window::_inited()', this._name);
   };
 
@@ -704,6 +700,32 @@
   //
 
   /**
+   * Finds a GUI Element by ID from Scheme.
+   *
+   * THIS IS JUST A SHORTCUT METHOD FROM THE UI SCHEME CLASS
+   *
+   * @param     String      id        The value of element 'data-id' parameter
+   *
+   * @see Scheme::find()
+   * @method Window::_find()
+   */
+  Window.prototype._find = function(id) {
+    return this._scheme ? this._scheme.find(this, id) : null;
+  };
+
+  /**
+   * Finds a GUI Element by ID from Scheme.
+   *
+   * THIS IS JUST A SHORTCUT METHOD FROM THE UI SCHEME CLASS
+   *
+   * @see Scheme::findByQuery()
+   * @method Window::_findByQuery()
+   */
+  Window.prototype._findByQuery = function(q, root, all) {
+    return this._scheme ? this._scheme.findByQuery(this, q, root, all) : null;
+  };
+
+  /**
    * Adds a hook (internal events)
    *
    * @param   String    k       Hook name: focus, blur, destroy
@@ -775,7 +797,7 @@
    */
   Window.prototype._removeChild = function(w) {
     var self = this;
-    this._children.forEach(function(child, i) {
+    this._children.every(function(child, i) {
       if ( child && child._wid === w._wid ) {
         console.debug('OSjs::Core::Window::_removeChild()');
 
@@ -801,7 +823,7 @@
     key = key || 'wid';
 
     var result = key === 'tag' ? [] : null;
-    this._children.forEach(function(child, i) {
+    this._children.every(function(child, i) {
       if ( child ) {
         if ( key === 'tag' ) {
           result.push(child);
@@ -908,13 +930,13 @@
    *
    * @method    Window::_minimize()
    */
-  Window.prototype._minimize = function() {
+  Window.prototype._minimize = function(force) {
     var self = this;
     if ( !this._properties.allow_minimize || this._destroyed  ) {
       return false;
     }
 
-    if ( this._state.minimized ) {
+    if ( !force && this._state.minimized ) {
       this._restore(false, true);
       return true;
     }
@@ -939,6 +961,8 @@
       wm.setCurrentWindow(null);
     }
 
+    this._updateMarkup();
+
     return true;
   };
 
@@ -949,14 +973,14 @@
    *
    * @method    Window::_maximize()
    */
-  Window.prototype._maximize = function() {
+  Window.prototype._maximize = function(force) {
     var self = this;
 
     if ( !this._properties.allow_maximize || this._destroyed || !this._$element  ) {
       return false;
     }
 
-    if ( this._state.maximized ) {
+    if ( !force && this._state.maximized ) {
       this._restore(true, false);
       return true;
     }
@@ -988,6 +1012,8 @@
     });
 
     this._onChange('maximize');
+
+    this._updateMarkup();
 
     return true;
   };
@@ -1041,6 +1067,8 @@
     this._onChange('restore');
 
     this._focus();
+
+    this._updateMarkup();
   };
 
   /**
@@ -1082,6 +1110,8 @@
 
     this._state.focused = true;
 
+    this._updateMarkup();
+
     return true;
   };
 
@@ -1115,6 +1145,8 @@
     if ( win && win._wid === this._wid ) {
       wm.setCurrentWindow(null);
     }
+
+    this._updateMarkup();
 
     return true;
   };
@@ -1340,7 +1372,10 @@
     if ( this._$disabled ) {
       this._$disabled.style.display = t ? 'block' : 'none';
     }
+
     this._disabled = t ? true : false;
+
+    this._updateMarkup();
   };
 
   /**
@@ -1357,6 +1392,49 @@
     if ( this._$loading ) {
       this._$loading.style.display = t ? 'block' : 'none';
     }
+
+    this._loading = t ? true : false;
+
+    this._updateMarkup();
+  };
+
+  /**
+   * Updates window markup with attributes etc
+   *
+   * @return void
+   *
+   * @method Window::_updateMarkup()
+   */
+  Window.prototype._updateMarkup = function(ui) {
+    if ( !this._$element ) {
+      return;
+    }
+
+    var t = this._loading || this._disabled;
+    var d = this._disabled;
+    var h = this._state.minimized;
+    var f = !this._state.focused;
+
+    this._$element.setAttribute('aria-busy', String(t));
+    this._$element.setAttribute('aria-hidden', String(h));
+    this._$element.setAttribute('aria-disabled', String(d));
+    this._$root.setAttribute('aria-hidden', String(f));
+
+    if ( !ui ) {
+      return;
+    }
+
+    var dmax   = this._properties.allow_maximize === true ? 'inline-block' : 'none';
+    var dmin   = this._properties.allow_minimize === true ? 'inline-block' : 'none';
+    var dclose = this._properties.allow_close === true ? 'inline-block' : 'none';
+
+    this._$top.querySelector('application-window-button-maximize').style.display = dmax;
+    this._$top.querySelector('application-window-button-minimize').style.display = dmin;
+    this._$top.querySelector('application-window-button-close').style.display = dclose;
+
+    var dres   = this._properties.allow_resize === true;
+
+    this._$element.setAttribute('data-allow-resize', String(dres));
   };
 
   /**
@@ -1421,85 +1499,14 @@
    * @method  Window::_nextTabIndex()
    */
   Window.prototype._nextTabIndex = function(ev) {
-
-    var prev = ev.shiftKey;
-    var accept = ['input', 'select', 'textarea', 'gui-list-view', 'gui-tree-view', 'gui-icon-view']; // Textarea/Iframe accepts TAB
-    var current = document.activeElement;
-    var currentTag = current ? current.tagName.toLowerCase() : null;
-    var root = this._$root;
-
-    function clamp(idx, size) {
-      if ( prev ) {
-        idx--;
-        if ( idx <= 0 ) {
-          idx = size - 1;
-        }
+    var nextElement = OSjs.GUI.Helpers.getNextElement(ev.shiftKey, document.activeElement, this._$root);
+    if ( nextElement ) {
+      if ( Utils.$hasClass(nextElement, 'gui-data-view') ) {
+        new OSjs.GUI.ElementDataView(nextElement)._call('focus');
       } else {
-        idx++;
-        if ( idx >= size ) {
-          idx = 0;
-        }
-      }
-
-      return idx;
-    }
-
-    function go(idx, elements) {
-      idx = clamp(idx, elements.length);
-
-      var el = getNextElement(idx, elements);
-      if ( el ) {
-        console.debug('Window::_nextTabIndex()', '=>', idx, el.tagName, el);
-
-        if ( Utils.$hasClass(el, 'gui-data-view') ) {
-          new OSjs.GUI.ElementDataView(el)._call('focus');
-        } else {
-          try {
-            el.focus();
-            //elements[idx].focus();
-          } catch ( e ) {}
-        }
-      }
-    }
-
-    function getNextElement(idx, elements) {
-      var found = null;
-      var list = elements.slice(idx, elements.length);
-
-      list.forEach(function(el, idx) {
-        // offsetParent makes sure the element is 'visible'
-        if ( !found && el.offsetParent && !el.getAttribute('disabled') && el.getAttribute('data-disabled') !== 'true' ) {
-          console.debug('Window::_nextTabIndex()', 'next', idx);
-          found = el;
-        }
-        return !!found;
-      });
-
-      return found;
-    }
-
-    if ( currentTag && accept.indexOf(currentTag) >= 0 ) {
-      var elements = root.querySelectorAll('input, select, textarea, .gui-data-view');
-      var found = -1;
-
-      elements.forEach(function(el, idx) {
-        if ( el === current ) {
-          found = idx;
-        }
-        return found < 0;
-      });
-
-      if ( found >= 0 ) {
-        var fel = elements[found];
-
-        if ( fel.tagName.toLowerCase() === 'textarea' && !Utils.$hasClass(fel, 'gui-focus-element') ) {
-          return;
-        }
-
-        ev.preventDefault();
-        ev.stopPropagation();
-
-        go(found, Array.prototype.slice.call(elements));
+        try {
+          nextElement.focus();
+        } catch ( e ) {}
       }
     }
   };
@@ -1735,7 +1742,7 @@
     s.width -= (borderSize * 2);
     s.height -= topMargin + (borderSize * 2);
 
-    return s;
+    return Object.freeze(s);
   };
 
   /**
@@ -1746,7 +1753,7 @@
    * @method  Window::_getViewRect()
    */
   Window.prototype._getViewRect = function() {
-    return this._$element ? Utils.$position(this._$element) : null;
+    return this._$element ? Object.freeze(Utils.$position(this._$element)) : null;
   };
 
   /**
@@ -1808,6 +1815,8 @@
     }
 
     this._onChange('title');
+
+    this._updateMarkup();
   };
 
   /**
@@ -1821,8 +1830,10 @@
    */
   Window.prototype._setIcon = function(i) {
     if ( this._$winicon ) {
-      this._$winicon.src = i;
+      this._$winicon.title = this._title;
+      this._$winicon.style.backgroundImage = 'url(' + i + ')';
     }
+
     this._icon = i;
     this._onChange('icon');
   };
@@ -1860,10 +1871,30 @@
     this._$root.appendChild(this._$warning);
   };
 
+  /**
+   * Set a window property
+   *
+   * @param   String    p     Key
+   * @param   String    v     Value
+   *
+   * @return  void
+   *
+   * @method Window::_setProperty()
+   */
+  Window.prototype._setProperty = function(p, v) {
+    if ( (v === '' || v === null) || !this._$element || (typeof this._properties[p] === 'undefined') ) {
+      return;
+    }
+
+    this._properties[p] = String(v) === 'true';
+
+    this._updateMarkup(true);
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Core.Window = Window;
+  OSjs.Core.Window = Object.seal(Window);
 
-})(OSjs.Utils, OSjs.API, OSjs.Core.Process);
+})(OSjs.Utils, OSjs.API, OSjs.GUI, OSjs.Core.Process);

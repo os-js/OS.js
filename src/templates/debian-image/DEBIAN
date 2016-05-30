@@ -1,7 +1,0 @@
-Package: OS.js
-Version: 2.0-alpha70
-Section: base
-Priority: optional
-Architecture: i386
-Maintainer: Anders Evenrud <andersevenrud@gmail.com>
-Description: JavaScript Could/Web Desktop Platform

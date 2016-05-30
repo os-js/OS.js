@@ -27,10 +27,41 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(_osjs, _http, _path, _url, _fs, _qs, _multipart, Cookies) {
+(function(_osjs, _http, _path, _url, _fs, _qs, _multipart, _sessions) {
   'use strict';
 
-  var instance, server;
+  var instance, server, proxy, httpProxy;
+
+  var colored = (function() {
+    var colors;
+
+    try {
+      colors = require('colors');
+    } catch ( e ) {}
+
+    return function() {
+      var args = Array.prototype.slice.call(arguments);
+      var str = args.shift();
+
+      if ( colors ) {
+        var ref = colors;
+        args.forEach(function(a) {
+          ref = ref[a];
+        });
+        return ref(str);
+      } else {
+        return str;
+      }
+    };
+  })();
+
+  try {
+    httpProxy = require('http-proxy');
+    proxy = httpProxy.createProxyServer({});
+    proxy.on('error', function(err) {
+      console.warn(err);
+    });
+  } catch ( e ) {}
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
@@ -41,7 +72,9 @@
    */
   function respond(data, mime, response, headers, code, pipeFile) {
     if ( instance.config.logging ) {
-      log(timestamp(), '>>>', code, mime, pipeFile || typeof data);
+      var okCodes = [200, 301, 302, 304];
+
+      log(timestamp(), colored('>>>', 'grey', 'bold'), colored(String(code) + ' ' + mime, okCodes.indexOf(code) >= 0 ? 'green' : 'red'), (pipeFile ? '=> ' + colored(pipeFile.replace(instance.setup.root, '/'), 'magenta') : typeof data));
     }
 
     function done() {
@@ -49,6 +82,18 @@
         instance.handler.onRequestEnd(null, response);
       }
       response.end();
+    }
+
+    if ( pipeFile ) {
+      var isdir = false;
+      try {
+        isdir = _fs.lstatSync(pipeFile).isDirectory();
+      } catch ( e ) {}
+
+      if ( isdir ) {
+        respondError('Invalid request', response);
+        return;
+      }
     }
 
     headers.forEach(function(h) {
@@ -88,33 +133,41 @@
       return;
     }
 
-    var fullPath = realPath ? path : instance.vfs.getRealPath(path, instance.config, request).root;
-    _fs.exists(fullPath, function(exists) {
-      if ( exists ) {
-        var mime = instance.vfs.getMime(fullPath, instance.config);
-        respond(null, mime, response, [], 200, fullPath);
-      } else {
-        respondNotFound(null, response, fullPath);
-      }
-    });
+    try {
+      var fullPath = realPath ? path : instance.vfs.getRealPath(path, instance.config, request).root;
+      _fs.exists(fullPath, function(exists) {
+        if ( exists ) {
+          var mime = instance.vfs.getMime(fullPath, instance.config);
+          respond(null, mime, response, [], 200, fullPath);
+        } else {
+          respondNotFound(null, response, fullPath);
+        }
+      });
+    } catch ( e ) {
+      console.error('!!! Caught exception', e);
+      console.warn(e.stack);
+      respondError(e, response, true);
+    }
   }
 
   /**
    * Respond with JSON data
    */
-  function respondJSON(data, response, headers) {
-    respond(JSON.stringify(data), 'application/json', response, headers || [], 200);
+  function respondJSON(data, response, headers, code) {
+    respond(JSON.stringify(data), 'application/json', response, headers || [], code || 200);
   }
 
   /**
    * Respond with an error
    */
-  function respondError(message, response, json) {
+  function respondError(message, response, json, code) {
+    code = code || 500;
+
     if ( json ) {
       message = 'Internal Server Error (HTTP 500): ' + message.toString();
-      respondJSON({result: null, error: message}, response);
+      respondJSON({result: null, error: message}, response, [], code);
     } else {
-      respond(message.toString(), 'text/plain', response, [], 500);
+      respond(message.toString(), 'text/plain', response, [], code);
     }
   }
 
@@ -152,32 +205,74 @@
   // HTTP
   /////////////////////////////////////////////////////////////////////////////
 
+  function proxyCall(request, response) {
+
+    function _getMatcher(k) {
+      var matcher = k;
+      if ( matcher.substr(0, 1) !== '/' ) {
+        matcher = '/' + matcher;
+      } else {
+        var check = k.match(/\/(.*)\/([a-z]+)?/);
+        if ( !check || !check[1] ) {
+          console.warn('Invalid proxy route', k);
+        }
+        matcher = new RegExp(check[1], check[2] || '');
+      }
+      return matcher;
+    }
+
+    function _getOptions(durl, matcher, pots) {
+      if ( typeof pots === 'string' ) {
+        if ( typeof matcher === 'string' ) {
+          request.url = durl.substr(matcher.length) || '/';
+        } else {
+          request.url = durl.replace(matcher, '') || '/';
+        }
+        pots = {target: pots};
+      }
+      return pots;
+    }
+
+    function isStringMatch(m, u) {
+      var rm = m.replace(/^\//, '').replace(/\/$/, '');
+      var um = u.replace(/^\//, '').replace(/\/$/, '');
+      return rm === um;
+    }
+
+    if ( proxy ) {
+      var proxies = instance.config.proxies;
+      var stop = false;
+
+      Object.keys(proxies).every(function(k) {
+        var matcher = _getMatcher(k);
+
+        if ( typeof matcher === 'string' ? isStringMatch(matcher, request.url) : matcher.test(request.url) ) {
+          var pots = _getOptions(request.url, matcher, proxies[k]);
+
+          stop = true;
+
+          log(timestamp(), colored('<<<', 'bold'), request.url);
+          log(timestamp(), colored('>>>', 'grey', 'bold'), colored(('PROXY ' + k + ' => ' + pots.target), 'yellow'));
+
+          proxy.web(request, response, pots);
+        }
+        return !stop;
+      });
+
+      if ( stop ) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   /**
    * Handles a HTTP Request
    */
   function httpCall(request, response) {
-    var url     = _url.parse(request.url, true),
-        path    = decodeURIComponent(url.pathname),
-        cookies = new Cookies(request, response);
 
-    request.cookies = cookies;
-
-    if ( path === '/' ) {
-      path += 'index.html';
-    }
-
-    if ( instance.config.logging ) {
-      log(timestamp(), '<<<', path);
-    }
-
-    if ( instance.handler && instance.handler.onRequestStart ) {
-      instance.handler.onRequestStart(request, response);
-    }
-
-    var isVfsCall = path.match(/^\/FS/) !== null;
-    var relPath   = path.replace(/^\/(FS|API)\/?/, '');
-
-    function handleCall(isVfs) {
+    function handleCall(rp, isVfs) {
       var body = '';
 
       request.on('data', function(data) {
@@ -187,13 +282,13 @@
       request.on('end', function() {
         try {
           var args = JSON.parse(body);
-          instance.request(isVfs, relPath, args, function(error, result) {
+          instance.request(isVfs, rp, args, function(error, result) {
             respondJSON({result: result, error: error}, response);
           }, request, response, instance.handler);
         } catch ( e ) {
           console.error('!!! Caught exception', e);
           console.warn(e.stack);
-          respondError(e, response, true);
+          respondError(e, response, true, 200);
         }
       });
     }
@@ -232,8 +327,8 @@
       });
     }
 
-    function handleVFSFile() {
-      var dpath = path.replace(/^\/(FS|API)(\/get\/)?/, '');
+    function handleVFSFile(p) {
+      var dpath = p.replace(/^\/(FS|API)(\/get\/)?/, '');
       instance.handler.checkAPIPrivilege(request, response, 'fs', function(err) {
         if ( err ) {
           respondError(err, response);
@@ -243,8 +338,8 @@
       });
     }
 
-    function handleDistFile() {
-      var rpath = path.replace(/^\/+/, '');
+    function handleDistFile(p) {
+      var rpath = p.replace(/^\/+/, '');
       var dpath = _path.join(instance.config.distdir, rpath);
 
       // Checks if the request was a package resource
@@ -264,23 +359,61 @@
       respondFile(unescape(dpath), request, response, true);
     }
 
-    if ( request.method === 'POST' ) {
-      if ( isVfsCall ) {
-        if ( relPath === 'upload') {
-          handleUpload();
+    if ( !proxyCall(request, response) ) {
+      return;
+    }
+
+    var url       = _url.parse(request.url, true);
+    var path      = decodeURIComponent(url.pathname);
+    var sid       = _sessions.init(request, response);
+
+    request.session = {
+      set: function(k, v) {
+        return _sessions.set(sid, k, v === null ? null : String(v));
+      },
+      get: function(k) {
+        var v = _sessions.get(sid, k);
+        if ( v !== false ) {
+          return v[0];
+        }
+        return false;
+      }
+    };
+
+    if ( path === '/' ) {
+      path += 'index.html';
+    }
+
+    if ( instance.config.logging ) {
+      log(timestamp(), colored('<<<', 'bold'), path);
+    }
+
+    if ( instance.handler && instance.handler.onRequestStart ) {
+      instance.handler.onRequestStart(request, response);
+    }
+
+    (function() {
+      var isVfsCall = path.match(/^\/FS/) !== null;
+      var relPath   = path.replace(/^\/(FS|API)\/?/, '');
+
+      if ( request.method === 'POST' ) {
+        if ( isVfsCall ) {
+          if ( relPath === 'upload') {
+            handleUpload();
+          } else {
+            handleCall(relPath, true);
+          }
         } else {
-          handleCall(true);
+          handleCall(relPath, false);
         }
       } else {
-        handleCall(false);
+        if ( isVfsCall ) {
+          handleVFSFile(path);
+        } else { // dist files
+          handleDistFile(path);
+        }
       }
-    } else {
-      if ( isVfsCall ) {
-        handleVFSFile();
-      } else { // dist files
-        handleDistFile();
-      }
-    }
+    })();
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -308,9 +441,9 @@
     instance.handler.onServerStart(function() {
       var port = setup.port || instance.config.port;
       if ( instance.config.logging ) {
-        console.log('***');
-        console.log('***', 'OS.js is listening on http://localhost:' + port);
-        console.log('***');
+        console.log('\n\n***');
+        console.log('***', 'OS.js is listening on http://localhost:' + port + ' (handler:' + instance.config.handler + ' dir:' + instance.setup.dist + ')');
+        console.log('***\n\n');
       }
 
       server.listen(port);
@@ -329,6 +462,12 @@
     cb = cb || function() {};
 
     instance.handler.onServerEnd(function() {
+      if ( proxy ) {
+        proxy.close();
+      }
+
+      instance.down();
+
       if ( server ) {
         server.close(cb);
       } else {
@@ -346,5 +485,5 @@
   require('node-fs-extra'),
   require('querystring'),
   require('formidable'),
-  require('cookies')
+  require('simple-session')
 );
