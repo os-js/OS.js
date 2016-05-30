@@ -100,9 +100,12 @@
       response.writeHead.apply(response, h);
     });
 
-    response.writeHead(code, {
-      'Content-Type': mime
-    });
+    var wheaders = {};
+    if ( mime ) {
+      wheaders['Content-Type'] = mime;
+    }
+
+    response.writeHead(code, wheaders);
 
     if ( pipeFile ) {
       var stream = _fs.createReadStream(pipeFile, {bufferSize: 64 * 1024});
