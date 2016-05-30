@@ -31,6 +31,8 @@
   'use strict';
 
   var tmp_connector_filename;
+
+  var cm_core, cm_conn;
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
@@ -53,8 +55,10 @@
     var self = this;
 
     //Check if Ciao is installed
+    self._toggleLoading(true);
     callAPI('opkg', {command: "list", args : {category : "installed"}}, function(err,res){
       if(err){
+        self._toggleLoading(false);
         console.log("ERROR in installation phase: " + err);
         wmRef.notification({
           icon: "apps/update-manager.png",
@@ -66,7 +70,7 @@
         API.createDialog("Confirm", {buttons: ['yes', 'no'], message: "Ciao library not found.\n Do you want install it?" },
           function(ev, button) {
             if (button == "yes"){
-              self._toggleLoading(true);
+              //self._toggleLoading(true);
               callAPI('opkg', {command: "install", args : {packagename : "ciao"}}, function(err,res){
                 var msg = "Done"
                 if(err)
@@ -103,8 +107,10 @@
     var connectorsSelectView = this._scheme.find(this, 'SelectConnectorView');
     var connectorsList = [{label: "Select connector", value: null}];
 
+    self._toggleLoading(true);
     VFS.scandir(ciaoPath, function(err,res){
       if(err) {
+        self._toggleLoading(false);
         console.log("Ciao err:" + err);
         API.createDialog("Error", {
           title : "Ciao Error",
@@ -116,6 +122,7 @@
 
       }
       connectorsSelectView.clear();
+
       res.forEach(function(item, index, array){
          //item = { filename:"ArduinoLuci" , id:null , mime:"" , path:"root:///osjs/dist/packages/target/ArduinoLuci" , size:0 , type:"dir" }
         var connectorName = item.filename.split(".")[0];
@@ -125,6 +132,9 @@
         });
       });
       connectorsSelectView.add(connectorsList);
+      connectorsSelectView.$element.firstElementChild[0].disabled = true;
+      connectorsSelectView.$element.firstElementChild[0].selected = true;
+      self._toggleLoading(false);
 
     }, {backlink:false});
 
@@ -135,46 +145,66 @@
 
 
     scheme.find(this, 'SelectConnectorView').on('change', function(evChange) {
-      if (evChange.detail != "null")
+      if (evChange.detail != "undefined")
       {
         editConfigurationButton.set('disabled', false);
         editConnectorCoreConfButton.set('disabled', false);
 
-        self.showConnectorConf(evChange.detail, ciaoPathRoot, self);
-
-
+        scheme.find(self, 'ConnectorConfView').clear();
+        scheme.find(self, 'ConnectorCoreConfView').clear();
+        self.showConnectorConf(evChange.detail, ciaoPathRoot);
       }
       else {
         editConfigurationButton.set('disabled', true);
         editConnectorCoreConfButton.set('disabled', true);
         scheme.find(self, 'ConnectorConfView').clear();
+        scheme.find(self, 'ConnectorCoreConfView').clear();
       }
     });
 
     scheme.find(this, 'editConfigurationButton').on('click', function (evClick) {
-      var confFile = new VFS.File("root://"+tmp_connector_filename, "text/plain");
+      var confFile = new VFS.File("root://"+tmp_connector_filename, "text/plain"),
+        selector,
+        tmpCiaoPathRoot = ciaoPathRoot,
+        that = self;
 
       if(scheme.find(self, 'SelectConnectorView').get("value") != "null") {
-        scheme.find(self, 'SelectConnectorView').get("value");
+        selector = scheme.find(self, 'SelectConnectorView').get("value");
 
-        API.createDialog("Alert", {title: "Alert", message: "To apply changes reset MCU or upload a new Ciao sketch." }, function() {});
+        //API.createDialog("Alert", {title: "Alert", message: "To apply changes reset MCU or upload a new Ciao sketch." }, function() {});
 
-        API.launch('ApplicationCodeMirror', {file: confFile});
+        API.launch('ApplicationCodeMirror', {file: confFile}, function(){
+          var list = API.getProcess('ApplicationCodeMirror', false);
+          cm_conn = list[list.length-1];
+          cm_conn.destroy = function(){
+            that.showConnectorConf(selector, tmpCiaoPathRoot);
+          }
+        });
       }
     });
 
     scheme.find(this, 'editConnectorCoreConfButton').on('click', function (evClick) {
 
-      var confFile = new VFS.File (ciaoPathRoot + "/conf/" + scheme.find(self, 'SelectConnectorView').get("value") + ".ciao.json.conf", "text/plain");   //edit
+      var confFile = new VFS.File (ciaoPathRoot + "/conf/" + scheme.find(self, 'SelectConnectorView').get("value") + ".ciao.json.conf", "text/plain"),
+        selector,
+        tmpCiaoPathRoot = ciaoPathRoot,
+        that = self;
 
       if(scheme.find(self, 'SelectConnectorView').get("value") != "null") {
-        scheme.find(self, 'SelectConnectorView').get("value");
+        selector = scheme.find(self, 'SelectConnectorView').get("value");
 
-        API.createDialog("Alert", {title: "Alert", message: "To apply changes reset MCU or upload a new Ciao sketch." }, function() {});
+        //API.createDialog("Alert", {title: "Alert", message: "To apply changes reset MCU or upload a new Ciao sketch." }, function() {});
 
-        API.launch('ApplicationCodeMirror', {file: confFile});
+        API.launch('ApplicationCodeMirror', {file: confFile}, function(confFile, scheme){
+          var list = API.getProcess('ApplicationCodeMirror', false);
+          cm_core = list[list.length-1];
+          cm_core.destroy = function(){
+            that.showConnectorConf(selector, tmpCiaoPathRoot);
+          }
+        });
       }
     });
+
   };
 
   function callAPI(fn, args, cb) {
@@ -183,7 +213,7 @@
     });
   }
 
-  ApplicationArduinoCiaoConfiguratorWindow.prototype.showConnectorConf = function (selection, ciaoPath, wind){
+  ApplicationArduinoCiaoConfiguratorWindow.prototype.showConnectorConf = function (selection, ciaoPath){
     var connectorConfView = this._scheme.find(this, 'ConnectorConfView');
     var ConnectorCoreConfView = this._scheme.find(this, 'ConnectorCoreConfView');
     var CommandsView = this._scheme.find(this, 'CommandsView');
@@ -229,7 +259,7 @@
                   value: coreConfObj[key],
                   columns: [
                     {label: key},
-                    {label: coreConfObj[key]}
+                    {label: JSON.stringify(coreConfObj[key])}
                   ]
                 });
               }
@@ -267,7 +297,7 @@
                         value: paramsConnectorConfObj[key],
                         columns: [
                           {label: key},
-                          {label: paramsConnectorConfObj[key]}
+                          {label: JSON.stringify(paramsConnectorConfObj[key])}
                         ]
                       });
                     }
@@ -292,7 +322,6 @@
       }
     });
   }
-
 
 
   ApplicationArduinoCiaoConfiguratorWindow.prototype.destroy = function() {
