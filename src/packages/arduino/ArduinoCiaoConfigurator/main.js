@@ -31,6 +31,8 @@
   'use strict';
 
   var tmp_connector_filename;
+
+  var cm_core, cm_conn;
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
@@ -53,8 +55,10 @@
     var self = this;
 
     //Check if Ciao is installed
+    self._toggleLoading(true);
     callAPI('opkg', {command: "list", args : {category : "installed"}}, function(err,res){
       if(err){
+        self._toggleLoading(false);
         console.log("ERROR in installation phase: " + err);
         wmRef.notification({
           icon: "apps/update-manager.png",
@@ -66,7 +70,7 @@
         API.createDialog("Confirm", {buttons: ['yes', 'no'], message: "Ciao library not found.\n Do you want install it?" },
           function(ev, button) {
             if (button == "yes"){
-              self._toggleLoading(true);
+              //self._toggleLoading(true);
               callAPI('opkg', {command: "install", args : {packagename : "ciao"}}, function(err,res){
                 var msg = "Done"
                 if(err)
@@ -146,9 +150,9 @@
         editConfigurationButton.set('disabled', false);
         editConnectorCoreConfButton.set('disabled', false);
 
-        scheme.find(this, 'ConnectorConfView').clear();
-        scheme.find(this, 'ConnectorCoreConfView').clear();
-        self.showConnectorConf(evChange.detail, ciaoPathRoot, self);
+        scheme.find(self, 'ConnectorConfView').clear();
+        scheme.find(self, 'ConnectorCoreConfView').clear();
+        self.showConnectorConf(evChange.detail, ciaoPathRoot);
       }
       else {
         editConfigurationButton.set('disabled', true);
@@ -159,27 +163,45 @@
     });
 
     scheme.find(this, 'editConfigurationButton').on('click', function (evClick) {
-      var confFile = new VFS.File("root://"+tmp_connector_filename, "text/plain");
+      var confFile = new VFS.File("root://"+tmp_connector_filename, "text/plain"),
+        selector,
+        tmpCiaoPathRoot = ciaoPathRoot,
+        that = self;
 
       if(scheme.find(self, 'SelectConnectorView').get("value") != "null") {
-        scheme.find(self, 'SelectConnectorView').get("value");
+        selector = scheme.find(self, 'SelectConnectorView').get("value");
 
         //API.createDialog("Alert", {title: "Alert", message: "To apply changes reset MCU or upload a new Ciao sketch." }, function() {});
 
-        API.launch('ApplicationCodeMirror', {file: confFile});
+        API.launch('ApplicationCodeMirror', {file: confFile}, function(){
+          var list = API.getProcess('ApplicationCodeMirror', false);
+          cm_conn = list[list.length-1];
+          cm_conn.destroy = function(){
+            that.showConnectorConf(selector, tmpCiaoPathRoot);
+          }
+        });
       }
     });
 
     scheme.find(this, 'editConnectorCoreConfButton').on('click', function (evClick) {
 
-      var confFile = new VFS.File (ciaoPathRoot + "/conf/" + scheme.find(self, 'SelectConnectorView').get("value") + ".ciao.json.conf", "text/plain");   //edit
+      var confFile = new VFS.File (ciaoPathRoot + "/conf/" + scheme.find(self, 'SelectConnectorView').get("value") + ".ciao.json.conf", "text/plain"),
+        selector,
+        tmpCiaoPathRoot = ciaoPathRoot,
+        that = self;
 
       if(scheme.find(self, 'SelectConnectorView').get("value") != "null") {
-        scheme.find(self, 'SelectConnectorView').get("value");
+        selector = scheme.find(self, 'SelectConnectorView').get("value");
 
         //API.createDialog("Alert", {title: "Alert", message: "To apply changes reset MCU or upload a new Ciao sketch." }, function() {});
 
-        API.launch('ApplicationCodeMirror', {file: confFile});
+        API.launch('ApplicationCodeMirror', {file: confFile}, function(confFile, scheme){
+          var list = API.getProcess('ApplicationCodeMirror', false);
+          cm_core = list[list.length-1];
+          cm_core.destroy = function(){
+            that.showConnectorConf(selector, tmpCiaoPathRoot);
+          }
+        });
       }
     });
 
@@ -191,7 +213,7 @@
     });
   }
 
-  ApplicationArduinoCiaoConfiguratorWindow.prototype.showConnectorConf = function (selection, ciaoPath, wind){
+  ApplicationArduinoCiaoConfiguratorWindow.prototype.showConnectorConf = function (selection, ciaoPath){
     var connectorConfView = this._scheme.find(this, 'ConnectorConfView');
     var ConnectorCoreConfView = this._scheme.find(this, 'ConnectorCoreConfView');
     var CommandsView = this._scheme.find(this, 'CommandsView');
