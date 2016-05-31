@@ -107,12 +107,22 @@
   /**
    * Compiles a LESS file
    */
-  function lessFile(src, dest, cb) {
+  function lessFile(src, dest, cfg, cb) {
     console.log('CSS', src.replace(ROOT, ''));
 
+    var base = 'theme.less';
     try {
-      var css = readFile(src).toString();
-      var opt = {sourceMap: {}};
+      base = cfg.themes.styleBase;
+    } catch ( e ) {}
+
+    try {
+      var opt = {
+        sourceMap: {},
+        paths: ['.', PATHS.themes, PATHS.stylesheets]
+      };
+
+      var css = '@import "' + base + '";\n\n';
+      css += readFile(src).toString();
 
       _less.render(css, opt).then(function(result) {
         writeFile(dest, result.css);
@@ -1525,7 +1535,7 @@
         var src  = _path.join(PATHS.styles, s.name, 'style.less');
         var dest = _path.join(PATHS.out_client_styles, s.name + '.css');
 
-        lessFile(src, dest, function(error) {
+        lessFile(src, dest, cfg, function(error) {
           if ( error ) {
             grunt.fail.warn(error);
             return;
