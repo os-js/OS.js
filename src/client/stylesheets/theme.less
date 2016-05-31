@@ -219,7 +219,7 @@ corewm-panel:before {
 }
 
 corewm-panel-container {
-  padding : calc(@gui_base_padding * 2);
+  padding : (@gui_base_padding * 2);
 }
 corewm-panel[data-orientation="horizontal"] corewm-panel-container {
   width : calc(~"100% - "@gui_base_padding * 2);
@@ -273,6 +273,8 @@ application-splash {
 corewm-notification {
   color : #fff; /* Window Manager manages this */
   cursor : pointer;
+  padding : (@gui_base_padding * 2);
+  margin : (@gui_base_padding * 2);
 }
 
   .custom-notification:before,
@@ -312,29 +314,49 @@ corewm-notification {
     color : @gui_selected_foreground_color;
   }
 
-  /**
-   * ===========================================================================
-   *                                WINDOW
-   * ===========================================================================
-   */
-  application-window {
-    opacity : 0.8;
-    margin-top : @window_top_height;
+corewm-search {
+  padding : @gui_base_padding;
+  min-width : 200px;
+  max-width : 40%;
+}
+  corewm-search > div {
+    margin-top : @gui_base_padding;
   }
-  application-window:before {
-    box-shadow : @base_shadow_unfocused;
-    background : @base_background_color;
-    top : calc(-@window_top_height - @window_border_size);
-    left : -@window_border_size;
-    right : -@window_border_size;
-    bottom : -@window_border_size;
+  corewm-search > ul {
+    margin-top : @gui_base_padding;
   }
-  application-window[data-focused="true"] {
-    opacity : 1.0;
-  }
-  application-window[data-focused="true"]:before {
-    box-shadow : @base_shadow_focused;
-  }
+    corewm-search > ul > li {
+      padding : @gui_base_padding;
+      padding-left : (16px + @gui_base_padding * 2);
+    }
+      corewm-search > ul > li > img {
+        top : @gui_base_padding;
+        left : @gui_base_padding;
+      }
+
+/**
+ * ===========================================================================
+ *                                WINDOW
+ * ===========================================================================
+ */
+application-window {
+  opacity : 0.8;
+  margin-top : @window_top_height;
+}
+application-window:before {
+  box-shadow : @base_shadow_unfocused;
+  background : @base_background_color;
+  top : calc(-@window_top_height - @window_border_size);
+  left : -@window_border_size;
+  right : -@window_border_size;
+  bottom : -@window_border_size;
+}
+application-window[data-focused="true"] {
+  opacity : 1.0;
+}
+application-window[data-focused="true"]:before {
+  box-shadow : @base_shadow_focused;
+}
   application-window[data-dnd-state="true"]:after {
   top : -@window_top_height;
 }
@@ -357,7 +379,7 @@ application-window-title {
   font-weight : bold;
   color : @base_foreground_color;
   opacity : .5;
-  left : calc(20px + @gui_base_padding);
+  left : (20px + @gui_base_padding);
   line-height : @window_top_height;
   text-align : center;
 }
@@ -441,7 +463,7 @@ application-window-warning {
     opacity : .9;
   }
 application-window-resize {
-  top : calc(-@window_top_height - @window_resize_offset);
+  top : (-@window_top_height - @window_resize_offset);
   left : -@window_resize_offset;
   right : -@window_resize_offset;
   bottom : -@window_resize_offset;

@@ -55,8 +55,6 @@ corewm-notification {
   display : block;
   position : relative;
   min-height : 10px;
-  padding : 10px;
-  margin : 10px;
   overflow : hidden;
   white-space : nowrap;
 }
@@ -426,10 +424,8 @@ corewm-panel-item .Ghost {
 corewm-search {
   position : absolute;
   display : none;
-  padding : 5px;
   z-index : 99999;
-  min-width : 200px;
-  max-width : 40%;
+  max-width : 400px;
 }
 corewm-search:before {
   position : absolute;
@@ -454,13 +450,11 @@ corewm-search[data-visible=true] {
     list-style-type : none;
     margin : 0;
     padding : 0;
-    margin-top : 5px;
   }
     corewm-search > ul > li {
       position : relative;
       margin : 0;
-      padding : 5px;
-      padding-left : 26px;
+      padding : 0;
     }
       corewm-search > ul > li > * {
         pointer-events : none;
