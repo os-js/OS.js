@@ -721,7 +721,7 @@
     if ( dist === 'dist-dev' ) {
       preloads.push({
         type: 'javascript',
-        src: _path.join('/', 'client', 'javascript', 'handlers', cfg.handler, 'handler.js')
+        src: '/' + ['client', 'javascript', 'handlers', cfg.handler, 'handler.js'].join('/')
       });
     }
 
