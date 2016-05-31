@@ -324,6 +324,7 @@ corewm-search {
   }
   corewm-search > ul {
     margin-top : @gui_base_padding;
+    cursor : pointer;
   }
     corewm-search > ul > li {
       padding : @gui_base_padding;
@@ -333,6 +334,11 @@ corewm-search {
         top : @gui_base_padding;
         left : @gui_base_padding;
       }
+    corewm-search > ul > .active,
+    corewm-search > ul > li:hover {
+      background : #fff;
+      color : #000;
+    }
 
 /**
  * ===========================================================================

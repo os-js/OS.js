@@ -446,7 +446,6 @@ corewm-search[data-visible=true] {
   }
 
   corewm-search > ul {
-    cursor : pointer;
     list-style-type : none;
     margin : 0;
     padding : 0;
@@ -464,11 +463,6 @@ corewm-search[data-visible=true] {
         top : 5px;
         left : 5px;
       }
-    corewm-search > ul > .active,
-    corewm-search > ul > li:hover {
-      background : #fff;
-      color : #000;
-    }
 
 /**
  * ===========================================================================
