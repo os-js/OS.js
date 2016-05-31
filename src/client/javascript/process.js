@@ -210,6 +210,8 @@
    * @class
    */
   function Process(name, args, metadata) {
+    console.group('Process::constructor()', name);
+
     this.__pid        = _PROCS.push(this) - 1;
     this.__pname      = name;
     this.__args       = args || {};
@@ -227,11 +229,10 @@
     this.__scope    = this.__metadata.scope || 'system';
     this.__iter     = this.__metadata.className;
 
-    console.debug('Process::constructor()', {
-      pid: this.__pid,
-      name: this.__pname,
-      args: this.__args
-    });
+    console.debug('id', this.__pid);
+    console.debug('args', this.__args);
+
+    console.groupEnd();
   }
 
   /**
@@ -249,7 +250,7 @@
     if ( !this.__destroyed ) {
       this.__destroyed = true;
 
-      console.debug('OSjs::Core::Process::destroy()', this.__pid, this.__pname);
+      console.group('OSjs::Core::Process::destroy()', this.__pid, this.__pname);
 
       this._emit('destroy', [kill]);
 
@@ -262,6 +263,8 @@
           _PROCS[this.__pid] = null;
         }
       }
+
+      console.groupEnd();
 
       return true;
     }

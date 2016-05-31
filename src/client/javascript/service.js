@@ -48,7 +48,9 @@
    * @class
    */
   function Service(name, args, metadata) {
+    console.group('Service::constructor()', name);
     Process.apply(this, arguments);
+    console.groupEnd();
   }
 
   Service.prototype = Object.create(Process.prototype);

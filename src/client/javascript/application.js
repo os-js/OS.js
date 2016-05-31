@@ -55,7 +55,8 @@
    * @class
    */
   function Application(name, args, metadata, settings) {
-    console.group('Application::constructor()');
+    console.group('Application::constructor()', name);
+
     this.__inited     = false;
     this.__mainwindow = null;
     this.__scheme     = null;
@@ -137,7 +138,7 @@
     }
     this.__destroying = true;
 
-    console.debug('Application::destroy()', this.__pname);
+    console.group('Application::destroy()', this.__pname);
 
     this.__windows.forEach(function(w) {
       try {
@@ -158,7 +159,9 @@
     }
     this.__scheme = null;
 
-    return Process.prototype.destroy.call(this, kill);
+    var result = Process.prototype.destroy.call(this, kill);
+    console.groupEnd();
+    return result;
   };
 
   /**
@@ -179,7 +182,7 @@
 
     if ( msg === 'destroyWindow' ) {
       if ( obj._name === this.__mainwindow ) {
-        this.destroy(false, obj._wid);
+        this.destroy(true, obj._wid);
       } else {
         this._removeWindow(obj);
       }

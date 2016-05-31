@@ -342,7 +342,7 @@
       var successes = [];
       var failed = [];
 
-      console.group('Utils::preload()', list);
+      console.group('Utils::preload()', list.length);
 
       OSjs.Utils.asyncs(list, function(item, index, next) {
         function _loaded(success, src) {

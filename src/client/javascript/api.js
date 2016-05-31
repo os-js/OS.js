@@ -742,7 +742,7 @@
     }
 
     console.group('doLaunchProcess()', n);
-    console.info('Arguments', arg);
+    console.debug('Arguments', arg);
 
     return launch();
   }
