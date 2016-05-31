@@ -138,8 +138,12 @@
     console.debug('Application::destroy()', this.__pname);
 
     this.__windows.forEach(function(w) {
-      if ( w ) {
-        w.destroy();
+      try {
+        if ( w ) {
+          w.destroy();
+        }
+      } catch ( e ) {
+        console.warn('Application::destroy()', e, e.stack);
       }
     });
 
@@ -167,23 +171,23 @@
    * @method  Application::_onMessage()
    */
   Application.prototype._onMessage = function(msg, obj, args) {
-    if ( !(this.__destroyed && this.__destroying) ) {
-      if ( msg === 'destroyWindow' ) {
-        this._removeWindow(obj);
-
-        if ( obj && obj._name === this.__mainwindow ) {
-          this.destroy();
-        }
-      } else if ( msg === 'attention' ) {
-        if ( this.__windows.length && this.__windows[0] ) {
-          this.__windows[0]._focus();
-        }
-      }
-
-      return Process.prototype._onMessage.apply(this, arguments);
+    if ( this.__destroying || this.__destroyed ) {
+      return false;
     }
 
-    return false;
+    if ( msg === 'destroyWindow' ) {
+      this._removeWindow(obj);
+
+      if ( obj && obj._name === this.__mainwindow ) {
+        this.destroy();
+      }
+    } else if ( msg === 'attention' ) {
+      if ( this.__windows.length && this.__windows[0] ) {
+        this.__windows[0]._focus();
+      }
+    }
+
+    return Process.prototype._onMessage.apply(this, arguments);
   };
 
   /**
