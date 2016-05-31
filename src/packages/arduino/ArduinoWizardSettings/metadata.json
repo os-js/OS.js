@@ -3,7 +3,7 @@
   "name":       "Arduino Configuration Wizard",
   "mime":       null,
   "icon":       "categories/applications-system.png",
-  "category":   "utilities",
+  "category":   "arduino",
   "preload":    [
     {"src": "main.js", "type": "javascript"},
     {"src": "locales.js", "type": "javascript"},

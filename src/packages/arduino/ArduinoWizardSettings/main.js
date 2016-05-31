@@ -557,7 +557,7 @@
     };
 
     ApplicationArduinoWizardSettingsWindow.prototype.destroy = function () {
-        Window.prototype.destroy.apply(this, arguments);
+      Window.prototype.destroy.apply(this, arguments);
     };
 
     /////////////////////////////////////////////////////////////////////////////
@@ -573,7 +573,15 @@
     ApplicationArduinoWizardSettings.constructor = Application;
 
     ApplicationArduinoWizardSettings.prototype.destroy = function () {
-        return Application.prototype.destroy.apply(this, arguments);
+      var that = this;
+      API.createDialog("Confirm", {buttons: ['yes', 'no'], message: "Do you want shown this application again?" },
+        function(ev, button) {
+          var pool = OSjs.Core.getSettingsManager().instance('Wizard');
+          pool.set('completed', button=="yes"? false : true, function(){
+            console.log("WIZARD " + button=="yes"? "ENABLED":"DISABLED");
+          });
+          return Application.prototype.destroy.apply(that, arguments);
+        });
     };
 
     ApplicationArduinoWizardSettings.prototype.init = function (settings, metadata) {
