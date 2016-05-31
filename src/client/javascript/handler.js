@@ -96,7 +96,7 @@
    * @method  _Handler::init()
    */
   _Handler.prototype.init = function(callback) {
-    console.info('Handler::init()');
+    console.debug('Handler::init()');
 
     var self = this;
     API.setLocale(API.getConfig('Locale'));
@@ -330,11 +330,7 @@
       return self._callAPI(method, args, options, cbSuccess, cbError);
     }
 
-    console.group('Handler::callAPI()');
-    console.log('Method', method);
-    console.log('Arguments', args);
-    console.log('Options', options);
-    console.groupEnd();
+    console.info('Handler::callAPI()', method);
 
     return checkState() ? _call() : false;
   };

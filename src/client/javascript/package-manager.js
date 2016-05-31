@@ -67,7 +67,7 @@
         var self = this;
         callback = callback || {};
 
-        console.info('PackageManager::load()');
+        console.debug('PackageManager::load()');
 
         function loadMetadata(cb) {
           self._loadMetadata(function(err) {

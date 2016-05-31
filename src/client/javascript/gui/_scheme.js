@@ -150,9 +150,7 @@
    * @class Scheme
    */
   function UIScheme(url) {
-    console.group('UIScheme::construct()');
-    console.log(url);
-    console.groupEnd();
+    console.debug('UIScheme::construct()', url);
 
     this.url = url;
     this.scheme = null;

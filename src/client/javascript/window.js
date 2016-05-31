@@ -258,7 +258,7 @@
       });
 
       console.group('Window::constructor()', _WID);
-      console.log(name, opts);
+      console.debug(name, opts);
 
       this._$element      = null;                           // DOMElement: Window Outer container
       this._$root         = null;                           // DOMElement: Window Inner container (for content)
@@ -524,9 +524,9 @@
     _initDimension();
     _initGravity();
 
-    console.log('Properties', this._properties);
-    console.log('Position', this._position);
-    console.log('Dimension', this._dimension);
+    console.debug('Properties', this._properties);
+    console.debug('Position', this._position);
+    console.debug('Dimension', this._dimension);
 
     main = document.createElement('application-window');
     main.setAttribute('data-window-id', this._wid);

@@ -403,8 +403,8 @@
    */
   function WindowManager(name, ref, args, metadata, settings) {
     console.group('WindowManager::constructor()');
-    console.log('Name', name);
-    console.log('Arguments', args);
+    console.debug('Name', name);
+    console.debug('Arguments', args);
 
     this._$notifications = null;
     this._windows        = [];

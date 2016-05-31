@@ -125,7 +125,7 @@
    * @api     OSjs.API.message()
    */
   function doProcessMessage(msg, obj, opts) {
-    console.info('doProcessMessage', msg, opts);
+    console.debug('doProcessMessage', msg, opts);
     _PROCS.forEach(function(p, i) {
       if ( p && (p instanceof OSjs.Core.Application || p instanceof Process) ) {
         p._onMessage(msg, obj, opts);
@@ -227,12 +227,11 @@
     this.__scope    = this.__metadata.scope || 'system';
     this.__iter     = this.__metadata.className;
 
-    console.group('Process::constructor()');
-    console.log('pid', this.__pid);
-    console.log('pname', this.__pname);
-    console.log('started', this.__started);
-    console.log('args', this.__args);
-    console.groupEnd();
+    console.debug('Process::constructor()', {
+      pid: this.__pid,
+      name: this.__pname,
+      args: this.__args
+    });
   }
 
   /**
@@ -250,7 +249,7 @@
     if ( !this.__destroyed ) {
       this.__destroyed = true;
 
-      console.log('OSjs::Core::Process::destroy()', this.__pid, this.__pname);
+      console.debug('OSjs::Core::Process::destroy()', this.__pid, this.__pname);
 
       this._emit('destroy', [kill]);
 
@@ -281,7 +280,7 @@
     opts = opts || {};
 
     if ( this.__evHandler && opts.source !== this.__pid ) {
-      console.info('Process::_onMessage()', msg, obj, opts, this.__pid, this.__pname);
+      console.debug('Process::_onMessage()', msg, obj, opts, this.__pid, this.__pname);
 
       this.__evHandler.emit('message', [msg, obj, opts]);
       if ( msg.substr(0, 3) === 'vfs' ) {

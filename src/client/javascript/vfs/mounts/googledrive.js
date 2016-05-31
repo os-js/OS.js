@@ -206,7 +206,7 @@
    * Get all files in a directory
    */
   function getAllDirectoryFiles(item, callback) {
-    console.log('GoogleDrive::*getAllDirectoryFiles()', item);
+    console.debug('GoogleDrive::*getAllDirectoryFiles()', item);
 
     function retrieveAllFiles(cb) {
       if ( _clearCacheTimeout ) {
@@ -366,7 +366,7 @@
             _treeCache = null;
           }, CACHE_CLEAR_TIMEOUT);
 
-          console.log('GoogleDrive::*getAllDirectoryFiles()', '=>', response);
+          console.debug('GoogleDrive::*getAllDirectoryFiles()', '=>', response);
           callback(error, response, root);
         });
       });

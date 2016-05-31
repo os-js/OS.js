@@ -259,7 +259,7 @@
       html.setAttribute('lang', l);
     }
 
-    console.log('doSetLocale()', CurrentLocale);
+    console.info('doSetLocale()', CurrentLocale);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -402,7 +402,7 @@
     }
 
     function _onDone(app) {
-      console.info('Found', app.length, 'applications supporting this mime');
+      console.debug('Found', app.length, 'applications supporting this mime');
       console.groupEnd();
       if ( app.length ) {
 
@@ -697,7 +697,7 @@
         }
       }
 
-      console.info('Manifest', data);
+      console.debug('Manifest', data);
 
       // Preload
       createLoading(n, {className: 'StartupNotification', tooltip: 'Starting ' + n});
@@ -1439,7 +1439,7 @@
     }
 
     var f = OSjs.API.getSound(name);
-    console.info('doPlaySound()', name, f);
+    console.debug('doPlaySound()', name, f);
     var a = new Audio(f);
     a.volume = volume;
     a.play();
@@ -1456,7 +1456,7 @@
    * @api     OSjs.API.setClipboard()
    */
   function doSetClipboard(data) {
-    console.info('OSjs.API.setClipboard()', data);
+    console.debug('OSjs.API.setClipboard()', data);
     _CLIPBOARD = data;
   }
 

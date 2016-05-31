@@ -202,7 +202,7 @@
        * @api SearchEngine::init()
        */
       init: function(cb) {
-        console.log('SearchEngine::init()');
+        console.debug('SearchEngine::init()');
 
         if ( inited ) {
           return;
@@ -224,7 +224,7 @@
        * @api SearchEngine::destroy()
        */
       destroy: function() {
-        console.log('SearchEngine::destroy()');
+        console.debug('SearchEngine::destroy()');
 
         modules.forEach(function(m) {
           m.destroy();

@@ -594,7 +594,7 @@
    * @api     OSjs.VFS.find()
    */
   OSjs.VFS.find = function(item, args, callback, options) {
-    console.info('VFS::find()', item, args, options);
+    console.debug('VFS::find()', item, args, options);
     if ( arguments.length < 3 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
     }
@@ -624,7 +624,7 @@
    * @api     OSjs.VFS.scandir()
    */
   OSjs.VFS.scandir = function(item, callback, options) {
-    console.info('VFS::scandir()', item, options);
+    console.debug('VFS::scandir()', item, options);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
     }
@@ -653,7 +653,7 @@
    * @api     OSjs.VFS.write()
    */
   OSjs.VFS.write = function(item, data, callback, options, appRef) {
-    console.info('VFS::write()', item, options);
+    console.debug('VFS::write()', item, options);
     if ( arguments.length < 3 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
     }
@@ -720,7 +720,7 @@
    * @api     OSjs.VFS.read()
    */
   OSjs.VFS.read = function(item, callback, options) {
-    console.info('VFS::read()', item, options);
+    console.debug('VFS::read()', item, options);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
     }
@@ -789,7 +789,7 @@
    * @api     OSjs.VFS.copy()
    */
   OSjs.VFS.copy = function(src, dest, callback, options, appRef) {
-    console.info('VFS::copy()', src, dest, options);
+    console.debug('VFS::copy()', src, dest, options);
     if ( arguments.length < 3 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
     }
@@ -878,7 +878,7 @@
    * @api     OSjs.VFS.move()
    */
   OSjs.VFS.move = function(src, dest, callback, options, appRef) {
-    console.info('VFS::move()', src, dest, options);
+    console.debug('VFS::move()', src, dest, options);
     if ( arguments.length < 3 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
     }
@@ -952,7 +952,7 @@
    * @api     OSjs.VFS.unlink()
    */
   OSjs.VFS.unlink = function(item, callback, options, appRef) {
-    console.info('VFS::unlink()', item, options);
+    console.debug('VFS::unlink()', item, options);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
     }
@@ -999,7 +999,7 @@
    * @api     OSjs.VFS.mkdir()
    */
   OSjs.VFS.mkdir = function(item, callback, options, appRef) {
-    console.info('VFS::mkdir()', item, options);
+    console.debug('VFS::mkdir()', item, options);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
     }
@@ -1037,7 +1037,7 @@
    * @api     OSjs.VFS.exists()
    */
   OSjs.VFS.exists = function(item, callback) {
-    console.info('VFS::exists()', item);
+    console.debug('VFS::exists()', item);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
     }
@@ -1056,7 +1056,7 @@
    * @api     OSjs.VFS.fileinfo()
    */
   OSjs.VFS.fileinfo = function(item, callback) {
-    console.info('VFS::fileinfo()', item);
+    console.debug('VFS::fileinfo()', item);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
     }
@@ -1080,7 +1080,7 @@
    * @api     OSjs.VFS.url()
    */
   OSjs.VFS.url = function(item, callback) {
-    console.info('VFS::url()', item);
+    console.debug('VFS::url()', item);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
     }
@@ -1113,7 +1113,7 @@
    * @api     OSjs.VFS.upload()
    */
   OSjs.VFS.upload = function(args, callback, options, appRef) {
-    console.info('VFS::upload()', args);
+    console.debug('VFS::upload()', args);
     args = args || {};
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -1204,7 +1204,7 @@
     var _didx = 1;
 
     return function(args, callback) {
-      console.info('VFS::download()', args);
+      console.debug('VFS::download()', args);
       args = args || {};
 
       if ( arguments.length < 2 ) {
@@ -1279,7 +1279,7 @@
    * @api     OSjs.VFS.trash()
    */
   OSjs.VFS.trash = function(item, callback) {
-    console.info('VFS::trash()', item);
+    console.debug('VFS::trash()', item);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
     }
@@ -1305,7 +1305,7 @@
    * @api     OSjs.VFS.untrash()
    */
   OSjs.VFS.untrash = function(item, callback) {
-    console.info('VFS::untrash()', item);
+    console.debug('VFS::untrash()', item);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
     }
@@ -1330,7 +1330,7 @@
    * @api     OSjs.VFS.emptyTrash()
    */
   OSjs.VFS.emptyTrash = function(callback) {
-    console.info('VFS::emptyTrash()');
+    console.debug('VFS::emptyTrash()');
     if ( arguments.length < 1 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
     }
@@ -1355,7 +1355,7 @@
    * @api     OSjs.VFS.freeSpace()
    */
   OSjs.VFS.freeSpace = function(item, callback) {
-    console.info('VFS::freeSpace()', item);
+    console.debug('VFS::freeSpace()', item);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
     }
@@ -1392,7 +1392,7 @@
     options.type = options.type || 'binary';
     mime = options.mime || 'application/octet-stream';
 
-    console.info('VFS::remoteRead()', url, mime);
+    console.debug('VFS::remoteRead()', url, mime);
 
     if ( arguments.length < 1 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
 
