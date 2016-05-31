@@ -129,7 +129,9 @@
    *
    * @method    Application::destroy()
    */
-  Application.prototype.destroy = function(kill) {
+  Application.prototype.destroy = function(kill, sourceWid) {
+    var self = this;
+
     if ( this.__destroying || this.__destroyed ) { // From 'process.js'
       return true;
     }
@@ -139,7 +141,7 @@
 
     this.__windows.forEach(function(w) {
       try {
-        if ( w ) {
+        if ( w && w._wid !== sourceWid ) {
           w.destroy();
         }
       } catch ( e ) {
@@ -156,7 +158,7 @@
     }
     this.__scheme = null;
 
-    return Process.prototype.destroy.apply(this, arguments);
+    return Process.prototype.destroy.call(this, kill);
   };
 
   /**
@@ -176,10 +178,10 @@
     }
 
     if ( msg === 'destroyWindow' ) {
-      this._removeWindow(obj);
-
-      if ( obj && obj._name === this.__mainwindow ) {
-        this.destroy();
+      if ( obj._name === this.__mainwindow ) {
+        this.destroy(false, obj._wid);
+      } else {
+        this._removeWindow(obj);
       }
     } else if ( msg === 'attention' ) {
       if ( this.__windows.length && this.__windows[0] ) {
