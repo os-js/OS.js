@@ -77,7 +77,7 @@
    * Demo initialization
    */
   DemoHandler.prototype.init = function(callback) {
-    console.info('OSjs::DemoHandler::init()');
+    console.info('DemoHandler::init()');
 
     var self = this;
 

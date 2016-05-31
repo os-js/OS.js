@@ -250,7 +250,7 @@
     if ( !this.__destroyed ) {
       this.__destroyed = true;
 
-      console.group('OSjs::Core::Process::destroy()', this.__pid, this.__pname);
+      console.group('Process::destroy()', this.__pid, this.__pname);
 
       this._emit('destroy', [kill]);
 

@@ -651,7 +651,7 @@
           return;
         }
 
-        console.debug('OSjs::Handlers::init()', 'login response', result);
+        console.debug('Handlers::init()', 'login response', result);
         container.parentNode.removeChild(container);
 
         self.onLogin(result, function() {

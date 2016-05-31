@@ -587,7 +587,7 @@
         opts.timeout  = 5000;
       }
 
-      console.log('OSjs::Core::WindowManager::notification()', opts);
+      console.debug('CoreWM::notification()', opts);
 
       var container  = document.createElement('corewm-notification');
       var classNames = [''];
@@ -752,9 +752,11 @@
   };
 
   CoreWM.prototype.applySettings = function(settings, force, save, triggerWatch) {
-    console.group('OSjs::Applications::CoreWM::applySettings');
+    console.group('CoreWM::applySettings()');
 
     settings = force ? settings : Utils.mergeObject(this._settings.get(), settings);
+
+    console.log(settings);
 
     this.setBackground(settings);
     this.setTheme(settings);
@@ -818,10 +820,6 @@
       }
     }
 
-    console.log('Wallpaper name', name);
-    console.log('Wallpaper type', type);
-    console.log('Wallpaper className', className);
-
     document.body.setAttribute('data-background-style', className);
 
     if ( back !== 'none' ) {
@@ -837,7 +835,6 @@
   };
 
   CoreWM.prototype.setTheme = function(settings) {
-    console.log('theme', settings.theme);
     if ( this.$themeLink ) {
       if ( settings.theme ) {
         this.setThemeLink(API.getThemeCSS(settings.theme));
@@ -852,7 +849,6 @@
 
     this.setThemeScript(API.getThemeResource('theme.js'));
 
-    console.log('animations', settings.animations);
     if ( this.$animationLink ) {
       if ( settings.animations ) {
         this.setAnimationLink(API.getApplicationResource(this, 'animations.css'));
