@@ -194,15 +194,26 @@
     if ( (wm && wm.getSetting('useTouchMenu') === true) ) {
       var inst = new ApplicationMenu();
       var pos = {x: ev.clientX, y: ev.clientY};
+
       if ( ev.target ) {
-        var target = ev.target;
-        if ( target.tagName === 'IMG' ) {
-          target = target.parentNode;
-        }
-        var rect = Utils.$position(target, document.body);
+        var rect = Utils.$position(ev.target, document.body);
         if ( rect.left && rect.top && rect.width && rect.height ) {
-          pos.x = rect.left - (rect.width / 2) + 4;
-          pos.y = rect.top + rect.height + 4;
+          pos.x = rect.left - (rect.width / 2);
+
+          if ( pos.x <= 16 ) {
+            pos.x = 0; // Snap to left
+          }
+
+          var panel = Utils.$parent(ev.target, function(node) {
+            return node.tagName.toLowerCase() === 'corewm-panel';
+          });
+
+          if ( panel ) {
+            var prect = Utils.$position(panel);
+            pos.y = prect.top + prect.height;
+          } else {
+            pos.y = rect.top + rect.height;
+          }
         }
       }
       API.createMenu(null, pos, inst);

@@ -415,7 +415,7 @@
     }
 
     var wm = OSjs.Core.getWindowManager();
-    var space = wm.getWindowSpace();
+    var space = wm.getWindowSpace(true);
     var pos = getPosition();
 
     Utils.$addClass(root, 'gui-root-menu');
