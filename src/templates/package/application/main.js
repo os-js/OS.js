@@ -50,14 +50,21 @@
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
 
-    // Load and set up scheme (GUI) here
+    // Load and render `scheme.html` file
     scheme.render(this, 'EXAMPLEWindow', root);
+
+    // Put your GUI code here (or make a new prototype function and call it):
 
     return root;
   };
 
   ApplicationEXAMPLEWindow.prototype.destroy = function() {
-    Window.prototype.destroy.apply(this, arguments);
+    // This is where you remove objects, dom elements etc attached to your
+    // instance. You can remove this if not used.
+    if ( Window.prototype.destroy.apply(this, arguments) ) {
+      return true;
+    }
+    return false;
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -72,7 +79,12 @@
   ApplicationEXAMPLE.constructor = Application;
 
   ApplicationEXAMPLE.prototype.destroy = function() {
-    return Application.prototype.destroy.apply(this, arguments);
+    // This is where you remove objects, dom elements etc attached to your
+    // instance. You can remove this if not used.
+    if ( Application.prototype.destroy.apply(this, arguments) ) {
+      return true;
+    }
+    return false;
   };
 
   ApplicationEXAMPLE.prototype.init = function(settings, metadata) {

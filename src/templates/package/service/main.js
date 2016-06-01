@@ -42,11 +42,18 @@
   EXAMPLEService.constructor = Service;
 
   EXAMPLEService.prototype.destroy = function() {
-    return Service.prototype.destroy.apply(this, arguments);
+    // This is where you remove objects, dom elements etc attached to your
+    // instance. You can remove this if not used.
+    if ( Service.prototype.destroy.apply(this, arguments) ) {
+      return true;
+    }
+    return false;
   };
 
   EXAMPLEService.prototype.init = function(settings, metadata) {
     Service.prototype.init.apply(this, arguments);
+
+    // Put your stuff here
   };
 
   /////////////////////////////////////////////////////////////////////////////
