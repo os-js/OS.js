@@ -404,7 +404,7 @@
     parentNode.appendChild(el);
     OSjs.GUI.Elements[tagName].build(el, applyArgs, win);
 
-    return new OSjs.GUI.Element(el);
+    return this.get(el);
   };
 
   /**
