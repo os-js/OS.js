@@ -133,6 +133,7 @@
     'DIALOG_FILE_MNU_ICONVIEW' : 'Biểu tượng',
     'DIALOG_FILE_ERROR'        : 'Lỗi FileDialog',
     'DIALOG_FILE_ERROR_SCANDIR': 'Không thể liệt kê thư mục \'{0}\' vì đã xảy ra lỗi',
+    'DIALOG_FILE_ERROR_FIND': 'Không thể tìm kiếm trong thư mục \'{0}\' bởi một lỗi đã xảy ra',
     'DIALOG_FILE_MISSING_FILENAME' : 'Bạn cần phải chọn một tập tin hoặc nhập tên tập tin mới!',
     'DIALOG_FILE_MISSING_SELECTION': 'Bạn cần phải chọn một tập tin!',
 
@@ -255,6 +256,10 @@
     'ERR_VFSMODULE_UNTRASH_FMT'    : 'Không thể di chuyển tập tin ra khỏi thùng rác: {0}',
     'ERR_VFSMODULE_EMPTYTRASH'     : 'Không thể làm rỗng thùng rác',
     'ERR_VFSMODULE_EMPTYTRASH_FMT' : 'Không thể làm rỗng thùng rác : {0}',
+    'ERR_VFSMODULE_FIND'           : 'Không thể tìm kiếm',
+    'ERR_VFSMODULE_FIND_FMT'       : 'Lỗi khi tìm kiếm: {0}',
+    'ERR_VFSMODULE_FREESPACE'      : 'Không thể làm sạch bộ nhớ',
+    'ERR_VFSMODULE_FREESPACE_FMT'  : 'Lỗi khi làm sạch bộ nhớ: {0}',
 
     // VFS -> Dropbox
     'DROPBOX_NOTIFICATION_TITLE' : 'Bạn đã đăng nhập vào Dropbox API',
@@ -268,6 +273,12 @@
     'ZIP_VENDOR_FAIL'   : 'Không tìm thấy zip.js, bạn có chắc chắn đã thiết lập nó chưa?',
     'ZIP_NO_RESOURCE'   : 'Không có nguồn zip đã được đưa ra',
     'ZIP_NO_PATH'       : 'Không có đường dẫn',
+
+    //
+    // SearchEngine
+    //
+    'SEARCH_LOADING': 'Đang tìm kiếm...',
+    'SEARCH_NO_RESULTS': 'Không có kết quả',
 
     //
     // PackageManager
@@ -406,8 +417,8 @@
     'LBL_USERNAME': 'Tên đăng nhập',
     'LBL_PASSWORD': 'Mật khẩu',
     'LBL_HOST': 'Host',
-    'LBL_NAMESPACE': 'Namespace'
-
+    'LBL_NAMESPACE': 'Namespace',
+    'LBL_SEARCH': 'Tìm kiếm'
   };
 
 })();
