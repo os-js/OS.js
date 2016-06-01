@@ -40,10 +40,10 @@
 
   var _PROCS = [];        // Running processes
 
-  function _kill(pid, force) {
+  function _kill(pid) {
     if ( pid >= 0 && _PROCS[pid] ) {
-      var res = _PROCS[pid].destroy(force);
-      console.warn('Killing application', pid, force, res);
+      var res = _PROCS[pid].destroy();
+      console.warn('Killing application', pid, res);
       if ( res !== false ) {
         _PROCS[pid] = null;
         return true;
@@ -60,12 +60,11 @@
    * Kills all processes
    *
    * @param   Mixed     match     String/RegExp to match with (optional)
-   * @param   boolean   force     Force killing (optional, default=false)
    *
    * @return  void
    * @api     OSjs.API.killAll()
    */
-  function doKillAllProcesses(match, force) {
+  function doKillAllProcesses(match) {
     if ( match ) {
       var isMatching;
       if ( match instanceof RegExp && _PROCS ) {
@@ -81,7 +80,7 @@
       if ( isMatching ) {
         _PROCS.forEach(function(p) {
           if ( p && isMatching(p) ) {
-            _kill(p.__pid, force);
+            _kill(p.__pid);
           }
         });
       }
@@ -90,7 +89,7 @@
 
     _PROCS.forEach(function(proc, i) {
       if ( proc ) {
-        proc.destroy(false, true);
+        proc.destroy(true);
       }
       _PROCS[i] = null;
     });
@@ -106,7 +105,7 @@
    * @api     OSjs.API.kill()
    */
   function doKillProcess(pid) {
-    return _kill(pid, true);
+    return _kill(pid);
   }
 
   /**
@@ -238,30 +237,24 @@
   /**
    * Destroys the process
    *
-   * @param   boolean   kill    Force kill ?
-   *
    * @return  boolean
    *
    * @method  Process::destroy()
    */
-  Process.prototype.destroy = function(kill) {
-    kill = (typeof kill === 'undefined') ? true : (kill === true);
-
+  Process.prototype.destroy = function() {
     if ( !this.__destroyed ) {
       this.__destroyed = true;
 
       console.group('Process::destroy()', this.__pid, this.__pname);
 
-      this._emit('destroy', [kill]);
+      this._emit('destroy', []);
 
       if ( this.__evHandler ) {
         this.__evHandler = this.__evHandler.destroy();
       }
 
-      if ( kill ) {
-        if ( this.__pid >= 0 ) {
-          _PROCS[this.__pid] = null;
-        }
+      if ( this.__pid >= 0 ) {
+        _PROCS[this.__pid] = null;
       }
 
       console.groupEnd();

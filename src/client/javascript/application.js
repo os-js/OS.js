@@ -130,7 +130,7 @@
    *
    * @method    Application::destroy()
    */
-  Application.prototype.destroy = function(kill, sourceWid) {
+  Application.prototype.destroy = function(sourceWid) {
     var self = this;
 
     if ( this.__destroying || this.__destroyed ) { // From 'process.js'
@@ -159,7 +159,7 @@
     }
     this.__scheme = null;
 
-    var result = Process.prototype.destroy.call(this, kill);
+    var result = Process.prototype.destroy.apply(this, arguments);
     console.groupEnd();
     return result;
   };
@@ -182,7 +182,7 @@
 
     if ( msg === 'destroyWindow' ) {
       if ( obj._name === this.__mainwindow ) {
-        this.destroy(true, obj._wid);
+        this.destroy(obj._wid);
       } else {
         this._removeWindow(obj);
       }

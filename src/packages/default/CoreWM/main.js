@@ -162,8 +162,8 @@
 
   };
 
-  CoreWM.prototype.destroy = function(kill, force) {
-    if ( !force && kill && !window.confirm(OSjs.Applications.CoreWM._('Killing this process will stop things from working!')) ) {
+  CoreWM.prototype.destroy = function(force) {
+    if ( !force && !window.confirm(OSjs.Applications.CoreWM._('Killing this process will stop things from working!')) ) {
       return false;
     }
 

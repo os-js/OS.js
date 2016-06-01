@@ -459,7 +459,7 @@
       }
 
       try {
-        p.destroy(true); // kill
+        p.destroy(); // kill
       } catch ( e ) {
         console.warn('OSjs.API.relaunch()', e.stack, e);
       }
