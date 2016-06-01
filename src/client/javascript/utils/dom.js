@@ -271,6 +271,33 @@
   };
 
   /**
+   * Traverses down to the parentnode validated by filter
+   *
+   * @param   DOMElement      el        The Element to find position of
+   * @param   Function        cb        The callback function => fn(node) return true/false here
+   *
+   * @return  DOMElement      el        The DOM element
+   *
+   * @api     OSjs.Utils.$parent()
+   */
+  OSjs.Utils.$parent = function(el, cb) {
+    var result = null;
+
+    if ( el && cb ) {
+      var current = el;
+      while ( current.parentNode ) {
+        if ( cb(current) ) {
+          result = current;
+          break;
+        }
+        current = current.parentNode;
+      }
+    }
+
+    return result;
+  };
+
+  /**
    * Get the index of an element within a node
    *
    * @param   DOMElement    el          Element to check
