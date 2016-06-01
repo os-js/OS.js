@@ -1,6 +1,6 @@
 With the *mysql* handler you can enable a login prompt for OS.js.
 
-**This assumes you have a server running with mysql already and and that you know how to use the CLI utilities.**
+**This assumes you have a server running with mysql already and that you know how to use the CLI utilities.**
 
 ## Setup OS.js
 
