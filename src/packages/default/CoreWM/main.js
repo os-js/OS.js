@@ -330,13 +330,15 @@
       // Workaround for windows appearing behind panel
       var p = this.panels[0];
       if ( p && p.getOntop() && p.getPosition('top') ) {
-        var space = this.getWindowSpace();
-        this._windows.forEach(function(iter) {
-          if ( iter && iter._position.y < space.top ) {
-            console.warn('CoreWM::initPanels()', 'I moved this window because it overlapped with a panel!', iter);
-            iter._move(iter._position.x, space.top);
-          }
-        });
+        setTimeout(function() {
+          var space = self.getWindowSpace();
+          self._windows.forEach(function(iter) {
+            if ( iter && iter._position.y < space.top ) {
+              console.warn('CoreWM::initPanels()', 'I moved this window because it overlapped with a panel!', iter);
+              iter._move(iter._position.x, space.top);
+            }
+          });
+        }, this.getAnimDuration() + 100);
       }
 
       if ( this.iconView ) {
