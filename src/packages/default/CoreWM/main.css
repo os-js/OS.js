@@ -472,7 +472,7 @@ corewm-search[data-visible=true] {
 
 @media all and (max-width: 800px) {
 
-  corewm-panel > corewm-panel-container > corewm-panel-item .corewm-panel-buttons > li span {
+  .PanelItemWindowList > ul > li > span {
     display: none;
   }
 
