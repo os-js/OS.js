@@ -114,7 +114,7 @@
       },
       mime: {
         label: 'LBL_MIME',
-        basis: '100px',
+        size: '100px',
         icon: function() {
           return null;
         },
@@ -124,7 +124,7 @@
       },
       mtime: {
         label: 'LBL_MODIFIED',
-        basis: '160px',
+        size: '160px',
         icon: function() {
           return null;
         },
@@ -134,7 +134,7 @@
       },
       ctime: {
         label: 'LBL_CREATED',
-        basis: '160px',
+        size: '160px',
         icon: function() {
           return null;
         },
@@ -144,7 +144,7 @@
       },
       size: {
         label: 'LBL_SIZE',
-        basis: '120px',
+        size: '120px',
         icon: function() {
           return null;
         },
@@ -175,14 +175,9 @@
           textalign: idx === 0 ? 'left' : 'right'
         });
       } else {
-        var grow = idx === 0 ? 1 : 0;
-        var shrink = grow;
-
         columns.push({
           label: API._(map.label),
-          basis: map.basis || 'auto',
-          grow: grow,
-          shrink: shrink,
+          size: map.size || '',
           resizable: idx > 0,
           textalign: idx === 0 ? 'left' : 'right'
         });

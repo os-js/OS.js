@@ -1418,76 +1418,36 @@ gui-list-view {
   min-width : 16px;
   min-height : 16px;
 }
+  gui-list-view-inner {
+    display : table;
+    width : 100%;
+    z-index : 2;
+    position : relative;
+    table-layout : fixed;
+    border-collapse : collapse;
+  }
   gui-list-view-body {
     display : block;
     position : relative;
     z-index : 2;
+
+    display : table-row-group;
+    width : 100%;
   }
 
   gui-list-view-head {
-    z-index : 20;
-    position : absolute;
-    top : 0;
-    left : 0;
-    right : 0;
+    display : table-header-group;
+    width : 100%;
+    visibility : hidden;
   }
 
   gui-list-view-head,
   gui-list-view-body {
-    position : relative;
-    display: block;
-
-    display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-
-    -webkit-flex-wrap: nowrap;
-       -moz-flex-wrap: nowrap;
-        -ms-flex-wrap: nowrap;
-         -o-flex-wrap: nowrap;
-            flex-wrap: nowrap;
-
-    -webkit-box-orient: vertical;
-       -moz-box-orient: vertical;
-        -ms-box-orient: vertical;
-         -o-box-orient: vertical;
-            box-orient: vertical;
-
-    -webkit-flex-direction: column;
-       -moz-flex-direction: column;
-        -ms-flex-direction: column;
-         -o-flex-direction: column;
-            flex-direction: column;
   }
     gui-list-view-row {
       position : relative;
-      display: block;
-
-      display: -webkit-box;
-      display: -moz-box;
-      display: -ms-flexbox;
-      display: -webkit-flex;
-      display: flex;
-
-      -webkit-flex-wrap: nowrap;
-         -moz-flex-wrap: nowrap;
-          -ms-flex-wrap: nowrap;
-           -o-flex-wrap: nowrap;
-              flex-wrap: nowrap;
-
-      -webkit-box-orient: horizontal;
-         -moz-box-orient: horizontal;
-          -ms-box-orient: horizontal;
-           -o-box-orient: horizontal;
-              box-orient: horizontal;
-
-      -webkit-flex-direction: row;
-         -moz-flex-direction: row;
-          -ms-flex-direction: row;
-           -o-flex-direction: row;
-              flex-direction: row;
+      display : table-row;
+      width : 100%;
     }
     gui-list-view-column {
       position : relative;
@@ -1498,22 +1458,13 @@ gui-list-view {
       overflow : hidden;
       line-height : 16px;
 
-      -webkit-box-flex: 1 0 auto;
-         -moz-box-flex: 1 0 auto;
-          -ms-box-flex: 1 0 auto;
-           -o-box-flex: 1 0 auto;
-
-      -webkit-flex: 1 0 auto;
-         -moz-flex: 1 0 auto;
-          -ms-flex: 1 0 auto;
-           -o-flex: 1 0 auto;
-              flex: 1 0 auto;
-
       -webkit-text-overflow: ellipsis;
          -moz-text-overflow: ellipsis;
           -ms-text-overflow: ellipsis;
            -o-text-overflow: ellipsis;
               text-overflow: ellipsis;
+
+      display : table-cell;
     }
     gui-list-view[data-icon-size="32"] gui-list-view-column {
       line-height : 32px;
@@ -1533,6 +1484,15 @@ gui-list-view {
 
     gui-list-view-row.gui-active {
     }*/
+
+    gui-list-view-fake-head {
+      position : absolute;
+      display : block;
+      top : 0;
+    }
+      gui-list-view-fake-head gui-list-view-head {
+        visibility : visible;
+      }
 
     gui-list-view-column-resizer {
       width : 1px;
