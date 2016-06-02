@@ -310,32 +310,39 @@
         }
       }
 
-      var fakeHead = document.createElement('gui-list-view-fake-head');
-      var fakeHeadInner = document.createElement('gui-list-view-inner');
-      fakeHeadInner.appendChild(document.createElement('gui-list-view-head'));
-      fakeHead.appendChild(fakeHeadInner);
+      var fakeHead = el.querySelector('gui-list-view-fake-head');
+      if ( !fakeHead ) {
+        fakeHead = document.createElement('gui-list-view-fake-head');
+        var fakeHeadInner = document.createElement('gui-list-view-inner');
+        fakeHeadInner.appendChild(document.createElement('gui-list-view-head'));
+        fakeHead.appendChild(fakeHeadInner);
+      }
 
       if ( !inner ) {
         inner = document.createElement('gui-list-view-inner');
         el.appendChild(inner);
       }
 
-      if ( body ) {
-        moveIntoInner(body);
-      } else {
-        body = document.createElement('gui-list-view-body');
-        inner.appendChild(body);
-      }
+      (function _createBody() {
+        if ( body ) {
+          moveIntoInner(body);
+        } else {
+          body = document.createElement('gui-list-view-body');
+          inner.appendChild(body);
+        }
+        body.setAttribute('role', 'group');
+      })();
 
-      if ( head ) {
-        moveIntoInner(head);
-      } else {
-        head = document.createElement('gui-list-view-head');
-        inner.insertBefore(head, body);
-      }
+      (function _createHead() {
+        if ( head ) {
+          moveIntoInner(head);
+        } else {
+          head = document.createElement('gui-list-view-head');
+          inner.insertBefore(head, body);
+        }
+        head.setAttribute('role', 'group');
+      })();
 
-      head.setAttribute('role', 'group');
-      body.setAttribute('role', 'group');
       el.setAttribute('role', 'list');
       el.appendChild(fakeHead);
 
