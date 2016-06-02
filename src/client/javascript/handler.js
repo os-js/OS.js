@@ -191,24 +191,32 @@
       });
     }
 
-    function saveSession(cb) {
-      var data = [];
-      API.getProcesses().forEach(function(proc, i) {
-        if ( proc && (proc instanceof OSjs.Core.Application) ) {
-          data.push(proc._getSessionData());
-        }
-      });
-
-      OSjs.Core.getSettingsManager().set('UserSession', null, data, cb);
-    }
-
     if ( save ) {
-      saveSession(function() {
+      this.saveSession(function() {
         _finished(true);
       });
       return;
     }
     _finished(true);
+  };
+
+  /**
+   * Default method for saving current sessions
+   *
+   * @param   Function  callback      Callback function
+   *
+   * @return  void
+   *
+   * @method  _Handler::saveSession()
+   */
+  _Handler.prototype.saveSession = function(callback) {
+    var data = [];
+    API.getProcesses().forEach(function(proc, i) {
+      if ( proc && (proc instanceof OSjs.Core.Application) ) {
+        data.push(proc._getSessionData());
+      }
+    });
+    OSjs.Core.getSettingsManager().set('UserSession', null, data, callback);
   };
 
   /**
