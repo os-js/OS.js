@@ -152,6 +152,66 @@
     return 'right';
   };
 
+  /**
+   * Checks if the event currently has the given key comination.
+   *
+   * Example: 'CTRL+SHIFT+A'
+   *
+   * @param   DOMEvent  ev            The DOM Event
+   * @param   String    checkFor      The string of keystrokes to check
+   *
+   * @return  boolean
+   *
+   * @api     OSjs.Utils.keyCombination()
+   */
+  OSjs.Utils.keyCombination = (function() {
+    var modifiers = {
+      CTRL: function(ev) {
+        return ev.ctrlKey;
+      },
+      SHIFT: function(ev) {
+        return ev.shiftKey;
+      },
+      ALT: function(ev) {
+        return ev.altKey;
+      },
+      META: function(ev) {
+        return ev.metaKey;
+      }
+    };
+
+    function getKeyName(keyCode) {
+      var result = false;
+      Object.keys(OSjs.Utils.Keys).forEach(function(k) {
+        if ( !result && (keyCode === OSjs.Utils.Keys[k]) ) {
+          result = k;
+        }
+      });
+      return result;
+    }
+
+    return function(ev, checkFor) {
+      var checks = checkFor.toUpperCase().split('+');
+      var checkMods = {CTRL: false, SHIFT: false, ALT: false};
+      var checkKeys = [];
+
+      checks.forEach(function(f) {
+        if ( modifiers[f] ) {
+          checkMods[f] = true;
+        } else {
+          checkKeys.push(f);
+        }
+      });
+
+      return Object.keys(checkMods).every(function(f) {
+        var fk = !!modifiers[f](ev);
+        return checkMods[f] === fk;
+      }) && checkKeys.every(function(f) {
+        return getKeyName(ev.keyCode) === f;
+      });
+    };
+  })();
+
   /////////////////////////////////////////////////////////////////////////////
   // DOM
   /////////////////////////////////////////////////////////////////////////////
