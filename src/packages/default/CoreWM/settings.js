@@ -62,6 +62,17 @@
       invertIconViewColor : false,
       moveOnResize        : true,       // Move windows into viewport on resize
       desktopIcons        : [],
+      hotkeys             : {
+        WINDOW_MOVE_UP : 'ALT+UP',
+        WINDOW_MOVE_DOWN : 'ALT+DOWN',
+        WINDOW_MOVE_LEFT : 'ALT+LEFT',
+        WINDOW_MOVE_RIGHT : 'ALT+RIGHT',
+        WINDOW_MINIMIZE : 'ALT+H',
+        WINDOW_RESTORE : 'ALT+R',
+        WINDOW_MAXIMIZE : 'ALT+M',
+        SEARCH : 'F3',
+        SWITCHER : 'ALT+TILDE'
+      },
       panels              : [
         {
           options: {

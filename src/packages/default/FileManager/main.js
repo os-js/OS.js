@@ -139,7 +139,7 @@
     });
 
     this._on('keydown', function(ev, keyCode, shiftKey, ctrlKey, altKey) {
-      if ( keyCode === Utils.Keys.V && ev.ctrlKey ) {
+      if ( Utils.keyCombination(ev, 'CTRL+V') ) {
         var clip = API.getClipboard();
         if ( clip && (clip instanceof Array) ) {
           clip.forEach(function(c) {

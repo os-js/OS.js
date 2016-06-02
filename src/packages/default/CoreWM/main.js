@@ -56,6 +56,63 @@
     this.$animationLink   = null;
     this.importedSettings = importSettings;
 
+    this.generatedHotkeyMap = {};
+
+    this.hotkeyMap = {
+      SEARCH: function(ev, win, wm) {
+        if ( wm ) {
+          var panel = wm.getPanel();
+          if ( panel ) {
+            var pitem = panel.getItemByType(OSjs.Applications.CoreWM.PanelItems.Search);
+            if ( pitem ) {
+              ev.preventDefault();
+              pitem.show();
+            }
+          }
+        }
+      },
+      SWITCHER: function(ev, win, wm) {
+        if ( wm.getSetting('enableSwitcher') && wm.switcher ) {
+          wm.switcher.show(ev, win, wm);
+        }
+      },
+      WINDOW_MINIMIZE: function(ev, win) {
+        if ( win ) {
+          win._minimize();
+        }
+      },
+      WINDOW_MAXIMIZE: function(ev, win) {
+        if ( win ) {
+          win._maximize();
+        }
+      },
+      WINDOW_RESTORE: function(ev, win) {
+        if ( win ) {
+          win._restore();
+        }
+      },
+      WINDOW_MOVE_LEFT: function(ev, win) {
+        if ( win ) {
+          win._moveTo('left');
+        }
+      },
+      WINDOW_MOVE_RIGHT: function(ev, win) {
+        if ( win ) {
+          win._moveTo('right');
+        }
+      },
+      WINDOW_MOVE_UP: function(ev, win) {
+        if ( win ) {
+          win._moveTo('top');
+        }
+      },
+      WINDOW_MOVE_DOWN: function(ev, win) {
+        if ( win ) {
+          win._moveTo('bottom');
+        }
+      }
+    };
+
     this._$notifications    = document.createElement('corewm-notifications');
     this._$notifications.setAttribute('role', 'log');
 
@@ -518,39 +575,18 @@
   CoreWM.prototype.onKeyDown = function(ev, win) {
     if ( !ev ) { return; }
 
-    var keys = Utils.Keys;
-    if ( ev.altKey && ev.keyCode === keys.TILDE ) { // Toggle Window switcher
-      if ( !this.getSetting('enableSwitcher') ) { return; }
-
-      if ( this.switcher ) {
-        this.switcher.show(ev, win, this);
-      }
-    } else if ( ev.altKey ) {
-      if ( !this.getSetting('enableHotkeys') ) { return; }
-
-      if ( win && win._properties.allow_hotkeys ) {
-        if ( ev.keyCode === keys.H ) { // Hide window [H]
-          win._minimize();
-        } else if ( ev.keyCode === keys.M ) { // Maximize window [M]
-          win._maximize();
-        } else if ( ev.keyCode === keys.R ) { // Restore window [R]
-          win._restore();
-        } else if ( ev.keyCode === keys.LEFT ) { // Pin Window Left [Left]
-          win._moveTo('left');
-        } else if ( ev.keyCode === keys.RIGHT ) { // Pin Window Right [Right]
-          win._moveTo('right');
-        } else if ( ev.keyCode === keys.UP ) { // Pin Window Top [Up]
-          win._moveTo('top');
-        } else if ( ev.keyCode === keys.DOWN ) { // Pin Window Bottom [Down]
-          win._moveTo('bottom');
+    var map = this.generatedHotkeyMap;
+    for ( var i in map ) {
+      if ( map.hasOwnProperty(i) ) {
+        if ( Utils.keyCombination(ev, i) ) {
+          map[i](ev, win, this);
+          break;
         }
       }
     }
   };
 
   CoreWM.prototype.showSettings = function(category) {
-    var self = this;
-
     OSjs.API.launch('ApplicationSettings', {category: category});
   };
 
@@ -754,6 +790,7 @@
   };
 
   CoreWM.prototype.applySettings = function(settings, force, save, triggerWatch) {
+    var self = this;
     console.group('CoreWM::applySettings()');
 
     settings = force ? settings : Utils.mergeObject(this._settings.get(), settings);
@@ -775,6 +812,16 @@
         this._settings.set(null, settings, save, triggerWatch);
       }
     }
+
+    var keys = this._settings.get('hotkeys');
+    Object.keys(keys).forEach(function(k) {
+      self.generatedHotkeyMap[keys[k]] = function() {
+        return self.hotkeyMap[k].apply(this, arguments);
+      };
+    });
+
+    console.warn(keys);
+    console.warn(this.generatedHotkeyMap);
 
     console.groupEnd();
 

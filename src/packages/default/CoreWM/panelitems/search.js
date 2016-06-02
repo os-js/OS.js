@@ -105,23 +105,9 @@
       }
     };
 
-    this.events.push(Utils.$bind(window, 'keydown', function(ev) {
-      if ( ev.keyCode === Utils.Keys.F3 ) {
-        ev.preventDefault();
-        self.show();
-      }
-    }));
-
     API.addHook('onBlurMenu', function() {
       self.hide();
     });
-
-    this.events.push(Utils.$bind(document.body, 'mousedown', function(ev) {
-      if ( ev.keyCode === Utils.Keys.F3 ) {
-        ev.preventDefault();
-        self.show();
-      }
-    }));
 
     this.events.push(Utils.$bind(root, 'click', function(ev) {
       ev.stopPropagation();
