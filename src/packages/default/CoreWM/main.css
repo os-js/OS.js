@@ -316,14 +316,14 @@ corewm-panel-item {
           flex: 0 0 auto;
 }
 
-corwm-panel-container > .corewm-panel-expand {
+corewm-panel-container > .corewm-panel-expand {
   -webkit-flex: 1 1 auto;
      -moz-flex: 1 1 auto;
       -ms-flex: 1 1 auto;
        -o-flex: 1 1 auto;
           flex: 1 1 auto;
 }
-corwm-panel-container > .corewm-panel-right {
+corewm-panel-container > .corewm-panel-right {
   -webkit-justify-content : flex-end;
      -moz-justify-content : flex-end;
       -ms-justify-content : flex-end;
