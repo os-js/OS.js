@@ -1427,10 +1427,8 @@ gui-list-view {
     border-collapse : collapse;
   }
   gui-list-view-body {
-    display : block;
     position : relative;
     z-index : 2;
-
     display : table-row-group;
     width : 100%;
   }
@@ -1441,9 +1439,6 @@ gui-list-view {
     visibility : hidden;
   }
 
-  gui-list-view-head,
-  gui-list-view-body {
-  }
     gui-list-view-row {
       position : relative;
       display : table-row;
@@ -1451,7 +1446,7 @@ gui-list-view {
     }
     gui-list-view-column {
       position : relative;
-      display : inline-block;
+      display : table-cell;
       background-repeat : no-repeat;
       background-position : left center;
       background-size : 16px;
@@ -1463,8 +1458,6 @@ gui-list-view {
           -ms-text-overflow: ellipsis;
            -o-text-overflow: ellipsis;
               text-overflow: ellipsis;
-
-      display : table-cell;
     }
     gui-list-view[data-icon-size="32"] gui-list-view-column {
       line-height : 32px;

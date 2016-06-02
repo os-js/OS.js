@@ -84,28 +84,33 @@
       response.end();
     }
 
-    if ( pipeFile ) {
-      var isdir = false;
-      try {
-        isdir = _fs.lstatSync(pipeFile).isDirectory();
-      } catch ( e ) {}
-
-      if ( isdir ) {
-        respondError('Invalid request', response);
-        return;
+    function checkDir() {
+      if ( pipeFile ) {
+        try {
+          return _fs.lstatSync(pipeFile).isDirectory();
+        } catch ( e ) {}
       }
+      return false;
     }
 
-    headers.forEach(function(h) {
-      response.writeHead.apply(response, h);
-    });
+    function writeHeaders() {
+      headers.forEach(function(h) {
+        response.writeHead.apply(response, h);
+      });
 
-    var wheaders = {};
-    if ( mime ) {
-      wheaders['Content-Type'] = mime;
+      var wheaders = {};
+      if ( mime ) {
+        wheaders['Content-Type'] = mime;
+      }
+
+      response.writeHead(code, wheaders);
     }
 
-    response.writeHead(code, wheaders);
+    if ( checkDir() ) {
+      respondError('Invalid request', response);
+    }
+
+    writeHeaders();
 
     if ( pipeFile ) {
       var stream = _fs.createReadStream(pipeFile, {bufferSize: 64 * 1024});

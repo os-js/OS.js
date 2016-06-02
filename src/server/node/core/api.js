@@ -165,56 +165,75 @@
       return;
     }
 
-    var method = args.method || 'GET';
-    var query = args.body || args.query || {}; // 'query' was the old name, but kept for compability
-    var binary = args.binary === true;
-    var mime = args.mime || (binary ? 'application/octet-stream' : null);
-    var opts = {
-      url: url,
-      method: method,
-      timeout: (args.timeout || 0) * 1000,
-      headers: args.headers || args.requestHeaders || {}
-    };
+    var curlRequest = (function parseRequestParameters() {
+      var query = args.body || args.query || {}; // 'query' was the old name, but kept for compability
+      var binary = args.binary === true;
+      var method = args.method || 'GET';
+      var mime = args.mime || (binary ? 'application/octet-stream' : null);
 
-    if ( method === 'POST' ) {
-      (function _applyPOST() {
-        if ( args.contentType === 'application/x-www-form-urlencoded' ) {
-          opts.form = query;
-        } else if ( args.contentType === 'multipart/form-data' ) {
-          opts.formData = query;
+      var opts = (function() {
+        return {
+          url: url,
+          method: method,
+          timeout: (args.timeout || 0) * 1000,
+          headers: args.headers || args.requestHeaders || {}
+        };
+      })();
+
+      (function parseRequestMethod() {
+        function _parsePOST() {
+          if ( args.contentType === 'application/x-www-form-urlencoded' ) {
+            opts.form = query;
+          } else if ( args.contentType === 'multipart/form-data' ) {
+            opts.formData = query;
+          } else {
+            if ( query && typeof query !== 'string' ) {
+              opts.json = typeof opts.json === 'undefined' ? true : opts.json;
+            }
+            opts.body = query;
+          }
+        }
+
+        function _parseOTHER() {
+          if ( typeof query === 'object' && url.indexOf('?') === '1' ) {
+            try {
+              url += '?' + Object.keys(query).map(function(k) {
+                return encodeURIComponent(k) + '=' + encodeURIComponent(query[k]);
+              }).join('&');
+            } catch ( e ) {
+              console.warn('Failed to transform curl query', e.stack, e);
+            }
+          }
+        }
+
+        if ( method === 'POST' ) {
+          _parsePOST();
         } else {
-          if ( query && typeof query !== 'string' ) {
-            opts.json = typeof opts.json === 'undefined' ? true : opts.json;
-          }
-          opts.body = query;
+          _parseOTHER();
+        }
+
+        if ( binary ) {
+          opts.encoding = null;
         }
       })();
-    } else {
-      (function _applyMETHOD() {
-        if ( typeof query === 'object' && url.indexOf('?') === '1' ) {
-          try {
-            url += '?' + Object.keys(query).map(function(k) {
-              return encodeURIComponent(k) + '=' + encodeURIComponent(query[k]);
-            }).join('&');
-          } catch ( e ) {
-            console.warn('Failed to transform curl query', e.stack, e);
-          }
-        }
-      })();
-    }
 
-    if ( binary ) {
-      opts.encoding = null;
-    }
+      return {
+        query: query,
+        binary: binary,
+        method: method,
+        mime: mime,
+        opts: opts
+      };
+    })();
 
-    require('request')(opts, function(error, response, body) {
+    require('request')(curlRequest.opts, function(error, response, body) {
       if ( error ) {
         callback(error);
         return;
       }
 
-      if ( binary && body ) {
-        body = 'data:' + mime + ';base64,' + (body.toString('base64'));
+      if ( curlRequest.binary && body ) {
+        body = 'data:' + curlRequest.mime + ';base64,' + (body.toString('base64'));
       }
 
       var data = {

@@ -290,6 +290,8 @@ corewm-panel-container {
 
   -webkit-box-align: center;
      -moz-box-align: center;
+       -o-box-align: center;
+          box-align: center;
 
   -webkit-flex-wrap: nowrap;
      -moz-flex-wrap: nowrap;
@@ -314,14 +316,14 @@ corewm-panel-item {
           flex: 0 0 auto;
 }
 
-corewm-panel-item.corewm-panel-expand {
+corwm-panel-container > .corewm-panel-expand {
   -webkit-flex: 1 1 auto;
      -moz-flex: 1 1 auto;
       -ms-flex: 1 1 auto;
        -o-flex: 1 1 auto;
           flex: 1 1 auto;
 }
-corewm-panel-item.corewm-panel-right {
+corwm-panel-container > .corewm-panel-right {
   -webkit-justify-content : flex-end;
      -moz-justify-content : flex-end;
       -ms-justify-content : flex-end;

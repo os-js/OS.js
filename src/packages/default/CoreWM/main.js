@@ -820,9 +820,6 @@
       };
     });
 
-    console.warn(keys);
-    console.warn(this.generatedHotkeyMap);
-
     console.groupEnd();
 
     return true;
