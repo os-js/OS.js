@@ -208,13 +208,11 @@
     }
 
     var wm = OSjs.Core.getWindowManager();
-    var space = wm.getWindowSpace();
+    var space = wm.getWindowSpace(true);
 
     Utils.$empty(this.$box.querySelector('ul'));
+    this.$box.style.marginTop = String(space.top) + 'px';
     this.$box.querySelector('input').value = '';
-
-    this.$box.style.top = String(space.top) + 'px';
-    this.$box.style.right = String(10) + 'px'; // FIXME
     this.$box.setAttribute('data-visible', String(true));
 
     this.$box.querySelector('input').focus();

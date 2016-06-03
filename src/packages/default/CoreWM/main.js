@@ -707,9 +707,8 @@
         opts.onClick(ev);
       };
 
-      var space = this.getWindowSpace();
-      this._$notifications.style.top = space.top + 'px';
-
+      var space = this.getWindowSpace(true);
+      this._$notifications.style.marginTop = String(space.top) + 'px';
       this._$notifications.appendChild(container);
 
       if ( opts.timeout ) {

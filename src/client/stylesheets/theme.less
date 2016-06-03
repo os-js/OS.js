@@ -270,11 +270,16 @@ application-splash {
   color : #fff; /* Window Manager manages this */
 }
 
+corewm-notifications {
+  top : 10px;
+  right : 10px;
+}
+
 corewm-notification {
   color : #fff; /* Window Manager manages this */
   cursor : pointer;
   padding : (@gui_base_padding * 2);
-  margin : (@gui_base_padding * 2);
+  margin-bottom : @gui_base_padding;
 }
 
   .custom-notification:before,
@@ -318,6 +323,8 @@ corewm-search {
   padding : @gui_base_padding;
   min-width : 200px;
   max-width : 40%;
+  right : 10px;
+  top : 10px;
 }
   corewm-search > div {
     margin-top : @gui_base_padding;
