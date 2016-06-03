@@ -199,7 +199,7 @@
     'ERR_VFS_FATAL'           : 'Fatal Error',
     'ERR_VFS_UNAVAILABLE'     : 'Not available',
     'ERR_VFS_FILE_ARGS'       : 'File expects at least one argument',
-    'ERR_VFS_NUM_ARGS'        : 'Not enugh arguments',
+    'ERR_VFS_NUM_ARGS'        : 'Not enough arguments',
     'ERR_VFS_EXPECT_FILE'     : 'Expects a file-object',
     'ERR_VFS_EXPECT_SRC_FILE' : 'Expects a source file-object',
     'ERR_VFS_EXPECT_DST_FILE' : 'Expects a destination file-object',
