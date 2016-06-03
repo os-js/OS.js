@@ -490,15 +490,20 @@
           var t = new GUI.ElementDataView(target);
           var dir = args.path || OSjs.API.getDefaultPath();
 
-          readdir(el, dir, function(error, result, summary) {
-            if ( error ) {
-              API.error(API._('ERR_VFSMODULE_XHR_ERROR'), API._('ERR_VFSMODULE_SCANDIR_FMT', dir), error);
-            } else {
-              t.clear();
-              t.add(result);
-            }
-            args.done(error, summary);
-          });
+          clearTimeout(el._readdirTimeout);
+          el._readdirTimeout = setTimeout(function() {
+            readdir(el, dir, function(error, result, summary) {
+              if ( error ) {
+                API.error(API._('ERR_VFSMODULE_XHR_ERROR'), API._('ERR_VFSMODULE_SCANDIR_FMT', dir), error);
+              } else {
+                t.clear();
+                t.add(result);
+              }
+              args.done(error, summary);
+            });
+
+            el._readdirTimeout = clearTimeout(el._readdirTimeout);
+          }, 50); // Prevent exessive calls
           return;
         }
 
