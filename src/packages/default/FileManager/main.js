@@ -587,7 +587,7 @@
     var opts = {scandir: {}};
     opts.scandir[opt] = toggle;
 
-    vfsOptions.set(null, opts);
+    vfsOptions.set(null, opts, null, false);
     view.set(key, toggle);
 
     if ( set ) {
