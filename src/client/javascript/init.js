@@ -484,34 +484,53 @@
     OSjs.API.playSound('service-login');
 
     var wm = OSjs.Core.getWindowManager();
+    var list = [];
 
-    function autostart(cb) {
-      var start = [];
+    // In this case we merge the Autostart and the previous session together.
+    // This ensures that items with autostart are loaded with correct
+    // session data on restore. This is much better than relying on the internal
+    // event/message system which does not trigger until after everything is loaded...
+    // this does everything beforehand! :)
+    try {
+      list = config.AutoStart;
+    } catch ( e ) {
+      console.warn('initSession()->autostart()', 'exception', e, e.stack);
+    }
 
-      try {
-        start = config.AutoStart;
-      } catch ( e ) {
-        console.warn('initSession()->autostart()', 'exception', e, e.stack);
+    var checkMap = {};
+    var skipMap = [];
+    list.forEach(function(iter, idx) {
+      if ( typeof iter === 'string' ) {
+        iter = list[idx] = {name: iter};
       }
+      if ( skipMap.indexOf(iter.name) === -1 ) {
+        if ( !checkMap[iter.name] ) {
+          checkMap[iter.name] = idx;
+          skipMap.push(iter.name);
+        }
+      }
+    });
 
-      console.info('initSession()->autostart()', start);
-      OSjs.API.launchList(start, null, null, cb);
-    }
-
-    function session() {
-      handler.loadSession(function() {
-        setTimeout(function() {
-          events.resize(null, true);
-        }, 500);
-
-        callback();
-
-        wm.onSessionLoaded();
+    handler.getLastSession(function(err, adds) {
+      adds.forEach(function(iter) {
+        if ( typeof checkMap[iter.name] === 'undefined' ) {
+          list.push(iter);
+        } else {
+          if ( iter.args ) {
+            var refid = checkMap[iter.name];
+            var ref = list[refid];
+            console.warn('----->', refid, iter);
+            if ( !ref.args ) {
+              ref.args = {};
+            }
+            ref.args = OSjs.Utils.mergeObject(ref.args, iter.args);
+          }
+        }
       });
-    }
 
-    autostart(function() {
-      session();
+      console.info('initSession()->autostart()', list);
+
+      OSjs.API.launchList(list, null, null, callback);
     });
   }
 

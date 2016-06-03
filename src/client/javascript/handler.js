@@ -141,7 +141,7 @@
    *
    * @param   String    username      Login username
    * @param   String    password      Login password
-   * @param   Function  callback      Callback function
+   * @param   Function  callback      Callback function => fn(err)
    *
    * @return  void
    *
@@ -167,7 +167,7 @@
    * Default logout method
    *
    * @param   boolean   save          Save session?
-   * @param   Function  callback      Callback function
+   * @param   Function  callback      Callback function => fn(err, result)
    *
    * @return  void
    *
@@ -203,7 +203,7 @@
   /**
    * Default method for saving current sessions
    *
-   * @param   Function  callback      Callback function
+   * @param   Function  callback      Callback function => fn(err)
    *
    * @return  void
    *
@@ -220,18 +220,16 @@
   };
 
   /**
-   * Default method to restore last running session
+   * Get last saved sessions
    *
-   * @param   Function  callback      Callback function
+   * @param   Function  callback      Callback function => fn(err,list)
    *
    * @return  void
    *
-   * @method  _Handler::loadSession()
+   * @method  _Handler::getLastSession()
    */
-  _Handler.prototype.loadSession = function(callback) {
+  _Handler.prototype.getLastSession = function(callback) {
     callback = callback || function() {};
-
-    console.info('Handler::loadSession()');
 
     var res = OSjs.Core.getSettingsManager().get('UserSession');
     var list = [];
@@ -243,7 +241,30 @@
       list.push({name: iter.name, args: args});
     });
 
-    API.launchList(list, null, null, callback);
+    callback(false, list);
+  };
+
+  /**
+   * Default method to restore last running session
+   *
+   * @param   Function  callback      Callback function => fn()
+   *
+   * @return  void
+   *
+   * @method  _Handler::loadSession()
+   */
+  _Handler.prototype.loadSession = function(callback) {
+    callback = callback || function() {};
+
+    console.info('Handler::loadSession()');
+
+    this.getLastSession(function(err, list) {
+      if ( err ) {
+        callback();
+      } else {
+        API.launchList(list, null, null, callback);
+      }
+    });
   };
 
   /**

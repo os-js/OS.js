@@ -414,7 +414,7 @@
 
     function _initGravity() {
       var grav = self._properties.gravity;
-      if ( grav ) {
+      if ( grav && !self._restored ) {
         if ( grav === 'center' ) {
           self._position.y = (window.innerHeight / 2) - (self._dimension.h / 2);
           self._position.x = (window.innerWidth / 2) - (self._dimension.w / 2);
