@@ -705,7 +705,6 @@
       var preload = getPreloads(data);
 
       function _onLaunchPreload() {
-
         OSjs.Utils.preload(preload, function(total, failed) {
           destroyLoading(n);
 

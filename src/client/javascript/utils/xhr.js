@@ -344,6 +344,20 @@
 
       console.group('Utils::preload()', list.length);
 
+      function getSource(item) {
+        var src = item.src;
+        if ( src.substr(0, 1) !== '/' && !src.match(/^(https?|ftp)/) ) {
+          src = window.location.pathname + src;
+        }
+
+        if ( !src.match(/^(https?|ftp)/) && src.indexOf('?') === -1 ) {
+          if ( OSjs.API.getConfig('Connection.Dist') === 'dist' && OSjs.API.getConfig('Connection.AppendVersion') ) {
+            src += '?ver=' + OSjs.API.getConfig('Connection.AppendVersion');
+          }
+        }
+        return src;
+      }
+
       OSjs.Utils.asyncs(list, function(item, index, next) {
         function _loaded(success, src) {
           (callbackProgress || function() {})(index, list.length);
@@ -359,11 +373,7 @@
             return;
           }
 
-          var src = item.src;
-          if ( src.substr(0, 1) !== '/' && !src.match(/^(https?|ftp)/) ) {
-            src = window.location.pathname + src;
-          }
-
+          var src = getSource(item);
           if ( item.type.match(/^style/) ) {
             createStyle(src, _loaded);
             return;

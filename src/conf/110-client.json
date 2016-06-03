@@ -12,7 +12,8 @@
       "SoundURI":     "themes/sounds",
       "IconURI":      "themes/icons",
       "FontURI":      "themes/fonts",
-      "PackageURI":   "packages"
+      "PackageURI":   "packages",
+      "AppendVersion":""
     },
 
     "Locale":           "en_EN",

@@ -862,11 +862,15 @@
     function addScript(i) {
       scripts.push('    <script type="text/javascript" charset="utf-8" src="' + i + '"></script>');
     }
+    var appendString = '';
+    if ( cfg.client.Connection.AppendVersion ) {
+      appendString = '?ver=' + cfg.client.Connection.AppendVersion;
+    }
 
     if ( dist === 'dist' ) {
-      addStyle('osjs.css');
-      addScript('osjs.js');
-      addScript('locales.js');
+      addStyle('osjs.css' + appendString);
+      addScript('osjs.js' + appendString);
+      addScript('locales.js' + appendString);
     } else {
       cfg.javascript.forEach(function(i) {
         if ( !i.match(/handlers\/(\w+)\/handler\.js$/) ) { // handler scripts are automatically preloaded by config!
