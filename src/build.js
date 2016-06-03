@@ -874,14 +874,14 @@
     } else {
       cfg.javascript.forEach(function(i) {
         if ( !i.match(/handlers\/(\w+)\/handler\.js$/) ) { // handler scripts are automatically preloaded by config!
-          addScript(i.replace('src/client/javascript', 'client/javascript'));
+          addScript(i.replace(/src\/client\/(.*)/, 'client/$1'));
         }
       });
       cfg.locales.forEach(function(i) {
-        addScript(i.replace('src/client/javascript', 'client/javascript'));
+        addScript(i.replace(/src\/client\/(.*)/, 'client/$1'));
       });
       cfg.stylesheets.forEach(function(i) {
-        addStyle(i.replace('src/client/stylesheets', 'client/stylesheets'));
+        addStyle(i.replace(/src\/client\/(.*)/, 'client/$1'));
       });
     }
 
