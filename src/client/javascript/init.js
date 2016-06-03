@@ -491,6 +491,9 @@
     // session data on restore. This is much better than relying on the internal
     // event/message system which does not trigger until after everything is loaded...
     // this does everything beforehand! :)
+    //
+    // TODO: Make it pretty
+    //
     try {
       list = config.AutoStart;
     } catch ( e ) {
@@ -519,7 +522,6 @@
           if ( iter.args ) {
             var refid = checkMap[iter.name];
             var ref = list[refid];
-            console.warn('----->', refid, iter);
             if ( !ref.args ) {
               ref.args = {};
             }
