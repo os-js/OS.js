@@ -81,15 +81,16 @@
    *
    * If you set `key` to `null` you will write to the tree root.
    *
-   * @param   Mixed         key         The key
-   * @param   Mixed         value       The value
-   * @param   Mixed         save        Saves the pool (either boolean or callback function)
+   * @param   Mixed      key           The key
+   * @param   Mixed      value         The value
+   * @param   Mixed      save          Saves the pool (either boolean or callback function)
+   * @param   boolean    triggerWatch  (Optional) trigger change event for watchers (default=true)
    *
    * @return  SettingsFragment          `this`
    *
    * @method  SettingsFragment::set()
    */
-  SettingsFragment.prototype.set = function(key, value, save) {
+  SettingsFragment.prototype.set = function(key, value, save, triggerWatch) {
     // Key here is actually the value
     // So you can update the whole object if you want.
     if ( key === null ) {
@@ -106,7 +107,9 @@
       OSjs.Core.getSettingsManager().save(this._pool, save);
     }
 
-    OSjs.Core.getSettingsManager().changed(this._pool);
+    if ( typeof triggerWatch === 'undefined' || triggerWatch === true ) {
+      OSjs.Core.getSettingsManager().changed(this._pool);
+    }
 
     return this;
   };
