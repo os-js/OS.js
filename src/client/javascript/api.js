@@ -119,7 +119,9 @@
 
   ServiceNotificationIcon.prototype._updateIcon = function() {
     if ( this.notif ) {
-      this.notif.$container.style.display = this.size ? 'inline-block' : 'none';
+      if ( this.notif.$container ) {
+        this.notif.$container.style.display = this.size ? 'inline-block' : 'none';
+      }
       this.notif.setTitle(OSjs.API._('SERVICENOTIFICATION_TOOLTIP', this.size.toString()));
     }
   };
