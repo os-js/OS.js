@@ -481,47 +481,32 @@
   /**
    * Launch a Process
    *
-   * @param   String      n               Application Name
-   * @param   Object      arg             Launch arguments
-   * @param   Function    onFinished      Callback on success
-   * @param   Function    onError         Callback on error
-   * @param   Function    onConstructed   Callback on application init
+   * @param   String      name          Application Name
+   * @param   Object      args          Launch arguments
+   * @param   Function    ondone        Callback on success
+   * @param   Function    onerror       Callback on error
+   * @param   Function    onconstruct   Callback on application init
    *
    * @return  bool
    * @api     OSjs.API.launch()
    */
-  function doLaunchProcess(n, arg, onFinished, onError, onConstructed) {
-    arg           = arg           || {};
-    onFinished    = onFinished    || function() {};
-    onError       = onError       || function() {};
-    onConstructed = onConstructed || function() {};
+  function doLaunchProcess(name, args, ondone, onerror, onconstruct) {
+    args = args || {};
 
-    if ( !n ) {
-      throw new Error('Cannot doLaunchProcess() witout a application name');
-    }
+    var err;
 
     var splash = null;
+    var instance = null;
     var pargs = {};
+
     var handler = OSjs.Core.getHandler();
     var packman = OSjs.Core.getPackageManager();
     var compability = OSjs.Utils.getCompability();
+    var metadata = packman.getPackage(name);
+    var running = OSjs.API.getProcess(name, true);
 
-    function checkApplicationCompability(comp) {
-      var result = [];
-      if ( typeof comp !== 'undefined' && (comp instanceof Array) ) {
-        comp.forEach(function(c, i) {
-          if ( typeof compability[c] !== 'undefined' ) {
-            if ( !compability[c] ) {
-              result.push(c);
-            }
-          }
-        });
-      }
-      return result;
-    }
-
-    function getPreloads(data) {
-      var preload = (data.preload || []).slice(0);
+    var preloads = (function() {
+      var list = (metadata.preload || []).slice(0);
       var additions = [];
 
       function _add(chk) {
@@ -532,8 +517,10 @@
         }
       }
 
-      if ( data.depends && data.depends instanceof Array ) {
-        data.depends.forEach(function(k) {
+      // If this package depends on another package, make sure
+      // to load the resources for the related one as well
+      if ( metadata.depends instanceof Array ) {
+        metadata.depends.forEach(function(k) {
           if ( !OSjs.Applications[k] ) {
             console.info('Using dependency', k);
             _add(packman.getPackage(k));
@@ -541,20 +528,23 @@
         });
       }
 
+      // ... same goes for packages that uses this package
+      // as a dependency.
       var pkgs = packman.getPackages(false);
       Object.keys(pkgs).forEach(function(pn) {
         var p = pkgs[pn];
-        if ( p.type === 'extension' && p.uses === n ) {
+        if ( p.type === 'extension' && p.uses === name ) {
           console.info('Using extension', pn);
           _add(p);
         }
       });
 
-      preload = additions.concat(preload);
+      list = additions.concat(list);
       additions = [];
 
-      if ( data.scope === 'user' ) {
-        preload = preload.map(function(p) {
+      // For user packages, make sure to load the correct URL
+      if ( metadata.scope === 'user' ) {
+        list = list.map(function(p) {
           if ( p.src.substr(0, 1) !== '/' && !p.src.match(/^(https?|ftp)/) ) {
             OSjs.VFS.url(p.src, function(error, url) {
               if ( !error ) {
@@ -567,57 +557,114 @@
         });
       }
 
-      return preload;
+      return list;
+    })();
+
+    function _createSplash() {
+      createLoading(name, {className: 'StartupNotification', tooltip: 'Starting ' + name});
+      if ( !OSjs.Applications[name] ) {
+        if ( metadata.splash !== false ) {
+          splash = OSjs.API.createSplash(metadata.name, metadata.icon);
+        }
+      }
     }
 
-    function _done() {
+    function _destroySplash() {
+      destroyLoading(name);
       if ( splash ) {
         splash.destroy();
         splash = null;
       }
     }
 
-    function _error(msg, exception) {
-      _done();
-      console.groupEnd(); // !!!
-      OSjs.API.error(OSjs.API._('ERR_APP_LAUNCH_FAILED'),
-                  OSjs.API._('ERR_APP_LAUNCH_FAILED_FMT', n),
-                  msg, exception, true);
+    function _onError(err, exception) {
+      _destroySplash();
 
-      onError(msg, n, arg, exception);
+      OSjs.API.error(OSjs.API._('ERR_APP_LAUNCH_FAILED'),
+                  OSjs.API._('ERR_APP_LAUNCH_FAILED_FMT', name),
+                  err, exception, true);
+
+      console.groupEnd();
+
+      (onerror || function() {})(err, name, args, exception);
     }
 
-    function _checkSingular(result) {
-      var singular = (typeof result.singular === 'undefined') ? false : (result.singular === true);
-      if ( singular ) {
-        var sproc = OSjs.API.getProcess(n, true);
-        if ( sproc ) {
-          console.debug('doLaunchProcess()', 'detected that this application is a singular and already running...');
-          if ( sproc instanceof OSjs.Core.Application ) {
-            sproc._onMessage('attention', arg);
-          } else {
-            _error(OSjs.API._('ERR_APP_LAUNCH_ALREADY_RUNNING_FMT', n));
+    function _onFinished(skip) {
+      _destroySplash();
+
+      console.groupEnd();
+
+      (ondone || function() {})(instance, metadata);
+    }
+
+    function _preLaunch(cb) {
+      var isCompatible = (function() {
+        var list = (metadata.compability || []).filter(function(c) {
+          if ( typeof compability[c] !== 'undefined' ) {
+            return !compability[c];
           }
-          console.groupEnd();
-          return true;
+          return false;
+        });
+
+        if ( list.length ) {
+          return OSjs.API._('ERR_APP_LAUNCH_COMPABILITY_FAILED_FMT', name, list.join(', '));
+        }
+        return true;
+      })();
+
+      if ( isCompatible !== true ) {
+        throw new Error(isCompatible);
+      }
+
+      if ( metadata.singular === true && running ) {
+        if ( running instanceof OSjs.Core.Application ) {
+          // In this case we do not trigger an error. Applications simply get a signal for attention
+          console.warn('doLaunchProcess()', 'detected that this application is a singular and already running...');
+          running._onMessage('attention', args);
+          _onFinished(true);
+          return; // muy importante!
+        } else {
+          throw new Error(OSjs.API._('ERR_APP_LAUNCH_ALREADY_RUNNING_FMT', name));
         }
       }
-      return false;
+
+      OSjs.Utils.asyncs(_hooks.onApplicationPreload, function(qi, i, n) {
+        qi(name, args, preloads, function(p) {
+          if ( p && (p instanceof Array) ) {
+            preloads = p;
+          }
+          n();
+        });
+      }, function() {
+        _createSplash();
+        cb();
+      });
+
+      doTriggerHook('onApplicationLaunch', [name, args]);
     }
 
-    function _createInstance(result) {
-      var a = null;
-      try {
-        a = new OSjs.Applications[n].Class(arg, result);
-        onConstructed(a, result);
-      } catch ( e ) {
-        console.warn('Error on constructing application', e, e.stack);
-        _error(OSjs.API._('ERR_APP_CONSTRUCT_FAILED_FMT', n, e), e);
+    function _preload(cb) {
+      OSjs.Utils.preload(preloads, function(total, failed) {
+        if ( failed.length ) {
+          cb(OSjs.API._('ERR_APP_PRELOAD_FAILED_FMT', name, failed.join(',')));
+        } else {
+          setTimeout(function() {
+            cb(false);
+          }, 0);
+        }
+      }, function(progress, count) {
+        if ( splash ) {
+          splash.update(progress, count);
+        }
+      }, pargs);
+    }
 
-        if ( a ) {
+    function _createProcess(cb) {
+      function __onprocessinitfailed() {
+        if ( instance ) {
           try {
-            a.destroy();
-            a = null;
+            instance.destroy();
+            instance = null;
           } catch ( ee ) {
             console.warn('Something awful happened when trying to clean up failed launch Oo', ee);
             console.warn(ee.stack);
@@ -625,125 +672,98 @@
         }
       }
 
-      return a;
-    }
-
-    function _callback(result) {
-      if ( typeof OSjs.Applications[n] === 'undefined' ) {
-        _error(OSjs.API._('ERR_APP_RESOURCES_MISSING_FMT', n));
-        return;
+      if ( typeof OSjs.Applications[name] === 'undefined' ) {
+        throw new Error(OSjs.API._('ERR_APP_RESOURCES_MISSING_FMT', name));
       }
 
-      if ( typeof OSjs.Applications[n] === 'function' ) {
-        OSjs.Applications[n]();
-        _done();
+      if ( typeof OSjs.Applications[name] === 'function' ) {
+        OSjs.Applications[name]();
+        cb(false, true);
         return;
       }
-
-      // Only allow one instance if specified
-      if ( _checkSingular(result) ) {
-        _done();
-        return;
-      }
-
-      // Create instance and restore settings
-      var a = _createInstance(result);
 
       try {
-        var settings = OSjs.Core.getSettingsManager().get(a.__pname) || {};
-        a.init(settings, result, function() {}); // NOTE: Empty function is for backward-compability
-        onFinished(a, result);
+        instance = new OSjs.Applications[name].Class(args, metadata);
+
+        (onconstruct || function() {})(instance, metadata);
+      } catch ( e ) {
+        console.warn('Error on constructing application', e, e.stack);
+        __onprocessinitfailed();
+        cb(OSjs.API._('ERR_APP_CONSTRUCT_FAILED_FMT', name, e), e);
+        return;
+      }
+
+      try {
+        var settings = OSjs.Core.getSettingsManager().get(instance.__pname) || {};
+        instance.init(settings, metadata, function() {}); // NOTE: Empty function is for backward-compability
 
         doTriggerHook('onApplicationLaunched', [{
-          application: a,
-          name: n,
-          args: arg,
+          application: instance,
+          name: name,
+          args: args,
           settings: settings,
-          metadata: result
+          metadata: metadata
         }]);
-
-        console.groupEnd();
       } catch ( ex ) {
         console.warn('Error on init() application', ex, ex.stack);
-        _error(OSjs.API._('ERR_APP_INIT_FAILED_FMT', n, ex.toString()), ex);
+        __onprocessinitfailed();
+        cb(OSjs.API._('ERR_APP_INIT_FAILED_FMT', name, ex.toString()), ex);
+        return;
       }
 
-      _done();
+      cb(false, true);
     }
 
-    function launch() {
-      doTriggerHook('onApplicationLaunch', [n, arg]);
+    if ( !name ) {
+      err = 'Cannot doLaunchProcess() witout a application name';
+      _onError(err);
+      throw new Error(err);
+    }
 
-      // Get metadata and check compability
-      var data = packman.getPackage(n);
-      if ( !data ) {
-        _error(OSjs.API._('ERR_APP_LAUNCH_MANIFEST_FAILED_FMT', n));
-        return false;
-      }
-      var nosupport = checkApplicationCompability(data.compability);
-      if ( nosupport.length ) {
-        _error(OSjs.API._('ERR_APP_LAUNCH_COMPABILITY_FAILED_FMT', n, nosupport.join(', ')));
-        return false;
-      }
+    if ( !metadata ) {
+      err = OSjs.API._('ERR_APP_LAUNCH_MANIFEST_FAILED_FMT', name);
+      _onError(err);
+      throw new Error(err);
+    }
 
-      if ( arg.__preload__ ) {
-        pargs = arg.__preload__;
-        delete arg.__preload__;
-      }
+    console.group('newLauncher()', name);
+    console.debug('args', args);
+    console.debug('metadata', metadata);
+    console.debug('preloads', preloads);
 
-      if ( !OSjs.Applications[n] ) {
-        if ( data.splash !== false ) {
-          splash = OSjs.API.createSplash(data.name, data.icon);
-        }
-      }
+    if ( args.__preload__ ) { // This is for relaunch()
+      pargs = args.__preload__;
+      delete args.__preload__;
+    }
 
-      console.debug('Manifest', data);
-
-      // Preload
-      createLoading(n, {className: 'StartupNotification', tooltip: 'Starting ' + n});
-
-      var preload = getPreloads(data);
-
-      function _onLaunchPreload() {
-        OSjs.Utils.preload(preload, function(total, failed) {
-          destroyLoading(n);
-
-          if ( failed.length ) {
-            _error(OSjs.API._('ERR_APP_PRELOAD_FAILED_FMT', n, failed.join(',')));
-            return;
+    // Main blob
+    try {
+      _preLaunch(function() {
+        _preload(function(err, res) {
+          if ( err ) {
+            _onError(err, res);
+          } else {
+            try {
+              _createProcess(function(err, res) {
+                if ( err ) {
+                  _onError(err, res);
+                } else {
+                  try {
+                    _onFinished(res);
+                  } catch ( e ) {
+                    _onError(e.toString(), e);
+                  }
+                }
+              });
+            } catch ( e ) {
+              _onError(e.toString(), e);
+            }
           }
-
-          setTimeout(function() {
-            _callback(data);
-          }, 0);
-        }, function(progress, count) {
-          if ( splash ) {
-            splash.update(progress, count);
-          }
-        }, pargs);
-      }
-
-      OSjs.Utils.asyncs(_hooks.onApplicationPreload, function(qi, i, n) {
-        qi(n, arg, preload, function(p) {
-          if ( p && (p instanceof Array) ) {
-            preload = p;
-          }
-
-          n();
         });
-      }, function() {
-        _onLaunchPreload();
       });
-
-      doTriggerHook('onApplicationLaunch', [n, arg]);
-
-      return true;
+    } catch ( e ) {
+      _onError(e.toString());
     }
-
-    console.group('doLaunchProcess()', n);
-    console.debug('Arguments', arg);
-
-    return launch();
   }
 
   /**
