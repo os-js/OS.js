@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "grunt": ">=1.0.1",
-    "less": ">=2.6.1",
+    "less": ">=2.7.1",
     "simple-session": ">=0.0.1",
     "node-fs-extra": ">=0.8.1",
     "findit": ">=2.0.0",
@@ -37,14 +37,14 @@
     "request": ">=2.70.0"
   },
   "devDependencies": {
-    "clean-css": ">=3.4.12",
+    "clean-css": ">=3.4.17",
     "uglify-js": ">=2.6.2",
     "colors": ">=1.1.2",
     "time-grunt": ">=1.3.0",
     "grunt-mocha-test": ">=0.12.7",
     "grunt-contrib-watch": ">=1.0.0",
     "grunt-contrib-jshint": ">=1.0.0",
-    "grunt-jscs": ">=2.8.0",
+    "grunt-jscs": ">=3.0.0",
     "grunt-contrib-csslint": "1.0.0",
     "grunt-contrib-validate-xml": ">=0.0.1"
   }
