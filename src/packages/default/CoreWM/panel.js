@@ -113,13 +113,19 @@
       ];
 
       if ( wm.getSetting('useTouchMenu') === true ) {
-        menu.push({title: OSjs.Applications.CoreWM._('Turn off TouchMenu'), onClick: function(ev) {
-          wm.applySettings({useTouchMenu: false}, false, true);
-        }});
+        menu.push({
+          title: OSjs.Applications.CoreWM._('Turn off TouchMenu'),
+          onClick: function(ev) {
+            wm.applySettings({useTouchMenu: false}, false, true);
+          }
+        });
       } else {
-        menu.push({title: OSjs.Applications.CoreWM._('Turn on TouchMenu'), onClick: function(ev) {
-          wm.applySettings({useTouchMenu: true}, false, true);
-        }});
+        menu.push({
+          title: OSjs.Applications.CoreWM._('Turn on TouchMenu'),
+          onClick: function(ev) {
+            wm.applySettings({useTouchMenu: true}, false, true);
+          }
+        });
       }
 
       API.createMenu(menu, ev);
