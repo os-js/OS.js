@@ -330,20 +330,24 @@
   function existsWrapper(item, callback, options) {
     options = options || {};
 
-    if ( typeof options.overwrite !== 'undefined' && options.overwrite === true ) {
-      callback();
-    } else {
-      OSjs.VFS.exists(item, function(error, result) {
-        if ( error ) {
-          console.warn('existsWrapper() error', error);
-        }
+    try {
+      if ( typeof options.overwrite !== 'undefined' && options.overwrite === true ) {
+        callback();
+      } else {
+        OSjs.VFS.exists(item, function(error, result) {
+          if ( error ) {
+            console.warn('existsWrapper() error', error);
+          }
 
-        if ( result ) {
-          callback(API._('ERR_VFS_FILE_EXISTS'));
-        } else {
-          callback();
-        }
-      });
+          if ( result ) {
+            callback(API._('ERR_VFS_FILE_EXISTS'));
+          } else {
+            callback();
+          }
+        });
+      }
+    } catch ( e ) {
+      callback(e);
     }
   }
 
@@ -856,10 +860,14 @@
 
     existsWrapper(dest, function(error) {
       if ( error ) {
-        error = API._('ERR_VFSMODULE_COPY_FMT', error);
-        return callback(error);
+        callback(API._('ERR_VFSMODULE_COPY_FMT', error));
+      } else {
+        try {
+          doRequest();
+        } catch ( e ) {
+          callback(API._('ERR_VFSMODULE_COPY_FMT', e));
+        }
       }
-      doRequest();
     });
   };
 
@@ -928,10 +936,14 @@
 
     existsWrapper(dest, function(error) {
       if ( error ) {
-        error = API._('ERR_VFSMODULE_MOVE_FMT', error);
-        return callback(error);
+        callback(API._('ERR_VFSMODULE_MOVE_FMT', error));
+      } else {
+        try {
+          doRequest();
+        } catch ( e ) {
+          callback(API._('ERR_VFSMODULE_MOVE_FMT', e));
+        }
       }
-      doRequest();
     });
   };
   OSjs.VFS.rename = function(src, dest, callback) {
@@ -1020,10 +1032,14 @@
 
     existsWrapper(item, function(error) {
       if ( error ) {
-        error = API._('ERR_VFSMODULE_MKDIR_FMT', error);
-        return callback(error);
+        return callback(API._('ERR_VFSMODULE_MKDIR_FMT', error));
       }
-      doRequest();
+
+      try {
+        doRequest();
+      } catch ( e ) {
+        return callback(API._('ERR_VFSMODULE_MKDIR_FMT', e));
+      }
     });
   };
 
@@ -1185,7 +1201,12 @@
         if ( error ) {
           return callback(error);
         }
-        doRequest(f, i);
+
+        try {
+          doRequest(f, i);
+        } catch ( e ) {
+          callback(API._('ERR_VFS_UPLOAD_FAIL_FMT', e));
+        }
       }, options);
     });
 
