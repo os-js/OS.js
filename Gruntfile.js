@@ -171,7 +171,6 @@
         ],
         options: {
           config: '.jscsrc',
-          verbose: true,
           fix: false,
           requireCurlyBraces: ['if']
         }
