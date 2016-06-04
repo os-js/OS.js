@@ -1041,9 +1041,15 @@
 
       describe('launch()', function() {
         it('should recieve error on invalid Application', function() {
-          OSjs.API.launch('InvalidApplication', null, function(err) {
-            expect(error).to.be.an.instanceof(String);
-          });
+          var error;
+          try {
+            OSjs.API.launch('InvalidApplication', null, function(err) {
+              expect(error).to.be.an.instanceof(String);
+            });
+          } catch ( e ) {
+            error = e;
+          }
+          expect(error).to.be.an.instanceof(Error);
         });
 
         it('should launch About application', function(done) {
