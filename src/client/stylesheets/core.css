@@ -231,12 +231,6 @@ body[data-attention="true"]:after {
   z-index : 2;
   opacity : .7;
   cursor : default;
-
-  -webkit-user-select : none;
-     -moz-user-select : none;
-      -ms-user-select : none;
-       -o-user-select : none;
-          user-select : none;
 }
 
   #DebugNotice a {
@@ -299,15 +293,6 @@ application-window-top {
        -o-flex-wrap: nowrap;
           flex-wrap: nowrap;
 }
-  application-window-top,
-  application-window-top > * {
-    -webkit-user-select : none;
-       -moz-user-select : none;
-        -ms-user-select : none;
-         -o-user-select : none;
-            user-select : none;
-  }
-
   application-window-top > * {
     min-width : 16px;
     min-height : 16px;
@@ -380,11 +365,6 @@ application-window-resize {
   right : 0;
   bottom : 0;
   z-index : -1;
-  -webkit-user-select : none;
-     -moz-user-select : none;
-      -ms-user-select : none;
-       -o-user-select : none;
-          user-select : none;
 }
 application-window[data-allow-resize="false"] > application-window-resize {
   display : none;

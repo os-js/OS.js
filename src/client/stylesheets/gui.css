@@ -41,14 +41,18 @@
  * ===========================================================================
  */
 
-application-window-content * {
-  box-sizing : border-box;
-
+*:not(textarea),
+*:not([type=text]),
+*:not([type=password]) {
   -webkit-touch-callout: none;
     -webkit-user-select: none;
        -moz-user-select: none;
         -ms-user-select: none;
             user-select: none;
+}
+
+application-window-content * {
+  box-sizing : border-box;
 }
 
 /*.gui-element {
@@ -989,13 +993,6 @@ gui-text {
     border : 0 none;
     outline : none;
     box-sizing : border-box;
-
-    -webkit-touch-callout: text;
-      -webkit-user-select: text;
-         -moz-user-select: text;
-          -ms-user-select: text;
-           -o-user-select: text;
-              user-select: text;
   }
 
   gui-password > label > input,
@@ -1028,13 +1025,6 @@ gui-textarea {
     resize : none;
     outline : none;
     box-sizing : border-box;
-
-    -webkit-touch-callout: text;
-      -webkit-user-select: text;
-         -moz-user-select: text;
-          -ms-user-select: text;
-           -o-user-select: text;
-              user-select: text;
   }
 
   /*gui-textarea textarea:disabled {
