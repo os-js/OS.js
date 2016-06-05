@@ -266,6 +266,8 @@
     'ERR_VFSMODULE_FIND_FMT'       : 'Failed to search: {0}',
     'ERR_VFSMODULE_FREESPACE'      : 'Failed to get free space',
     'ERR_VFSMODULE_FREESPACE_FMT'  : 'Failed to get free space: {0}',
+    'ERR_VFSMODULE_EXISTS'         : 'Failed to check if exists',
+    'ERR_VFSMODULE_EXISTS_FMT'     : 'Failed to check if exists: {0}',
 
     // VFS -> Dropbox
     'DROPBOX_NOTIFICATION_TITLE' : 'You are signed in to Dropbox API',
