@@ -468,25 +468,6 @@ corewm-search[data-visible=true] {
 
 /**
  * ===========================================================================
- *                               RESPONSIVE
- * ===========================================================================
- */
-
-@media all and (max-width: 800px) {
-
-  .PanelItemWindowList > ul > li > span {
-    display: none;
-  }
-
-  #CoreWMApplicationMenu {
-    overflow : auto;
-    text-align : center;
-  }
-
-}
-
-/**
- * ===========================================================================
  *                               PANEL ITEMS
  * ===========================================================================
  */
@@ -496,6 +477,9 @@ corewm-panel .PanelItemClock {
 }
 corewm-panel .PanelItemClock li {
   cursor : default;
+}
+corewm-panel .PanelItemWindowList li > span {
+  max-width : 200px;
 }
 
 corewm-panel[data-orientation="horizontal"] .PanelItemWindowList li {
@@ -636,4 +620,23 @@ corewm-panel .PanelItemNotificationArea .BusyNotification > div > div:after {
   to {
     transform: rotate( 360deg );
   }
+}
+
+/**
+ * ===========================================================================
+ *                               RESPONSIVE
+ * ===========================================================================
+ */
+
+@media all and (max-width: 800px) {
+
+  .PanelItemWindowList > ul > li > span {
+    display: none;
+  }
+
+  #CoreWMApplicationMenu {
+    overflow : auto;
+    text-align : center;
+  }
+
 }
