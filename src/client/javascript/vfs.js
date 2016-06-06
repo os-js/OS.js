@@ -181,13 +181,13 @@
     var d = null;
 
     if ( typeof test === 'string' ) {
-      Object.keys(OSjs.VFS.Modules).every(function(name) {
-        var i = OSjs.VFS.Modules[name];
-        if ( i.enabled() === true && i.match && test.match(i.match) ) {
-          d = name;
-          return false;
+      Object.keys(OSjs.VFS.Modules).forEach(function(name) {
+        if ( d === null ) {
+          var i = OSjs.VFS.Modules[name];
+          if ( i.enabled() === true && i.match && test.match(i.match) ) {
+            d = name;
+          }
         }
-        return true;
       });
     }
 
@@ -853,8 +853,7 @@
       var mdst = getModuleFromPath(dest.path);
 
       if ( (srcInternal && dstInternal) || (msrc === mdst) ) {
-        var tmp = (msrc === mdst) ? src.path : null;
-        request(tmp, 'copy', [src, dest], function(error, response) {
+        request(src.path, 'copy', [src, dest], function(error, response) {
           dialogProgress(100);
           if ( error ) {
             error = API._('ERR_VFSMODULE_COPY_FMT', error);
@@ -935,8 +934,7 @@
       var mdst = getModuleFromPath(dest.path);
 
       if ( (srcInternal && dstInternal) || (msrc === mdst) ) {
-        var tmp = (msrc === mdst) ? src.path : null;
-        request(tmp, 'move', [src, dest], function(error, response) {
+        request(src.path, 'move', [src, dest], function(error, response) {
           if ( error ) {
             error = API._('ERR_VFSMODULE_MOVE_FMT', error);
           }
