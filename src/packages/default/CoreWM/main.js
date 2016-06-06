@@ -1025,8 +1025,8 @@
           s.height -= ph;
         }
 
-        if ( p._options.position === 'bottom' ) {
-          p.bottom += ph;
+        if ( p._options.get('position') === 'bottom' ) {
+          s.bottom += ph;
         }
       }
     });
