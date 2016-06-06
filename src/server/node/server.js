@@ -71,6 +71,10 @@
     _server.close();
   });
 
+  process.on('uncaughtException', function (error) {
+    console.log('UNCAUGHT EXCEPTION', error, error.stack);
+  });
+
   _server.listen({
     port: PORT,
     dirname: __dirname,
