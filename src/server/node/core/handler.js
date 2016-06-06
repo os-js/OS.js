@@ -54,7 +54,11 @@
               return;
             }
 
-            fref.apply(fref, [args, callback, request, response, config, h]);
+            try {
+              fref.apply(fref, [args, callback, request, response, config, h]);
+            } catch ( e ) {
+              callback(e);
+            }
           });
         };
       } else {
