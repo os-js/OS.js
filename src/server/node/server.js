@@ -71,7 +71,7 @@
     _server.close();
   });
 
-  process.on('uncaughtException', function (error) {
+  process.on('uncaughtException', function(error) {
     console.log('UNCAUGHT EXCEPTION', error, error.stack);
   });
 
