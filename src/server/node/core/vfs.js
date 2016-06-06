@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(_path, _fs) {
+(function(_path, _nfs, _fs) {
   'use strict';
 
   function readExif(path, mime, cb) {
@@ -426,11 +426,17 @@
           if ( exists ) {
             callback('Target already exist!');
           } else {
-            _fs.copy(srcPath, dstPath, function(error, data) {
-              if ( error ) {
-                callback('Error copying: ' + error);
+            _fs.access(_path.dirname(dstPath), _nfs.W_OK, function(err) {
+              if ( err ) {
+                callback('Cannot write to destination');
               } else {
-                callback(false, true);
+                _fs.copy(srcPath, dstPath, function(error, data) {
+                  if ( error ) {
+                    callback('Error copying: ' + error);
+                  } else {
+                    callback(false, true);
+                  }
+                });
               }
             });
           }
@@ -533,11 +539,14 @@
     var realDst = getRealPath(dst, config, request);
     var srcPath = realSrc.root; //_path.join(realSrc.root, src);
     var dstPath = realDst.root; //_path.join(realDst.root, dst);
-    _fs.exists(srcPath, function(exists) {
-      if ( exists ) {
-        _fs.exists(dstPath, function(exists) {
-          if ( exists ) {
-            callback('Target already exist!');
+
+    _fs.access(srcPath, _nfs.R_OK, function(err) {
+      if ( err ) {
+        callback('Cannot read source');
+      } else {
+        _fs.access(_path.dirname(dstPath), _nfs.W_OK, function(err) {
+          if ( err ) {
+            callback('Cannot write to destination');
           } else {
             _fs.rename(srcPath, dstPath, function(error, data) {
               if ( error ) {
@@ -548,8 +557,6 @@
             });
           }
         });
-      } else {
-        callback('Source does not exist!');
       }
     });
   };
@@ -822,5 +829,6 @@
 
 })(
   require('path'),
+  require('fs'),
   require('node-fs-extra')
 );
