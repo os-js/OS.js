@@ -55,6 +55,7 @@
     this.$themeScript     = null;
     this.$animationLink   = null;
     this.importedSettings = importSettings;
+    this.isResponsive     = window.innerWidth <= 800;
 
     this.generatedHotkeyMap = {};
 
@@ -433,45 +434,71 @@
   //
 
   CoreWM.prototype.resize = function(ev, rect, wasInited) {
-    if ( !this.getSetting('moveOnResize') ) { return; }
 
     var space = this.getWindowSpace();
     var margin = this.getSetting('desktopMargin');
-    var i = 0, l = this._windows.length, iter, wrect;
-    var mx, my, moved;
+    var windows = this._windows;
+    var responsive = window.innerWidth <= 800;
 
-    for ( i; i < l; i++ ) {
-      iter = this._windows[i];
-      if ( !iter ) { continue; }
-      wrect = iter._getViewRect();
-      if ( wrect === null ) { continue; }
-      if ( iter._state.mimimized ) { continue; }
+    function moveIntoView() {
+      var i = 0, l = windows.length, iter, wrect;
+      var mx, my, moved;
 
-      // Move the window into view if outside of view
-      mx = iter._position.x;
-      my = iter._position.y;
-      moved = false;
+      for ( i; i < l; i++ ) {
+        iter = windows[i];
+        if ( !iter ) { continue; }
+        wrect = iter._getViewRect();
+        if ( wrect === null ) { continue; }
+        if ( iter._state.mimimized ) { continue; }
 
-      if ( (wrect.left + margin) > rect.width ) {
-        mx = space.width - iter._dimension.w;
-        moved = true;
-      }
-      if ( (wrect.top + margin) > rect.height ) {
-        my = space.height - iter._dimension.h;
-        moved = true;
-      }
+        // Move the window into view if outside of view
+        mx = iter._position.x;
+        my = iter._position.y;
+        moved = false;
 
-      if ( moved ) {
-        if ( mx < space.left ) { mx = space.left; }
-        if ( my < space.top  ) { my = space.top;  }
-        iter._move(mx, my);
-      }
+        if ( (wrect.left + margin) > rect.width ) {
+          mx = space.width - iter._dimension.w;
+          moved = true;
+        }
+        if ( (wrect.top + margin) > rect.height ) {
+          my = space.height - iter._dimension.h;
+          moved = true;
+        }
 
-      // Restore maximized windows (FIXME: Better solution?)
-      if ( iter._state.maximized && (wasInited ? iter._restored : true) ) {
-        iter._restore(true, false);
+        if ( moved ) {
+          if ( mx < space.left ) { mx = space.left; }
+          if ( my < space.top  ) { my = space.top;  }
+          iter._move(mx, my);
+        }
+
+        // Restore maximized windows (FIXME: Better solution?)
+        if ( iter._state.maximized && (wasInited ? iter._restored : true) ) {
+          iter._restore(true, false);
+        }
       }
     }
+
+    function emitResize() {
+      windows.forEach(function(w) {
+        if ( w ) {
+          w._emit('resize');
+        }
+      });
+    }
+
+    if ( responsive ) {
+      emitResize();
+    } else {
+      if ( this.isResponsive ) { // Emit the resize signal again if we changed view
+        emitResize();
+      }
+
+      if ( this.getSetting('moveOnResize') ) {
+        moveIntoView();
+      }
+    }
+
+    this.isResponsive = responsive;
   };
 
   CoreWM.prototype.onDropLeave = function() {
