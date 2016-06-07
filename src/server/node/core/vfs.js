@@ -466,7 +466,12 @@
    * @api     vfs.upload
    */
   module.exports.upload = function(args, request, callback, config) {
-    var tmpPath = (args.path + '/' + args.name).replace('////', '///'); // FIXME
+    var tmpPath = args.path;
+    if ( !tmpPath.match(/\/$/) ) {
+      tmpPath += '/';
+    }
+    tmpPath += args.name;
+
     var dstPath = getRealPath(tmpPath, config, request).root;
     var overwrite = args.overwrite === true;
 

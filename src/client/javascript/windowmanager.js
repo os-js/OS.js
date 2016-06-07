@@ -179,13 +179,15 @@
       var boundMove = Utils.$bind(document, 'mousemove', _onMouseMove, false);
       var boundUp = Utils.$bind(document, 'mouseup', _onMouseUp, false);
 
+      var outside = false;
       function _onMouseMove(ev, pos) {
-        onMouseMove(ev, action, win, pos);
+        if ( wm._mouselock ) {
+          onMouseMove(ev, action, win, pos);
+        }
       }
       function _onMouseUp(ev, pos) {
         onMouseUp(ev, action, win, pos);
         boundMove = Utils.$unbind(boundMove);
-        boundUp = Utils.$unbind(boundUp);
       }
     }
 
@@ -267,7 +269,7 @@
 
           if ( nt < current.rectWorkspace.top ) {
             nt = current.rectWorkspace.top;
-            nh = newRect.height; // FIXME: Not 100% precice
+            nh = newRect.height;
           } else {
             if ( nh < current.minHeight ) {
               nt = current.rectWindow.b - current.minHeight;

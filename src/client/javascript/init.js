@@ -492,8 +492,6 @@
     // event/message system which does not trigger until after everything is loaded...
     // this does everything beforehand! :)
     //
-    // TODO: Make it pretty
-    //
     try {
       list = config.AutoStart;
     } catch ( e ) {
@@ -515,20 +513,22 @@
     });
 
     handler.getLastSession(function(err, adds) {
-      adds.forEach(function(iter) {
-        if ( typeof checkMap[iter.name] === 'undefined' ) {
-          list.push(iter);
-        } else {
-          if ( iter.args ) {
-            var refid = checkMap[iter.name];
-            var ref = list[refid];
-            if ( !ref.args ) {
-              ref.args = {};
+      if ( !err ) {
+        adds.forEach(function(iter) {
+          if ( typeof checkMap[iter.name] === 'undefined' ) {
+            list.push(iter);
+          } else {
+            if ( iter.args ) {
+              var refid = checkMap[iter.name];
+              var ref = list[refid];
+              if ( !ref.args ) {
+                ref.args = {};
+              }
+              ref.args = OSjs.Utils.mergeObject(ref.args, iter.args);
             }
-            ref.args = OSjs.Utils.mergeObject(ref.args, iter.args);
           }
-        }
-      });
+        });
+      }
 
       console.info('initSession()->autostart()', list);
 
