@@ -268,30 +268,19 @@
   function initLayout() {
     console.debug('initLayout()');
 
-    var append = OSjs.API.getConfig('VersionAppend');
+    if ( OSjs.API.getConfig('Watermark.enabled') ) {
+      var ver = OSjs.API.getConfig('Version', 'unknown version');
+      var html = [OSjs.API.getConfig('Watermark.build'), OSjs.API.getConfig('Watermark.copyright')];
 
-    var ver = OSjs.API.getConfig('Version', 'unknown version');
-    var cop = 'Copyright © 2011-2016 ';
-    var lnk = document.createElement('a');
-    lnk.setAttribute('aria-hidden', 'true');
-    lnk.href = 'mailto:andersevenrud@gmail.com';
-    lnk.appendChild(document.createTextNode('Anders Evenrud'));
+      var el = document.createElement('div');
+      el.id = 'DebugNotice';
+      el.setAttribute('aria-hidden', 'true');
+      el.innerHTML = html.join('<br />').replace(/%VERSION%/, ver);
 
-    var el = document.createElement('div');
-    el.id = 'DebugNotice';
-    el.setAttribute('aria-hidden', 'true');
-    el.appendChild(document.createTextNode(OSjs.Utils.format('OS.js {0}', ver)));
-    el.appendChild(document.createElement('br'));
-    el.appendChild(document.createTextNode(cop));
-    el.appendChild(lnk);
-    if ( append ) {
-      el.appendChild(document.createElement('br'));
-      el.innerHTML += append;
+      document.body.appendChild(el);
     }
 
     document.getElementById('LoadingScreen').style.display = 'none';
-
-    document.body.appendChild(el);
   }
 
   /**

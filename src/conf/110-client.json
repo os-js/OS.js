@@ -18,7 +18,6 @@
 
     "Locale":           "en_EN",
     "BugReporting":     true,
-    "VersionAppend":    "",
     "ShowQuitWarning":  false,
     "ReloadOnShutdown": false,
 
@@ -30,6 +29,12 @@
     "Icons":     {},
     "MIME":      {},
     "WM":        {},
+
+    "Watermark": {
+      "enabled": true,
+      "build": "OS.js %VERSION%",
+      "copyright": "Copyright &copy; 2011-2016 <a href=\"mailto:andersevenrud@gmail.com\">andersevenrud@gmail.com</a>"
+    },
 
     "PackageManager": {
       "UserPackages":  "home:///.packages",
