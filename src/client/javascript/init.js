@@ -270,7 +270,7 @@
 
     if ( OSjs.API.getConfig('Watermark.enabled') ) {
       var ver = OSjs.API.getConfig('Version', 'unknown version');
-      var html = [OSjs.API.getConfig('Watermark.build'), OSjs.API.getConfig('Watermark.copyright')];
+      var html = OSjs.API.getConfig('Watermark.lines') || [];
 
       var el = document.createElement('div');
       el.id = 'DebugNotice';
