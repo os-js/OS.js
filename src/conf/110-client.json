@@ -33,7 +33,7 @@
     "Watermark": {
       "enabled": true,
       "build": "OS.js %VERSION%",
-      "copyright": "Copyright &copy; 2011-2016 <a href=\"mailto:andersevenrud@gmail.com\">andersevenrud@gmail.com</a>"
+      "copyright": "Copyright &copy; 2011-2016 <a href=\"mailto:andersevenrud@gmail.com\">Anders Evenrud</a>"
     },
 
     "PackageManager": {
