@@ -18,7 +18,7 @@ Works in any modern browser and can be deployed on any platform using Node or PH
 
 ## Try it yourself
 
-Visit the [official demo](https://osjsv2.0o.no) for a preview version. Please not that some features are disabled and might be outdated or unavailable at times.
+Visit the [official demo](https://osjsv2.0o.no) for a preview version. Please note that some features are disabled and might be outdated or unavailable at times.
 
 ![ScreenShot](https://raw.githubusercontent.com/os-js/OS.js/master/src/gfx/screenshot.png)
 
