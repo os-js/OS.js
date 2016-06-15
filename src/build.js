@@ -1514,6 +1514,24 @@
       });
     }
 
+    function runPackageScript(type, pn, cmd, src, dst, cb) {
+      if ( cmd ) {
+        console.log('CMD', type + '@' + pn, '$', cmd);
+        require('child_process').exec(cmd, {cwd: src}, function(err, stdout, stderr) {
+          if ( grunt.option('verbose') ) {
+            console.log(stdout);
+          }
+          if ( stderr ) {
+            console.error(stderr);
+          }
+
+          cb();
+        });
+      } else {
+        cb();
+      }
+    }
+
     var packages = readPackageMetadata(grunt);
     aQueue(Object.keys(packages), function(p, next) {
       if ( arg && arg !== p ) {
@@ -1525,27 +1543,37 @@
       var iter = packages[p];
       var src = _path.join(PATHS.packages, p);
       var dst = _path.join(PATHS.out_client_packages, p);
-      var copy = iter.build.copy || [];
+      var scripts = iter.build.scripts || {};
 
-      function _proceed(additions) {
-        additions = additions.filter(function(iter) {
-          return copy.indexOf(iter) < 0;
-        });
+      function _compile() {
+        var copy = iter.build.copy || [];
 
-        if ( additions.length ) {
-          copy = copy.concat(additions);
+        function _proceed(additions) {
+          additions = additions.filter(function(iter) {
+            return copy.indexOf(iter) < 0;
+          });
+
+          if ( additions.length ) {
+            copy = copy.concat(additions);
+          }
+
+          copyFiles(src, dst, p, copy);
+
+          if ( iter.type !== 'extension' ) {
+            combineFiles(src, dst, p, iter);
+          }
+
+          aQueue(scripts.after || [], function(cmd, nxt) {
+            runPackageScript('after', p, cmd, src, dst, nxt);
+          }, next);
         }
 
-        copyFiles(src, dst, p, copy);
-
-        if ( iter.type !== 'extension' ) {
-          combineFiles(src, dst, p, iter);
-        }
-
-        return next();
+        compileLess(src, iter.build.less, _proceed);
       }
 
-      compileLess(src, iter.build.less, _proceed);
+      aQueue(scripts.before || [], function(cmd, nxt) {
+        runPackageScript('before', p, cmd, src, dst, nxt);
+      }, _compile);
     }, function() {
       onfinished();
     });
