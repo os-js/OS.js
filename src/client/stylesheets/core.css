@@ -450,6 +450,9 @@ application-window.DialogWindow gui-label label {
 application-window.DialogWindow gui-button-bar gui-button {
   min-width : 80px;
 }
+application-window.DialogWindow gui-label[data-id="Message"] span {
+  font-weight : bold;
+}
 
 /**
  * ===========================================================================

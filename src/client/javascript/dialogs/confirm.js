@@ -64,7 +64,8 @@
     var self = this;
     var root = DialogWindow.prototype.init.apply(this, arguments);
 
-    this.scheme.find(this, 'Message').set('value', this.args.message);
+    var msg = DialogWindow.parseMessage(this.args.message);
+    this.scheme.find(this, 'Message').empty().append(msg);
 
     var buttonMap = {
       yes: 'ButtonYes',

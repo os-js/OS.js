@@ -62,8 +62,10 @@
   InputDialog.prototype.init = function() {
     var self = this;
     var root = DialogWindow.prototype.init.apply(this, arguments);
+
     if ( this.args.message ) {
-      this.scheme.find(this, 'Message').set('value', this.args.message, true);
+      var msg = DialogWindow.parseMessage(this.args.message);
+      this.scheme.find(this, 'Message').empty().append(msg);
     }
 
     var input = this.scheme.find(this, 'Input');

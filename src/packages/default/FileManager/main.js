@@ -737,7 +737,7 @@
     win._toggleDisabled(true);
     API.createDialog('Confirm', {
       buttons: ['yes', 'no'],
-      message: Utils.format(OSjs.Applications.ApplicationFileManager._('Delete <span>{0}</span> ?'), files)
+      message: Utils.format(OSjs.Applications.ApplicationFileManager._('Delete **{0}** ?'), files)
     }, function(ev, button) {
       win._toggleDisabled(false);
       if ( button !== 'ok' && button !== 'yes' ) { return; }
@@ -790,7 +790,7 @@
 
     items.forEach(function(item) {
       var dialog = API.createDialog('Input', {
-        message: OSjs.Applications.ApplicationFileManager._('Rename <span>{0}</span>', item.filename),
+        message: OSjs.Applications.ApplicationFileManager._('Rename **{0}**', item.filename),
         value: item.filename
       }, function(ev, button, result) {
         if ( button === 'ok' && result ) {
@@ -817,7 +817,7 @@
 
     API.createDialog('Input', {
       value: 'My new File',
-      message: OSjs.Applications.ApplicationFileManager._('Create a new file in <span>{0}</span>', dir)
+      message: OSjs.Applications.ApplicationFileManager._('Create a new file in **{0}**', dir)
     }, function(ev, button, result) {
       if ( !result ) {
         win._toggleDisabled(false);
@@ -847,7 +847,7 @@
 
     win._toggleDisabled(true);
     API.createDialog('Input', {
-      message: OSjs.Applications.ApplicationFileManager._('Create a new directory in <span>{0}</span>', dir)
+      message: OSjs.Applications.ApplicationFileManager._('Create a new directory in **{0}**', dir)
     }, function(ev, button, result) {
       if ( !result ) {
         win._toggleDisabled(false);
@@ -865,7 +865,7 @@
   ApplicationFileManager.prototype.copy = function(src, dest, win) {
     var self = this;
     var dialog = API.createDialog('FileProgress', {
-      message: OSjs.Applications.ApplicationFileManager._('Copying <span>{0}</span> to <span>{1}</span>', src.filename, dest.path)
+      message: OSjs.Applications.ApplicationFileManager._('Copying **{0}** to **{1}**', src.filename, dest.path)
     }, function() {
     }, win);
 

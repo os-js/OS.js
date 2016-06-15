@@ -157,6 +157,22 @@
     }
   };
 
+  DialogWindow.parseMessage = function(msg) {
+    msg = Utils.$escape(msg || '').replace(/\*\*(.*)\*\*/g, '<span>$1</span>');
+
+    var tmp = document.createElement('div');
+    tmp.innerHTML = msg;
+
+    var frag = document.createDocumentFragment();
+    for ( var i = 0; i < tmp.childNodes.length; i++ ) {
+      console.warn(tmp.childNodes[i]);
+      frag.appendChild(tmp.childNodes[i].cloneNode(true));
+    }
+    tmp = null;
+
+    return frag;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
