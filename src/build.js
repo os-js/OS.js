@@ -246,6 +246,18 @@
     }
   }
 
+  function aQueue(queue, every, done) {
+    (function _next(index) {
+      if ( index >= queue.length ) {
+        return done();
+      }
+
+      every(queue[index], function() {
+        _next(index + 1);
+      });
+    })(0);
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -1389,7 +1401,7 @@
   /**
    * Builds packages
    */
-  function buildPackages(grunt, arg) {
+  function buildPackages(grunt, onfinished, arg) {
     function copyFiles(src, dst, p, list) {
       list = list || [];
 
@@ -1465,24 +1477,77 @@
       });
     }
 
+    function compileLess(root, files, done) {
+      files = files || {};
+
+      var additions = [];
+
+      aQueue(Object.keys(files), function(ln, next) {
+        var dest = _path.join(root, files[ln]);
+        var src = _path.join(root, ln);
+
+        console.log('CSS', src.replace(ROOT, ''), '=>', dest.replace(ROOT, ''));
+
+        try {
+          var data = readFile(src).toString();
+          _less.render(data, {
+            sourceMap: {},
+            paths: ['.', PATHS.themes, PATHS.stylesheets]
+          }).then(function(result) {
+            writeFile(dest, result.css);
+            writeFile(dest + '.map', result.map);
+
+            additions.push(files[ln]);
+            additions.push(files[ln] + '.map');
+
+            next();
+          }, function(error) {
+            console.warn(error);
+            next();
+          });
+        } catch ( e ) {
+          console.warn(error, error.stack);
+          next();
+        }
+      }, function() {
+        done(additions);
+      });
+    }
+
     var packages = readPackageMetadata(grunt);
-    Object.keys(packages).forEach(function(p) {
+    aQueue(Object.keys(packages), function(p, next) {
       if ( arg && arg !== p ) {
-        return;
+        return next();
       }
+
       grunt.log.subhead(p);
 
       var iter = packages[p];
       var src = _path.join(PATHS.packages, p);
       var dst = _path.join(PATHS.out_client_packages, p);
+      var copy = iter.build.copy || [];
 
-      copyFiles(src, dst, p, iter.build.copy);
+      function _proceed(additions) {
+        additions = additions.filter(function(iter) {
+          return copy.indexOf(iter) < 0;
+        });
 
-      if ( iter.type === 'extension' ) {
-        return;
+        if ( additions.length ) {
+          copy = copy.concat(additions);
+        }
+
+        copyFiles(src, dst, p, copy);
+
+        if ( iter.type !== 'extension' ) {
+          combineFiles(src, dst, p, iter);
+        }
+
+        return next();
       }
 
-      combineFiles(src, dst, p, iter);
+      compileLess(src, iter.build.less, _proceed);
+    }, function() {
+      onfinished();
     });
   }
 

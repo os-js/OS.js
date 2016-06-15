@@ -254,7 +254,8 @@
         return;
       }
 
-      _build.buildPackages(grunt, arg);
+      var done = this.async();
+      _build.buildPackages(grunt, done, arg);
     });
 
     grunt.registerTask('themes', 'Build theme files (arguments: resources, fonts. Or a single theme, ex: grunt themes:MyThemename)', function(arg) {
