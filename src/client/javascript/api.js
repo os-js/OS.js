@@ -48,7 +48,6 @@
     'onInited':              [],
     'onWMInited':            [],
     'onSessionLoaded':       [],
-    'onLogout':              [],
     'onShutdown':            [],
     'onApplicationPreload':  [],
     'onApplicationLaunch':   [],

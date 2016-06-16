@@ -692,6 +692,8 @@
       handler = null;
     }
 
+    OSjs.API.triggerHook('onShutdown');
+
     console.warn('OS.js was shut down!');
 
     if ( OSjs.API.getConfig('Connection.Type') === 'nw' ) {

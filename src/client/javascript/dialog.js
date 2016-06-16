@@ -165,7 +165,6 @@
 
     var frag = document.createDocumentFragment();
     for ( var i = 0; i < tmp.childNodes.length; i++ ) {
-      console.warn(tmp.childNodes[i]);
       frag.appendChild(tmp.childNodes[i].cloneNode(true));
     }
     tmp = null;
