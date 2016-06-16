@@ -139,6 +139,28 @@
   }
 
   /**
+   * Check if targets have the same transport/module
+   */
+  function hasSameTransport(src, dest) {
+    // Modules using the normal server API
+    if ( isInternalModule(src.path) && isInternalModule(dest.path) ) {
+      return true;
+    }
+
+    var msrc = getModuleFromPath(src.path);
+    var isrc = OSjs.VFS.Modules[msrc] || {};
+    var mdst = getModuleFromPath(dest.path);
+    var idst = OSjs.VFS.Modules[mdst] || {};
+
+    // If mounts are labeled with a name
+    if ( isrc.moduleName === idst.moduleName ) {
+      return true;
+    }
+
+    return msrc === mdst;
+  }
+
+  /**
    * Returns a list of all enabled VFS modules
    *
    * @param   Object    opts          Options
@@ -847,12 +869,7 @@
         callback(error, result);
       }
 
-      var srcInternal = isInternalModule(src.path);
-      var dstInternal = isInternalModule(dest.path);
-      var msrc = getModuleFromPath(src.path);
-      var mdst = getModuleFromPath(dest.path);
-
-      if ( (srcInternal && dstInternal) || (msrc === mdst) ) {
+      if ( hasSameTransport(src, dest) ) {
         request(src.path, 'copy', [src, dest], function(error, response) {
           dialogProgress(100);
           if ( error ) {
@@ -861,6 +878,17 @@
           _finished(error, response);
         }, options);
       } else {
+        var msrc = getModuleFromPath(src.path);
+        var mdst = getModuleFromPath(dest.path);
+
+        // FIXME: This does not work for folders
+        if ( src.type === 'dir' ) {
+          _finished(API._('ERR_VFSMODULE_COPY_FMT', 'Copying folders between different transports is not yet supported!'));
+          return;
+        }
+
+        dest.mime = src.mime;
+
         OSjs.VFS.Modules[msrc].request('read', [src], function(error, data) {
           dialogProgress(50);
 
@@ -869,7 +897,6 @@
             return;
           }
 
-          dest.mime = src.mime;
           OSjs.VFS.Modules[mdst].request('write', [dest, data], function(error, result) {
             dialogProgress(100);
 
@@ -928,12 +955,7 @@
         callback(error, result);
       }
 
-      var srcInternal = isInternalModule(src.path);
-      var dstInternal = isInternalModule(dest.path);
-      var msrc = getModuleFromPath(src.path);
-      var mdst = getModuleFromPath(dest.path);
-
-      if ( (srcInternal && dstInternal) || (msrc === mdst) ) {
+      if ( hasSameTransport(src, dest) ) {
         request(src.path, 'move', [src, dest], function(error, response) {
           if ( error ) {
             error = API._('ERR_VFSMODULE_MOVE_FMT', error);
@@ -941,6 +963,11 @@
           _finished(error, error ? null : response);
         }, options);
       } else {
+        var msrc = getModuleFromPath(src.path);
+        var mdst = getModuleFromPath(dest.path);
+
+        dest.mime = src.mime;
+
         self.copy(src, dest, function(error, result) {
           if ( error ) {
             error = API._('ERR_VFS_TRANSFER_FMT', error);
