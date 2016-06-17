@@ -1,7 +1,7 @@
 (function() {
 
   exports.register = function(apiNamespace, vfsNamespace, instance) {
-    API.broadway = function(args, callback, request, response) {
+    API.broadway = function(server, args, callback) {
       callback(false, false);
     };
   };

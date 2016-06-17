@@ -72,15 +72,22 @@
     response = response || defaultResponse();
     req = req || defaultRequest();
 
+    var server = {
+      request: req,
+      response: response,
+      config: config,
+      handler: handler
+    };
+
     if ( isVfs ) {
       if ( vfsNamespace[method] && ((['getMine', 'getRealPath']).indexOf(method) < 0) ) {
-        vfsNamespace[method](args, callback, req, response, config, handler);
+        vfsNamespace[method](server, args, callback);
         return;
       }
       throw 'Invalid VFS method: ' + method;
     } else {
       if ( apiNamespace[method] ) {
-        apiNamespace[method](args, callback, req, response, config, handler);
+        apiNamespace[method](server, args, callback);
         return;
       }
     }

@@ -142,7 +142,7 @@
     }
 
     try {
-      var fullPath = realPath ? path : instance.vfs.getRealPath(path, instance.config, request).root;
+      var fullPath = realPath ? path : instance.vfs.getRealPath({config: instance.config, request: request}, path).root;
       _fs.exists(fullPath, function(exists) {
         if ( exists ) {
           var mime = instance.vfs.getMime(fullPath, instance.config);
@@ -312,13 +312,13 @@
             respondError(err, response);
           }
         } else {
-          instance.handler.checkAPIPrivilege(request, response, 'upload', function(err) {
+          instance.handler.checkAPIPrivilege({request: request, response: response}, 'upload', function(err) {
             if ( err ) {
               respondError(err, response);
               return;
             }
 
-            instance.vfs.upload({
+            instance.vfs.upload(server, {
               src: files.upload.path,
               name: files.upload.name,
               path: fields.path,
@@ -329,7 +329,7 @@
                 return;
               }
               respondText(response, '1');
-            }, request, response);
+            });
           });
         }
       });
@@ -337,7 +337,7 @@
 
     function handleVFSFile(p) {
       var dpath = p.replace(/^\/(FS|API)(\/get\/)?/, '');
-      instance.handler.checkAPIPrivilege(request, response, 'fs', function(err) {
+      instance.handler.checkAPIPrivilege({request: request, response: response}, 'fs', function(err) {
         if ( err ) {
           respondError(err, response);
           return;
@@ -353,7 +353,7 @@
       // Checks if the request was a package resource
       var pmatch = rpath.match(/^packages\/(.*\/.*)\/(.*)/);
       if ( pmatch && pmatch.length === 3 ) {
-        instance.handler.checkPackagePrivilege(request, response, pmatch[1], function(err) {
+        instance.handler.checkPackagePrivilege({request: request, response: response}, pmatch[1], function(err) {
           if ( err ) {
             respondError(err, response);
             return;
