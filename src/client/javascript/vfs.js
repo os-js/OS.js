@@ -139,6 +139,19 @@
   }
 
   /**
+   * Checks if internal module is enabled
+   */
+  function isInternalEnabled(module) {
+    try {
+      if ( API.getConfig('VFS.Internal.' + module + '.enabled') === false ) {
+        return false;
+      }
+    } catch ( e ) {}
+
+    return true;
+  }
+
+  /**
    * Check if targets have the same transport/module
    */
   function hasSameTransport(src, dest) {
@@ -1670,6 +1683,7 @@
   OSjs.VFS.getModules            = getModules;
   OSjs.VFS.getModuleFromPath     = getModuleFromPath;
   OSjs.VFS.isInternalModule      = isInternalModule;
+  OSjs.VFS.isInternalEnabled     = isInternalEnabled;
   OSjs.VFS.getRelativeURL        = getRelativeURL;
   OSjs.VFS.getRootFromPath       = getRootFromPath;
   OSjs.VFS.addFormFile           = addFormFile;

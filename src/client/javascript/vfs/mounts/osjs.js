@@ -88,6 +88,9 @@
     visible: true,
     internal: true,
     searchable: true,
+    enabled: function() {
+      return OSjs.VFS.isInternalEnabled('osjs');
+    },
     request: makeRequest
   });
 

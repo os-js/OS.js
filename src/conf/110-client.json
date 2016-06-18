@@ -76,6 +76,18 @@
         "Enabled": false
       },
 
+      "Internal": {
+        "osjs": {
+          "enabled": true
+        },
+        "applications": {
+          "enabled": true
+        },
+        "home": {
+          "enabled": true
+        }
+      },
+
       "Mountpoints": {
         "shared": {
           "enabled":     true,

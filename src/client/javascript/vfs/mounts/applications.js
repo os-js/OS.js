@@ -30,30 +30,73 @@
 (function(Utils, API) {
   'use strict';
 
-  window.OSjs           = window.OSjs       || {};
-  OSjs.VFS              = OSjs.VFS          || {};
-  OSjs.VFS.Modules      = OSjs.VFS.Modules  || {};
+  window.OSjs       = window.OSjs       || {};
+  OSjs.VFS          = OSjs.VFS          || {};
+  OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
+
+  /////////////////////////////////////////////////////////////////////////////
+  // WRAPPERS
+  /////////////////////////////////////////////////////////////////////////////
+
+  function makeRequest(name, args, callback, options) {
+    args = args || [];
+    callback = callback || {};
+
+    function getFiles() {
+      var metadata = OSjs.Core.getPackageManager().getPackages();
+      var files = [];
+
+      Object.keys(metadata).forEach(function(m) {
+        var iter = metadata[m];
+        if ( iter.type !== 'extension' ) {
+          files.push(new OSjs.VFS.File({
+            filename: iter.name,
+            icon: {
+              filename: iter.icon,
+              application: m
+            },
+            type: 'application',
+            path: 'applications:///' + m,
+            mime: 'osjs/application'
+          }, 'osjs/application'));
+        }
+      });
+
+      return files;
+    }
+
+    if ( name === 'scandir' ) {
+      var files = getFiles();
+      callback(false, files);
+      return;
+    }
+
+    return callback(API._('ERR_VFS_UNAVAILABLE'));
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
   /**
-   * This is a virtual module for showing 'dist' files in OS.js
+   * This is a virtual module for showing 'applications' in OS.js
    *
-   * @see OSjs.VFS.Transports.Internal
-   * @api OSjs.VFS.Modules.User
+   * @api OSjs.VFS.Modules.Applications
    */
-  OSjs.VFS.Modules.User = OSjs.VFS.Modules.User || OSjs.VFS._createMountpoint({
-    readOnly: false,
-    description: 'Home',
-    root: 'home:///',
-    icon: 'places/folder_home.png',
-    match: /^home\:\/\//,
+  OSjs.VFS.Modules.Applications = OSjs.VFS.Modules.Applications || OSjs.VFS._createMountpoint({
+    readOnly: true,
+    description: 'Applications',
+    root: 'applications:///',
+    match: /^applications\:\/\//,
+    icon: 'places/user-bookmarks.png',
+    special: true,
     visible: true,
     internal: true,
     searchable: true,
-    request: OSjs.VFS.Transports.Internal.request
+    enabled: function() {
+      return OSjs.VFS.isInternalEnabled('applications');
+    },
+    request: makeRequest
   });
 
 })(OSjs.Utils, OSjs.API);
