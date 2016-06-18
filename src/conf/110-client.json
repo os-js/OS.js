@@ -85,6 +85,9 @@
         },
         "home": {
           "enabled": true
+        },
+        "localstorage": {
+          "enabled": true
         }
       },
 

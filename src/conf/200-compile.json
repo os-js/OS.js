@@ -80,6 +80,7 @@
     "src/client/javascript/vfs/mounts/googledrive.js",
     "src/client/javascript/vfs/mounts/dropbox.js",
     "src/client/javascript/vfs/mounts/onedrive.js",
+    "src/client/javascript/vfs/mounts/localstorage.js",
     "src/client/javascript/helpers/date.js",
     "src/client/javascript/helpers/event-handler.js",
     "src/client/javascript/helpers/iframe-application.js",
