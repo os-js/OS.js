@@ -1,3 +1,74 @@
+# 2.0.0-alpha77
+
+A ton of new features, massive amount of cleanups. General bugfixes and improvements
+to documentation and developer features.
+
+Relevant:
+
+- http://community.os.js.org/t/features-extending-base-css/65
+- http://community.os.js.org/t/notice-node-server-api-changes/73
+- http://community.os.js.org/t/features-package-less-and-custom-script-support/72
+
+Digest:
+
+* Core: New 'Process' event system
+* Core: Better handling of autostarting
+* Core: Added more internal hooks
+* CoreWM: Improvements to smaller screen support
+* CoreWM: window list panel item now has context menu from actual window
+* CoreWM: Rewritten panel CSS implementation (better scaling and rotation support)
+* CoreWM: Better touch menu handling
+* CoreWM: Proper hotkey handling via configs
+* CoreWM: Fixed wrong calculation of desktop area when panel is on bottom
+* CoreWM: Trigger `resize()` when responsive design kicks in/out
+* CoreWM: CSS improvements
+* settings-manager: bugfixes
+* dialogs: Better handling of 'markdown-ish' messages
+* window: Added 'inited' hook/signal
+* WindowManager: Prevent crash when `Window::init` fails
+* Themes: Support for custom base LESS files
+* GUI: Disabled spell-shecking etc by default from textual inputs
+* GUI: Cleanups of some methods
+* GUI: Added scoped `son()` for events so you can bind context
+* GUI: Added `get('selected')` to 'gui-tabs'
+* GUI: 'gui-fileview' no longer shows empty columns on '0 bytes'
+* GUI: Prevent error on invalid triggers in 'Scheme'
+* GUI: Scheme now supports using `app://` to load `src` attributes
+* GUI: 'gui-list-view' now behaves as a table
+* GUI: Bugfixes in Scheme
+* UI: Better `user-select` CSS
+* Handler: Exposed `saveSession()``
+* API: Better application shutdown API
+* API: Fixes to `getThemeResource()`
+* API: Cleanups
+* Utils: `$index()` now checks elements to prevent errors
+* Utils: `dirname()` bugfixes
+* Utils: Added `$parent()` function
+* Utils: Added `keyCombination()` function
+* Utils: Improved preloader
+* VFS: Throw exceptions as early as possible in the API chain
+* VFS: Improved copying between different mountpoints
+* VFS: Updated signals and error handling
+* VFS: Cleanups
+* locales: Updated vi_VN
+* server-node: Moved core code into 'core' directory
+* server-node: Better commandline option support
+* server-node: Some improvements to `scandir()`
+* server-node: Display correct url when launching server
+* server-node: Added uncaughtException handler
+* server-node: Refactoring of entire API chain method arguments
+* server-node: Cleanups and bugfixes
+* build: Improved windows support in build scripts
+* build: Added support for append version string in resources
+* build: Customizable watermarks
+* build: Support for LESS files in applications
+* build: Support for custom before/after scripts in application build process
+* misc: More work on developer environment
+* misc: Updated unit tests
+* misc: Updated bithoundrc
+* misc: Fixed typos in documentation
+* misc: Updated docs
+
 # 2.0.0-alpha76
 
 Search Engine, HTTP/2 support, bugfixes, improvements
