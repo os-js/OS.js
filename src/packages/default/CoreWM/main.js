@@ -895,12 +895,16 @@
     document.body.setAttribute('data-background-style', className);
 
     if ( back !== 'none' ) {
-      VFS.url(back, function(error, result) {
-        if ( !error ) {
-          back = 'url(\'' + result + '\')';
-          document.body.style.backgroundImage = back;
-        }
-      });
+      try {
+        VFS.url(back, function(error, result) {
+          if ( !error ) {
+            back = 'url(\'' + result + '\')';
+            document.body.style.backgroundImage = back;
+          }
+        });
+      } catch ( e ) {
+        console.warn('CoreWM::setBackground()', e, e.stack);
+      }
     } else {
       document.body.style.backgroundImage = back;
     }
