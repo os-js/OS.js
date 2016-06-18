@@ -87,7 +87,7 @@
           "enabled": true
         },
         "localstorage": {
-          "enabled": true
+          "enabled": false
         }
       },
 
