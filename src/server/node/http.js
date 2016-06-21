@@ -302,6 +302,7 @@
     }
 
     function handleUpload() {
+      var server = {request: request, response: response, config: instance.config, handler: instance.handler};
       var form = new _multipart.IncomingForm({
         uploadDir: instance.config.tmpdir
       });
@@ -312,7 +313,7 @@
             respondError(err, response);
           }
         } else {
-          instance.handler.checkAPIPrivilege({request: request, response: response}, 'upload', function(err) {
+          instance.handler.checkAPIPrivilege(server, 'upload', function(err) {
             if ( err ) {
               respondError(err, response);
               return;
