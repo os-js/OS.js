@@ -693,6 +693,8 @@
       return false;
     }
 
+    this._emit('destroy');
+
     this._destroyed = true;
 
     var wm = OSjs.Core.getWindowManager();
@@ -740,7 +742,6 @@
     }
 
     this._onChange('close');
-    this._emit('destroy');
 
     _destroyDOM();
     _destroyWin();
