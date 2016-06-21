@@ -264,19 +264,16 @@
       el.setAttribute('role', 'menubar');
 
       function updateChildren(sm, level) {
-        if ( !sm ) {
-          return;
-        }
+        if ( sm && sm.children ) {
+          var children = sm.children;
+          var child;
+          for ( var i = 0; i < children.length; i++ ) {
+            child = children[i];
+            if ( child.tagName === 'GUI-MENU-ENTRY' ) {
 
-        var children = sm.children;
-        var child;
-
-        for ( var i = 0; i < children.length; i++ ) {
-          child = children[i];
-          if ( child.tagName === 'GUI-MENU-ENTRY' ) {
-
-            child.setAttribute('aria-haspopup', String(!!child.firstChild));
-            updateChildren(child.firstChild, level + 1);
+              child.setAttribute('aria-haspopup', String(!!child.firstChild));
+              updateChildren(child.firstChild, level + 1);
+            }
           }
         }
       }
