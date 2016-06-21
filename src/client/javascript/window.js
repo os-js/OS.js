@@ -847,8 +847,10 @@
    * @method  Window::_emit()
    */
   Window.prototype._emit = function(k, args) {
-    if ( this._evHandler ) {
-      return this._evHandler.emit(k, args);
+    if ( !this._destroyed ) {
+      if ( this._evHandler ) {
+        return this._evHandler.emit(k, args);
+      }
     }
     return false;
   };
