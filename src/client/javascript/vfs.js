@@ -251,7 +251,8 @@
       throw new TypeError(API._('ERR_ARGUMENT_FMT', 'VFS::' + method, 'options', 'Object', typeof options));
     }
 
-    OSjs.Core.getHandler().onVFSRequest(d, method, args, function vfsRequestCallback(err, response) {
+    var h = OSjs.Core.getHandler();
+    h.onVFSRequest(d, method, args, function vfsRequestCallback(err, response) {
       if ( arguments.length === 2 ) {
         console.warn('VFS::request()', 'Core::onVFSRequest hijacked the VFS request');
         callback(err, response);
@@ -259,7 +260,17 @@
       }
 
       try {
-        OSjs.VFS.Modules[d].request(method, args, callback, options);
+        OSjs.VFS.Modules[d].request(method, args, function(err, res) {
+          h.onVFSRequestCompleted(d, method, args, err, res, function(e, r) {
+            if ( arguments.length === 2 ) {
+              console.warn('VFS::request()', 'Core::onVFSRequestCompleted hijacked the VFS request');
+              callback(e, r);
+              return;
+            } else {
+              callback(err, res);
+            }
+          });
+        }, options);
       } catch ( e ) {
         var msg = API._('ERR_VFSMODULE_EXCEPTION_FMT', e.toString());
         callback(msg);

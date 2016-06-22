@@ -586,7 +586,9 @@
   /**
    * Called upon a VFS request
    *
-   * You can use this to interrupt operations
+   * You can use this to interrupt/hijack operations.
+   *
+   * It is what gets called 'before' a VFS request takes place
    *
    * @param   String    vfsModule     VFS Module Name
    * @param   String    vfsMethod     VFS Method Name
@@ -598,7 +600,29 @@
    * @method  _Handler::onVFSRequest()
    */
   _Handler.prototype.onVFSRequest = function(vfsModule, vfsMethod, vfsArguments, callback) {
-    // If you want to interrupt or modify somehow, just send the two arguments to the
+    // If you want to interrupt/hijack or modify somehow, just send the two arguments to the
+    // callback: (error, result)
+    callback(/* continue normal behaviour */);
+  };
+
+  /**
+   * Called upon a VFS request completion
+   *
+   * It is what gets called 'after' a VFS request has taken place
+   *
+   * @param   String    vfsModule     VFS Module Name
+   * @param   String    vfsMethod     VFS Method Name
+   * @param   Object    vfsArguments  VFS Method Arguments
+   * @param   String    vfsError      VFS Response Error
+   * @param   Mixed     vfsResult     VFS Response Result
+   * @param   Function  callback      Callback function
+   *
+   * @return  void
+   *
+   * @method  _Handler::onVFSRequestCompleted()
+   */
+  _Handler.prototype.onVFSRequestCompleted = function(vfsModule, vfsMethod, vfsArguments, vfsError, vfsResult, callback) {
+    // If you want to interrupt/hijack or modify somehow, just send the two arguments to the
     // callback: (error, result)
     callback(/* continue normal behaviour */);
   };
