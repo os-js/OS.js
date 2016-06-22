@@ -87,7 +87,13 @@
                 return;
               }
 
-              fref.apply(fref, [server, args, callback]);
+              handler.onVFSRequest(server, fn, args, function(err, resp) {
+                if ( arguments.length === 2 ) {
+                  callback(err, resp);
+                } else {
+                  fref.apply(fref, [server, args, callback]);
+                }
+              });
             });
           });
         };
@@ -340,6 +346,23 @@
     this.setUserData(server, null, function() {
       callback(false, true);
     });
+  };
+
+  /**
+   * Event fired when client requests a VFS event
+   *
+   * @param     Object        server        Server object
+   * @param     String        vfsMethod     VFS Method
+   * @param     Object        vfsArguments  VFS Arguments
+   * @param     Function      callback      Callback fuction
+   *
+   * @async
+   * @method Handler::onVFSRequest()
+   */
+  DefaultHandler.prototype.onVFSRequest = function(server, vfsMethod, vfsArguments, callback) {
+    // If you want to interrupt or modify somehow, just send the two arguments to the
+    // callback: (error, result)
+    callback(/* continue normal behaviour */);
   };
 
   /**
