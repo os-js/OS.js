@@ -598,8 +598,9 @@
    * @method  _Handler::onVFSRequest()
    */
   _Handler.prototype.onVFSRequest = function(vfsModule, vfsMethod, vfsArguments, callback) {
-    // If you want to interrupt or modify somehow
-    callback();
+    // If you want to interrupt or modify somehow, just send the two arguments to the
+    // callback: (error, result)
+    callback(/* continue normal behaviour */);
   };
 
   /**

@@ -251,7 +251,13 @@
       throw new TypeError(API._('ERR_ARGUMENT_FMT', 'VFS::' + method, 'options', 'Object', typeof options));
     }
 
-    OSjs.Core.getHandler().onVFSRequest(d, method, args, function vfsRequestCallback() {
+    OSjs.Core.getHandler().onVFSRequest(d, method, args, function vfsRequestCallback(err, response) {
+      if ( arguments.length === 2 ) {
+        console.warn('VFS::request()', 'Core::onVFSRequest hijacked the VFS request');
+        callback(err, response);
+        return;
+      }
+
       try {
         OSjs.VFS.Modules[d].request(method, args, callback, options);
       } catch ( e ) {
