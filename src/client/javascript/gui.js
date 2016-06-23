@@ -562,7 +562,7 @@
 
       // Get "real" elements from input wrappers
       if ( next.tagName.match(/^GUI\-(BUTTON|TEXT|PASSWORD|SWITCH|CHECKBOX|RADIO|SELECT)/) ) {
-        next = next.querySelectorAll('input, textarea, button')[0];
+        next = next.querySelectorAll('input, textarea, button, select')[0];
       }
 
       // Special case for elements that wraps
