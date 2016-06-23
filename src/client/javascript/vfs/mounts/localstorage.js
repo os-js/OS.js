@@ -656,7 +656,7 @@
    */
   OSjs.VFS.Modules.LocalStorage = OSjs.VFS.Modules.LocalStorage || OSjs.VFS._createMountpoint({
     readOnly: false,
-    moduleName: 'localstorage',
+    transport: 'LocalStorage',
     description: 'LocalStorage',
     visible: true,
     searchable: false,
