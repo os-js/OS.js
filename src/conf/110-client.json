@@ -76,22 +76,31 @@
         "Enabled": false
       },
 
-      "Internal": {
-        "osjs": {
-          "enabled": true
-        },
-        "applications": {
-          "enabled": true
-        },
-        "home": {
-          "enabled": true
-        },
-        "localstorage": {
-          "enabled": false
-        }
+      "LocalStorage": {
+        "Enabled": false
       },
 
       "Mountpoints": {
+        "applications": {
+          "enabled": true,
+          "transport": "Applications",
+          "icon": "places/user-bookmarks.png",
+          "description": "Applications"
+        },
+
+        "osjs": {
+          "enabled": true,
+          "transport": "OSjs",
+          "icon": "devices/harddrive.png",
+          "description": "OS.js"
+        },
+
+        "home": {
+          "enabled": true,
+          "icon": "places/folder_home.png",
+          "description": "Home"
+        },
+
         "shared": {
           "enabled":     true,
           "description": "Shared",

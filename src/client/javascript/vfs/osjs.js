@@ -30,73 +30,46 @@
 (function(Utils, API) {
   'use strict';
 
-  window.OSjs       = window.OSjs       || {};
-  OSjs.VFS          = OSjs.VFS          || {};
-  OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
+  window.OSjs          = window.OSjs          || {};
+  OSjs.VFS             = OSjs.VFS             || {};
+  OSjs.VFS.Transports  = OSjs.VFS.Transports  || {};
 
   /////////////////////////////////////////////////////////////////////////////
-  // WRAPPERS
+  // API
   /////////////////////////////////////////////////////////////////////////////
 
-  function makeRequest(name, args, callback, options) {
-    args = args || [];
-    callback = callback || {};
+  var Transport = {
+    url: function(item, callback) {
+      var root = window.location.pathname || '/';
+      if ( root === '/' || window.location.protocol === 'file:' ) {
+        root = '';
+      }
 
-    function getFiles() {
-      var metadata = OSjs.Core.getPackageManager().getPackages();
-      var files = [];
-
-      Object.keys(metadata).forEach(function(m) {
-        var iter = metadata[m];
-        if ( iter.type !== 'extension' ) {
-          files.push(new OSjs.VFS.File({
-            filename: iter.name,
-            icon: {
-              filename: iter.icon,
-              application: m
-            },
-            type: 'application',
-            path: 'applications:///' + m,
-            mime: 'osjs/application'
-          }, 'osjs/application'));
-        }
-      });
-
-      return files;
+      var module = OSjs.VFS.Modules[OSjs.VFS.getModuleFromPath(item.path)];
+      var url = item.path.replace(module.match, root);
+      callback(false, url);
     }
+  };
 
-    if ( name === 'scandir' ) {
-      var files = getFiles();
-      callback(false, files);
-      return;
+  // Inherit non-restricted methods
+  var restricted = ['write', 'copy', 'move', 'unlink', 'mkdir', 'exists', 'fileinfo', 'trash', 'untrash', 'emptyTrash', 'freeSpace'];
+  var internal = OSjs.VFS.Transports.Internal.module;
+  Object.keys(internal).forEach(function(n) {
+    if ( restricted.indexOf(n) === -1 ) {
+      Transport[n] = internal[n];
     }
-
-    return callback(API._('ERR_VFS_UNAVAILABLE'));
-  }
+  });
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * This is a virtual module for showing 'applications' in OS.js
-   *
-   * @api OSjs.VFS.Modules.Applications
-   */
-  OSjs.VFS.Modules.Applications = OSjs.VFS.Modules.Applications || OSjs.VFS._createMountpoint({
-    readOnly: true,
-    description: 'Applications',
-    root: 'applications:///',
-    match: /^applications\:\/\//,
-    icon: 'places/user-bookmarks.png',
-    special: true,
-    visible: true,
-    internal: true,
-    searchable: true,
-    enabled: function() {
-      return OSjs.VFS.isInternalEnabled('applications');
-    },
-    request: makeRequest
-  });
+  OSjs.VFS.Transports.OSjs = {
+    module: Transport,
+    defaults: function(opts) {
+      opts.readOnly = true;
+      opts.searchable = true;
+    }
+  };
 
 })(OSjs.Utils, OSjs.API);

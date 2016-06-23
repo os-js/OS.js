@@ -30,33 +30,50 @@
 (function(Utils, API) {
   'use strict';
 
-  window.OSjs           = window.OSjs       || {};
-  OSjs.VFS              = OSjs.VFS          || {};
-  OSjs.VFS.Modules      = OSjs.VFS.Modules  || {};
+  window.OSjs          = window.OSjs          || {};
+  OSjs.VFS             = OSjs.VFS             || {};
+  OSjs.VFS.Transports  = OSjs.VFS.Transports  || {};
+
+  /////////////////////////////////////////////////////////////////////////////
+  // API
+  /////////////////////////////////////////////////////////////////////////////
+
+  var Transport = {
+    scandir: function(item, callback, options) {
+      var metadata = OSjs.Core.getPackageManager().getPackages();
+      var files = [];
+
+      Object.keys(metadata).forEach(function(m) {
+        var iter = metadata[m];
+        if ( iter.type !== 'extension' ) {
+          files.push(new OSjs.VFS.File({
+            filename: iter.name,
+            icon: {
+              filename: iter.icon,
+              application: m
+            },
+            type: 'application',
+            path: 'applications:///' + m,
+            mime: 'osjs/application'
+          }, 'osjs/application'));
+        }
+      });
+
+      callback(false, files);
+    }
+  };
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * This is a virtual module for showing 'dist' files in OS.js
-   *
-   * @see OSjs.VFS.Transports.Internal
-   * @api OSjs.VFS.Modules.Home
-   */
-  OSjs.VFS.Modules.Home = OSjs.VFS.Modules.Home || OSjs.VFS._createMountpoint({
-    transport: 'Internal',
-    readOnly: false,
-    description: 'Home',
-    root: 'home:///',
-    icon: 'places/folder_home.png',
-    match: /^home\:\/\//,
-    visible: true,
-    internal: true,
-    searchable: true,
-    enabled: function() {
-      return OSjs.VFS.isInternalEnabled('home');
+  OSjs.VFS.Transports.Applications = {
+    module: Transport,
+    defaults: function(opts) {
+      opts.readOnly = true;
+      opts.special = true;
+      opts.searchable = true;
     }
-  });
+  };
 
 })(OSjs.Utils, OSjs.API);

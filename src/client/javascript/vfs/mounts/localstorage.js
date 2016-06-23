@@ -670,7 +670,14 @@
       return _isMounted;
     },
     enabled: function() {
-      return OSjs.VFS.isInternalEnabled('localstorage');
+      try {
+        if ( API.getConfig('VFS.LocalStorage.Enabled') ) {
+          return true;
+        }
+      } catch ( e ) {
+        console.warn('OSjs.VFS.Modules.LocalStorage::enabled()', e, e.stack);
+      }
+      return false;
     },
     root: 'localstorage:///',
     icon: 'apps/web-browser.png',

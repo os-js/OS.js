@@ -578,10 +578,10 @@
     var queue = [
       initPreload,
       initHandler,
+      initVFS,
       initPackageManager,
       initExtensions,
       initSettingsManager,
-      initVFS,
       initSearch,
       function(cfg, cb) {
         return OSjs.GUI.DialogScheme.init(cb);
