@@ -1674,7 +1674,6 @@
   OSjs.VFS.dataSourceToAb        = dataSourceToAb;
 
   OSjs.VFS._createMountpoint     = _createMountpoint;
-  OSjs.VFS._
   OSjs.VFS.createMountpoint      = createMountpoint;
   OSjs.VFS.removeMountpoint      = removeMountpoint;
   OSjs.VFS.registerMountpoints   = registerMountpoints;
