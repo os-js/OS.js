@@ -230,6 +230,7 @@
     'ERR_VFSMODULE_EXCEPTION_FMT'      : 'VFS Module Exception: {0}',
     'ERR_VFSMODULE_NOT_FOUND_FMT'      : 'No VFS Module matches {0}. Wrong path or format ?',
     'ERR_VFSMODULE_READONLY'           : 'This VFS Module is read-only',
+    'ERR_VFSMODULE_READONLY_FMT'       : 'This VFS Module is read-only: {0}',
 
     'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Downloading file',
 

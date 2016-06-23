@@ -611,6 +611,11 @@
     }
   }
 
+  function isReadOnly(item) {
+    var m = getModuleFromPath(item.path);
+    return OSjs.VFS.Modules[m].readOnly === true;
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // VFS METHODS
   /////////////////////////////////////////////////////////////////////////////
@@ -827,6 +832,11 @@
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
     }
 
+    if ( isReadOnly(dest) ) {
+      callback(API._('ERR_VFSMODULE_READONLY_FMT', getModuleFromPath(dest.path)));
+      return;
+    }
+
     src = checkMetadataArgument(src, API._('ERR_VFS_EXPECT_SRC_FILE'));
     dest = checkMetadataArgument(dest, API._('ERR_VFS_EXPECT_DST_FILE'));
 
@@ -919,6 +929,8 @@
    * @api     OSjs.VFS.move()
    */
   OSjs.VFS.move = function(src, dest, callback, options, appRef) {
+    var self = this;
+
     console.debug('VFS::move()', src, dest, options);
     if ( arguments.length < 3 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -927,7 +939,10 @@
     src = checkMetadataArgument(src, API._('ERR_VFS_EXPECT_SRC_FILE'));
     dest = checkMetadataArgument(dest, API._('ERR_VFS_EXPECT_DST_FILE'));
 
-    var self = this;
+    if ( isReadOnly(dest) ) {
+      callback(API._('ERR_VFSMODULE_READONLY_FMT', getModuleFromPath(dest.path)));
+      return;
+    }
 
     function doRequest() {
       function _finished(error, result) {
