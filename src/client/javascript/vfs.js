@@ -1635,6 +1635,14 @@
           return;
         }
 
+        if ( params.readOnly ) {
+          var restricted = ['upload', 'unlink', 'write', 'mkdir', 'copy', 'move', 'trash', 'untrash', 'emptyTrash'];
+          if ( restricted.indexOf(name) !== -1 ) {
+            callback(API._('ERR_VFSMODULE_READONLY'));
+            return;
+          }
+        }
+
         var fargs = args || [];
         fargs.push(callback);
         fargs.push(options);
