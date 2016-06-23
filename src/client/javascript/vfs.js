@@ -1589,9 +1589,9 @@
         if ( iter.enabled !== false ) {
           console.info('VFS', 'Registering mountpoint', key, iter);
 
-          OSjs.VFS.Modules[key] = _createMountpoint({
+          var mp = _createMountpoint({
             readOnly: (typeof iter.readOnly === 'undefined') ? false : (iter.readOnly === true),
-            transport: 'Internal',
+            transport: iter.transport || 'Internal',
             description: iter.description || key,
             icon: iter.icon || 'devices/harddrive.png',
             root: key + ':///',
@@ -1600,6 +1600,10 @@
             searchable: true,
             match: createMatch(key + '://')
           });
+
+          mp.settings = iter.settings;
+
+          OSjs.VFS.Modules[key] = mp;
         }
       });
     }
@@ -1617,21 +1621,19 @@
    * @api   OSjs.VFS.createMountpoint()
    */
   function _createMountpoint(params) {
+    var target = OSjs.VFS.Transports[params.transport];
+    if ( target && typeof target.defaults === 'function' ) {
+      target.defaults(params);
+    }
+
     return Utils.argumentDefaults(params, {
       request: function(name, args, callback, options) {
         callback = callback || function() {
           console.warn('NO CALLBACK FUNCTION WAS ASSIGNED IN VFS REQUEST');
         };
 
-        var target = OSjs.VFS.Transports[params.transport];
         if ( !target ) {
           callback(API._('ERR_VFSMODULE_INVALID_TYPE_FMT', params.transport));
-          return;
-        }
-
-        var module = target.module || {};
-        if ( !module[name] ) {
-          callback(API._('ERR_VFS_UNAVAILABLE'));
           return;
         }
 
@@ -1641,6 +1643,12 @@
             callback(API._('ERR_VFSMODULE_READONLY'));
             return;
           }
+        }
+
+        var module = target.module || {};
+        if ( !module[name] ) {
+          callback(API._('ERR_VFS_UNAVAILABLE'));
+          return;
         }
 
         var fargs = args || [];
