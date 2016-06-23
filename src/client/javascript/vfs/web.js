@@ -41,40 +41,11 @@
    *
    * To make this work you *will need* CORS support!
    *
-   * Scandir() works by loading a file named `_scandir.json` in the
+   * scandir() works by loading a file named `_scandir.json` in the
    * requested folder.
    *
-   * Below you can find the mountpoint map to URL;
-   *
-   * Example _scandir.json file:
+   * Example _scandir.json file in doc/vfs/web/_scandir.json
    */
-
-  /*
-
-    [
-      {
-        "filename": "subdir",
-        "path": "/subdir",
-        "size": 0,
-        "type": "dir"
-      },
-      {
-        "filename": "README.md",
-        "path": "/README.md",
-        "size": 2762,
-        "type": "file",
-        "mime": "text/plain"
-      },
-      {
-        "filename": "screenshot.png",
-        "path": "/screenshot.png",
-        "size": 139204,
-        "type": "file",
-        "mime": "image/png"
-      }
-    ]
-
-  */
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS

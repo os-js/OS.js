@@ -1,0 +1,22 @@
+[
+  {
+    "filename": "subdir",
+    "path": "/subdir",
+    "size": 0,
+    "type": "dir"
+  },
+  {
+    "filename": "README.md",
+    "path": "/README.md",
+    "size": 2762,
+    "type": "file",
+    "mime": "text/plain"
+  },
+  {
+    "filename": "screenshot.png",
+    "path": "/screenshot.png",
+    "size": 139204,
+    "type": "file",
+    "mime": "image/png"
+  }
+]
