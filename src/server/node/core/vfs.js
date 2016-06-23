@@ -232,6 +232,12 @@
     return result;
   }
 
+  function checkProtectedPath(dst) {
+    if ( dst.match(/osjs\:/) ) {
+      throw new Error('Access denied');
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
@@ -329,6 +335,8 @@
     var realPath = getRealPath(server, args.path);
     var path = realPath.path;
 
+    checkProtectedPath(args.path);
+
     function writeFile(d, e) {
       _fs.writeFile(realPath.root, d, e || 'utf8', function(error, data) {
         if ( error ) {
@@ -366,6 +374,8 @@
     var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
     var realPath = getRealPath(server, args.path);
     var path = realPath.path;
+
+    checkProtectedPath(args.path);
 
     if ( (realPath.path || '/') === '/' ) {
       callback('Permission denied');
@@ -406,6 +416,8 @@
     var src  = args.src;
     var dst  = args.dest;
     var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
+
+    checkProtectedPath(dst);
 
     var realSrc = getRealPath(server, src);
     var realDst = getRealPath(server, dst);
@@ -460,6 +472,8 @@
       tmpPath += '/';
     }
     tmpPath += args.name;
+
+    checkProtectedPath(args.path);
 
     var dstPath = getRealPath(server, tmpPath).root;
     var overwrite = args.overwrite === true;
@@ -527,6 +541,8 @@
     var dst  = args.dest;
     var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
 
+    checkProtectedPath(dst);
+
     var realSrc = getRealPath(server, src);
     var realDst = getRealPath(server, dst);
     var srcPath = realSrc.root; //_path.join(realSrc.root, src);
@@ -571,6 +587,8 @@
     var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
     var realPath = getRealPath(server, args.path);
     var path = realPath.path;
+
+    checkProtectedPath(args.path);
 
     _fs.exists(realPath.root, function(exists) {
       if ( exists ) {
