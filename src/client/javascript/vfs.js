@@ -1595,13 +1595,12 @@
             description: iter.description || key,
             icon: iter.icon || 'devices/harddrive.png',
             root: key + ':///',
+            options: iter.options,
             visible: true,
             internal: true,
             searchable: true,
             match: createMatch(key + '://')
           });
-
-          mp.settings = iter.settings;
 
           OSjs.VFS.Modules[key] = mp;
         }

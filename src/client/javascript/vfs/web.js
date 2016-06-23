@@ -182,7 +182,7 @@
     var rel = OSjs.VFS.getRelativeURL(file.path);
     var moduleName = OSjs.VFS.getModuleFromPath(file.path);
     var module = OSjs.VFS.Modules[moduleName];
-    var base = (module.settings || {}).url;
+    var base = (module.options || {}).url;
     return base + rel.replace(/^\/+/, '/');
   }
 
