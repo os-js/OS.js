@@ -901,7 +901,7 @@
    */
   OSjs.VFS.Modules.GoogleDrive = OSjs.VFS.Modules.GoogleDrive || OSjs.VFS._createMountpoint({
     readOnly: false,
-    moduleName: 'googledrive',
+    transport: 'GoogleDrive',
     description: 'Google Drive',
     visible: true,
     searchable: false,

@@ -45,6 +45,7 @@
    * @api OSjs.VFS.Modules.Home
    */
   OSjs.VFS.Modules.Home = OSjs.VFS.Modules.Home || OSjs.VFS._createMountpoint({
+    transport: 'Internal',
     readOnly: false,
     description: 'Home',
     root: 'home:///',
@@ -55,8 +56,7 @@
     searchable: true,
     enabled: function() {
       return OSjs.VFS.isInternalEnabled('home');
-    },
-    request: OSjs.VFS.Transports.Internal.request
+    }
   });
 
 })(OSjs.Utils, OSjs.API);

@@ -641,7 +641,7 @@
    */
   OSjs.VFS.Modules.OneDrive = OSjs.VFS.Modules.OneDrive || OSjs.VFS._createMountpoint({
     readOnly: false,
-    moduleName: 'onedrive',
+    transport: 'OneDrive',
     description: 'OneDrive',
     visible: true,
     searchable: false,

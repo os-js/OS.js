@@ -363,7 +363,7 @@
    */
   OSjs.VFS.Modules.Dropbox = OSjs.VFS.Modules.Dropbox || OSjs.VFS._createMountpoint({
     readOnly: false,
-    moduleName: 'dropbox',
+    transport: 'Dropbox',
     description: 'Dropbox',
     visible: true,
     searchable: false,

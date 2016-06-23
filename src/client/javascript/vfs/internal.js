@@ -38,146 +38,108 @@
   // API
   /////////////////////////////////////////////////////////////////////////////
 
-  var internalTransport = {};
+  var Transport = {
+    scandir: function(item, callback, options) {
+      internalRequest('scandir', {path: item.path}, function(error, result) {
+        var list = [];
+        if ( result ) {
+          result = OSjs.VFS.filterScandir(result, options);
+          result.forEach(function(iter) {
+            list.push(new OSjs.VFS.File(iter));
+          });
+        }
+        callback(error, list);
+      });
+    },
 
-  internalTransport.scandir = function(item, callback, options) {
-    OSjs.VFS.internalCall('scandir', {path: item.path}, function(error, result) {
-      var list = [];
-      if ( result ) {
-        result = OSjs.VFS.filterScandir(result, options);
-        result.forEach(function(iter) {
-          list.push(new OSjs.VFS.File(iter));
-        });
+    write: function(item, data, callback, options) {
+      options = options || {};
+      options.onprogress = options.onprogress || function() {};
+
+      function _write(dataSource) {
+        var wopts = {path: item.path, data: dataSource};
+
+        /*
+        if ( API.getConfig('Connection.Type') === 'nw' ) {
+          OSjs.Core.getHandler().nw.request(true, 'write', wopt, function(err, res) {
+            callback(err, res);
+          });
+          return;
+        }
+        */
+
+        internalRequest('write', wopts, callback, options);
       }
-      callback(error, list);
-    });
-  };
 
-  internalTransport.write = function(item, data, callback, options) {
-    options = options || {};
-    options.onprogress = options.onprogress || function() {};
+      if ( typeof data === 'string' && !data.length ) {
+        _write(data);
+        return;
+      }
 
-    function _write(dataSource) {
-      var wopts = {path: item.path, data: dataSource};
+      OSjs.VFS.abToDataSource(data, item.mime, function(error, dataSource) {
+        if ( error ) {
+          callback(error);
+          return;
+        }
 
-      /*
+        _write(dataSource);
+      });
+    },
+
+    read: function(item, callback, options) {
       if ( API.getConfig('Connection.Type') === 'nw' ) {
-        OSjs.Core.getHandler().nw.request(true, 'write', wopt, function(err, res) {
+        OSjs.Core.getHandler().nw.request(true, 'read', {
+          path: item.path,
+          options: {raw: true}
+        }, function(err, res) {
           callback(err, res);
         });
         return;
       }
-      */
 
-      OSjs.VFS.internalCall('write', wopts, callback, options);
+      internalRequest('get', {path: item.path}, callback, options);
+    },
+
+    copy: function(src, dest, callback) {
+      internalRequest('copy', {src: src.path, dest: dest.path}, callback);
+    },
+
+    move: function(src, dest, callback) {
+      internalRequest('move', {src: src.path, dest: dest.path}, callback);
+    },
+
+    unlink: function(item, callback) {
+      internalRequest('delete', {path: item.path}, callback);
+    },
+
+    mkdir: function(item, callback) {
+      internalRequest('mkdir', {path: item.path}, callback);
+    },
+
+    exists: function(item, callback) {
+      internalRequest('exists', {path: item.path}, callback);
+    },
+
+    fileinfo: function(item, callback) {
+      internalRequest('fileinfo', {path: item.path}, callback);
+    },
+
+    find: function(item, args, callback) {
+      internalRequest('find', {path: item.path, args: args}, callback);
+    },
+
+    url: function(item, callback) {
+      callback(false, OSjs.VFS.Transports.Internal.path(item));
+    },
+
+    freeSpace: function(root, callback) {
+      internalRequest('freeSpace', {root: root}, callback);
     }
-
-    if ( typeof data === 'string' && !data.length ) {
-      _write(data);
-      return;
-    }
-
-    OSjs.VFS.abToDataSource(data, item.mime, function(error, dataSource) {
-      if ( error ) {
-        callback(error);
-        return;
-      }
-
-      _write(dataSource);
-    });
-  };
-
-  internalTransport.read = function(item, callback, options) {
-
-    if ( API.getConfig('Connection.Type') === 'nw' ) {
-      OSjs.Core.getHandler().nw.request(true, 'read', {
-        path: item.path,
-        options: {raw: true}
-      }, function(err, res) {
-        callback(err, res);
-      });
-      return;
-    }
-
-    OSjs.VFS.internalCall('get', {path: item.path}, callback, options);
-  };
-
-  internalTransport.copy = function(src, dest, callback) {
-    OSjs.VFS.internalCall('copy', {src: src.path, dest: dest.path}, callback);
-  };
-
-  internalTransport.move = function(src, dest, callback) {
-    OSjs.VFS.internalCall('move', {src: src.path, dest: dest.path}, callback);
-  };
-
-  internalTransport.unlink = function(item, callback) {
-    OSjs.VFS.internalCall('delete', {path: item.path}, callback);
-  };
-
-  internalTransport.mkdir = function(item, callback) {
-    OSjs.VFS.internalCall('mkdir', {path: item.path}, callback);
-  };
-
-  internalTransport.exists = function(item, callback) {
-    OSjs.VFS.internalCall('exists', {path: item.path}, callback);
-  };
-
-  internalTransport.fileinfo = function(item, callback) {
-    OSjs.VFS.internalCall('fileinfo', {path: item.path}, callback);
-  };
-
-  internalTransport.find = function(item, args, callback) {
-    OSjs.VFS.internalCall('find', {path: item.path, args: args}, callback);
-  };
-
-  internalTransport.url = function(item, callback) {
-    callback(false, OSjs.VFS.Transports.Internal.path(item));
-  };
-
-  internalTransport.trash = function(item, callback) {
-    callback(API._('ERR_VFS_UNAVAILABLE'));
-  };
-
-  internalTransport.untrash = function(item, callback) {
-    callback(API._('ERR_VFS_UNAVAILABLE'));
-  };
-
-  internalTransport.emptyTrash = function(item, callback) {
-    callback(API._('ERR_VFS_UNAVAILABLE'));
-  };
-
-  internalTransport.freeSpace = function(root, callback) {
-    OSjs.VFS.internalCall('freeSpace', {root: root}, callback);
   };
 
   /////////////////////////////////////////////////////////////////////////////
   // WRAPPERS
   /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Make a OS.js Server HTTP request for VFS
-   *
-   * @param   String      name      Method name
-   * @param   Object      args      Method arguments
-   * @param   Function    callback  Callback => fn(error, result)
-   * @param   Object      option    (Optional) request options
-   *
-   * @return  void
-   * @api OSjs.VFS.Transports.Internal.request()
-   */
-  function makeRequest(name, args, callback, options) {
-    args = args || [];
-    callback = callback || {};
-
-    if ( !internalTransport[name] ) {
-      throw new Error('Invalid Internal API call name');
-    }
-
-    var fargs = args;
-    fargs.push(callback);
-    fargs.push(options);
-    internalTransport[name].apply(internalTransport, fargs);
-  }
 
   /**
    * Make a OS.js Server HTTP URL for VFS
@@ -195,12 +157,66 @@
     return OSjs.Core.getHandler().getVFSPath(item);
   }
 
+  /**
+   * Perform default VFS call via backend
+   *
+   * @see _Handler.callAPI()
+   * @api OSjs.VFS.Transports.Internal.request()
+   */
+  function internalRequest(name, args, callback) {
+    API.call('FS:' + name, args, function(err, res) {
+      if ( !err && typeof res === 'undefined' ) {
+        err = API._('ERR_VFS_FATAL');
+      }
+      callback(err, res);
+    });
+  }
+
+  /**
+   * Wrapper for internal file uploads
+   *
+   * @see _Handler.callPOST()
+   * @api OSjs.VFS.Transports.Internal.upload()
+   */
+  function internalUpload(file, dest, callback, options) {
+    options = options || {};
+
+    if ( typeof file.size !== 'undefined' ) {
+      var maxSize = API.getConfig('VFS.MaxUploadSize');
+      if ( maxSize > 0 ) {
+        var bytes = file.size;
+        if ( bytes > maxSize ) {
+          var msg = API._('DIALOG_UPLOAD_TOO_BIG_FMT', Utils.humanFileSize(maxSize));
+          callback('error', msg);
+          return;
+        }
+      }
+    }
+
+    var fd  = new FormData();
+    fd.append('upload', 1);
+    fd.append('path', dest);
+
+    if ( options ) {
+      Object.keys(options).forEach(function(key) {
+        fd.append(key, String(options[key]));
+      });
+    }
+
+    OSjs.VFS.addFormFile(fd, 'upload', file);
+
+    OSjs.Core.getHandler().callAPI('FS:upload', fd, callback, null, options);
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.VFS.Transports.Internal = {
-    request: makeRequest,
+    request: internalRequest,
+    upload: internalUpload,
+
+    module: Transport,
     path: makePath
   };
 

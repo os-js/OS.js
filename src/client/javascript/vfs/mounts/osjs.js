@@ -38,15 +38,16 @@
   // API
   /////////////////////////////////////////////////////////////////////////////
 
-  var OSjsStorage = {};
-  OSjsStorage.url = function(item, callback) {
-    var root = window.location.pathname || '/';
-    if ( root === '/' || window.location.protocol === 'file:' ) {
-      root = '';
-    }
+  var Transport = {
+    url: function(item, callback) {
+      var root = window.location.pathname || '/';
+      if ( root === '/' || window.location.protocol === 'file:' ) {
+        root = '';
+      }
 
-    var url = item.path.replace(OSjs.VFS.Modules.OSjs.match, root);
-    callback(false, url);
+      var url = item.path.replace(OSjs.VFS.Modules.OSjs.match, root);
+      callback(false, url);
+    }
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -54,19 +55,20 @@
   /////////////////////////////////////////////////////////////////////////////
 
   function makeRequest(name, args, callback, options) {
-    args = args || [];
-    callback = callback || {};
+    callback = callback || function() {};
 
     var restricted = ['write', 'copy', 'move', 'unlink', 'mkdir', 'exists', 'fileinfo', 'trash', 'untrash', 'emptyTrash', 'freeSpace'];
-    if ( OSjsStorage[name] ) {
-      var fargs = args;
-      fargs.push(callback);
-      fargs.push(options);
-      return OSjsStorage[name].apply(OSjsStorage, fargs);
+    var fargs = args || [];
+    fargs.push(callback);
+    fargs.push(options);
+
+    if ( Transport[name] ) {
+      return Transport[name].apply(Transport, fargs);
     } else if ( restricted.indexOf(name) !== -1 ) {
       return callback(API._('ERR_VFS_UNAVAILABLE'));
     }
-    OSjs.VFS.Transports.Internal.request.apply(null, arguments);
+
+    return OSjs.VFS.Transports.Internal.module[name].apply(null, fargs);
   }
 
   /////////////////////////////////////////////////////////////////////////////

@@ -166,7 +166,7 @@
     var idst = OSjs.VFS.Modules[mdst] || {};
 
     // If mounts are labeled with a name
-    if ( isrc.moduleName === idst.moduleName ) {
+    if ( isrc.transport === idst.transport ) {
       return true;
     }
 
@@ -365,18 +365,6 @@
   }
 
   /**
-   * Perform default VFS call via backend
-   */
-  function internalCall(name, args, callback) {
-    API.call('FS:' + name, args, function(err, res) {
-      if ( !err && typeof res === 'undefined' ) {
-        err = API._('ERR_VFS_FATAL');
-      }
-      callback(err, res);
-    });
-  }
-
-  /**
    * A wrapper for checking if a file exists
    */
   function existsWrapper(item, callback, options) {
@@ -401,42 +389,6 @@
     } catch ( e ) {
       callback(e);
     }
-  }
-
-  /**
-   * Wrapper for internal file uploads
-   *
-   * @see _Handler.callPOST()
-   * @api OSjs.VFS.internalUpload()
-   */
-  function internalUpload(file, dest, callback, options) {
-    options = options || {};
-
-    if ( typeof file.size !== 'undefined' ) {
-      var maxSize = API.getConfig('VFS.MaxUploadSize');
-      if ( maxSize > 0 ) {
-        var bytes = file.size;
-        if ( bytes > maxSize ) {
-          var msg = API._('DIALOG_UPLOAD_TOO_BIG_FMT', Utils.humanFileSize(maxSize));
-          callback('error', msg);
-          return;
-        }
-      }
-    }
-
-    var fd  = new FormData();
-    fd.append('upload', 1);
-    fd.append('path', dest);
-
-    if ( options ) {
-      Object.keys(options).forEach(function(key) {
-        fd.append(key, String(options[key]));
-      });
-    }
-
-    addFormFile(fd, 'upload', file);
-
-    OSjs.Core.getHandler().callAPI('FS:upload', fd, callback, null, options);
   }
 
   /**
@@ -1233,7 +1185,7 @@
           file: f
         }, _dialogClose, args.win || args.app);
       } else {
-        OSjs.VFS.internalUpload(f, args.destination, function(err, result, ev) {
+        OSjs.VFS.Transports.Internal.upload(f, args.destination, function(err, result, ev) {
           if ( err ) {
             if ( err === 'canceled' ) {
               callback(API._('ERR_VFS_UPLOAD_CANCELLED'), null, ev);
@@ -1508,7 +1460,7 @@
    * @option  opts    String      name            Mountpoint Name (unique)
    * @option  opts    String      description     General description
    * @option  opts    String      icon            Icon
-   * @option  opts    String      type            Connection type (internal/webdav)
+   * @option  opts    String      transport       Transporter name (Internal/WebDAV)
    * @option  opts    Object      options         Connection options (for external services like webdav)
    *
    * @option  options String      host            (Optional) Host (full URL)
@@ -1525,7 +1477,7 @@
   function createMountpoint(opts, cb) {
     opts = Utils.argumentDefaults(opts, {
       description: 'My VFS Module',
-      type: 'internal',
+      transport: 'Internal',
       name: 'MyModule',
       icon: 'places/server.png',
       searchable: false
@@ -1535,8 +1487,8 @@
       throw new Error(API._('ERR_VFSMODULE_ALREADY_MOUNTED_FMT', opts.name));
     }
 
-    if ( opts.type === 'owndrive' ) {
-      opts.type = 'webdav';
+    if ( opts.transport.toLowerCase() === 'owndrive' ) {
+      opts.transport = 'WebDAV';
     }
 
     var modulePath = opts.name.replace(/\s/g, '-').toLowerCase() + '://';
@@ -1566,16 +1518,7 @@
         root: moduleRoot,
         icon: opts.icon,
         match: moduleMatch,
-        options: moduleOptions,
-        request: function(name, args, callback, options) {
-          if ( opts.type === 'internal' ) {
-            OSjs.VFS.Transports.Internal.request.apply(null, arguments);
-          } else if ( opts.type === 'webdav' ) {
-            OSjs.VFS.Transports.WebDAV.request.apply(null, arguments);
-          } else {
-            callback(API._('ERR_VFSMODULE_INVALID_TYPE_FMT', opts.type));
-          }
-        }
+        options: moduleOptions
       });
     })();
 
@@ -1648,17 +1591,14 @@
 
           OSjs.VFS.Modules[key] = _createMountpoint({
             readOnly: (typeof iter.readOnly === 'undefined') ? false : (iter.readOnly === true),
+            transport: 'Internal',
             description: iter.description || key,
             icon: iter.icon || 'devices/harddrive.png',
             root: key + ':///',
             visible: true,
             internal: true,
             searchable: true,
-            match: createMatch(key + '://'),
-            request: function mountpointRequest() {
-              // This module uses the same API as public
-              OSjs.VFS.Transports.Internal.request.apply(null, arguments);
-            }
+            match: createMatch(key + '://')
           });
         }
       });
@@ -1678,6 +1618,28 @@
    */
   function _createMountpoint(params) {
     return Utils.argumentDefaults(params, {
+      request: function(name, args, callback, options) {
+        callback = callback || function() {
+          console.warn('NO CALLBACK FUNCTION WAS ASSIGNED IN VFS REQUEST');
+        };
+
+        var target = OSjs.VFS.Transports[params.transport];
+        if ( !target ) {
+          callback(API._('ERR_VFSMODULE_INVALID_TYPE_FMT', params.transport));
+          return;
+        }
+
+        var module = target.module || {};
+        if ( !module[name] ) {
+          callback(API._('ERR_VFS_UNAVAILABLE'));
+          return;
+        }
+
+        var fargs = args || [];
+        fargs.push(callback);
+        fargs.push(options);
+        module[name].apply(module, fargs);
+      },
       unmount: function(cb) {
         (cb || function() {})(API._('ERR_VFS_UNAVAILABLE'), false);
       },
@@ -1694,8 +1656,6 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.VFS.internalCall          = internalCall;
-  OSjs.VFS.internalUpload        = internalUpload;
   OSjs.VFS.filterScandir         = filterScandir;
   OSjs.VFS.getModules            = getModules;
   OSjs.VFS.getModuleFromPath     = getModuleFromPath;
@@ -1714,6 +1674,7 @@
   OSjs.VFS.dataSourceToAb        = dataSourceToAb;
 
   OSjs.VFS._createMountpoint     = _createMountpoint;
+  OSjs.VFS._
   OSjs.VFS.createMountpoint      = createMountpoint;
   OSjs.VFS.removeMountpoint      = removeMountpoint;
   OSjs.VFS.registerMountpoints   = registerMountpoints;

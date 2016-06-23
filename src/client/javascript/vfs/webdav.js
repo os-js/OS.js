@@ -144,7 +144,7 @@
     }
 
     if ( getCORSAllowed(sourceFile) ) {
-      OSjs.VFS.internalCall('get', {url: sourceUrl, method: method}, callback);
+      OSjs.VFS.Transports.Internal.request('get', {url: sourceUrl, method: method}, callback);
     } else {
       externalCall();
     }
@@ -154,182 +154,137 @@
   // API
   /////////////////////////////////////////////////////////////////////////////
 
-  var davTransport = {};
+  var Transport = {
+    scandir: function(item, callback, options) {
+      function parse(doc) {
+        var ns = getNamespace(item);
+        var list = [];
+        var reqpath = resolvePath(item);
+        var root = OSjs.VFS.getRootFromPath(item.path);
 
-  davTransport.scandir = function(item, callback, options) {
-    function parse(doc) {
-      var ns = getNamespace(item);
-      var list = [];
-      var reqpath = resolvePath(item);
-      var root = OSjs.VFS.getRootFromPath(item.path);
-
-      if ( item.path !== root ) {
-        list.push({
-          path: root,
-          filename: '..',
-          type: 'dir'
-        });
-      }
-
-      doc.children.forEach(function(c) {
-        var type = 'file';
-
-        function getPath() {
-          var path = c.getElementsByTagNameNS(ns, 'href')[0].textContent;
-          return path.substr(getURI(item).length - 1, path.length);
-        }
-
-        function getId() {
-          var id = null;
-          try {
-            id = c.getElementsByTagNameNS(ns, 'getetag')[0].textContent;
-          } catch ( e ) {
-          }
-          return id;
-        }
-
-        function getMime() {
-          var mime = null;
-          if ( type === 'file' ) {
-            try {
-              mime = c.getElementsByTagNameNS(ns, 'getcontenttype')[0].textContent || 'application/octet-stream';
-            } catch ( e ) {
-              mime = 'application/octet-stream';
-            }
-          }
-          return mime;
-        }
-
-        function getSize() {
-          var size = 0;
-          if ( type === 'file' ) {
-            try {
-              size = parseInt(c.getElementsByTagNameNS(ns, 'getcontentlength')[0].textContent, 10) || 0;
-            } catch ( e ) {
-            }
-          }
-          return size;
-        }
-
-        var path = getPath();
-        if ( path.match(/\/$/) ) {
-          type = 'dir';
-          path = path.replace(/\/$/, '') || '/';
-        }
-
-        if ( path !== reqpath ) {
+        if ( item.path !== root ) {
           list.push({
-            id: getId(),
-            path: root + path.replace(/^\//, ''),
-            filename: Utils.filename(path),
-            size: getSize(),
-            mime: getMime(),
-            type: type
+            path: root,
+            filename: '..',
+            type: 'dir'
           });
         }
-      });
 
-      return OSjs.VFS.filterScandir(list, options);
-    }
+        doc.children.forEach(function(c) {
+          var type = 'file';
 
-    davCall('PROPFIND', {path: item.path}, function(error, doc) {
-      var list = [];
-      if ( !error && doc ) {
-        var result = parse(doc);
-        result.forEach(function(iter) {
-          list.push(new OSjs.VFS.File(iter));
+          function getPath() {
+            var path = c.getElementsByTagNameNS(ns, 'href')[0].textContent;
+            return path.substr(getURI(item).length - 1, path.length);
+          }
+
+          function getId() {
+            var id = null;
+            try {
+              id = c.getElementsByTagNameNS(ns, 'getetag')[0].textContent;
+            } catch ( e ) {
+            }
+            return id;
+          }
+
+          function getMime() {
+            var mime = null;
+            if ( type === 'file' ) {
+              try {
+                mime = c.getElementsByTagNameNS(ns, 'getcontenttype')[0].textContent || 'application/octet-stream';
+              } catch ( e ) {
+                mime = 'application/octet-stream';
+              }
+            }
+            return mime;
+          }
+
+          function getSize() {
+            var size = 0;
+            if ( type === 'file' ) {
+              try {
+                size = parseInt(c.getElementsByTagNameNS(ns, 'getcontentlength')[0].textContent, 10) || 0;
+              } catch ( e ) {
+              }
+            }
+            return size;
+          }
+
+          var path = getPath();
+          if ( path.match(/\/$/) ) {
+            type = 'dir';
+            path = path.replace(/\/$/, '') || '/';
+          }
+
+          if ( path !== reqpath ) {
+            list.push({
+              id: getId(),
+              path: root + path.replace(/^\//, ''),
+              filename: Utils.filename(path),
+              size: getSize(),
+              mime: getMime(),
+              type: type
+            });
+          }
         });
+
+        return OSjs.VFS.filterScandir(list, options);
       }
-      callback(error, list);
-    });
-  };
 
-  davTransport.write = function(item, data, callback, options) {
-    davCall('PUT', {path: item.path, mime: item.mime, data: data}, callback);
-  };
+      davCall('PROPFIND', {path: item.path}, function(error, doc) {
+        var list = [];
+        if ( !error && doc ) {
+          var result = parse(doc);
+          result.forEach(function(iter) {
+            list.push(new OSjs.VFS.File(iter));
+          });
+        }
+        callback(error, list);
+      });
+    },
 
-  davTransport.read = function(item, callback, options) {
-    davCall('GET', {path: item.path, mime: item.mime}, callback, true);
-  };
+    write: function(item, data, callback, options) {
+      davCall('PUT', {path: item.path, mime: item.mime, data: data}, callback);
+    },
 
-  davTransport.copy = function(src, dest, callback) {
-    davCall('COPY', {path: src.path, dest: dest.path}, callback);
-  };
+    read: function(item, callback, options) {
+      davCall('GET', {path: item.path, mime: item.mime}, callback, true);
+    },
 
-  davTransport.move = function(src, dest, callback) {
-    davCall('MOVE', {path: src.path, dest: dest.path}, callback);
-  };
+    copy: function(src, dest, callback) {
+      davCall('COPY', {path: src.path, dest: dest.path}, callback);
+    },
 
-  davTransport.unlink = function(item, callback) {
-    davCall('DELETE', {path: item.path}, callback);
-  };
+    move: function(src, dest, callback) {
+      davCall('MOVE', {path: src.path, dest: dest.path}, callback);
+    },
 
-  davTransport.mkdir = function(item, callback) {
-    davCall('MKCOL', {path: item.path}, callback);
-  };
+    unlink: function(item, callback) {
+      davCall('DELETE', {path: item.path}, callback);
+    },
 
-  davTransport.exists = function(item, callback) {
-    davCall('PROPFIND', {path: item.path}, function(error, doc) {
-      callback(false, !error);
-    });
-  };
+    mkdir: function(item, callback) {
+      davCall('MKCOL', {path: item.path}, callback);
+    },
 
-  davTransport.find = function(item, args, callback) {
-    callback(API._('ERR_VFS_UNAVAILABLE'));
-  };
+    exists: function(item, callback) {
+      davCall('PROPFIND', {path: item.path}, function(error, doc) {
+        callback(false, !error);
+      });
+    },
 
-  davTransport.fileinfo = function(item, callback, options) {
-    callback(API._('ERR_VFS_UNAVAILABLE'));
-  };
+    url: function(item, callback, options) {
+      callback(false, OSjs.VFS.Transports.WebDAV.path(item));
+    },
 
-  davTransport.url = function(item, callback, options) {
-    callback(false, OSjs.VFS.Transports.WebDAV.path(item));
-  };
-
-  davTransport.trash = function(item, callback) {
-    callback(API._('ERR_VFS_UNAVAILABLE'));
-  };
-
-  davTransport.untrash = function(item, callback) {
-    callback(API._('ERR_VFS_UNAVAILABLE'));
-  };
-
-  davTransport.emptyTrash = function(item, callback) {
-    callback(API._('ERR_VFS_UNAVAILABLE'));
-  };
-
-  davTransport.freeSpace = function(root, callback) {
-    callback(false, -1);
+    freeSpace: function(root, callback) {
+      callback(false, -1);
+    }
   };
 
   /////////////////////////////////////////////////////////////////////////////
   // WRAPPERS
   /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Make a WebDAV HTTP request for VFS
-   *
-   * @param   String      name      Method name
-   * @param   Object      args      Method arguments
-   * @param   Function    callback  Callback => fn(error, result)
-   * @param   Object      option    (Optional) request options
-   *
-   * @return  void
-   * @api OSjs.VFS.Transports.WebDAV.request()
-   */
-  function makeRequest(name, args, callback, options) {
-    args = args || [];
-    callback = callback || {};
-
-    if ( !davTransport[name] ) {
-      throw new Error(API._('ERR_VFSMODULE_INVALID_METHOD_FMT', name));
-    }
-
-    var fargs = args;
-    fargs.push(callback);
-    fargs.push(options);
-    davTransport[name].apply(davTransport, fargs);
-  }
 
   /**
    * Make a WebDAV HTTP URL for VFS
@@ -361,7 +316,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.VFS.Transports.WebDAV = {
-    request: makeRequest,
+    module: Transport,
     path: makePath
   };
 
