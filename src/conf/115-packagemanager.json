@@ -1,0 +1,8 @@
+{
+  "client": {
+    "PackageManager": {
+      "UserPackages":  "home:///.packages",
+      "UserMetadata":  "home:///.packages/packages.json"
+    }
+  }
+}

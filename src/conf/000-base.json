@@ -3,7 +3,19 @@
   "connection": "http",
 
   "client" : {
-    "Version" : "2.0-alpha77"
+    "Version" : "2.0-alpha77",
+    "SettingsManager": {},
+    "PackageManager": {},
+    "Preloads": {},
+    "AutoStart": [],
+    "Languages": {},
+    "Styles": [],
+    "Sounds": {},
+    "Icons": {},
+    "Fonts": {},
+    "MIME": {},
+    "WM": {},
+    "VFS": {}
   },
 
   "repositories": ["default"],
