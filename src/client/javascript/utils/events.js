@@ -40,7 +40,7 @@
   /**
    * This is just a helper object for managing bound events.
    *
-   * Let's say you bind the 'mousemove' event, this will result in both
+   * Let's say you bind the 'mousedown' event, this will result in both
    * 'mousedown' *and* 'touchstart' being bound due to how the cross-platform
    * system works. This object holds a reference to all of these.
    *
@@ -110,6 +110,8 @@
         Object.keys(this._boundEvents).forEach(function(type) {
           self.unbindEventListener(type);
         });
+
+        delete this._boundEvents;
       }
     };
 
@@ -310,13 +312,24 @@
    *
    * @api OSjs.Utils.$bind()
    */
-  OSjs.Utils.$bind = (function() {
+  OSjs.Utils.$bind = (function(msPointerEnabled) {
+    var touchstartName = msPointerEnabled ? 'pointerdown' : 'touchstart';
+    var touchendName   = msPointerEnabled ? 'pointerup'   : 'touchend';
+    var touchmoveName  = msPointerEnabled ? 'pointermove' : 'touchmove';
 
     function pos(ev, touchDevice) {
-      return {
-        x: (touchDevice ? (ev.changedTouches[0] || {}) : ev).clientX,
-        y: (touchDevice ? (ev.changedTouches[0] || {}) : ev).clientY
-      };
+      function _getTouch() {
+        var t = {};
+        if ( ev.changedTouches ) {
+          t = ev.changedTouches[0];
+        } else if ( ev.touches ) {
+          t = ev.touches[0];
+        }
+        return t;
+      }
+
+      var dev = touchDevice ? _getTouch() : ev;
+      return {x: dev.clientX, y: dev.clientY};
     }
 
     function createTouchHandler(el, evName, collection, callback, signal) {
@@ -374,32 +387,32 @@
         whenFinished = false;
       }
 
-      collection.add(el, ['touchstart', cbs, true]);
-      collection.add(el, ['touchend', cbe, true]);
+      collection.add(el, [touchstartName, cbs, true]);
+      collection.add(el, [touchendName, cbe, true]);
     }
+
+    var touchMap = {
+      click: createTouchHandler,
+      contextmenu: createTouchHandler,
+      dblclick: createTouchHandler,
+      mouseup: touchendName,
+      mousemove: touchmoveName,
+      mousedown: touchstartName
+    };
 
     return function(el, evName, callback, param) {
       var origName = evName;
       evName = origName.split(':')[0];
 
-      var touchMap = {
-        click: createTouchHandler,
-        contextmenu: createTouchHandler,
-        dblclick: createTouchHandler,
-        mouseup: 'touchend',
-        mousemove: 'touchmove',
-        mousedown: 'touchstart'
-      };
-
       var collection = new EventCollection();
       var tev = touchMap[evName];
       var wasTouch = false;
 
-      function cbTouch(ev) {
+      function cbTouchEvent(ev) {
         callback.call(el, ev, pos(ev, true), true);
       }
 
-      function cbNormal(ev) {
+      function cbMouseEvent(ev) {
         if ( !wasTouch ) {
           callback.call(el, ev, pos(ev), false);
         }
@@ -410,14 +423,14 @@
           wasTouch = true;
         });
       } else if ( typeof tev === 'string' ) {
-        collection.add(el, [tev, cbTouch, param === true]);
+        collection.add(el, [tev, cbTouchEvent, param === true]);
       }
 
-      collection.add(el, [evName, cbNormal, param === true]);
+      collection.add(el, [evName, cbMouseEvent, param === true]);
 
       el.bindVirtualListneners(origName, collection);
     };
-  })();
+  })(window.navigator.msPointerEnabled);
 
   /**
    * Unbinds the given event
