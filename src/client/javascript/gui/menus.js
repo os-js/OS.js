@@ -98,9 +98,109 @@
     Utils.$addClass(r, 'gui-showing');
   }
 
+  function runChildren(pel, level, winRef, cb) {
+    level = level || 0;
+    cb = cb || function() {};
+
+    (pel.children || []).forEach(function(child, i) {
+      if ( child && child.tagName.toLowerCase() === 'gui-menu-entry') {
+        GUI.Elements['gui-menu-entry'].build(child, null, winRef);
+
+        cb(child, level);
+      }
+    });
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Element: 'gui-menu-entry'
+   *
+   * An entry for a menu.
+   *
+   * Events:
+   *  select        When an entry was selected (click) => fn(ev)
+   *
+   * @api OSjs.GUI.Elements.gui-menu-entry
+   * @class
+   */
+  GUI.Elements['gui-menu-entry'] = (function() {
+    function _checkExpand(child) {
+      var sub = child.querySelector('gui-menu');
+      if ( sub ) {
+        Utils.$addClass(child, 'gui-menu-expand');
+        child.setAttribute('aria-haspopup', 'true');
+        return true;
+      } else {
+        child.setAttribute('aria-haspopup', 'false');
+      }
+
+      return false;
+    }
+
+    function createTyped(child, par) {
+      var type = child.getAttribute('data-type');
+      var value = child.getAttribute('data-checked') === 'true';
+      var input = null;
+      if ( type ) {
+        var group = child.getAttribute('data-group');
+        input = document.createElement('input');
+        input.type = type;
+        input.name = group ? group + '[]' : '';
+        if ( value ) {
+          input.setAttribute('checked', 'checked');
+        }
+        input.addEventListener('click', function(ev) {
+          blurMenu();
+        }, true);
+
+        par.setAttribute('role', 'menuitem' + type);
+        par.appendChild(input);
+      }
+    }
+
+    return {
+      bind: function(el, evName, callback, params) {
+        if ( evName === 'select' ) {
+          evName = '_select';
+        }
+
+        var target = el.querySelector('gui-menu-entry > label');
+        Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
+      },
+      build: function(child, arg, winRef) {
+        if ( arguments.length < 3 ) {
+          return;
+        }
+        child.setAttribute('role', 'menuitem' + (child.getAttribute('data-type') || ''));
+
+        var label = GUI.Helpers.getLabel(child);
+        var icon = GUI.Helpers.getIcon(child, winRef);
+        child.setAttribute('aria-label', label);
+
+        var span = document.createElement('label');
+        if ( icon ) {
+          child.style.backgroundImage = 'url(' + icon + ')';
+          Utils.$addClass(span, 'gui-has-image');
+        }
+        child.appendChild(span);
+
+        createTyped(span);
+
+        if ( child.getAttribute('data-labelhtml') === 'true' ) {
+          span.innerHTML = label;
+        } else {
+          span.appendChild(document.createTextNode(label));
+        }
+
+        var i = Utils.$index(child);
+        var expand = _checkExpand(child);
+        bindSelectionEvent(child, span, i, expand);
+      }
+    };
+  })();
 
   /**
    * Element: 'gui-menu'
@@ -157,87 +257,16 @@
       return false;
     },
     build: function(el, customMenu, winRef) {
-
-      var isMenuBarChild =  el.parentNode ? el.parentNode.tagName === 'GUI-MENU-BAR-ENTRY' : false;
-
-      function createTyped(child, par) {
-        var type = child.getAttribute('data-type');
-        var value = child.getAttribute('data-checked') === 'true';
-        var input = null;
-        if ( type ) {
-          var group = child.getAttribute('data-group');
-          input = document.createElement('input');
-          input.type = type;
-          input.name = group ? group + '[]' : '';
-          if ( value ) {
-            input.setAttribute('checked', 'checked');
-          }
-          input.addEventListener('click', function(ev) {
-            blurMenu();
-          }, true);
-
-          par.setAttribute('role', 'menuitem' + type);
-          par.appendChild(input);
-        }
-      }
-
-      function runChildren(pel, level) {
-
-        function _checkExpand(child) {
-          if ( child.children && child.children.length ) {
-            Utils.$addClass(child, 'gui-menu-expand');
-            child.setAttribute('aria-haspopup', 'true');
-            return true;
-          } else {
-            child.setAttribute('aria-haspopup', 'false');
-          }
-
-          return false;
-        }
-
-        function createChild(child, i) {
-
-          if ( child && child.tagName.toLowerCase() === 'gui-menu-entry') {
-            var expand = _checkExpand(child);
-
-            child.setAttribute('role', 'menuitem' + (child.getAttribute('data-type') || ''));
-
-            var label = GUI.Helpers.getLabel(child);
-            var icon = GUI.Helpers.getIcon(child, winRef);
-            child.setAttribute('aria-label', label);
-
-            var span = document.createElement('label');
-            if ( icon ) {
-              child.style.backgroundImage = 'url(' + icon + ')';
-              Utils.$addClass(span, 'gui-has-image');
-            }
-            child.appendChild(span);
-
-            createTyped(child, span);
-
-            if ( child.getAttribute('data-labelhtml') === 'true' ) {
-              span.innerHTML = label;
-            } else {
-              span.appendChild(document.createTextNode(label));
-            }
-
-            bindSelectionEvent(child, span, i, expand);
-
-            if ( customMenu ) {
-              var sub = child.querySelector('gui-menu');
-              if ( sub ) {
-                runChildren(sub, level + 1);
-              }
-            }
-          }
-        }
-
-        (pel.children || []).forEach(createChild);
-      }
-
       el.setAttribute('role', 'menu');
 
-      runChildren(el, 0);
+      runChildren(el, 0, winRef, function(child, level) {
+        if ( customMenu ) {
+          var sub = child.querySelector('gui-menu');
+          if ( sub ) {
+            runChildren(sub, level + 1, winRef);
+          }
+        }
+      });
     }
   };
 
