@@ -52,11 +52,11 @@
     el.appendChild(img);
     el.appendChild(span);
 
-    this.evClick = Utils.$bind(el, 'click', function() {
+    Utils.$bind(el, 'click', function() {
       win._restore(false, true);
     });
 
-    this.evMenu = Utils.$bind(el, 'contextmenu', function(ev) {
+    Utils.$bind(el, 'contextmenu', function(ev) {
       ev.preventDefault();
       ev.stopPropagation();
 
@@ -110,15 +110,9 @@
   }
 
   WindowListEntry.prototype.destroy = function() {
-    if ( this.evClick ) {
-      this.evClick = this.evClick.destroy();
-    }
-
-    if ( this.evMenu ) {
-      this.evMenu = this.evMenu.destroy();
-    }
-
     if ( this.$element ) {
+      Utils.$unbind(this.$element, 'click');
+      Utils.$unbind(this.$element, 'contextmenu');
       this.$element = Utils.$remove(this.$element);
     }
   };

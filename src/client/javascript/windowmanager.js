@@ -176,8 +176,8 @@
 
       win._emit('preop');
 
-      var boundMove = Utils.$bind(document, 'mousemove', _onMouseMove, false);
-      var boundUp = Utils.$bind(document, 'mouseup', _onMouseUp, false);
+      Utils.$bind(document, 'mousemove:movewindow', _onMouseMove, false);
+      Utils.$bind(document, 'mouseup:movewindowstop', _onMouseUp, false);
 
       var outside = false;
       function _onMouseMove(ev, pos) {
@@ -187,7 +187,8 @@
       }
       function _onMouseUp(ev, pos) {
         onMouseUp(ev, action, win, pos);
-        boundMove = Utils.$unbind(boundMove);
+        Utils.$unbind(document, 'mousemove:movewindow');
+        Utils.$unbind(document, 'mouseup:movewindowstop');
       }
     }
 

@@ -28,6 +28,7 @@
     "src/client/javascript/polyfill.js",
     "src/client/javascript/init.js",
     "src/client/javascript/utils/compability.js",
+    "src/client/javascript/utils/events.js",
     "src/client/javascript/utils/misc.js",
     "src/client/javascript/utils/dom.js",
     "src/client/javascript/utils/xhr.js",

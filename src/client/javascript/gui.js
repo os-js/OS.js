@@ -444,7 +444,6 @@
 
     var startX, startY, currentX, currentY;
     var dragging = false;
-    var boundUp, boundMove;
 
     function _onMouseDown(ev, pos, touchDevice) {
       ev.preventDefault();
@@ -455,8 +454,8 @@
       onDown(ev, {x: startX, y: startY});
       dragging = true;
 
-      boundUp = Utils.$bind(window, 'mouseup', _onMouseUp, false);
-      boundMove = Utils.$bind(window, 'mousemove', _onMouseMove, false);
+      Utils.$bind(window, 'mouseup:guidrag', _onMouseUp, false);
+      Utils.$bind(window, 'mousemove:guidrag', _onMouseMove, false);
     }
 
     function _onMouseMove(ev, pos, touchDevice) {
@@ -477,8 +476,8 @@
       onUp(ev, {x: currentX, y: currentY});
       dragging = false;
 
-      boundUp = Utils.$unbind(boundUp);
-      boundMove = Utils.$unbind(boundMove);
+      Utils.$unbind(window, 'mouseup:guidrag');
+      Utils.$unbind(window, 'mousemove:guidrag');
     }
 
     Utils.$bind(el, 'mousedown', _onMouseDown, false);

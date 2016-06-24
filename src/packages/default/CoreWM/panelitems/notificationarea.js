@@ -46,8 +46,6 @@
     this.onDestroy      = opts.onDestroy     || function() {};
     this.onClick        = opts.onClick       || function() {};
     this.onContextMenu  = opts.onContextMenu || function() {};
-    this.evClick        = null;
-    this.evMenu         = null;
 
     this._build(name);
     this.onCreated.call(this);
@@ -68,7 +66,7 @@
       this.$container.title = this.opts.tooltip;
     }
 
-    this.evClick = Utils.$bind(this.$container, 'click', function(ev) {
+    Utils.$bind(this.$container, 'click', function(ev) {
       ev.stopPropagation();
       ev.preventDefault();
       OSjs.API.blurMenu();
@@ -76,7 +74,7 @@
       return false;
     });
 
-    this.evMenu = Utils.$bind(this.$container, 'contextmenu', function(ev) {
+    Utils.$bind(this.$container, 'contextmenu', function(ev) {
       ev.stopPropagation();
       ev.preventDefault();
       OSjs.API.blurMenu();
@@ -125,11 +123,9 @@
   };
 
   NotificationAreaItem.prototype.destroy = function() {
-    if ( this.evClick ) {
-      this.evClick = Utils.$unbind(this.evClick);
-    }
-    if ( this.evMenu ) {
-      this.evMenu = Utils.$unbind(this.evMenu);
+    if ( this.$container ) {
+      Utils.$unbind(this.$container, 'click');
+      Utils.$unbind(this.$container, 'contextmenu');
     }
     this.onDestroy.call(this);
 

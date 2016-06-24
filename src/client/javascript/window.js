@@ -717,6 +717,14 @@
 
     // Removed DOM elements and their referring objects (GUI Elements etc)
     function _destroyDOM() {
+      if ( self._$element ) {
+        // Make sure to remove any remaining event listeners
+        self._$element.querySelectorAll('*').forEach(function(iter) {
+          if ( iter ) {
+            iter.unbindEventListeners();
+          }
+        });
+      }
       if ( self._parent ) {
         self._parent._removeChild(self);
       }
