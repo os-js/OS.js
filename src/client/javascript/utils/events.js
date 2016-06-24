@@ -90,7 +90,7 @@
 
       // Make sure no duplicate listeners take place
       for ( var i = 0; i < this._boundEvents[type].length; i++ ) {
-        if ( this._boundEvents[type] === listener ) {
+        if ( this._boundEvents[type][i] === listener ) {
           return;
         }
       }
