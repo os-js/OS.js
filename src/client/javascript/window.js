@@ -818,32 +818,6 @@
   };
 
   /**
-   * Adds a hook to internal event
-   *
-   * DEPRECATED
-   *
-   * @see Window::_on()
-   * @method  Window::_addHook()
-   */
-  Window.prototype._addHook = function(k, func) {
-    console.warn('DEPRECATION WARNING', 'Window::_addHook', 'will be replaced with', 'Window::_on');
-    return this._on(k, func);
-  };
-
-  /**
-   * Fire a hook to internal event
-   *
-   * DEPRECATED
-   *
-   * @see Window::_emit()
-   * @method  Window::_fireHook()
-   */
-  Window.prototype._fireHook = function(k, args) {
-    console.warn('DEPRECATION WARNING', 'Window::_fireHook', 'will be replaced with', 'Window::_emit');
-    return this._emit(k, args);
-  };
-
-  /**
    * Fire a hook to internal event
    *
    * @param   String    k       Event name
