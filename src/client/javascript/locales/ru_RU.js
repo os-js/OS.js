@@ -31,8 +31,6 @@
   // jscs:disable validateQuoteMarks
   'use strict';
 
-  OSjs.Locales = OSjs.Locales || {};
-
   OSjs.Locales.ru_RU = {
     'ERR_FILE_OPEN'             : 'Ошибка открытия файла',
     'ERR_WM_NOT_RUNNING'        : 'Менеджер окон не запущен',

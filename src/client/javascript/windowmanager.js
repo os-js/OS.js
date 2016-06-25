@@ -30,9 +30,6 @@
 (function(Utils, API, Process, Window) {
   'use strict';
 
-  window.OSjs = window.OSjs || {};
-  OSjs.Core   = OSjs.Core   || {};
-
   var _WM;             // Running Window Manager process
 
   /////////////////////////////////////////////////////////////////////////////

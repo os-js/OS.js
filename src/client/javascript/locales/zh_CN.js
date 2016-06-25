@@ -31,8 +31,6 @@
   // jscs:disable validateQuoteMarks
   'use strict';
 
-  OSjs.Locales = OSjs.Locales || {};
-
   OSjs.Locales.zh_CN = {
     'ERR_FILE_OPEN'             : '打开文件错误',
     'ERR_WM_NOT_RUNNING'        : '窗口管理器未支持',

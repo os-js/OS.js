@@ -30,6 +30,8 @@
 (function(Utils, API) {
   'use strict';
 
+  var gapi = window.gapi = window.gapi  || {};
+
   // https://developers.google.com/drive/web/quickstart/quickstart-js
   // https://developers.google.com/+/web/signin/javascript-flow
   // https://developers.google.com/drive/realtime/realtime-quickstart
@@ -39,12 +41,6 @@
   // https://developers.google.com/drive/v2/reference/files/list
   // http://stackoverflow.com/questions/22092402/python-google-drive-api-list-the-entire-drive-file-tree
   // https://developers.google.com/drive/web/folder
-
-  var gapi = window.gapi = window.gapi  || {};
-  var OSjs = window.OSjs = window.OSjs  || {};
-
-  OSjs.VFS          = OSjs.VFS          || {};
-  OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
 
   // If the user idles the connection for this amount of time, the cache will automatically clean
   // forcing an update. If user uploads from another place etc. OS.js will make sure to fetch these

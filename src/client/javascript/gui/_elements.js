@@ -30,9 +30,6 @@
 (function(API, Utils, VFS) {
   'use strict';
 
-  window.OSjs = window.OSjs || {};
-  OSjs.GUI = OSjs.GUI || {};
-
   /**
    * Wrapper for getting which element to focus/blur
    */

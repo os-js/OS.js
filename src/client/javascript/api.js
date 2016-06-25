@@ -34,9 +34,6 @@
    * Please note that there are some more methods defined in `process.js`
    */
 
-  window.OSjs       = window.OSjs       || {};
-  OSjs.API          = OSjs.API          || {};
-
   var DefaultLocale = 'en_EN';
   var CurrentLocale = 'en_EN';
 

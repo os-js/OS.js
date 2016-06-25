@@ -34,12 +34,6 @@
   // http://msdn.microsoft.com/en-us/library/hh826531.aspx
   // http://msdn.microsoft.com/en-us/library/dn659726.aspx
 
-  //var WL   = window.WL   = window.WL    || {};
-  var OSjs = window.OSjs = window.OSjs  || {};
-
-  OSjs.VFS          = OSjs.VFS          || {};
-  OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
-
   var _isMounted    = false;
 
   var _mimeCache;

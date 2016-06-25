@@ -31,9 +31,6 @@
   /*jshint latedef: false */
   'use strict';
 
-  window.OSjs = window.OSjs || {};
-  OSjs.GUI = OSjs.GUI || {};
-
   var dialogScheme;
 
   /////////////////////////////////////////////////////////////////////////////

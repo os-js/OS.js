@@ -31,10 +31,7 @@
 (function(Utils, API) {
   'use strict';
 
-  var OSjs = window.OSjs = window.OSjs || {};
   var gapi = window.gapi = window.gapi || {};
-
-  OSjs.Helpers = OSjs.Helpers || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // API

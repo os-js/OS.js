@@ -31,10 +31,6 @@
 (function(Utils, API, GUI, Window) {
   'use strict';
 
-  var OSjs = window.OSjs = window.OSjs || {};
-
-  OSjs.Helpers = OSjs.Helpers || {};
-
   var URL_FMT = 'https://marketplace.firefox.com/api/';
 
   function buildURL(path, args) {

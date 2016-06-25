@@ -30,10 +30,6 @@
 (function(Utils, API) {
   'use strict';
 
-  window.OSjs          = window.OSjs          || {};
-  OSjs.VFS             = OSjs.VFS             || {};
-  OSjs.VFS.Transports  = OSjs.VFS.Transports  || {};
-
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////

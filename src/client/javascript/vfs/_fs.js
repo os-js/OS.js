@@ -30,8 +30,6 @@
 (function(Utils, API) {
   'use strict';
 
-  OSjs.VFS = OSjs.VFS || {};
-
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -1025,7 +1023,7 @@
         return;
       }
 
-      dataSourceToAb(response.body, mime, function(error, response) {
+      OSjs.VFS.dataSourceToAb(response.body, mime, function(error, response) {
         if ( options.type === 'text' ) {
           OSjs.VFS.abToText(response, mime, function(error, text) {
             callback(error, text);

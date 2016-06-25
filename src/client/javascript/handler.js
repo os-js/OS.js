@@ -31,9 +31,6 @@
 (function(API, Utils) {
   'use strict';
 
-  window.OSjs   = window.OSjs   || {};
-  OSjs.Core     = OSjs.Core     || {};
-
   var _handlerInstance;
 
   /////////////////////////////////////////////////////////////////////////////

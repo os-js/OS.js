@@ -31,8 +31,6 @@
   // jscs:disable validateQuoteMarks
   'use strict';
 
-  OSjs.Locales = OSjs.Locales || {};
-
   OSjs.Locales.de_DE = {
     'ERR_FILE_OPEN'     : 'Fehler beim Öffnen der Datei',
     'ERR_WM_NOT_RUNNING': 'Fenster-Manager wird nicht ausgeführt',
