@@ -569,7 +569,9 @@
       return !!r;
     });
 
-    Utils.$bind(windowIcon, 'dblclick', Utils._preventDefault);
+    Utils.$bind(windowIcon, 'dblclick', function(ev) {
+      ev.preventDefault();
+    });
     Utils.$bind(windowIcon, 'click', function(ev) {
       ev.preventDefault();
       ev.stopPropagation();

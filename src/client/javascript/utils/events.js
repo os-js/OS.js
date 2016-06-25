@@ -201,17 +201,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
-   * Prevents default Event (shortcut)
-   *
-   * @api OSjs.Utils._preventDefault()
-   * @return bool
-   */
-  OSjs.Utils._preventDefault = function(ev) {
-    ev.preventDefault();
-    return false;
-  };
-
-  /**
    * Get the mouse button pressed
    *
    * @param   DOMEvent  ev    The DOM Event
