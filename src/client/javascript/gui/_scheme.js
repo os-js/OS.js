@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, VFS) {
+(function(API, Utils, VFS, GUI) {
   /*jshint latedef: false */
   'use strict';
 
@@ -52,20 +52,20 @@
 
     node.querySelectorAll('gui-label, gui-button, gui-list-view-column, gui-select-option, gui-select-list-option').forEach(function(el) {
       if ( !el.children.length && !el.getAttribute('data-no-translate') ) {
-        var lbl = OSjs.GUI.Helpers.getValueLabel(el);
+        var lbl = GUI.Helpers.getValueLabel(el);
         el.appendChild(document.createTextNode(translator(lbl)));
       }
     });
 
     node.querySelectorAll('gui-button').forEach(function(el) {
-      var label = OSjs.GUI.Helpers.getValueLabel(el);
+      var label = GUI.Helpers.getValueLabel(el);
       if ( label ) {
         el.appendChild(document.createTextNode(API._(label)));
       }
     });
 
     node.querySelectorAll('*[data-icon]').forEach(function(el) {
-      var image = OSjs.GUI.Helpers.getIcon(el, win);
+      var image = GUI.Helpers.getIcon(el, win);
       el.setAttribute('data-icon', image);
     });
 
@@ -335,7 +335,7 @@
    */
   UIScheme.prototype.render = function(win, id, root, type, onparse, args) {
     root = root || win._getRoot();
-    if ( root instanceof OSjs.GUI.Element ) {
+    if ( root instanceof GUI.Element ) {
       root = root.$element;
     }
 
@@ -387,19 +387,19 @@
     tagName = tagName || '';
     params = params || {};
     parentNode = parentNode || win.getRoot();
-    if ( parentNode instanceof OSjs.GUI.Element ) {
+    if ( parentNode instanceof GUI.Element ) {
       parentNode = parentNode.$element;
     }
 
     var el;
-    if ( OSjs.GUI.Elements[tagName] && OSjs.GUI.Elements[tagName].create ) {
-      el = OSjs.GUI.Elements[tagName].create(params);
+    if ( GUI.Elements[tagName] && GUI.Elements[tagName].create ) {
+      el = GUI.Elements[tagName].create(params);
     } else {
-      el = OSjs.GUI.Helpers.createElement(tagName, params);
+      el = GUI.Helpers.createElement(tagName, params);
     }
 
     parentNode.appendChild(el);
-    OSjs.GUI.Elements[tagName].build(el, applyArgs, win);
+    GUI.Elements[tagName].build(el, applyArgs, win);
 
     return this.get(el);
   };
@@ -538,14 +538,14 @@
     // Lastly render elements
     onparse(node);
 
-    Object.keys(OSjs.GUI.Elements).forEach(function(key) {
+    Object.keys(GUI.Elements).forEach(function(key) {
       node.querySelectorAll(key).forEach(function(pel) {
         if ( pel._wasParsed ) {
           return;
         }
 
         try {
-          OSjs.GUI.Elements[key].build(pel);
+          GUI.Elements[key].build(pel);
         } catch ( e ) {
           console.warn('parseNode()', id, type, win, 'exception');
           console.warn(e, e.stack);
@@ -562,10 +562,10 @@
     if ( el ) {
       var tagName = el.tagName.toLowerCase();
       if ( tagName.match(/^gui\-(list|tree|icon|file)\-view$/) || tagName.match(/^gui\-select/) ) {
-        return new OSjs.GUI.ElementDataView(el, q);
+        return new GUI.ElementDataView(el, q);
       }
     }
-    return new OSjs.GUI.Element(el, q);
+    return new GUI.Element(el, q);
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -619,7 +619,7 @@
           url = root + 'dialogs.html';
         }
 
-        dialogScheme = OSjs.GUI.createScheme(url);
+        dialogScheme = GUI.createScheme(url);
         dialogScheme.load(function(error) {
           if ( error ) {
             console.warn('OSjs.GUI.initDialogScheme()', 'error loading dialog schemes', error);
@@ -636,8 +636,8 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.GUI.Scheme = Object.seal(UIScheme);
-  OSjs.GUI.DialogScheme = DialogScheme;
-  OSjs.GUI.createScheme = createScheme;
+  GUI.Scheme = Object.seal(UIScheme);
+  GUI.DialogScheme = DialogScheme;
+  GUI.createScheme = createScheme;
 
-})(OSjs.API, OSjs.Utils, OSjs.VFS);
+})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

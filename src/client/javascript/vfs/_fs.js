@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API) {
+(function(Utils, API, VFS) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -66,7 +66,7 @@
    * Perform VFS request
    */
   function request(test, method, args, callback, options) {
-    var d = OSjs.VFS.getModuleFromPath(test, false);
+    var d = VFS.getModuleFromPath(test, false);
 
     if ( !d ) {
       throw new Error(API._('ERR_VFSMODULE_NOT_FOUND_FMT', test));
@@ -93,7 +93,7 @@
       }
 
       try {
-        OSjs.VFS.Modules[d].request(method, args, function(err, res) {
+        VFS.Modules[d].request(method, args, function(err, res) {
           h.onVFSRequestCompleted(d, method, args, err, res, function(e, r) {
             if ( arguments.length === 2 ) {
               console.warn('VFS::request()', 'Core::onVFSRequestCompleted hijacked the VFS request');
@@ -113,23 +113,23 @@
   }
 
   /**
-   * Will transform the argument to a OSjs.VFS.File instance
+   * Will transform the argument to a VFS.File instance
    * or throw an error depending on input
    */
   function checkMetadataArgument(item, err) {
     if ( typeof item === 'string' ) {
-      item = new OSjs.VFS.File(item);
+      item = new VFS.File(item);
     } else if ( typeof item === 'object' ) {
       if ( item.path ) {
-        item = new OSjs.VFS.File(item);
+        item = new VFS.File(item);
       }
     }
 
-    if ( !(item instanceof OSjs.VFS.File) ) {
+    if ( !(item instanceof VFS.File) ) {
       throw new TypeError(err || API._('ERR_VFS_EXPECT_FILE'));
     }
 
-    if ( !OSjs.VFS.getModuleFromPath(item.path, false) ) {
+    if ( !VFS.getModuleFromPath(item.path, false) ) {
       throw new Error(API._('ERR_VFSMODULE_NOT_FOUND_FMT', item.path));
     }
 
@@ -141,14 +141,14 @@
    */
   function hasSameTransport(src, dest) {
     // Modules using the normal server API
-    if ( OSjs.VFS.isInternalModule(src.path) && OSjs.VFS.isInternalModule(dest.path) ) {
+    if ( VFS.isInternalModule(src.path) && VFS.isInternalModule(dest.path) ) {
       return true;
     }
 
-    var msrc = OSjs.VFS.getModuleFromPath(src.path);
-    var isrc = OSjs.VFS.Modules[msrc] || {};
-    var mdst = OSjs.VFS.getModuleFromPath(dest.path);
-    var idst = OSjs.VFS.Modules[mdst] || {};
+    var msrc = VFS.getModuleFromPath(src.path);
+    var isrc = VFS.Modules[msrc] || {};
+    var mdst = VFS.getModuleFromPath(dest.path);
+    var idst = VFS.Modules[mdst] || {};
 
     // If mounts are labeled with a name
     if ( isrc.transport === idst.transport ) {
@@ -168,7 +168,7 @@
       if ( typeof options.overwrite !== 'undefined' && options.overwrite === true ) {
         callback();
       } else {
-        OSjs.VFS.exists(item, function(error, result) {
+        VFS.exists(item, function(error, result) {
           if ( error ) {
             console.warn('existsWrapper() error', error);
           }
@@ -189,8 +189,8 @@
    * Check if destination is readOnly
    */
   function isReadOnly(item) {
-    var m = OSjs.VFS.getModuleFromPath(item.path);
-    return (OSjs.VFS.Modules[m] || {}).readOnly === true;
+    var m = VFS.getModuleFromPath(item.path);
+    return (VFS.Modules[m] || {}).readOnly === true;
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -211,7 +211,7 @@
    * @return  void
    * @api     OSjs.VFS.find()
    */
-  OSjs.VFS.find = function(item, args, callback, options) {
+  VFS.find = function(item, args, callback, options) {
     console.debug('VFS::find()', item, args, options);
     if ( arguments.length < 3 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -236,7 +236,7 @@
    * @return  void
    * @api     OSjs.VFS.scandir()
    */
-  OSjs.VFS.scandir = function(item, callback, options) {
+  VFS.scandir = function(item, callback, options) {
     console.debug('VFS::scandir()', item, options);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -260,7 +260,7 @@
    * @return  void
    * @api     OSjs.VFS.write()
    */
-  OSjs.VFS.write = function(item, data, callback, options, appRef) {
+  VFS.write = function(item, data, callback, options, appRef) {
     console.debug('VFS::write()', item, options);
     if ( arguments.length < 3 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -297,20 +297,20 @@
     try {
       if ( typeof data === 'string' ) {
         if ( data.length ) {
-          OSjs.VFS.textToAb(data, item.mime, function(error, response) {
+          VFS.textToAb(data, item.mime, function(error, response) {
             _converted(error, response);
           });
         } else {
           _converted(null, data);
         }
       } else {
-        if ( data instanceof OSjs.VFS.FileDataURL ) {
-          OSjs.VFS.dataSourceToAb(data.toString(), item.mime, function(error, response) {
+        if ( data instanceof VFS.FileDataURL ) {
+          VFS.dataSourceToAb(data.toString(), item.mime, function(error, response) {
             _converted(error, response);
           });
           return;
         } else if ( window.Blob && data instanceof window.Blob ) {
-          OSjs.VFS.blobToAb(data, function(error, response) {
+          VFS.blobToAb(data, function(error, response) {
             _converted(error, response);
           });
           return;
@@ -334,7 +334,7 @@
    * @return  void
    * @api     OSjs.VFS.read()
    */
-  OSjs.VFS.read = function(item, callback, options) {
+  VFS.read = function(item, callback, options) {
     console.debug('VFS::read()', item, options);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -354,17 +354,17 @@
       if ( options.type ) {
         var types = {
           datasource: function readToDataSource() {
-            OSjs.VFS.abToDataSource(response, item.mime, function(error, dataSource) {
+            VFS.abToDataSource(response, item.mime, function(error, dataSource) {
               callback(error, error ? null : dataSource);
             });
           },
           text: function readToText() {
-            OSjs.VFS.abToText(response, item.mime, function(error, text) {
+            VFS.abToText(response, item.mime, function(error, text) {
               callback(error, error ? null : text);
             });
           },
           blob: function readToBlob() {
-            OSjs.VFS.abToBlob(response, item.mime, function(error, blob) {
+            VFS.abToBlob(response, item.mime, function(error, blob) {
               callback(error, error ? null : blob);
             });
           }
@@ -403,14 +403,14 @@
    * @return  void
    * @api     OSjs.VFS.copy()
    */
-  OSjs.VFS.copy = function(src, dest, callback, options, appRef) {
+  VFS.copy = function(src, dest, callback, options, appRef) {
     console.debug('VFS::copy()', src, dest, options);
     if ( arguments.length < 3 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
     }
 
     if ( isReadOnly(dest) ) {
-      callback(API._('ERR_VFSMODULE_READONLY_FMT', OSjs.VFS.getModuleFromPath(dest.path)));
+      callback(API._('ERR_VFSMODULE_READONLY_FMT', VFS.getModuleFromPath(dest.path)));
       return;
     }
 
@@ -447,8 +447,8 @@
           _finished(error, response);
         }, options);
       } else {
-        var msrc = OSjs.VFS.getModuleFromPath(src.path);
-        var mdst = OSjs.VFS.getModuleFromPath(dest.path);
+        var msrc = VFS.getModuleFromPath(src.path);
+        var mdst = VFS.getModuleFromPath(dest.path);
 
         // FIXME: This does not work for folders
         if ( src.type === 'dir' ) {
@@ -458,7 +458,7 @@
 
         dest.mime = src.mime;
 
-        OSjs.VFS.Modules[msrc].request('read', [src], function(error, data) {
+        VFS.Modules[msrc].request('read', [src], function(error, data) {
           dialogProgress(50);
 
           if ( error ) {
@@ -466,7 +466,7 @@
             return;
           }
 
-          OSjs.VFS.Modules[mdst].request('write', [dest, data], function(error, result) {
+          VFS.Modules[mdst].request('write', [dest, data], function(error, result) {
             dialogProgress(100);
 
             if ( error ) {
@@ -505,7 +505,7 @@
    * @return  void
    * @api     OSjs.VFS.move()
    */
-  OSjs.VFS.move = function(src, dest, callback, options, appRef) {
+  VFS.move = function(src, dest, callback, options, appRef) {
     var self = this;
 
     console.debug('VFS::move()', src, dest, options);
@@ -517,7 +517,7 @@
     dest = checkMetadataArgument(dest, API._('ERR_VFS_EXPECT_DST_FILE'));
 
     if ( isReadOnly(dest) ) {
-      callback(API._('ERR_VFSMODULE_READONLY_FMT', OSjs.VFS.getModuleFromPath(dest.path)));
+      callback(API._('ERR_VFSMODULE_READONLY_FMT', VFS.getModuleFromPath(dest.path)));
       return;
     }
 
@@ -537,8 +537,8 @@
           _finished(error, error ? null : response);
         }, options);
       } else {
-        var msrc = OSjs.VFS.getModuleFromPath(src.path);
-        var mdst = OSjs.VFS.getModuleFromPath(dest.path);
+        var msrc = VFS.getModuleFromPath(src.path);
+        var mdst = VFS.getModuleFromPath(dest.path);
 
         dest.mime = src.mime;
 
@@ -548,7 +548,7 @@
             return _finished(error);
           }
 
-          OSjs.VFS.Modules[msrc].request('unlink', [src], function(error, result) {
+          VFS.Modules[msrc].request('unlink', [src], function(error, result) {
             if ( error ) {
               error = API._('ERR_VFS_TRANSFER_FMT', error);
             }
@@ -570,8 +570,8 @@
       }
     });
   };
-  OSjs.VFS.rename = function(src, dest, callback) {
-    OSjs.VFS.move.apply(this, arguments);
+  VFS.rename = function(src, dest, callback) {
+    VFS.move.apply(this, arguments);
   };
 
   /**
@@ -587,7 +587,7 @@
    * @return  void
    * @api     OSjs.VFS.unlink()
    */
-  OSjs.VFS.unlink = function(item, callback, options, appRef) {
+  VFS.unlink = function(item, callback, options, appRef) {
     console.debug('VFS::unlink()', item, options);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -596,7 +596,7 @@
     item = checkMetadataArgument(item);
 
     function _checkPath() {
-      var chkdir = new OSjs.VFS.File(API.getConfig('PackageManager.UserPackages'));
+      var chkdir = new VFS.File(API.getConfig('PackageManager.UserPackages'));
       var idir = Utils.dirname(item.path);
 
       if ( idir === chkdir.path ) {
@@ -613,8 +613,8 @@
       return response;
     }, options);
   };
-  OSjs.VFS['delete'] = function(item, callback) {
-    OSjs.VFS.unlink.apply(this, arguments);
+  VFS['delete'] = function(item, callback) {
+    VFS.unlink.apply(this, arguments);
   };
 
   /**
@@ -630,7 +630,7 @@
    * @return  void
    * @api     OSjs.VFS.mkdir()
    */
-  OSjs.VFS.mkdir = function(item, callback, options, appRef) {
+  VFS.mkdir = function(item, callback, options, appRef) {
     console.debug('VFS::mkdir()', item, options);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -660,7 +660,7 @@
    * @return  void
    * @api     OSjs.VFS.exists()
    */
-  OSjs.VFS.exists = function(item, callback) {
+  VFS.exists = function(item, callback) {
     console.debug('VFS::exists()', item);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -679,7 +679,7 @@
    * @return  void
    * @api     OSjs.VFS.fileinfo()
    */
-  OSjs.VFS.fileinfo = function(item, callback) {
+  VFS.fileinfo = function(item, callback) {
     console.debug('VFS::fileinfo()', item);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -698,7 +698,7 @@
    * @return  void
    * @api     OSjs.VFS.url()
    */
-  OSjs.VFS.url = function(item, callback) {
+  VFS.url = function(item, callback) {
     console.debug('VFS::url()', item);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -728,7 +728,7 @@
    * @return  void
    * @api     OSjs.VFS.upload()
    */
-  OSjs.VFS.upload = function(args, callback, options, appRef) {
+  VFS.upload = function(args, callback, options, appRef) {
     console.debug('VFS::upload()', args);
     args = args || {};
 
@@ -744,7 +744,7 @@
 
     function _createFile(filename, mime, size) {
       var npath = (args.destination + '/' + filename).replace(/\/\/\/\/+/, '///');
-      return new OSjs.VFS.File({
+      return new VFS.File({
         filename: filename,
         path: npath,
         mime: mime || 'application/octet-stream',
@@ -763,7 +763,7 @@
       callback(false, file);
     }
 
-    if ( !OSjs.VFS.isInternalModule(args.destination) ) {
+    if ( !VFS.isInternalModule(args.destination) ) {
       args.files.forEach(function(f, i) {
         request(args.destination, 'upload', [f, args.destination], callback, options);
       });
@@ -777,7 +777,7 @@
           file: f
         }, _dialogClose, args.win || args.app);
       } else {
-        OSjs.VFS.Transports.Internal.upload(f, args.destination, function(err, result, ev) {
+        VFS.Transports.Internal.upload(f, args.destination, function(err, result, ev) {
           if ( err ) {
             if ( err === 'canceled' ) {
               callback(API._('ERR_VFS_UPLOAD_CANCELLED'), null, ev);
@@ -796,7 +796,7 @@
 
     args.files.forEach(function(f, i) {
       var filename = (f instanceof window.File) ? f.name : f.filename;
-      var dest = new OSjs.VFS.File(args.destination + '/' + filename);
+      var dest = new VFS.File(args.destination + '/' + filename);
 
       existsWrapper(dest, function(error) {
         if ( error ) {
@@ -822,7 +822,7 @@
    * @return  void
    * @api     OSjs.VFS.download()
    */
-  OSjs.VFS.download = (function download() {
+  VFS.download = (function download() {
     var _didx = 1;
 
     return function(args, callback) {
@@ -843,17 +843,17 @@
 
       API.createLoading(lname, {className: 'BusyNotification', tooltip: API._('TOOLTIP_VFS_DOWNLOAD_NOTIFICATION')});
 
-      var dmodule = OSjs.VFS.getModuleFromPath(args.path);
-      if ( !OSjs.VFS.isInternalModule(args.path) ) {
+      var dmodule = VFS.getModuleFromPath(args.path);
+      if ( !VFS.isInternalModule(args.path) ) {
         var file = args;
-        if ( !(file instanceof OSjs.VFS.File) ) {
-          file = new OSjs.VFS.File(args.path);
+        if ( !(file instanceof VFS.File) ) {
+          file = new VFS.File(args.path);
           if ( args.id ) {
             file.id = args.id;
           }
         }
 
-        OSjs.VFS.Modules[dmodule].request('read', [file], function(error, result) {
+        VFS.Modules[dmodule].request('read', [file], function(error, result) {
           API.destroyLoading(lname);
 
           if ( error ) {
@@ -866,7 +866,7 @@
         return;
       }
 
-      OSjs.VFS.url(args, function(error, url) {
+      VFS.url(args, function(error, url) {
         if ( error ) {
           return callback(error);
         }
@@ -900,7 +900,7 @@
    * @return  void
    * @api     OSjs.VFS.trash()
    */
-  OSjs.VFS.trash = function(item, callback) {
+  VFS.trash = function(item, callback) {
     console.debug('VFS::trash()', item);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -921,7 +921,7 @@
    * @return  void
    * @api     OSjs.VFS.untrash()
    */
-  OSjs.VFS.untrash = function(item, callback) {
+  VFS.untrash = function(item, callback) {
     console.debug('VFS::untrash()', item);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -941,7 +941,7 @@
    * @return  void
    * @api     OSjs.VFS.emptyTrash()
    */
-  OSjs.VFS.emptyTrash = function(callback) {
+  VFS.emptyTrash = function(callback) {
     console.debug('VFS::emptyTrash()');
     if ( arguments.length < 1 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -961,7 +961,7 @@
    * @return  void
    * @api     OSjs.VFS.freeSpace()
    */
-  OSjs.VFS.freeSpace = function(item, callback) {
+  VFS.freeSpace = function(item, callback) {
     console.debug('VFS::freeSpace()', item);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -969,8 +969,8 @@
 
     item = checkMetadataArgument(item);
 
-    var m = OSjs.VFS.getModuleFromPath(item.path, false);
-    m = OSjs.VFS.Modules[m];
+    var m = VFS.getModuleFromPath(item.path, false);
+    m = VFS.Modules[m];
 
     requestWrapper([item.path, 'freeSpace', [m.root]], 'ERR_VFSMODULE_FREESPACE_FMT', callback);
   };
@@ -991,7 +991,7 @@
    * @return  void
    * @api     OSjs.VFS.remoteRead()
    */
-  OSjs.VFS.remoteRead = function(url, mime, callback, options) {
+  VFS.remoteRead = function(url, mime, callback, options) {
     options = options || {};
     options.type = options.type || 'binary';
     mime = options.mime || 'application/octet-stream';
@@ -1023,9 +1023,9 @@
         return;
       }
 
-      OSjs.VFS.dataSourceToAb(response.body, mime, function(error, response) {
+      VFS.dataSourceToAb(response.body, mime, function(error, response) {
         if ( options.type === 'text' ) {
-          OSjs.VFS.abToText(response, mime, function(error, text) {
+          VFS.abToText(response, mime, function(error, text) {
             callback(error, text);
           });
           return;
@@ -1039,4 +1039,4 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-})(OSjs.Utils, OSjs.API);
+})(OSjs.Utils, OSjs.API, OSjs.VFS);

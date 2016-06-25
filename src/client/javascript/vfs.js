@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API) {
+(function(Utils, API, VFS) {
   'use strict';
 
   /*@
@@ -42,7 +42,7 @@
    *  ---------------------------------------------------------------------------
    *
    *  Functions that take 'metadata' (File Metadata) as an argument (like all of them)
-   *  it expects you to use an instance of OSjs.VFS.File()
+   *  it expects you to use an instance of VFS.File()
    *
    *     VFS.read(new VFS.File('/path/to/file', 'text/plain'), callback);
    *
@@ -65,7 +65,7 @@
    *     Blob                      Browser internal
    *     ArrayBuffer               Browser internal
    *     String                    Just a normal string
-   *     OSjs.VFS.FileDataURL      Wrapper for dataSource URL strings
+   *     VFS.FileDataURL      Wrapper for dataSource URL strings
    *     JSON                      JSON Data defined as: {filename: foo, data: bar}
    *
    *  ---------------------------------------------------------------------------
@@ -79,10 +79,6 @@
    *     Dropbox      dropbox:///         Dropbox Storage
    *
    */
-
-  OSjs.VFS             = OSjs.VFS            || {};
-  OSjs.VFS.Modules     = OSjs.VFS.Modules    || {};
-  OSjs.VFS.Transports  = OSjs.VFS.Transports || {};
 
   var DefaultModule = 'User';
   var MountsRegistered = false;
@@ -102,7 +98,7 @@
   function isInternalModule(test) {
     test = test || '';
 
-    var m = OSjs.VFS.Modules;
+    var m = VFS.Modules;
     var d = null;
 
     if ( test !== null ) {
@@ -153,7 +149,7 @@
       special: false
     });
 
-    var m = OSjs.VFS.Modules;
+    var m = VFS.Modules;
     var a = [];
     Object.keys(m).forEach(function(name) {
       var iter = m[name];
@@ -186,9 +182,9 @@
     var d = null;
 
     if ( typeof test === 'string' ) {
-      Object.keys(OSjs.VFS.Modules).forEach(function(name) {
+      Object.keys(VFS.Modules).forEach(function(name) {
         if ( d === null ) {
-          var i = OSjs.VFS.Modules[name];
+          var i = VFS.Modules[name];
           if ( i.enabled() === true && i.match && test.match(i.match) ) {
             d = name;
           }
@@ -301,7 +297,7 @@
    */
   function getRootFromPath(path) {
     var module = getModuleFromPath(path);
-    return OSjs.VFS.Modules[module].root;
+    return VFS.Modules[module].root;
   }
 
   /**
@@ -536,7 +532,7 @@
       searchable: false
     });
 
-    if ( OSjs.VFS.Modules[opts.name] ) {
+    if ( VFS.Modules[opts.name] ) {
       throw new Error(API._('ERR_VFSMODULE_ALREADY_MOUNTED_FMT', opts.name));
     }
 
@@ -563,7 +559,7 @@
           API.message('vfs:unmount', opts.name, {source: null});
           (cb || function() {})(false, true);
 
-          delete OSjs.VFS.Modules[opts.name];
+          delete VFS.Modules[opts.name];
         },
         mounted: function() {
           return isMounted;
@@ -589,7 +585,7 @@
       throw new Error(API._('ERR_VFSMODULE_INVALID_CONFIG_FMT', validModule));
     }
 
-    OSjs.VFS.Modules[opts.name] = module;
+    VFS.Modules[opts.name] = module;
     API.message('vfs:mount', opts.name, {source: null});
 
     (cb || function() {})(false, true);
@@ -608,10 +604,10 @@
    * @api OSjs.VFS.removeMountpoints()
    */
   function removeMountpoint(moduleName, cb) {
-    if ( !OSjs.VFS.Modules[moduleName] || !OSjs.VFS.Modules[moduleName].dynamic ) {
+    if ( !VFS.Modules[moduleName] || !VFS.Modules[moduleName].dynamic ) {
       throw new Error(API._('ERR_VFSMODULE_NOT_MOUNTED_FMT', moduleName));
     }
-    OSjs.VFS.Modules[moduleName].unmount(cb);
+    VFS.Modules[moduleName].unmount(cb);
   }
 
   /**
@@ -655,7 +651,7 @@
             match: createMatch(key + '://')
           });
 
-          OSjs.VFS.Modules[key] = mp;
+          VFS.Modules[key] = mp;
         }
       });
     }
@@ -673,7 +669,7 @@
    * @api   OSjs.VFS.createMountpoint()
    */
   function _createMountpoint(params) {
-    var target = OSjs.VFS.Transports[params.transport];
+    var target = VFS.Transports[params.transport];
     if ( target && typeof target.defaults === 'function' ) {
       target.defaults(params);
     }
@@ -724,26 +720,26 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.VFS.filterScandir         = filterScandir;
-  OSjs.VFS.getModules            = getModules;
-  OSjs.VFS.getModuleFromPath     = getModuleFromPath;
-  OSjs.VFS.isInternalModule      = isInternalModule;
-  OSjs.VFS.isInternalEnabled     = isInternalEnabled;
-  OSjs.VFS.getRelativeURL        = getRelativeURL;
-  OSjs.VFS.getRootFromPath       = getRootFromPath;
-  OSjs.VFS.addFormFile           = addFormFile;
+  VFS.filterScandir         = filterScandir;
+  VFS.getModules            = getModules;
+  VFS.getModuleFromPath     = getModuleFromPath;
+  VFS.isInternalModule      = isInternalModule;
+  VFS.isInternalEnabled     = isInternalEnabled;
+  VFS.getRelativeURL        = getRelativeURL;
+  VFS.getRootFromPath       = getRootFromPath;
+  VFS.addFormFile           = addFormFile;
 
-  OSjs.VFS.abToBinaryString      = abToBinaryString;
-  OSjs.VFS.abToDataSource        = abToDataSource;
-  OSjs.VFS.abToText              = abToText;
-  OSjs.VFS.textToAb              = textToAb;
-  OSjs.VFS.abToBlob              = abToBlob;
-  OSjs.VFS.blobToAb              = blobToAb;
-  OSjs.VFS.dataSourceToAb        = dataSourceToAb;
+  VFS.abToBinaryString      = abToBinaryString;
+  VFS.abToDataSource        = abToDataSource;
+  VFS.abToText              = abToText;
+  VFS.textToAb              = textToAb;
+  VFS.abToBlob              = abToBlob;
+  VFS.blobToAb              = blobToAb;
+  VFS.dataSourceToAb        = dataSourceToAb;
 
-  OSjs.VFS._createMountpoint     = _createMountpoint;
-  OSjs.VFS.createMountpoint      = createMountpoint;
-  OSjs.VFS.removeMountpoint      = removeMountpoint;
-  OSjs.VFS.registerMountpoints   = registerMountpoints;
+  VFS._createMountpoint     = _createMountpoint;
+  VFS.createMountpoint      = createMountpoint;
+  VFS.removeMountpoint      = removeMountpoint;
+  VFS.registerMountpoints   = registerMountpoints;
 
-})(OSjs.Utils, OSjs.API);
+})(OSjs.Utils, OSjs.API, OSjs.VFS);

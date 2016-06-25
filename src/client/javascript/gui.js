@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, VFS) {
+(function(API, Utils, VFS, GUI) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -175,7 +175,7 @@
     }
 
     if ( (param === 'value' || param === 'selected') && isDataView ) {
-      return OSjs.GUI.Elements[tagName].values(el);
+      return GUI.Elements[tagName].values(el);
     }
 
     return el.getAttribute('data-' + param);
@@ -783,7 +783,7 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.GUI.Helpers = {
+  GUI.Helpers = {
     getNextElement: getNextElement,
     getProperty: getProperty,
     getValueLabel: getValueLabel,
@@ -800,4 +800,4 @@
     createDroppable: createDroppable
   };
 
-})(OSjs.API, OSjs.Utils, OSjs.VFS);
+})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);
