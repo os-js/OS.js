@@ -366,7 +366,11 @@ function curl_request(request, response, args)
     end
 
     if headers ~= nil then
-      c:setopt_httpheader(headers)
+      local setHeaders = {}
+      for key, value in pairs(headers) do
+        table.insert(setHeaders, key .. ': ' .. value)
+      end
+      c:setopt_httpheader(setHeaders)
     end
 
     c:setopt_writefunction(WriteMemoryCallback)
