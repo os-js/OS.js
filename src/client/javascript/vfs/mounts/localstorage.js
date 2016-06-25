@@ -652,7 +652,7 @@
   OSjs.VFS.Modules.LocalStorage = OSjs.VFS.Modules.LocalStorage || OSjs.VFS._createMountpoint({
     readOnly: false,
     transport: 'LocalStorage',
-    description: 'LocalStorage',
+    description: API.getConfig('VFS.LocalStorage.Options.description', 'LocalStorage'),
     visible: true,
     searchable: false,
     unmount: function(cb) {
@@ -675,7 +675,7 @@
       return false;
     },
     root: 'localstorage:///',
-    icon: 'apps/web-browser.png',
+    icon: API.getConfig('VFS.LocalStorage.Options.icon', 'apps/web-browser.png'),
     match: /^localstorage\:\/\//,
     request: makeRequest
   });
