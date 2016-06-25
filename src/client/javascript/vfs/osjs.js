@@ -34,6 +34,13 @@
   // API
   /////////////////////////////////////////////////////////////////////////////
 
+  /*
+   * OSjs 'dist' VFS Transport Module
+   *
+   * This is just a custom version of 'Internal' module
+   *
+   * @api OSjs.VFS.Transports.OSjs
+   */
   var Transport = {
     url: function(item, callback) {
       var root = window.location.pathname || '/';

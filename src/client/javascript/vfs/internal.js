@@ -34,6 +34,14 @@
   // API
   /////////////////////////////////////////////////////////////////////////////
 
+  /*
+   * Default VFS Transport Module
+   *
+   * All mountpoints without a spesified Transport module is routed through
+   * here. This means the node/php server handles the request directly
+   *
+   * @api OSjs.VFS.Transports.Internal
+   */
   var Transport = {
     scandir: function(item, callback, options) {
       internalRequest('scandir', {path: item.path}, function(error, result) {

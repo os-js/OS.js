@@ -76,6 +76,11 @@
   // API
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Web/HTTP VFS Transport Module
+   *
+   * @api OSjs.VFS.Transports.Web
+   */
   var Transport = {
     scandir: function(item, callback, options) {
       var root = OSjs.VFS.getRootFromPath(item.path);
@@ -144,6 +149,15 @@
   // WRAPPERS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Make a Web HTTP URL for VFS
+   *
+   * @param   Mixed       item        (Optional) Path of VFS.File object
+   *
+   * @retun   String                  URL based on input
+   *
+   * @api OSjs.VFS.Transports.Web.path()
+   */
   function makePath(file) {
     var root = OSjs.VFS.getRootFromPath(file.path);
     var rel = OSjs.VFS.getRelativeURL(file.path);

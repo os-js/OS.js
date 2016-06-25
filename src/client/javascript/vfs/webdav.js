@@ -150,6 +150,11 @@
   // API
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * WebDAV (OwnCloud) VFS Transport Module
+   *
+   * @api OSjs.VFS.Transports.WebDAV
+   */
   var Transport = {
     scandir: function(item, callback, options) {
       function parse(doc) {
