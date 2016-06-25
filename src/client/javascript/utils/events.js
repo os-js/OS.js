@@ -290,6 +290,8 @@
   /**
    * Wrapper for event-binding
    *
+   * You can bind multiple events by separating types with a comma
+   *
    * @param   DOMElement    el          DOM Element to attach event to
    * @param   String        ev          DOM Event Name
    * @param   Function      callback    Callback on event
@@ -387,34 +389,36 @@
     };
 
     return function(el, evName, callback, param) {
-      var origName = evName;
-      evName = origName.split(':')[0];
 
-      var collection = new EventCollection();
-      var tev = touchMap[evName];
-      var wasTouch = false;
+      evName.replace(/\s/g, '').split(',').forEach(function(part) {
+        var collection = new EventCollection();
+        var type = part.split(':')[0];
+        var tev = touchMap[type];
+        var wasTouch = false;
 
-      function cbTouchEvent(ev) {
-        callback.call(el, ev, pos(ev, true), true);
-      }
-
-      function cbMouseEvent(ev) {
-        if ( !wasTouch ) {
-          callback.call(el, ev, pos(ev), false);
+        function cbTouchEvent(ev) {
+          callback.call(el, ev, pos(ev, true), true);
         }
-      }
 
-      if ( typeof tev === 'function' ) {
-        tev(el, evName, collection, callback, function() {
-          wasTouch = true;
-        });
-      } else if ( typeof tev === 'string' ) {
-        collection.add(el, [tev, cbTouchEvent, param === true]);
-      }
+        function cbMouseEvent(ev) {
+          if ( !wasTouch ) {
+            callback.call(el, ev, pos(ev), false);
+          }
+        }
 
-      collection.add(el, [evName, cbMouseEvent, param === true]);
+        if ( typeof tev === 'function' ) {
+          tev(el, type, collection, callback, function() {
+            wasTouch = true;
+          });
+        } else if ( typeof tev === 'string' ) {
+          collection.add(el, [tev, cbTouchEvent, param === true]);
+        }
 
-      el.bindVirtualListneners(origName, collection);
+        collection.add(el, [type, cbMouseEvent, param === true]);
+
+        el.bindVirtualListneners(part, collection);
+      });
+
     };
   })(window.navigator.msPointerEnabled);
 
@@ -422,6 +426,8 @@
    * Unbinds the given event
    *
    * If you don't give a callback it will unbind *all* events in this category.
+   *
+   * You can unbind multiple events by separating types with a comma
    *
    * @param   DOMElement    el          DOM Element to attach event to
    * @param   String        ev          DOM Event Name
@@ -434,7 +440,9 @@
    */
   OSjs.Utils.$unbind = function(el, evName, callback, param) {
     if ( el ) {
-      el.unbindEventListener(evName, callback, param);
+      evName.replace(/\s/g, '').split(',').forEach(function(type) {
+        el.unbindEventListener(type, callback, param);
+      });
     }
   };
 
