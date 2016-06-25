@@ -72,6 +72,7 @@
     "src/client/javascript/handler.js",
     "src/client/javascript/handlers/%HANDLER%/handler.js",
     "src/client/javascript/vfs.js",
+    "src/client/javascript/vfs/_fs.js",
     "src/client/javascript/vfs/_file.js",
     "src/client/javascript/vfs/internal.js",
     "src/client/javascript/vfs/osjs.js",
