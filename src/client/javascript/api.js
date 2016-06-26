@@ -1117,7 +1117,9 @@
 
       queue.forEach(function(k, i) {
         if ( i >= queue.length - 1 ) {
-          result = ns[k];
+          if ( ns ) {
+            result = ns[k];
+          }
         } else {
           ns = ns[k];
         }
