@@ -110,11 +110,7 @@
       protocol = 'osjs://';
     } else if ( path.match(/^home\:\/\//) ) {
       path = path.replace(/^home\:\/\//, '');
-      var userdir = server.request.session.get('username');
-      if ( !userdir ) {
-        throw 'No user session was found';
-      }
-      fullPath = _path.join(server.config.vfs.homes, userdir, path);
+      fullPath = _path.join(server.handler.getHomePath(server), path);
       protocol = 'home://';
     } else {
       var tmp = path.split(/^(\w+)\:\/\//);

@@ -138,6 +138,23 @@
   }
 
   /**
+   * Creates the user home path from
+   *
+   * @param   Object      server        Server object
+   *
+   * @return  String
+   *
+   * @method Handler::getHomePath()
+   */
+  DefaultHandler.prototype.getHomePath = function(server) {
+    var userdir = server.request.session.get('username');
+    if ( !userdir ) {
+      throw 'No user session was found';
+    }
+    return _path.join(server.config.vfs.homes, userdir);
+  };
+
+  /**
    * Gets the username of currently active user
    *
    * @param   Object      server        Server object
