@@ -884,7 +884,7 @@
         } else {
           root = OSjs.API.getConfig('Connection.FSURI');
           sub = OSjs.API.getConfig('PackageManager.UserPackages');
-          path = root + OSjs.Utils.pathJoin(sub, appname, name);
+          path = root + '/get/' + OSjs.Utils.pathJoin(sub, appname, name);
         }
       }
 
