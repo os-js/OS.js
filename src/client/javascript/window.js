@@ -720,7 +720,7 @@
         // Make sure to remove any remaining event listeners
         self._$element.querySelectorAll('*').forEach(function(iter) {
           if ( iter ) {
-            iter.unbindEventListeners();
+            Utils.$unbind(iter);
           }
         });
       }

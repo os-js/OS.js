@@ -63,77 +63,67 @@
   // EXTEND EVENT BINDING
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Add new methods to EventTarget for better binding/unbinding of events.
-   *
-   * This makes it possible to add collections and remove them entirely later
-   * without giving a reference to the bound function.
-   *
-   * It does not override the browser internals in any way.
-   */
-  (function() {
+  function _initObject(self, type) {
+    if ( typeof self._boundEvents === 'undefined' ) {
+      self._boundEvents = {};
+    }
+    if ( typeof self._boundEvents[type] === 'undefined' ) {
+      self._boundEvents[type] = [];
+    }
+  }
 
-    function _initObject(self, type) {
-      if ( typeof self._boundEvents === 'undefined' ) {
-        self._boundEvents = {};
-      }
-      if ( typeof self._boundEvents[type] === 'undefined' ) {
-        self._boundEvents[type] = [];
+  function bindEventListener(el, type, listener, useCapture) {
+    _initObject(el, type);
+
+    // Make sure no duplicate listeners take place
+    for ( var i = 0; i < el._boundEvents[type].length; i++ ) {
+      if ( el._boundEvents[type][i] === listener ) {
+        return;
       }
     }
 
-    EventTarget.prototype.bindEventListener = function(type, listener, useCapture) {
-      _initObject(this, type);
+    el._boundEvents[type].push(listener);
+    el.addEventListener.apply(el, arguments);
+  }
 
-      // Make sure no duplicate listeners take place
-      for ( var i = 0; i < this._boundEvents[type].length; i++ ) {
-        if ( this._boundEvents[type][i] === listener ) {
-          return;
-        }
-      }
+  function bindVirtualListneners(el, type, collection) {
+    _initObject(el, type);
+    el._boundEvents[type].push(collection);
+  }
 
-      this._boundEvents[type].push(listener);
-      this.addEventListener.apply(this, arguments);
-    };
+  function unbindEventListeners(el) {
+    if ( el._boundEvents ) {
+      Object.keys(el._boundEvents).forEach(function(type) {
+        unbindEventListener(el, type);
+      });
+      delete el._boundEvents;
+    }
+  }
 
-    EventTarget.prototype.bindVirtualListneners = function(type, collection) {
-      _initObject(this, type);
-      this._boundEvents[type].push(collection);
-    };
-
-    EventTarget.prototype.unbindEventListeners = function() {
-      var self = this;
-      if ( this._boundEvents ) {
-        Object.keys(this._boundEvents).forEach(function(type) {
-          self.unbindEventListener(type);
-        });
-
-        delete this._boundEvents;
-      }
-    };
-
-    EventTarget.prototype.unbindEventListener = function(type, listener, useCapture) {
-      if ( typeof listener === 'function' ) {
-        this.removeEventListener(type, listener, useCapture);
-      } else {
-        if ( this._boundEvents ) {
-          var list = this._boundEvents || [];
+  function unbindEventListener(el, type, listener, useCapture) {
+    if ( typeof listener === 'function' ) {
+      el.removeEventListener(type, listener, useCapture);
+    } else {
+      if ( type ) {
+        if ( el._boundEvents ) {
+          var list = el._boundEvents || [];
 
           for ( var i = 0; i < list[type].length; i++ ) {
             if ( list[type][i] instanceof EventCollection ) {
               list[type][i].clear();
             } else {
-              this.removeEventListener(type, list[type][i], useCapture);
+              el.removeEventListener(type, list[type][i], useCapture);
             }
 
             list[type].splice(i, 1);
             i++;
           }
         }
+      } else {
+        unbindEventListeners(el);
       }
-    };
-
-  })();
+    }
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // MISC
@@ -416,7 +406,7 @@
 
         collection.add(el, [type, cbMouseEvent, param === true]);
 
-        el.bindVirtualListneners(part, collection);
+        bindVirtualListneners(el, part, collection);
       });
 
     };
@@ -440,9 +430,13 @@
    */
   OSjs.Utils.$unbind = function(el, evName, callback, param) {
     if ( el ) {
-      evName.replace(/\s/g, '').split(',').forEach(function(type) {
-        el.unbindEventListener(type, callback, param);
-      });
+      if ( evName ) {
+        evName.replace(/\s/g, '').split(',').forEach(function(type) {
+          unbindEventListener(el, type, callback, param);
+        });
+      } else {
+        unbindEventListeners(el);
+      }
     }
   };
 
