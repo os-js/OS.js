@@ -126,6 +126,8 @@
    * Respond with a file
    */
   function respondFile(path, request, response, realPath) {
+    var server = {request: request, response: response, config: instance.config, handler: instance.handler};
+
     if ( !realPath && path.match(/^(ftp|https?)\:\/\//) ) {
       if ( instance.config.vfs.proxy ) {
         try {
@@ -142,7 +144,7 @@
     }
 
     try {
-      var fullPath = realPath ? path : instance.vfs.getRealPath({config: instance.config, request: request}, path).root;
+      var fullPath = realPath ? path : instance.vfs.getRealPath(server, path).root;
       _fs.exists(fullPath, function(exists) {
         if ( exists ) {
           var mime = instance.vfs.getMime(fullPath, instance.config);
@@ -279,6 +281,7 @@
    * Handles a HTTP Request
    */
   function httpCall(request, response) {
+    var server = {request: request, response: response, config: instance.config, handler: instance.handler};
 
     function handleCall(rp, isVfs) {
       var body = '';
@@ -302,7 +305,6 @@
     }
 
     function handleUpload() {
-      var server = {request: request, response: response, config: instance.config, handler: instance.handler};
       var form = new _multipart.IncomingForm({
         uploadDir: instance.config.tmpdir
       });
@@ -338,7 +340,7 @@
 
     function handleVFSFile(p) {
       var dpath = p.replace(/^\/(FS|API)(\/get\/)?/, '');
-      instance.handler.checkAPIPrivilege({request: request, response: response}, 'fs', function(err) {
+      instance.handler.checkAPIPrivilege(server, 'fs', function(err) {
         if ( err ) {
           respondError(err, response);
           return;
@@ -354,7 +356,7 @@
       // Checks if the request was a package resource
       var pmatch = rpath.match(/^packages\/(.*\/.*)\/(.*)/);
       if ( pmatch && pmatch.length === 3 ) {
-        instance.handler.checkPackagePrivilege({request: request, response: response}, pmatch[1], function(err) {
+        instance.handler.checkPackagePrivilege(server, pmatch[1], function(err) {
           if ( err ) {
             respondError(err, response);
             return;
