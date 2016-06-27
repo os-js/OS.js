@@ -410,7 +410,8 @@
       });
 
     };
-  })(window.navigator.msPointerEnabled);
+  })(false);
+  //})(window.navigator.msPointerEnabled);
 
   /**
    * Unbinds the given event
