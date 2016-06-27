@@ -35,6 +35,7 @@
  *  To use with `php -S localhost:8000 src/server/php/server.php'
  *  in the directory dist/
  */
+ini_set('always_populate_raw_post_data', 1);
 error_reporting(E_ALL);
 
 // Bootstrapping
