@@ -49,6 +49,7 @@ require "{$root}/settings.php";
 
 if ( !defined("ROOTDIR") )    define("ROOTDIR",     realpath(__DIR__ . '/../../../'));                // The path to root dir
 if ( !defined("DISTDIR") )    define("DISTDIR",     ROOTDIR . "/dist");                               // Dist dir
+if ( !defined("REPODIR") )    define("REPODIR",     ROOTDIR . "/src/packages");
 if ( !defined("TIMEZONE") )   define("TIMEZONE",    "Europe/Oslo");                                   // Timezone
 if ( !defined("SHOWERRORS") ) define("SHOWERRORS",  true);                                            // Show error reports from backend
 if ( !defined("ERRHANDLER") ) define("ERRHANDLER",  false);                                           // Report non-errors (warnings, notices etc)
