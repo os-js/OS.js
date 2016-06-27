@@ -41,9 +41,9 @@
  * ===========================================================================
  */
 
-*:not(textarea),
-*:not([type=text]),
-*:not([type=password]) {
+button, div, span, p, a, img, label, .gui-element, application-window {
+  cursor : default;
+
   -webkit-touch-callout: none;
     -webkit-user-select: none;
        -moz-user-select: none;
@@ -234,27 +234,6 @@ application-window-content * {
       -ms-flex: 0 1 auto;
        -o-flex: 0 1 auto;
           flex: 0 1 auto;
-}
-
-gui-hbox,
-gui-hbox > *,
-gui-vbox,
-gui-vbox > *,
-gui-menu,
-gui-menu > *,
-gui-label,
-gui-label > *,
-gui-menu-bar,
-gui-menu-bar > *,
-gui-toolbar,
-gui-toolbar > *,
-gui-list-view,
-gui-list-view > *,
-gui-tree-view,
-gui-tree-view > *,
-gui-icon-view,
-gui-icon-view > * {
-  cursor : default;
 }
 
 /**
