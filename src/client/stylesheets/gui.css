@@ -1432,9 +1432,6 @@ gui-list-view {
       line-height : 32px;
       background-size : 32px;
     }
-      gui-list-view-column > * {
-        display : inline;
-      }
       gui-list-view-column > span {
         white-space: nowrap;
       }
