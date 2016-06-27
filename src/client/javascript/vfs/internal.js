@@ -191,7 +191,7 @@
         var bytes = file.size;
         if ( bytes > maxSize ) {
           var msg = API._('DIALOG_UPLOAD_TOO_BIG_FMT', Utils.humanFileSize(maxSize));
-          callback('error', msg);
+          callback('error', null, msg);
           return;
         }
       }
