@@ -3,6 +3,7 @@
     "OSjs": true,
     "zip": true,
     "alert": true,
+    "confirm": true,
     "escape": true,
     "unescape": true,
     "EventTarget": true

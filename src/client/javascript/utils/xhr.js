@@ -93,7 +93,7 @@
       var result;
 
       function _onError(error) {
-        var error = OSjs.API._('ERR_UTILS_XHR_FMT', error);
+        error = OSjs.API._('ERR_UTILS_XHR_FMT', error);
         console.warn('Utils::ajax()', 'onReadyStateChange()', error);
         args.onerror(error, result, request, args.url);
       }
