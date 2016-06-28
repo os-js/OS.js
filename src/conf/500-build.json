@@ -75,6 +75,7 @@
     "src/client/javascript/vfs/_fs.js",
     "src/client/javascript/vfs/_file.js",
     "src/client/javascript/vfs/internal.js",
+    "src/client/javascript/vfs/http.js",
     "src/client/javascript/vfs/osjs.js",
     "src/client/javascript/vfs/web.js",
     "src/client/javascript/vfs/webdav.js",
