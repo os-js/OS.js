@@ -47,14 +47,15 @@
     this.collection = [];
   }
 
-  EventCollection.prototype.add = function(el, iter) {
+  EventCollection.prototype.add = function(el, iter, param) {
     el.addEventListener.apply(el, iter);
-    this.collection.push([el, iter]);
+    this.collection.push([el, iter, param]);
+
   };
 
   EventCollection.prototype.clear = function() {
     this.collection.forEach(function(iter) {
-      iter[0].removeEventListener.apply(iter[0], iter[1]);
+      iter[0].removeEventListener.call(iter[0], iter[1], iter[2]);
     });
     this.collection = [];
   };
@@ -83,7 +84,7 @@
     }
 
     el._boundEvents[type].push(listener);
-    el.addEventListener.apply(el, arguments);
+    el.addEventListener(type, listener, useCapture);
   }
 
   function bindVirtualListneners(el, type, collection) {
