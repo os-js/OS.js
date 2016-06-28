@@ -84,26 +84,33 @@
     function getResponse(ctype) {
       var response = request.responseText;
       if ( args.json && ctype.match(/^application\/json/) ) {
-        try {
-          response = JSON.parse(response);
-        } catch (ex) {
-          console.warn('Utils::ajax()', 'handleResponse()', ex);
-        }
+        response = JSON.parse(response);
       }
-
       return response;
     }
 
     function onReadyStateChange() {
+      var result;
+
+      function _onError(error) {
+        var error = OSjs.API._('ERR_UTILS_XHR_FMT', error);
+        console.warn('Utils::ajax()', 'onReadyStateChange()', error);
+        args.onerror(error, result, request, args.url);
+      }
+
       if ( request.readyState === 4 ) {
-        var ctype = request.getResponseHeader('content-type') || '';
-        var result = getResponse(ctype);
+        try {
+          var ctype = request.getResponseHeader('content-type') || '';
+          result = getResponse(ctype);
+        } catch (ex) {
+          _onError(ex.toString());
+          return;
+        }
 
         if ( request.status === 200 || request.status === 201 ) {
           args.onsuccess(result, request, args.url);
         } else {
-          var error = OSjs.API._('ERR_UTILS_XHR_FMT', request.status.toString());
-          args.onerror(error, result, request, args.url);
+          _onError(request.status.toString());
         }
       }
     }
