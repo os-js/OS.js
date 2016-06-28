@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API) {
+(function(Utils, API, VFS) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -47,9 +47,9 @@
       internalRequest('scandir', {path: item.path}, function(error, result) {
         var list = [];
         if ( result ) {
-          result = OSjs.VFS.filterScandir(result, options);
+          result = VFS.filterScandir(result, options);
           result.forEach(function(iter) {
-            list.push(new OSjs.VFS.File(iter));
+            list.push(new VFS.File(iter));
           });
         }
         callback(error, list);
@@ -80,7 +80,7 @@
         return;
       }
 
-      OSjs.VFS.abToDataSource(data, item.mime, function(error, dataSource) {
+      VFS.abToDataSource(data, item.mime, function(error, dataSource) {
         if ( error ) {
           callback(error);
           return;
@@ -133,7 +133,7 @@
     },
 
     url: function(item, callback) {
-      callback(false, OSjs.VFS.Transports.Internal.path(item));
+      callback(false, VFS.Transports.Internal.path(item));
     },
 
     freeSpace: function(root, callback) {
@@ -156,7 +156,7 @@
    */
   function makePath(item) {
     if ( typeof item === 'string' ) {
-      item = new OSjs.VFS.File(item);
+      item = new VFS.File(item);
     }
     return OSjs.Core.getHandler().getVFSPath(item);
   }
@@ -207,21 +207,82 @@
       });
     }
 
-    OSjs.VFS.addFormFile(fd, 'upload', file);
+    VFS.addFormFile(fd, 'upload', file);
 
     OSjs.Core.getHandler().callAPI('FS:upload', fd, callback, null, options);
+  }
+
+  /**
+   * Read a remote file with URL (CORS)
+   *
+   * This function basically does a cURL call and downloads
+   * the data.
+   *
+   * @param   String          url       URL
+   * @param   String          mime      MIME Type
+   * @param   Function        callback  Callback function => fn(error, result)
+   * @param   Object          options   Options
+   *
+   * @option  options     String      type    What to return, default: binary. Can also be: text, datasource
+   *
+   * @return  void
+   * @api     OSjs.VFS.Transports.Internal.fetch()
+   */
+  function internalFetch(url, mime, callback, options) {
+    options = options || {};
+    options.type = options.type || 'binary';
+    mime = options.mime || 'application/octet-stream';
+
+    console.debug('VFS::Transports::Internal::fetch()', url, mime);
+
+    if ( arguments.length < 1 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
+
+    options = options || {};
+
+    API.curl({
+      url: url,
+      binary: true,
+      mime: mime,
+      method: 'POST'
+    }, function(error, response) {
+      if ( error ) {
+        callback(error);
+        return;
+      }
+
+      if ( !response.body ) {
+        callback(API._('ERR_VFS_REMOTEREAD_EMPTY'));
+        return;
+      }
+
+      if ( options.type.toLowerCase() === 'datasource' ) {
+        callback(false, response.body);
+        return;
+      }
+
+      VFS.dataSourceToAb(response.body, mime, function(error, response) {
+        if ( options.type === 'text' ) {
+          VFS.abToText(response, mime, function(error, text) {
+            callback(error, text);
+          });
+          return;
+        }
+        callback(error, response);
+      });
+    });
   }
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.VFS.Transports.Internal = {
+  VFS.Transports.Internal = {
     request: internalRequest,
     upload: internalUpload,
+    fetch: internalFetch,
 
     module: Transport,
     path: makePath
   };
 
-})(OSjs.Utils, OSjs.API);
+})(OSjs.Utils, OSjs.API, OSjs.VFS);

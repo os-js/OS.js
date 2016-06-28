@@ -65,7 +65,7 @@
    *     Blob                      Browser internal
    *     ArrayBuffer               Browser internal
    *     String                    Just a normal string
-   *     VFS.FileDataURL      Wrapper for dataSource URL strings
+   *     VFS.FileDataURL           Wrapper for dataSource URL strings
    *     JSON                      JSON Data defined as: {filename: foo, data: bar}
    *
    *  ---------------------------------------------------------------------------
@@ -172,11 +172,12 @@
    *
    * @param   String    test        Path name
    * @param   boolean   retdef      Return default upon failure (default = true)
+   * @param   boolean   retobj      Return module object instead of name (default = false)
    *
-   * @return  boolean
+   * @return  Mixed                 Module name or object based on arguments
    * @api     OSjs.VFS.getModuleFromPath()
    */
-  function getModuleFromPath(test, retdef) {
+  function getModuleFromPath(test, retdef, retobj) {
     retdef = typeof retdef === 'undefined' ? true : (retdef === true);
 
     var d = null;
@@ -192,7 +193,8 @@
       });
     }
 
-    return d || (retdef ? DefaultModule : null);
+    var moduleName = d || (retdef ? DefaultModule : null);
+    return retobj ? VFS.Modules[moduleName] : moduleName;
   }
 
   /**
@@ -629,15 +631,11 @@
       console.warn('mountpoints.js initialization error', e, e.stack);
     }
 
-    console.debug('Registering mountpoints...', config);
-
     if ( config ) {
       var points = Object.keys(config);
       points.forEach(function(key) {
         var iter = config[key];
         if ( iter.enabled !== false ) {
-          console.info('VFS', 'Registering mountpoint', key, iter);
-
           var mp = _createMountpoint({
             readOnly: (typeof iter.readOnly === 'undefined') ? false : (iter.readOnly === true),
             transport: iter.transport || 'Internal',
@@ -674,7 +672,7 @@
       target.defaults(params);
     }
 
-    return Utils.argumentDefaults(params, {
+    var cfg = Utils.argumentDefaults(params, {
       request: function(name, args, callback, options) {
         callback = callback || function() {
           console.warn('NO CALLBACK FUNCTION WAS ASSIGNED IN VFS REQUEST');
@@ -714,6 +712,10 @@
         return true;
       }
     });
+
+    console.debug('Registering mountpoints...', cfg);
+
+    return cfg;
   }
 
   /////////////////////////////////////////////////////////////////////////////

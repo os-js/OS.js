@@ -327,7 +327,8 @@
         return;
       }
 
-      OSjs.VFS.remoteRead(url, item.mime, function(error, response) {
+      var file = new OSjs.VFS.File(url, item.mime);
+      OSjs.VFS.read(file, function(error, response) {
         if ( error ) {
           callback(error);
           return;
