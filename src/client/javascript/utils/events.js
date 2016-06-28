@@ -47,15 +47,15 @@
     this.collection = [];
   }
 
-  EventCollection.prototype.add = function(el, iter, param) {
+  EventCollection.prototype.add = function(el, iter) {
     el.addEventListener.apply(el, iter);
-    this.collection.push([el, iter, param]);
+    this.collection.push([el, iter]);
 
   };
 
   EventCollection.prototype.clear = function() {
     this.collection.forEach(function(iter) {
-      iter[0].removeEventListener.call(iter[0], iter[1], iter[2]);
+      iter[0].removeEventListener.apply(iter[0], iter[1]);
     });
     this.collection = [];
   };
