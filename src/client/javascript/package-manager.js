@@ -449,7 +449,7 @@
             var a = p[i];
             if ( a && a.mime ) {
               if ( Utils.checkAcceptMime(mime, a.mime) ) {
-                list.push(Object.freeze(Utils.cloneObject(i)));
+                list.push(i);
               }
             }
           }
