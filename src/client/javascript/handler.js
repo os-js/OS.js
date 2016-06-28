@@ -59,6 +59,7 @@
 
     this._saveTimeout = null;
 
+    this.loggedIn   = false;
     this.offline    = false;
     this.nw         = null;
     this.userData   = {
@@ -179,6 +180,7 @@
       var opts = {};
       self.callAPI('logout', opts, function(response) {
         if ( response.result ) {
+          self.loggedIn = false;
           callback(true);
         } else {
           callback(false, 'An error occured: ' + (response.error || 'Unknown error'));
@@ -576,6 +578,8 @@
     if ( data.blacklistedPackages ) {
       OSjs.Core.getPackageManager().setBlacklist(data.blacklistedPackages);
     }
+
+    this.loggedIn = true;
 
     callback();
   };

@@ -85,6 +85,7 @@
     'ERR_LOGIN_INVALID' : 'Invalid login',
 
     // SESSION
+    'ERR_NO_SESSION': 'No session was created by the server. Do you want to retry login?',
     'MSG_SESSION_WARNING' : 'Are you sure you want to quit OS.js? All unsaved settings and application data will be lost!',
 
     // Service

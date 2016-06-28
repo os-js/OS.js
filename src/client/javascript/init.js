@@ -296,19 +296,28 @@
     console.debug('initHandler()');
 
     handler = new OSjs.Core.Handler();
-    handler.init(function(error) {
-      if ( inited ) {
-        return;
-      }
-      inited = true;
 
+    function _done(error) {
       if ( error ) {
         onError(error);
         return;
       }
 
+      if ( !inited ) {
+        if ( !handler.loggedIn ) {
+          if ( confirm(OSjs.API._('ERR_NO_SESSION')) ) {
+            handler.init(_done);
+          }
+          return;
+        }
+      }
+
+      inited = true;
+
       callback();
-    });
+    }
+
+    handler.init(_done);
   }
 
   /**
