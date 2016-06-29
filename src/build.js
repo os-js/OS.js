@@ -1402,15 +1402,12 @@
    * Builds packages
    */
   function buildPackages(grunt, onfinished, arg) {
-    function copyFiles(src, dst, p, list) {
+    function copyFiles(src, dst, p, list, additions) {
       list = list || [];
+      additions = additions || [];
 
-      deleteFile(dst);
-
-      if ( list.length ) {
-        mkdir(dst);
-
-        list.forEach(function(f) {
+      function _copyList(lst) {
+        lst.forEach(function(f) {
           try {
             mkdir(_path.join(dst, _path.dirname(f)));
           } catch ( e ) {}
@@ -1421,10 +1418,19 @@
             error(e);
           }
         });
+      }
+
+      deleteFile(dst);
+
+      if ( list.length ) {
+        mkdir(dst);
+        _copyList(list);
       } else {
         mkdir(_path.dirname(dst));
         copyFile(src, dst);
       }
+
+      _copyList(additions);
     }
 
     function combineFiles(src, dst, p, iter) {
@@ -1553,11 +1559,7 @@
             return copy.indexOf(iter) < 0;
           });
 
-          if ( additions.length ) {
-            copy = copy.concat(additions);
-          }
-
-          copyFiles(src, dst, p, copy);
+          copyFiles(src, dst, p, copy, additions);
 
           if ( iter.type !== 'extension' ) {
             combineFiles(src, dst, p, iter);
