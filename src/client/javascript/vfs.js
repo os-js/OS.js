@@ -531,7 +531,9 @@
       transport: 'Internal',
       name: 'MyModule',
       icon: 'places/server.png',
-      searchable: false
+      searchable: false,
+      visible: true,
+      readOnly: false
     });
 
     if ( VFS.Modules[opts.name] ) {
@@ -551,9 +553,9 @@
       var isMounted = true;
 
       return _createMountpoint({
-        readOnly: false,
+        readOnly: opts.readOnly,
         description: opts.description,
-        visible: true,
+        visible: opts.visible,
         dynamic: true,
         unmount: function(cb) {
           isMounted = false;
