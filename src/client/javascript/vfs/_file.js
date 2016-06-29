@@ -101,6 +101,8 @@
         this.type = mime;
       }
     }
+
+    this._guessMime();
   }
 
   FileMetadata.prototype.setData = function(o) {
@@ -127,6 +129,15 @@
       mime: this.mime,
       id: this.id
     };
+  };
+
+  FileMetadata.prototype._guessMime = function() {
+    if ( this.mime || this.type === 'dir' || this.path.match(/\/$/) ) {
+      return;
+    }
+
+    var ext = Utils.filext(this.path);
+    this.mime = API.getConfig('MIME.mapping')['.' + ext] || 'application/octet-stream';
   };
 
   /////////////////////////////////////////////////////////////////////////////
