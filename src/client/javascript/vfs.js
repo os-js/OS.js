@@ -645,7 +645,7 @@
             icon: iter.icon || 'devices/harddrive.png',
             root: key + ':///',
             options: iter.options,
-            visible: true,
+            visible: iter.visible !== false,
             internal: true,
             searchable: true,
             match: createMatch(key + '://')
