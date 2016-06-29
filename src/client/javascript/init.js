@@ -589,7 +589,7 @@
     var config = OSjs.Core.getConfig();
     var splash = document.getElementById('LoadingScreen');
     var loading = OSjs.API.createSplash('OS.js', null, null, splash);
-    var freeze = ['API', 'Core', 'Config', 'Dialogs', 'GUI', 'Locales', 'VFS'];
+    var freeze = ['API', 'Core', 'Dialogs', 'Extensions', 'GUI', 'Helpers', 'Locales', 'Utils', 'VFS'];
     var queue = [
       initPreload,
       initHandler,
