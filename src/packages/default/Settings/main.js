@@ -599,7 +599,7 @@
 
     var view = scheme.find(this, 'SearchPaths').clear();
     view.set('columns', [
-      {label: 'Path',  grow: 1, shrink: 1}
+      {label: 'Path'}
     ]);
 
     var list = (searchOptions.paths || []).map(function(l) {

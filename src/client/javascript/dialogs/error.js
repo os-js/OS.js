@@ -88,9 +88,8 @@
     var root = DialogWindow.prototype.init.apply(this, arguments);
     root.setAttribute('role', 'alertdialog');
 
-    var msg = Utils.$escape(this.args.message || '').replace(/\*\*(\w+)\*\*/, '<span>$1</span>');
-
-    this.scheme.find(this, 'Message').set('value', msg, true);
+    var msg = DialogWindow.parseMessage(this.args.message);
+    this.scheme.find(this, 'Message').empty().append(msg);
     this.scheme.find(this, 'Summary').set('value', this.args.error);
     this.scheme.find(this, 'Trace').set('value', this.traceMessage);
     if ( !this.traceMessage ) {

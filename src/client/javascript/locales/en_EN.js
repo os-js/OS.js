@@ -31,8 +31,6 @@
   // jscs:disable validateQuoteMarks
   'use strict';
 
-  OSjs.Locales = OSjs.Locales || {};
-
   OSjs.Locales.en_EN = {
     //
     // CORE
@@ -87,6 +85,7 @@
     'ERR_LOGIN_INVALID' : 'Invalid login',
 
     // SESSION
+    'ERR_NO_SESSION': 'No session was created by the server. Do you want to retry login?',
     'MSG_SESSION_WARNING' : 'Are you sure you want to quit OS.js? All unsaved settings and application data will be lost!',
 
     // Service
@@ -196,22 +195,23 @@
     //
     // VFS
     //
-    'ERR_VFS_FATAL'           : 'Fatal Error',
-    'ERR_VFS_UNAVAILABLE'     : 'Not available',
-    'ERR_VFS_FILE_ARGS'       : 'File expects at least one argument',
-    'ERR_VFS_NUM_ARGS'        : 'Not enugh arguments',
-    'ERR_VFS_EXPECT_FILE'     : 'Expects a file-object',
-    'ERR_VFS_EXPECT_SRC_FILE' : 'Expects a source file-object',
-    'ERR_VFS_EXPECT_DST_FILE' : 'Expects a destination file-object',
-    'ERR_VFS_FILE_EXISTS'     : 'Destination already exists',
-    'ERR_VFS_TRANSFER_FMT'    : 'An error occured while transfering between storage: {0}',
-    'ERR_VFS_UPLOAD_NO_DEST'  : 'Cannot upload a file without a destination',
-    'ERR_VFS_UPLOAD_NO_FILES' : 'Cannot upload without any files defined',
-    'ERR_VFS_UPLOAD_FAIL_FMT' : 'File upload failed: {0}',
-    'ERR_VFS_UPLOAD_CANCELLED': 'File upload was cancelled',
-    'ERR_VFS_DOWNLOAD_NO_FILE': 'Cannot download a path without a path',
-    'ERR_VFS_DOWNLOAD_FAILED' : 'An error occured while downloading: {0}',
-    'ERR_VFS_REMOTEREAD_EMPTY': 'Response was empty',
+    'ERR_VFS_FATAL'            : 'Fatal Error',
+    'ERR_VFS_UNAVAILABLE'      : 'Not available',
+    'ERR_VFS_FILE_ARGS'        : 'File expects at least one argument',
+    'ERR_VFS_NUM_ARGS'         : 'Not enough arguments',
+    'ERR_VFS_EXPECT_FILE'      : 'Expects a file-object',
+    'ERR_VFS_EXPECT_SRC_FILE'  : 'Expects a source file-object',
+    'ERR_VFS_EXPECT_DST_FILE'  : 'Expects a destination file-object',
+    'ERR_VFS_FILE_EXISTS'      : 'Destination already exists',
+    'ERR_VFS_TARGET_NOT_EXISTS': 'Traget does not exist',
+    'ERR_VFS_TRANSFER_FMT'     : 'An error occured while transfering between storage: {0}',
+    'ERR_VFS_UPLOAD_NO_DEST'   : 'Cannot upload a file without a destination',
+    'ERR_VFS_UPLOAD_NO_FILES'  : 'Cannot upload without any files defined',
+    'ERR_VFS_UPLOAD_FAIL_FMT'  : 'File upload failed: {0}',
+    'ERR_VFS_UPLOAD_CANCELLED' : 'File upload was cancelled',
+    'ERR_VFS_DOWNLOAD_NO_FILE' : 'Cannot download a path without a path',
+    'ERR_VFS_DOWNLOAD_FAILED'  : 'An error occured while downloading: {0}',
+    'ERR_VFS_REMOTEREAD_EMPTY' : 'Response was empty',
 
     'ERR_VFSMODULE_INVALID'            : 'Invalid VFS Module',
     'ERR_VFSMODULE_INVALID_FMT'        : 'Invalid VFS Module: {0}',
@@ -228,6 +228,8 @@
     'ERR_VFSMODULE_EXCEPTION'          : 'VFS Module Exception',
     'ERR_VFSMODULE_EXCEPTION_FMT'      : 'VFS Module Exception: {0}',
     'ERR_VFSMODULE_NOT_FOUND_FMT'      : 'No VFS Module matches {0}. Wrong path or format ?',
+    'ERR_VFSMODULE_READONLY'           : 'This VFS Module is read-only',
+    'ERR_VFSMODULE_READONLY_FMT'       : 'This VFS Module is read-only: {0}',
 
     'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Downloading file',
 
@@ -264,6 +266,10 @@
     'ERR_VFSMODULE_EMPTYTRASH_FMT' : 'Failed to empty trash: {0}',
     'ERR_VFSMODULE_FIND'           : 'Failed to search',
     'ERR_VFSMODULE_FIND_FMT'       : 'Failed to search: {0}',
+    'ERR_VFSMODULE_FREESPACE'      : 'Failed to get free space',
+    'ERR_VFSMODULE_FREESPACE_FMT'  : 'Failed to get free space: {0}',
+    'ERR_VFSMODULE_EXISTS'         : 'Failed to check if exists',
+    'ERR_VFSMODULE_EXISTS_FMT'     : 'Failed to check if exists: {0}',
 
     // VFS -> Dropbox
     'DROPBOX_NOTIFICATION_TITLE' : 'You are signed in to Dropbox API',

@@ -38,7 +38,7 @@
    * PanelItem: AppMenu
    */
   function PanelItemAppMenu(settings) {
-    PanelItem.apply(this, ['PanelItemAppMenu PanelItemFill', 'AppMenu', settings, {}]);
+    PanelItem.apply(this, ['PanelItemAppMenu', 'AppMenu', settings, {}]);
     this.$container = null;
   }
 
@@ -55,13 +55,10 @@
     var root = PanelItem.prototype.init.apply(this, arguments);
     var wm = OSjs.Core.getWindowManager();
 
-    this.$container = document.createElement('ul');
-    root.appendChild(this.$container);
-
     var sel = document.createElement('li');
-    sel.className = 'Button';
     sel.title = API._('LBL_APPLICATIONS');
     sel.innerHTML = '<img alt="" src="' + API.getIcon(wm.getSetting('icon') || 'osjs-white.png') + '" />';
+    sel.className = 'corewm-panel-button-centered';
     sel.setAttribute('role', 'button');
     sel.setAttribute('data-label', 'OS.js Application Menu');
 
@@ -75,7 +72,7 @@
       ev.stopPropagation();
     });
 
-    this.$container.appendChild(sel);
+    this._$container.appendChild(sel);
 
     return root;
   };

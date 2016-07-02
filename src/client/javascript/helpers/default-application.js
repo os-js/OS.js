@@ -31,9 +31,6 @@
 (function(Application, Window, Utils, VFS, API, GUI) {
   'use strict';
 
-  window.OSjs       = window.OSjs       || {};
-  OSjs.Helpers      = OSjs.Helpers      || {};
-
   /////////////////////////////////////////////////////////////////////////////
   // Default Application Helper
   /////////////////////////////////////////////////////////////////////////////

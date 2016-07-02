@@ -31,9 +31,6 @@
 (function(Utils, API, VFS) {
   'use strict';
 
-  var OSjs = window.OSjs = window.OSjs || {};
-  OSjs.Helpers = OSjs.Helpers || {};
-
   var requestFileSystem = window.webkitRequestFileSystem || window.mozRequestFileSystem || window.requestFileSystem;
   var URL = window.webkitURL || window.mozURL || window.URL;
 

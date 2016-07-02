@@ -1,4 +1,3 @@
-@import 'src/client/stylesheets/theme.less';
 @import 'src/client/themes/styles/material/materialColors.less';
 
 @base_background_color  : @clr-blue-700;
@@ -270,7 +269,6 @@ gui-button {
     outline: 0 !important;
     text-decoration: none !important;
     cursor: pointer;
-    user-select: none;
     transition: background 0.3s;
 
     img{
@@ -310,7 +308,7 @@ corewm-panel{
   &:before {
     background: @clr-blue-700 !important;
   }
-  .PanelItemWindowList .Button {
+  .PanelItemWindowList li {
     opacity: 1 !important;
 
     span {

@@ -38,7 +38,7 @@
    * PanelItem: Buttons
    */
   function PanelItemButtons(settings) {
-    PanelItem.apply(this, ['PanelItemButtons PanelItemFill', 'Buttons', settings, {
+    PanelItem.apply(this, ['PanelItemButtons', 'Buttons', settings, {
       buttons: [
         {
           title: API._('LBL_SETTINGS'),
@@ -47,8 +47,6 @@
         }
       ]
     }]);
-
-    this.$container = null;
   }
 
   PanelItemButtons.prototype = Object.create(PanelItem.prototype);
@@ -62,10 +60,6 @@
     var self = this;
     var root = PanelItem.prototype.init.apply(this, arguments);
 
-    this.$container = document.createElement('ul');
-    this.$container.setAttribute('role', 'toolbar');
-    root.appendChild(this.$container);
-
     this.renderButtons();
 
     var ghost;
@@ -78,7 +72,7 @@
       ghost = Utils.$remove(ghost);
       lastTarget = null;
       if ( lastPadding !== null ) {
-        self.$container.style.paddingRight = lastPadding;
+        self._$container.style.paddingRight = lastPadding;
       }
     }
 
@@ -91,14 +85,14 @@
       }
 
       if ( lastPadding === null ) {
-        lastPadding = self.$container.style.paddingRight;
+        lastPadding = self._$container.style.paddingRight;
       }
 
       if ( target !== lastTarget ) {
         clearGhost();
 
         ghost = document.createElement('li');
-        ghost.className = 'Button Ghost';
+        ghost.className = 'Ghost';
 
         if ( target.tagName === 'LI' ) {
           try {
@@ -110,10 +104,10 @@
       }
       lastTarget = target;
 
-      self.$container.style.paddingRight = '16px';
+      self._$container.style.paddingRight = '16px';
     }
 
-    GUI.Helpers.createDroppable(this.$container, {
+    GUI.Helpers.createDroppable(this._$container, {
       onOver: function(ev, el, args) {
         if ( ev.target && !Utils.$hasClass(ev.target, 'Ghost') ) {
           createGhost(ev.target);
@@ -149,13 +143,8 @@
     return root;
   };
 
-  PanelItemButtons.prototype.destroy = function() {
-    this.$container = null;
-    PanelItem.prototype.destroy.apply(this, arguments);
-  };
-
   PanelItemButtons.prototype.clearButtons = function() {
-    Utils.$empty(this.$container);
+    Utils.$empty(this._$container);
   };
 
   PanelItemButtons.prototype.renderButtons = function() {
@@ -224,7 +213,6 @@
 
   PanelItemButtons.prototype.addButton = function(title, icon, menu, callback) {
     var sel = document.createElement('li');
-    sel.className = 'Button';
     sel.title = title;
     sel.innerHTML = '<img alt="" src="' + API.getIcon(icon) + '" />';
     sel.setAttribute('role', 'button');
@@ -239,7 +227,7 @@
       }
     });
 
-    this.$container.appendChild(sel);
+    this._$container.appendChild(sel);
   };
 
   /////////////////////////////////////////////////////////////////////////////

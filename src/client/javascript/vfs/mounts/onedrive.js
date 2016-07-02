@@ -34,12 +34,6 @@
   // http://msdn.microsoft.com/en-us/library/hh826531.aspx
   // http://msdn.microsoft.com/en-us/library/dn659726.aspx
 
-  //var WL   = window.WL   = window.WL    || {};
-  var OSjs = window.OSjs = window.OSjs  || {};
-
-  OSjs.VFS          = OSjs.VFS          || {};
-  OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
-
   var _isMounted    = false;
 
   var _mimeCache;
@@ -333,7 +327,8 @@
         return;
       }
 
-      OSjs.VFS.remoteRead(url, item.mime, function(error, response) {
+      var file = new OSjs.VFS.File(url, item.mime);
+      OSjs.VFS.read(file, function(error, response) {
         if ( error ) {
           callback(error);
           return;
@@ -572,6 +567,10 @@
     callback(API._('ERR_VFS_UNAVAILABLE'));
   };
 
+  OneDriveStorage.freeSpace = function(root, callback) {
+    callback(false, -1);
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // WRAPPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -597,7 +596,7 @@
         }
 
         _isMounted = true;
-        API.message('vfs', {type: 'mount', module: 'OneDrive', source: null});
+        API.message('vfs:mount', 'OneDrive', {source: null});
         callback(OneDriveStorage);
       });
       return;
@@ -637,6 +636,7 @@
    */
   OSjs.VFS.Modules.OneDrive = OSjs.VFS.Modules.OneDrive || OSjs.VFS._createMountpoint({
     readOnly: false,
+    transport: 'OneDrive',
     description: 'OneDrive',
     visible: true,
     searchable: false,
@@ -644,7 +644,7 @@
       // FIXME: Should we sign out here too ?
       cb = cb || function() {};
       _isMounted = false;
-      API.message('vfs', {type: 'unmount', module: 'OneDrive', source: null});
+      API.message('vfs:unmount', 'OneDrive', {source: null});
       cb(false, true);
     },
     mounted: function() {

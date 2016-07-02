@@ -1,0 +1,28 @@
+{
+  "themes": {
+    "styleBase": "theme.less",
+    "icons": ["default"],
+    "styles": ["default", "dark", "glass", "windows8", "material"],
+    "sounds": ["default"],
+    "fonts": ["Karla", "Roboto"]
+  },
+  "client": {
+    "Fonts": {
+      "default": "Karla",
+      "list": [
+        "Arial",
+        "Arial Black",
+        "Sans-serif",
+        "Serif",
+        "Trebuchet MS",
+        "Impact",
+        "Georgia",
+        "Courier New",
+        "Comic Sans MS",
+        "Monospace",
+        "Symbol",
+        "Webdings"
+      ]
+    }
+  }
+}

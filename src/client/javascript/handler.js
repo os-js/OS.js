@@ -31,9 +31,6 @@
 (function(API, Utils) {
   'use strict';
 
-  window.OSjs   = window.OSjs   || {};
-  OSjs.Core     = OSjs.Core     || {};
-
   var _handlerInstance;
 
   /////////////////////////////////////////////////////////////////////////////
@@ -62,6 +59,7 @@
 
     this._saveTimeout = null;
 
+    this.loggedIn   = false;
     this.offline    = false;
     this.nw         = null;
     this.userData   = {
@@ -96,7 +94,7 @@
    * @method  _Handler::init()
    */
   _Handler.prototype.init = function(callback) {
-    console.info('Handler::init()');
+    console.debug('Handler::init()');
 
     var self = this;
     API.setLocale(API.getConfig('Locale'));
@@ -141,7 +139,7 @@
    *
    * @param   String    username      Login username
    * @param   String    password      Login password
-   * @param   Function  callback      Callback function
+   * @param   Function  callback      Callback function => fn(err)
    *
    * @return  void
    *
@@ -167,7 +165,7 @@
    * Default logout method
    *
    * @param   boolean   save          Save session?
-   * @param   Function  callback      Callback function
+   * @param   Function  callback      Callback function => fn(err, result)
    *
    * @return  void
    *
@@ -182,6 +180,7 @@
       var opts = {};
       self.callAPI('logout', opts, function(response) {
         if ( response.result ) {
+          self.loggedIn = false;
           callback(true);
         } else {
           callback(false, 'An error occured: ' + (response.error || 'Unknown error'));
@@ -191,19 +190,8 @@
       });
     }
 
-    function saveSession(cb) {
-      var data = [];
-      API.getProcesses().forEach(function(proc, i) {
-        if ( proc && (proc instanceof OSjs.Core.Application) ) {
-          data.push(proc._getSessionData());
-        }
-      });
-
-      OSjs.Core.getSettingsManager().set('UserSession', null, data, cb);
-    }
-
     if ( save ) {
-      saveSession(function() {
+      this.saveSession(function() {
         _finished(true);
       });
       return;
@@ -212,18 +200,35 @@
   };
 
   /**
-   * Default method to restore last running session
+   * Default method for saving current sessions
    *
-   * @param   Function  callback      Callback function
+   * @param   Function  callback      Callback function => fn(err)
    *
    * @return  void
    *
-   * @method  _Handler::loadSession()
+   * @method  _Handler::saveSession()
    */
-  _Handler.prototype.loadSession = function(callback) {
-    callback = callback || function() {};
+  _Handler.prototype.saveSession = function(callback) {
+    var data = [];
+    API.getProcesses().forEach(function(proc, i) {
+      if ( proc && (proc instanceof OSjs.Core.Application) ) {
+        data.push(proc._getSessionData());
+      }
+    });
+    OSjs.Core.getSettingsManager().set('UserSession', null, data, callback);
+  };
 
-    console.info('Handler::loadSession()');
+  /**
+   * Get last saved sessions
+   *
+   * @param   Function  callback      Callback function => fn(err,list)
+   *
+   * @return  void
+   *
+   * @method  _Handler::getLastSession()
+   */
+  _Handler.prototype.getLastSession = function(callback) {
+    callback = callback || function() {};
 
     var res = OSjs.Core.getSettingsManager().get('UserSession');
     var list = [];
@@ -235,7 +240,30 @@
       list.push({name: iter.name, args: args});
     });
 
-    API.launchList(list, null, null, callback);
+    callback(false, list);
+  };
+
+  /**
+   * Default method to restore last running session
+   *
+   * @param   Function  callback      Callback function => fn()
+   *
+   * @return  void
+   *
+   * @method  _Handler::loadSession()
+   */
+  _Handler.prototype.loadSession = function(callback) {
+    callback = callback || function() {};
+
+    console.info('Handler::loadSession()');
+
+    this.getLastSession(function(err, list) {
+      if ( err ) {
+        callback();
+      } else {
+        API.launchList(list, null, null, callback);
+      }
+    });
   };
 
   /**
@@ -330,11 +358,7 @@
       return self._callAPI(method, args, options, cbSuccess, cbError);
     }
 
-    console.group('Handler::callAPI()');
-    console.log('Method', method);
-    console.log('Arguments', args);
-    console.log('Options', options);
-    console.groupEnd();
+    console.info('Handler::callAPI()', method);
 
     return checkState() ? _call() : false;
   };
@@ -555,13 +579,17 @@
       OSjs.Core.getPackageManager().setBlacklist(data.blacklistedPackages);
     }
 
+    this.loggedIn = true;
+
     callback();
   };
 
   /**
    * Called upon a VFS request
    *
-   * You can use this to interrupt operations
+   * You can use this to interrupt/hijack operations.
+   *
+   * It is what gets called 'before' a VFS request takes place
    *
    * @param   String    vfsModule     VFS Module Name
    * @param   String    vfsMethod     VFS Method Name
@@ -573,8 +601,31 @@
    * @method  _Handler::onVFSRequest()
    */
   _Handler.prototype.onVFSRequest = function(vfsModule, vfsMethod, vfsArguments, callback) {
-    // If you want to interrupt or modify somehow
-    callback();
+    // If you want to interrupt/hijack or modify somehow, just send the two arguments to the
+    // callback: (error, result)
+    callback(/* continue normal behaviour */);
+  };
+
+  /**
+   * Called upon a VFS request completion
+   *
+   * It is what gets called 'after' a VFS request has taken place
+   *
+   * @param   String    vfsModule     VFS Module Name
+   * @param   String    vfsMethod     VFS Method Name
+   * @param   Object    vfsArguments  VFS Method Arguments
+   * @param   String    vfsError      VFS Response Error
+   * @param   Mixed     vfsResult     VFS Response Result
+   * @param   Function  callback      Callback function
+   *
+   * @return  void
+   *
+   * @method  _Handler::onVFSRequestCompleted()
+   */
+  _Handler.prototype.onVFSRequestCompleted = function(vfsModule, vfsMethod, vfsArguments, vfsError, vfsResult, callback) {
+    // If you want to interrupt/hijack or modify somehow, just send the two arguments to the
+    // callback: (error, result)
+    callback(/* continue normal behaviour */);
   };
 
   /**
@@ -655,7 +706,7 @@
           return;
         }
 
-        console.debug('OSjs::Handlers::init()', 'login response', result);
+        console.debug('Handlers::init()', 'login response', result);
         container.parentNode.removeChild(container);
 
         self.onLogin(result, function() {

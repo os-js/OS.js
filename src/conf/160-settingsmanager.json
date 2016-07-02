@@ -1,0 +1,13 @@
+{
+  "client": {
+    "SettingsManager": {
+      "SearchEngine": {
+        "applications": true,
+        "files": true,
+        "paths": [
+          "home:///"
+        ]
+      }
+    }
+  }
+}

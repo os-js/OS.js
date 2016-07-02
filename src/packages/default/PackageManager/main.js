@@ -31,7 +31,8 @@
   'use strict';
 
   function fetchJSON(cb) {
-    var url = '//builds.os.js.org/store/packages.json';
+    var url = window.location.protocol + '//builds.os.js.org/store/packages.json';
+
     API.curl({
       url: url,
       method: 'GET'
@@ -42,7 +43,8 @@
     var handler = OSjs.Core.getHandler();
     var pacman = OSjs.Core.getPackageManager();
 
-    VFS.remoteRead(download, 'application/zip', function(error, ab) {
+    var file = new VFS.File(download, 'application/zip');
+    VFS.read(file, function(error, ab) {
       if ( error ) {
         cb(error);
         return;

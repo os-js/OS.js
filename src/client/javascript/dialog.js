@@ -30,9 +30,6 @@
 (function(Utils, API, Window) {
   'use strict';
 
-  window.OSjs = window.OSjs || {};
-  OSjs.Core   = OSjs.Core   || {};
-
   /////////////////////////////////////////////////////////////////////////////
   // DIALOG
   /////////////////////////////////////////////////////////////////////////////
@@ -155,6 +152,21 @@
     if ( ev.keyCode === Utils.Keys.ESC ) {
       this.onClose(ev, 'cancel');
     }
+  };
+
+  DialogWindow.parseMessage = function(msg) {
+    msg = Utils.$escape(msg || '').replace(/\*\*(.*)\*\*/g, '<span>$1</span>');
+
+    var tmp = document.createElement('div');
+    tmp.innerHTML = msg;
+
+    var frag = document.createDocumentFragment();
+    for ( var i = 0; i < tmp.childNodes.length; i++ ) {
+      frag.appendChild(tmp.childNodes[i].cloneNode(true));
+    }
+    tmp = null;
+
+    return frag;
   };
 
   /////////////////////////////////////////////////////////////////////////////

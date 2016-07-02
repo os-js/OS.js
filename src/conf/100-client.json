@@ -1,0 +1,44 @@
+{
+  "client" : {
+    "Connection": {
+      "Type": "%CONNECTION%",
+      "Handler": "%HANDLER%",
+
+      "RootURI": "",
+      "APIURI": "API",
+      "FSURI": "FS",
+      "MetadataURI": "packages.js",
+      "ThemeURI": "themes/styles",
+      "SoundURI": "themes/sounds",
+      "IconURI": "themes/icons",
+      "FontURI": "themes/fonts",
+      "PackageURI": "packages",
+      "AppendVersion":""
+    },
+
+    "BugReporting": true,
+    "ShowQuitWarning": false,
+    "ReloadOnShutdown": false,
+
+    "Watermark": {
+      "enabled": true,
+      "lines": [
+        "OS.js %VERSION%",
+        "Copyright &copy; 2011-2016 <a href=\"mailto:andersevenrud@gmail.com\">Anders Evenrud</a>"
+      ]
+    },
+
+    "DropboxAPI": {
+      "ClientKey": ""
+    },
+
+    "GoogleAPI": {
+      "ClientId": ""
+    },
+
+    "WindowsLiveAPI": {
+      "ClientId": ""
+    }
+
+  }
+}

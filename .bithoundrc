@@ -9,6 +9,8 @@
 
     "src/client/stylesheets/**",
     "src/client/themes/**",
+    "src/server/test/**",
+    "src/client/test/**",
     "src/templates/**",
     "src/installer/**",
     "src/packages/**",
@@ -17,7 +19,6 @@
     "src/conf/**",
     "src/x11/**",
     "vendor/*",
-    "test/**",
     "dist/**",
     "vfs/**",
     "doc/**",

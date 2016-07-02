@@ -30,9 +30,6 @@
 (function() {
   'use strict';
 
-  window.OSjs = window.OSjs || {};
-  OSjs.Utils  = OSjs.Utils  || {};
-
   /////////////////////////////////////////////////////////////////////////////
   // FS
   /////////////////////////////////////////////////////////////////////////////
@@ -80,12 +77,18 @@
   OSjs.Utils.dirname = function(f) {
 
     function _parentDir(p) {
-      var pstr   = p.split(/^(.*)\:\/\/(.*)/).filter(function(n) { return n !== ''; });
+      var pstr = p.split(/^(.*)\:\/\/(.*)/).filter(function(n) {
+        return n !== '';
+      });
+
       var args   = pstr.pop();
       var prot   = pstr.pop();
       var result = '';
 
-      var tmp = args.split('/').filter(function(n) { return n !== ''; });
+      var tmp = args.split('/').filter(function(n) {
+        return n !== '';
+      });
+
       if ( tmp.length ) {
         tmp.pop();
       }
@@ -94,6 +97,7 @@
       if ( !result.match(/^\//) ) {
         result = '/' + result;
       }
+
       if ( prot ) {
         result = prot + '://' + result;
       }
@@ -101,7 +105,7 @@
       return result;
     }
 
-    return f === '/' ? f : _parentDir(f.replace(/\/$/, ''));
+    return f.match(/^((.*)\:\/\/)?\/$/) ? f : _parentDir(f.replace(/\/$/, ''));
   };
 
   /**

@@ -29,3 +29,10 @@ Please read http://os.js.org/doc/manuals/man-development.html before you start m
 * [OS.js Core Source](https://github.com/os-js/OS.js)
 * [OS.js Homepage Source](https://github.com/andersevenrud/os.js.org)
 
+# For OS.js Team Members
+
+If you are a member of the official OS.js developer Team:
+
+* [Discussions](http://community.os.js.org/c/team)
+* [Tasks](https://trello.com/osjs)
+* [Chat](https://gitter.im/os-js/OS.js/teams)

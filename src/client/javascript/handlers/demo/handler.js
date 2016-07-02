@@ -30,9 +30,6 @@
 (function(API, Utils, VFS) {
   'use strict';
 
-  window.OSjs = window.OSjs || {};
-  OSjs.Core   = OSjs.Core   || {};
-
   function getSettings() {
     var result = {};
 
@@ -77,7 +74,7 @@
    * Demo initialization
    */
   DemoHandler.prototype.init = function(callback) {
-    console.info('OSjs::DemoHandler::init()');
+    console.info('DemoHandler::init()');
 
     var self = this;
 

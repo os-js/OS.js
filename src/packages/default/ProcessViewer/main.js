@@ -81,9 +81,9 @@
     }
 
     view.set('columns', [
-      {label: 'Name', basis: '100px', grow: 1, shrink: 1},
-      {label: 'PID', basis: '60px', grow: 0, shrink: 0, textalign: 'right'},
-      {label: 'Alive', basis: '60px', grow: 0, shrink: 0, textalign: 'right'}
+      {label: 'Name'},
+      {label: 'PID', size: '60px', textalign: 'right'},
+      {label: 'Alive', size: '60px', textalign: 'right'}
     ]);
 
     scheme.find(this, 'ButtonKill').on('click', function() {

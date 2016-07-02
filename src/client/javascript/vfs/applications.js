@@ -30,19 +30,19 @@
 (function(Utils, API) {
   'use strict';
 
-  window.OSjs       = window.OSjs       || {};
-  OSjs.VFS          = OSjs.VFS          || {};
-  OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
-
   /////////////////////////////////////////////////////////////////////////////
-  // WRAPPERS
+  // API
   /////////////////////////////////////////////////////////////////////////////
 
-  function makeRequest(name, args, callback, options) {
-    args = args || [];
-    callback = callback || {};
-
-    function getFiles() {
+  /*
+   * Application VFS Transport Module
+   *
+   * This is only used for listing packages
+   *
+   * @api OSjs.VFS.Transports.Applications
+   */
+  var Transport = {
+    scandir: function(item, callback, options) {
       var metadata = OSjs.Core.getPackageManager().getPackages();
       var files = [];
 
@@ -62,38 +62,21 @@
         }
       });
 
-      return files;
-    }
-
-    if ( name === 'scandir' ) {
-      var files = getFiles();
       callback(false, files);
-      return;
     }
-
-    return callback(API._('ERR_VFS_UNAVAILABLE'));
-  }
+  };
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * This is a virtual module for showing 'applications' in OS.js
-   *
-   * @api OSjs.VFS.Modules.Apps
-   */
-  OSjs.VFS.Modules.Apps = OSjs.VFS.Modules.Apps || OSjs.VFS._createMountpoint({
-    readOnly: true,
-    description: 'Applications',
-    root: 'applications:///',
-    match: /^applications\:\/\//,
-    icon: 'places/user-bookmarks.png',
-    special: true,
-    visible: true,
-    internal: true,
-    searchable: true,
-    request: makeRequest
-  });
+  OSjs.VFS.Transports.Applications = {
+    module: Transport,
+    defaults: function(opts) {
+      opts.readOnly = true;
+      opts.special = true;
+      opts.searchable = true;
+    }
+  };
 
 })(OSjs.Utils, OSjs.API);

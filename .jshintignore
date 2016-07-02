@@ -9,11 +9,12 @@ src/client/themes/**
 src/templates/**
 src/installer/**
 src/server/php/**
+src/server/test/**
+src/client/test/**
 src/conf/**
 src/x11-launcher/**
+dist-dev/**
 vendor/*
 dist/**
 vfs/**
 doc/**
-
-dist-dev/**

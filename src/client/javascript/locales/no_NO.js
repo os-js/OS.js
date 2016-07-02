@@ -31,8 +31,6 @@
   // jscs:disable validateQuoteMarks
   'use strict';
 
-  OSjs.Locales = OSjs.Locales || {};
-
   OSjs.Locales.no_NO = {
     'ERR_FILE_OPEN'             : 'Feil ved åpning av fil',
     'ERR_WM_NOT_RUNNING'        : 'Window Manager kjører ikke',

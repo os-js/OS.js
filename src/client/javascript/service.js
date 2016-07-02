@@ -30,9 +30,6 @@
 (function(Utils, API, Process) {
   'use strict';
 
-  window.OSjs = window.OSjs || {};
-  OSjs.Core   = OSjs.Core   || {};
-
   /////////////////////////////////////////////////////////////////////////////
   // SERVICE
   /////////////////////////////////////////////////////////////////////////////
@@ -48,7 +45,9 @@
    * @class
    */
   function Service(name, args, metadata) {
+    console.group('Service::constructor()', name);
     Process.apply(this, arguments);
+    console.groupEnd();
   }
 
   Service.prototype = Object.create(Process.prototype);

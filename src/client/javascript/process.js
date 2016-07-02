@@ -30,26 +30,22 @@
 (function(Utils, API) {
   'use strict';
 
-  window.OSjs = window.OSjs || {};
-  OSjs.API    = OSjs.API    || {};
-  OSjs.Core   = OSjs.Core   || {};
-
   /////////////////////////////////////////////////////////////////////////////
   // GLOBALS
   /////////////////////////////////////////////////////////////////////////////
 
   var _PROCS = [];        // Running processes
 
-  function _kill(pid, force) {
-    if ( pid >= 0 ) {
-      if ( _PROCS[pid] ) {
-        console.warn('Killing application', pid);
-        if ( _PROCS[pid].destroy(true, force) === false ) {
-          return;
-        }
+  function _kill(pid) {
+    if ( pid >= 0 && _PROCS[pid] ) {
+      var res = _PROCS[pid].destroy();
+      console.warn('Killing application', pid, res);
+      if ( res !== false ) {
         _PROCS[pid] = null;
+        return true;
       }
     }
+    return false;
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -60,12 +56,11 @@
    * Kills all processes
    *
    * @param   Mixed     match     String/RegExp to match with (optional)
-   * @param   boolean   force     Force killing (optional, default=false)
    *
    * @return  void
    * @api     OSjs.API.killAll()
    */
-  function doKillAllProcesses(match, force) {
+  function doKillAllProcesses(match) {
     if ( match ) {
       var isMatching;
       if ( match instanceof RegExp && _PROCS ) {
@@ -81,7 +76,7 @@
       if ( isMatching ) {
         _PROCS.forEach(function(p) {
           if ( p && isMatching(p) ) {
-            _kill(p.__pid, force);
+            _kill(p.__pid);
           }
         });
       }
@@ -90,7 +85,7 @@
 
     _PROCS.forEach(function(proc, i) {
       if ( proc ) {
-        proc.destroy(false, true);
+        proc.destroy(true);
       }
       _PROCS[i] = null;
     });
@@ -102,11 +97,11 @@
    *
    * @param   int     pid       Process ID
    *
-   * @return  void
+   * @return  boolean           Success or not
    * @api     OSjs.API.kill()
    */
   function doKillProcess(pid) {
-    _kill(pid, false);
+    return _kill(pid);
   }
 
   /**
@@ -125,7 +120,7 @@
    * @api     OSjs.API.message()
    */
   function doProcessMessage(msg, obj, opts) {
-    console.info('doProcessMessage', msg, opts);
+    console.debug('doProcessMessage', msg, opts);
     _PROCS.forEach(function(p, i) {
       if ( p && (p instanceof OSjs.Core.Application || p instanceof Process) ) {
         p._onMessage(msg, obj, opts);
@@ -192,6 +187,7 @@
    *  api           API event                                => (method)
    *  destroy       Destruction event                        => (killed)
    *  destroyWindow Attached window destruction event        => (win)
+   *  initedWindow  Attached window event                    => (win)
    *  vfs           For all VFS events                       => (msg, object, options)
    *  vfs:mount     VFS mount event                          => (module, options, msg)
    *  vfs:unmount   VFS unmount event                        => (module, options, msg)
@@ -209,6 +205,8 @@
    * @class
    */
   function Process(name, args, metadata) {
+    console.group('Process::constructor()', name);
+
     this.__pid        = _PROCS.push(this) - 1;
     this.__pname      = name;
     this.__args       = args || {};
@@ -226,45 +224,40 @@
     this.__scope    = this.__metadata.scope || 'system';
     this.__iter     = this.__metadata.className;
 
-    console.group('Process::constructor()');
-    console.log('pid', this.__pid);
-    console.log('pname', this.__pname);
-    console.log('started', this.__started);
-    console.log('args', this.__args);
+    console.debug('id', this.__pid);
+    console.debug('args', this.__args);
+
     console.groupEnd();
   }
 
   /**
    * Destroys the process
    *
-   * @param   boolean   kill    Force kill ?
-   *
    * @return  boolean
    *
    * @method  Process::destroy()
    */
-  Process.prototype.destroy = function(kill) {
-    kill = (typeof kill === 'undefined') ? true : (kill === true);
-
+  Process.prototype.destroy = function() {
     if ( !this.__destroyed ) {
-      console.log('OSjs::Core::Process::destroy()', this.__pid, this.__pname);
+      this.__destroyed = true;
 
-      this._emit('destroy', [kill]);
+      console.group('Process::destroy()', this.__pid, this.__pname);
+
+      this._emit('destroy', []);
 
       if ( this.__evHandler ) {
         this.__evHandler = this.__evHandler.destroy();
       }
 
-      if ( kill ) {
-        if ( this.__pid >= 0 ) {
-          _PROCS[this.__pid] = null;
-        }
+      if ( this.__pid >= 0 ) {
+        _PROCS[this.__pid] = null;
       }
 
-      this.__destroyed = true;
+      console.groupEnd();
 
       return true;
     }
+
     return false;
   };
 
@@ -279,7 +272,7 @@
     opts = opts || {};
 
     if ( this.__evHandler && opts.source !== this.__pid ) {
-      console.info('Process::_onMessage()', msg, obj, opts, this.__pid, this.__pname);
+      console.debug('Process::_onMessage()', msg, obj, opts, this.__pid, this.__pname);
 
       this.__evHandler.emit('message', [msg, obj, opts]);
       if ( msg.substr(0, 3) === 'vfs' ) {
@@ -371,49 +364,6 @@
       method: method,
       'arguments': args, __loading: showLoading
     }, cb);
-  };
-
-  /**
-   * Call the ApplicationAPI
-   *
-   * This is used for calling 'api.php' or 'api.js' in your Application.
-   *
-   * On Lua or Arduino it is called 'server.lua'
-   *
-   * WARNING: THIS METHOD WILL BE DEPRECATED
-   *
-   * @param   String      method      Name of method
-   * @param   Object      args        Arguments in JSON
-   * @param   Function    onSuccess   When request is done callback fn(result)
-   * @param   Function    onError     When an error occured fn(error)
-   * @param   boolean     showLoading Show loading indication (default=true)
-   *
-   * @return  boolean
-   *
-   * @method  Process::_call()
-   */
-  Process.prototype._call = function(method, args, onSuccess, onError, showLoading) {
-    var self = this;
-
-    function _defaultError(err) {
-      err = err || 'Unknown error';
-      OSjs.API.error(OSjs.API._('ERR_APP_API_ERROR'),
-                     OSjs.API._('ERR_APP_API_ERROR_DESC_FMT', self.__pname, method),
-                     err);
-    }
-
-    console.warn('********************************* WARNING *********************************');
-    console.warn('THE METHOD Process:_call() IS DEPRECATED AND WILL BE REMOVED IN THE FUTURE');
-    console.warn('PLEASE USE Process::_api() INSTEAD!');
-    console.warn('***************************************************************************');
-
-    this._api(method, args, function(err, res) {
-      if ( err ) {
-        (onError || _defaultError)(err);
-      } else {
-        (onSuccess || function() {})(res);
-      }
-    }, showLoading);
   };
 
   /**

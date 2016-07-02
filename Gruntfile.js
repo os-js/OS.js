@@ -83,7 +83,6 @@
           'src/*.js',
           'src/server/node/*.js',
           'src/server/node/**/*.js',
-          'src/server/node/node_modules/osjs/*.js',
           'src/client/javascript/*.js',
           'src/client/javascript/**/*.js',
           'src/packages/default/**/*.js',
@@ -118,7 +117,7 @@
       },
       mochaTest: {
         test: {
-          src: ['test/server/*.js']
+          src: ['src/server/test/node/*.js']
         }
       },
       watch: {
@@ -165,7 +164,6 @@
           'src/*.js',
           'src/server/node/*.js',
           'src/server/node/**/*.js',
-          'src/server/node/node_modules/osjs/*.js',
           'src/client/javascript/*.js',
           'src/client/javascript/**/*.js',
           'src/packages/default/**/*.js',
@@ -173,7 +171,6 @@
         ],
         options: {
           config: '.jscsrc',
-          verbose: true,
           fix: false,
           requireCurlyBraces: ['if']
         }
@@ -257,7 +254,8 @@
         return;
       }
 
-      _build.buildPackages(grunt, arg);
+      var done = this.async();
+      _build.buildPackages(grunt, done, arg);
     });
 
     grunt.registerTask('themes', 'Build theme files (arguments: resources, fonts. Or a single theme, ex: grunt themes:MyThemename)', function(arg) {

@@ -34,93 +34,71 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
-  function resize(rel, w) {
-    var flex = w.toString() + 'px';
-    rel.style.webkitFlexBasis = flex;
-    rel.style.mozFflexBasis = flex;
-    rel.style.msFflexBasis = flex;
-    rel.style.oFlexBasis = flex;
-    rel.style.flexBasis = flex;
-  }
+  /**
+   * This is the function that applies a "fake" header to the table
+   * floating on top, containing the resizers.
+   *
+   * There's no other way to do this perfectly using tables.
+   * First attempt was using flexboxes, but it has a severe performance penalty
+   * when resizing because you have to repaint ALL the rows manually
+   */
+  function createFakeHeader(el) {
 
-  function createEntry(v, head) {
-    var label = v.label || '';
+    function createResizers() {
+      var fhead = el.querySelector('gui-list-view-fake-head');
+      var head = el.querySelector('gui-list-view-head');
+      var fcols = fhead.querySelectorAll('gui-list-view-column');
+      var cols = head.querySelectorAll('gui-list-view-column');
 
-    if ( v.label ) {
-      delete v.label;
-    }
+      fhead.querySelectorAll('gui-list-view-column-resizer').forEach(function(rel) {
+        Utils.$remove(rel);
+      });
 
-    var checks = {grow: 1, shrink: 1, basis: ''};
-    Object.keys(checks).forEach(function(k) {
-      if ( typeof v[k] === 'undefined' ) {
-        v[k] = checks[k];
-      }
-    });
+      cols.forEach(function(col, idx) {
+        var attr = col.getAttribute('data-resizable');
+        if ( attr === 'true' ) {
+          var fcol = fcols[idx];
 
-    var nel = GUI.Helpers.createElement('gui-list-view-column', v);
-    if ( typeof label === 'function' ) {
-      nel.appendChild(label.call(nel, nel, v));
-    } else {
-      nel.appendChild(document.createTextNode(label));
-    }
+          var resizer = document.createElement('gui-list-view-column-resizer');
+          fcol.appendChild(resizer);
 
-    return nel;
-  }
+          var startWidth   = 0;
+          var maxWidth     = 0;
+          var widthOffset  = 16;
+          var minWidth     = widthOffset;
+          var tmpEl        = null;
 
-  function createResizers(el) {
-    var head = el.querySelector('gui-list-view-head');
-    var body = el.querySelector('gui-list-view-body');
-    var cols = head.querySelectorAll('gui-list-view-column');
+          GUI.Helpers.createDrag(resizer, function(ev) {
+            startWidth = col.offsetWidth;
+            minWidth = widthOffset;//calculateWidth();
+            maxWidth = el.offsetWidth - (el.children.length * widthOffset);
+          }, function(ev, diff) {
+            var newWidth = startWidth - diff.x;
 
-    head.querySelectorAll('gui-list-view-column-resizer').forEach(function(rel) {
-      Utils.$remove(rel);
-    });
+            if ( !isNaN(newWidth) && newWidth > minWidth && newWidth < maxWidth ) {
+              col.style.width = String(newWidth) + 'px';
+              fcol.style.width = String(newWidth) + 'px';
+            }
 
-    cols.forEach(function(col, idx) {
-      var attr = col.getAttribute('data-resizable');
-      if ( attr === 'true' ) {
-        var resizer = document.createElement('gui-list-view-column-resizer');
-        col.appendChild(resizer);
-
-        var startWidth   = 0;
-        var maxWidth     = 0;
-        var widthOffset  = 16;
-        var minWidth     = widthOffset;
-        var tmpEl        = null;
-
-        /*
-        function calculateWidth() {
-          tmpEl = Utils.$remove(tmpEl);
-          tmpEl = document.createElement('span');
-          tmpEl.style.visibility = 'hidden';
-          tmpEl.innerHTML = col.innerHTML;
-          document.body.appendChild(tmpEl);
-
-          return tmpEl.offsetWidth || minWidth;
+            tmpEl = Utils.$remove(tmpEl);
+          });
         }
-        */
+      });
+    }
 
-        GUI.Helpers.createDrag(resizer, function(ev) {
-          startWidth = col.offsetWidth;
-          minWidth = widthOffset;//calculateWidth();
-          maxWidth = el.offsetWidth - (el.children.length * widthOffset);
-        }, function(ev, diff) {
-          var newWidth = startWidth - diff.x;
-          if ( !isNaN(newWidth) && newWidth > minWidth && newWidth < maxWidth ) {
-            resize(col, newWidth);
+    var fh = el.querySelector('gui-list-view-fake-head gui-list-view-head');
+    Utils.$empty(fh);
 
-            // FIXME: Super slow!
-            body.querySelectorAll('gui-list-view-row').forEach(function(row) {
-              resize(row.children[idx], newWidth);
-            });
-          }
-
-          tmpEl = Utils.$remove(tmpEl);
-        });
-      }
-    });
+    var row = el.querySelector('gui-list-view-head gui-list-view-row');
+    if ( row ) {
+      fh.appendChild(row.cloneNode(true));
+      createResizers();
+    }
   }
 
+  /**
+   * Applies DOM changes for a row to be rendered properly
+   */
   function initRow(el, row) {
     var cols = el.querySelectorAll('gui-list-view-head gui-list-view-column');
     var headContainer = el.querySelector('gui-list-view-head');
@@ -128,8 +106,6 @@
     row.querySelectorAll('gui-list-view-column').forEach(function(cel, idx) {
       var cl = cols.length;
       var x = cl ? idx % cl : idx;
-
-      GUI.Helpers.setFlexbox(cel, null, null, null, cols[x]);
 
       var icon = cel.getAttribute('data-icon');
       if ( icon && icon !== 'null' ) {
@@ -155,6 +131,37 @@
     GUI.Elements._dataview.bindEntryEvents(el, row, 'gui-list-view-row');
   }
 
+  /**
+   * Creates a new `gui-list-view-column`
+   */
+  function createEntry(v, head) {
+    var label = v.label || '';
+
+    if ( v.label ) {
+      delete v.label;
+    }
+    var setSize = null;
+    if ( v.size ) {
+      setSize = v.size;
+      delete v.size;
+    }
+
+    var nel = GUI.Helpers.createElement('gui-list-view-column', v);
+    if ( setSize ) {
+      nel.style.width = setSize;
+    }
+    if ( typeof label === 'function' ) {
+      nel.appendChild(label.call(nel, nel, v));
+    } else {
+      nel.appendChild(document.createTextNode(label));
+    }
+
+    return nel;
+  }
+
+  /**
+   * Creates a new `gui-list-view-row` from iter
+   */
   function createRow(e) {
     e = e || {};
     if ( e.columns ) {
@@ -162,7 +169,6 @@
 
       e.columns.forEach(function(se) {
         row.appendChild(createEntry(se));
-
       });
 
       return row;
@@ -186,16 +192,20 @@
    *    value: "something or JSON or whatever",
    *    columns: [
    *      {label: "Value for column 1", icon: "Optional icon"},
-   *      {label: "Value for column 2", icon: "Optional icon"}
+   *      {label: "Value for column 2", icon: "Optional icon"},
+   *      {label: "Value for column 3", icon: "Optional icon"},
+   *      {label: "Value for column 4", icon: "Optional icon"},
    *    ]
    * }
    * ```
    *
-   * Format for columns (flexbox parameters are also usable):
+   * Format for columns:
    * ```
    * [
-   *    {label: "Column 1"},
-   *    {label: "Column 2"}
+   *    {label: "Column 1", size: "100px"},
+   *    {label: "Column 2", size: "100px", visible: false},
+   *    {label: "Column 3", size: "100px", textalign: "right"},
+   *    {label: "Column 4", size: "100px", textalign: "right"}
    * ]
    * ```
    *
@@ -245,13 +255,11 @@
             nel.style.display = 'none';
           }
           row.appendChild(nel);
-
-          GUI.Helpers.setFlexbox(nel);
         });
 
         head.appendChild(row);
 
-        createResizers(el);
+        createFakeHeader(el);
         return true;
       } else if ( param === 'selected' || param === 'value' ) {
         var body = el.querySelector('gui-list-view-body');
@@ -290,41 +298,65 @@
     build: function(el, applyArgs) {
       el._columns  = [];
 
+      // Make sure base elements are in the dom
+      var inner = el.querySelector('gui-list-view-inner');
       var head = el.querySelector('gui-list-view-head');
       var body = el.querySelector('gui-list-view-body');
 
-      // Make sure base elements are in the dom
-      if ( !body ) {
-        body = document.createElement('gui-list-view-body');
-        el.appendChild(body);
+      function moveIntoInner(cel) {
+        // So user can forget adding the inner
+        if ( cel.parentNode.tagName !== 'GUI-LIST-VIEW-INNER' ) {
+          inner.appendChild(cel);
+        }
       }
 
-      if ( !head ) {
-        head = document.createElement('gui-list-view-head');
-        el.insertBefore(head, body);
+      var fakeHead = el.querySelector('gui-list-view-fake-head');
+      if ( !fakeHead ) {
+        fakeHead = document.createElement('gui-list-view-fake-head');
+        var fakeHeadInner = document.createElement('gui-list-view-inner');
+        fakeHeadInner.appendChild(document.createElement('gui-list-view-head'));
+        fakeHead.appendChild(fakeHeadInner);
       }
 
-      head.setAttribute('role', 'group');
-      body.setAttribute('role', 'group');
+      if ( !inner ) {
+        inner = document.createElement('gui-list-view-inner');
+        el.appendChild(inner);
+      }
+
+      (function _createBody() {
+        if ( body ) {
+          moveIntoInner(body);
+        } else {
+          body = document.createElement('gui-list-view-body');
+          inner.appendChild(body);
+        }
+        body.setAttribute('role', 'group');
+      })();
+
+      (function _createHead() {
+        if ( head ) {
+          moveIntoInner(head);
+        } else {
+          head = document.createElement('gui-list-view-head');
+          inner.insertBefore(head, body);
+        }
+        head.setAttribute('role', 'group');
+      })();
+
       el.setAttribute('role', 'list');
-
-      // Misc UI
-      createResizers(el);
+      el.appendChild(fakeHead);
 
       Utils.$bind(el, 'scroll', function(ev) {
-        head.style.top = el.scrollTop + 'px';
+        fakeHead.style.top = el.scrollTop + 'px';
       }, false);
 
       // Create scheme defined header
-      el.querySelectorAll('gui-list-view-head gui-list-view-column').forEach(function(cel, idx) {
-        GUI.Helpers.setFlexbox(cel);
-
+      var hcols = el.querySelectorAll('gui-list-view-head gui-list-view-column');
+      hcols.forEach(function(cel, idx) {
         var vis = cel.getAttribute('data-visible');
         var iter = {
           visible: vis === null || vis === 'true',
-          grow: cel.getAttribute('data-grow'),
-          shrink: cel.getAttribute('data-shrink'),
-          basis: cel.getAttribute('data-basis')
+          size: cel.getAttribute('data-size')
         };
 
         el._columns.push(iter);
@@ -333,6 +365,8 @@
           cel.style.display = 'none';
         }
       });
+
+      createFakeHeader(el);
 
       // Create scheme defined rows
       el.querySelectorAll('gui-list-view-body gui-list-view-row').forEach(function(row) {

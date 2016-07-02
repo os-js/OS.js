@@ -107,12 +107,22 @@
   /**
    * Compiles a LESS file
    */
-  function lessFile(src, dest, cb) {
+  function lessFile(src, dest, cfg, cb) {
     console.log('CSS', src.replace(ROOT, ''));
 
+    var base = 'theme.less';
     try {
-      var css = readFile(src).toString();
-      var opt = {sourceMap: {}};
+      base = cfg.themes.styleBase;
+    } catch ( e ) {}
+
+    try {
+      var opt = {
+        sourceMap: {},
+        paths: ['.', PATHS.themes, PATHS.stylesheets]
+      };
+
+      var css = '@import "' + base + '";\n\n';
+      css += readFile(src).toString();
 
       _less.render(css, opt).then(function(result) {
         writeFile(dest, result.css);
@@ -234,6 +244,18 @@
         removeNulls(obj[k]);
       }
     }
+  }
+
+  function aQueue(queue, every, done) {
+    (function _next(index) {
+      if ( index >= queue.length ) {
+        return done();
+      }
+
+      every(queue[index], function() {
+        _next(index + 1);
+      });
+    })(0);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -711,7 +733,7 @@
     if ( dist === 'dist-dev' ) {
       preloads.push({
         type: 'javascript',
-        src: _path.join('/', 'client', 'javascript', 'handlers', cfg.handler, 'handler.js')
+        src: '/' + ['client', 'javascript', 'handlers', cfg.handler, 'handler.js'].join('/')
       });
     }
 
@@ -852,22 +874,26 @@
     function addScript(i) {
       scripts.push('    <script type="text/javascript" charset="utf-8" src="' + i + '"></script>');
     }
+    var appendString = '';
+    if ( cfg.client.Connection.AppendVersion ) {
+      appendString = '?ver=' + cfg.client.Connection.AppendVersion;
+    }
 
     if ( dist === 'dist' ) {
-      addStyle('osjs.css');
-      addScript('osjs.js');
-      addScript('locales.js');
+      addStyle('osjs.css' + appendString);
+      addScript('osjs.js' + appendString);
+      addScript('locales.js' + appendString);
     } else {
       cfg.javascript.forEach(function(i) {
         if ( !i.match(/handlers\/(\w+)\/handler\.js$/) ) { // handler scripts are automatically preloaded by config!
-          addScript(i.replace('src/client/javascript', 'client/javascript'));
+          addScript(i.replace(/src\/client\/(.*)/, 'client/$1'));
         }
       });
       cfg.locales.forEach(function(i) {
-        addScript(i.replace('src/client/javascript', 'client/javascript'));
+        addScript(i.replace(/src\/client\/(.*)/, 'client/$1'));
       });
       cfg.stylesheets.forEach(function(i) {
-        addStyle(i.replace('src/client/stylesheets', 'client/stylesheets'));
+        addStyle(i.replace(/src\/client\/(.*)/, 'client/$1'));
       });
     }
 
@@ -1375,16 +1401,13 @@
   /**
    * Builds packages
    */
-  function buildPackages(grunt, arg) {
-    function copyFiles(src, dst, p, list) {
+  function buildPackages(grunt, onfinished, arg) {
+    function copyFiles(src, dst, p, list, additions) {
       list = list || [];
+      additions = additions || [];
 
-      deleteFile(dst);
-
-      if ( list.length ) {
-        mkdir(dst);
-
-        list.forEach(function(f) {
+      function _copyList(lst) {
+        lst.forEach(function(f) {
           try {
             mkdir(_path.join(dst, _path.dirname(f)));
           } catch ( e ) {}
@@ -1395,10 +1418,19 @@
             error(e);
           }
         });
+      }
+
+      deleteFile(dst);
+
+      if ( list.length ) {
+        mkdir(dst);
+        _copyList(list);
       } else {
         mkdir(_path.dirname(dst));
         copyFile(src, dst);
       }
+
+      _copyList(additions);
     }
 
     function combineFiles(src, dst, p, iter) {
@@ -1451,24 +1483,101 @@
       });
     }
 
-    var packages = readPackageMetadata(grunt);
-    Object.keys(packages).forEach(function(p) {
-      if ( arg && arg !== p ) {
-        return;
+    function compileLess(root, files, done) {
+      files = files || {};
+
+      var additions = [];
+
+      aQueue(Object.keys(files), function(ln, next) {
+        var dest = _path.join(root, files[ln]);
+        var src = _path.join(root, ln);
+
+        console.log('CSS', src.replace(ROOT, ''), '=>', dest.replace(ROOT, ''));
+
+        try {
+          var data = readFile(src).toString();
+          _less.render(data, {
+            sourceMap: {},
+            paths: ['.', PATHS.themes, PATHS.stylesheets]
+          }).then(function(result) {
+            writeFile(dest, result.css);
+            writeFile(dest + '.map', result.map);
+
+            additions.push(files[ln]);
+            additions.push(files[ln] + '.map');
+
+            next();
+          }, function(error) {
+            console.warn(error);
+            next();
+          });
+        } catch ( e ) {
+          console.warn(error, error.stack);
+          next();
+        }
+      }, function() {
+        done(additions);
+      });
+    }
+
+    function runPackageScript(type, pn, cmd, src, dst, cb) {
+      if ( cmd ) {
+        console.log('CMD', type + '@' + pn, '$', cmd);
+        require('child_process').exec(cmd, {cwd: src}, function(err, stdout, stderr) {
+          if ( grunt.option('verbose') ) {
+            console.log(stdout);
+          }
+          if ( stderr ) {
+            console.error(stderr);
+          }
+
+          cb();
+        });
+      } else {
+        cb();
       }
+    }
+
+    var packages = readPackageMetadata(grunt);
+    aQueue(Object.keys(packages), function(p, next) {
+      if ( arg && arg !== p ) {
+        return next();
+      }
+
       grunt.log.subhead(p);
 
       var iter = packages[p];
       var src = _path.join(PATHS.packages, p);
       var dst = _path.join(PATHS.out_client_packages, p);
+      var scripts = iter.build.scripts || {};
 
-      copyFiles(src, dst, p, iter.build.copy);
+      function _compile() {
+        var copy = iter.build.copy || [];
 
-      if ( iter.type === 'extension' ) {
-        return;
+        function _proceed(additions) {
+          additions = additions.filter(function(iter) {
+            return copy.indexOf(iter) < 0;
+          });
+
+          copyFiles(src, dst, p, copy, additions);
+
+          if ( iter.type !== 'extension' ) {
+            combineFiles(src, dst, p, iter);
+          }
+
+          aQueue(scripts.after || [], function(cmd, nxt) {
+            runPackageScript('after', p, cmd, src, dst, nxt);
+          }, next);
+        }
+
+        compileLess(src, iter.build.less, _proceed);
       }
 
-      combineFiles(src, dst, p, iter);
+      aQueue(scripts.before || [], function(cmd, nxt) {
+        runPackageScript('before', p, cmd, src, dst, nxt);
+      }, _compile);
+    }, function() {
+      onfinished();
     });
   }
 
@@ -1525,7 +1634,7 @@
         var src  = _path.join(PATHS.styles, s.name, 'style.less');
         var dest = _path.join(PATHS.out_client_styles, s.name + '.css');
 
-        lessFile(src, dest, function(error) {
+        lessFile(src, dest, cfg, function(error) {
           if ( error ) {
             grunt.fail.warn(error);
             return;

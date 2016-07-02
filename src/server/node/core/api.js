@@ -37,11 +37,9 @@
   /**
    * Login Wrapper. This is just a placeholder. The function is bound in the handler
    *
+   * @param   Object    server      Server object
    * @param   Object    args        API Call Arguments
    * @param   Function  callback    Callback function => fn(error, result)
-   * @param   Object    request     Server request object
-   * @param   Object    response    Server response object
-   * @param   Object    config      Server configuration object
    *
    * @option  args      String    username    Username
    * @option  args      String    password    Password
@@ -50,35 +48,31 @@
    *
    * @api     api.login
    */
-  module.exports.login = function(args, callback, request, response, config) {
+  module.exports.login = function(server, args, callback) {
     callback('No handler assigned', {});
   };
 
   /**
    * Logout Wrapper. This is just a placeholder. The function is bound in the handler
    *
+   * @param   Object    server      Server object
    * @param   Object    args        API Call Arguments
    * @param   Function  callback    Callback function => fn(error, result)
-   * @param   Object    request     Server request object
-   * @param   Object    response    Server response object
-   * @param   Object    config      Server configuration object
    *
    * @return  void
    *
    * @api     api.logout
    */
-  module.exports.logout = function(args, callback, request, response, config) {
+  module.exports.logout = function(server, args, callback) {
     callback('No handler assigned', {});
   };
 
   /**
    * Settings storing Wrapper. This is just a placeholder. The function is bound in the handler
    *
+   * @param   Object    server      Server object
    * @param   Object    args        API Call Arguments
    * @param   Function  callback    Callback function => fn(error, result)
-   * @param   Object    request     Server request object
-   * @param   Object    response    Server response object
-   * @param   Object    config      Server configuration object
    *
    * @option  args      Object    settings    Settings Tree
    *
@@ -86,18 +80,16 @@
    *
    * @api     api.settings
    */
-  module.exports.settings = function(args, callback, request, response, config) {
+  module.exports.settings = function(server, args, callback) {
     callback('No handler assigned', {});
   };
 
   /**
    * Application API Call
    *
+   * @param   Object    server      Server object
    * @param   Object    args        API Call Arguments
    * @param   Function  callback    Callback function => fn(error, result)
-   * @param   Object    request     Server request object
-   * @param   Object    response    Server response object
-   * @param   Object    config      Server configuration object
    *
    * @option  args      String    path        Package Path (ex: default/FileManager)
    * @option  args      String    method      API Method name
@@ -107,20 +99,20 @@
    *
    * @api     api.application
    */
-  module.exports.application = function(args, callback, request, response, config, handler) {
+  module.exports.application = function(server, args, callback) {
     var apath = args.path || null;
     var ameth = args.method || null;
     var aargs = args['arguments'] || [];
 
-    var aroot = _path.join(config.repodir, apath);
+    var aroot = _path.join(server.config.repodir, apath);
     var fpath = _path.join(aroot, 'api.js');
 
     try {
       require(fpath)[ameth](aargs, function(error, result) {
         callback(error, result);
-      }, request, response, config, handler);
+      }, server.request, server.response, server.config, server.handler);
     } catch ( e ) {
-      if ( config.logging !== false ) {
+      if ( server.config.logging !== false ) {
         console.warn(e.stack, e.trace);
       }
       callback('Application API error or missing: ' + e.toString(), null);
@@ -136,11 +128,9 @@
    * query string was defined in the url, this method will try to transform the
    * given body data and append to the url.
    *
+   * @param   Object    server      Server object
    * @param   Object    args        API Call Arguments
    * @param   Function  callback    Callback function => fn(error, result)
-   * @param   Object    request     Server request object
-   * @param   Object    response    Server response object
-   * @param   Object    config      Server configuration object
    *
    * @option  args      String    method        HTTP Call method (GET/POST/HEAD)
    * @option  args      String    url           HTTP Call URL
@@ -157,60 +147,83 @@
    *
    * @api     api.curl
    */
-  module.exports.curl = function(args, callback, request, response, config) {
+  module.exports.curl = function(server, args, callback) {
     var url = args.url;
-    var method = args.method || 'GET';
-    var query = args.body || args.query || {}; // 'query' was the old name, but kept for compability
-    var binary = args.binary === true;
-    var mime = args.mime || (binary ? 'application/octet-stream' : null);
 
     if ( !url ) {
       callback('cURL expects an \'url\'');
       return;
     }
 
-    var opts = {
-      url: url,
-      method: method,
-      timeout: (args.timeout || 0) * 1000,
-      headers: args.headers || args.requestHeaders || {}
-    };
+    var curlRequest = (function parseRequestParameters() {
+      var query = args.body || args.query || {}; // 'query' was the old name, but kept for compability
+      var binary = args.binary === true;
+      var method = args.method || 'GET';
+      var mime = args.mime || (binary ? 'application/octet-stream' : null);
 
-    if ( method === 'POST' ) {
-      if ( args.contentType === 'application/x-www-form-urlencoded' ) {
-        opts.form = query;
-      } else if ( args.contentType === 'multipart/form-data' ) {
-        opts.formData = query;
-      } else {
-        if ( query && typeof query !== 'string' ) {
-          opts.json = typeof opts.json === 'undefined' ? true : opts.json;
+      var opts = (function() {
+        return {
+          url: url,
+          method: method,
+          timeout: (args.timeout || 0) * 1000,
+          headers: args.headers || args.requestHeaders || {}
+        };
+      })();
+
+      (function parseRequestMethod() {
+        function _parsePOST() {
+          if ( args.contentType === 'application/x-www-form-urlencoded' ) {
+            opts.form = query;
+          } else if ( args.contentType === 'multipart/form-data' ) {
+            opts.formData = query;
+          } else {
+            if ( query && typeof query !== 'string' ) {
+              opts.json = typeof opts.json === 'undefined' ? true : opts.json;
+            }
+            opts.body = query;
+          }
         }
-        opts.body = query;
-      }
-    } else {
-      if ( typeof query === 'object' && url.indexOf('?') === '1' ) {
-        try {
-          url += '?' + Object.keys(query).map(function(k) {
-            return encodeURIComponent(k) + '=' + encodeURIComponent(query[k]);
-          }).join('&');
-        } catch ( e ) {
-          console.warn('Failed to transform curl query', e.stack, e);
+
+        function _parseOTHER() {
+          if ( typeof query === 'object' && url.indexOf('?') === '1' ) {
+            try {
+              url += '?' + Object.keys(query).map(function(k) {
+                return encodeURIComponent(k) + '=' + encodeURIComponent(query[k]);
+              }).join('&');
+            } catch ( e ) {
+              console.warn('Failed to transform curl query', e.stack, e);
+            }
+          }
         }
-      }
-    }
 
-    if ( binary ) {
-      opts.encoding = null;
-    }
+        if ( method === 'POST' ) {
+          _parsePOST();
+        } else {
+          _parseOTHER();
+        }
 
-    require('request')(opts, function(error, response, body) {
+        if ( binary ) {
+          opts.encoding = null;
+        }
+      })();
+
+      return {
+        query: query,
+        binary: binary,
+        method: method,
+        mime: mime,
+        opts: opts
+      };
+    })();
+
+    require('request')(curlRequest.opts, function(error, response, body) {
       if ( error ) {
         callback(error);
         return;
       }
 
-      if ( binary && body ) {
-        body = 'data:' + mime + ';base64,' + (body.toString('base64'));
+      if ( curlRequest.binary && body ) {
+        body = 'data:' + curlRequest.mime + ';base64,' + (body.toString('base64'));
       }
 
       var data = {

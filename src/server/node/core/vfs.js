@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(_path, _fs) {
+(function(_path, _nfs, _fs) {
   'use strict';
 
   function readExif(path, mime, cb) {
@@ -37,7 +37,7 @@
       try {
         var CR = require('exif').ExifImage;
         new CR({image: path}, function(err, result) {
-          cb(null, JSON.stringify(result, null, 4));
+          cb(err, JSON.stringify(result, null, 4));
         });
         return;
       } catch ( e ) {
@@ -99,22 +99,18 @@
     return s.replace(/\\/g, '/');
   }
 
-  function getRealPath(path, config, request) {
+  function getRealPath(server, path) {
     var fullPath = null;
     var protocol = '';
     var fprotocol = '';
 
     if ( path.match(/^osjs\:\/\//) ) {
       path = path.replace(/^osjs\:\/\//, '');
-      fullPath = _path.join(config.distdir, path);
+      fullPath = _path.join(server.config.distdir, path);
       protocol = 'osjs://';
     } else if ( path.match(/^home\:\/\//) ) {
       path = path.replace(/^home\:\/\//, '');
-      var userdir = request.session.get('username');
-      if ( !userdir ) {
-        throw 'No user session was found';
-      }
-      fullPath = _path.join(config.vfs.homes, userdir, path);
+      fullPath = _path.join(server.handler.getHomePath(server), path);
       protocol = 'home://';
     } else {
       var tmp = path.split(/^(\w+)\:\/\//);
@@ -122,10 +118,10 @@
       if ( tmp.length === 3 ) {
         fprotocol = tmp[1];
 
-        if ( config.vfs.mounts && config.vfs.mounts[fprotocol] ) {
+        if ( server.config.vfs.mounts && server.config.vfs.mounts[fprotocol] ) {
           protocol = fprotocol + '://';
           path = path.replace(/^(\w+)\:\/\//, '');
-          fullPath = _path.join(config.vfs.mounts[fprotocol], path);
+          fullPath = _path.join(server.config.vfs.mounts[fprotocol], path);
         }
       }
     }
@@ -134,13 +130,13 @@
       var found = (function() {
         var rmap = {
           '%UID%': function() {
-            return request.session.get('username');
+            return server.request.session.get('username');
           },
           '%USERNAME%': function() {
-            return request.session.get('username');
+            return server.request.session.get('username');
           },
           '%DROOT%': function() {
-            return config.rootdir;
+            return server.config.rootdir;
           },
           '%MOUNTPOINT%': function() {
             return fprotocol;
@@ -154,10 +150,10 @@
           return s;
         }
 
-        if ( fprotocol && config.vfs.mounts['*'] ) {
+        if ( fprotocol && server.config.vfs.mounts['*'] ) {
           protocol = fprotocol + '://';
           path = path.replace(/^(\w+)\:\/\//, '');
-          fullPath = _path.join(_createDir(config.vfs.mounts['*']), path.replace(/\/+/g, '/'));
+          fullPath = _path.join(_createDir(server.config.vfs.mounts['*']), path.replace(/\/+/g, '/'));
 
           return true;
         }
@@ -232,6 +228,12 @@
     return result;
   }
 
+  function checkProtectedPath(dst) {
+    if ( dst.match(/osjs\:/) ) {
+      throw new Error('Access denied');
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
@@ -241,9 +243,8 @@
    *
    * NOT AVAILABLE FROM CLIENT
    *
+   * @param   Object    server      Server object
    * @param   String    file        File path
-   * @param   Object    config      Server configuration object
-   * @param   Object    request     Server request object
    *
    * @return  Object                With `root` (real path), `path` (virtual path), `protocol` (virtual protocol)
    *
@@ -268,11 +269,9 @@
   /**
    * Read a file
    *
+   * @param   Object    server      Server object
    * @param   Object    args        API Call Arguments
    * @param   Function  callback    Callback function => fn(error, result)
-   * @param   Object    request     Server request object
-   * @param   Object    response    Server response object
-   * @param   Object    config      Server configuration object
    *
    * @option  args      String    path      Request path
    * @option  args      Object    options   (Optional) Request options
@@ -283,8 +282,8 @@
    *
    * @api     vfs.read
    */
-  module.exports.read = function(args, request, callback, config) {
-    var realPath = getRealPath(args.path, config, request);
+  module.exports.read = function(server, args, callback) {
+    var realPath = getRealPath(server, args.path);
     var path = realPath.path;
     var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
 
@@ -297,7 +296,7 @@
             if ( opts.raw ) {
               callback(false, data);
             } else {
-              data = 'data:' + getMime(realPath.root, config) + ';base64,' + (new Buffer(data).toString('base64'));
+              data = 'data:' + getMime(realPath.root, server.config) + ';base64,' + (new Buffer(data).toString('base64'));
               callback(false, data.toString());
             }
           }
@@ -311,11 +310,9 @@
   /**
    * Write a file
    *
+   * @param   Object    server      Server object
    * @param   Object    args        API Call Arguments
    * @param   Function  callback    Callback function => fn(error, result)
-   * @param   Object    request     Server request object
-   * @param   Object    response    Server response object
-   * @param   Object    config      Server configuration object
    *
    * @option  args      String    path      Request path
    * @option  args      Mixed     data      Request payload
@@ -328,25 +325,16 @@
    *
    * @api     vfs.write
    */
-  module.exports.write = function(args, request, callback, config) {
+  module.exports.write = function(server, args, callback) {
     var data = args.data || '';
     var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
-    var realPath = getRealPath(args.path, config, request);
+    var realPath = getRealPath(server, args.path);
     var path = realPath.path;
 
-    if ( opts.raw ) {
-      _fs.writeFile(realPath.root, data, opts.rawtype || 'binary', function(error, data) {
-        if ( error ) {
-          callback('Error writing file: ' + error);
-        } else {
-          callback(false, true);
-        }
-      });
-    } else {
-      data = unescape(data.substring(data.indexOf(',') + 1));
-      data = new Buffer(data, 'base64');
+    checkProtectedPath(args.path);
 
-      _fs.writeFile(realPath.root, data, function(error, data) {
+    function writeFile(d, e) {
+      _fs.writeFile(realPath.root, d, e || 'utf8', function(error, data) {
         if ( error ) {
           callback('Error writing file: ' + error);
         } else {
@@ -354,16 +342,22 @@
         }
       });
     }
+
+    if ( opts.raw ) {
+      writeFile(data, opts.rawtype || 'binary');
+    } else {
+      data = unescape(data.substring(data.indexOf(',') + 1));
+      data = new Buffer(data, 'base64');
+      writeFile(data);
+    }
   };
 
   /**
    * Delete a file
    *
+   * @param   Object    server      Server object
    * @param   Object    args        API Call Arguments
    * @param   Function  callback    Callback function => fn(error, result)
-   * @param   Object    request     Server request object
-   * @param   Object    response    Server response object
-   * @param   Object    config      Server configuration object
    *
    * @option  args      String    path      Request path
    * @option  args      Object    options   (Optional) Request options
@@ -372,10 +366,12 @@
    *
    * @api     vfs.delete
    */
-  module.exports.delete = function(args, request, callback, config) {
+  module.exports.delete = function(server, args, callback) {
     var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
-    var realPath = getRealPath(args.path, config, request);
+    var realPath = getRealPath(server, args.path);
     var path = realPath.path;
+
+    checkProtectedPath(args.path);
 
     if ( (realPath.path || '/') === '/' ) {
       callback('Permission denied');
@@ -400,11 +396,9 @@
   /**
    * Copy a file
    *
+   * @param   Object    server      Server object
    * @param   Object    args        API Call Arguments
    * @param   Function  callback    Callback function => fn(error, result)
-   * @param   Object    request     Server request object
-   * @param   Object    response    Server response object
-   * @param   Object    config      Server configuration object
    *
    * @option  args      String    src       Request source path
    * @option  args      String    dest      Request destination path
@@ -414,13 +408,15 @@
    *
    * @api     vfs.copy
    */
-  module.exports.copy = function(args, request, callback, config) {
+  module.exports.copy = function(server, args, callback) {
     var src  = args.src;
     var dst  = args.dest;
     var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
 
-    var realSrc = getRealPath(src, config, request);
-    var realDst = getRealPath(dst, config, request);
+    checkProtectedPath(dst);
+
+    var realSrc = getRealPath(server, src);
+    var realDst = getRealPath(server, dst);
     var srcPath = realSrc.root; //_path.join(realSrc.root, src);
     var dstPath = realDst.root; //_path.join(realDst.root, dst);
     _fs.exists(srcPath, function(exists) {
@@ -429,11 +425,17 @@
           if ( exists ) {
             callback('Target already exist!');
           } else {
-            _fs.copy(srcPath, dstPath, function(error, data) {
-              if ( error ) {
-                callback('Error copying: ' + error);
+            _fs.access(_path.dirname(dstPath), _nfs.W_OK, function(err) {
+              if ( err ) {
+                callback('Cannot write to destination');
               } else {
-                callback(false, true);
+                _fs.copy(srcPath, dstPath, function(error, data) {
+                  if ( error ) {
+                    callback('Error copying: ' + error);
+                  } else {
+                    callback(false, true);
+                  }
+                });
               }
             });
           }
@@ -447,11 +449,9 @@
   /**
    * Uploads a file
    *
+   * @param   Object    server      Server object
    * @param   Object    args        API Call Arguments
    * @param   Function  callback    Callback function => fn(error, result)
-   * @param   Object    request     Server request object
-   * @param   Object    response    Server response object
-   * @param   Object    config      Server configuration object
    *
    * @option  args      String    src         Uploaded file path
    * @option  args      String    name        Destination filename
@@ -462,9 +462,16 @@
    *
    * @api     vfs.upload
    */
-  module.exports.upload = function(args, request, callback, config) {
-    var tmpPath = (args.path + '/' + args.name).replace('////', '///'); // FIXME
-    var dstPath = getRealPath(tmpPath, config, request).root;
+  module.exports.upload = function(server, args, callback) {
+    var tmpPath = args.path;
+    if ( !tmpPath.match(/\/$/) ) {
+      tmpPath += '/';
+    }
+    tmpPath += args.name;
+
+    checkProtectedPath(args.path);
+
+    var dstPath = getRealPath(server, tmpPath).root;
     var overwrite = args.overwrite === true;
 
     function _rename(source, dest, cb) {
@@ -513,11 +520,9 @@
   /**
    * Move a file
    *
+   * @param   Object    server      Server object
    * @param   Object    args        API Call Arguments
    * @param   Function  callback    Callback function => fn(error, result)
-   * @param   Object    request     Server request object
-   * @param   Object    response    Server response object
-   * @param   Object    config      Server configuration object
    *
    * @option  args      String    src       Request source path
    * @option  args      String    dest      Request destination path
@@ -527,20 +532,25 @@
    *
    * @api     vfs.move
    */
-  module.exports.move = function(args, request, callback, config) {
+  module.exports.move = function(server, args, callback) {
     var src  = args.src;
     var dst  = args.dest;
     var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
 
-    var realSrc = getRealPath(src, config, request);
-    var realDst = getRealPath(dst, config, request);
+    checkProtectedPath(dst);
+
+    var realSrc = getRealPath(server, src);
+    var realDst = getRealPath(server, dst);
     var srcPath = realSrc.root; //_path.join(realSrc.root, src);
     var dstPath = realDst.root; //_path.join(realDst.root, dst);
-    _fs.exists(srcPath, function(exists) {
-      if ( exists ) {
-        _fs.exists(dstPath, function(exists) {
-          if ( exists ) {
-            callback('Target already exist!');
+
+    _fs.access(srcPath, _nfs.R_OK, function(err) {
+      if ( err ) {
+        callback('Cannot read source');
+      } else {
+        _fs.access(_path.dirname(dstPath), _nfs.W_OK, function(err) {
+          if ( err ) {
+            callback('Cannot write to destination');
           } else {
             _fs.rename(srcPath, dstPath, function(error, data) {
               if ( error ) {
@@ -551,8 +561,6 @@
             });
           }
         });
-      } else {
-        callback('Source does not exist!');
       }
     });
   };
@@ -560,11 +568,9 @@
   /**
    * Creates a directory
    *
+   * @param   Object    server      Server object
    * @param   Object    args        API Call Arguments
    * @param   Function  callback    Callback function => fn(error, result)
-   * @param   Object    request     Server request object
-   * @param   Object    response    Server response object
-   * @param   Object    config      Server configuration object
    *
    * @option  args      String    src       Request source path
    * @option  args      Object    options   (Optional) Request options
@@ -573,10 +579,12 @@
    *
    * @api     vfs.mkdir
    */
-  module.exports.mkdir = function(args, request, callback, config) {
+  module.exports.mkdir = function(server, args, callback) {
     var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
-    var realPath = getRealPath(args.path, config, request);
+    var realPath = getRealPath(server, args.path);
     var path = realPath.path;
+
+    checkProtectedPath(args.path);
 
     _fs.exists(realPath.root, function(exists) {
       if ( exists ) {
@@ -596,11 +604,9 @@
   /**
    * Check if file exists
    *
+   * @param   Object    server      Server object
    * @param   Object    args        API Call Arguments
    * @param   Function  callback    Callback function => fn(error, result)
-   * @param   Object    request     Server request object
-   * @param   Object    response    Server response object
-   * @param   Object    config      Server configuration object
    *
    * @option  args      String    src       Request source path
    * @option  args      Object    options   (Optional) Request options
@@ -609,9 +615,9 @@
    *
    * @api     vfs.exists
    */
-  module.exports.exists = function(args, request, callback, config) {
+  module.exports.exists = function(server, args, callback) {
     var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
-    var realPath = getRealPath(args.path, config, request);
+    var realPath = getRealPath(server, args.path);
     _fs.exists(realPath.root, function(exists) {
       callback(false, exists);
     });
@@ -620,11 +626,9 @@
   /**
    * Search for file(s)
    *
+   * @param   Object    server      Server object
    * @param   Object    args        API Call Arguments
    * @param   Function  callback    Callback function => fn(error, result)
-   * @param   Object    request     Server request object
-   * @param   Object    response    Server response object
-   * @param   Object    config      Server configuration object
    *
    * @option  args      String    src       Request source path
    * @option  args      Object    query     Query object {query, limit}
@@ -633,11 +637,11 @@
    *
    * @api     vfs.find
    */
-  module.exports.find = function(args, request, callback, config) {
+  module.exports.find = function(server, args, callback) {
     var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
     var qargs = args.args || {};
     var query = (qargs.query || '').toLowerCase();
-    var realPath = getRealPath(args.path, config, request);
+    var realPath = getRealPath(server, args.path);
 
     if ( !qargs.recursive ) {
       _fs.readdir(realPath.root, function(error, files) {
@@ -646,7 +650,7 @@
         } else {
           callback(false, getFileIters(files.filter(function(f) {
             return f.toLowerCase().indexOf(query) !== -1;
-          }), realPath, request, config));
+          }), realPath, server.request, server.config));
         }
       });
 
@@ -658,64 +662,63 @@
       find = require('findit')(realPath.root);
     } catch ( e ) {
       callback('Failed to load findit node library: ' + e.toString());
-    } finally {
-      var list = [];
-
-      find.on('path', function() {
-        if ( qargs.limit && list.length >= qargs.limit ) {
-          find.stop();
-        }
-      });
-
-      find.on('directory', function(dir, stat) {
-        var filename = _path.basename(dir).toLowerCase();
-        if ( filename.indexOf(query) !== -1 ) {
-          list.push({
-            filename: filename,
-            path: realPath.protocol + '/' + dir.substr(realPath.root.length).replace(/^\//, ''),
-            mime: '',
-            size: 0,
-            mtime: '',
-            ctime: stat.ctime,
-            type: 'dir'
-          });
-        }
-      });
-
-      find.on('file', function(file, stat) {
-        var filename = _path.basename(file).toLowerCase();
-        if ( filename.indexOf(query) !== -1 ) {
-          var ftype = stat.isFile() ? 'file' : 'dir';
-
-          list.push({
-            filename: filename,
-            path: realPath.protocol + '/' + file.substr(realPath.root.length).replace(/^\//, ''),
-            mime: ftype === 'file' ? getMime(file, config) : '',
-            size: ftype === 'file' ? stat.size : 0,
-            mtime: stat.mtime,
-            ctime: stat.ctime,
-            type: ftype
-          });
-        }
-      });
-
-      find.on('end', function() {
-        callback(false, list);
-      });
-      find.on('stop', function() {
-        callback(false, list);
-      });
+      return;
     }
+
+    var list = [];
+
+    find.on('path', function() {
+      if ( qargs.limit && list.length >= qargs.limit ) {
+        find.stop();
+      }
+    });
+
+    find.on('directory', function(dir, stat) {
+      var filename = _path.basename(dir).toLowerCase();
+      if ( filename.indexOf(query) !== -1 ) {
+        list.push({
+          filename: filename,
+          path: realPath.protocol + '/' + dir.substr(realPath.root.length).replace(/^\//, ''),
+          mime: '',
+          size: 0,
+          mtime: '',
+          ctime: stat.ctime,
+          type: 'dir'
+        });
+      }
+    });
+
+    find.on('file', function(file, stat) {
+      var filename = _path.basename(file).toLowerCase();
+      if ( filename.indexOf(query) !== -1 ) {
+        var ftype = stat.isFile() ? 'file' : 'dir';
+
+        list.push({
+          filename: filename,
+          path: realPath.protocol + '/' + file.substr(realPath.root.length).replace(/^\//, ''),
+          mime: ftype === 'file' ? getMime(file, server.config) : '',
+          size: ftype === 'file' ? stat.size : 0,
+          mtime: stat.mtime,
+          ctime: stat.ctime,
+          type: ftype
+        });
+      }
+    });
+
+    find.on('end', function() {
+      callback(false, list);
+    });
+    find.on('stop', function() {
+      callback(false, list);
+    });
   };
 
   /**
    * Get metadata about a file
    *
+   * @param   Object    server      Server object
    * @param   Object    args        API Call Arguments
    * @param   Function  callback    Callback function => fn(error, result)
-   * @param   Object    request     Server request object
-   * @param   Object    response    Server response object
-   * @param   Object    config      Server configuration object
    *
    * @option  args      String    src       Request source path
    * @option  args      Object    options   (Optional) Request options
@@ -724,9 +727,9 @@
    *
    * @api     vfs.fileinfo
    */
-  module.exports.fileinfo = function(args, request, callback, config) {
+  module.exports.fileinfo = function(server, args, callback) {
     var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
-    var realPath = getRealPath(args.path, config, request);
+    var realPath = getRealPath(server, args.path);
     var path = realPath.path;
     _fs.exists(realPath.root, function(exists) {
       if ( !exists ) {
@@ -737,7 +740,7 @@
             callback('Error getting file information: ' + error);
           } else {
 
-            var mime = getMime(realPath.root, config);
+            var mime = getMime(realPath.root, server.config);
             var data = {
               path:         realPath.protocol + realPath.path,
               filename:     _path.basename(realPath.root),
@@ -764,11 +767,9 @@
   /**
    * Scans given directory
    *
+   * @param   Object    server      Server object
    * @param   Object    args        API Call Arguments
    * @param   Function  callback    Callback function => fn(error, result)
-   * @param   Object    request     Server request object
-   * @param   Object    response    Server response object
-   * @param   Object    config      Server configuration object
    *
    * @option  args      String    src       Request source path
    * @option  args      Object    options   (Optional) Request options
@@ -777,20 +778,51 @@
    *
    * @api     vfs.scandir
    */
-  module.exports.scandir = function(args, request, callback, config) {
+  module.exports.scandir = function(server, args, callback) {
     var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
-    var realPath = getRealPath(args.path, config, request);
+    var realPath = getRealPath(server, args.path);
 
     _fs.readdir(realPath.root, function(error, files) {
       if ( error ) {
         callback('Error reading directory: ' + error);
       } else {
-        callback(false, getFileIters(files, realPath, request, config));
+        callback(false, getFileIters(files, realPath, server.request, server.config));
       }
     });
   };
 
+  /**
+   * Checks given root path for free space
+   *
+   * @param   Object    server      Server object
+   * @param   Object    args        API Call Arguments
+   * @param   Function  callback    Callback function => fn(error, result)
+   *
+   * @option  args      String    root      Request source path
+   * @option  args      Object    options   (Optional) Request options
+   *
+   * @return  void
+   *
+   * @api     vfs.freeSpace
+   */
+  module.exports.freeSpace = function(server, args, callback) {
+    var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
+    var realPath = getRealPath(server, args.root);
+
+    try {
+      var ds = require('diskspace');
+      ds.check(realPath.root, function(err, total, free, stat) {
+        callback(err, free);
+      });
+    } catch ( e ) {
+      callback('Failed to load diskspace node library: ' + e.toString());
+      return;
+    }
+
+  };
+
 })(
   require('path'),
+  require('fs'),
   require('node-fs-extra')
 );

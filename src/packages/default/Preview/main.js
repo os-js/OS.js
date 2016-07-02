@@ -63,13 +63,17 @@
 
     if ( result ) {
       if ( file.mime.match(/^image/) ) {
-        this._scheme.create(self, 'gui-image', {src: result}, root, {onload: function() {
-          self._resizeTo(this.offsetWidth, this.offsetHeight, true, false, this);
-        }});
+        this._scheme.create(self, 'gui-image', {src: result}, root, {
+          onload: function() {
+            self._resizeTo(this.offsetWidth, this.offsetHeight, true, false, this);
+          }
+        });
       } else if ( file.mime.match(/^video/) ) {
-        this._scheme.create(self, 'gui-video', {src: result, controls: true, autoplay: true}, root, {onload: function() {
-          self._resizeTo(this.offsetWidth, this.offsetHeight, true, false, this);
-        }});
+        this._scheme.create(self, 'gui-video', {src: result, controls: true, autoplay: true}, root, {
+          onload: function() {
+            self._resizeTo(this.offsetWidth, this.offsetHeight, true, false, this);
+          }
+        });
       }
     }
 

@@ -50,26 +50,26 @@
   exports.register = function(instance, DefaultHandler) {
     function PAMHandler() {
       DefaultHandler.call(this, instance, {
-        login: function(login, callback, request, response, config, handler) {
-          var cfg = config.handlers.pam;
+        login: function(server, login, callback) {
+          var cfg = server.config.handlers.pam;
           _pam.authenticate(login.username, login.password, function(err) {
             if ( err ) {
               callback(err);
             } else {
-              handler.onSystemLogin(request, response, cfg, login, function(cb) {
+              server.handler.onSystemLogin(server, cfg, login, function(cb) {
                 cb(_userid.uid(login.username));
               }, callback);
             }
           });
         },
 
-        logout: function(args, callback, request, response, config, handler) {
-          handler.onLogout(request, response, callback);
+        logout: function(server, args, callback) {
+          server.handler.onLogout(server, callback);
         },
 
-        settings: function(args, callback, request, response, config, handler) {
-          var cfg = config.handlers.pam;
-          handler.onSystemSettings(request, response, cfg, args.settings, callback);
+        settings: function(server, args, callback) {
+          var cfg = server.config.handlers.pam;
+          server.handler.onSystemSettings(server, cfg, args.settings, callback);
         }
       });
     }

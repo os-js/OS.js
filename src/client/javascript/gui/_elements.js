@@ -27,11 +27,8 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, VFS) {
+(function(API, Utils, VFS, GUI) {
   'use strict';
-
-  window.OSjs = window.OSjs || {};
-  OSjs.GUI = OSjs.GUI || {};
 
   /**
    * Wrapper for getting which element to focus/blur
@@ -132,8 +129,8 @@
    */
   UIElement.prototype.show = function() {
     if ( this.$element && !this.$element.offsetParent ) {
-      if ( OSjs.GUI.Elements[this.tagName] && OSjs.GUI.Elements[this.tagName].show ) {
-        OSjs.GUI.Elements[this.tagName].show.apply(this, arguments);
+      if ( GUI.Elements[this.tagName] && GUI.Elements[this.tagName].show ) {
+        GUI.Elements[this.tagName].show.apply(this, arguments);
       } else {
         if ( this.$element ) {
           this.$element.style.display = this.oldDisplay || '';
@@ -170,8 +167,8 @@
    * @return Element this
    */
   UIElement.prototype.on = function(evName, callback, args) {
-    if ( OSjs.GUI.Elements[this.tagName] && OSjs.GUI.Elements[this.tagName].bind ) {
-      OSjs.GUI.Elements[this.tagName].bind(this.$element, evName, callback, args);
+    if ( GUI.Elements[this.tagName] && GUI.Elements[this.tagName].bind ) {
+      GUI.Elements[this.tagName].bind(this.$element, evName, callback, args);
     }
     return this;
   };
@@ -186,7 +183,7 @@
    * **the first parameter is always the GUI element**
    *
    * @see Element::on()
-   * @method Element::pon()
+   * @method Element::son()
    * @return Element this
    */
   UIElement.prototype.son = function(evName, thisArg, callback, args) {
@@ -210,13 +207,13 @@
    */
   UIElement.prototype.set = function(param, value, arg, arg2) {
     if ( this.$element ) {
-      if ( OSjs.GUI.Elements[this.tagName] && OSjs.GUI.Elements[this.tagName].set ) {
-        if ( OSjs.GUI.Elements[this.tagName].set(this.$element, param, value, arg, arg2) === true ) {
+      if ( GUI.Elements[this.tagName] && GUI.Elements[this.tagName].set ) {
+        if ( GUI.Elements[this.tagName].set(this.$element, param, value, arg, arg2) === true ) {
           return this;
         }
       }
 
-      OSjs.GUI.Helpers.setProperty(this.$element, param, value, arg, arg2);
+      GUI.Helpers.setProperty(this.$element, param, value, arg, arg2);
     }
     return this;
   };
@@ -232,11 +229,11 @@
    */
   UIElement.prototype.get = function() {
     if ( this.$element ) {
-      if ( OSjs.GUI.Elements[this.tagName] && OSjs.GUI.Elements[this.tagName].get ) {
+      if ( GUI.Elements[this.tagName] && GUI.Elements[this.tagName].get ) {
         var args = ([this.$element]).concat(Array.prototype.slice.call(arguments));
-        return OSjs.GUI.Elements[this.tagName].get.apply(this, args);
+        return GUI.Elements[this.tagName].get.apply(this, args);
       } else {
-        return OSjs.GUI.Helpers.getProperty(this.$element, arguments[0]);
+        return GUI.Helpers.getProperty(this.$element, arguments[0]);
       }
     }
     return null;
@@ -257,7 +254,7 @@
     thisArg = thisArg || this;
 
     if ( this.$element ) {
-      return OSjs.GUI.Elements[this.tagName][name].apply(thisArg, args);
+      return GUI.Elements[this.tagName][name].apply(thisArg, args);
     }
     return null;
   };
@@ -306,7 +303,7 @@
 
   UIElement.prototype._append = function(el, scheme, win, args) {
     if ( el instanceof Element ) {
-      OSjs.GUI.Scheme.parseNode(scheme, win, el, null, args);
+      GUI.Scheme.parseNode(scheme, win, el, null, args);
     }
 
     // Move elements over
@@ -331,7 +328,7 @@
   UIElement.prototype.querySelector = function(q, rui) {
     var el = this.$element.querySelector(q);
     if ( rui ) {
-      return OSjs.GUI.Scheme.getElementInstance(el, q);
+      return GUI.Scheme.getElementInstance(el, q);
     }
     return el;
   };
@@ -349,16 +346,16 @@
     var el = this.$element.querySelectorAll(q);
     if ( rui ) {
       el = el.map(function(i) {
-        return OSjs.GUI.Scheme.getElementInstance(i, q);
+        return GUI.Scheme.getElementInstance(i, q);
       });
     }
     return el;
   };
 
   UIElement.prototype._call = function(method, args) {
-    if ( OSjs.GUI.Elements[this.tagName] && OSjs.GUI.Elements[this.tagName].call ) {
+    if ( GUI.Elements[this.tagName] && GUI.Elements[this.tagName].call ) {
       var cargs = ([this.$element, method, args]);//.concat(args);
-      return OSjs.GUI.Elements[this.tagName].call.apply(this, cargs);
+      return GUI.Elements[this.tagName].call.apply(this, cargs);
     }
     return null;//this;
   };
@@ -396,7 +393,7 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.GUI.Element = Object.seal(UIElement);
-  OSjs.GUI.ElementDataView = Object.seal(UIElementDataView);
+  GUI.Element = Object.seal(UIElement);
+  GUI.ElementDataView = Object.seal(UIElementDataView);
 
-})(OSjs.API, OSjs.Utils, OSjs.VFS);
+})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

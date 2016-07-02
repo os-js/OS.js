@@ -61,11 +61,11 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var APIUser = function() {};
-  APIUser.login = function(login, request, response, callback, config, handler) {
+  APIUser.login = function(server, login, callback) {
     console.log('APIUser::login()');
 
     function complete(data) {
-      handler.onLogin(request, response, {
+      server.handler.onLogin(server, {
         userData: {
           id : data.id,
           username : data.username,
@@ -161,9 +161,8 @@
     });
   };
 
-  APIUser.updateSettings = function(settings, request, response, callback) {
-    var uname = request.session.get('username');
-
+  APIUser.updateSettings = function(server, settings, callback) {
+    var uname = server.handler.getUserName(server);
     var q = 'UPDATE `users` SET `settings` = ? WHERE `username` = ?;';
     var a = [JSON.stringify(settings), uname];
 
@@ -182,25 +181,25 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var API = {
-    login: function(args, callback, request, response, config, handler) {
-      APIUser.login(args, request, response, function(error, result) {
+    login: function(server, args, callback) {
+      APIUser.login(server, args, function(error, result) {
         if ( error ) {
           callback(error);
           return;
         }
 
-        handler.onLogin(request, response, result, function() {
+        server.handler.onLogin(server, result, function() {
           callback(false, result);
         });
-      }, config, handler);
+      });
     },
 
-    logout: function(args, callback, request, response, config, handler) {
-      handler.onLogout(request, response, callback);
+    logout: function(server, args, callback) {
+      server.handler.onLogout(server, callback);
     },
 
-    settings: function(args, callback, request, response, config, handler) {
-      APIUser.updateSettings(args.settings, request, response, callback);
+    settings: function(server, args, callback) {
+      APIUser.updateSettings(server, args.settings, callback);
     }
   };
 

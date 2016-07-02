@@ -31,8 +31,6 @@
 (function(Utils, VFS, API) {
   'use strict';
 
-  window.OSjs = window.OSjs || {};
-
   /////////////////////////////////////////////////////////////////////////////
   // PACKAGE MANAGER
   /////////////////////////////////////////////////////////////////////////////
@@ -67,7 +65,7 @@
         var self = this;
         callback = callback || {};
 
-        console.info('PackageManager::load()');
+        console.debug('PackageManager::load()');
 
         function loadMetadata(cb) {
           self._loadMetadata(function(err) {
@@ -451,7 +449,7 @@
             var a = p[i];
             if ( a && a.mime ) {
               if ( Utils.checkAcceptMime(mime, a.mime) ) {
-                list.push(Object.freeze(Utils.cloneObject(i)));
+                list.push(i);
               }
             }
           }

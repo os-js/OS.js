@@ -31,11 +31,6 @@
 (function(Utils, API) {
   'use strict';
 
-  var OSjs = window.OSjs = window.OSjs || {};
-  //var WL   = window.WL   = window.WL || {};
-
-  OSjs.Helpers = OSjs.Helpers || {};
-
   var redirectURI = window.location.href.replace(/\/$/, '') + '/vendor/wlOauthReceiver.html';
 
   /////////////////////////////////////////////////////////////////////////////

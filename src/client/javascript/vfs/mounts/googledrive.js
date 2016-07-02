@@ -30,6 +30,8 @@
 (function(Utils, API) {
   'use strict';
 
+  var gapi = window.gapi = window.gapi  || {};
+
   // https://developers.google.com/drive/web/quickstart/quickstart-js
   // https://developers.google.com/+/web/signin/javascript-flow
   // https://developers.google.com/drive/realtime/realtime-quickstart
@@ -39,12 +41,6 @@
   // https://developers.google.com/drive/v2/reference/files/list
   // http://stackoverflow.com/questions/22092402/python-google-drive-api-list-the-entire-drive-file-tree
   // https://developers.google.com/drive/web/folder
-
-  var gapi = window.gapi = window.gapi  || {};
-  var OSjs = window.OSjs = window.OSjs  || {};
-
-  OSjs.VFS          = OSjs.VFS          || {};
-  OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
 
   // If the user idles the connection for this amount of time, the cache will automatically clean
   // forcing an update. If user uploads from another place etc. OS.js will make sure to fetch these
@@ -206,7 +202,7 @@
    * Get all files in a directory
    */
   function getAllDirectoryFiles(item, callback) {
-    console.log('GoogleDrive::*getAllDirectoryFiles()', item);
+    console.debug('GoogleDrive::*getAllDirectoryFiles()', item);
 
     function retrieveAllFiles(cb) {
       if ( _clearCacheTimeout ) {
@@ -366,7 +362,7 @@
             _treeCache = null;
           }, CACHE_CLEAR_TIMEOUT);
 
-          console.log('GoogleDrive::*getAllDirectoryFiles()', '=>', response);
+          console.debug('GoogleDrive::*getAllDirectoryFiles()', '=>', response);
           callback(error, response, root);
         });
       });
@@ -821,6 +817,10 @@
     });
   };
 
+  GoogleDriveStorage.freeSpace = function(root, callback) {
+    callback(false, -1);
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // WRAPPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -855,7 +855,7 @@
         gapi.client.load('drive', 'v2', function() {
           _isMounted = true;
 
-          API.message('vfs', {type: 'mount', module: 'GoogleDrive', source: null});
+          API.message('vfs:mount', 'GoogleDrive', {source: null});
 
           callback(GoogleDriveStorage);
         });
@@ -897,6 +897,7 @@
    */
   OSjs.VFS.Modules.GoogleDrive = OSjs.VFS.Modules.GoogleDrive || OSjs.VFS._createMountpoint({
     readOnly: false,
+    transport: 'GoogleDrive',
     description: 'Google Drive',
     visible: true,
     searchable: false,
@@ -904,7 +905,7 @@
       // FIXME: Should we sign out here too ?
       cb = cb || function() {};
       _isMounted = false;
-      API.message('vfs', {type: 'unmount', module: 'GoogleDrive', source: null});
+      API.message('vfs:unmount', 'GoogleDrive', {source: null});
       cb(false, true);
     },
     mounted: function() {

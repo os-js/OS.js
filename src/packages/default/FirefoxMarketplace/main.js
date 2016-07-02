@@ -112,8 +112,8 @@
     });
 
     view.set('columns', [
-      {label: 'Name', grow: 1, shrink: 1},
-      {label: 'Version', basis: '60px', grow: 0, shrink: 0}
+      {label: 'Name'},
+      {label: 'Version', size: '60px'}
     ]);
 
     scheme.find(this, 'ButtonRefresh').on('click', function() {

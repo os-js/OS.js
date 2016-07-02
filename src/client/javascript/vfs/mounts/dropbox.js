@@ -35,10 +35,6 @@
   // https://www.dropbox.com/developers/core/start/python
   // https://www.dropbox.com/developers/reference/devguide
 
-  window.OSjs       = window.OSjs       || {};
-  OSjs.VFS          = OSjs.VFS          || {};
-  OSjs.VFS.Modules  = OSjs.VFS.Modules  || {};
-
   var _cachedClient;
   var _isMounted = false;
 
@@ -272,6 +268,10 @@
     callback(API._('ERR_VFS_UNAVAILABLE'));
   };
 
+  DropboxVFS.freeSpace = function(root, callback) {
+    callback(false, -1);
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // WRAPPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -290,7 +290,7 @@
 
         createRingNotification();
 
-        API.message('vfs', {type: 'mount', module: 'Dropbox', source: null});
+        API.message('vfs:mount', 'Dropbox', {source: null});
 
         callback(_cachedClient);
       });
@@ -310,7 +310,7 @@
       _isMounted = false;
       _cachedClient = null;
 
-      API.message('vfs', {type: 'unmount', module: 'Dropbox', source: null});
+      API.message('vfs:unmount', 'Dropbox', {source: null});
 
       destroyRingNotification();
 
@@ -359,6 +359,7 @@
    */
   OSjs.VFS.Modules.Dropbox = OSjs.VFS.Modules.Dropbox || OSjs.VFS._createMountpoint({
     readOnly: false,
+    transport: 'Dropbox',
     description: 'Dropbox',
     visible: true,
     searchable: false,
@@ -366,7 +367,7 @@
       // FIXME: Should we sign out here too ?
       cb = cb || function() {};
       _isMounted = false;
-      API.message('vfs', {type: 'unmount', module: 'Dropbox', source: null});
+      API.message('vfs:unmount', 'Dropbox', {source: null});
       cb(false, true);
     },
     mounted: function() {

@@ -38,8 +38,8 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var API = {
-    login: function(args, callback, request, response, config, handler) {
-      handler.onLogin(request, response, {
+    login: function(server, args, callback) {
+      server.handler.onLogin(server, {
         userData: {
           id: 0,
           username: 'demo',
@@ -49,8 +49,8 @@
       }, callback);
     },
 
-    logout: function(args, callback, request, response, config, handler) {
-      handler.onLogout(request, response, callback);
+    logout: function(server, args, callback) {
+      server.handler.onLogout(server, callback);
     }
   };
 
@@ -75,24 +75,24 @@
      * By default OS.js will check src/conf for group permissions.
      * This overrides and leaves no checks (full access)
      */
-    DemoHandler.prototype.checkAPIPrivilege = function(request, response, privilege, callback) {
-      this._checkHasSession(request, response, callback);
+    DemoHandler.prototype.checkAPIPrivilege = function(server, privilege, callback) {
+      this._checkHasSession(server, callback);
     };
 
     /**
      * By default OS.js will check src/conf for group permissions.
      * This overrides and leaves no checks (full access)
      */
-    DemoHandler.prototype.checkVFSPrivilege = function(request, response, path, args, callback) {
-      this._checkHasSession(request, response, callback);
+    DemoHandler.prototype.checkVFSPrivilege = function(server, path, args, callback) {
+      this._checkHasSession(server, callback);
     };
 
     /**
      * By default OS.js will check src/conf for group permissions.
      * This overrides and leaves no checks (full access)
      */
-    DemoHandler.prototype.checkPackagePrivilege = function(request, response, packageName, callback) {
-      this._checkHasSession(request, response, callback);
+    DemoHandler.prototype.checkPackagePrivilege = function(server, packageName, callback) {
+      this._checkHasSession(server, callback);
     };
 
     return new DemoHandler();

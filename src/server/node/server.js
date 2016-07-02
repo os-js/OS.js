@@ -31,7 +31,26 @@
   'use strict';
 
   var DIST = (process && process.argv.length > 2) ? process.argv[2] : 'dist';
-  var ROOT = (process && process.argv.length > 3) ? process.argv[3] : _path.join(__dirname, '/../../../');
+  var ROOT = _path.join(__dirname, '/../../../');
+  var PORT = null;
+  var NOLOG = false;
+
+  (function() {
+    var i, arg;
+    for ( i = 0; i < process.argv.length; i++ ) {
+      arg = process.argv[i];
+
+      if ( ['-nl', '--no-log'].indexOf(arg) >= 0 ) {
+        NOLOG = true;
+      } else if ( ['-p', '--port'].indexOf(arg) >= 0 ) {
+        i++;
+        PORT = process.argv[i];
+      } else if ( ['-r', '--root'].indexOf(arg) >= 0 ) {
+        i++;
+        ROOT = process.argv[i];
+      }
+    }
+  })();
 
   if ( DIST === 'x11' ) {
     DIST = 'dist';
@@ -52,12 +71,16 @@
     _server.close();
   });
 
+  process.on('uncaughtException', function(error) {
+    console.log('UNCAUGHT EXCEPTION', error, error.stack);
+  });
+
   _server.listen({
-    port: null,
+    port: PORT,
     dirname: __dirname,
     root: ROOT,
     dist: DIST,
-    logging: true,
+    logging: !NOLOG,
     nw: false
   });
 })(require('path'), require('./http.js'));

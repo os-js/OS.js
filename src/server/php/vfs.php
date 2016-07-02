@@ -38,7 +38,7 @@ class MIME
   protected static $instance;
 
   protected function __construct() {
-    $file = sprintf("%s/src/conf/%s", ROOTDIR, "130-mime.json");
+    $file = sprintf("%s/src/conf/%s", ROOTDIR, "300-mime.json");
 
     if ( file_exists($file) ) {
       $arr = (array)json_decode(file_get_contents($file), true);
@@ -275,6 +275,12 @@ class FS
       throw new Exception("Failed to create directory");
     }
     return true;
+  }
+
+  public static function freeSpace($fname) {
+    list($dirname, $root, $protocol, $fname) = getRealPath($fname);
+    if ( $protocol === "osjs://" ) throw new Exception("Not allowed");
+    return disk_free_space($fname);
   }
 
   public static function find($path, $args) {

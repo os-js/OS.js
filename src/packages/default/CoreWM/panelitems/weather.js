@@ -40,11 +40,13 @@
   function PanelItemWeather() {
     var self = this;
 
-    PanelItem.apply(this, ['PanelItemWeather PanelItemFill PanelItemRight']);
+    PanelItem.apply(this, ['PanelItemWeather corewm-panel-right corewm-panel-dummy']);
 
     this.clockInterval  = null;
     this.position = null;
     this.interval = null;
+    this.$element = null;
+    this.$image = null;
 
     if ( navigator.geolocation ) {
       navigator.geolocation.getCurrentPosition(function(pos) {
@@ -65,29 +67,35 @@
 
   PanelItemWeather.prototype.init = function() {
     var root = PanelItem.prototype.init.apply(this, arguments);
-    this.updateWeather(root);
+    this.$element = document.createElement('li');
+    this.$image = document.createElement('img');
+    this.$element.appendChild(this.$image);
+    this._$container.appendChild(this.$element);
+    this.updateWeather();
     return root;
   };
 
   PanelItemWeather.prototype.destroy = function() {
     this.interval = clearInterval(this.interval);
+    this.$image = Utils.$remove(this.$image);
+    this.$element = Utils.$remove(this.$element);
+
     PanelItem.prototype.destroy.apply(this, arguments);
   };
 
-  PanelItemWeather.prototype.updateWeather = function(root) {
+  PanelItemWeather.prototype.updateWeather = function() {
     var self = this;
-    root = root || this._$element;
 
-    if ( !root ) {
+    if ( !this.$image ) {
       return;
     }
 
-    root.title = 'Not allowed or unavailable';
+    this.$image.title = 'Not allowed or unavailable';
 
     var busy = false;
 
     function setImage(src) {
-      root.style.background = 'transparent url(\'' + src + '\') no-repeat center center';
+      self.$image.src = src;
     }
 
     function setWeather(name, weather, main) {
@@ -144,7 +152,7 @@
       }
 
       var src = API.getIcon('status/' + icon);
-      root.title = Utils.format('{0} - {1} - {2}', name, desc, temp);
+      self.$image.title = Utils.format('{0} - {1} - {2}', name, desc, temp);
       setImage(src);
     }
 
@@ -184,7 +192,7 @@
       updateWeather();
     }, (60 * 60 * 1000));
 
-    Utils.$bind(root, 'click', function() {
+    Utils.$bind(this._$root, 'click', function() {
       updateWeather();
     });
 

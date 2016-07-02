@@ -199,10 +199,10 @@
        * @param   Function    cb        Callback => fn(error, result)
        * @return  void
        *
-       * @api SearchEgine::init()
+       * @method SearchEngine::init()
        */
       init: function(cb) {
-        console.log('SearchEngine::init()');
+        console.debug('SearchEngine::init()');
 
         if ( inited ) {
           return;
@@ -221,10 +221,10 @@
        *
        * @return  void
        *
-       * @api SearchEgine::destroy()
+       * @method SearchEngine::destroy()
        */
       destroy: function() {
-        console.log('SearchEngine::destroy()');
+        console.debug('SearchEngine::destroy()');
 
         modules.forEach(function(m) {
           m.destroy();
@@ -242,7 +242,7 @@
        * @param   Function    cb        Callback => fn(error, result)
        * @return  void
        *
-       * @api SearchEgine::search()
+       * @method SearchEngine::search()
        */
       search: function(q, args, cb) {
         var result = [];
@@ -290,7 +290,7 @@
        * @param   Function    cb        Callback => fn(error, result)
        * @return  void
        *
-       * @api SearchEgine::reindex()
+       * @method SearchEngine::reindex()
        */
       reindex: function(args, cb) {
         var errors = [];
@@ -316,7 +316,7 @@
        * @param   boolean     save        Save settings (default=true)
        * @return  void
        *
-       * @api SearchEgine::configure()
+       * @method SearchEngine::configure()
        */
       configure: function(opts, save) {
       }

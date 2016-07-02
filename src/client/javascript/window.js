@@ -30,9 +30,6 @@
 (function(Utils, API, GUI, Process) {
   'use strict';
 
-  window.OSjs = window.OSjs || {};
-  OSjs.Core   = OSjs.Core   || {};
-
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -112,17 +109,20 @@
     var queries;
 
     function _createQueries() {
-      var wm = OSjs.Core.getWindowManager();
-      var qs = wm._settings.get('mediaQueries') || {};
       var result = {};
 
-      Object.keys(qs).forEach(function(k) {
-        if ( qs[k] ) {
-          result[k] = function(w, h, ref) {
-            return w <= qs[k];
-          };
-        }
-      });
+      var wm = OSjs.Core.getWindowManager();
+      if ( wm ) {
+        var qs = wm._settings.get('mediaQueries') || {};
+
+        Object.keys(qs).forEach(function(k) {
+          if ( qs[k] ) {
+            result[k] = function(w, h, ref) {
+              return w <= qs[k];
+            };
+          }
+        });
+      }
 
       return result;
     }
@@ -255,7 +255,7 @@
       });
 
       console.group('Window::constructor()', _WID);
-      console.log(name, opts);
+      console.debug(name, opts);
 
       this._$element      = null;                           // DOMElement: Window Outer container
       this._$root         = null;                           // DOMElement: Window Inner container (for content)
@@ -411,7 +411,7 @@
 
     function _initGravity() {
       var grav = self._properties.gravity;
-      if ( grav ) {
+      if ( grav && !self._restored ) {
         if ( grav === 'center' ) {
           self._position.y = (window.innerHeight / 2) - (self._dimension.h / 2);
           self._position.x = (window.innerWidth / 2) - (self._dimension.w / 2);
@@ -521,9 +521,9 @@
     _initDimension();
     _initGravity();
 
-    console.log('Properties', this._properties);
-    console.log('Position', this._position);
-    console.log('Dimension', this._dimension);
+    console.debug('Properties', this._properties);
+    console.debug('Position', this._position);
+    console.debug('Dimension', this._dimension);
 
     main = document.createElement('application-window');
     main.setAttribute('data-window-id', this._wid);
@@ -569,7 +569,9 @@
       return !!r;
     });
 
-    Utils.$bind(windowIcon, 'dblclick', Utils._preventDefault);
+    Utils.$bind(windowIcon, 'dblclick', function(ev) {
+      ev.preventDefault();
+    });
     Utils.$bind(windowIcon, 'click', function(ev) {
       ev.preventDefault();
       ev.stopPropagation();
@@ -669,7 +671,11 @@
 
     this._emit('inited');
 
-    console.debug('OSjs::Core::Window::_inited()', this._name);
+    if ( this._app ) {
+      this._app._onMessage('initedWindow', this, {});
+    }
+
+    console.debug('Window::_inited()', this._name);
   };
 
   /**
@@ -686,11 +692,13 @@
       return false;
     }
 
+    this._emit('destroy');
+
     this._destroyed = true;
 
     var wm = OSjs.Core.getWindowManager();
 
-    console.group('OSjs::Core::Window::destroy()');
+    console.group('Window::destroy()');
 
     // Nulls out stuff
     function _removeDOM() {
@@ -708,6 +716,14 @@
 
     // Removed DOM elements and their referring objects (GUI Elements etc)
     function _destroyDOM() {
+      if ( self._$element ) {
+        // Make sure to remove any remaining event listeners
+        self._$element.querySelectorAll('*').forEach(function(iter) {
+          if ( iter ) {
+            Utils.$unbind(iter);
+          }
+        });
+      }
       if ( self._parent ) {
         self._parent._removeChild(self);
       }
@@ -733,7 +749,6 @@
     }
 
     this._onChange('close');
-    this._emit('destroy');
 
     _destroyDOM();
     _destroyWin();
@@ -802,32 +817,6 @@
   };
 
   /**
-   * Adds a hook to internal event
-   *
-   * DEPRECATED
-   *
-   * @see Window::_on()
-   * @method  Window::_addHook()
-   */
-  Window.prototype._addHook = function(k, func) {
-    console.warn('DEPRECATION WARNING', 'Window::_addHook', 'will be replaced with', 'Window::_on');
-    return this._on(k, func);
-  };
-
-  /**
-   * Fire a hook to internal event
-   *
-   * DEPRECATED
-   *
-   * @see Window::_emit()
-   * @method  Window::_fireHook()
-   */
-  Window.prototype._fireHook = function(k, args) {
-    console.warn('DEPRECATION WARNING', 'Window::_fireHook', 'will be replaced with', 'Window::_emit');
-    return this._emit(k, args);
-  };
-
-  /**
    * Fire a hook to internal event
    *
    * @param   String    k       Event name
@@ -840,7 +829,12 @@
    * @method  Window::_emit()
    */
   Window.prototype._emit = function(k, args) {
-    return this._evHandler.emit(k, args);
+    if ( !this._destroyed ) {
+      if ( this._evHandler ) {
+        return this._evHandler.emit(k, args);
+      }
+    }
+    return false;
   };
 
   /**
@@ -855,7 +849,10 @@
    * @method  Window::_on()
    */
   Window.prototype._on = function(k, func) {
-    return this._evHandler.on(k, func, this);
+    if ( this._evHandler ) {
+      return this._evHandler.on(k, func, this);
+    }
+    return false;
   };
 
   /**
@@ -871,7 +868,10 @@
    * @method  Window::_off()
    */
   Window.prototype._off = function(k, idx) {
-    return this._evHandler.off(k, idx);
+    if ( this._evHandler ) {
+      return this._evHandler.off(k, idx);
+    }
+    return false;
   };
 
   //
@@ -879,7 +879,7 @@
   //
 
   Window.prototype._addChild = function(w, wmAdd, wmFocus) {
-    console.debug('OSjs::Core::Window::_addChild()');
+    console.debug('Window::_addChild()');
     w._parent = this;
 
     var wm = OSjs.Core.getWindowManager();
@@ -902,15 +902,13 @@
    */
   Window.prototype._removeChild = function(w) {
     var self = this;
-    this._children.every(function(child, i) {
-      if ( child && child._wid === w._wid ) {
-        console.debug('OSjs::Core::Window::_removeChild()');
 
+    this._children.forEach(function(child, i) {
+      if ( child && child._wid === w._wid ) {
+        console.debug('Window::_removeChild()');
         child.destroy();
         self._children[i] = null;
-        return false;
       }
-      return true;
     });
   };
 
@@ -1017,7 +1015,7 @@
    * @method  Window::_close()
    */
   Window.prototype._close = function() {
-    console.debug('OSjs::Core::Window::_close()');
+    console.debug('Window::_close()');
     if ( this._disabled || this._destroyed ) {
       return false;
     }
@@ -1046,7 +1044,7 @@
       return true;
     }
 
-    console.debug(this._name, '>', 'OSjs::Core::Window::_minimize()');
+    console.debug(this._name, '>', 'Window::_minimize()');
 
     this._blur();
 
@@ -1090,7 +1088,7 @@
       return true;
     }
 
-    console.debug(this._name, '>', 'OSjs::Core::Window::_maximize()');
+    console.debug(this._name, '>', 'Window::_maximize()');
 
     this._lastPosition    = {x: this._position.x,  y: this._position.y};
     this._lastDimension   = {w: this._dimension.w, h: this._dimension.h};
@@ -1158,7 +1156,7 @@
       }
     }
 
-    console.debug(this._name, '>', 'OSjs::Core::Window::_restore()');
+    console.debug(this._name, '>', 'Window::_restore()');
 
     max = (typeof max === 'undefined') ? true : (max === true);
     min = (typeof min === 'undefined') ? true : (min === true);
@@ -1192,7 +1190,7 @@
       return false;
     }
 
-    console.debug(this._name, '>', 'OSjs::Core::Window::_focus()');
+    console.debug(this._name, '>', 'Window::_focus()');
 
     this._toggleAttentionBlink(false);
 
@@ -1236,7 +1234,7 @@
       return false;
     }
 
-    console.debug(this._name, '>', 'OSjs::Core::Window::_blur()');
+    console.debug(this._name, '>', 'Window::_blur()');
 
     this._$element.setAttribute('data-focused', 'false');
     this._state.focused = false;
@@ -1475,7 +1473,7 @@
    * @method    Window::_toggleDisabled()
    */
   Window.prototype._toggleDisabled = function(t) {
-    console.debug(this._name, '>', 'OSjs::Core::Window::_toggleDisabled()', t);
+    console.debug(this._name, '>', 'Window::_toggleDisabled()', t);
     if ( this._$disabled ) {
       this._$disabled.style.display = t ? 'block' : 'none';
     }
@@ -1495,7 +1493,7 @@
    * @method    Window::_toggleLoading()
    */
   Window.prototype._toggleLoading = function(t) {
-    console.debug(this._name, '>', 'OSjs::Core::Window::_toggleLoading()', t);
+    console.debug(this._name, '>', 'Window::_toggleLoading()', t);
     if ( this._$loading ) {
       this._$loading.style.display = t ? 'block' : 'none';
     }
@@ -1574,7 +1572,7 @@
     /*
     if ( t ) {
       if ( !this._blinkTimer ) {
-        console.debug(this._name, '>', 'OSjs::Core::Window::_toggleAttentionBlink()', t);
+        console.debug(this._name, '>', 'Window::_toggleAttentionBlink()', t);
         this._blinkTimer = setInterval(function() {
           s = !s;
 
@@ -1584,7 +1582,7 @@
       }
     } else {
       if ( this._blinkTimer ) {
-        console.debug(this._name, '>', 'OSjs::Core::Window::_toggleAttentionBlink()', t);
+        console.debug(this._name, '>', 'Window::_toggleAttentionBlink()', t);
         clearInterval(this._blinkTimer);
         this._blinkTimer = null;
       }
@@ -1637,7 +1635,7 @@
       return false;
     }
 
-    console.debug('OSjs::Core::Window::_onDndEvent()', type, item, args);
+    console.debug('Window::_onDndEvent()', type, item, args);
 
     this._emit('drop', [ev, type, item, args, el]);
 
@@ -1706,7 +1704,7 @@
       return;
     }
 
-    console.debug(this._name, '>', 'OSjs::Core::Window::_onWindowIconClick()');
+    console.debug(this._name, '>', 'Window::_onWindowIconClick()');
 
     var self = this;
     var control = [
@@ -1799,7 +1797,7 @@
    * @method  Window::_onWindowButtonClick()
    */
   Window.prototype._onWindowButtonClick = function(ev, el, btn) {
-    console.debug(this._name, '>', 'OSjs::Core::Window::_onWindowButtonClick()', btn);
+    console.debug(this._name, '>', 'Window::_onWindowButtonClick()', btn);
 
     this._blurGUI();
 
@@ -1825,7 +1823,7 @@
   Window.prototype._onChange = function(ev, byUser) {
     ev = ev || '';
     if ( ev ) {
-      console.debug(this._name, '>', 'OSjs::Core::Window::_onChange()', ev);
+      console.debug(this._name, '>', 'Window::_onChange()', ev);
       var wm = OSjs.Core.getWindowManager();
       if ( wm ) {
         wm.eventWindow(ev, this);

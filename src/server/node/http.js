@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(_osjs, _path, _url, _fs, _qs, _multipart, _sessions) {
+(function(_osjs, _path, _url, _util, _fs, _qs, _multipart, _sessions) {
   'use strict';
 
   var instance, server, proxy, httpProxy;
@@ -84,25 +84,33 @@
       response.end();
     }
 
-    if ( pipeFile ) {
-      var isdir = false;
-      try {
-        isdir = _fs.lstatSync(pipeFile).isDirectory();
-      } catch ( e ) {}
-
-      if ( isdir ) {
-        respondError('Invalid request', response);
-        return;
+    function checkDir() {
+      if ( pipeFile ) {
+        try {
+          return _fs.lstatSync(pipeFile).isDirectory();
+        } catch ( e ) {}
       }
+      return false;
     }
 
-    headers.forEach(function(h) {
-      response.writeHead.apply(response, h);
-    });
+    function writeHeaders() {
+      headers.forEach(function(h) {
+        response.writeHead.apply(response, h);
+      });
 
-    response.writeHead(code, {
-      'Content-Type': mime
-    });
+      var wheaders = {};
+      if ( mime ) {
+        wheaders['Content-Type'] = mime;
+      }
+
+      response.writeHead(code, wheaders);
+    }
+
+    if ( checkDir() ) {
+      respondError('Invalid request', response);
+    }
+
+    writeHeaders();
 
     if ( pipeFile ) {
       var stream = _fs.createReadStream(pipeFile, {bufferSize: 64 * 1024});
@@ -118,6 +126,8 @@
    * Respond with a file
    */
   function respondFile(path, request, response, realPath) {
+    var server = {request: request, response: response, config: instance.config, handler: instance.handler};
+
     if ( !realPath && path.match(/^(ftp|https?)\:\/\//) ) {
       if ( instance.config.vfs.proxy ) {
         try {
@@ -134,7 +144,7 @@
     }
 
     try {
-      var fullPath = realPath ? path : instance.vfs.getRealPath(path, instance.config, request).root;
+      var fullPath = realPath ? path : instance.vfs.getRealPath(server, path).root;
       _fs.exists(fullPath, function(exists) {
         if ( exists ) {
           var mime = instance.vfs.getMime(fullPath, instance.config);
@@ -271,6 +281,7 @@
    * Handles a HTTP Request
    */
   function httpCall(request, response) {
+    var server = {request: request, response: response, config: instance.config, handler: instance.handler};
 
     function handleCall(rp, isVfs) {
       var body = '';
@@ -304,13 +315,13 @@
             respondError(err, response);
           }
         } else {
-          instance.handler.checkAPIPrivilege(request, response, 'upload', function(err) {
+          instance.handler.checkAPIPrivilege(server, 'upload', function(err) {
             if ( err ) {
               respondError(err, response);
               return;
             }
 
-            instance.vfs.upload({
+            instance.vfs.upload(server, {
               src: files.upload.path,
               name: files.upload.name,
               path: fields.path,
@@ -321,7 +332,7 @@
                 return;
               }
               respondText(response, '1');
-            }, request, response);
+            });
           });
         }
       });
@@ -329,7 +340,7 @@
 
     function handleVFSFile(p) {
       var dpath = p.replace(/^\/(FS|API)(\/get\/)?/, '');
-      instance.handler.checkAPIPrivilege(request, response, 'fs', function(err) {
+      instance.handler.checkAPIPrivilege(server, 'fs', function(err) {
         if ( err ) {
           respondError(err, response);
           return;
@@ -345,7 +356,7 @@
       // Checks if the request was a package resource
       var pmatch = rpath.match(/^packages\/(.*\/.*)\/(.*)/);
       if ( pmatch && pmatch.length === 3 ) {
-        instance.handler.checkPackagePrivilege(request, response, pmatch[1], function(err) {
+        instance.handler.checkPackagePrivilege(server, pmatch[1], function(err) {
           if ( err ) {
             respondError(err, response);
             return;
@@ -438,6 +449,7 @@
     instance = _osjs.init(setup);
 
     var httpConfig = instance.config.http || {};
+    var addr = 'http://localhost';
 
     if ( httpConfig.mode === 'http2' || httpConfig.mode === 'https' ) {
       var rdir = httpConfig.cert.path || _path.dirname(setup.dirname);
@@ -448,17 +460,24 @@
       copts.cert = _fs.readFileSync(_path.join(rdir, cname + '.crt'));
 
       server = require(httpConfig.mode).createServer(copts, httpCall);
+      addr = 'https://localhost';
     } else {
       server = require('http').createServer(httpCall);
     }
 
     instance.handler.onServerStart(function() {
       var port = setup.port || instance.config.port;
-      if ( instance.config.logging ) {
-        console.log('\n\n***');
-        console.log('***', 'OS.js is listening on http://localhost:' + port + ' (handler:' + instance.config.handler + ' dir:' + instance.setup.dist + ' mode:' + httpConfig.mode + ')');
-        console.log('***\n\n');
-      }
+      var msg = _util.format('OS.js is listening on %s:%d (handler:%s dir:%s mode:%s logging:%s)',
+                             addr,
+                             port,
+                             instance.config.handler,
+                             instance.setup.dist,
+                             (httpConfig.mode || 'http'),
+                             String(setup.logging));
+
+      console.log('\n\n***');
+      console.log('***', msg);
+      console.log('***\n\n');
 
       server.listen(port);
     });
@@ -492,9 +511,10 @@
   };
 
 })(
-  require('osjs'),
+  require('./core'),
   require('path'),
   require('url'),
+  require('util'),
   require('node-fs-extra'),
   require('querystring'),
   require('formidable'),

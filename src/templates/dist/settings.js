@@ -27,6 +27,10 @@
             }
           });
         }
+
+        var dev =_cache.Connection.Dist === 'dist-dev';
+        _cache.MOCHAMODE = dev && window.location.hash === '#mocha';
+        _cache.DEVMODE = dev && window.location.hash === '#developer';
       }
 
       return Object.freeze(_cache);

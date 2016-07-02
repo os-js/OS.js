@@ -8,7 +8,7 @@ Works in any modern browser and can be deployed on any platform using Node or PH
 
 [![bitHound Score](https://www.bithound.io/github/os-js/OS.js/badges/score.svg)](https://www.bithound.io/github/os-js/OS.js)
 [![Travis CI Build Status](https://travis-ci.org/os-js/OS.js.svg?branch=master)](https://travis-ci.org/os-js/OS.js)
-[![Codacy Badge](https://api.codacy.com/project/badge/grade/61677f92d80d446ca37f7b6ab2fae032)](https://www.codacy.com/app/os-js/OS.js) [![Gitter](https://img.shields.io/gitter/room/os-js/OS.js.svg)](https://gitter.im/os-js/OS.js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/bcb06aa267d5433db95a581237c23453)](https://www.codacy.com/app/andersevenrud/OS-js?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=os-js/OS.js&amp;utm_campaign=Badge_Grade)
 [![Community](https://img.shields.io/badge/join-community-green.svg)](http://community.os.js.org/)
 [![JS.ORG](https://img.shields.io/badge/js.org-os-ffb400.svg)](http://js.org)
 
@@ -18,7 +18,7 @@ Works in any modern browser and can be deployed on any platform using Node or PH
 
 ## Try it yourself
 
-Visit the [official demo](https://osjsv2.0o.no) for a preview version. Please not that some features are disabled and might be outdated or unavailable at times.
+Visit the [official demo](https://osjsv2.0o.no) for a preview version. Please note that some features are disabled and might be outdated or unavailable at times.
 
 ![ScreenShot](https://raw.githubusercontent.com/os-js/OS.js/master/src/gfx/screenshot.png)
 

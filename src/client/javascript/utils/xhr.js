@@ -30,9 +30,6 @@
 (function() {
   'use strict';
 
-  window.OSjs = window.OSjs || {};
-  OSjs.Utils  = OSjs.Utils  || {};
-
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
@@ -87,26 +84,33 @@
     function getResponse(ctype) {
       var response = request.responseText;
       if ( args.json && ctype.match(/^application\/json/) ) {
-        try {
-          response = JSON.parse(response);
-        } catch (ex) {
-          console.warn('Utils::ajax()', 'handleResponse()', ex);
-        }
+        response = JSON.parse(response);
       }
-
       return response;
     }
 
     function onReadyStateChange() {
+      var result;
+
+      function _onError(error) {
+        error = OSjs.API._('ERR_UTILS_XHR_FMT', error);
+        console.warn('Utils::ajax()', 'onReadyStateChange()', error);
+        args.onerror(error, result, request, args.url);
+      }
+
       if ( request.readyState === 4 ) {
-        var ctype = request.getResponseHeader('content-type') || '';
-        var result = getResponse(ctype);
+        try {
+          var ctype = request.getResponseHeader('content-type') || '';
+          result = getResponse(ctype);
+        } catch (ex) {
+          _onError(ex.toString());
+          return;
+        }
 
         if ( request.status === 200 || request.status === 201 ) {
           args.onsuccess(result, request, args.url);
         } else {
-          var error = OSjs.API._('ERR_UTILS_XHR_FMT', request.status.toString());
-          args.onerror(error, result, request, args.url);
+          _onError(request.status.toString());
         }
       }
     }
@@ -316,14 +320,47 @@
       });
     }
 
+    function checkType(item) {
+      if ( typeof item === 'string' ) {
+        item = {src: item};
+      }
+
+      if ( !item.type ) {
+        item.type = (function(src) {
+          if ( src.match(/\.js$/i) ) {
+            return 'javascript';
+          } else if ( src.match(/\.css$/i) ) {
+            return 'stylesheet';
+          }
+          return 'unknown';
+        })(item.src);
+      }
+
+      return item;
+    }
+
     return function(list, callback, callbackProgress, args) {
       list = (list || []).slice();
       args = args || {};
 
-      var successes  = [];
-      var failed     = [];
+      var successes = [];
+      var failed = [];
 
-      console.group('Utils::preload()', list);
+      console.group('Utils::preload()', list.length);
+
+      function getSource(item) {
+        var src = item.src;
+        if ( src.substr(0, 1) !== '/' && !src.match(/^(https?|ftp)/) ) {
+          src = window.location.pathname + src;
+        }
+
+        if ( !src.match(/^(https?|ftp)/) && src.indexOf('?') === -1 ) {
+          if ( OSjs.API.getConfig('Connection.Dist') === 'dist' && OSjs.API.getConfig('Connection.AppendVersion') ) {
+            src += '?ver=' + OSjs.API.getConfig('Connection.AppendVersion');
+          }
+        }
+        return src;
+      }
 
       OSjs.Utils.asyncs(list, function(item, index, next) {
         function _loaded(success, src) {
@@ -333,24 +370,26 @@
         }
 
         if ( item ) {
+          item = checkType(item);
+
           if ( _LOADED[item.src] === true && (item.force !== true && args.force !== true) ) {
             _loaded(true);
             return;
           }
 
-          var src = item.src;
-          if ( src.substr(0, 1) !== '/' && !src.match(/^(https?|ftp)/) ) {
-            src = window.location.href + src;
-          }
-
+          var src = getSource(item);
           if ( item.type.match(/^style/) ) {
             createStyle(src, _loaded);
+            return;
           } else if ( item.type.match(/script$/) ) {
             createScript(src, _loaded);
+            return;
+          } else {
+            failed.push(src);
           }
-        } else {
-          next();
         }
+
+        next();
       }, function() {
         console.groupEnd();
         (callback || function() {})(list.length, failed, successes);

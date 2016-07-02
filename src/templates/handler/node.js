@@ -41,8 +41,8 @@
    * These methods will be added to the OS.js `API` namespace
    */
   var API = {
-    login: function(args, callback, request, response, config, handler) {
-      handler.onLogin(request, response, {
+    login: function(server, args, callback) {
+      handler.onLogin(server, {
         userSettings: {},
         userData: {
           id: 0,
@@ -53,11 +53,11 @@
       }, callback);
     },
 
-    logout: function(args, callback, request, response, config, handler) {
-      handler.onLogout(request, response, callback);
+    logout: function(server, args, callback) {
+      handler.onLogout(server, callback);
     },
 
-    settings: function(args, callback, request, response, config, handler) {
+    settings: function(server, args, callback) {
       callback(false, true);
     }
   };

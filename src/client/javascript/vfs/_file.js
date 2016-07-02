@@ -27,10 +27,8 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API) {
+(function(Utils, API, VFS) {
   'use strict';
-
-  OSjs.VFS = OSjs.VFS || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // FILE ABSTRACTION
@@ -103,6 +101,8 @@
         this.type = mime;
       }
     }
+
+    this._guessMime();
   }
 
   FileMetadata.prototype.setData = function(o) {
@@ -131,11 +131,20 @@
     };
   };
 
+  FileMetadata.prototype._guessMime = function() {
+    if ( this.mime || this.type === 'dir' || this.path.match(/\/$/) ) {
+      return;
+    }
+
+    var ext = Utils.filext(this.path);
+    this.mime = API.getConfig('MIME.mapping')['.' + ext] || 'application/octet-stream';
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.VFS.File        = FileMetadata;
-  OSjs.VFS.FileDataURL = FileDataURL;
+  VFS.File        = FileMetadata;
+  VFS.FileDataURL = FileDataURL;
 
-})(OSjs.Utils, OSjs.API);
+})(OSjs.Utils, OSjs.API, OSjs.VFS);

@@ -93,7 +93,6 @@
     this._items = [];
     this._outtimeout = null;
     this._intimeout = null;
-    this._outEvent = null;
     this._options = options.mergeDefaults({
       position: 'top'
     });
@@ -113,13 +112,19 @@
       ];
 
       if ( wm.getSetting('useTouchMenu') === true ) {
-        menu.push({title: OSjs.Applications.CoreWM._('Turn off TouchMenu'), onClick: function(ev) {
-          wm.applySettings({useTouchMenu: false}, false, true);
-        }});
+        menu.push({
+          title: OSjs.Applications.CoreWM._('Turn off TouchMenu'),
+          onClick: function(ev) {
+            wm.applySettings({useTouchMenu: false}, false, true);
+          }
+        });
       } else {
-        menu.push({title: OSjs.Applications.CoreWM._('Turn on TouchMenu'), onClick: function(ev) {
-          wm.applySettings({useTouchMenu: true}, false, true);
-        }});
+        menu.push({
+          title: OSjs.Applications.CoreWM._('Turn on TouchMenu'),
+          onClick: function(ev) {
+            wm.applySettings({useTouchMenu: true}, false, true);
+          }
+        });
       }
 
       API.createMenu(menu, ev);
@@ -127,6 +132,7 @@
 
     this._$container = document.createElement('corewm-panel-container');
     this._$element = document.createElement('corewm-panel');
+    this._$element.setAttribute('data-orientation', 'horizontal');
     this._$element.setAttribute('role', 'toolbar');
 
     Utils.$bind(this._$element, 'mousedown', function(ev) {
@@ -145,7 +151,7 @@
       createMenu(ev);
     });
 
-    this._outEvent = Utils.$bind(document, 'mouseout', function(ev) {
+    Utils.$bind(document, 'mouseout:panelmouseleave', function(ev) {
       self.onMouseLeave(ev);
     }, false);
 
@@ -159,7 +165,7 @@
 
   Panel.prototype.destroy = function() {
     this._clearTimeouts();
-    this._outEvent = Utils.$unbind(this._outEvent);
+    Utils.$unbind(document, 'mouseout:panelmouseleave');
 
     this._items.forEach(function(item) {
       item.destroy();
@@ -297,6 +303,7 @@
 
   var PanelItem = function(className, itemName, settings, defaults) {
     this._$root = null;
+    this._$container = null;
     this._className = className || 'Unknown';
     this._itemName = itemName || className.split(' ')[0];
     this._settings = null;
@@ -318,6 +325,10 @@
     this._$root = document.createElement('corewm-panel-item');
     this._$root.className = this._className;
 
+    this._$container = document.createElement('ul');
+    this._$container.setAttribute('role', 'toolbar');
+    this._$container.className = 'corewm-panel-buttons';
+
     if ( this._settings ) {
       var title = 'Open ' + this._itemName + ' settings'; // FIXME: Locale
       Utils.$bind(this._$root, 'contextmenu', function(ev) {
@@ -333,6 +344,8 @@
       });
     }
 
+    this._$root.appendChild(this._$container);
+
     return this._$root;
   };
 
@@ -342,6 +355,7 @@
     }
     this._settingsDialog = null;
     this._$root = Utils.$remove(this._$root);
+    this._$container = Utils.$remove(this._$container);
   };
 
   PanelItem.prototype.applySettings = function() {

@@ -27,12 +27,8 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, VFS) {
+(function(API, Utils, VFS, GUI) {
   'use strict';
-
-  window.OSjs = window.OSjs || {};
-  OSjs.GUI = OSjs.GUI || {};
-  OSjs.GUI.Elements = OSjs.GUI.Elements || {};
 
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
@@ -179,7 +175,7 @@
     }
 
     if ( (param === 'value' || param === 'selected') && isDataView ) {
-      return OSjs.GUI.Elements[tagName].values(el);
+      return GUI.Elements[tagName].values(el);
     }
 
     return el.getAttribute('data-' + param);
@@ -444,7 +440,6 @@
 
     var startX, startY, currentX, currentY;
     var dragging = false;
-    var boundUp, boundMove;
 
     function _onMouseDown(ev, pos, touchDevice) {
       ev.preventDefault();
@@ -455,8 +450,8 @@
       onDown(ev, {x: startX, y: startY});
       dragging = true;
 
-      boundUp = Utils.$bind(window, 'mouseup', _onMouseUp, false);
-      boundMove = Utils.$bind(window, 'mousemove', _onMouseMove, false);
+      Utils.$bind(window, 'mouseup:guidrag', _onMouseUp, false);
+      Utils.$bind(window, 'mousemove:guidrag', _onMouseMove, false);
     }
 
     function _onMouseMove(ev, pos, touchDevice) {
@@ -477,8 +472,8 @@
       onUp(ev, {x: currentX, y: currentY});
       dragging = false;
 
-      boundUp = Utils.$unbind(boundUp);
-      boundMove = Utils.$unbind(boundMove);
+      Utils.$unbind(window, 'mouseup:guidrag');
+      Utils.$unbind(window, 'mousemove:guidrag');
     }
 
     Utils.$bind(el, 'mousedown', _onMouseDown, false);
@@ -562,7 +557,7 @@
 
       // Get "real" elements from input wrappers
       if ( next.tagName.match(/^GUI\-(BUTTON|TEXT|PASSWORD|SWITCH|CHECKBOX|RADIO|SELECT)/) ) {
-        next = next.querySelectorAll('input, textarea, button')[0];
+        next = next.querySelectorAll('input, textarea, button, select')[0];
       }
 
       // Special case for elements that wraps
@@ -788,7 +783,7 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.GUI.Helpers = {
+  GUI.Helpers = {
     getNextElement: getNextElement,
     getProperty: getProperty,
     getValueLabel: getValueLabel,
@@ -805,4 +800,4 @@
     createDroppable: createDroppable
   };
 
-})(OSjs.API, OSjs.Utils, OSjs.VFS);
+})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

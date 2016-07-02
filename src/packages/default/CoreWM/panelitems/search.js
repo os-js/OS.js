@@ -42,13 +42,15 @@
    * PanelItem: Search
    */
   function PanelItemSearch(settings) {
-    PanelItem.apply(this, ['PanelItemSearch PanelItemFill PanelItemRight', 'Search', settings, {
+    PanelItem.apply(this, ['PanelItemSearch corewm-panel-right', 'Search', settings, {
     }]);
 
+    this.$ul = null;
     this.$box = null;
+    this.$input = null;
+
     this.$message = null;
     this.visible = false;
-    this.events = [];
     this.hookId = -1;
     this.currentIndex = -1;
     this.currentCount = 0;
@@ -68,11 +70,6 @@
 
     var img = document.createElement('img');
     img.src = API.getIcon('actions/search.png');
-
-    var button = document.createElement('div');
-    button.appendChild(img);
-
-    root.appendChild(button);
 
     var input = document.createElement('input');
     input.setAttribute('type', 'text');
@@ -110,25 +107,11 @@
       }
     };
 
-    this.events.push(Utils.$bind(window, 'keydown', function(ev) {
-      if ( ev.keyCode === Utils.Keys.F3 ) {
-        ev.preventDefault();
-        self.show();
-      }
-    }));
-
     API.addHook('onBlurMenu', function() {
       self.hide();
     });
 
-    this.events.push(Utils.$bind(document.body, 'mousedown', function(ev) {
-      if ( ev.keyCode === Utils.Keys.F3 ) {
-        ev.preventDefault();
-        self.show();
-      }
-    }));
-
-    this.events.push(Utils.$bind(button, 'click', function(ev) {
+    Utils.$bind(root, 'click', function(ev) {
       ev.stopPropagation();
 
       if ( self.visible ) {
@@ -136,37 +119,44 @@
       } else {
         self.show();
       }
-    }));
+    });
 
-    this.events.push(Utils.$bind(input, 'mousedown', function(ev) {
+    Utils.$bind(input, 'mousedown', function(ev) {
       ev.stopPropagation();
-    }));
+    });
 
-    this.events.push(Utils.$bind(input, 'keydown', function(ev) {
+    Utils.$bind(input, 'keydown', function(ev) {
       if ( keyEvents[ev.keyCode] ) {
         ev.preventDefault();
         ev.stopPropagation();
 
         keyEvents[ev.keyCode].call(this, ev);
       }
-    }));
+    });
 
-    this.events.push(Utils.$bind(ul, 'mousedown', function(ev) {
+    Utils.$bind(ul, 'mousedown', function(ev) {
       ev.stopPropagation();
-    }));
+    });
 
-    this.events.push(Utils.$bind(ul, 'click', function(ev) {
+    Utils.$bind(ul, 'click', function(ev) {
       var target = ev.target;
       if ( target.tagName === 'LI' ) {
         self.launch(target);
       }
-    }));
+    });
 
-    this.events.push(Utils.$bind(this.$box, 'mousedown', function() {
+    Utils.$bind(this.$box, 'mousedown', function() {
       if ( input ) {
         input.focus();
       }
-    }));
+    });
+
+    var li = document.createElement('li');
+    li.appendChild(img);
+
+    this.$ul = ul;
+    this.$input = input;
+    this._$container.appendChild(li);
 
     document.body.appendChild(this.$box);
 
@@ -181,18 +171,21 @@
   };
 
   PanelItemSearch.prototype.destroy = function() {
-    this.$message = Utils.$remove(this.$message);
-    this.$box = Utils.$remove(this.$box);
-
     if ( this.hookId >= 0 ) {
       API.removeHook(this.hookId);
     }
 
-    this.events.forEach(function(ev) {
-      ev.destroy();
-    });
+    Utils.$unbind(this._$root, 'click');
+    Utils.$unbind(this.$input, 'mousedown');
+    Utils.$unbind(this.$input, 'keydown');
+    Utils.$unbind(this.$ul, 'mousedown');
+    Utils.$unbind(this.$ul, 'click');
+    Utils.$unbind(this.$box, 'mousedown');
 
-    this.events = [];
+    this.$message = Utils.$remove(this.$message);
+    this.$input = Utils.$remove(this.$input);
+    this.$box = Utils.$remove(this.$box);
+    this.$ul = Utils.$remove(this.$ul);
 
     PanelItem.prototype.destroy.apply(this, arguments);
   };
@@ -223,13 +216,11 @@
     }
 
     var wm = OSjs.Core.getWindowManager();
-    var space = wm.getWindowSpace();
+    var space = wm.getWindowSpace(true);
 
     Utils.$empty(this.$box.querySelector('ul'));
+    this.$box.style.marginTop = String(space.top) + 'px';
     this.$box.querySelector('input').value = '';
-
-    this.$box.style.top = String(space.top) + 'px';
-    this.$box.style.right = String(10) + 'px'; // FIXME
     this.$box.setAttribute('data-visible', String(true));
 
     this.$box.querySelector('input').focus();

@@ -30,16 +30,22 @@
 (function() {
   'use strict';
 
-  window.OSjs = window.OSjs || {};
-
   var handler    = null;
   var loaded     = false;
   var inited     = false;
   var signingOut = false;
 
   // Make sure these namespaces exist
-  (['API', 'GUI', 'Core', 'Dialogs', 'Helpers', 'Applications', 'Locales', 'VFS', 'Extensions']).forEach(function(ns) {
+  (['Utils', 'API', 'GUI', 'Core', 'Dialogs', 'Helpers', 'Applications', 'Locales', 'VFS', 'Extensions']).forEach(function(ns) {
     OSjs[ns] = OSjs[ns] || {};
+  });
+
+  (['Elements', 'Helpers']).forEach(function(ns) {
+    OSjs.GUI[ns] = OSjs.GUI[ns] || {};
+  });
+
+  (['Transports', 'Modules']).forEach(function(ns) {
+    OSjs.VFS[ns] = OSjs.VFS[ns] || {};
   });
 
   /////////////////////////////////////////////////////////////////////////////
@@ -268,30 +274,19 @@
   function initLayout() {
     console.debug('initLayout()');
 
-    var append = OSjs.API.getConfig('VersionAppend');
+    if ( OSjs.API.getConfig('Watermark.enabled') ) {
+      var ver = OSjs.API.getConfig('Version', 'unknown version');
+      var html = OSjs.API.getConfig('Watermark.lines') || [];
 
-    var ver = OSjs.API.getConfig('Version', 'unknown version');
-    var cop = 'Copyright © 2011-2016 ';
-    var lnk = document.createElement('a');
-    lnk.setAttribute('aria-hidden', 'true');
-    lnk.href = 'mailto:andersevenrud@gmail.com';
-    lnk.appendChild(document.createTextNode('Anders Evenrud'));
+      var el = document.createElement('div');
+      el.id = 'DebugNotice';
+      el.setAttribute('aria-hidden', 'true');
+      el.innerHTML = html.join('<br />').replace(/%VERSION%/, ver);
 
-    var el = document.createElement('div');
-    el.id = 'DebugNotice';
-    el.setAttribute('aria-hidden', 'true');
-    el.appendChild(document.createTextNode(OSjs.Utils.format('OS.js {0}', ver)));
-    el.appendChild(document.createElement('br'));
-    el.appendChild(document.createTextNode(cop));
-    el.appendChild(lnk);
-    if ( append ) {
-      el.appendChild(document.createElement('br'));
-      el.innerHTML += append;
+      document.body.appendChild(el);
     }
 
     document.getElementById('LoadingScreen').style.display = 'none';
-
-    document.body.appendChild(el);
   }
 
   /**
@@ -301,19 +296,28 @@
     console.debug('initHandler()');
 
     handler = new OSjs.Core.Handler();
-    handler.init(function(error) {
-      if ( inited ) {
-        return;
-      }
-      inited = true;
 
+    function _done(error) {
       if ( error ) {
         onError(error);
         return;
       }
 
+      if ( !inited ) {
+        if ( !handler.loggedIn ) {
+          if ( confirm(OSjs.API._('ERR_NO_SESSION')) ) {
+            handler.init(_done);
+          }
+          return;
+        }
+      }
+
+      inited = true;
+
       callback();
-    });
+    }
+
+    handler.init(_done);
   }
 
   /**
@@ -358,13 +362,26 @@
    */
   function initPreload(config, callback) {
     console.debug('initPreload()');
+    var list = [];
 
-    var preloads = config.Preloads;
-    preloads.forEach(function(val, index) {
-      val.src = OSjs.Utils.checkdir(val.src);
-    });
+    function flatten(a) {
+      a.forEach(function(i) {
+        if ( i instanceof Array ) {
+          flatten(i);
+        } else {
+          if ( typeof i === 'string' ) {
+            i = OSjs.Utils.checkdir(i);
+          } else {
+            i.src = OSjs.Utils.checkdir(i.src);
+          }
+          list.push(i);
+        }
+      });
+    }
 
-    OSjs.Utils.preload(preloads, function(total, failed) {
+    flatten(config.Preloads);
+
+    OSjs.Utils.preload(list, function(total, failed) {
       if ( failed.length ) {
         console.warn('doInitialize()', 'some preloads failed to load:', failed);
       }
@@ -471,35 +488,96 @@
     OSjs.API.playSound('service-login');
 
     var wm = OSjs.Core.getWindowManager();
+    var list = [];
 
-    function autostart(cb) {
-      var start = [];
+    // In this case we merge the Autostart and the previous session together.
+    // This ensures that items with autostart are loaded with correct
+    // session data on restore. This is much better than relying on the internal
+    // event/message system which does not trigger until after everything is loaded...
+    // this does everything beforehand! :)
+    //
+    try {
+      list = config.AutoStart;
+    } catch ( e ) {
+      console.warn('initSession()->autostart()', 'exception', e, e.stack);
+    }
 
-      try {
-        start = config.AutoStart;
-      } catch ( e ) {
-        console.warn('initSession()->autostart()', 'exception', e, e.stack);
+    var checkMap = {};
+    var skipMap = [];
+    list.forEach(function(iter, idx) {
+      if ( typeof iter === 'string' ) {
+        iter = list[idx] = {name: iter};
+      }
+      if ( skipMap.indexOf(iter.name) === -1 ) {
+        if ( !checkMap[iter.name] ) {
+          checkMap[iter.name] = idx;
+          skipMap.push(iter.name);
+        }
+      }
+    });
+
+    handler.getLastSession(function(err, adds) {
+      if ( !err ) {
+        adds.forEach(function(iter) {
+          if ( typeof checkMap[iter.name] === 'undefined' ) {
+            list.push(iter);
+          } else {
+            if ( iter.args ) {
+              var refid = checkMap[iter.name];
+              var ref = list[refid];
+              if ( !ref.args ) {
+                ref.args = {};
+              }
+              ref.args = OSjs.Utils.mergeObject(ref.args, iter.args);
+            }
+          }
+        });
       }
 
-      console.info('initSession()->autostart()', start);
-      OSjs.API.launchList(start, null, null, cb);
-    }
+      console.info('initSession()->autostart()', list);
 
-    function session() {
-      handler.loadSession(function() {
-        setTimeout(function() {
-          events.resize(null, true);
-        }, 500);
-
-        callback();
-
-        wm.onSessionLoaded();
-      });
-    }
-
-    autostart(function() {
-      session();
+      OSjs.API.launchList(list, null, null, callback);
     });
+  }
+
+  /**
+   * Client-side unit-testing
+   */
+  function initTestEnvironment(config, callback) {
+    OSjs.Utils.preload([
+      '/vendor/mocha/mocha.js',
+      '/vendor/mocha/mocha.css',
+      '/vendor/chai/chai.js'
+    ], function() {
+      // Add basic layout
+      var h1 = document.createElement('h1');
+      h1.style.margin = '20px';
+      h1.appendChild(document.createTextNode('OS.js Mocha Client Test Suite'));
+      document.body.appendChild(h1);
+
+      var el = document.createElement('div');
+      el.id = 'mocha';
+      document.body.appendChild(el);
+
+      // Reset certain styles
+      document.body.style.background = '#fff';
+      document.body.style.overflow = 'auto';
+
+      // Init mocha interfaces
+      window.mocha.ui('bdd');
+      window.mocha.reporter('html');
+
+      // Create mock Window Manager
+      (new OSjs.Core.WindowManager('MochaWM', null, {}, {}, {})).init();
+
+      // Load default themes
+      OSjs.Utils.$createCSS(OSjs.API.getThemeCSS('default'));
+
+      // Load and run tests
+      OSjs.Utils.preload(['/client/test/test.js'], callback);
+    });
+
+    return true;
   }
 
   /**
@@ -511,56 +589,77 @@
     var config = OSjs.Core.getConfig();
     var splash = document.getElementById('LoadingScreen');
     var loading = OSjs.API.createSplash('OS.js', null, null, splash);
-    var freeze = ['API', 'Core', 'Config', 'Dialogs', 'GUI', 'Locales', 'VFS'];
-
-    initLayout();
-
-    OSjs.Utils.asyncs([
+    var freeze = ['API', 'Core', 'Dialogs', 'Extensions', 'GUI', 'Helpers', 'Locales', 'Utils', 'VFS'];
+    var queue = [
       initPreload,
       initHandler,
+      initVFS,
       initPackageManager,
       initExtensions,
       initSettingsManager,
-      initVFS,
-      initSearch
-    ], function(entry, index, next) {
-      if ( index < 1 ) {
-        OSjs.API.triggerHook('onInitialize');
+      initSearch,
+      function(cfg, cb) {
+        return OSjs.GUI.DialogScheme.init(cb);
       }
+    ];
 
-      loading.update(index + 1, 8);
+    function _inited() {
+      loading = loading.destroy();
+      splash = OSjs.Utils.$remove(splash);
 
-      entry(config, next);
-    }, function() {
+      var wm = OSjs.Core.getWindowManager();
+      wm._fullyLoaded = true;
+
+      OSjs.API.triggerHook('onWMInited');
+
+      console.groupEnd();
+    }
+
+    function _done() {
       OSjs.API.triggerHook('onInited');
 
-      OSjs.GUI.DialogScheme.init(function() {
-        loading.update(7, 8);
+      loading.update(queue.length - 1, queue.length + 1);
 
-        freeze.forEach(function(f) {
-          if ( typeof OSjs[f] === 'object' ) {
-            Object.freeze(OSjs[f]);
-          }
-        });
+      freeze.forEach(function(f) {
+        if ( typeof OSjs[f] === 'object' ) {
+          Object.freeze(OSjs[f]);
+        }
+      });
 
+      if ( config.DEVMODE || config.MOCHAMODE ) {
+        _inited();
+      }
+
+      if ( config.MOCHAMODE ) {
+        window.mocha.run();
+      } else {
         initWindowManager(config, function() {
-          loading = loading.destroy();
-          splash = OSjs.Utils.$remove(splash);
-
-          OSjs.API.triggerHook('onWMInited');
-
           initEvents();
-          var wm = OSjs.Core.getWindowManager();
-          wm._fullyLoaded = true;
 
-          console.groupEnd();
+          _inited();
 
           initSession(config, function() {
             OSjs.API.triggerHook('onSessionLoaded');
           });
         });
-      });
-    });
+      }
+    }
+
+    initLayout();
+
+    if ( config.MOCHAMODE ) {
+      queue.push(initTestEnvironment);
+    }
+
+    OSjs.Utils.asyncs(queue, function(entry, index, next) {
+      if ( index < 1 ) {
+        OSjs.API.triggerHook('onInitialize');
+      }
+
+      loading.update(index + 1, queue.length + 1);
+
+      entry(config, next);
+    }, _done);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -607,6 +706,8 @@
       handler.destroy();
       handler = null;
     }
+
+    OSjs.API.triggerHook('onShutdown');
 
     console.warn('OS.js was shut down!');
 

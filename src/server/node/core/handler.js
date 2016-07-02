@@ -47,14 +47,18 @@
   function registerAPIMethod(handler, instance, fn, fref) {
     if ( !instance.api[fn] ) {
       if ( ignorePrivilegesAPI.indexOf(fn) < 0 ) {
-        instance.api[fn] = function(args, callback, request, response, config, h) {
-          handler.checkAPIPrivilege(request, response, fn, function(err) {
+        instance.api[fn] = function(server, args, callback) {
+          handler.checkAPIPrivilege(server, fn, function(err) {
             if ( err ) {
               callback(err);
               return;
             }
 
-            fref.apply(fref, [args, callback, request, response, config, h]);
+            try {
+              fref.apply(fref, [server, args, callback]);
+            } catch ( e ) {
+              callback(e);
+            }
           });
         };
       } else {
@@ -70,20 +74,26 @@
   function registerVFSMethod(handler, instance, fn, fref) {
     if ( !instance.vfs[fn] ) {
       if ( ignorePrivilegesVFS.indexOf(fn) < 0 ) {
-        instance.vfs[fn] = function(args, callback, request, response) {
-          handler.checkAPIPrivilege(request, response, 'fs', function(err) {
+        instance.vfs[fn] = function(server, args, callback) {
+          handler.checkAPIPrivilege(server, 'fs', function(err) {
             if ( err ) {
               callback(err);
               return;
             }
 
-            handler.checkVFSPrivilege(request, response, fn, args, function(err) {
+            handler.checkVFSPrivilege(server, fn, args, function(err) {
               if ( err ) {
                 callback(err);
                 return;
               }
 
-              fref.apply(fref, [args, request, callback, instance.config, handler]);
+              handler.onVFSRequest(server, fn, args, function(err, resp) {
+                if ( arguments.length === 2 ) {
+                  callback(err, resp);
+                } else {
+                  fref.apply(fref, [server, args, callback]);
+                }
+              });
             });
           });
         };
@@ -128,29 +138,44 @@
   }
 
   /**
+   * Creates the user home path from
+   *
+   * @param   Object      server        Server object
+   *
+   * @return  String
+   *
+   * @method Handler::getHomePath()
+   */
+  DefaultHandler.prototype.getHomePath = function(server) {
+    var userdir = server.request.session.get('username');
+    if ( !userdir ) {
+      throw 'No user session was found';
+    }
+    return _path.join(server.config.vfs.homes, userdir);
+  };
+
+  /**
    * Gets the username of currently active user
    *
-   * @param   Object      request       Server request object
-   * @param   Object      response      Server response object
+   * @param   Object      server        Server object
    *
    * @method Handler::getUserName()
    */
-  DefaultHandler.prototype.getUserName = function(request, response) {
-    return request.session.get('username');
+  DefaultHandler.prototype.getUserName = function(server) {
+    return server.request.session.get('username');
   };
 
   /**
    * Gets the groups of currently active user
    *
-   * @param   Object      request       Server request object
-   * @param   Object      response      Server response object
+   * @param   Object      server        Server object
    *
    * @method Handler::getUserGroups()
    */
-  DefaultHandler.prototype.getUserGroups = function(request, response) {
+  DefaultHandler.prototype.getUserGroups = function(server) {
     var groups = [];
     try {
-      groups = JSON.parse(request.session.get('groups'));
+      groups = JSON.parse(server.request.session.get('groups'));
     } catch ( e ) {
       groups = [];
     }
@@ -160,23 +185,21 @@
   /**
    * Gets the blacklisted packages of active user
    *
-   * @param   Object      request       Server request object
-   * @param   Object      response      Server response object
+   * @param   Object      server        Server object
    * @param   Function    callback      Callback function => fn(error, result)
    *
    * @async
    * @return  void
    * @method  Handler::getUserBlacklistedPackages()
    */
-  DefaultHandler.prototype.getUserBlacklistedPackages = function(request, response, callback) {
+  DefaultHandler.prototype.getUserBlacklistedPackages = function(server, callback) {
     callback(false, []);
   };
 
   /**
    * Sets the user data of active user
    *
-   * @param   Object      request       Server request object
-   * @param   Object      response      Server response object
+   * @param   Object      server        Server object
    * @param   Object      data          Session data
    * @param   Function    callback      Callback function => fn(error, result)
    *
@@ -184,13 +207,13 @@
    * @return void
    * @method Handler::setUserData()
    */
-  DefaultHandler.prototype.setUserData = function(request, response, data, callback) {
+  DefaultHandler.prototype.setUserData = function(server, data, callback) {
     if ( data === null ) {
-      request.session.set('username', null);
-      request.session.set('groups', null);
+      server.request.session.set('username', null);
+      server.request.session.set('groups', null);
     } else {
-      request.session.set('username', data.username);
-      request.session.set('groups', JSON.stringify(data.groups));
+      server.request.session.set('username', data.username);
+      server.request.session.set('groups', JSON.stringify(data.groups));
     }
 
     callback(false, true);
@@ -201,8 +224,7 @@
    *
    * THIS IS THE METHOD CALLED FROM THE SERVER
    *
-   * @param   Object      request       Server request object
-   * @param   Object      response      Server response object
+   * @param   Object      server        Server object
    * @param   Mixed       privilege     Check against given privilege(s)
    * @param   Function    callback      Callback function => fn(err, result)
    *
@@ -211,14 +233,14 @@
    * @async
    * @method Handler::checkAPIPrivilege()
    */
-  DefaultHandler.prototype.checkAPIPrivilege = function(request, response, privilege, callback) {
+  DefaultHandler.prototype.checkAPIPrivilege = function(server, privilege, callback) {
     var self = this;
-    this._checkHasSession(request, response, function(err) {
+    this._checkHasSession(server, function(err) {
       if ( err ) {
         callback(err);
         return;
       }
-      self._checkHasAPIPrivilege(request, response, privilege, callback);
+      self._checkHasAPIPrivilege(server, privilege, callback);
     });
   };
 
@@ -227,8 +249,7 @@
    *
    * THIS IS THE METHOD CALLED FROM THE SERVER
    *
-   * @param   Object      request       Server request object
-   * @param   Object      response      Server response object
+   * @param   Object      server        Server object
    * @param   String      method        VFS Method name
    * @param   Object      args          VFS Method arguments
    * @param   Function    callback      Callback function => fn(err, result)
@@ -238,14 +259,14 @@
    * @async
    * @method Handler::checkVFSPrivilege()
    */
-  DefaultHandler.prototype.checkVFSPrivilege = function(request, response, method, args, callback) {
+  DefaultHandler.prototype.checkVFSPrivilege = function(server, method, args, callback) {
     var self = this;
-    this._checkHasSession(request, response, function(err) {
+    this._checkHasSession(server, function(err) {
       if ( err ) {
         callback(err);
         return;
       }
-      self._checkHasVFSPrivilege(request, response, method, args, callback);
+      self._checkHasVFSPrivilege(server, method, args, callback);
     });
   };
 
@@ -254,8 +275,7 @@
    *
    * THIS IS THE METHOD CALLED FROM THE SERVER
    *
-   * @param   Object      request       Server request object
-   * @param   Object      response      Server response object
+   * @param   Object      server        Server object
    * @param   String      packageName   Name of Package (ex: repo/name)
    * @param   Function    callback      Callback function => fn(err, result)
    *
@@ -264,14 +284,14 @@
    * @async
    * @method Handler::checkPackagePrivilege()
    */
-  DefaultHandler.prototype.checkPackagePrivilege = function(request, response, packageName, callback) {
+  DefaultHandler.prototype.checkPackagePrivilege = function(server, packageName, callback) {
     var self = this;
-    this._checkHasSession(request, response, function(err) {
+    this._checkHasSession(server, function(err) {
       if ( err ) {
         callback(err);
         return;
       }
-      self._checkHasPackagePrivilege(request, response, packageName, callback);
+      self._checkHasPackagePrivilege(server, packageName, callback);
     });
   };
 
@@ -298,22 +318,21 @@
   /**
    * Event fired when server gets a login
    *
-   * @param     Object        request       Server request object
-   * @param     Object        response      Server response object
+   * @param     Object        server        Server object
    * @param     Object        data          The login data
    * @param     Function      callback      Callback fuction
    *
    * @async
    * @method Handler::onLogin()
    */
-  DefaultHandler.prototype.onLogin = function(request, response, data, callback) {
+  DefaultHandler.prototype.onLogin = function(server, data, callback) {
     var self = this;
 
     function finished() {
       if ( data.blacklistedPackages ) {
         callback(false, data);
       } else {
-        self.getUserBlacklistedPackages(request, response, function(error, blacklist) {
+        self.getUserBlacklistedPackages(server, function(error, blacklist) {
           if ( error ) {
             callback(error);
           } else {
@@ -326,7 +345,7 @@
 
     data.userSettings = data.userSettings || {};
 
-    this.setUserData(request, response, data.userData, function() {
+    this.setUserData(server, data.userData, function() {
       finished();
     });
   };
@@ -334,17 +353,33 @@
   /**
    * Event fired when server gets a logout
    *
-   * @param     Object        request       Server request object
-   * @param     Object        response      Server response object
+   * @param     Object        server        Server object
    * @param     Function      callback      Callback fuction
    *
    * @async
    * @method Handler::onLogout()
    */
-  DefaultHandler.prototype.onLogout = function(request, response, callback) {
-    this.setUserData(request, response, null, function() {
+  DefaultHandler.prototype.onLogout = function(server, callback) {
+    this.setUserData(server, null, function() {
       callback(false, true);
     });
+  };
+
+  /**
+   * Event fired when client requests a VFS event
+   *
+   * @param     Object        server        Server object
+   * @param     String        vfsMethod     VFS Method
+   * @param     Object        vfsArguments  VFS Arguments
+   * @param     Function      callback      Callback fuction
+   *
+   * @async
+   * @method Handler::onVFSRequest()
+   */
+  DefaultHandler.prototype.onVFSRequest = function(server, vfsMethod, vfsArguments, callback) {
+    // If you want to interrupt or modify somehow, just send the two arguments to the
+    // callback: (error, result)
+    callback(/* continue normal behaviour */);
   };
 
   /**
@@ -352,8 +387,7 @@
    *
    * If the user has group 'admin' it will automatically granted full access
    *
-   * @param   Object      request       Server request object
-   * @param   Object      response      Server response object
+   * @param   Object      server        Server object
    * @param   String      groupname     Group name(s) (can also be an array)
    * @param   Function    callback      Callback function => fn(err, result)
    *
@@ -362,7 +396,7 @@
    * @async
    * @method Handler::_checkHasGroup()
    */
-  DefaultHandler.prototype._checkHasGroup = function(request, response, groupnames, callback) {
+  DefaultHandler.prototype._checkHasGroup = function(server, groupnames, callback) {
     groupnames = groupnames || [];
     if ( !(groupnames instanceof Array) && groupnames ) {
       groupnames = [groupnames];
@@ -371,7 +405,7 @@
     var self = this;
     var allowed = (function() {
       if ( typeof groupnames !== 'boolean' ) {
-        var groups = self.getUserGroups(request, response);
+        var groups = self.getUserGroups(server);
         if ( groups.indexOf('admin') < 0 ) {
           var allowed = true;
           groupnames.forEach(function(p) {
@@ -393,15 +427,14 @@
   /**
    * Default method for checking if user has a session
    *
-   * @param   Object      request       Server request object
-   * @param   Object      response      Server response object
+   * @param   Object      server        Server object
    * @param   Function    callback      Callback function => fn(err, result)
    *
    * @async
    * @method Handler::_checkHasSession()
    */
-  DefaultHandler.prototype._checkHasSession = function(request, response, callback) {
-    if ( !this.instance.setup.nw && !this.getUserName(request, response) ) {
+  DefaultHandler.prototype._checkHasSession = function(server, callback) {
+    if ( !this.instance.setup.nw && !this.getUserName(server) ) {
       callback('You have no OS.js Session, please log in!');
       return;
     }
@@ -411,16 +444,15 @@
   /**
    * Default method for checking blacklisted package permissions
    *
-   * @param   Object      request       Server request object
-   * @param   Object      response      Server response object
+   * @param   Object      server        Server object
    * @param   String      packageName   Name of the package
    * @param   Function    callback      Callback function => fn(err, result)
    *
    * @async
    * @method Handler::_checkHasBlacklistedPackage()
    */
-  DefaultHandler.prototype._checkHasBlacklistedPackage = function(request, response, packageName, callback) {
-    this.getUserBlacklistedPackages(request, response, function(error, list) {
+  DefaultHandler.prototype._checkHasBlacklistedPackage = function(server, packageName, callback) {
+    this.getUserBlacklistedPackages(server, function(error, list) {
       if ( error ) {
         callback(error, false);
       } else {
@@ -436,10 +468,10 @@
    * @see Handler::checkAPIPrivilege()
    * @method Handler::_checkHasAPIPrivilege()
    */
-  DefaultHandler.prototype._checkHasAPIPrivilege = function(request, response, privilege, callback) {
+  DefaultHandler.prototype._checkHasAPIPrivilege = function(server, privilege, callback) {
     var map = this.instance.config.api.groups;
     if ( map && privilege && map[privilege] ) {
-      this._checkHasGroup(request, response, privilege, function(err, res) {
+      this._checkHasGroup(server, privilege, function(err, res) {
         if ( !res && !err ) {
           err = 'You are not allowed to use this API function!';
         }
@@ -461,8 +493,8 @@
    * @see Handler::checkVFSPrivilege()
    * @method Handler::_checkHasVFSPrivilege()
    */
-  DefaultHandler.prototype._checkHasVFSPrivilege = function(request, response, method, args, callback) {
-    var mount = this.instance.vfs.getRealPath(args.path || args.src, this.instance.config, request);
+  DefaultHandler.prototype._checkHasVFSPrivilege = function(server, method, args, callback) {
+    var mount = this.instance.vfs.getRealPath(server, args.path || args.src);
     var cfg = this.instance.config.vfs.groups;
     var against;
 
@@ -471,7 +503,7 @@
     } catch ( e ) {}
 
     if ( against ) {
-      this._checkHasGroup(request, response, against, function(err, res) {
+      this._checkHasGroup(server, against, function(err, res) {
         if ( !res && !err ) {
           err = 'You are not allowed to use this VFS function!';
         }
@@ -492,7 +524,7 @@
    * @see Handler::checkPackagePrivilege()
    * @method Handler::_checkHasPackagePrivilege()
    */
-  DefaultHandler.prototype._checkHasPackagePrivilege = function(request, response, packageName, callback) {
+  DefaultHandler.prototype._checkHasPackagePrivilege = function(server, packageName, callback) {
     var packages = this.instance.metadata;
     var self = this;
 
@@ -501,12 +533,12 @@
     }
 
     if ( packages && packages[packageName] && packages[packageName].groups ) {
-      this._checkHasGroup(request, response, packages[packageName].groups, function(err, res) {
+      this._checkHasGroup(server, packages[packageName].groups, function(err, res) {
         if ( err ) {
           notallowed(err);
         } else {
           if ( res ) {
-            self._checkHasBlacklistedPackage(request, response, packageName, function(err, res) {
+            self._checkHasBlacklistedPackage(server, packageName, function(err, res) {
               if ( err || !res ) {
                 notallowed(err);
               } else {
@@ -535,9 +567,8 @@
    * - Get user-blacklisted packages from home directory
    * - Gets user-id (external event)
    *
-   * @param     Object        request       Server request object
-   * @param     Object        response      Server response object
-   * @param     Object        cfg           The config object
+   * @param     Object        server        Server object
+   * @param     Object        config        Handler config object
    * @param     Object        login         The login object
    * @param     Function      getUserId     Function for getting userid
    * @param     Function      callback      Callback fuction
@@ -545,11 +576,11 @@
    * @async
    * @method Handler::onSystemLogin()
    */
-  DefaultHandler.prototype.onSystemLogin = function(request, response, cfg, login, getUserId, callback) {
+  DefaultHandler.prototype.onSystemLogin = function(server, config, login, getUserId, callback) {
     var self = this;
 
     function getUserGroups(cb) {
-      _fs.readFile(cfg.groups, function(err, gdata) {
+      _fs.readFile(config.groups, function(err, gdata) {
         var list = {};
         if ( !err ) {
           try {
@@ -562,7 +593,7 @@
     }
 
     function getUserSettings(cb) {
-      _fs.readFile(getSettingsPath(cfg, login.username), function(err, sdata) {
+      _fs.readFile(getSettingsPath(config, login.username), function(err, sdata) {
         var settings = {};
         if ( !err && sdata ) {
           try {
@@ -574,7 +605,7 @@
     }
 
     function getUserBlacklist(cb) {
-      _fs.readFile(cfg.blacklist, function(err, bdata) {
+      _fs.readFile(config.blacklist, function(err, bdata) {
         var blacklist = [];
 
         if ( !err && bdata ) {
@@ -588,7 +619,7 @@
     }
 
     function done(data, settings, blacklist) {
-      self.onLogin(request, response, {
+      self.onLogin(server, {
         userData: {
           id:       data.id,
           username: login.username,
@@ -619,9 +650,8 @@
   /**
    * Stores the user setings into the home directory of user
    *
-   * @param     Object        request       Server request object
-   * @param     Object        response      Server response object
-   * @param     Object        cfg           The config object
+   * @param     Object        server        Server object
+   * @param     Object        config        Handler config object
    * @param     Object        settings      The settings object
    * @param     Function      getUserId     Function for getting userid
    * @param     Function      callback      Callback fuction
@@ -629,10 +659,10 @@
    * @async
    * @method Handler::onSystemSettings()
    */
-  DefaultHandler.prototype.onSystemSettings = function(request, response, cfg, settings, callback) {
-    var uname = this.getUserName(request, response);
+  DefaultHandler.prototype.onSystemSettings = function(server, config, settings, callback) {
+    var uname = this.getUserName(server);
     var data  = JSON.stringify(settings);
-    var spath = getSettingsPath(cfg, uname);
+    var spath = getSettingsPath(config, uname);
 
     // Make sure directory exists before writing
     _fs.mkdir(_path.dirname(spath), function() {
@@ -653,8 +683,8 @@
    */
   function NWHandler(instance) {
     DefaultHandler.call(this, instance, {
-      login: function(args, callback, request, response, config, handler) {
-        handler.onLogin(request, response, {
+      login: function(server, args, callback) {
+        server.handler.onLogin(server, {
           userData: {
             id: 0,
             username: 'nw',
@@ -663,8 +693,8 @@
           }
         }, callback);
       },
-      logout: function(args, callback, request, response, config, handler) {
-        handler.onLogout(request, response, callback);
+      logout: function(server, args, callback) {
+        server.handler.onLogout(server, callback);
       }
     });
   }

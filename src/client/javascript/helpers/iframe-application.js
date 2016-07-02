@@ -31,9 +31,6 @@
 (function(Application, Window, Utils, VFS, GUI) {
   'use strict';
 
-  window.OSjs       = window.OSjs       || {};
-  OSjs.Helpers      = OSjs.Helpers      || {};
-
   /////////////////////////////////////////////////////////////////////////////
   // Iframe Application Window Helper
   /////////////////////////////////////////////////////////////////////////////

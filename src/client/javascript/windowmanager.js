@@ -30,9 +30,6 @@
 (function(Utils, API, Process, Window) {
   'use strict';
 
-  window.OSjs = window.OSjs || {};
-  OSjs.Core   = OSjs.Core   || {};
-
   var _WM;             // Running Window Manager process
 
   /////////////////////////////////////////////////////////////////////////////
@@ -61,6 +58,10 @@
     };
 
     var theme = _WM.getStyleTheme(true);
+    if ( !theme.style ) {
+      theme.style = {'window': {margin: 0, border: 0}};
+    }
+
     this.theme = {
       topMargin : theme.style.window.margin || 0,
       borderSize: theme.style.window.border || 0
@@ -172,16 +173,19 @@
 
       win._emit('preop');
 
-      var boundMove = Utils.$bind(document, 'mousemove', _onMouseMove, false);
-      var boundUp = Utils.$bind(document, 'mouseup', _onMouseUp, false);
+      Utils.$bind(document, 'mousemove:movewindow', _onMouseMove, false);
+      Utils.$bind(document, 'mouseup:movewindowstop', _onMouseUp, false);
 
+      var outside = false;
       function _onMouseMove(ev, pos) {
-        onMouseMove(ev, action, win, pos);
+        if ( wm._mouselock ) {
+          onMouseMove(ev, action, win, pos);
+        }
       }
       function _onMouseUp(ev, pos) {
         onMouseUp(ev, action, win, pos);
-        boundMove = Utils.$unbind(boundMove);
-        boundUp = Utils.$unbind(boundUp);
+        Utils.$unbind(document, 'mousemove:movewindow');
+        Utils.$unbind(document, 'mouseup:movewindowstop');
       }
     }
 
@@ -263,7 +267,7 @@
 
           if ( nt < current.rectWorkspace.top ) {
             nt = current.rectWorkspace.top;
-            nh = newRect.height; // FIXME: Not 100% precice
+            nh = newRect.height;
           } else {
             if ( nh < current.minHeight ) {
               nt = current.rectWindow.b - current.minHeight;
@@ -399,8 +403,8 @@
    */
   function WindowManager(name, ref, args, metadata, settings) {
     console.group('WindowManager::constructor()');
-    console.log('Name', name);
-    console.log('Arguments', args);
+    console.debug('Name', name);
+    console.debug('Arguments', args);
 
     this._$notifications = null;
     this._windows        = [];
@@ -533,7 +537,12 @@
     }
     console.debug('WindowManager::addWindow()');
 
-    w.init(this, w._app, w._scheme);
+    try {
+      w.init(this, w._app, w._scheme);
+    } catch ( e ) {
+      console.error('WindowManager::addWindow()', '=>', 'Window::init()', e, e.stack);
+    }
+
     //attachWindowEvents(w, this);
     createWindowBehaviour(w, this);
 
