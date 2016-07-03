@@ -263,11 +263,11 @@
    * @function curl
    * @memberof OSjs.API
    *
-   * {@link https://os.js.org/doc/tutorials/using-curl.html}
-   * {@link https://os.js.org/doc/server/srcservernodenode_modulesosjsapijs.html#api-curl}
-   *
    * @param   {Object}    args      cURL Arguments (see docs)
    * @param   {Function}  callback  Callback function => fn(error, response)
+   *
+   * @link https://os.js.org/doc/tutorials/using-curl.html
+   * @link https://os.js.org/doc/server/srcservernodenode_modulesosjsapijs.html#api-curl
    */
   API.curl = function _apiCurl(args, callback) {
     args = args || {};

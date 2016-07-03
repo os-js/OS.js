@@ -51,8 +51,8 @@
    * @param   {Object}    metadata  Application metadata
    * @param   {Object}    settings  Application settings
    *
-   * {@link https://os.js.org/doc/tutorials/create-application.html}
-   * {@link https://os.js.org/doc/tutorials/application-with-server-api.html}
+   * @link https://os.js.org/doc/tutorials/create-application.html
+   * @link https://os.js.org/doc/tutorials/application-with-server-api.html
    *
    * @abstract
    * @constructor

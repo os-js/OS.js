@@ -88,7 +88,7 @@
    * @memberof OSjs.Helpers.FirefoxMarketplace
    * @see OSjs.Helpers.FirefoxMarketplace.createInsatance
    *
-   * {@link http://firefox-marketplace-api.readthedocs.org/en/latest}
+   * @link http://firefox-marketplace-api.readthedocs.org/en/latest
    */
   function FirefoxMarketplace(clientId) {
   }

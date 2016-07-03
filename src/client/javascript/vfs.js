@@ -524,8 +524,6 @@
    * @function createMountpoint
    * @memberof OSjs.VFS
    *
-   * {@link  https://os.js.org/doc/manuals/man-mountpoints.html}
-   *
    * @param {Object}     opts                           Mountpoint options
    * @param {String}     opts.name                      Mountpoint Name (unique)
    * @param {String}     opts.description               General description
@@ -537,6 +535,8 @@
    * @param {String}     [opts.options.password]        Password
    * @param {Boolean}    [opts.options.cors=false]      If CORS is enabled
    * @param {Function}   cb                             Callback function => fn(err, result)
+   *
+   * @link  https://os.js.org/doc/manuals/man-mountpoints.html
    */
   function createMountpoint(opts, cb) {
     opts = Utils.argumentDefaults(opts, {

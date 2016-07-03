@@ -61,9 +61,9 @@
    * @memberof OSjs.Helpers.GoogleAPI
    * @see OSjs.Helpers.GoogleAPI.createInsatance
    *
-   * {@link https://developers.google.com/api-client-library/javascript/start/start-js}
-   * {@link https://developers.google.com/api-client-library/javascript/}
-   * {@link https://console.developers.google.com/project}
+   * @link https://developers.google.com/api-client-library/javascript/start/start-js
+   * @link https://developers.google.com/api-client-library/javascript/
+   * @link https://console.developers.google.com/project
    */
   function GoogleAPI(clientId) {
     this.clientId       = clientId;
