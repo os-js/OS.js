@@ -100,11 +100,11 @@
    * @function set
    * @memberof OSjs.Core.SettingsManager#
    *
-   * @param  {String}     pool            Name of settings pool
-   * @param  {String}     [key]           Key entry of tree
-   * @param  {Mixed}      value           The value (or entire tree if no key given)
-   * @param  {Mixed}      [save]          boolean or callback function for saving
-   * @param  {Boolean}    [triggerWatch]  trigger change event for watchers (default=true)
+   * @param  {String}     pool                  Name of settings pool
+   * @param  {String}     [key]                 Key entry of tree
+   * @param  {Mixed}      value                 The value (or entire tree if no key given)
+   * @param  {Mixed}      [save]                boolean or callback function for saving
+   * @param  {Boolean}    [triggerWatch=true]   trigger change event for watchers
    *
    * @return  {Boolean}
    */
@@ -162,7 +162,7 @@
    * @memberof OSjs.Core.SettingsManager#
    *
    * @param  {String}     pool      Name of settings pool
-   * @param  {Object}     default   (Optional) Default settings tree
+   * @param  {Object}     [default] Default settings tree
    */
   SettingsManager.defaults = function(pool, defaults) {
     this.defaults[pool] = defaults;
@@ -175,7 +175,7 @@
    * @memberof OSjs.Core.SettingsManager#
    *
    * @param  {String}     pool      Name of settings pool
-   * @param  {Object}     default   (Optional) Default settings tree
+   * @param  {Object}     [default] Default settings tree
    *
    * @return {Object}
    */
@@ -258,8 +258,8 @@
    * @function clear
    * @memberof OSjs.Core.SettingsManager#
    *
-   * @param  {String}     pool      Name of settings pool
-   * @param  {Mixed}      save      (Optional) boolean or callback function for saving (default = true)
+   * @param  {String}     pool        Name of settings pool
+   * @param  {Mixed}      [save=true] Boolean or callback function for saving
    *
    * @return {OSjs.Core.SettingsManager}      this
    */

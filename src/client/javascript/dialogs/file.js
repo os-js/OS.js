@@ -40,8 +40,8 @@
    * @param  {Object}           args                      An object with arguments
    * @param  {String}           args.title                Dialog title
    * @param  {String}           args.title                Dialog title
-   * @param  {String}           args.type                 Dialog type (default=open, alternative=save)
-   * @param  {Boolean}          [args.multiple=false]     Multiple file selection (default=false)
+   * @param  {String}           [args.type=open]          Dialog type (alternative=save)
+   * @param  {Boolean}          [args.multiple=false]     Multiple file selection
    * @param  {OSjs.VFS.File}    [args.file]               Current file
    * @param  {String}           [args.path]               Default path
    * @param  {String}           [args.filename]           Default filename

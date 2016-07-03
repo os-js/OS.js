@@ -126,8 +126,8 @@
    * @function $position
    * @memberof OSjs.Utils
    *
-   * @param   {Node}      el        The Element to find position of
-   * @param   {Node}      parentEl  Optional parent to end loop in
+   * @param   {Node}      el          The Element to find position of
+   * @param   {Node}      [parentEl]  Parent to end loop in
    *
    * @return  {Object}                    The bounding box
    */
@@ -184,8 +184,8 @@
    * @function $index
    * @memberof OSjs.Utils
    *
-   * @param   {Node}    el          Element to check
-   * @param   {Node}    parentEl    Optional parent (automatically checked)
+   * @param   {Node}      el          The Element to check
+   * @param   {Node}      [parentEl]  Parent to end loop in
    *
    * @return  {Number}              The index
    */

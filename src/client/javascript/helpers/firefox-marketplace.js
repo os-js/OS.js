@@ -161,7 +161,7 @@
    * @function search
    * @memberof OSjs.Helpers.FirefoxMarketplace.Class#
    *
-   * @param   {String}      q             Query string (optional)
+   * @param   {String}      [q]           Query string
    * @param   {Function}    callback      Callback => fn(error, result)
    */
   FirefoxMarketplace.prototype.search = function(q, callback) {

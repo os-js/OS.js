@@ -229,13 +229,13 @@
    * @function scandir
    * @memberof OSjs.VFS
    *
-   * @param   {OSjs.VFS.File}   item                        File Metadata
-   * @param   {Function}        callback                    Callback function => fn(error, result)
-   * @param   {Object}          [options]                   Set of options
-   * @param   {String}          [options.typeFilter]        Filter by 'file' or 'dir'
-   * @param   {Array}           [options.mimeFilter]        Array of mime regex matchers
-   * @param   {Boolean}         [options.showHiddenFiles]   Show hidden files (default=true)
-   * @param   {Boolean}         [options.backlink]          Return '..' when applicable (default=true)
+   * @param   {OSjs.VFS.File}   item                             File Metadata
+   * @param   {Function}        callback                         Callback function => fn(error, result)
+   * @param   {Object}          [options]                        Set of options
+   * @param   {String}          [options.typeFilter]             Filter by 'file' or 'dir'
+   * @param   {Array}           [options.mimeFilter]             Array of mime regex matchers
+   * @param   {Boolean}         [options.showHiddenFiles=true]   Show hidden files
+   * @param   {Boolean}         [options.backlink=true]          Return '..' when applicable
    */
   VFS.scandir = function(item, callback, options) {
     console.debug('VFS::scandir()', item, options);
@@ -713,17 +713,15 @@
    * @function upload
    * @memberof OSjs.VFS
    *
-   * @param   Object          args      Function arguments (see below)
-   * @param   Function        callback  Callback function => fn(error, result)
-   * @param   Object          options   Optional set of options
-   * @param   Application     appRef    Optional reference to an Application
-   *
-   * @option  options boolean     overwrite     If set to true it will not check if the destination exists
-   *
-   * @option  args    Application app           (optional) If specified (Application ref) it will create a Dialog window
-   * @option  args    Window      win           (optional) Save as above only will add as child to this window
-   * @option  args    String      destination   Full path to destination
-   * @option  args    Array       files         Array of 'File'
+   * @param   {Object}                    args                Function arguments (see below)
+   * @param   {String}                    args.destination    Full path to destination
+   * @param   {Array}                     args.files          Array of 'File'
+   * @param   {OSjs.CoreApplication}      [args.app]          If specified (Application ref) it will create a Dialog window
+   * @param   {OSjs.Core.Window}          [args.win]          Save as above only will add as child to this window
+   * @param   {Function}                  callback            Callback function => fn(error, result)
+   * @param   {Object}                    [options]           Set of options
+   * @param   {Boolean}                   [options.overwrite] If set to true it will not check if the destination exists
+   * @param   {OSjs.Core.Application}     [appRef]            Reference to an Application
    */
   VFS.upload = function(args, callback, options, appRef) {
     console.debug('VFS::upload()', args);

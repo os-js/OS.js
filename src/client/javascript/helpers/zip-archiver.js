@@ -264,7 +264,7 @@
    * @param   {OSjs.VFS.File}     file                Archive File
    * @param   {OSjs.VFS.File}     add                 File to add
    * @param   {Object}            args                Arguments
-   * @param   {String}            args.path           Root path to add to (default='/')
+   * @param   {String}            [args.path=/]       Root path to add to
    * @param   {Function}          args.onprogress     Callback on progress => fn(state[, args, ...])
    * @param   {Function}          args.oncomplete     Callback on complete => fn(error, result)
    */

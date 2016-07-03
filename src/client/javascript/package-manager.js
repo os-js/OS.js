@@ -396,7 +396,7 @@
        * @function getPackages
        * @memberof OSjs.Core.PackageManager#
        *
-       * @param {Boolean}     filtered      Returns filtered list (default=true)
+       * @param {Boolean}     [filtered=true]      Returns filtered list
        *
        * @return {Array}
        */

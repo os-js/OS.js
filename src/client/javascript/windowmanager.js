@@ -608,10 +608,10 @@
    * @function applySettings
    * @memberof OSjs.Core.WindowManager#
    *
-   * @param   {Object}      settings        JSON Settings
-   * @param   {Boolean}     force           If forced, no merging will take place
-   * @param   {Boolean}     save            Saves settings
-   * @param   {Boolean}     triggerWatch    (Optional) trigger change event for watchers (default=true)
+   * @param   {Object}      settings              JSON Settings
+   * @param   {Boolean}     force                 If forced, no merging will take place
+   * @param   {Boolean}     save                  Saves settings
+   * @param   {Boolean}     [triggerWatch=true]   Trigger change event for watchers
    *
    * @return  {Boolean}                     On success
    */
@@ -638,7 +638,7 @@
    * @memberof OSjs.Core.WindowManager#
    *
    * @param   {Object}    styles      Style object
-   * @param   {String}    rawStyles   (Optional) raw CSS data
+   * @param   {String}    [rawStyles] Raw CSS data
    */
   WindowManager.prototype.createStylesheet = function(styles, rawStyles) {
     this.destroyStylesheet();
@@ -714,12 +714,12 @@
    * @function notification
    * @memberof OSjs.Core.WindowManager#
    *
-   * @param   {Object}    opts             Notification options
-   * @param   {String}    opts.icon        What icon to display
-   * @param   {String}    opts.title       What title to display
-   * @param   {String}    opts.message     What message to display
-   * @param   {Number}    opts.timeout     Timeout (default = 5000)
-   * @param   {Function}  opts.onClick     Event callback on click => fn(ev)
+   * @param   {Object}    opts                   Notification options
+   * @param   {String}    opts.icon              What icon to display
+   * @param   {String}    opts.title             What title to display
+   * @param   {String}    opts.message           What message to display
+   * @param   {Number}    [opts.timeout=5000]    Timeout
+   * @param   {Function}  opts.onClick           Event callback on click => fn(ev)
    */
   WindowManager.prototype.notification = function() {
     // Implement in your WM

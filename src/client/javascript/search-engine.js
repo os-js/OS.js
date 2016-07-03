@@ -322,8 +322,8 @@
        * @function configure
        * @memberof OSjs.Core.SearchEngine#
        *
-       * @param   {Object}      opts        Settings Object
-       * @param   {Boolean}     save        Save settings (default=true)
+       * @param   {Object}      opts          Settings Object
+       * @param   {Boolean}     [save=true]   Save settings
        */
       configure: function(opts, save) {
       }

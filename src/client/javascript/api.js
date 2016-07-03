@@ -293,10 +293,10 @@
    * @see OSjs.Core.Handler#callAPI
    * @see OSjs.Utils.ajax
    *
-   * @param   {String}    m       Method name
-   * @param   {Object}    a       Method arguments
-   * @param   {Function}  cb      Callback on success => fn(err, res)
-   * @param   {Object}    options (Optional) Options to send to the XHR request
+   * @param   {String}    m         Method name
+   * @param   {Object}    a         Method arguments
+   * @param   {Function}  cb        Callback on success => fn(err, res)
+   * @param   {Object}    [options] Options to send to the XHR request
    */
   var _CALL_INDEX = 1;
   API.call = function _apiCall(m, a, cb, options) {
@@ -914,9 +914,9 @@
    * @function getFileIcon
    * @memberof OSjs.API
    *
-   * @param   {File}      file      File Data (see supported types)
-   * @param   {String}    [size]    Icon size (default="16x16")
-   * @param   {String}    [icon]    Default icon
+   * @param   {File}      file            File Data (see supported types)
+   * @param   {String}    [size=16x16]    Icon size
+   * @param   {String}    [icon]          Default icon
    *
    * @return  {String}            The absolute URL to the icon
    */
@@ -1052,9 +1052,9 @@
    * @function getIcon
    * @memberof OSjs.API
    *
-   * @param   {String}              name    Resource filename
-   * @param   {String}              [size]  Icon size (default=16x16)
-   * @param   {OSjs.Core.Process}   [app]   Application instance reference. Can also be String. For `name` starting with './'
+   * @param   {String}              name          Resource filename
+   * @param   {String}              [size=16x16]  Icon size
+   * @param   {OSjs.Core.Process}   [app]         Application instance reference. Can also be String. For `name` starting with './'
    *
    * @return  {String}            The absolute URL to the resource
    */
@@ -1102,8 +1102,8 @@
    * @memberof OSjs.API
    * @see OSjs.Core.getConfig
    *
-   * @param   {String}    path              (Optional) Path
-   * @param   {Mixed}     defaultValue      (Optional) Default value if undefined
+   * @param   {String}    [path]                        Path
+   * @param   {Mixed}     [defaultValue=undefined]      Use default value
    *
    * @return  {Mixed}             Parameter value or entire tree on no path
    */
@@ -1179,7 +1179,7 @@
    * @param   {String}        className       Dialog Namespace Class Name
    * @param   {Object}        args            Arguments you want to send to dialog
    * @param   {Function}      callback        Callback on dialog action (close/ok etc) => fn(ev, button, result)
-   * @param   {Mixed}         parentObj       (Optional) A window or app (to make it a child window)
+   * @param   {Mixed}         [parentObj]     A window or app (to make it a child window)
    *
    * @return  {OSjs.Core.Window}
    */
@@ -1305,10 +1305,10 @@
    * @function createSplash
    * @memberof OSjs.API
    *
-   * @param   {String}      name          The name to display
-   * @param   {String}      icon          The icon to display
-   * @param   {String}      [label]       The label (default = 'Starting')
-   * @param   {Node}        [parentEl]    The parent element
+   * @param   {String}      name              The name to display
+   * @param   {String}      icon              The icon to display
+   * @param   {String}      [label=Starting]  The label
+   * @param   {Node}        [parentEl]        The parent element
    *
    * @return  {Object}
    */

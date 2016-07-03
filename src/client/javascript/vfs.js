@@ -193,9 +193,9 @@
    * @function getModuleFromPath
    * @memberof OSjs.VFS
    *
-   * @param   {String}    test        Path name
-   * @param   {Boolean}   retdef      Return default upon failure (default = true)
-   * @param   {Boolean}   retobj      Return module object instead of name (default = false)
+   * @param   {String}    test               Path name
+   * @param   {Boolean}   [retdef=true]      Return default upon failure
+   * @param   {Boolean}   [retobj=false]     Return module object instead of name
    *
    * @return  {Mixed}                 Module name or object based on arguments
    */
@@ -535,7 +535,7 @@
    * @param {String}     [opts.options.host]            Host (full URL)
    * @param {String}     [opts.options.username]        Username
    * @param {String}     [opts.options.password]        Password
-   * @param {Boolean}    [opts.options.cors]            If CORS is enabled (default=false)
+   * @param {Boolean}    [opts.options.cors=false]      If CORS is enabled
    * @param {Function}   cb                             Callback function => fn(err, result)
    */
   function createMountpoint(opts, cb) {

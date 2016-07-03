@@ -434,7 +434,7 @@
    * @function _getArgument
    * @memberof OSjs.Core.Process#
    *
-   * @param   {String}  [k]     Optional argument
+   * @param   {String}  [k]     Argument
    *
    * @return  {Mixed}     Argument value or null
    */

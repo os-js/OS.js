@@ -41,22 +41,22 @@
    * @function ajax
    * @memberof OSjs.Utils
    *
-   * @param   {Object}     args                      Aguments (see below)
-   * @param   {String}     args.url                  The URL
-   * @param   {String}     args.method               HTTP Call method: (POST/GET, default = GET)
-   * @param   {Mixed}      args.body                 Optional body to send (for POST)
-   * @param   {integer}    args.timeout              Optional timeout (in milliseconds)
-   * @param   {String}     args.responseType         HTTP Response type (default = null)
-   * @param   {Object}     args.requestHeaders       Tuple with headers (default = null)
-   * @param   {Boolean}    args.json                 Handle as a JSON request/response (default = false)
-   * @param   {Boolean}    args.jsonp                Handle as a JSONP request (default = false)
-   * @param   {Array}      args.acceptcodes          Array of accepted status codes for success signal [arraybuffer] (Optional)
-   * @param   {Function}   args.onerror              onerror callback => fn(error, evt, request, url)
-   * @param   {Function}   args.onsuccess            onsuccess callback => fn(result, request, url)
-   * @param   {Function}   args.oncreated            oncreated callback => fn(request)
-   * @param   {Function}   args.onfailed             onfailed callback => fn(evt)
-   * @param   {Function}   args.oncanceled           oncanceled callback => fn(evt)
-   * @param   {Function}   args.ontimeout            ontimeout callback => fn(evt)
+   * @param   {Object}     args                        Aguments (see below)
+   * @param   {String}     args.url                    The URL
+   * @param   {String}     [args.method=GET]           HTTP Call method
+   * @param   {Mixed}      [args.body]                 Body to send (for POST)
+   * @param   {integer}    [args.timeout=0]            Timeout (in milliseconds)
+   * @param   {String}     [args.responseType=null]    HTTP Response type
+   * @param   {Object}     [args.requestHeaders=null]  Tuple with headers
+   * @param   {Boolean}    [args.json=false]           Handle as a JSON request/response
+   * @param   {Boolean}    [args.jsonp=false]          Handle as a JSONP request
+   * @param   {Array}      [args.acceptcodes]          Array of accepted status codes for success signal [arraybuffer]
+   * @param   {Function}   [args.onerror]              onerror callback => fn(error, evt, request, url)
+   * @param   {Function}   [args.onsuccess]            onsuccess callback => fn(result, request, url)
+   * @param   {Function}   [args.oncreated]            oncreated callback => fn(request)
+   * @param   {Function}   [args.onfailed]             onfailed callback => fn(evt)
+   * @param   {Function}   [args.oncanceled]           oncanceled callback => fn(evt)
+   * @param   {Function}   [args.ontimeout]            ontimeout callback => fn(evt)
    */
   OSjs.Utils.ajax = function(args) {
     var request;

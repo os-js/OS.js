@@ -86,10 +86,10 @@
    * @function set
    * @memberof OSjs.Helpers.SettingsFragment#
    *
-   * @param   {Mixed}      key             The key
-   * @param   {Mixed}      value           The value
-   * @param   {Mixed}      save            Saves the pool (either boolean or callback function)
-   * @param   {Boolean}    [triggerWatch]  Trigger change event for watchers (default=true)
+   * @param   {Mixed}      key                   The key
+   * @param   {Mixed}      value                 The value
+   * @param   {Mixed}      save                  Saves the pool (either boolean or callback function)
+   * @param   {Boolean}    [triggerWatch=true]   Trigger change event for watchers
    *
    * @return  {OSjs.Helpers.SettingsFragment}  Itself `this`
    */

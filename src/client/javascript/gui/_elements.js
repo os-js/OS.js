@@ -111,7 +111,7 @@
    * @summary The Class used for all UI Elements.
    *
    * @param {Node}      el      DOM Node
-   * @param {String}    [q]     Optional query that element came from
+   * @param {String}    [q]     Query that element came from
    *
    * {@link https://os.js.org/doc/tutorials/gui.html}
    *
@@ -325,7 +325,7 @@
    *
    * @param   {String}    name      Name of function
    * @param   {Array}     [args]    Argument array (passed to apply())
-   * @param   {Mixed}     [thisArg] `this` argument (default=UIElement/this)
+   * @param   {Mixed}     [thisArg] `this` argument
    *
    * @return {Mixed}
    */
@@ -406,8 +406,8 @@
    * @function querySelector
    * @memberof OSjs.GUI.Element#
    *
-   * @param     {String}      q     Query
-   * @param     {Boolean}     rui   Return UI Element if possible (default=false)
+   * @param     {String}      q             Query
+   * @param     {Boolean}     [rui=false]   Return UI Element if possible
    *
    * @return    {Node}
    */
@@ -425,8 +425,8 @@
    * @function querySelectorAll
    * @memberof OSjs.GUI.Element#
    *
-   * @param     {String}      q     Query
-   * @param     {Boolean}     rui   Return UI Element if possible (default=false)
+   * @param     {String}      q             Query
+   * @param     {Boolean}     [rui=false]   Return UI Element if possible
    *
    * @return    {NodeCollection}
    */

@@ -254,7 +254,7 @@
    * @memberof OSjs.Helpers.Date#
    * @see OSjs.Helpers.Date#format
    *
-   * @param   {String}    fmt     Date format (optional)
+   * @param   {String}    [fmt]     Date format
    *
    * @return  {Mixed}     If no format is given it will return ExtendedDate
    */
@@ -269,7 +269,7 @@
    * @memberof OSjs.Helpers.Date#
    * @see OSjs.Helpers.Date#format
    *
-   * @param   {String}    fmt     Date format (optional)
+   * @param   {String}    [fmt]     Date format
    *
    * @return  {Mixed}     If no format is given it will return ExtendedDate
    */

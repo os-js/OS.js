@@ -393,11 +393,11 @@
    * @function createInstance
    * @memberof OSjs.Helpers.GoogleAPI
    *
-   * @param   {Object}    args           Arguments
-   * @param   {Array}     args.load      What functions/apis to load
-   * @param   {Array}     args.scope     What scopes to load
-   * @param   {boolean}   args.client    Load using gapi.client (default=false) WILL BE REPLACED!
-   * @param   {Function}  callback       Callback function => fn(error, instance)
+   * @param   {Object}    args                   Arguments
+   * @param   {Array}     args.load              What functions/apis to load
+   * @param   {Array}     args.scope             What scopes to load
+   * @param   {boolean}   [args.client=false]    Load using gapi.client WILL BE REPLACED!
+   * @param   {Function}  callback               Callback function => fn(error, instance)
    */
   OSjs.Helpers.GoogleAPI.createInstance = function(args, callback) {
     var load = args.load || [];

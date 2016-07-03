@@ -205,10 +205,10 @@
    * @function setProperty
    * @memberof OSjs.GUI.Helpers
    *
-   * @param   Node            el            Element
-   * @param   String          param         Parameter name
-   * @param   Mixed           value         Parameter value
-   * @param   String          [tagName]     What tagname is in use? Automatic
+   * @param   {Node}            el            Element
+   * @param   {String}          param         Parameter name
+   * @param   {Mixed}           value         Parameter value
+   * @param   {String}          [tagName]     What tagname is in use? Automatic
    */
   GUI.Helpers.setProperty = function setProperty(el, param, value, tagName) {
     tagName = tagName || el.tagName.toLowerCase();
@@ -612,14 +612,14 @@
    * @function createDraggable
    * @memberof OSjs.GUI.Helpers
    *
-   * @param  {Node}          el      DOMElement
-   * @param  {Object}        args    JSON of draggable params
-   * @param  {Object}        args.data       The data (JSON by default)
-   * @param  {String}        [args.type]     A custom drag event 'type'
-   * @param  {String}        [args.effect]   The draggable effect (cursor) (Default=move)
-   * @param  {String}        [args.mime]     The mime type of content (Default=application/json)
-   * @param  {Function}      args.onStart    Callback when drag started => fn(ev, el, args)
-   * @param  {Function}      args.onEnd      Callback when drag ended => fn(ev, el, args)
+   * @param  {Node}          el                               DOMElement
+   * @param  {Object}        args                             JSON of draggable params
+   * @param  {Object}        args.data                        The data (JSON by default)
+   * @param  {String}        [args.type]                      A custom drag event 'type'
+   * @param  {String}        [args.effect=move]               The draggable effect (cursor)
+   * @param  {String}        [args.mime=application/json]     The mime type of content
+   * @param  {Function}      args.onStart                     Callback when drag started => fn(ev, el, args)
+   * @param  {Function}      args.onEnd                       Callback when drag ended => fn(ev, el, args)
    */
   GUI.Helpers.createDraggable = function createDraggable(el, args) {
     args = OSjs.Utils.argumentDefaults(args, {
@@ -693,18 +693,18 @@
    * @function createDroppable
    * @memberof OSjs.GUI.Helpers
    *
-   * @param   {Node}            el                      DOMElement
-   * @param   {Object}          args                    JSON of droppable params
-   * @param   {String}          [args.accept]           Accept given drag event 'type'
-   * @param   {String}          [args.effect]           The draggable effect (cursor) (Default=move)
-   * @param   {String}          [args.mime]             The mime type of content (Default=application/json)
-   * @param   {Boolean}         [args.files]            Support file drops from OS (Default=true)
-   * @param   {Function}        args.onEnter            Callback when drag entered => fn(ev, el)
-   * @param   {Function}        args.onOver             Callback when drag over => fn(ev, el)
-   * @param   {Function}        args.onLeave            Callback when drag leave => fn(ev, el)
-   * @param   {Function}        args.onDrop             Callback when drag drop all => fn(ev, el)
-   * @param   {Function}        args.onFilesDropped     Callback when drag drop file => fn(ev, el, files, args)
-   * @param   {Function}        args.onItemDropped      Callback when drag drop internal object => fn(ev, el, item, args)
+   * @param   {Node}            el                              DOMElement
+   * @param   {Object}          args                            JSON of droppable params
+   * @param   {String}          [args.accept]                   Accept given drag event 'type'
+   * @param   {String}          [args.effect=move]              The draggable effect (cursor)
+   * @param   {String}          [args.mime=application/json]    The mime type of content
+   * @param   {Boolean}         [args.files=true]               Support file drops from OS
+   * @param   {Function}        args.onEnter                    Callback when drag entered => fn(ev, el)
+   * @param   {Function}        args.onOver                     Callback when drag over => fn(ev, el)
+   * @param   {Function}        args.onLeave                    Callback when drag leave => fn(ev, el)
+   * @param   {Function}        args.onDrop                     Callback when drag drop all => fn(ev, el)
+   * @param   {Function}        args.onFilesDropped             Callback when drag drop file => fn(ev, el, files, args)
+   * @param   {Function}        args.onItemDropped              Callback when drag drop internal object => fn(ev, el, item, args)
    */
   GUI.Helpers.createDroppable = function createDroppable(el, args) {
     args = OSjs.Utils.argumentDefaults(args, {

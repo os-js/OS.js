@@ -37,18 +37,18 @@
    *
    * OSjs.API.createDialog('Font', {}, fn);
    *
-   * @param  {Object}      args                        An object with arguments
-   * @param  {String}      args.title                  Dialog title
-   * @param  {String}      args.fontName               Current font name (default=internal)
-   * @param  {Number}      args.fontSize               Current font size (default=12)
-   * @param  {String}      [args.fontColor]            Font color (default=#00000)b
-   * @param  {String}      [args.backgroundColor]      Background color (default=#ffffff)
-   * @param  {Array}       [args.fonts]                Default font list
-   * @param  {Number}      [args.minSize]              Minimun size (default=6)
-   * @param  {Number}      [args.maxSize]              Maximum size (default=30
-   * @param  {String}      [args.text]                 Preview text
-   * @param  {String}      [args.unit]                 Size unit (default="px")
-   * @param  {Function}    callback                    Callback when done => fn(ev, button, result)
+   * @param  {Object}      args                                An object with arguments
+   * @param  {String}      args.title                          Dialog title
+   * @param  {String}      [args.fontName=internal]            Current font name
+   * @param  {Number}      [args.fontSize=12]                  Current font size
+   * @param  {String}      [args.fontColor=#00000]             Font color
+   * @param  {String}      [args.backgroundColor=#ffffff]      Background color
+   * @param  {Array}       [args.fonts]                        Default font list
+   * @param  {Number}      [args.minSize=6]                    Minimun size
+   * @param  {Number}      [args.maxSize=30]                   Maximum size
+   * @param  {String}      [args.text]                         Preview text
+   * @param  {String}      [args.unit=px]                      Size unit
+   * @param  {Function}    callback                            Callback when done => fn(ev, button, result)
    *
    * @constructor Font
    * @memberof OSjs.Dialogs

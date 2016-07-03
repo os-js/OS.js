@@ -249,8 +249,8 @@
    * @function openDialog
    * @memberof OSjs.Helpers.DefaultApplication#
    *
-   * @param   {OSjs.VFS.File}       file        (Optional) Current File
-   * @param   {OSjs.Core.Window}    win         Window reference
+   * @param   {OSjs.VFS.File}       [file]      Current File
+   * @param   {OSjs.Core.Window}    [win]       Window reference
    */
   DefaultApplication.prototype.openDialog = function(file, win) {
     var self = this;
@@ -281,8 +281,8 @@
    * @function newDialog
    * @memberof OSjs.Helpers.DefaultApplication#
    *
-   * @param   {String}              path        (Optional) Current path
-   * @param   {OSjs.Core.Window}    win         Window reference
+   * @param   {String}              [path]        Current path
+   * @param   {OSjs.Core.Window}    [win]         Window reference
    */
   DefaultApplication.prototype.newDialog = function(path, win) {
     var self = this;

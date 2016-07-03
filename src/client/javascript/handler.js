@@ -57,9 +57,6 @@
    * @constructor Handler
    * @memberof OSjs.Core
    * @see OSjs.Core.getHandler
-   *
-   * {@link https://os.js.org/doc/manuals/man-multiuser.html}
-   * {@link https://os.js.org/doc/tutorials/create-handler.html}
    */
   var _Handler = function() {
     if ( _handlerInstance ) {
@@ -273,7 +270,7 @@
    * @function saveSettings
    * @memberof OSjs.Core.Handler#
    *
-   * @param   {String}    pool          (optional) Pool Name
+   * @param   {String}    [pool]        Pool Name
    * @param   {Mixed}     storage       Storage data
    * @param   {Function}  callback      Callback function => fn(error, result)
    */
