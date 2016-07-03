@@ -30,6 +30,14 @@
 (function(Utils, API, VFS) {
   'use strict';
 
+  /**
+   * A response from a VFS request. The results are usually from the server,
+   * except for when an exception occured in the stack.
+   * @callback vfsCallback
+   * @param {String} [error] Error from response (if any)
+   * @param {Mixed} result Result from response (if any)
+   */
+
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -205,7 +213,7 @@
    *
    * @param  {OSjs.VFS.File}   item              Root path
    * @param  {Object}          args              Search query
-   * @param  {Function}        callback          Callback function => fn(error, result)
+   * @param  {vfsCallback}     callback          Callback function
    * @param  {Object}          [options]         Set of options
    * @param  {String}          options.query     The search query string
    * @param  {Number}          [options.limit]   Limit results to this amount
@@ -230,7 +238,7 @@
    * @memberof OSjs.VFS
    *
    * @param   {OSjs.VFS.File}   item                             File Metadata
-   * @param   {Function}        callback                         Callback function => fn(error, result)
+   * @param   {vfsCallback}     callback                         Callback function
    * @param   {Object}          [options]                        Set of options
    * @param   {String}          [options.typeFilter]             Filter by 'file' or 'dir'
    * @param   {Array}           [options.mimeFilter]             Array of mime regex matchers
@@ -257,7 +265,7 @@
    *
    * @param   {OSjs.VFS.File}             item          File Metadata (you can also provide a string)
    * @param   {File}                      data          File Data (see supported types)
-   * @param   {Function}                  callback      Callback function => fn(error, result)
+   * @param   {vfsCallback}               callback      Callback function
    * @param   {Object}                    [options]     Set of options
    * @param   {OSjs.Core.Application}     [appRef]      Reference to an Application
    */
@@ -330,7 +338,7 @@
    * @memberof OSjs.VFS
    *
    * @param   {OSjs.VFS.File}   item                File Metadata (you can also provide a string)
-   * @param   {Function}        callback            Callback function => fn(error, result)
+   * @param   {vfsCallback}     callback            Callback function
    * @param   {Object}          [options]           Set of options
    * @param   {String}          [options.type]      What to return, default: binary. Can also be: text, datasource
    */
@@ -397,7 +405,7 @@
    *
    * @param   {OSjs.VFS.File}             src                   Source File Metadata (you can also provide a string)
    * @param   {OSjs.VFS.File}             dest                  Destination File Metadata (you can also provide a string)
-   * @param   {Function}                  callback              Callback function => fn(error, result)
+   * @param   {vfsCallback}               callback              Callback function
    * @param   {Object}                    [options]             Set of options
    * @param   {Boolean}                   [options.overwrite]   If set to true it will not check if the destination exists
    * @param   {OSjs.Core.Application}     [appRef]              Seference to an Application
@@ -498,7 +506,7 @@
    *
    * @param   {OSjs.VFS.File}             src                   Source File Metadata (you can also provide a string)
    * @param   {OSjs.VFS.File}             dest                  Destination File Metadata (you can also provide a string)
-   * @param   {Function}                  callback              Callback function => fn(error, result)
+   * @param   {vfsCallback}               callback              Callback function
    * @param   {Object}                    [options]             Set of options
    * @param   {Boolean}                   [options.overwrite]   If set to true it will not check if the destination exists
    * @param   {OSjs.Core.Application}     [appRef]              Seference to an Application
@@ -581,7 +589,7 @@
    * @memberof OSjs.VFS
    *
    * @param   {OSjs.VFS.File}             item                  File Metadata (you can also provide a string)
-   * @param   {Function}                  callback              Callback function => fn(error, result)
+   * @param   {vfsCallback}               callback              Callback function
    * @param   {Object}                    [options]             Set of options
    * @param   {OSjs.Core.Application}     [appRef]              Reference to an Application
    */
@@ -622,7 +630,7 @@
    * @memberof OSjs.VFS
    *
    * @param   {OSjs.VFS.File}             item                  File Metadata (you can also provide a string)
-   * @param   {Function}                  callback              Callback function => fn(error, result)
+   * @param   {vfsCallback}               callback              Callback function
    * @param   {Object}                    [options]             Set of options
    * @param   {Boolean}                   [options.overwrite]   If set to true it will not check if the destination exists
    * @param   {OSjs.Core.Application}     [appRef]              Reference to an Application
@@ -655,7 +663,7 @@
    * @memberof OSjs.VFS
    *
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
-   * @param   {Function}        callback  Callback function => fn(error, result)
+   * @param   {vfsCallback}     callback  Callback function
    */
   VFS.exists = function(item, callback) {
     console.debug('VFS::exists()', item);
@@ -674,7 +682,7 @@
    * @memberof OSjs.VFS
    *
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
-   * @param   {Function}        callback  Callback function => fn(error, result)
+   * @param   {vfsCallback}     callback  Callback function
    */
   VFS.fileinfo = function(item, callback) {
     console.debug('VFS::fileinfo()', item);
@@ -693,7 +701,7 @@
    * @memberof OSjs.VFS
    *
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
-   * @param   {Function}        callback  Callback function => fn(error, result)
+   * @param   {vfsCallback}     callback  Callback function
    */
   VFS.url = function(item, callback) {
     console.debug('VFS::url()', item);
@@ -718,7 +726,7 @@
    * @param   {Array}                     args.files          Array of 'File'
    * @param   {OSjs.CoreApplication}      [args.app]          If specified (Application ref) it will create a Dialog window
    * @param   {OSjs.Core.Window}          [args.win]          Save as above only will add as child to this window
-   * @param   {Function}                  callback            Callback function => fn(error, result)
+   * @param   {vfsCallback}               callback            Callback function
    * @param   {Object}                    [options]           Set of options
    * @param   {Boolean}                   [options.overwrite] If set to true it will not check if the destination exists
    * @param   {OSjs.Core.Application}     [appRef]            Reference to an Application
@@ -815,7 +823,7 @@
    * @memberof OSjs.VFS
    *
    * @param   {OSjs.VFS.File}   args      File Metadata (you can also provide a string)
-   * @param   {Function}        callback  Callback function => fn(error, result)
+   * @param   {vfsCallback}     callback  Callback function
    */
   VFS.download = (function download() {
     var _didx = 1;
@@ -893,7 +901,7 @@
    * @memberof OSjs.VFS
    *
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
-   * @param   {Function}        callback  Callback function => fn(error, result)
+   * @param   {vfsCallback}     callback  Callback function
    */
   VFS.trash = function(item, callback) {
     console.debug('VFS::trash()', item);
@@ -914,7 +922,7 @@
    * @memberof OSjs.VFS
    *
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
-   * @param   {Function}        callback  Callback function => fn(error, result)
+   * @param   {vfsCallback}     callback  Callback function
    */
   VFS.untrash = function(item, callback) {
     console.debug('VFS::untrash()', item);
@@ -934,7 +942,7 @@
    * @function emptyTrash
    * @memberof OSjs.VFS
    *
-   * @param   {Function}        callback  Callback function => fn(error, result)
+   * @param   {vfsCallback}     callback  Callback function
    */
   VFS.emptyTrash = function(callback) {
     console.debug('VFS::emptyTrash()');
@@ -954,7 +962,7 @@
    * @memberof OSjs.VFS
    *
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
-   * @param   {Function}        callback  Callback function => fn(error, result)
+   * @param   {vfsCallback}     callback  Callback function
    */
   VFS.freeSpace = function(item, callback) {
     console.debug('VFS::freeSpace()', item);
