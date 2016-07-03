@@ -108,6 +108,8 @@
    * - gui-expander
    * </code></pre>
    *
+   * @summary The Class used for all UI Elements.
+   *
    * @param {Node}      el      DOM Node
    * @param {String}    [q]     Optional query that element came from
    *

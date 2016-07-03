@@ -47,11 +47,15 @@
   /**
    * The GoogleAPI wrapper class
    *
-   * This is a private class and can only be aquired through
-   * OSjs.Helpers.GoogleAPI.createInsatance()
-   *
+   * <pre><b>
    * Generally you want to create an instance of this helper
    * and when successfully created use `window.gapi`.
+   *
+   * This is a private class and can only be aquired through
+   * OSjs.Helpers.GoogleAPI.createInsatance()
+   * </b></pre>
+   *
+   * @summary Helper for communicating with Google API.
    *
    * @constructor Class
    * @memberof OSjs.Helpers.GoogleAPI

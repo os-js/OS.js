@@ -38,7 +38,11 @@
   /**
    * Settings Fragment Class
    *
+   * <pre><b>
    * This is the object returned when manipulating with SettingsManager.
+   * </b></pre>
+   *
+   * @summary This is the class returned from SettingsManager getters.
    *
    * @param   {Object}        obj         Settings tree
    * @param   {String}        poolName    Name of the pool

@@ -398,6 +398,11 @@
    * OSjs.Core.getWindowManager();
    * </code></pre>
    *
+   * @example
+   * OSjs.Core.getWindowManager()
+   *
+   * @summary Class used for basis as a Window Manager.
+   *
    * @param   {String}                      name      Window Manager name
    * @param   {OSjs.Core.WindowManager}     ref       Constructed instance ref
    * @param   {Object}                      args      Constructed arguments

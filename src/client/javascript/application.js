@@ -44,6 +44,8 @@
    * YOU CANNOT CANNOT USE THIS VIA 'new' KEYWORD.
    * </b></pre>
    *
+   * @summary Class used for basis as an Application.
+   *
    * @param   {String}    name      Process name
    * @param   {Object}    args      Process arguments
    * @param   {Object}    metadata  Application metadata

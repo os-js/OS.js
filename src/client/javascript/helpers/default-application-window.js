@@ -40,6 +40,8 @@
    *
    * Use in combination with 'DefaultApplication'
    *
+   * @summary Helper for making Applications with file interaction.
+   *
    * @constructor
    * @memberof OSjs.Helpers
    * @see OSjs.Helpers.DefaultApplication

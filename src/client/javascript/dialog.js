@@ -43,6 +43,8 @@
    * YOU CANNOT CANNOT USE THIS VIA 'new' KEYWORD.
    * </b></pre>
    *
+   * @summary Class used for basis as a Dialog.
+   *
    * @abstract
    * @constructor
    * @memberof OSjs.Core

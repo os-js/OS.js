@@ -145,6 +145,8 @@
   /**
    * The class for loading and parsing UI Schemes
    *
+   * @summary Class for loading, parsing and manipulating Scheme files.
+   *
    * @constructor Scheme
    * @memberof OSjs.GUI
    */
@@ -604,6 +606,8 @@
 
   /**
    * Shortcut for creating a new UIScheme class
+   *
+   * @summary Helper for loading Dialog scheme files.
    *
    * @constructor DialogScheme
    * @memberof OSjs.GUI

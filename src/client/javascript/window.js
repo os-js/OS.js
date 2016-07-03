@@ -193,6 +193,8 @@
    *  drop:file     When a internal file object was dropped   => (ev, VFS.File, args, srcEl)
    * </code></pre>
    *
+   * @summary Class used for basis as a Window.
+   *
    * @param   {String}                    name                     Window name (unique)
    * @param   {Object}                    opts                     List of options
    * @param   {String}                    opts.title               Window Title

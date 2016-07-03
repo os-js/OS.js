@@ -47,11 +47,15 @@
   /**
    * The WindowsLiveAPI wrapper class
    *
+   * <pre><b>
    * This is a private class and can only be aquired through
    * OSjs.Helpers.WindowsLiveAPI.createInsatance()
    *
    * Generally you want to create an instance of this helper
    * and when successfully created use `window.WL`.
+   * </b></pre>
+   *
+   * @summary Helper for communicating with Windows Live API.
    *
    * @constructor Class
    * @memberof OSjs.Helpers.WindowsLiveAPI

@@ -40,11 +40,15 @@
   /**
    * IFrame Application Window constructor
    *
+   * <pre><b>
    * This class is a basic implementation of OSjs.Core.Window
    * that uses Iframe as window content. It's usefull for creating
    * applications that is not using OS.js API.
    *
    * You can use this in combination with 'IFrameApplication'
+   * </b></pre>
+   *
+   * @summary Helper for making IFrame Applications.
    *
    * @param  {String}                 name          Window name
    * @param  {Object}                 opts          Window options
@@ -207,12 +211,16 @@
   /**
    * IFrame Application constructor
    *
+   * <pre><code>
    * Usage: Just apply the correct options and this should work
    * automatically.
    *
    * This just inits an empty application with a window that uses
    * iframe for contents. Look at the IFrameApplicationWindow
    * constructor for more options you can apply here.
+   * </code></pre>
+   *
+   * @summary Helper for making IFrame Applications.
    *
    * @param   {String}    name          Process name
    * @param   {Object}    args          Process arguments

@@ -209,6 +209,8 @@
    *  vfs:update    VFS update event                         => (dir, options, msg)
    * </code></pre>
    *
+   * @summary Class used for basis as a Process.
+   *
    * @param   {string}    name        Process Name
    * @param   {Object}    args        Process Arguments
    * @param   {Object}    metadata    Package Metadata

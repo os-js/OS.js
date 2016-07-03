@@ -45,17 +45,21 @@
   /**
    * Default Handler Implementation
    *
-   * @summary Used for communication, resources, settings and session handling
-   *
    * <pre><b>
    * YOU CAN ONLY GET AN INSTANCE WITH `Core.getHandler()`
    * </b></pre>
    *
-   * {@link https://os.js.org/doc/manuals/man-multiuser.html}
-   * {@link https://os.js.org/doc/tutorials/create-handler.html}
+   * @summary Used for communication, resources, settings and session handling
+   *
+   * @example
+   * OSjs.Core.getHandler()
    *
    * @constructor Handler
    * @memberof OSjs.Core
+   * @see OSjs.Core.getHandler
+   *
+   * {@link https://os.js.org/doc/manuals/man-multiuser.html}
+   * {@link https://os.js.org/doc/tutorials/create-handler.html}
    */
   var _Handler = function() {
     if ( _handlerInstance ) {

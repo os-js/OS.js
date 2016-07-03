@@ -81,6 +81,8 @@
    *
    * Works just like 'Date', but has some extended methods
    *
+   * @summary Class for date manipulation and formatting.
+   *
    * @constructor Date
    * @memberof OSjs.Helpers
    */

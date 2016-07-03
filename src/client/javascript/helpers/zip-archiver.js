@@ -146,12 +146,15 @@
   /**
    * The GoogleAPI wrapper class
    *
+   * <pre><b>
    * This is a private class and can only be aquired through
    * OSjs.Helpers.ZipArchiver.createInsatance()
    *
    * Generally you want to create an instance of this helper
    * and when successfully created use `window.zip` use the instance helpers.
+   * </b></pre>
    *
+   * @summary Helper for handling ZIP files.
    *
    * @constructor
    * @memberof OSjs.Helpers

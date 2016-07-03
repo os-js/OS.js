@@ -40,6 +40,8 @@
    *
    * This class just holds a map of events that you can trigger.
    *
+   * @summary Helper for handling events.
+   *
    * @param   {String}      name        A name (identifier)
    * @param   {Array}       names       List of initial event names
    *

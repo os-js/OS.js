@@ -40,9 +40,15 @@
    * YOU CAN ONLY GET AN INSTANCE WITH `Core.getSettingsManager()`
    * </b></pre>
    *
+   * @example
+   * OSjs.Core.getSettingsManager()
+   *
+   * @summary Used for managing Settings across all applications and modules.
+   *
    * @constructor
    * @memberof OSjs.Core
    * @see OSjs.Helpers.EventHandler
+   * @see OSjs.Core.getSettingsManager
    */
   var SettingsManager = {
     storage: {},

@@ -176,10 +176,18 @@
    *
    * For maintaining settings
    *
+   * <pre><b>
    * You can only get an instance with `Core.getSearchEngine()`
+   * </b></pre>
+   *
+   * @example
+   * OSjs.Core.getSearchEngine()
+   *
+   * @summary The Search Engine for location files and application.
    *
    * @constructor
    * @memberof OSjs.Core
+   * @see OSjs.Core.getSearchEngine
    */
   var SearchEngine = (function() {
 

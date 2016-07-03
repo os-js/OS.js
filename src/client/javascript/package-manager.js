@@ -44,8 +44,14 @@
    * YOU CAN ONLY GET AN INSTANCE WITH `Core.getPackageManager()`
    * </b></pre>
    *
+   * @example
+   * OSjs.Core.getPackageManager()
+   *
+   * @summary Used for managing packages
+   *
    * @constructor
    * @memberof OSjs.Core
+   * @see OSjs.Core.getPackageManager
    */
   var PackageManager = (function() {
     var blacklist = [];

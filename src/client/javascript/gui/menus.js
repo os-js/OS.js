@@ -377,18 +377,15 @@
   /**
    * Create and show a new menu
    *
-   * <pre><code>
-   *   Format:
-   *   [
+   * @example
+   * createMenu([
    *    {
    *      title: "Title",
    *      icon: "Icon",
    *      onClick: function() {}, // Callback
    *      items: [] // Recurse :)
    *    }
-   *    ...
-   *   ]
-   * </code></pre>
+   * ])
    *
    * @param   {Array}       items             Array of items
    * @param   {Event}       ev                DOM Event or dict with x/y

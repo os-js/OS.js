@@ -77,8 +77,12 @@
   /**
    * The FirefoxMarketplace wrapper class
    *
+   * <pre><b>
    * This is a private class and can only be aquired through
    * OSjs.Helpers.FirefoxMarketplace.createInsatance()
+   * </b></pre>
+   *
+   * @summary Helper for communicating with Firefox Marketplace.
    *
    * @constructor Class
    * @memberof OSjs.Helpers.FirefoxMarketplace

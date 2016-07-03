@@ -41,6 +41,8 @@
    * YOU CANNOT CANNOT USE THIS VIA 'new' KEYWORD.
    * </b></pre>
    *
+   * @summary Class used for basis as a Service.
+   *
    * @param   {String}    name    Process name
    * @param   {Object}    args    Process arguments
    *

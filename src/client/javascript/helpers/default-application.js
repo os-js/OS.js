@@ -40,6 +40,8 @@
    *
    * Handles opening, saving and creation of files.
    *
+   * @summary Helper for making Applications with file interaction.
+   *
    * @constructor
    * @memberof OSjs.Helpers
    * @see OSjs.Helpers.DefaultApplicationWindow
