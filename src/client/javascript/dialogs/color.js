@@ -37,10 +37,10 @@
    *
    * OSjs.API.createDialog('Color', {}, fn);
    *
-   * @param  {Object}      args              An object with arguments
-   * @param  {String}      args.title        Dialog title
-   * @param  {Mixed}       args.color        Either hex string or rbg object
-   * @param  {Function}    callback          Callback when done => fn(ev, button, result)
+   * @param  {Object}          args              An object with arguments
+   * @param  {String}          args.title        Dialog title
+   * @param  {Mixed}           args.color        Either hex string or rbg object
+   * @param  {dialogCallback}  callback          Callback when done
    *
    * @constructor Color
    * @memberof OSjs.Dialogs

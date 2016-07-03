@@ -45,6 +45,11 @@
    * @memberof OSjs.VFS
    */
 
+  /**
+   * A supported file data type
+   * @typedef {(window.File|window.Blob|OSjs.VFS.File|OSjs.VFS.FileDataURL)} File
+   */
+
   /*@
    *
    *  This is a wrapper for handling all VFS functions

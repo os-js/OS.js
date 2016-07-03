@@ -37,10 +37,10 @@
    *
    * OSjs.API.createDialog('Alert', {}, fn);
    *
-   * @param  {Object}      args              An object with arguments
-   * @param  {String}      args.title        Dialog title
-   * @param  {String}      args.message      Dialog message
-   * @param  {Function}    callback          Callback when done => fn(ev, button, result)
+   * @param  {Object}          args              An object with arguments
+   * @param  {String}          args.title        Dialog title
+   * @param  {String}          args.message      Dialog message
+   * @param  {dialogCallback}  callback          Callback when done
    *
    * @constructor Alert
    * @memberof OSjs.Dialogs

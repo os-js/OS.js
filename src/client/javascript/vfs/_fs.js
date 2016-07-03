@@ -234,6 +234,8 @@
   /**
    * Scandir
    *
+   * @summary Scans a directory for files and directories.
+   *
    * @function scandir
    * @memberof OSjs.VFS
    *
@@ -258,7 +260,7 @@
   /**
    * Write File
    *
-   * This function currently have no options.
+   * @summary Writes data to a file
    *
    * @function write
    * @memberof OSjs.VFS
@@ -334,6 +336,8 @@
   /**
    * Read File
    *
+   * @summary Reads data from a file
+   *
    * @function read
    * @memberof OSjs.VFS
    *
@@ -399,6 +403,8 @@
 
   /**
    * Copy File
+   *
+   * @summary Copies a file to a destination
    *
    * @function copy
    * @memberof OSjs.VFS
@@ -501,6 +507,8 @@
   /**
    * Move File
    *
+   * @summary Moves a file to a destination
+   *
    * @function move
    * @memberof OSjs.VFS
    *
@@ -576,6 +584,14 @@
       }
     });
   };
+
+  /**
+   * Alias of move
+   *
+   * @function rename
+   * @memberof OSjs.VFS
+   * @alias OSjs.VFS.move
+   */
   VFS.rename = function(src, dest, callback) {
     VFS.move.apply(this, arguments);
   };
@@ -584,6 +600,8 @@
    * Delete File
    *
    * This function currently have no options.
+   *
+   * @summary Deletes a file
    *
    * @function unlink
    * @memberof OSjs.VFS
@@ -619,12 +637,22 @@
       return response;
     }, options);
   };
+
+  /**
+   * Alias of unlink
+   *
+   * @function delete
+   * @memberof OSjs.VFS
+   * @alias OSjs.VFS.unlink
+   */
   VFS['delete'] = function(item, callback) {
     VFS.unlink.apply(this, arguments);
   };
 
   /**
    * Create Directory
+   *
+   * @summary Creates a directory
    *
    * @function mkdir
    * @memberof OSjs.VFS
@@ -659,6 +687,8 @@
   /**
    * Check if file exists
    *
+   * @summary Check if a target exists
+   *
    * @function exists
    * @memberof OSjs.VFS
    *
@@ -678,6 +708,8 @@
   /**
    * Get file info
    *
+   * @summary Gets information about a file
+   *
    * @function fileinfo
    * @memberof OSjs.VFS
    *
@@ -696,6 +728,8 @@
 
   /**
    * Get file URL
+   *
+   * @summary Gets absolute HTTP URL to a file
    *
    * @function url
    * @memberof OSjs.VFS
@@ -717,6 +751,8 @@
 
   /**
    * Upload file(s)
+   *
+   * @summary Uploads a file to the target from browser
    *
    * @function upload
    * @memberof OSjs.VFS
@@ -819,6 +855,8 @@
   /**
    * Download a file
    *
+   * @summary Downloads a file to the computer
+   *
    * @function download
    * @memberof OSjs.VFS
    *
@@ -895,7 +933,7 @@
   /**
    * Move file to trash (Not used in internal storage)
    *
-   * THIS IS NOT USED FOR INTERNAL MODULES
+   * @summary Trashes a file
    *
    * @function trash
    * @memberof OSjs.VFS
@@ -916,7 +954,7 @@
   /**
    * Restore file from trash
    *
-   * THIS IS NOT USED FOR INTERNAL MODULES
+   * @summary Removes a file from trash
    *
    * @function untrash
    * @memberof OSjs.VFS
@@ -937,7 +975,7 @@
   /**
    * Permanently empty trash
    *
-   * THIS IS NOT USED FOR INTERNAL MODULES
+   * @summary Empties the trash
    *
    * @function emptyTrash
    * @memberof OSjs.VFS
@@ -957,6 +995,8 @@
    * Checks for free space in given protocol from file
    *
    * Result is -1 when unavailable
+   *
+   * @summary Gets free space on target
    *
    * @function freeSpace
    * @memberof OSjs.VFS

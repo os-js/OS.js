@@ -30,6 +30,26 @@
 (function(Utils, API, Window) {
   'use strict';
 
+  /**
+   * A callback for Dialogs.
+   *
+   * <pre>
+   * The list of included buttons are: ok, cancel, yes, no
+   * depending on which dialog was called.
+   *
+   * The result also depends on which dialog was called.
+   *
+   * The default button is 'cancel' if window was closed.
+   *
+   * You only get an event back if an actual button was pressed.
+   * </pre>
+   *
+   * @callback dialogCallback
+   * @param {Event}   ev      Browser event that occured from action
+   * @param {String}  button  Which button that was clicked
+   * @param {Mixed}   result  Result from dialog input
+   */
+
   /////////////////////////////////////////////////////////////////////////////
   // DIALOG
   /////////////////////////////////////////////////////////////////////////////

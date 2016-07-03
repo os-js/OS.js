@@ -42,7 +42,7 @@
    * @param  {Object}          args              An object with arguments
    * @param  {String}          args.title        Dialog title
    * @param  {String}          args.message      Dialog message
-   * @param  {Function}        callback          Callback when done => fn(ev, button, result)
+   * @param  {dialogCallback}  callback          Callback when done
    *
    * @constructor FileProgress
    * @memberof OSjs.Dialogs
