@@ -105,6 +105,7 @@
      * @name path
      * @memberof OSjs.VFS.File#
      * @type {String}
+     * @example home:///foo/bar.baz
      */
     this.path     = null;
 
@@ -113,6 +114,7 @@
      * @name filename
      * @memberof OSjs.VFS.File#
      * @type {String}
+     * @example foo.baz
      */
     this.filename = null;
 
@@ -121,6 +123,7 @@
      * @name type
      * @memberof OSjs.VFS.File#
      * @type {String}
+     * @example file
      */
     this.type     = null;
 
@@ -129,6 +132,7 @@
      * @name size
      * @memberof OSjs.VFS.File#
      * @type {Number}
+     * @example 1234
      */
     this.size     = null;
 
@@ -137,11 +141,12 @@
      * @name mime
      * @memberof OSjs.VFS.File#
      * @type {String}
+     * @example application/octet-stream
      */
     this.mime     = null;
 
     /**
-     * Unique identifier
+     * Unique identifier (Only used for external services requring it)
      * @name id
      * @memberof OSjs.VFS.File#
      * @type {String}
