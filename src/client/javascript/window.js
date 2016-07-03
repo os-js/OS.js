@@ -168,6 +168,10 @@
   /**
    * Window Class
    *
+   * <pre><b>
+   * YOU CANNOT CANNOT USE THIS VIA 'new' KEYWORD.
+   * </b></pre>
+   *
    * <pre><code>
    * Events:
    *  inited        When window has been inited and rendered  => ()
@@ -219,9 +223,10 @@
    * @param   {OSjs.Core.Application}     appRef                   Application Reference
    * @param   {OSjs.GUI.Scheme}           schemeRef                GUI Scheme Reference
    *
+   * @abstract
    * @constructor
    * @memberof OSjs.Core
-   * @see OSjs.Helpers.EventHandler
+   * @mixes OSjs.Helpers.EventHandler
    */
   var Window = (function() {
     var _WID                = 0;

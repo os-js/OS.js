@@ -40,7 +40,9 @@
    *
    * For maintaining packages
    *
-   * You can only get an instance with `Core.getPackageManager()`
+   * <pre><b>
+   * YOU CAN ONLY GET AN INSTANCE WITH `Core.getPackageManager()`
+   * </b></pre>
    *
    * @constructor
    * @memberof OSjs.Core

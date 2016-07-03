@@ -37,9 +37,14 @@
   /**
    * Service Class
    *
+   * <pre><b>
+   * YOU CANNOT CANNOT USE THIS VIA 'new' KEYWORD.
+   * </b></pre>
+   *
    * @param   {String}    name    Process name
    * @param   {Object}    args    Process arguments
    *
+   * @abstract
    * @constructor
    * @memberof OSjs.Core
    * @extends OSjs.Core.Process

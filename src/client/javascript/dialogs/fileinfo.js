@@ -33,6 +33,10 @@
   /**
    * An 'File Information' dialog
    *
+   * @example
+   *
+   * OSjs.API.createDialog('FileInfo', {}, fn);
+   *
    * @param  {Object}          args              An object with arguments
    * @param  {String}          args.title        Dialog title
    * @param  {OSjs.VFS.File}   args.file         File to use

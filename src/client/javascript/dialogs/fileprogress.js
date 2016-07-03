@@ -35,6 +35,10 @@
    *
    * This is only used internally automatically.
    *
+   * @example
+   *
+   * OSjs.API.createDialog('FileProgress', {}, fn);
+   *
    * @param  {Object}          args              An object with arguments
    * @param  {String}          args.title        Dialog title
    * @param  {String}          args.message      Dialog message

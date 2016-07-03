@@ -56,13 +56,14 @@
    * @constructor Class
    * @memberof OSjs.Helpers.WindowsLiveAPI
    * @see OSjs.Helpers.WindowsLiveAPI.createInsatance
-   * @link http://msdn.microsoft.com/en-us/library/hh826547.aspx
-   * @link http://msdn.microsoft.com/en-us/library/hh826538.aspx
-   * @link http://msdn.microsoft.com/en-us/library/hh550837.aspx
-   * @link http://msdn.microsoft.com/en-us/library/dn631844.aspx
-   * @link http://msdn.microsoft.com/en-us/library/dn631839.aspx
-   * @link http://msdn.microsoft.com/en-us/library/hh243643.aspx
-   * @link https://account.live.com/developers/applications/index
+   *
+   * {@link http://msdn.microsoft.com/en-us/library/hh826547.aspx}
+   * {@link http://msdn.microsoft.com/en-us/library/hh826538.aspx}
+   * {@link http://msdn.microsoft.com/en-us/library/hh550837.aspx}
+   * {@link http://msdn.microsoft.com/en-us/library/dn631844.aspx}
+   * {@link http://msdn.microsoft.com/en-us/library/dn631839.aspx}
+   * {@link http://msdn.microsoft.com/en-us/library/hh243643.aspx}
+   * {@link https://account.live.com/developers/applications/index}
    */
   function WindowsLiveAPI(clientId) {
     this.hasSession = false;

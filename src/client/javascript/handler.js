@@ -45,15 +45,14 @@
   /**
    * Default Handler Implementation
    *
-   * Used for communication, resources, settings and session handling
+   * @summary Used for communication, resources, settings and session handling
    *
-   * You can implement your own.
+   * <pre><b>
+   * YOU CAN ONLY GET AN INSTANCE WITH `Core.getHandler()`
+   * </b></pre>
    *
-   * NEVER CONSTRUCT YOUR OWN INTANCE! To get one use:
-   * OSjs.Core.getHandler();
-   *
-   * @link https://os.js.org/doc/manuals/man-multiuser.html
-   * @link https://os.js.org/doc/tutorials/create-handler.html
+   * {@link https://os.js.org/doc/manuals/man-multiuser.html}
+   * {@link https://os.js.org/doc/tutorials/create-handler.html}
    *
    * @constructor Handler
    * @memberof OSjs.Core

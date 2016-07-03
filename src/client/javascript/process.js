@@ -185,6 +185,10 @@
   /**
    * Process Template Class
    *
+   * <pre><b>
+   * YOU CANNOT CANNOT USE THIS VIA 'new' KEYWORD.
+   * </b></pre>
+   *
    * <pre><code>
    * Events:
    *  message       All events                               => (msg, object, options)
@@ -209,9 +213,10 @@
    * @param   {Object}    args        Process Arguments
    * @param   {Object}    metadata    Package Metadata
    *
+   * @abstract
    * @constructor
    * @memberof OSjs.Core
-   * @see OSjs.Helpers.EventHandler
+   * @mixes OSjs.Helpers.EventHandler
    */
   function Process(name, args, metadata) {
     console.group('Process::constructor()', name);

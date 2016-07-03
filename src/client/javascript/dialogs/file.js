@@ -33,8 +33,12 @@
   /**
    * An 'File' dialog
    *
-   * @param  {Object}           args              An object with arguments
-   * @param  {String}           args.title        Dialog title
+   * @example
+   *
+   * OSjs.API.createDialog('File', {}, fn);
+   *
+   * @param  {Object}           args                      An object with arguments
+   * @param  {String}           args.title                Dialog title
    * @param  {String}           args.title                Dialog title
    * @param  {String}           args.type                 Dialog type (default=open, alternative=save)
    * @param  {Boolean}          [args.multiple=false]     Multiple file selection (default=false)
@@ -46,7 +50,7 @@
    * @param  {Array}            [args.filter]             Array of MIMIE filters
    * @param  {Array}            [args.mfilter]            Array of function to filter module list
    * @param  {String}           [args.select]             Selection type (file/dir)
-   * @param  {Function}         callback          Callback when done => fn(ev, button, result)
+   * @param  {Function}         callback                  Callback when done => fn(ev, button, result)
    *
    * @constructor File
    * @memberof OSjs.Dialogs

@@ -33,6 +33,10 @@
   /**
    * An 'FileUpload' dialog
    *
+   * @example
+   *
+   * OSjs.API.createDialog('FileUpload', {}, fn);
+   *
    * @param  {Object}          args              An object with arguments
    * @param  {String}          args.title        Dialog title
    * @param  {String}          args.dest         VFS destination

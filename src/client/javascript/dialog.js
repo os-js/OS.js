@@ -39,9 +39,15 @@
    *
    * A simple wrapper with some pre-defined options
    *
+   * <pre><b>
+   * YOU CANNOT CANNOT USE THIS VIA 'new' KEYWORD.
+   * </b></pre>
+   *
+   * @abstract
    * @constructor
    * @memberof OSjs.Core
    * @extends OSjs.Core.Window
+   * @see OSjs.API.createDialog
    */
   function DialogWindow(className, opts, args, callback) {
     var self = this;

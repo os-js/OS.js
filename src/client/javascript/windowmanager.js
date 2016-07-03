@@ -393,8 +393,10 @@
    * WindowManager Process Class
    * The default implementation of this is in apps/CoreWM/main.js
    *
+   * <pre><code>
    * NEVER CONSTRUCT YOUR OWN INTANCE! To get one use:
    * OSjs.Core.getWindowManager();
+   * </code></pre>
    *
    * @param   {String}                      name      Window Manager name
    * @param   {OSjs.Core.WindowManager}     ref       Constructed instance ref
@@ -402,6 +404,7 @@
    * @param   {Object}                      metadata  Package Metadata
    * @param   {Object}                      settings  Restored settings
    *
+   * @abstract
    * @constructor
    * @memberof OSjs.Core
    * @extends OSjs.Core.Process

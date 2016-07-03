@@ -33,6 +33,10 @@
   /**
    * An 'Color Chooser' dialog
    *
+   * @example
+   *
+   * OSjs.API.createDialog('Color', {}, fn);
+   *
    * @param  {Object}      args              An object with arguments
    * @param  {String}      args.title        Dialog title
    * @param  {Mixed}       args.color        Either hex string or rbg object

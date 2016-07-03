@@ -40,14 +40,19 @@
    * The 'Process arguments' is a JSON object with the arguments the
    * Applications was launched with. Just like 'argv'
    *
+   * <pre><b>
+   * YOU CANNOT CANNOT USE THIS VIA 'new' KEYWORD.
+   * </b></pre>
+   *
    * @param   {String}    name      Process name
    * @param   {Object}    args      Process arguments
    * @param   {Object}    metadata  Application metadata
    * @param   {Object}    settings  Application settings
    *
-   * @link    https://os.js.org/doc/tutorials/create-application.html
-   * @link    https://os.js.org/doc/tutorials/application-with-server-api.html
+   * {@link https://os.js.org/doc/tutorials/create-application.html}
+   * {@link https://os.js.org/doc/tutorials/application-with-server-api.html}
    *
+   * @abstract
    * @constructor
    * @memberof OSjs.Core
    * @extends OSjs.Core.Process

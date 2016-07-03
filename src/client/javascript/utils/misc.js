@@ -39,7 +39,7 @@
    *
    * @function format
    * @memberof OSjs.Utils
-   * @link http://stackoverflow.com/a/4673436
+   * {@link http://stackoverflow.com/a/4673436}
    *
    * @param   {String}      format        String format
    * @param   {...String}   s             Insert into format
@@ -297,7 +297,7 @@
    *
    * @function invertHEX
    * @memberof OSjs.Utils
-   * @link http://stackoverflow.com/a/9601429/1236086
+   * {@link http://stackoverflow.com/a/9601429/1236086}
    *
    * @param   {String}      hex     Hex string (With #)
    *

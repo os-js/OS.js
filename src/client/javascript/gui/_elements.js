@@ -111,9 +111,10 @@
    * @param {Node}      el      DOM Node
    * @param {String}    [q]     Optional query that element came from
    *
+   * {@link https://os.js.org/doc/tutorials/gui.html}
+   *
    * @constructor Element
    * @memberof OSjs.GUI
-   * @link https://os.js.org/doc/tutorials/gui.html
    */
   function UIElement(el, q) {
     this.$element = el || null;

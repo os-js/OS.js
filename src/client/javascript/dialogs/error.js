@@ -33,6 +33,10 @@
   /**
    * An 'Error' dialog
    *
+   * @example
+   *
+   * OSjs.API.createDialog('Error', {}, fn);
+   *
    * @param  {Object}          args              An object with arguments
    * @param  {String}          args.title        Dialog title
    * @param  {String}          args.message      Dialog message

@@ -34,9 +34,11 @@
   /**
    * Settings Manager Class
    *
-   * For maintaining settings
+   * @summary Class for maintaining settings
    *
-   * You can only get an instance with `Core.getSettingsManager()`
+   * <pre><b>
+   * YOU CAN ONLY GET AN INSTANCE WITH `Core.getSettingsManager()`
+   * </b></pre>
    *
    * @constructor
    * @memberof OSjs.Core

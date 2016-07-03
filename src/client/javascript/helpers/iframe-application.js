@@ -56,7 +56,8 @@
    * @constructor
    * @memberof OSjs.Helpers
    * @see OSjs.Core.Window
-   * @link https://os.js.org/doc/tutorials/iframe-application.html
+   *
+   * {@link https://os.js.org/doc/tutorials/iframe-application.html}
    */
   var IFrameApplicationWindow = function(name, opts, app) {
     opts = Utils.argumentDefaults(opts, {

@@ -134,7 +134,7 @@
    *
    * @function humanFileSize
    * @memberof OSjs.Utils
-   * @link http://stackoverflow.com/users/65387/mark
+   * {@link http://stackoverflow.com/users/65387/mark}
    *
    * @param   {Number}  bytes     Size in bytes
    * @param   {String}  si        Use SI units ?

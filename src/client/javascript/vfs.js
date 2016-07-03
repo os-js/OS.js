@@ -523,7 +523,8 @@
    *
    * @function createMountpoint
    * @memberof OSjs.VFS
-   * @link  https://os.js.org/doc/manuals/man-mountpoints.html
+   *
+   * {@link  https://os.js.org/doc/manuals/man-mountpoints.html}
    *
    * @param {Object}     opts                           Mountpoint options
    * @param {String}     opts.name                      Mountpoint Name (unique)
