@@ -33,17 +33,15 @@
   /**
    * An 'Input' dialog
    *
-   * @param   args      Object        An object with arguments
-   * @param   callback  Function      Callback when done => fn(ev, button, result)
+   * @param  {Object}          args                An object with arguments
+   * @param  {String}          args.title          Dialog title
+   * @param  {String}          args.message        Dialog message
+   * @param  {String}          [args.value]        Input value
+   * @param  {String}          [args.placeholder]  Input placeholder
+   * @param  {Function}        callback            Callback when done => fn(ev, button, result)
    *
-   * @option    args    title       String      Dialog title
-   * @option    args    message     String      Dialog message
-   * @option    args    value       String      (Optional) Input value
-   * @option    args    placeholder String      (Optional) Input placeholder
-   *
-   * @extends DialogWindow
-   * @class InputDialog
-   * @api OSjs.Dialogs.Input
+   * @constructor Input
+   * @memberof OSjs.Dialogs
    */
   function InputDialog(args, callback) {
     args = Utils.argumentDefaults(args, {});

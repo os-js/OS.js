@@ -120,11 +120,14 @@
    *
    * An entry for a menu.
    *
-   * Events:
-   *  select        When an entry was selected (click) => fn(ev)
+   * <pre><code>
+   *   Events:
+   *    select        When an entry was selected (click) => fn(ev)
+   * <pre><code>
    *
-   * @api OSjs.GUI.Elements.gui-menu-entry
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-menu-entry
    */
   GUI.Elements['gui-menu-entry'] = (function() {
     function _checkExpand(child) {
@@ -207,14 +210,17 @@
    *
    * A normal menu (also contextmenu)
    *
-   * Events:
-   *  select        When an entry was selected (click) => fn(ev)
+   * <pre><code>
+   *   Events:
+   *    select        When an entry was selected (click) => fn(ev)
    *
-   * Setters:
-   *  checked       Set checkbox/option checked value
+   *   Setters:
+   *    checked       Set checkbox/option checked value
+   * </code></pre>
    *
-   * @api OSjs.GUI.Elements.gui-menu
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-menu
    */
   GUI.Elements['gui-menu'] = {
     bind: function(el, evName, callback, params) {
@@ -275,10 +281,13 @@
    *
    * A menubar with sub-menus
    *
-   * @event     select               When an entry was selected (click) => fn(ev)
+   * <pre><code>
+   *   event     select               When an entry was selected (click) => fn(ev)
+   * </code></pre>
    *
-   * @api OSjs.GUI.Elements.gui-menu-bar
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-menu-bar
    */
   GUI.Elements['gui-menu-bar'] = {
     bind: function(el, evName, callback, params) {
@@ -360,33 +369,33 @@
   /**
    * Blur the currently open menu (aka hiding)
    *
-   * @return void
-   * @api OSjs.GUI.Helpers.blurMenu()
+   * @function blurMenu
+   * @memberof OSjs.GUI.Helpers
    */
   OSjs.GUI.Helpers.blurMenu = blurMenu;
 
   /**
    * Create and show a new menu
    *
-   * Format:
-   * ```
-   * [
-   *  {
-   *    title: "Title",
-   *    icon: "Icon",
-   *    onClick: function() {}, // Callback
-   *    items: [] // Recurse :)
-   *  }
-   *  ...
-   * ]
-   * ```
+   * <pre><code>
+   *   Format:
+   *   [
+   *    {
+   *      title: "Title",
+   *      icon: "Icon",
+   *      onClick: function() {}, // Callback
+   *      items: [] // Recurse :)
+   *    }
+   *    ...
+   *   ]
+   * </code></pre>
    *
-   * @param   Array       items             Array of items
-   * @param   Event       ev                DOM Event or dict with x/y
-   * @param   Mixed       customInstance    Show a custom created menu
+   * @param   {Array}       items             Array of items
+   * @param   {Event}       ev                DOM Event or dict with x/y
+   * @param   {Mixed}       [customInstance]  Show a custom created menu
    *
-   * @return void
-   * @api OSjs.GUI.Helpers.createMenu()
+   * @function createMenu
+   * @memberof OSjs.GUI.Helpers
    */
   OSjs.GUI.Helpers.createMenu = function(items, ev, customInstance) {
     items = items || [];

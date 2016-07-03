@@ -185,39 +185,40 @@
    *
    * A list view with columns.
    *
-   * Format for add():
+   * <pre><code>
+   *   Parameters:
+   *    zebra     boolean       Enable zebra stripes
    *
-   * ```
-   * {
-   *    value: "something or JSON or whatever",
-   *    columns: [
-   *      {label: "Value for column 1", icon: "Optional icon"},
-   *      {label: "Value for column 2", icon: "Optional icon"},
-   *      {label: "Value for column 3", icon: "Optional icon"},
-   *      {label: "Value for column 4", icon: "Optional icon"},
-   *    ]
-   * }
-   * ```
+   *   Setters:
+   *    columns(arr)  Sets the columns
+   * </code></pre>
    *
-   * Format for columns:
-   * ```
-   * [
-   *    {label: "Column 1", size: "100px"},
-   *    {label: "Column 2", size: "100px", visible: false},
-   *    {label: "Column 3", size: "100px", textalign: "right"},
-   *    {label: "Column 4", size: "100px", textalign: "right"}
-   * ]
-   * ```
+   * @example
    *
-   * Parameters:
-   *  zebra     boolean       Enable zebra stripes
+   * .set('columns', [
+   *      {label: "Column 1", size: "100px"},
+   *      {label: "Column 2", size: "100px", visible: false},
+   *      {label: "Column 3", size: "100px", textalign: "right"},
+   *      {label: "Column 4", size: "100px", textalign: "right"}
+   * ])
    *
-   * Setters:
-   *  columns(arr)  Sets the columns
+   * @example
    *
-   * @api OSjs.GUI.Elements.gui-list-view
-   * @see OSjs.GUI.Elements._dataview
-   * @class
+   * .add([
+   *   {
+   *      value: "something or JSON or whatever",
+   *      columns: [
+   *        {label: "Value for column 1", icon: "Optional icon"},
+   *        {label: "Value for column 2", icon: "Optional icon"},
+   *        {label: "Value for column 3", icon: "Optional icon"},
+   *        {label: "Value for column 4", icon: "Optional icon"},
+   *      ]
+   *   }
+   * ])
+   *
+   * @constructs OSjs.GUI.DataView
+   * @memberof OSjs.GUI.Elements
+   * @var gui-list-view
    */
   GUI.Elements['gui-list-view'] = {
     bind: GUI.Elements._dataview.bind,

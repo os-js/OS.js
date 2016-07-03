@@ -33,23 +33,21 @@
   /**
    * An 'Font Selection' dialog
    *
-   * @param   args      Object        An object with arguments
-   * @param   callback  Function      Callback when done => fn(ev, button, result)
+   * @param  {Object}      args                        An object with arguments
+   * @param  {String}      args.title                  Dialog title
+   * @param  {String}      args.fontName               Current font name (default=internal)
+   * @param  {Number}      args.fontSize               Current font size (default=12)
+   * @param  {String}      [args.fontColor]            Font color (default=#00000)b
+   * @param  {String}      [args.backgroundColor]      Background color (default=#ffffff)
+   * @param  {Array}       [args.fonts]                Default font list
+   * @param  {Number}      [args.minSize]              Minimun size (default=6)
+   * @param  {Number}      [args.maxSize]              Maximum size (default=30
+   * @param  {String}      [args.text]                 Preview text
+   * @param  {String}      [args.unit]                 Size unit (default="px")
+   * @param  {Function}    callback                    Callback when done => fn(ev, button, result)
    *
-   * @option    args    title               String      Dialog title
-   * @option    args    fontName            String      Current font name (default=internal)
-   * @option    args    fontSize            int         Current font size (default=12)
-   * @option    args    fontColor           String      (Optional) Font color (default=#00000)
-   * @option    args    backgroundColor     String      (Optional) Background color (default=#ffffff)
-   * @option    args    fonts               Array       (Optional) Default font list
-   * @option    args    minSize             int         (Optional) Minimun size (default=6)
-   * @option    args    maxSize             int         (Optional) Maximum size (default=30
-   * @option    args    text                String      (Optional) Preview text
-   * @option    args    unit                String      (Optional) Size unit (default="px")
-   *
-   * @extends DialogWindow
-   * @class FontDialog
-   * @api OSjs.Dialogs.Font
+   * @constructor Font
+   * @memberof OSjs.Dialogs
    */
   function FontDialog(args, callback) {
     args = Utils.argumentDefaults(args, {

@@ -30,6 +30,21 @@
 (function(Utils, API, VFS) {
   'use strict';
 
+  /**
+   * @namespace VFS
+   * @memberof OSjs
+   */
+
+  /**
+   * @namespace Transports
+   * @memberof OSjs.VFS
+   */
+
+  /**
+   * @namespace Modules
+   * @memberof OSjs.VFS
+   */
+
   /*@
    *
    *  This is a wrapper for handling all VFS functions
@@ -90,10 +105,12 @@
   /**
    * Check if given path is an internal module
    *
-   * @param   String    test        Module Name
+   * @function isInternalModule
+   * @memberof OSjs.VFS
    *
-   * @return  boolean
-   * @api     OSjs.VFS.isInternalModule()
+   * @param   {String}    test        Module Name
+   *
+   * @return  {Boolean}
    */
   function isInternalModule(test) {
     test = test || '';
@@ -118,10 +135,12 @@
   /**
    * Checks if internal module is enabled
    *
-   * @param   String    module        Module Name
+   * @function isInternalEnabled
+   * @memberof OSjs.VFS
    *
-   * @return  boolean
-   * @api     OSjs.VFS.isInternalEnabled()
+   * @param   {String}    module        Module Name
+   *
+   * @return  {Boolean}
    */
   function isInternalEnabled(module) {
     try {
@@ -136,12 +155,13 @@
   /**
    * Returns a list of all enabled VFS modules
    *
-   * @param   Object    opts          Options
+   * @function getModules
+   * @memberof OSjs.VFS
    *
-   * @option  opts      boolean       visible       All visible modules only (default=true)
+   * @param   {Object}    opts                  Options
+   * @param   {Boolean}   [opts.visible=true]   All visible modules only
    *
-   * @return  Array                   List of all Modules found
-   * @api     OSjs.VFS.getModules()
+   * @return  {Array}                   List of all Modules found
    */
   function getModules(opts) {
     opts = Utils.argumentDefaults(opts, {
@@ -170,12 +190,14 @@
   /**
    * Get module name from path
    *
-   * @param   String    test        Path name
-   * @param   boolean   retdef      Return default upon failure (default = true)
-   * @param   boolean   retobj      Return module object instead of name (default = false)
+   * @function getModuleFromPath
+   * @memberof OSjs.VFS
    *
-   * @return  Mixed                 Module name or object based on arguments
-   * @api     OSjs.VFS.getModuleFromPath()
+   * @param   {String}    test        Path name
+   * @param   {Boolean}   retdef      Return default upon failure (default = true)
+   * @param   {Boolean}   retobj      Return module object instead of name (default = false)
+   *
+   * @return  {Mixed}                 Module name or object based on arguments
    */
   function getModuleFromPath(test, retdef, retobj) {
     retdef = typeof retdef === 'undefined' ? true : (retdef === true);
@@ -200,15 +222,17 @@
   /**
    * Filters a scandir() request
    *
-   * @param             Array     list              List of results from scandir()
-   * @param             Object    options           Filter options
+   * @function filterScandir
+   * @memberof OSjs.VFS
    *
-   * @option  opts      String    typeFilter        `type` filter
-   * @option  opts      Array     mimeFilter        `mime` filter
-   * @option  opts      boolean   showHiddenFiles   Show dotfiles
+   * @param     {Array}     list                      List of results from scandir()
+   * @param     {Object}    options                   Filter options
    *
-   * @return  boolean
-   * @api     OSjs.VFS.filterScandir()
+   * @param     {String}    options.typeFilter        `type` filter
+   * @param     {Array}     options.mimeFilter        `mime` filter
+   * @param     {Boolean}   options.showHiddenFiles   Show dotfiles
+   *
+   * @return  {Boolean}
    */
   function filterScandir(list, options) {
 
@@ -334,14 +358,13 @@
   /**
    * This is a helper to add a File to FormData
    *
-   * @param   FormData          fd      FormData instance
-   * @param   String            key     FormData entry name
-   * @param   [File]            data    File Data (see supported types)
-   * @param   OSjs.VFS.File     file    File Metadata
+   * @function addFormFile
+   * @memberof OSjs.VFS
    *
-   * @return  void
-   *
-   * @api     OSjs.VFS.addFormFile()
+   * @param   {FormData}          fd      FormData instance
+   * @param   {String}            key     FormData entry name
+   * @param   {(File|Blob)}       data    File Data (see supported types)
+   * @param   {OSjs.VFS.File}     file    File Metadata
    */
   function addFormFile(fd, key, data, file) {
     if ( data instanceof window.File ) {
@@ -368,13 +391,12 @@
   /**
    * Convert DataSourceURL to ArrayBuffer
    *
-   * @param   String        data        The datasource string
-   * @param   String        mime        The mime type
-   * @param   Function      callback    Callback function => fn(error, result)
+   * @function dataSourceToAb
+   * @memberof OSjs.VFS
    *
-   * @return  void
-   *
-   * @api     OSjs.VFS.dataSourceToAb()
+   * @param   {String}        data        The datasource string
+   * @param   {String}        mime        The mime type
+   * @param   {Function}      callback    Callback function => fn(error, result)
    */
   function dataSourceToAb(data, mime, callback) {
     var byteString = atob(data.split(',')[1]);
@@ -392,13 +414,12 @@
   /**
    * Convert PlainText to ArrayBuffer
    *
-   * @param   String        data        The plaintext string
-   * @param   String        mime        The mime type
-   * @param   Function      callback    Callback function => fn(error, result)
+   * @function textToAb
+   * @memberof OSjs.VFS
    *
-   * @return  void
-   *
-   * @api     OSjs.VFS.textToAb()
+   * @param   {String}        data        The plaintext string
+   * @param   {String}        mime        The mime type
+   * @param   {Function}      callback    Callback function => fn(error, result)
    */
   function textToAb(data, mime, callback) {
     _abToSomething('readAsArrayBuffer', data, mime, callback);
@@ -407,13 +428,12 @@
   /**
    * Convert ArrayBuffer to DataSourceURL
    *
-   * @param   ArrayBuffer   arrayBuffer The ArrayBuffer
-   * @param   String        mime        The mime type
-   * @param   Function      callback    Callback function => fn(error, result)
+   * @function abToDataSource
+   * @memberof OSjs.VFS
    *
-   * @return  void
-   *
-   * @api     OSjs.VFS.abToDataSource()
+   * @param   {ArrayBuffer}   arrayBuffer The ArrayBuffer
+   * @param   {String}        mime        The mime type
+   * @param   {Function}      callback    Callback function => fn(error, result)
    */
   function abToDataSource(arrayBuffer, mime, callback) {
     _abToSomething('readAsDataURL', arrayBuffer, mime, callback);
@@ -422,13 +442,12 @@
   /**
    * Convert ArrayBuffer to PlainText
    *
-   * @param   ArrayBuffer   arrayBuffer The ArrayBuffer
-   * @param   String        mime        The mime type
-   * @param   Function      callback    Callback function => fn(error, result)
+   * @function abToText
+   * @memberof OSjs.VFS
    *
-   * @return  void
-   *
-   * @api     OSjs.VFS.abToText()
+   * @param   {ArrayBuffer}   arrayBuffer The ArrayBuffer
+   * @param   {String}        mime        The mime type
+   * @param   {Function}      callback    Callback function => fn(error, result)
    */
   function abToText(arrayBuffer, mime, callback) {
     _abToSomething('readAsText', arrayBuffer, mime, callback);
@@ -437,13 +456,12 @@
   /**
    * Convert ArrayBuffer to BinaryString
    *
-   * @param   ArrayBuffer   arrayBuffer The ArrayBuffer
-   * @param   String        mime        The mime type
-   * @param   Function      callback    Callback function => fn(error, result)
+   * @function abToBinaryString
+   * @memberof OSjs.VFS
    *
-   * @return  void
-   *
-   * @api     OSjs.VFS.abToBinaryString()
+   * @param   {ArrayBuffer}   arrayBuffer The ArrayBuffer
+   * @param   {String}        mime        The mime type
+   * @param   {Function}      callback    Callback function => fn(error, result)
    */
   function abToBinaryString(arrayBuffer, mime, callback) {
     _abToSomething('readAsBinaryString', arrayBuffer, mime, callback);
@@ -452,13 +470,12 @@
   /**
    * Convert ArrayBuffer to Blob
    *
-   * @param   ArrayBuffer   arrayBuffer The ArrayBuffer
-   * @param   String        mime        The mime type
-   * @param   Function      callback    Callback function => fn(error, result)
+   * @function abToBlob
+   * @memberof OSjs.VFS
    *
-   * @return  void
-   *
-   * @api     OSjs.VFS.abToBlob()
+   * @param   {ArrayBuffer}   arrayBuffer The ArrayBuffer
+   * @param   {String}        mime        The mime type
+   * @param   {Function}      callback    Callback function => fn(error, result)
    */
   function abToBlob(arrayBuffer, mime, callback) {
     mime = mime || 'application/octet-stream';
@@ -475,12 +492,11 @@
   /**
    * Convert Blob to ArrayBuffer
    *
-   * @param   Blob          data        The blob
-   * @param   Function      callback    Callback function => fn(error, result)
+   * @function blobToAb
+   * @memberof OSjs.VFS
    *
-   * @return  void
-   *
-   * @api     OSjs.VFS.blobToAb()
+   * @param   {Blob}          data        The blob
+   * @param   {Function}      callback    Callback function => fn(error, result)
    */
   function blobToAb(data, callback) {
     try {
@@ -505,25 +521,21 @@
    *
    * If you want to configure default mountpoints, look at the manual linked below.
    *
-   * @param Object        opts        Mountpoint options
-   * @param Function      cb          Callback function => fn(err, result)
-   *
-   * @option  opts    String      name            Mountpoint Name (unique)
-   * @option  opts    String      description     General description
-   * @option  opts    String      icon            Icon
-   * @option  opts    String      transport       Transporter name (Internal/WebDAV)
-   * @option  opts    Object      options         Connection options (for external services like webdav)
-   *
-   * @option  options String      host            (Optional) Host (full URL)
-   * @option  options String      username        (Optional) Username
-   * @option  options String      password        (Optional) Password
-   * @option  options boolean     cors            (Optional) If CORS is enabled (default=false)
-   *
-   * @return  void
-   *
+   * @function createMountpoint
+   * @memberof OSjs.VFS
    * @link  https://os.js.org/doc/manuals/man-mountpoints.html
    *
-   * @api   OSjs.VFS.createMountpoint()
+   * @param {Object}     opts                           Mountpoint options
+   * @param {String}     opts.name                      Mountpoint Name (unique)
+   * @param {String}     opts.description               General description
+   * @param {String}     opts.icon                      Icon
+   * @param {String}     opts.transport                 Transporter name (Internal/WebDAV)
+   * @param {Object}     opts.options                   Connection options (for external services like webdav)
+   * @param {String}     [opts.options.host]            Host (full URL)
+   * @param {String}     [opts.options.username]        Username
+   * @param {String}     [opts.options.password]        Password
+   * @param {Boolean}    [opts.options.cors]            If CORS is enabled (default=false)
+   * @param {Function}   cb                             Callback function => fn(err, result)
    */
   function createMountpoint(opts, cb) {
     opts = Utils.argumentDefaults(opts, {
@@ -600,12 +612,11 @@
    *
    * Only mountpoints mounted via `createMountpoint` is supported
    *
-   * @param   String      moduleName        Name of registered module
-   * @param   Function    cb                Callback function => fn(err, result)
+   * @function removeMountpoints
+   * @memberof OSjs.VFS
    *
-   * @return  void
-   *
-   * @api OSjs.VFS.removeMountpoints()
+   * @param   {String}      moduleName        Name of registered module
+   * @param   {Function}    cb                Callback function => fn(err, result)
    */
   function removeMountpoint(moduleName, cb) {
     if ( !VFS.Modules[moduleName] || !VFS.Modules[moduleName].dynamic ) {
@@ -617,9 +628,8 @@
   /**
    * Registeres all configured mount points
    *
-   * @return  void
-   *
-   * @api     OSjs.VFS.registerMountpoints()
+   * @function registerMountpoints
+   * @memberof OSjs.VFS
    */
   function registerMountpoints() {
     if ( MountsRegistered ) { return; }

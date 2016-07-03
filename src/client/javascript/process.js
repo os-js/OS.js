@@ -55,10 +55,10 @@
   /**
    * Kills all processes
    *
-   * @param   Mixed     match     String/RegExp to match with (optional)
+   * @param   {(String|RegExp)}     match     Kill all matching this
    *
-   * @return  void
-   * @api     OSjs.API.killAll()
+   * @function killAll
+   * @memberof OSjs.API
    */
   function doKillAllProcesses(match) {
     if ( match ) {
@@ -95,10 +95,12 @@
   /**
    * Kills a process
    *
-   * @param   int     pid       Process ID
+   * @param   {Number}  pid       Process ID
    *
-   * @return  boolean           Success or not
-   * @api     OSjs.API.kill()
+   * @return  {Boolean}           Success or not
+   *
+   * @function kill
+   * @memberof OSjs.API
    */
   function doKillProcess(pid) {
     return _kill(pid);
@@ -109,15 +111,15 @@
    *
    * Example: VFS uses this to signal file changes etc.
    *
-   * @param   String    msg     Message name
-   * @param   Object    obj     Message object
-   * @param   Object    opts    Options
+   * @param   {String}    msg             Message name
+   * @param   {Object}    obj             Message object
+   * @param   {Object}    opts            Options
+   * @param   {Number}    [opts.source]   Source Process ID
    *
-   * @option  opts    integer   source   (Optional) Source Process ID
+   * @see     Process._onMessage()
    *
-   * @return  void
-   * @see     Process::_onMessage()
-   * @api     OSjs.API.message()
+   * @function message
+   * @memberof OSjs.API
    */
   function doProcessMessage(msg, obj, opts) {
     console.debug('doProcessMessage', msg, opts);
@@ -131,11 +133,13 @@
   /**
    * Get a process by name
    *
-   * @param   String    name    Process Name (or by number)
-   * @param   boolean   first   Return the first found
+   * @param   {String}    name    Process Name (or by number)
+   * @param   {Boolean}   first   Return the first found
    *
-   * @return  Process           Or an Array of Processes
-   * @api     OSjs.API.getProcess()
+   * @return  {Process}           Or an Array of Processes
+   *
+   * @function getProcess
+   * @memberof OSjs.API
    */
   function doGetProcess(name, first) {
     var p;
@@ -165,9 +169,10 @@
   /**
    * Get all processes
    *
-   * @return  Array
+   * @function getProcesses
+   * @memberof OSjs.API
    *
-   * @api     OSjs.API.getProcesses()
+   * @return  {Array}
    */
   function doGetProcesses() {
     return _PROCS;
@@ -180,6 +185,7 @@
   /**
    * Process Template Class
    *
+   * <pre><code>
    * Events:
    *  message       All events                               => (msg, object, options)
    *  attention     When application gets attention signal   => (args)
@@ -197,22 +203,67 @@
    *  vfs:delete    VFS delete event                         => (dest, options, msg)
    *  vfs:upload    VFS upload event                         => (file, options, msg)
    *  vfs:update    VFS update event                         => (dir, options, msg)
+   * </code></pre>
    *
-   * @param   String    name    Process Name
+   * @param   {string}    name        Process Name
+   * @param   {Object}    args        Process Arguments
+   * @param   {Object}    metadata    Package Metadata
    *
-   * @see     OSjs.Helpers.EventHandler
-   * @api     OSjs.Core.Process
-   * @class
+   * @constructor
+   * @memberof OSjs.Core
+   * @see OSjs.Helpers.EventHandler
    */
   function Process(name, args, metadata) {
     console.group('Process::constructor()', name);
 
+    /**
+     * Process ID
+     * @name __pid
+     * @memberof OSjs.Core.Process#
+     * @type {Number}
+     */
     this.__pid        = _PROCS.push(this) - 1;
+
+    /**
+     * Process Name
+     * @name __pname
+     * @memberof OSjs.Core.Process#
+     * @type {String}
+     */
     this.__pname      = name;
+
+    /**
+     * Process Arguments
+     * @name __args
+     * @memberof OSjs.Core.Process#
+     * @type {Object}
+     */
     this.__args       = args || {};
+
+    /**
+     * Package Metadata
+     * @name __metadata
+     * @memberof OSjs.Core.Process#
+     * @type {Object}
+     */
     this.__metadata   = metadata || {};
+
+    /**
+     * Started timestamp
+     * @name __started
+     * @memberof OSjs.Core.Process#
+     * @type {Date}
+     */
     this.__started    = new Date();
+
+    /**
+     * If process was destroyed
+     * @name __destroyed
+     * @memberof OSjs.Core.Process#
+     * @type {Boolean}
+     */
     this.__destroyed  = false;
+
     this.__evHandler  = new OSjs.Helpers.EventHandler(name, [
       'message', 'attention', 'hashchange', 'api', 'destroy', 'destroyWindow', 'vfs',
       'vfs:mount', 'vfs:unmount', 'vfs:mkdir', 'vfs:write', 'vfs:move',
@@ -233,9 +284,10 @@
   /**
    * Destroys the process
    *
-   * @return  boolean
+   * @function destroy
+   * @memberof OSjs.Core.Process#
    *
-   * @method  Process::destroy()
+   * @return  {Boolean}
    */
   Process.prototype.destroy = function() {
     if ( !this.__destroyed ) {
@@ -264,9 +316,12 @@
   /**
    * Method for handling internal messaging system
    *
-   * @return  void
+   * @function _onMessage
+   * @memberof  OSjs.Core.Process#
    *
-   * @method  Process::_onMessage()
+   * @param   {string}    msg       Message type
+   * @param   {Object}    obj       Message object
+   * @param   {Object}    [opts]    Message options
    */
   Process.prototype._onMessage = function(msg, obj, opts) {
     opts = opts || {};
@@ -285,14 +340,13 @@
   /**
    * Fire a hook to internal event
    *
-   * @param   String    k       Event name
-   * @param   Array     args    Send these arguments (fn.apply)
+   * @function _emit
+   * @memberof OSjs.Core.Process#
+   * @see OSjs.Core.Process#on
+   * @see OSjs.Helpers.EventHandler#emit
    *
-   * @return  void
-   *
-   * @see Process::_on()
-   * @see EventHandler::emit()
-   * @method  Process::_emit()
+   * @param   {string}    k       Event name
+   * @param   {Array}     args    Send these arguments (fn.apply)
    */
   Process.prototype._emit = function(k, args) {
     return this.__evHandler.emit(k, args);
@@ -301,13 +355,14 @@
   /**
    * Adds a hook to internal event
    *
-   * @param   String    k       Event name
-   * @param   Function  func    Callback function
+   * @function _on
+   * @memberof OSjs.Core.Process#
+   * @see OSjs.Helpers.EventHandler#on
    *
-   * @return  integer
+   * @param   {string}    k       Event name
+   * @param   {Function}  func    Callback function
    *
-   * @see EventHandler::on()
-   * @method  Process::_on()
+   * @return  {Number}
    */
   Process.prototype._on = function(k, func) {
     return this.__evHandler.on(k, func, this);
@@ -316,14 +371,13 @@
   /**
    * Adds a hook to internal event
    *
-   * @param   String    k       Event name
-   * @param   integer   idx     The hook index returned from _on()
+   * @function _off
+   * @memberof OSjs.Core.Process#
+   * @see OSjs.Core.Process#_on
+   * @see OSjs.Helpers.EventHandler#off
    *
-   * @return  void
-   *
-   * @see Process::_on()
-   * @see EventHandler::off()
-   * @method  Process::_off()
+   * @param   {String}    k       Event name
+   * @param   {Number}    idx     The hook index returned from _on()
    */
   Process.prototype._off = function(k, idx) {
     return this.__evHandler.off(k, idx);
@@ -336,14 +390,15 @@
    *
    * On Lua or Arduino it is called 'server.lua'
    *
-   * @param   String      method      Name of method
-   * @param   Object      args        Arguments in JSON
-   * @param   Function    callback    Callback method => fn(error, result)
-   * @param   boolean     showLoading Show loading indication (default=true)
+   * @function _api
+   * @memberof OSjs.Core.Process#
    *
-   * @return  boolean
+   * @param   {String}      method              Name of method
+   * @param   {Object}      args                Arguments in JSON
+   * @param   {Function}    callback            Callback method => fn(error, result)
+   * @param   {Boolean}     [showLoading=true]  Show loading indication
    *
-   * @method  Process::_api()
+   * @return  {boolean}
    */
   Process.prototype._api = function(method, args, callback, showLoading) {
     var self = this;
@@ -369,9 +424,12 @@
   /**
    * Get a launch/session argument
    *
-   * @return  Mixed     Argument value or null
+   * @function _getArgument
+   * @memberof OSjs.Core.Process#
    *
-   * @method  Process::_getArgument()
+   * @param   {String}  [k]     Optional argument
+   *
+   * @return  {Mixed}     Argument value or null
    */
   Process.prototype._getArgument = function(k) {
     return typeof this.__args[k] === 'undefined' ? null : this.__args[k];
@@ -380,9 +438,10 @@
   /**
    * Get all launch/session argument
    *
-   * @return  Array
+   * @function _getArguments
+   * @memberof OSjs.Core.Process#
    *
-   * @method  Process::_getArguments()
+   * @return  {Array}
    */
   Process.prototype._getArguments = function() {
     return this.__args;
@@ -393,12 +452,13 @@
    *
    * This is a shortcut for API.getApplicationResource()
    *
-   * @param   String      src       Resource name (path)
+   * @function _getResource
+   * @memberof OSjs.Core.Process#
+   * @see API.getApplicationResource()
    *
-   * @return  String
+   * @param   {String}      src       Resource name (path)
    *
-   * @method  Process::_getResource()
-   * @see     API::getApplicationResource()
+   * @return  {String}
    */
   Process.prototype._getResource = function(src) {
     return API.getApplicationResource(this, src);
@@ -407,12 +467,11 @@
   /**
    * Set a launch/session argument
    *
-   * @param   String    k             Key
-   * @param   String    v             Value
+   * @function _setArgument
+   * @memberof OSjs.Core.Process#
    *
-   * @return  void
-   *
-   * @method  Process::_setArgument()
+   * @param   {String}    k             Key
+   * @param   {String}    v             Value
    */
   Process.prototype._setArgument = function(k, v) {
     this.__args[k] = v;

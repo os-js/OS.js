@@ -39,10 +39,9 @@
    *
    * A simple wrapper with some pre-defined options
    *
-   * @see OSjs.Core.Window
-   * @api OSjs.Core.DialogWindow
-   * @class DialogWindow
-   * @extends Window
+   * @constructor
+   * @memberof OSjs.Core
+   * @extends OSjs.Core.Window
    */
   function DialogWindow(className, opts, args, callback) {
     var self = this;
@@ -93,6 +92,11 @@
   DialogWindow.prototype = Object.create(Window.prototype);
   DialogWindow.constructor = Window;
 
+  /**
+   * @override
+   * @function init
+   * @memberof OSjs.Core.DialogWindow#
+   */
   DialogWindow.prototype.init = function() {
     var self = this;
 
@@ -135,10 +139,21 @@
     return root;
   };
 
+  /**
+   * When dialog closes
+   *
+   * @function onClose
+   * @memberof OSjs.Core.DialogWindow#
+   */
   DialogWindow.prototype.onClose = function(ev, button) {
     this.closeCallback(ev, button, null);
   };
 
+  /**
+   * @override
+   * @function _close
+   * @memberof OSjs.Core.DialogWindow#
+   */
   DialogWindow.prototype._close = function() {
     if ( !this.buttonClicked ) {
       this.onClose(null, 'cancel', null);
@@ -146,6 +161,11 @@
     return Window.prototype._close.apply(this, arguments);
   };
 
+  /**
+   * @override
+   * @function _onKeyEvent
+   * @memberof OSjs.Core.DialogWindow#
+   */
   DialogWindow.prototype._onKeyEvent = function(ev) {
     Window.prototype._onKeyEvent.apply(this, arguments);
 
@@ -154,6 +174,12 @@
     }
   };
 
+  /**
+   * Parses given message to be inserted into Dialog
+   *
+   * @function parseMessage
+   * @memberof OSjs.Core.DialogWindow
+   */
   DialogWindow.parseMessage = function(msg) {
     msg = Utils.$escape(msg || '').replace(/\*\*(.*)\*\*/g, '<span>$1</span>');
 

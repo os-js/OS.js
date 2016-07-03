@@ -39,8 +39,6 @@
    *
    * All mountpoints without a spesified Transport module is routed through
    * here. This means the node/php server handles the request directly
-   *
-   * @api OSjs.VFS.Transports.Internal
    */
   var Transport = {
     scandir: function(item, callback, options) {
@@ -148,11 +146,12 @@
   /**
    * Make a OS.js Server HTTP URL for VFS
    *
-   * @param   Mixed       item        (Optional) Path of VFS.File object
+   * @param   {(String|OSjs.VFS.File)}    item        VFS File
    *
-   * @retun   String                  URL based on input
+   * @retun   {String}                  URL based on input
    *
-   * @api OSjs.VFS.Transports.Internal.path()
+   * @function path
+   * @memberof OSjs.VFS.Transports.Internal
    */
   function makePath(item) {
     if ( typeof item === 'string' ) {
@@ -164,8 +163,8 @@
   /**
    * Perform default VFS call via backend
    *
-   * @see _Handler.callAPI()
-   * @api OSjs.VFS.Transports.Internal.request()
+   * @function request
+   * @memberof OSjs.VFS.Transports.Internal
    */
   function internalRequest(name, args, callback) {
     API.call('FS:' + name, args, function(err, res) {
@@ -179,8 +178,8 @@
   /**
    * Wrapper for internal file uploads
    *
-   * @see _Handler.callPOST()
-   * @api OSjs.VFS.Transports.Internal.upload()
+   * @function upload
+   * @memberof OSjs.VFS.Transports.Internal
    */
   function internalUpload(file, dest, callback, options) {
     options = options || {};
@@ -225,8 +224,8 @@
    *
    * @option  options     String      type    What to return, default: binary. Can also be: text, datasource
    *
-   * @return  void
-   * @api     OSjs.VFS.Transports.Internal.fetch()
+   * @function fetch
+   * @memberof OSjs.VFS.Transports.Internal
    */
   function internalFetch(url, mime, callback, options) {
     options = options || {};

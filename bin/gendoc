@@ -1,0 +1,2 @@
+#!/bin/bash
+jsdoc --debug -c .jsdoc -d doc/jsdoc -t src/templates/jsdoc

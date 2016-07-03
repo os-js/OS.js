@@ -178,8 +178,8 @@
    *
    * You can only get an instance with `Core.getSearchEngine()`
    *
-   * @api     OSjs.Core.SearchEngine
-   * @class
+   * @constructor
+   * @memberof OSjs.Core
    */
   var SearchEngine = (function() {
 
@@ -196,10 +196,10 @@
       /**
        * Initialize instance
        *
-       * @param   Function    cb        Callback => fn(error, result)
-       * @return  void
+       * @function init
+       * @memberof OSjs.Core.SearchEngine#
        *
-       * @method SearchEngine::init()
+       * @param   {Function}    cb        Callback => fn(error, result)
        */
       init: function(cb) {
         console.debug('SearchEngine::init()');
@@ -219,9 +219,8 @@
       /**
        * Destroy instance
        *
-       * @return  void
-       *
-       * @method SearchEngine::destroy()
+       * @function destroy
+       * @memberof OSjs.Core.SearchEngine#
        */
       destroy: function() {
         console.debug('SearchEngine::destroy()');
@@ -237,12 +236,12 @@
       /**
        * Perform a search
        *
-       * @param   String      q         Search query
-       * @param   Object      args      Arguments
-       * @param   Function    cb        Callback => fn(error, result)
-       * @return  void
+       * @function search
+       * @memberof OSjs.Core.SearchEngine#
        *
-       * @method SearchEngine::search()
+       * @param   {String}      q         Search query
+       * @param   {Object}      args      Arguments
+       * @param   {Function}    cb        Callback => fn(error, result)
        */
       search: function(q, args, cb) {
         var result = [];
@@ -284,13 +283,12 @@
       /**
        * Reindex databases
        *
-       * TODO
+       * @TODO implement
+       * @function reindex
+       * @memberof OSjs.Core.SearchEngine#
        *
-       * @param   Object      args      Arguments
-       * @param   Function    cb        Callback => fn(error, result)
-       * @return  void
-       *
-       * @method SearchEngine::reindex()
+       * @param   {Object}      args      Arguments
+       * @param   {Function}    cb        Callback => fn(error, result)
        */
       reindex: function(args, cb) {
         var errors = [];
@@ -312,11 +310,12 @@
       /**
        * Configure the Search Engine
        *
-       * @param   Object      opts        Settings Object
-       * @param   boolean     save        Save settings (default=true)
-       * @return  void
+       * @TODO implement
+       * @function configure
+       * @memberof OSjs.Core.SearchEngine#
        *
-       * @method SearchEngine::configure()
+       * @param   {Object}      opts        Settings Object
+       * @param   {Boolean}     save        Save settings (default=true)
        */
       configure: function(opts, save) {
       }
@@ -331,8 +330,10 @@
   /**
    * Get the current SearchEngine  instance
    *
-   * @return SearchEngine
-   * @api OSjs.Core.getSearchEngine()
+   * @function getSearchEngine
+   * @memberof OSjs.Core
+   *
+   * @return {OSjs.Core.SearchEngine}
    */
   OSjs.Core.getSearchEngine = function() {
     return SearchEngine;

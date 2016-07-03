@@ -40,12 +40,11 @@
    *
    * This class just holds a map of events that you can trigger.
    *
-   * @param   String      name        A name (identifier)
-   * @param   Array       names       List of initial event names
+   * @param   {String}      name        A name (identifier)
+   * @param   {Array}       names       List of initial event names
    *
-   * @see     OSjs.Helpers.EventHandler
-   * @api     OSjs.Core.Window
-   * @class
+   * @constructor
+   * @memberof OSjs.Helpers
    */
   function EventHandler(name, names) {
     this.name   = name;
@@ -68,11 +67,12 @@
    * You can also give a RegExp pattern as a name to match multiple entries,
    * as well as a comma separated string.
    *
-   * @param   String    name        Event name
-   * @param   Function  cb          Callback function
-   * @param   Object    thisArg     (Optional) Set 'this'
+   * @function on
+   * @memberof OSjs.Helpers.EventHandler#
    *
-   * @method  EventHandler::on()
+   * @param   {String}    name        Event name
+   * @param   {Function}  cb          Callback function
+   * @param   {Object}    [thisArg]   Set 'this'
    */
   EventHandler.prototype.on = function(name, cb, thisArg) {
     thisArg = thisArg || this;
@@ -112,10 +112,11 @@
   /**
    * Unregister an event
    *
-   * @param   String    name        Event name
-   * @param   integer   index       Event index (as returned by on())
+   * @function off
+   * @memberof OSjs.Helpers.EventHandler#
    *
-   * @method  EventHandler::off()
+   * @param   {String}    name        Event name
+   * @param   {Number}    index       Event index (as returned by on())
    */
   EventHandler.prototype.off = function(name, index) {
     if ( !(this.events[name] instanceof Array) ) {
@@ -132,10 +133,11 @@
   /**
    * Fire an event
    *
-   * @param   String    name        Event name
-   * @param   Array     args        List of arguments to send to .apply()
+   * @function emit
+   * @memberof OSjs.Helpers.EventHandler#
    *
-   * @method  EventHandler::emit()
+   * @param   {String}    name        Event name
+   * @param   {Array}     args        List of arguments to send to .apply()
    */
   EventHandler.prototype.emit = function(name, args) {
     args = args || [];

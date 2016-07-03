@@ -31,6 +31,11 @@
 (function(Utils, API) {
   'use strict';
 
+  /**
+   * @namespace GoogleAPI
+   * @memberof OSjs.Helpers
+   */
+
   var gapi = window.gapi = window.gapi || {};
 
   /////////////////////////////////////////////////////////////////////////////
@@ -48,15 +53,12 @@
    * Generally you want to create an instance of this helper
    * and when successfully created use `window.gapi`.
    *
-   * @link  https://developers.google.com/api-client-library/javascript/start/start-js
-   * @link  https://developers.google.com/api-client-library/javascript/
-   * @link  https://console.developers.google.com/project
-   *
-   * @see OSjs.Helpers.GoogleAPI.createInsatance()
-   * @api OSjs.Helpers.GoogleAPI.GoogleAPI
-   *
-   * @private
-   * @class
+   * @constructor Class
+   * @memberof OSjs.Helpers.GoogleAPI
+   * @see OSjs.Helpers.GoogleAPI.createInsatance
+   * @link https://developers.google.com/api-client-library/javascript/start/start-js
+   * @link https://developers.google.com/api-client-library/javascript/
+   * @link https://console.developers.google.com/project
    */
   function GoogleAPI(clientId) {
     this.clientId       = clientId;
@@ -200,11 +202,10 @@
   /**
    * Sign out of GoogleAPI
    *
-   * @param   Function    cb      Callback => fn(error, result)
+   * @function signOut
+   * @memberof OSjs.Helpers.GoogleAPI.Class#
    *
-   * @return  void
-   *
-   * @method  GoogleAPI::signOut()
+   * @param   {Function}    cb      Callback => fn(error, result)
    */
   GoogleAPI.prototype.signOut = function(cb) {
     cb = cb || function() {};
@@ -236,11 +237,10 @@
   /**
    * Revoke Google permissions for this app
    *
-   * @param   Function    cb      Callback => fn(error, result)
+   * @function revoke
+   * @memberof OSjs.Helpers.GoogleAPI.Class#
    *
-   * @return  void
-   *
-   * @method  GoogleAPI::revoke()
+   * @param   {Function}    cb      Callback => fn(error, result)
    */
   GoogleAPI.prototype.revoke = function(callback) {
     console.info('GoogleAPI::revoke()');
@@ -368,9 +368,10 @@
   /**
    * Gets the currently running instance
    *
-   * @api OSjs.Helpers.GoogleAPI.getInstance()
+   * @function getInstance
+   * @memberof OSjs.Helpers.GoogleAPI
    *
-   * @return  GoogleAPI       Can also be null
+   * @return  {OSjs.Helpers.GoogleAPI.Class}       Can also be null
    */
   OSjs.Helpers.GoogleAPI.getInstance = function() {
     return SingletonInstance;
@@ -379,20 +380,19 @@
   /**
    * Create an instance of GoogleAPI
    *
-   * @param   Object    args      Arguments
-   * @param   Function  callback  Callback function => fn(error, instance)
-   *
-   * @option  args    Array     load      What functions/apis to load
-   * @option  args    Array     scope     What scopes to load
-   * @option  args    boolean   client    Load using gapi.client (default=false) WILL BE REPLACED!
-   *
+   * @example
    * The 'load' Array can be filled with either strings, or arrays. ex:
    * - ['drive-realtime', 'drive-share']
    * - [['calendar', 'v1'], 'drive-share']
    *
-   * @api OSjs.Helpers.GoogleAPI.createInstance()
+   * @function createInstance
+   * @memberof OSjs.Helpers.GoogleAPI
    *
-   * @return  void
+   * @param   {Object}    args           Arguments
+   * @param   {Array}     args.load      What functions/apis to load
+   * @param   {Array}     args.scope     What scopes to load
+   * @param   {boolean}   args.client    Load using gapi.client (default=false) WILL BE REPLACED!
+   * @param   {Function}  callback       Callback function => fn(error, instance)
    */
   OSjs.Helpers.GoogleAPI.createInstance = function(args, callback) {
     var load = args.load || [];

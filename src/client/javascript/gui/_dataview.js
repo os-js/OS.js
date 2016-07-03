@@ -218,20 +218,24 @@
    *
    * See `ev.detail` for data on events (like on 'change').
    *
-   * @getter    value     Mixed         The value/currently selected
-   * @getter    selected  Mixed         Alias of 'value'
-   * @getter    entry     Mixed         Gets an etnry by value, key
-   * @setter    value     Mixed         The value/currently selected
-   * @property  multiple  boolean       If multiple elements are selectable
-   * @event     select                  When entry was selected => fn(ev)
-   * @event     activate                When entry was activated => fn(ev)
-   * @action    add                     Add elements(s) => fn(entries)
-   * @action    patch                   Patch/Update elements => fn(entries)
-   * @action    remove                  Removes element => fn(arg)
-   * @action    clear                   Clear elements => fn()
+   * <pre><code>
+   *   getter    value     Mixed         The value/currently selected
+   *   getter    selected  Mixed         Alias of 'value'
+   *   getter    entry     Mixed         Gets an etnry by value, key
+   *   setter    value     Mixed         The value/currently selected
+   *   property  multiple  boolean       If multiple elements are selectable
+   *   event     select                  When entry was selected => fn(ev)
+   *   event     activate                When entry was activated => fn(ev)
+   *   action    add                     Add elements(s) => fn(entries)
+   *   action    patch                   Patch/Update elements => fn(entries)
+   *   action    remove                  Removes element => fn(arg)
+   *   action    clear                   Clear elements => fn()
+   * </code></pre>
    *
-   * @api OSjs.GUI.Elements._dataview
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var DataView
+   * @abstract
    */
   GUI.Elements._dataview = {
     clear: function(el, body) {

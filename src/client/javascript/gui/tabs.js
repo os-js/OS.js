@@ -50,11 +50,14 @@
    *
    * A container with tabs for displaying content.
    *
-   * @event     select                    When tab has changed => fn(ev)
-   * @event     activate                  Alias of 'select'
+   * <pre><code>
+   *   event     select                    When tab has changed => fn(ev)
+   *   event     activate                  Alias of 'select'
+   * </code></pre>
    *
-   * @api OSjs.GUI.Elements.gui-tabs
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-tabs
    */
   GUI.Elements['gui-tabs'] = {
     bind: function(el, evName, callback, params) {

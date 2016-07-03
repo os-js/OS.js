@@ -272,13 +272,16 @@
    *
    * Just a normal label.
    *
-   * @getter    value     String        The value/contents
-   * @setter    value     String        The value/contents
-   * @setter    label     String        The label text
-   * @property  disabled  boolean       Disabled state
+   * <pre><code>
+   *   getter    value     String        The value/contents
+   *   setter    value     String        The value/contents
+   *   setter    label     String        The label text
+   *   property  disabled  boolean       Disabled state
+   * </code></pre>
    *
-   * @api OSjs.GUI.Elements.gui-label
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-label
    */
   GUI.Elements['gui-label'] = {
     set: function(el, param, value, isHTML) {
@@ -313,17 +316,20 @@
    *
    * See `ev.detail` for data on events (like on 'change').
    *
-   * @getter    value         String        The value/contents
-   * @setter    value         String        The value/contents
-   * @setter    label         String        The label text
-   * @setter    disabled      boolean       Set disabled state
-   * @property  disabled      boolean       Disabled state
-   * @property  value         String        The input value
-   * @property  placeholder   String        An optional placeholder
-   * @event     change                      When input has changed => fn(ev)
+   * <pre><code>
+   *   getter    value         String        The value/contents
+   *   setter    value         String        The value/contents
+   *   setter    label         String        The label text
+   *   setter    disabled      boolean       Set disabled state
+   *   property  disabled      boolean       Disabled state
+   *   property  value         String        The input value
+   *   property  placeholder   String        An optional placeholder
+   *   event     change                      When input has changed => fn(ev)
+   * </code></pre>
    *
-   * @api OSjs.GUI.Elements.gui-textarea
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-textarea
    */
   GUI.Elements['gui-textarea'] = {
     bind: bindInputEvents,
@@ -349,17 +355,20 @@
    *
    * See `ev.detail` for data on events (like on 'change').
    *
-   * @getter    value         String        The value/contents
-   * @setter    value         String        The value/contents
-   * @setter    disabled      boolean       Set disabled state
-   * @property  disabled      boolean       Disabled state
-   * @property  value         String        The input value
-   * @property  placeholder   String        An optional placeholder
-   * @event     change                      When input has changed => fn(ev)
-   * @event     enter                       When enter key was pressed => fn(ev)
+   * <pre><code>
+   *   getter    value         String        The value/contents
+   *   setter    value         String        The value/contents
+   *   setter    disabled      boolean       Set disabled state
+   *   property  disabled      boolean       Disabled state
+   *   property  value         String        The input value
+   *   property  placeholder   String        An optional placeholder
+   *   event     change                      When input has changed => fn(ev)
+   *   event     enter                       When enter key was pressed => fn(ev)
+   * </code></pre>
    *
-   * @api OSjs.GUI.Elements.gui-text
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-text
    */
   GUI.Elements['gui-text'] = {
     bind: bindInputEvents,
@@ -375,17 +384,20 @@
    *
    * See `ev.detail` for data on events (like on 'change').
    *
-   * @getter    value         String        The value/contents
-   * @setter    value         String        The value/contents
-   * @setter    disabled      boolean       Set disabled state
-   * @property  disabled      boolean       Disabled state
-   * @property  value         String        The input value
-   * @property  placeholder   String        An optional placeholder
-   * @event     change                      When input has changed => fn(ev)
-   * @event     enter                       When enter key was pressed => fn(ev)
+   * <pre><code>
+   *   getter    value         String        The value/contents
+   *   setter    value         String        The value/contents
+   *   setter    disabled      boolean       Set disabled state
+   *   property  disabled      boolean       Disabled state
+   *   property  value         String        The input value
+   *   property  placeholder   String        An optional placeholder
+   *   event     change                      When input has changed => fn(ev)
+   *   event     enter                       When enter key was pressed => fn(ev)
+   * </code></pre>
    *
-   * @api OSjs.GUI.Elements.gui-password
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-password
    */
   GUI.Elements['gui-password'] = {
     bind: bindInputEvents,
@@ -401,14 +413,17 @@
    *
    * See `ev.detail` for data on events (like on 'change').
    *
-   * @getter    value     String        The value/contents
-   * @setter    value     String        The value/contents
-   * @setter    disabled  boolean       Set disabled state
-   * @property  disabled  boolean       Disabled state
-   * @event     change                  When input has changed => fn(ev)
+   * <pre><code>
+   *   getter    value     String        The value/contents
+   *   setter    value     String        The value/contents
+   *   setter    disabled  boolean       Set disabled state
+   *   property  disabled  boolean       Disabled state
+   *   event     change                  When input has changed => fn(ev)
+   * </code></pre>
    *
-   * @api OSjs.GUI.Elements.gui-file-upload
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-file-upload
    */
   GUI.Elements['gui-file-upload'] = {
     bind: bindInputEvents,
@@ -430,16 +445,19 @@
    *
    * See `ev.detail` for data on events (like on 'change').
    *
-   * @getter    value     boolean       The value/checked state
-   * @setter    value     boolean       The value/checked state
-   * @setter    disabled  boolean       Set disabled state
-   * @property  disabled  boolean       Disabled state
-   * @property  label     String        (Optional) Set a label on the input element
-   * @property  group     String        (Optional) A group identificator
-   * @event     change                  When input has changed => fn(ev)
+   * <pre><code>
+   *   getter    value     boolean       The value/checked state
+   *   setter    value     boolean       The value/checked state
+   *   setter    disabled  boolean       Set disabled state
+   *   property  disabled  boolean       Disabled state
+   *   property  label     String        (Optional) Set a label on the input element
+   *   property  group     String        (Optional) A group identificator
+   *   event     change                  When input has changed => fn(ev)
+   * </code></pre>
    *
-   * @api OSjs.GUI.Elements.gui-radio
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-radio
    */
   GUI.Elements['gui-radio'] = {
     bind: bindInputEvents,
@@ -455,16 +473,19 @@
    *
    * See `ev.detail` for data on events (like on 'change').
    *
-   * @getter    value     boolean       The value/checked state
-   * @setter    value     boolean       The value/checked state
-   * @setter    disabled  boolean       Set disabled state
-   * @property  disabled  boolean       Disabled state
-   * @property  label     String        (Optional) Set a label on the input element
-   * @property  group     String        (Optional) A group identificator
-   * @event     change                  When input has changed => fn(ev)
+   * <pre><code>
+   *   getter    value     boolean       The value/checked state
+   *   setter    value     boolean       The value/checked state
+   *   setter    disabled  boolean       Set disabled state
+   *   property  disabled  boolean       Disabled state
+   *   property  label     String        (Optional) Set a label on the input element
+   *   property  group     String        (Optional) A group identificator
+   *   event     change                  When input has changed => fn(ev)
+   * </code></pre>
    *
-   * @api OSjs.GUI.Elements.gui-checbox
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-checkbox
    */
   GUI.Elements['gui-checkbox'] = {
     bind: bindInputEvents,
@@ -480,14 +501,17 @@
    *
    * See `ev.detail` for data on events (like on 'change').
    *
-   * @getter    value     String        The value/enabled state
-   * @setter    value     String        The value/enabled state
-   * @setter    disabled  boolean       Set disabled state
-   * @property  disabled  boolean       Disabled state
-   * @event     change                  When input has changed => fn(ev)
+   * <pre><code>
+   *   getter    value     String        The value/enabled state
+   *   setter    value     String        The value/enabled state
+   *   setter    disabled  boolean       Set disabled state
+   *   property  disabled  boolean       Disabled state
+   *   event     change                  When input has changed => fn(ev)
+   * </code></pre>
    *
-   * @api OSjs.GUI.Elements.gui-switch
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-switch
    */
   GUI.Elements['gui-switch'] = {
     bind: bindInputEvents,
@@ -542,16 +566,19 @@
    *
    * A normal button
    *
-   * @getter    value     String        The value
-   * @setter    value     String        The value
-   * @setter    icon      String        Icon source
-   * @setter    disabled  boolean       Set disabled state
-   * @property  disabled  boolean       Disabled state
-   * @property  icon      String        Icon source
-   * @event     click                   When input was clicked => fn(ev)
+   * <pre><code>
+   *   getter    value     String        The value
+   *   setter    value     String        The value
+   *   setter    icon      String        Icon source
+   *   setter    disabled  boolean       Set disabled state
+   *   property  disabled  boolean       Disabled state
+   *   property  icon      String        Icon source
+   *   event     click                   When input was clicked => fn(ev)
+   * </code></pre>
    *
-   * @api OSjs.GUI.Elements.gui-button
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-button
    */
   GUI.Elements['gui-button'] = {
     set: function(el, param, value, isHTML) {
@@ -661,27 +688,28 @@
    *
    * A selection dropdown.
    *
-   * Format for add():
-   * ```
-   * {
-   *  label: "Label",
-   *  value: "Value"
-   * }
-   * ```
-   *
    * See `ev.detail` for data on events (like on 'change').
    *
-   * @getter    value     String        The value
-   * @setter    value     String        The value
-   * @setter    disabled  boolean       Set disabled state
-   * @property  disabled  boolean       Disabled state
-   * @event     change                  When input has changed => fn(ev)
-   * @action    add                     Add elements(s) => fn(entries)
-   * @action    clear                   Clear elements => fn()
-   * @action    remove                  Removes element => fn(arg)
+   * <pre><code>
+   *   getter    value     String        The value
+   *   setter    value     String        The value
+   *   setter    disabled  boolean       Set disabled state
+   *   property  disabled  boolean       Disabled state
+   *   event     change                  When input has changed => fn(ev)
+   *   action    add                     Add elements(s) => fn(entries)
+   *   action    clear                   Clear elements => fn()
+   *   action    remove                  Removes element => fn(arg)
+   * </code></pre>
    *
-   * @api OSjs.GUI.Elements.gui-select
-   * @class
+   * @example
+   *   add({
+   *    label: "Label",
+   *    value: "Value"
+   *   })
+   *
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-select
    */
   GUI.Elements['gui-select'] = guiSelect;
 
@@ -690,27 +718,22 @@
    *
    * A selection list (same as dropdown except multiple)
    *
-   * Format for add():
-   * ```
-   * {
-   *  label: "Label",
-   *  value: "Value"
-   * }
-   * ```
-   *
    * See `ev.detail` for data on events (like on 'change').
    *
-   * @getter    value     String        The value
-   * @setter    value     String        The value
-   * @setter    disabled  boolean       Set disabled state
-   * @property  disabled  boolean       Disabled state
-   * @event     change                  When input has changed => fn(ev)
-   * @action    add                     Add elements(s) => fn(entries)
-   * @action    clear                   Clear elements => fn()
-   * @action    remove                  Removes element => fn(arg)
+   * <pre><code>
+   *   getter    value     String        The value
+   *   setter    value     String        The value
+   *   setter    disabled  boolean       Set disabled state
+   *   property  disabled  boolean       Disabled state
+   *   event     change                  When input has changed => fn(ev)
+   *   action    add                     Add elements(s) => fn(entries)
+   *   action    clear                   Clear elements => fn()
+   *   action    remove                  Removes element => fn(arg)
+   * </code></pre>
    *
-   * @api OSjs.GUI.Elements.gui-select-list
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-select-list
    */
   GUI.Elements['gui-select-list'] = guiSelect;
 
@@ -721,16 +744,19 @@
    *
    * See `ev.detail` for data on events (like on 'change').
    *
-   * @getter    value     String        The value
-   * @setter    value     String        The value
-   * @setter    disabled  boolean       Set disabled state
-   * @property  min       integer       The minimum value
-   * @property  max       integer       The maxmimum value
-   * @property  disabled  boolean       Disabled state
-   * @event     change                  When input has changed => fn(ev)
+   * <pre><code>
+   *   getter    value     String        The value
+   *   setter    value     String        The value
+   *   setter    disabled  boolean       Set disabled state
+   *   property  min       integer       The minimum value
+   *   property  max       integer       The maxmimum value
+   *   property  disabled  boolean       Disabled state
+   *   event     change                  When input has changed => fn(ev)
+   * </code></pre>
    *
-   * @api OSjs.GUI.Elements.gui-slider
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-slider
    */
   GUI.Elements['gui-slider'] = {
     bind: bindInputEvents,
@@ -751,12 +777,15 @@
    *
    * A text area displaying current value with a button to open a modal/dialog etc.
    *
-   * @getter    value     String        The value
-   * @setter    value     String        The value
-   * @event     open                    When button was pressed => fn(ev)
+   * <pre><code>
+   *   getter    value     String        The value
+   *   setter    value     String        The value
+   *   event     open                    When button was pressed => fn(ev)
+   * </code></pre>
    *
-   * @api OSjs.GUI.Elements.gui-input-modal
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-input-modal
    */
   GUI.Elements['gui-input-modal'] = {
     bind: function(el, evName, callback, params) {

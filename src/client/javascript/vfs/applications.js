@@ -30,6 +30,11 @@
 (function(Utils, API) {
   'use strict';
 
+  /**
+   * @namespace Applications
+   * @memberof OSjs.VFS.Transports
+   */
+
   /////////////////////////////////////////////////////////////////////////////
   // API
   /////////////////////////////////////////////////////////////////////////////
@@ -38,8 +43,6 @@
    * Application VFS Transport Module
    *
    * This is only used for listing packages
-   *
-   * @api OSjs.VFS.Transports.Applications
    */
   var Transport = {
     scandir: function(item, callback, options) {

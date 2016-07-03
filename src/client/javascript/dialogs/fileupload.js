@@ -33,16 +33,14 @@
   /**
    * An 'FileUpload' dialog
    *
-   * @param   args      Object        An object with arguments
-   * @param   callback  Function      Callback when done => fn(ev, button, result)
+   * @param  {Object}          args              An object with arguments
+   * @param  {String}          args.title        Dialog title
+   * @param  {String}          args.dest         VFS destination
+   * @param  {OSjs.VFS.File}   [args.file]       File to upload
+   * @param  {Function}        callback          Callback when done => fn(ev, button, result)
    *
-   * @option    args    title       String      Dialog title
-   * @option    args    dest        String      Upload destination path
-   * @option    args    file        Mixed       (Optional) Upload this file
-   *
-   * @extends DialogWindow
-   * @class FileUploadDialog
-   * @api OSjs.Dialogs.FileUpload
+   * @constructor FileUpload
+   * @memberof OSjs.Dialogs
    */
   function FileUploadDialog(args, callback) {
     args = Utils.argumentDefaults(args, {

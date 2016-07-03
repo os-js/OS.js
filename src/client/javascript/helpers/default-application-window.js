@@ -40,10 +40,10 @@
    *
    * Use in combination with 'DefaultApplication'
    *
+   * @constructor
+   * @memberof OSjs.Helpers
    * @see OSjs.Helpers.DefaultApplication
-   * @api OSjs.Helpers.DefaultApplicationWindow
-   *
-   * @class
+   * @see OSjs.Core.Window
    */
   function DefaultApplicationWindow(name, app, args, scheme, file) {
     Window.apply(this, arguments);
@@ -146,11 +146,10 @@
   /**
    * Checks if current file has changed
    *
-   * @param   Function      cb        Callback => fn(discard_changes)
+   * @function  checkHasChanged
+   * @memberof OSjs.Helpers.DefaultApplicationWindow#
    *
-   * @return  void
-   *
-   * @method  DefaultApplicationWindow::checkHasChanged()
+   * @param   {Function}      cb        Callback => fn(discard_changes)
    */
   DefaultApplicationWindow.prototype.checkHasChanged = function(cb) {
     var self = this;
@@ -174,14 +173,13 @@
   /**
    * Show opened/created file
    *
-   * @param   OSjs.VFS.File       file        File
-   * @param   Mixed               content     File contents
-   *
    * YOU SHOULD EXTEND THIS METHOD IN YOUR WINDOW TO ACTUALLY DISPLAY CONTENT
    *
-   * @return  void
+   * @function  showFile
+   * @memberof OSjs.Helpers.DefaultApplicationWindow#
    *
-   * @method  DefaultApplicationWindow::showFile()
+   * @param   {OSjs.VFS.File}       file        File
+   * @param   {Mixed}               content     File contents
    */
   DefaultApplicationWindow.prototype.showFile = function(file, content) {
     this.updateFile(file);
@@ -190,11 +188,10 @@
   /**
    * Updates current view for given File
    *
-   * @param   OSjs.VFS.File       file        File
+   * @function updateFile
+   * @memberof OSjs.Helpers.DefaultApplicationWindow#
    *
-   * @return  void
-   *
-   * @method  DefaultApplicationWindow::updateFile()
+   * @param   {OSjs.VFS.File}       file        File
    */
   DefaultApplicationWindow.prototype.updateFile = function(file) {
     this.currentFile = file || null;
@@ -216,9 +213,10 @@
    *
    * YOU SHOULD IMPLEMENT THIS METHOD IN YOUR WINDOW TO RETURN FILE CONTENTS
    *
-   * @return  Mixed File contents
+   * @function getFileData
+   * @memberof OSjs.Helpers.DefaultApplicationWindow#
    *
-   * @method  DefaultApplicationWindow::getFileData()
+   * @return  {Mixed} File contents
    */
   DefaultApplicationWindow.prototype.getFileData = function() {
     return null;

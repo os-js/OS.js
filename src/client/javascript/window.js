@@ -65,7 +65,7 @@
   /**
    * Get viewport (Wrapper)
    *
-   * @return Object {top, left, width, height}
+   * @return {Object}
    * @api OSjs.API.getWindowSpace()
    */
   function getWindowSpace() {
@@ -168,6 +168,7 @@
   /**
    * Window Class
    *
+   * <pre><code>
    * Events:
    *  inited        When window has been inited and rendered  => ()
    *  focus         When window gets focus                    => ()
@@ -186,41 +187,41 @@
    *  drop          When a drop event occurs                  => (ev, type, item, args, srcEl)
    *  drop:upload   When a upload file was dropped            => (ev, <File>, args)
    *  drop:file     When a internal file object was dropped   => (ev, VFS.File, args, srcEl)
+   * </code></pre>
    *
-   * @param   String                    name        Window name (unique)
-   * @param   Object                    opts        List of options
-   * @param   OSjs.Core.Application     appRef      Application Reference
-   * @param   OSjs.GUI.Scheme           schemeRef   GUI Scheme Reference
+   * @param   {String}                    name                     Window name (unique)
+   * @param   {Object}                    opts                     List of options
+   * @param   {String}                    opts.title               Window Title
+   * @param   {String}                    opts.icon                Window Icon
+   * @param   {Number}                    [opts.x]                 X Position
+   * @param   {Number}                    [opts.y]                 Y Position
+   * @param   {Number}                    [opts.w]                 Width
+   * @param   {Number}                    [opts.h]                 Height
+   * @param   {String}                    [opts.tag]               Window Tag
+   * @param   {String}                    [opts.gravity]           Window Gravity
+   * @param   {boolean}                   [opts.allow_move]        Allow movment
+   * @param   {boolean}                   [opts.allow_resize]      Allow resize
+   * @param   {boolean}                   [opts.allow_minimize]    Allow minimize
+   * @param   {boolean}                   [opts.allow_maximize]    Allow maximize
+   * @param   {boolean}                   [opts.allow_close]       Allow closing
+   * @param   {boolean}                   [opts.allow_windowlist]  Allow appear in WindowList (Panel)
+   * @param   {boolean}                   [opts.allow_drop]        Allow DnD
+   * @param   {boolean}                   [opts.allow_iconmenu]    Allow Menu when click on Window Icon
+   * @param   {boolean}                   [opts.allow_ontop]       Allow ontop
+   * @param   {boolean}                   [opts.allow_hotkeys]     Allow usage of hotkeys
+   * @param   {boolean}                   [opts.allow_session]     Allow to store for session
+   * @param   {boolean}                   [opts.key_capture]       Allow key capture (UNSUSED ?!)
+   * @param   {boolean}                   [opts.min_width]         Minimum allowed width
+   * @param   {boolean}                   [opts.min_height]        Minimum allowed height
+   * @param   {boolean}                   [opts.max_width]         Maximum allowed width
+   * @param   {boolean}                   [opts.max_height]        Maximum allowed height
+   * @param   {Object}                    [opts.media_queries]     Media queries to apply CSS attribute => {name: fn(w,h,win) => Boolean }
+   * @param   {OSjs.Core.Application}     appRef                   Application Reference
+   * @param   {OSjs.GUI.Scheme}           schemeRef                GUI Scheme Reference
    *
-   * @option  opts     String          title             Window Title
-   * @option  opts     String          icon              Window Icon
-   * @option  opts     int             x                 (Optional) X Position
-   * @option  opts     int             y                 (Optional) Y Position
-   * @option  opts     int             w                 (Optional) Width
-   * @option  opts     int             h                 (Optional) Height
-   * @option  opts     String          tag               (Optional) Window Tag
-   * @option  opts     String          gravity           (Optional) Window Gravity
-   * @option  opts     boolean         allow_move        (Optional) Allow movment
-   * @option  opts     boolean         allow_resize      (Optional) Allow resize
-   * @option  opts     boolean         allow_minimize    (Optional) Allow minimize
-   * @option  opts     boolean         allow_maximize    (Optional) Allow maximize
-   * @option  opts     boolean         allow_close       (Optional) Allow closing
-   * @option  opts     boolean         allow_windowlist  (Optional) Allow appear in WindowList (Panel)
-   * @option  opts     boolean         allow_drop        (Optional) Allow DnD
-   * @option  opts     boolean         allow_iconmenu    (Optional) Allow Menu when click on Window Icon
-   * @option  opts     boolean         allow_ontop       (Optional) Allow ontop
-   * @option  opts     boolean         allow_hotkeys     (Optional) Allow usage of hotkeys
-   * @option  opts     boolean         allow_session     (Optional) Allow to store for session
-   * @option  opts     boolean         key_capture       (Optional) Allow key capture (UNSUSED ?!)
-   * @option  opts     boolean         min_width         (Optional) Minimum allowed width
-   * @option  opts     boolean         min_height        (Optional) Minimum allowed height
-   * @option  opts     boolean         max_width         (Optional) Maximum allowed width
-   * @option  opts     boolean         max_height        (Optional) Maximum allowed height
-   * @options opts     Object          media_queries     (Optional) Media queries to apply CSS attribute => {name: fn(w,h,win) => Boolean }
-   *
-   * @see     OSjs.Helpers.EventHandler
-   * @api     OSjs.Core.Window
-   * @class
+   * @constructor
+   * @memberof OSjs.Core
+   * @see OSjs.Helpers.EventHandler
    */
   var Window = (function() {
     var _WID                = 0;
@@ -257,40 +258,215 @@
       console.group('Window::constructor()', _WID);
       console.debug(name, opts);
 
-      this._$element      = null;                           // DOMElement: Window Outer container
-      this._$root         = null;                           // DOMElement: Window Inner container (for content)
-      this._$top          = null;                           // DOMElement: Window Top
-      this._$winicon      = null;                           // DOMElement: Window Icon
-      this._$loading      = null;                           // DOMElement: Window Loading overlay
-      this._$disabled     = null;                           // DOMElement: Window Disabled Overlay
-      this._$resize       = null;                           // DOMElement: Window Resizer
-      this._$warning      = null;                           // DOMElement: Warning message
+      /**
+       * The outer container
+       * @name _$element
+       * @memberof OSjs.Core.Window#
+       * @type {Node}
+       */
+      this._$element      = null;
 
-      this._opts          = opts;                           // Construction opts
-      this._app           = appRef || null;                 // Reference to Application Window was created from
-      this._scheme        = schemeRef || null;              // Reference to UIScheme
-      this._destroyed     = false;                          // If Window has been destroyed
-      this._restored      = false;                          // If Window was restored
-      this._loaded        = false;                          // If Window is finished loading
-      this._wid           = _WID;                           // Window ID (Internal)
-      this._icon          = opts.icon;                      // Window Icon
-      this._name          = name;                           // Window Name (Unique identifier)
-      this._title         = opts.title;                     // Window Title
+      /**
+       * The inner (content) container
+       * @name _$root
+       * @memberof OSjs.Core.Window#
+       * @type {Node}
+       */
+      this._$root         = null;
+
+      /**
+       * The top container
+       * @name _$top
+       * @memberof OSjs.Core.Window#
+       * @type {Node}
+       */
+      this._$top          = null;
+
+      /**
+       * The icon element
+       * @name _$winicon
+       * @memberof OSjs.Core.Window#
+       * @type {Node}
+       */
+      this._$winicon      = null;
+
+      /**
+       * The loading overlay
+       * @name _$loading
+       * @memberof OSjs.Core.Window#
+       * @type {Node}
+       */
+      this._$loading      = null;
+
+      /**
+       * The disabled overlay
+       * @name _$disabled
+       * @memberof OSjs.Core.Window#
+       * @type {Node}
+       */
+      this._$disabled     = null;
+
+      /**
+       * The resize underlay
+       * @name _$resize
+       * @memberof OSjs.Core.Window#
+       * @type {Node}
+       */
+      this._$resize       = null;
+
+      /**
+       * The warning overlay
+       * @name _$warning
+       * @memberof OSjs.Core.Window#
+       * @type {Node}
+       */
+      this._$warning      = null;
+
+      /**
+       * Constructor options copy
+       * @name _opts
+       * @memberof OSjs.Core.Window#
+       * @type {Object}
+       */
+      this._opts          = opts;
+
+      /**
+       * Application reference
+       * @name _app
+       * @memberof OSjs.Core.Window#
+       * @type {OSjs.Core.Application}
+       */
+      this._app           = appRef || null;
+
+      /**
+       * Scheme reference
+       * @name _scheme
+       * @memberof OSjs.Core.Window#
+       * @type {OSjs.GUI.Scheme}
+       */
+      this._scheme        = schemeRef || null;
+
+      /**
+       * If Window has been destroyed
+       * @name _destroyed
+       * @memberof OSjs.Core.Window#
+       * @type {Boolean}
+       */
+      this._destroyed     = false;
+
+      /**
+       * If Window was restored
+       * @name _restored
+       * @memberof OSjs.Core.Window#
+       * @type {Boolean}
+       */
+      this._restored      = false;
+
+      /**
+       * If Window is finished loading
+       * @name _loaded
+       * @memberof OSjs.Core.Window#
+       * @type {Boolean}
+       */
+      this._loaded        = false;
+
+      /**
+       * If Window is currently disabled
+       * @name _disabled
+       * @memberof OSjs.Core.Window#
+       * @type {Boolean}
+       */
+      this._disabled      = true;
+
+      /**
+       * If Window is currently loading
+       * @name _loading
+       * @memberof OSjs.Core.Window#
+       * @type {Boolean}
+       */
+      this._loading       = false;
+
+      /**
+       * Window ID (Internal)
+       * @name _wid
+       * @memberof OSjs.Core.Window#
+       * @type {Number}
+       */
+      this._wid           = _WID;
+
+      /**
+       * Window Icon
+       * @name _icon
+       * @memberof OSjs.Core.Window#
+       * @type {String}
+       */
+      this._icon          = opts.icon;
+
+      /**
+       * Window Name
+       * @name _name
+       * @memberof OSjs.Core.Window#
+       * @type {String}
+       */
+      this._name          = name;
+
+      /**
+       * Window Title
+       * @name _title
+       * @memberof OSjs.Core.Window#
+       * @type {String}
+       */
+      this._title         = opts.title;
+
+      /**
+       * Window Tag (ex. Use this when you have a group of windows)
+       * @name _title
+       * @memberof OSjs.Core.Window#
+       * @type {String}
+       */
+      this._tag           = opts.tag;
+
+      /**
+       * Window Position With x and y
+       * @name _position
+       * @memberof OSjs.Core.Window#
+       * @type {Object}
+       */
+      this._position      = {x:opts.x, y:opts.y};
+
+      /**
+       * Window Dimension With w and h
+       * @name _dimension
+       * @memberof OSjs.Core.Window#
+       * @type {Object}
+       */
+      this._dimension     = {w:opts.width, h:opts.height};
+
+      /**
+       * Children
+       * @name _children
+       * @memberof OSjs.Core.Window#
+       * @type {Array}
+       */
+      this._children      = [];
+
+      /**
+       * Parent
+       * @name _parent
+       * @memberof OSjs.Core.Window#
+       * @type {OSjs.Core.Window}
+       */
+      this._parent        = null;
+
       this._origtitle     = this._title;                    // Backup window title
-      this._tag           = opts.tag;                       // Window Tag (ex. Use this when you have a group of windows)
-      this._position      = {x:opts.x, y:opts.y};           // Window Position
-      this._dimension     = {w:opts.width, h:opts.height};  // Window Dimension
       this._lastDimension = this._dimension;                // Last Window Dimension
       this._lastPosition  = this._position;                 // Last Window Position
       this._tmpPosition   = null;
-      this._children      = [];                             // Child Windows
-      this._parent        = null;                           // Parent Window reference
-      this._disabled      = true;                           // If Window is currently disabled
-      this._loading       = false;                          // If Window is currently loading
       this._sound         = null;                           // Play this sound when window opens
       this._soundVolume   = _DEFAULT_SND_VOLUME;            // ... using this volume
       this._blinkTimer    = null;
       this._queryTimer    = null;
+
       this._evHandler     = new OSjs.Helpers.EventHandler(name, [
                               'focus', 'blur', 'destroy', 'maximize', 'minimize', 'restore',
                               'move', 'moved', 'resize', 'resized',
@@ -298,7 +474,13 @@
                               'drop', 'drop:upload', 'drop:file'
                             ]);
 
-      this._properties    = {                               // Window Properties
+      /**
+       * Window Properties
+       * @name _properties
+       * @memberof OSjs.Core.Window#
+       * @type {Object}
+       */
+      this._properties    = {
         gravity           : null,
         allow_move        : true,
         allow_resize      : true,
@@ -320,7 +502,13 @@
         media_queries     : createMediaQueries()
       };
 
-      this._state = { // Window State
+      /**
+       * Window State
+       * @name _state
+       * @memberof OSjs.Core.Window#
+       * @type {Object}
+       */
+      this._state = {
         focused   : false,
         modal     : false,
         minimized : false,
@@ -368,13 +556,14 @@
    * If you are looking for move/resize events, they are located in
    * the WindowManager.
    *
-   * @param   WindowManager   _wm     Window Manager reference
-   * @param   Application     _app    Application reference
-   * @param   UIScheme        _scheme UIScheme reference
+   * @function init
+   * @memberof OSjs.Core.Window#
    *
-   * @return  DOMElement              The Window DOM element
+   * @param   {OSjs.Core.WindowManager}   _wm     Window Manager reference
+   * @param   {OSjs.Core.Application}     _app    Application reference
+   * @param   {OSjs.GUI.Scheme}           _scheme UIScheme reference
    *
-   * @method  Window::init()
+   * @return  {Node} The Window DOM element
    */
   Window.prototype.init = function(_wm, _app, _scheme) {
     var self = this;
@@ -656,6 +845,12 @@
     return this._$root;
   };
 
+  /**
+   * When window is rendered and inited
+   *
+   * @function _inited
+   * @memberof OSjs.Core.Window#
+   */
   Window.prototype._inited = function() {
     this._loaded = true;
 
@@ -681,9 +876,10 @@
   /**
    * Destroy the Window
    *
-   * @return  boolean
+   * @function destroy
+   * @memberof OSjs.Core.Window#
    *
-   * @method  Window::destroy()
+   * @return  Boolean
    */
   Window.prototype.destroy = function() {
     var self = this;
@@ -795,10 +991,13 @@
    *
    * THIS IS JUST A SHORTCUT METHOD FROM THE UI SCHEME CLASS
    *
-   * @param     String      id        The value of element 'data-id' parameter
+   * @function _find
+   * @memberof OSjs.Core.Window#
+   * @see OSjs.GUI.Scheme#find
    *
-   * @see Scheme::find()
-   * @method Window::_find()
+   * @param     {String}      id        The value of element 'data-id' parameter
+   *
+   * @return {OSjs.GUI.Element}
    */
   Window.prototype._find = function(id) {
     return this._scheme ? this._scheme.find(this, id) : null;
@@ -809,8 +1008,11 @@
    *
    * THIS IS JUST A SHORTCUT METHOD FROM THE UI SCHEME CLASS
    *
-   * @see Scheme::findByQuery()
-   * @method Window::_findByQuery()
+   * @function _findByQuery
+   * @memberof OSjs.Core.Window#
+   * @see OSjs.GUI.Scheme#findByQuery
+   *
+   * @return {(Array|OSjs.GUI.Element)}
    */
   Window.prototype._findByQuery = function(q, root, all) {
     return this._scheme ? this._scheme.findByQuery(this, q, root, all) : null;
@@ -819,14 +1021,14 @@
   /**
    * Fire a hook to internal event
    *
-   * @param   String    k       Event name
-   * @param   Array     args    Send these arguments (fn.apply)
+   * @function _emit
+   * @memberof OSjs.Core.Window#
+   * @see OSjs.Helpers.EventHandler#emit
    *
-   * @return  void
+   * @param   {String}    k       Event name
+   * @param   {Array}     args    Send these arguments (fn.apply)
    *
-   * @see Window::_on()
-   * @see OSjs.Helpers.EventHandler::emit()
-   * @method  Window::_emit()
+   * @return {Boolean}
    */
   Window.prototype._emit = function(k, args) {
     if ( !this._destroyed ) {
@@ -840,13 +1042,14 @@
   /**
    * Adds a hook to internal event
    *
-   * @param   String    k       Event name
-   * @param   Function  func    Callback function
+   * @function _on
+   * @memberof OSjs.Core.Window#
+   * @see OSjs.Helpers.EventHandler#on
    *
-   * @return  integer
+   * @param   {String}    k       Event name
+   * @param   {Function}  func    Callback function
    *
-   * @see OSjs.Helpers.EventHandler::on()
-   * @method  Window::_on()
+   * @return  {Number}
    */
   Window.prototype._on = function(k, func) {
     if ( this._evHandler ) {
@@ -856,16 +1059,16 @@
   };
 
   /**
-   * Adds a hook to internal event
+   * Removes a hook to internal event
    *
-   * @param   String    k       Event name
-   * @param   integer   idx     The hook index returned from _on()
+   * @function _off
+   * @memberof OSjs.Core.Window#
+   * @see OSjs.Helpers.EventHandler#off
    *
-   * @return  void
+   * @param   {String}    k       Event name
+   * @param   {Number}   idx     The hook index returned from _on()
    *
-   * @see Window::_on()
-   * @see OSjs.Helpers.EventHandler::off()
-   * @method  Window::_off()
+   * @return {Boolean}
    */
   Window.prototype._off = function(k, idx) {
     if ( this._evHandler ) {
@@ -878,6 +1081,15 @@
   // Children (Windows)
   //
 
+  /**
+   * Add a child-window
+   *
+   * @function _addChild
+   * @memberof OSjs.Core.Window#
+   * @see OSjs.Helpers.EventHandler#off
+   *
+   * @return  {OSjs.Core.Window} The added instance
+   */
   Window.prototype._addChild = function(w, wmAdd, wmFocus) {
     console.debug('Window::_addChild()');
     w._parent = this;
@@ -894,11 +1106,12 @@
   /**
    * Removes a child Window
    *
-   * @param   Window    w     Widow reference
+   * @function _removeChild
+   * @memberof OSjs.Core.Window#
    *
-   * @return  boolean         On success
+   * @param   {OSjs.Core.Window}    w     Widow reference
    *
-   * @method  Window::_removeChild()
+   * @return  {Boolean}         On success
    */
   Window.prototype._removeChild = function(w) {
     var self = this;
@@ -915,12 +1128,13 @@
   /**
    * Get a Window child by X
    *
-   * @param   String      value   Value to look for
-   * @param   String      key     Key to look for
+   * @function _getChild
+   * @memberof OSjs.Core.Window#
    *
-   * @return  Window              Resulted Window or 'null'
+   * @param   {String}      value   Value to look for
+   * @param   {String}      key     Key to look for
    *
-   * @method  Window::_getChild()
+   * @return  {OSjs.Core.Window} Resulted Window or 'null'
    */
   Window.prototype._getChild = function(value, key) {
     key = key || 'wid';
@@ -945,8 +1159,12 @@
   /**
    * Get a Window child by ID
    *
-   * @see Window::_getChild()
-   * @method Window::_getChildById()
+   * @function _getChildById
+   * @memberof OSjs.Core.Window#
+   * @see OSjs.Core.Window#_getChild
+   *
+   * @param {Number} id Window id
+   * @return {OSjs.Core.Window}
    */
   Window.prototype._getChildById = function(id) {
     return this._getChild(id, 'wid');
@@ -955,8 +1173,12 @@
   /**
    * Get a Window child by Name
    *
-   * @see Window::_getChild()
-   * @method Window::_getChildByName()
+   * @function _getChildByName
+   * @memberof OSjs.Core.Window#
+   * @see OSjs.Core.Window#_getChild
+   *
+   * @param {String} name Window name
+   * @return {OSjs.Core.Window}
    */
   Window.prototype._getChildByName = function(name) {
     return this._getChild(name, 'name');
@@ -965,10 +1187,13 @@
   /**
    * Get Window(s) child by Tag
    *
-   * @return  Array
+   * @function _getChildrenByTag
+   * @memberof OSjs.Core.Window#
+   * @see OSjs.Core.Window#_getChild
    *
-   * @see Window::_getChild()
-   * @method Window::_getChildrenByTag()
+   * @param {String} tag Tag name
+   *
+   * @return  {Array}
    */
   Window.prototype._getChildrenByTag = function(tag) {
     return this._getChild(tag, 'tag');
@@ -977,9 +1202,10 @@
   /**
    * Gets all children Windows
    *
-   * @return  Array
+   * @function _getChildren
+   * @memberof OSjs.Core.Window#
    *
-   * @method  Window::_getChildren()
+   * @return  {Array}
    */
   Window.prototype._getChildren = function() {
     return this._children;
@@ -988,9 +1214,8 @@
   /**
    * Removes all children Windows
    *
-   * @return  void
-   *
-   * @method  Window::_removeChildren()
+   * @function _removeChildren
+   * @memberof OSjs.Core.Window#
    */
   Window.prototype._removeChildren = function() {
     if ( this._children && this._children.length ) {
@@ -1010,9 +1235,10 @@
   /**
    * Close the Window
    *
-   * @return  boolean     On succes
+   * @function _close
+   * @memberof OSjs.Core.Window#
    *
-   * @method  Window::_close()
+   * @return  {Boolean}     On succes
    */
   Window.prototype._close = function() {
     console.debug('Window::_close()');
@@ -1029,9 +1255,10 @@
   /**
    * Minimize the Window
    *
-   * @return    boolean     On success
+   * @function _minimize
+   * @memberof OSjs.Core.Window#
    *
-   * @method    Window::_minimize()
+   * @return    {Boolean}     On success
    */
   Window.prototype._minimize = function(force) {
     var self = this;
@@ -1072,9 +1299,10 @@
   /**
    * Maximize the Window
    *
-   * @return    boolean     On success
+   * @function _maximize
+   * @memberof OSjs.Core.Window#
    *
-   * @method    Window::_maximize()
+   * @return    {Boolean}     On success
    */
   Window.prototype._maximize = function(force) {
     var self = this;
@@ -1125,12 +1353,11 @@
   /**
    * Restore the Window
    *
-   * @param     boolean     max     Revert maximize state
-   * @param     boolean     min     Revert minimize state
+   * @function _restore
+   * @memberof OSjs.Core.Window#
    *
-   * @return    void
-   *
-   * @method    Window::_restore()
+   * @param     {Boolean}     max     Revert maximize state
+   * @param     {Boolean}     min     Revert minimize state
    */
   Window.prototype._restore = function(max, min) {
     var self = this;
@@ -1179,11 +1406,12 @@
   /**
    * Focus the window
    *
-   * @param   boolean     force     Forces focus
+   * @function _focus
+   * @memberof OSjs.Core.Window#
    *
-   * @return  boolean               On success
+   * @param   {Boolean}     force     Forces focus
    *
-   * @method  Window::_focus()
+   * @return  {Boolean}               On success
    */
   Window.prototype._focus = function(force) {
     if ( !this._$element || this._destroyed ) {
@@ -1223,11 +1451,12 @@
   /**
    * Blur the window
    *
-   * @param   boolean     force     Forces blur
+   * @function _blur
+   * @memberof OSjs.Core.Window#
    *
-   * @return  boolean               On success
+   * @param   {Boolean}     force     Forces blur
    *
-   * @method  Window::_blur()
+   * @return  {Boolean}               On success
    */
   Window.prototype._blur = function(force) {
     if ( !this._$element || this._destroyed || (!force && !this._state.focused) ) {
@@ -1259,7 +1488,8 @@
   /**
    * Blurs the GUI
    *
-   * @method Window::_blurGUI()
+   * @function _blurGUI
+   * @memberof OSjs.Core.Window#
    */
   Window.prototype._blurGUI = function() {
     this._$root.querySelectorAll('input, textarea, select, iframe, button').forEach(function(el) {
@@ -1273,16 +1503,15 @@
    * Use this method if you want the window to fit into the viewport and not
    * just set a specific size
    *
-   * @param   int           dw            Width
-   * @param   int           dh            Height
-   * @param   boolean       limit         Limit to this size (default=true)
-   * @param   boolean       move          Move window if too big (default=false)
-   * @param   DOMElement    container     Relative to this container (default=null)
-   * @param   boolean       force         Force movment (default=false)
+   * @function _resizeTo
+   * @memberof OSjs.Core.Window#
    *
-   * @return  void
-   *
-   * @method  Window::_resizeTo()
+   * @param   {Number}      dw                   Width
+   * @param   {Number}      dh                   Height
+   * @param   {Boolean}     [limit=true]         Limit to this size
+   * @param   {Boolean}     [move=false]         Move window if too big
+   * @param   {Node}        [container=null]     Relative to this container
+   * @param   {Boolean}     [force=false]        Force movment
    */
   Window.prototype._resizeTo = function(dw, dh, limit, move, container, force) {
     var self = this;
@@ -1409,11 +1638,10 @@
   /**
    * Move window to position
    *
-   * @param   Object      pos       Object with {x:, y:}
+   * @function _moveTo
+   * @memberof OSjs.Core.Window#
    *
-   * @return  void
-   *
-   * @method  Window::_moveTo()
+   * @param   {Object}      pos       Position rectangle
    */
   Window.prototype._moveTo = function(pos) {
     var wm = OSjs.Core.getWindowManager();
@@ -1439,12 +1667,13 @@
   /**
    * Move window to position
    *
-   * @param   int       x     X Position
-   * @param   int       y     Y Position
+   * @function _move
+   * @memberof OSjs.Core.Window#
    *
-   * @return  boolean         On success
+   * @param   {Number}       x     X Position
+   * @param   {Number}       y     Y Position
    *
-   * @method  Window::_move()
+   * @return  {Boolean}         On success
    */
   Window.prototype._move = function(x, y) {
     if ( !this._$element || this._destroyed || !this._properties.allow_move  ) {
@@ -1466,11 +1695,10 @@
   /**
    * Toggle disabled overlay
    *
-   * @param     boolean     t       Toggle
+   * @function _toggleDisabled
+   * @memberof OSjs.Core.Window#
    *
-   * @return    void
-   *
-   * @method    Window::_toggleDisabled()
+   * @param     {Boolean}     t       Toggle
    */
   Window.prototype._toggleDisabled = function(t) {
     console.debug(this._name, '>', 'Window::_toggleDisabled()', t);
@@ -1486,11 +1714,10 @@
   /**
    * Toggle loading overlay
    *
-   * @param     boolean     t       Toggle
+   * @function _toggleLoading
+   * @memberof OSjs.Core.Window#
    *
-   * @return    void
-   *
-   * @method    Window::_toggleLoading()
+   * @param     {Boolean}     t       Toggle
    */
   Window.prototype._toggleLoading = function(t) {
     console.debug(this._name, '>', 'Window::_toggleLoading()', t);
@@ -1506,9 +1733,8 @@
   /**
    * Updates window markup with attributes etc
    *
-   * @return void
-   *
-   * @method Window::_updateMarkup()
+   * @function _updateMarkup
+   * @memberof OSjs.Core.Window#
    */
   Window.prototype._updateMarkup = function(ui) {
     if ( !this._$element ) {
@@ -1545,11 +1771,10 @@
   /**
    * Toggle attention
    *
-   * @param     boolean     t       Toggle
+   * @function _toggleAttentionBlink
+   * @memberof OSjs.Core.Window#
    *
-   * @return    void
-   *
-   * @method    Window::_toggleAttentionBlink()
+   * @param     {Boolean}     t       Toggle
    */
   Window.prototype._toggleAttentionBlink = function(t) {
     if ( !this._$element || this._destroyed  ) { return false; }
@@ -1598,10 +1823,10 @@
   /**
    * Check next Tab (cycle GUIElement)
    *
-   * @param   Event     ev            DOM Event
-   * @return  void
+   * @function _nextTabIndex
+   * @memberof OSjs.Core.Window#
    *
-   * @method  Window::_nextTabIndex()
+   * @param   {Event}     ev            DOM Event
    */
   Window.prototype._nextTabIndex = function(ev) {
     var nextElement = OSjs.GUI.Helpers.getNextElement(ev.shiftKey, document.activeElement, this._$root);
@@ -1623,12 +1848,13 @@
   /**
    * On Drag-and-drop event
    *
-   * @param   DOMEevent     ev        DOM Event
-   * @param   String        type      DnD type
+   * @function _onDndEvent
+   * @memberof OSjs.Core.Window#
    *
-   * @return  boolean                 On success
+   * @param   {Event}     ev        DOM Event
+   * @param   {String}    type      DnD type
    *
-   * @method  Window::_onDndEvent()
+   * @return  {Boolean} On success
    */
   Window.prototype._onDndEvent = function(ev, type, item, args, el) {
     if ( this._disabled || this._destroyed ) {
@@ -1653,12 +1879,11 @@
   /**
    * On Key event
    *
-   * @param   DOMEvent      ev        DOM Event
-   * @param   String        type      Key type
+   * @function _onKeyEvent
+   * @memberof OSjs.Core.Window#
    *
-   * @return  void
-   *
-   * @method  Window::_onKeyEvent()
+   * @param   {Event}      ev        DOM Event
+   * @param   {String}     type      Key type
    */
   Window.prototype._onKeyEvent = function(ev, type) {
     if ( this._destroyed ) {
@@ -1677,8 +1902,8 @@
   /**
    * On Window resized
    *
-   * @return  void
-   * @method  Window::_onResize()
+   * @function _onResize
+   * @memberof OSjs.Core.Window#
    */
   Window.prototype._onResize = function() {
     clearTimeout(this._queryTimer);
@@ -1692,12 +1917,11 @@
   /**
    * On Window Icon Click
    *
-   * @param   DOMEvent      ev        DOM Event
-   * @param   DOMElement    el        DOM Element
+   * @function _onResize
+   * @memberof OSjs.Core.Window#
    *
-   * @return  void
-   *
-   * @method  Window::_onWindowIconClick()
+   * @param   {Event}   ev        DOM Event
+   * @param   {Node}    el        DOM Element
    */
   Window.prototype._onWindowIconClick = function(ev, el) {
     if ( !this._properties.allow_iconmenu || this._destroyed  ) {
@@ -1788,13 +2012,12 @@
   /**
    * On Window Button Click
    *
-   * @param   DOMEvent      ev        DOM Event
-   * @param   DOMElement    el        DOM Element
-   * @param   String        btn       Button name
+   * @function _onWindowButtonClick
+   * @memberof OSjs.Core.Window#
    *
-   * @return  void
-   *
-   * @method  Window::_onWindowButtonClick()
+   * @param   {Event}   ev        DOM Event
+   * @param   {Node}    el        DOM Element
+   * @param   {String}  btn       Button name
    */
   Window.prototype._onWindowButtonClick = function(ev, el, btn) {
     console.debug(this._name, '>', 'Window::_onWindowButtonClick()', btn);
@@ -1813,12 +2036,11 @@
   /**
    * On Window has changed
    *
-   * @param   DOMEvent      ev        DOM Event
-   * @param   boolean       byUser    Performed by user?
+   * @function _onChange
+   * @memberof OSjs.Core.Window#
    *
-   * @return  void
-   *
-   * @method  Window::_onChange()
+   * @param   {Event}     ev        DOM Event
+   * @param   {Boolean}   byUser    Performed by user?
    */
   Window.prototype._onChange = function(ev, byUser) {
     ev = ev || '';
@@ -1838,9 +2060,10 @@
   /**
    * Get Window maximized size
    *
-   * @return    Object      Size of {left:, top:, right:, bottom: }
+   * @function _getMaximizedSize
+   * @memberof OSjs.Core.Window#
    *
-   * @method    Window::_getMaximizedSize()
+   * @return    {Object}      Size in rectangle
    */
   Window.prototype._getMaximizedSize = function() {
     var s = getWindowSpace();
@@ -1871,9 +2094,9 @@
   /**
    * Get Window position in DOM
    *
-   * @see OSjs.Utils.$position()
-   *
-   * @method  Window::_getViewRect()
+   * @function _getViewRect
+   * @memberof OSjs.Core.Window#
+   * @see OSjs.Utils.position
    */
   Window.prototype._getViewRect = function() {
     return this._$element ? Object.freeze(Utils.$position(this._$element)) : null;
@@ -1882,9 +2105,10 @@
   /**
    * Get Window main DOM element
    *
-   * @return  DOMElement
+   * @function _getRoot
+   * @memberof OSjs.Core.Window#
    *
-   * @method  Window::_getRoot()
+   * @return  {Node}
    */
   Window.prototype._getRoot = function() {
     return this._$root;
@@ -1893,9 +2117,10 @@
   /**
    * Get Window z-index
    *
-   * @return    int
+   * @function _getZindex
+   * @memberof OSjs.Core.Window#
    *
-   * @method    Window::_getZindex()
+   * @return    {Number}
    */
   Window.prototype._getZindex = function() {
     if ( this._$element ) {
@@ -1907,13 +2132,12 @@
   /**
    * Set Window title
    *
-   * @param   String      t         Title
-   * @param   boolean     append    (Optional) Append this to original title
-   * @param   String      delimiter (Optional) The delimiter (default is -)
+   * @function _setTitle
+   * @memberof OSjs.Core.Window#
    *
-   * @return  void
-   *
-   * @method  Window::_setTitle()
+   * @param   {String}      t           Title
+   * @param   {Boolean}     [append]    Append this to original title
+   * @param   {String}      [delimiter] The delimiter (default is -)
    */
   Window.prototype._setTitle = function(t, append, delimiter) {
     if ( !this._$element || this._destroyed ) {
@@ -1945,11 +2169,10 @@
   /**
    * Set Windoc icon
    *
-   * @param   String      i     Icon path
+   * @function _setIcon
+   * @memberof OSjs.Core.Window#
    *
-   * @return  void
-   *
-   * @method  Window::_setIcon()
+   * @param   {String}      i     Icon path
    */
   Window.prototype._setIcon = function(i) {
     if ( this._$winicon ) {
@@ -1964,7 +2187,10 @@
   /**
    * Set Window warning message (Displays as a popup inside window)
    *
-   * @param   String      message       Warning message
+   * @function _setWarning
+   * @memberof OSjs.Core.Window#
+   *
+   * @param   {String}      message       Warning message
    */
   Window.prototype._setWarning = function(message) {
     var self = this;
@@ -1997,12 +2223,11 @@
   /**
    * Set a window property
    *
-   * @param   String    p     Key
-   * @param   String    v     Value
+   * @function _setProperty
+   * @memberof OSjs.Core.Window#
    *
-   * @return  void
-   *
-   * @method Window::_setProperty()
+   * @param   {String}    p     Key
+   * @param   {String}    v     Value
    */
   Window.prototype._setProperty = function(p, v) {
     if ( (v === '' || v === null) || !this._$element || (typeof this._properties[p] === 'undefined') ) {

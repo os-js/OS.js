@@ -27,6 +27,7 @@ src/installer/installer.exe
 # Builds
 dist/*
 dist-dev/*
+doc/jsdoc
 
 # Vendor
 vendor/dropbox*

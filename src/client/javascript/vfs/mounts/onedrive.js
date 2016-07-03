@@ -632,7 +632,8 @@
   /**
    * This is the Microsoft OneDrive VFS Abstraction for OS.js
    *
-   * @api OSjs.VFS.Modules.OneDrive
+   * @namespace OneDrive
+   * @memberof OSjs.VFS.Modules
    */
   OSjs.VFS.Modules.OneDrive = OSjs.VFS.Modules.OneDrive || OSjs.VFS._createMountpoint({
     readOnly: false,

@@ -133,7 +133,7 @@
   /**
    * A collection of keycode mappings
    *
-   * @api OSjs.Utils.Keys
+   * @memberof OSjs.Utils
    * @var
    */
   OSjs.Utils.Keys = {
@@ -194,11 +194,12 @@
   /**
    * Get the mouse button pressed
    *
-   * @param   DOMEvent  ev    The DOM Event
+   * @function mouseButton
+   * @memberof OSjs.Utils
    *
-   * @return  String          The mouse button (left/middle/right)
+   * @param   {Event}     ev    The DOM Event
    *
-   * @api     OSjs.Utils.mouseButton()
+   * @return  {String}          The mouse button (left/middle/right)
    */
   OSjs.Utils.mouseButton = function(ev) {
     if ( typeof ev.button !== 'undefined' ) {
@@ -223,12 +224,13 @@
    *
    * Example: 'CTRL+SHIFT+A'
    *
-   * @param   DOMEvent  ev            The DOM Event
-   * @param   String    checkFor      The string of keystrokes to check
+   * @function keyCombination
+   * @memberof OSjs.Utils
    *
-   * @return  boolean
+   * @param   {Event}     ev            The DOM Event
+   * @param   {String}    checkFor      The string of keystrokes to check
    *
-   * @api     OSjs.Utils.keyCombination()
+   * @return  {Boolean}
    */
   OSjs.Utils.keyCombination = (function() {
     var modifiers = {
@@ -283,13 +285,13 @@
    *
    * You can bind multiple events by separating types with a comma
    *
-   * @param   DOMElement    el          DOM Element to attach event to
-   * @param   String        ev          DOM Event Name
-   * @param   Function      callback    Callback on event
+   * @function $bind
+   * @memberof OSjs.Utils
    *
-   * @return  void
-   *
-   * @api OSjs.Utils.$bind()
+   * @param   {Node}          el            DOM Element to attach event to
+   * @param   {String}        ev            DOM Event Name
+   * @param   {Function}      callback      Callback on event
+   * @param   {Boolean}       [useCapture]  Use capture mode
    */
   OSjs.Utils.$bind = (function(msPointerEnabled) {
     var touchstartName = msPointerEnabled ? 'pointerdown' : 'touchstart';
@@ -421,14 +423,14 @@
    *
    * You can unbind multiple events by separating types with a comma
    *
-   * @param   DOMElement    el          DOM Element to attach event to
-   * @param   String        ev          DOM Event Name
-   * @param   Function      callback    Callback on event
+   * @function $unbind
+   * @memberof OSjs.Utils
+   * @see OSjs.Utils.$bind
    *
-   * @return  void
-   *
-   * @see OSjs.Utils.$bind()
-   * @api OSjs.Utils.$unbind()
+   * @param   {Node}          el            DOM Element to attach event to
+   * @param   {String}        [ev]          DOM Event Name
+   * @param   {Function}      [callback]    Callback on event
+   * @param   {Boolean}       [useCapture]  Use capture mode
    */
   OSjs.Utils.$unbind = function(el, evName, callback, param) {
     if ( el ) {

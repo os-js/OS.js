@@ -30,6 +30,11 @@
 (function(Utils, API) {
   'use strict';
 
+  /**
+   * @namespace Web
+   * @memberof OSjs.VFS.Transports
+   */
+
   /*
    * THIS IS AN EXPERIMENTAL WEB TRANSPORT MODULE FOR OS.js VFS
    *
@@ -152,11 +157,12 @@
   /**
    * Make a Web HTTP URL for VFS
    *
-   * @param   Mixed       item        (Optional) Path of VFS.File object
+   * @param   {(String|OSjs.VFS.File)}    item        VFS File
    *
-   * @retun   String                  URL based on input
+   * @retun   {String}                  URL based on input
    *
-   * @api OSjs.VFS.Transports.Web.path()
+   * @function path
+   * @memberof OSjs.VFS.Transports.Web
    */
   function makePath(file) {
     var root = OSjs.VFS.getRootFromPath(file.path);

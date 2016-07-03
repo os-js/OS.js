@@ -30,14 +30,17 @@
 (function(Utils, API, VFS) {
   'use strict';
 
+  /**
+   * @namespace HTTP
+   * @memberof OSjs.VFS.Transports
+   */
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
   /*
    * Default HTTP VFS Transport Module
-   *
-   * @api OSjs.VFS.Transports.HTTP
    */
   VFS.Transports.HTTP = {
     module: {
@@ -49,8 +52,6 @@
 
   /**
    * A hidden mountpoint for making HTTP requests via VFS
-   *
-   * @api OSjs.VFS.Modules.HTTP
    */
   VFS.Modules.HTTP = VFS.Modules.HTTP || OSjs.VFS._createMountpoint({
     readOnly: true,

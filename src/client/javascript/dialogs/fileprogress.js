@@ -35,15 +35,13 @@
    *
    * This is only used internally automatically.
    *
-   * @param   args      Object        An object with arguments
-   * @param   callback  Function      Callback when done => fn(ev, button, result)
+   * @param  {Object}          args              An object with arguments
+   * @param  {String}          args.title        Dialog title
+   * @param  {String}          args.message      Dialog message
+   * @param  {Function}        callback          Callback when done => fn(ev, button, result)
    *
-   * @option    args    title       String      Dialog title
-   * @option    args    message     String      Dialog message
-   *
-   * @extends DialogWindow
-   * @class FileProgressDialog
-   * @api OSjs.Dialogs.FileProgress
+   * @constructor FileProgress
+   * @memberof OSjs.Dialogs
    */
   function FileProgressDialog(args, callback) {
     args = Utils.argumentDefaults(args, {});

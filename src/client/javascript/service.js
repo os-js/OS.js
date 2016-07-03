@@ -37,12 +37,12 @@
   /**
    * Service Class
    *
-   * @param   String    name    Process name
-   * @param   Object    args    Process arguments
+   * @param   {String}    name    Process name
+   * @param   {Object}    args    Process arguments
    *
-   * @api     OSjs.Core.Service
-   * @extends Process
-   * @class
+   * @constructor
+   * @memberof OSjs.Core
+   * @extends OSjs.Core.Process
    */
   function Service(name, args, metadata) {
     console.group('Service::constructor()', name);
@@ -56,9 +56,8 @@
   /**
    * Intiaialize the Service
    *
-   * @return  void
-   *
-   * @method Service::init()
+   * @function init
+   * @memberof OSjs.Core.Service#
    */
   Service.prototype.init = function() {
   };

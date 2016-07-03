@@ -33,16 +33,14 @@
   /**
    * An 'Confirm' dialog
    *
-   * @param   args      Object        An object with arguments
-   * @param   callback  Function      Callback when done => fn(ev, button, result)
+   * @param  {Object}          args              An object with arguments
+   * @param  {String}          args.title        Dialog title
+   * @param  {String}          args.message      Dialog message
+   * @param  {Array}           args.buttons      Dialog buttons (default=yes,no,cancel)
+   * @param  {Function}        callback          Callback when done => fn(ev, button, result)
    *
-   * @option    args    title       String      Dialog title
-   * @option    args    message     String      Dialog message
-   * @option    args    buttons     Array       Dialog buttons (default=yes,no,cancel)
-   *
-   * @extends DialogWindow
-   * @class ConfirmDialog
-   * @api OSjs.Dialogs.Confirm
+   * @constructor Confirm
+   * @memberof OSjs.Dialogs
    */
   function ConfirmDialog(args, callback) {
     args = Utils.argumentDefaults(args, {

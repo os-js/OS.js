@@ -30,6 +30,21 @@
 (function() {
   'use strict';
 
+  /**
+   * @namespace Core
+   * @memberof OSjs
+   */
+
+  /**
+   * @namespace Utils
+   * @memberof OSjs
+   */
+
+  /**
+   * @namespace Helpers
+   * @memberof OSjs
+   */
+
   var handler    = null;
   var loaded     = false;
   var inited     = false;
@@ -669,7 +684,8 @@
   /**
    * Shuts down OS.js
    *
-   * @api OSjs.API.shutdown()
+   * @function shutdown
+   * @memberof OSjs.API
    */
   OSjs.API.shutdown = function() {
     if ( !inited || !loaded ) {
@@ -738,10 +754,11 @@
    *
    * You should use 'OSjs.API.getConfig()' to get a setting
    *
-   * @return  Object
+   * @function getConfig
+   * @memberof OSjs.Core
+   * @see OSjs.API.getConfig
    *
-   * @see     OSjs.API.getConfig()
-   * @api     OSjs.Core.getConfig()
+   * @return  {Object}
    */
   OSjs.Core.getConfig = OSjs.Core.getConfig || function() {
     return {};
@@ -752,9 +769,10 @@
    *
    * THIS IS JUST A PLACEHOLDER. 'packages.js' SHOULD HAVE THIS!
    *
-   * @return  Object
+   * @function getMetadata
+   * @memberof OSjs.Core
    *
-   * @api     OSjs.Core.getMetadata()
+   * @return  {Object}
    */
   OSjs.Core.getMetadata = OSjs.Core.getMetadata || function() {
     return {};

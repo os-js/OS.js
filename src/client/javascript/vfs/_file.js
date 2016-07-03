@@ -41,15 +41,36 @@
    *
    * Useful for canvas data etc.
    *
-   * @api     OSjs.VFS.FileDataURL
-   * @class
+   * @constructor
+   * @memberof OSjs.VFS
    */
   function FileDataURL(dataURL) {
+    /**
+     * File URI data (base64 encoded)
+     * @name dataURL
+     * @memberof OSjs.VFS.FileDataURL#
+     * @type {String}
+     */
     this.dataURL = dataURL;
   }
+
+  /**
+   * Get base64 data
+   * @function toBase64
+   * @memberof OSjs.VFS.FileDataURL#
+   * @return {String}
+   */
   FileDataURL.prototype.toBase64 = function() {
     return this.data.split(',')[1];
   };
+
+  /**
+   * Get raw data URI
+   * @override
+   * @function toString
+   * @memberof OSjs.VFS.FileDataURL#
+   * @return {String}
+   */
   FileDataURL.prototype.toString = function() {
     return this.dataURL;
   };
@@ -60,31 +81,71 @@
    *
    * This object has the same properties as in the option list below
    *
-   * @param   Mixed       arg       Either a 'path' or 'object' (filled with properties)
-   * @param   String      mime      MIME type of File Type (ex: 'application/json' or 'dir')
+   * If you construct without a MIME type, OS.js will try to guess what it is.
    *
-   * @option  opts     String          icon              Window Icon
+   * @param   {(String|Object)} arg           Either a 'path' or 'object' (filled with properties)
+   * @param   {String}          arg.path      Full path
+   * @param   {String}          arg.filename  Filename (automatically detected)
+   * @param   {String}          arg.type      File type (file/dir)
+   * @param   {Number}          arg.size      File size (in bytes)
+   * @param   {String}          arg.mime      File MIME (ex: application/json)
+   * @param   {Mixed}           arg.id        Unique identifier (not required)
+   * @param   {String}          [mime]        MIME type of File Type (ex: 'application/json' or 'dir')
    *
-   * @option  arg   String      path      Full path
-   * @option  arg   String      filename  Filename (automatically detected)
-   * @option  arg   String      type      File type (file/dir)
-   * @option  arg   int         size      File size (in bytes)
-   * @option  arg   String      mime      File MIME (ex: application/json)
-   * @option  arg   Mixed       id        Unique identifier (not required)
-   *
-   * @api     OSjs.VFS.File
-   * @class
+   * @constructor File
+   * @memberof OSjs.VFS
    */
   function FileMetadata(arg, mime) {
     if ( !arg ) {
       throw new Error(API._('ERR_VFS_FILE_ARGS'));
     }
 
+    /**
+     * Full path
+     * @name path
+     * @memberof OSjs.VFS.File#
+     * @type {String}
+     */
     this.path     = null;
+
+    /**
+     * Filename
+     * @name filename
+     * @memberof OSjs.VFS.File#
+     * @type {String}
+     */
     this.filename = null;
+
+    /**
+     * Type (dir or file)
+     * @name type
+     * @memberof OSjs.VFS.File#
+     * @type {String}
+     */
     this.type     = null;
+
+    /**
+     * Size in bytes
+     * @name size
+     * @memberof OSjs.VFS.File#
+     * @type {Number}
+     */
     this.size     = null;
+
+    /**
+     * MIME type
+     * @name mime
+     * @memberof OSjs.VFS.File#
+     * @type {String}
+     */
     this.mime     = null;
+
+    /**
+     * Unique identifier
+     * @name id
+     * @memberof OSjs.VFS.File#
+     * @type {String}
+     */
     this.id       = null;
 
     if ( typeof arg === 'object' ) {
@@ -105,6 +166,14 @@
     this._guessMime();
   }
 
+  /**
+   * Set data from Object (key/value pair)
+   *
+   * @function setData
+   * @memberof OSjs.VFS.File#
+   *
+   * @param {Object}    o     Object
+   */
   FileMetadata.prototype.setData = function(o) {
     var self = this;
     if ( o ) {
@@ -120,6 +189,14 @@
     }
   };
 
+  /**
+   * Get object data as key/value pair
+   *
+   * @function getData
+   * @memberof OSjs.VFS.File#
+   *
+   * @return {Object}
+   */
   FileMetadata.prototype.getData = function() {
     return {
       path: this.path,

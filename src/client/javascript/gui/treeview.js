@@ -169,21 +169,20 @@
    *
    * A tree view for nested content
    *
-   * Format for add():
-   * ```
-   * {
-   *    label: "Label",
-   *    icon: "Optional icon path",
-   *    value: "something or JSON or whatever",
-   *    entries: [] // Recurse :)
-   * }
-   * ```
-   *
    * For more properties and events etc, see 'dataview'
    *
-   * @api OSjs.GUI.Elements.gui-tree-view
-   * @see OSjs.GUI.Elements._dataview
-   * @class
+   * @example
+   *
+   *   .add({
+   *      label: "Label",
+   *      icon: "Optional icon path",
+   *      value: "something or JSON or whatever",
+   *      entries: [] // Recurse :)
+   *   })
+   *
+   * @constructs OSjs.GUI.DataView
+   * @memberof OSjs.GUI.Elements
+   * @var gui-tree-view
    */
   GUI.Elements['gui-tree-view'] = {
     bind: GUI.Elements._dataview.bind,

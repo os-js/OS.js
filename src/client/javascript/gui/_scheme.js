@@ -127,9 +127,12 @@
   /**
    * Shortcut for creating a new UIScheme class
    *
-   * @param String    url     URL to scheme file
-   * @return UIScheme
-   * @api OSjs.GUI.createScheme()
+   * @function createScheme
+   * @memberof OSjs.GUI
+   *
+   * @param {String}    url     URL to scheme file
+   *
+   * @return {OSjs.GUI.Scheme}
    */
   function createScheme(url) {
     return new UIScheme(url);
@@ -142,9 +145,8 @@
   /**
    * The class for loading and parsing UI Schemes
    *
-   * @api   OSjs.GUI.Scheme
-   *
-   * @class Scheme
+   * @constructor Scheme
+   * @memberof OSjs.GUI
    */
   function UIScheme(url) {
     console.debug('UIScheme::construct()', url);
@@ -154,6 +156,12 @@
     this.triggers = {render: []};
   }
 
+  /**
+   * Destroys the instance
+   *
+   * @function destroy
+   * @memberof OSjs.GUI.Scheme#
+   */
   UIScheme.prototype.destroy = function() {
     Utils.$empty(this.scheme);
 
@@ -164,11 +172,11 @@
   /**
    * Register event
    *
-   * @param   String      f       Event name
-   * @param   Function    fn      Function/callback
+   * @function on
+   * @memberof OSjs.GUI.Scheme#
    *
-   * @return  void
-   * @method  Scheme::on()
+   * @param   {String}      f       Event name
+   * @param   {Function}    fn      Function/callback
    */
   UIScheme.prototype.on = function(f, fn) {
     this.triggers[f].push(fn);
@@ -210,11 +218,11 @@
   /**
    * Load Scheme from given String
    *
-   * @param   String      html    HTML data
-   * @param   Function    cb      callback => fn(error, scheme)
+   * @function loadString
+   * @memberof OSjs.GUI.Scheme#
    *
-   * @return  void
-   * @method  Scheme::load()
+   * @param   {String}      html    HTML data
+   * @param   {Function}    cb      callback => fn(error, scheme)
    */
   UIScheme.prototype.loadString = function(html, cb) {
     console.debug('UIScheme::loadString()');
@@ -225,10 +233,10 @@
   /**
    * Load Scheme from URL
    *
-   * @param   Function    cb      callback => fn(error, scheme)
+   * @function load
+   * @memberof OSjs.GUI.Scheme#
    *
-   * @return  void
-   * @method  Scheme::load()
+   * @param   {Function}    cb      callback => fn(error, scheme)
    */
   UIScheme.prototype.load = function(cb) {
     var self = this;
@@ -265,11 +273,13 @@
   /**
    * Get fragment from ID (and/or type)
    *
-   * @param   String      id      ID
-   * @param   String      type    (Optional) type (application-window | application-fragment)
+   * @function getFragment
+   * @memberof OSjs.GUI.Scheme#
    *
-   * @return  DOMElement
-   * @method  Scheme::getFragment()
+   * @param   {String}      id      ID
+   * @param   {String}      [type]  Type (application-window | application-fragment)
+   *
+   * @return  {Node}
    */
   UIScheme.prototype.getFragment = function(id, type) {
     var content = null;
@@ -287,14 +297,16 @@
   /**
    * Parses the given fragment
    *
-   * @param   String      id      Fragment ID
-   * @param   String      type    (Optional) Fragment Type
-   * @param   Window      win     OS.js Window
-   * @param   Function    onparse (Optional) Callback on parsed
-   * @param   Object      args    (Optional) Parameters
+   * @function parse
+   * @memberof OSjs.GUI.Scheme#
    *
-   * @return  DOMElement
-   * @method  Scheme::parse()
+   * @param   {String}            id        Fragment ID
+   * @param   {String}            [type]    Fragment Type
+   * @param   {OSjs.Core.Window}  [win]     OS.js Window
+   * @param   {Function}          [onparse] Callback on parsed
+   * @param   {Object}            [args]    Parameters
+   *
+   * @return  {Node}
    */
   UIScheme.prototype.parse = function(id, type, win, onparse, args) {
     var self = this;
@@ -323,15 +335,17 @@
   /**
    * Renders the given fragment into Window
    *
-   * @param   Window      win     OS.js Window
-   * @param   String      id      Fragment ID
-   * @param   DOMElement  root    (Optional) Root HTML Node
-   * @param   String      type    (Optional) Fragment Type
-   * @param   Function    onparse (Optional) Callback on parsed
-   * @param   Object      args    (Optional) Parameters
+   * @function render
+   * @memberof OSjs.GUI.Scheme#
    *
-   * @return  DOMElement
-   * @method  Scheme::render()
+   * @param   {OSjs.Core.Window}    win       OS.js Window
+   * @param   {String}              id        Fragment ID
+   * @param   {Node}                [root]    Root HTML Node
+   * @param   {String}              [type]    Fragment Type
+   * @param   {Function}            [onparse] Callback on parsed
+   * @param   {Object}              [args]    Parameters
+   *
+   * @return  {Node}
    */
   UIScheme.prototype.render = function(win, id, root, type, onparse, args) {
     root = root || win._getRoot();
@@ -374,14 +388,16 @@
   /**
    * Renders the given fragment into Window
    *
-   * @param   Window      win           OS.js Window
-   * @param   String      tagName       OS.js GUI Element name
-   * @param   Object      params        Parameters
-   * @param   DOMElement  parentNode    Parent Node
-   * @param   Object      applyArgs     New element parameters
+   * @function create
+   * @memberof OSjs.GUI.Scheme#
    *
-   * @return  UIElement
-   * @method  Scheme::create()
+   * @param   {OSjs.Core.Window}      win           OS.js Window
+   * @param   {String}                tagName       OS.js GUI Element name
+   * @param   {Object}                params        Parameters
+   * @param   {Node}                  parentNode    Parent Node
+   * @param   {Object}                applyArgs     New element parameters
+   *
+   * @return  {OSjs.GUI.Element}
    */
   UIScheme.prototype.create = function(win, tagName, params, parentNode, applyArgs) {
     tagName = tagName || '';
@@ -407,12 +423,14 @@
   /**
    * Returns given UIElement by ID
    *
-   * @param   Window      win       OS.js Window
-   * @param   String      id        Element ID (data-id)
-   * @param   DOMElement  root      (Optional) Root Node
+   * @function find
+   * @memberof OSjs.GUI.Scheme#
    *
-   * @return  UIElement
-   * @method  Scheme::find()
+   * @param   {OSjs.Core.Window}      win       OS.js Window
+   * @param   {String}                id        Element ID (data-id)
+   * @param   {Node}                  [root]    Root Node
+   *
+   * @return  {OSjs.GUI.Element}
    */
   UIScheme.prototype.find = function(win, id, root) {
     root = this._findRoot(win, root);
@@ -423,13 +441,15 @@
   /**
    * Returns given UIElement by query
    *
-   * @param   Window      win       OS.js Window
-   * @param   String      id        Element ID (data-id)
-   * @param   DOMElement  root      (Optional) Root Node
-   * @param   boolean     all       (Optional) Perform `querySelectorAll`
+   * @function findByQuery
+   * @memberof OSjs.GUI.Scheme#
    *
-   * @return  UIElement
-   * @method  Scheme::find()
+   * @param   {OSjs.Core.Window}      win       OS.js Window
+   * @param   {String}                id        Element ID (data-id)
+   * @param   {Node}                  [root]    Root Node
+   * @param   {Boolean}               [all]     Perform `querySelectorAll`
+   *
+   * @return  {OSjs.GUI.Element}
    */
   UIScheme.prototype.findByQuery = function(win, query, root, all) {
     root = this._findRoot(win, root);
@@ -450,12 +470,14 @@
   /**
    * Returns given DOMElement by ID
    *
-   * @param   Window      win       OS.js Window
-   * @param   String      id        Element ID (data-id)
-   * @param   DOMElement  root      (Optional) Root Node
+   * @function findDOM
+   * @memberof OSjs.GUI.Scheme#
    *
-   * @return  DOMNode
-   * @method  Scheme::has()
+   * @param   {OSjs.Core.Window}      win       OS.js Window
+   * @param   {String}                id        Element ID (data-id)
+   * @param   {Node}                  [root]    Root Node
+   *
+   * @return  {Node}
    */
   UIScheme.prototype.findDOM = function(win, id, root) {
     root = this._findRoot(win, root);
@@ -480,10 +502,12 @@
   /**
    * Gets UIElement by DOMElement
    *
-   * @param   DOMElement    el      DOM Element
+   * @function get
+   * @memberof OSjs.GUI.Scheme#
    *
-   * @return  UIElement
-   * @method  Scheme::get()
+   * @param   {Node}    el      DOM Element
+   *
+   * @return  {OSjs.GUI.Element}
    */
   UIScheme.prototype.get = function(el, q) {
     return UIScheme.getElementInstance(el, q);
@@ -492,8 +516,10 @@
   /**
    * Get HTML from Scheme
    *
-   * @return  String
-   * @method  Scheme::getHTML()
+   * @function getHTML
+   * @memberof OSjs.GUI.Scheme#
+   *
+   * @return  {String}
    */
   UIScheme.prototype.getHTML = function() {
     return this.scheme.firstChild.innerHTML;
@@ -504,15 +530,17 @@
    *
    * PLEASE NOTE THAT THIS METHOD IS STATIC!
    *
-   * @param   OSjs.GUI.Scheme     scheme      Reference to the Scheme
-   * @param   OSjs.Core.Window    win         Reference to the Window
-   * @param   DOMElement          node        The HTML node to parse
-   * @param   Object              args        List of arguments to send to the parser
-   * @param   Function            onparse     Method to signal when parsing has started
-   * @param   Mixed               id          (Optional) The id of the source (for debugging)
+   * @function parseNode
+   * @memberof OSjs.GUI.Scheme
    *
-   * @return  String
-   * @method  Scheme::parseNode()
+   * @param   {OSjs.GUI.Scheme}     scheme      Reference to the Scheme
+   * @param   {OSjs.Core.Window}    win         Reference to the Window
+   * @param   {Node}                node        The HTML node to parse
+   * @param   {Object}              args        List of arguments to send to the parser
+   * @param   {Function}            onparse     Method to signal when parsing has started
+   * @param   {Mixed}               [id]        The id of the source (for debugging)
+   *
+   * @return  {String}
    */
   UIScheme.parseNode = function(scheme, win, node, type, args, onparse, id) {
     onparse = onparse || function() {};
@@ -556,7 +584,9 @@
   };
 
   /**
-   * @see UIScheme::get()
+   * @function getElementInstance
+   * @memberof OSjs.GUI.Scheme
+   * @see OSjs.GUI.Scheme#get
    */
   UIScheme.getElementInstance = function(el, q) {
     if ( el ) {
@@ -572,6 +602,12 @@
   // DialogScheme
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Shortcut for creating a new UIScheme class
+   *
+   * @constructor DialogScheme
+   * @memberof OSjs.GUI
+   */
   var DialogScheme = (function() {
     var dialogScheme;
 
@@ -580,8 +616,10 @@
       /**
        * Get the Dialog scheme
        *
-       * @return UIScheme
-       * @api OSjs.GUI.DialogScheme.get()
+       * @function get
+       * @memberof OSjs.GUI.DialogScheme#
+       *
+       * @return {OSjs.GUI.Scheme}
        */
       get: function() {
         return dialogScheme;
@@ -590,8 +628,8 @@
       /**
        * Destroy the Dialog scheme
        *
-       * @return void
-       * @api OSjs.GUI.DialogScheme.destroy()
+       * @function destroy
+       * @memberof OSjs.GUI.DialogScheme#
        */
       destroy: function() {
         if ( dialogScheme ) {
@@ -603,9 +641,10 @@
       /**
        * Initialize the Dialog scheme
        *
-       * @param   Function    cb      Callback function
-       * @return void
-       * @api OSjs.GUI.DialogScheme.init()
+       * @function init
+       * @memberof OSjs.GUI.DialogScheme#
+       *
+       * @param   {Function}    cb      Callback function
        */
       init: function(cb) {
         if ( dialogScheme ) {

@@ -893,7 +893,8 @@
   /**
    * This is the Google Drive VFS Abstraction for OS.js
    *
-   * @api OSjs.VFS.Modules.GoogleDrive
+   * @namespace GoogleDrive
+   * @memberof OSjs.VFS.Modules
    */
   OSjs.VFS.Modules.GoogleDrive = OSjs.VFS.Modules.GoogleDrive || OSjs.VFS._createMountpoint({
     readOnly: false,

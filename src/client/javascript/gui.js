@@ -30,6 +30,18 @@
 (function(API, Utils, VFS, GUI) {
   'use strict';
 
+  GUI.Helpers = GUI.Helpers || {};
+
+  /**
+   * @namespace GUI
+   * @memberof OSjs
+   */
+
+  /**
+   * @namespace Helpers
+   * @memberof OSjs.GUI
+   */
+
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -37,13 +49,14 @@
   /**
    * Gets window id from upper parent element
    *
-   * @param   DOMElement      el      Child element (can be anything)
+   * @function getWindowId
+   * @memberof OSjs.GUI.Helpers
    *
-   * @return  int
+   * @param   {Node}      el      Child element (can be anything)
    *
-   * @api OSjs.GUI.Helpers.getWindowId()
+   * @return  {Number}
    */
-  function getWindowId(el) {
+  GUI.Helpers = function getWindowId(el) {
     while ( el.parentNode ) {
       var attr = el.getAttribute('data-window-id');
       if ( attr !== null ) {
@@ -52,32 +65,34 @@
       el = el.parentNode;
     }
     return null;
-  }
+  };
 
   /**
    * Gets "label" from a node
    *
-   * @param   DOMElement      el      The element
+   * @function getLabel
+   * @memberof OSjs.GUI.Helpers
    *
-   * @return  String
+   * @param   {Node}      el      The element
    *
-   * @api OSjs.GUI.Helpers.getLabel()
+   * @return  {String}
    */
-  function getLabel(el) {
+  GUI.Helpers.getLabel = function getLabel(el) {
     var label = el.getAttribute('data-label');
     return label || '';
-  }
+  };
 
   /**
    * Gets "label" from a node (Where it can be innerHTML and parameter)
    *
-   * @param   DOMElement      el      The element
+   * @function getValueLabel
+   * @memberof OSjs.GUI.Helpers
    *
-   * @return  String
+   * @param   {Node}      el      The element
    *
-   * @api OSjs.GUI.Helpers.getValueLabel()
+   * @return  {String}
    */
-  function getValueLabel(el, attr) {
+  GUI.Helpers.getValueLabel = function getValueLabel(el, attr) {
     var label = attr ? el.getAttribute('data-label') : null;
 
     if ( el.childNodes.length && el.childNodes[0].nodeType === 3 && el.childNodes[0].nodeValue ) {
@@ -86,18 +101,19 @@
     }
 
     return label || '';
-  }
+  };
 
   /**
    * Gets "value" from a node
    *
-   * @param   DOMElement      el       The element
+   * @function getViewNodeValue
+   * @memberof OSjs.GUI.Helpers
    *
-   * @return  String
+   * @param   {Node}      el       The element
    *
-   * @api OSjs.GUI.Helpers.getViewNodeValue()
+   * @return  {String}
    */
-  function getViewNodeValue(el) {
+  GUI.Helpers.getViewNodeValue = function getViewNodeValue(el) {
     var value = el.getAttribute('data-value');
     if ( typeof value === 'string' && value.match(/^\[|\{/) ) {
       try {
@@ -107,19 +123,20 @@
       }
     }
     return value;
-  }
+  };
 
   /**
    * Internal for getting
    *
-   * @param   DOMElement          el      Element
-   * @param   OSjs.Core.Window    win     (optional) Window Reference
+   * @function getIcon
+   * @memberof OSjs.GUI.Helpers
    *
-   * @return  String
+   * @param   {Node}                el      Element
+   * @param   {OSjs.Core.Window}    [win]   Window Reference
    *
-   * @api OSjs.GUI.Helpers.getIcon()
+   * @return  {String}
    */
-  function getIcon(el, win) {
+  GUI.Helpers.getIcon = function getIcon(el, win) {
     var image = el.getAttribute('data-icon');
 
     if ( image && image !== 'undefined') {
@@ -146,20 +163,21 @@
     }
 
     return null;
-  }
+  };
 
   /**
    * Wrapper for getting custom dom element property value
    *
-   * @param   DOMElement      el      Element
-   * @param   String          param   Parameter name
-   * @param   String          tagName (Optional) What tagname is in use? Automatic
+   * @function getProperty
+   * @memberof OSjs.GUI.Helpers
    *
-   * @api OSjs.GUI.Helpers.getProperty()
+   * @param   {Node}     el          Element
+   * @param   {String}   param       Parameter name
+   * @param   {String}   [tagName]   What tagname is in use? Automatic
    *
-   * @return  Mixed
+   * @return  {Mixed}
    */
-  function getProperty(el, param, tagName) {
+  GUI.Helpers.getProperty = function getProperty(el, param, tagName) {
     tagName = tagName || el.tagName.toLowerCase();
     var isDataView = tagName.match(/^gui\-(tree|icon|list|file)\-view$/);
 
@@ -179,21 +197,20 @@
     }
 
     return el.getAttribute('data-' + param);
-  }
+  };
 
   /**
    * Wrapper for setting custom dom element property value
    *
-   * @param   DOMElement      el      Element
-   * @param   String          param   Parameter name
-   * @param   Mixed           value   Parameter value
-   * @param   String          tagName (Optional) What tagname is in use? Automatic
+   * @function setProperty
+   * @memberof OSjs.GUI.Helpers
    *
-   * @api OSjs.GUI.Helpers.setProperty()
-   *
-   * @return  void
+   * @param   Node            el            Element
+   * @param   String          param         Parameter name
+   * @param   Mixed           value         Parameter value
+   * @param   String          [tagName]     What tagname is in use? Automatic
    */
-  function setProperty(el, param, value, tagName) {
+  GUI.Helpers.setProperty = function setProperty(el, param, value, tagName) {
     tagName = tagName || el.tagName.toLowerCase();
 
     function _setInputProperty() {
@@ -249,7 +266,7 @@
         var firstChild = el.querySelector('textarea, input, select');
         el.appendChild(firstChild);
         Utils.$remove(el.querySelector('label'));
-        createInputLabel(el, tagName.replace(/^gui\-/, ''), firstChild, value);
+        GUI.Helpers.createInputLabel(el, tagName.replace(/^gui\-/, ''), firstChild, value);
       }
     }
 
@@ -277,22 +294,21 @@
     if ( param !== 'value' ) {
       _setElementProperty();
     }
-  }
+  };
 
   /**
    * Creates a label for given input element
    *
-   * @param   DOMEelement     el        Element root
-   * @param   String          type      Input element type
-   * @param   DOMElement      input     The input element
-   * @param   String          label     (Optional) Used when updating
+   * @function createInputLabel
+   * @memberof OSjs.GUI.Helpers
    *
-   * @return  void
-   *
-   * @api OSjs.GUI.Helpers.createInputLabel()
+   * @param   {Node}            el        Element root
+   * @param   {String}          type      Input element type
+   * @param   {Node}            input     The input element
+   * @param   {String}          [label]   Used when updating
    */
-  function createInputLabel(el, type, input, label) {
-    label = label || getLabel(el);
+  GUI.Helpers.createInputLabel = function createInputLabel(el, type, input, label) {
+    label = label || GUI.Helpers.getLabel(el);
 
     if ( label ) {
       var lbl = document.createElement('label');
@@ -310,18 +326,21 @@
     } else {
       el.appendChild(input);
     }
-  }
+  };
 
   /**
    * Create a new custom DOM element
    *
-   * @param   String      tagName           Tag Name
-   * @param   Object      params            Dict with data-* properties
-   * @param   Array       ignoreParams      (optional) list of arguments to ignore
+   * @function createElement
+   * @memberof OSjs.GUI.Helpers
    *
-   * @return  DOMElement
+   * @param   {String}      tagName           Tag Name
+   * @param   {Object}      params            Dict with data-* properties
+   * @param   {Array}       [ignoreParams]    List of arguments to ignore
+   *
+   * @return {Node}
    */
-  function createElement(tagName, params, ignoreParams) {
+  GUI.Helpers.createElement = function createElement(tagName, params, ignoreParams) {
     ignoreParams = ignoreParams || [];
 
     var el = document.createElement(tagName);
@@ -367,20 +386,21 @@
     }
 
     return el;
-  }
+  };
 
   /**
    * Sets the flexbox CSS style properties for given container
    *
-   * @param   DOMElement      el              The container
-   * @param   int             grow            Grow factor
-   * @param   int             shrink          Shrink factor
-   * @param   String          basis           (Optional: basis, default=auto)
-   * @param   DOMElement      checkel         (Optional: take defaults from this node)
+   * @function setFlexbox
+   * @memberof OSjs.GUI.Helpers
    *
-   * @api OSjs.GUI.Helpers.setFlexbox()
+   * @param   {Node}            el              The container
+   * @param   {Number}          grow            Grow factor
+   * @param   {Number}          shrink          Shrink factor
+   * @param   {String}          [basis=auto]    Basis
+   * @param   {Node}            [checkel]       Take defaults from this node
    */
-  function setFlexbox(el, grow, shrink, basis, checkel) {
+  GUI.Helpers.setFlexbox = function setFlexbox(el, grow, shrink, basis, checkel) {
     checkel = checkel || el;
     (function() {
       if ( typeof basis === 'undefined' || basis === null ) {
@@ -421,19 +441,20 @@
     if ( align ) {
       Utils.$addClass(el, 'gui-flex-align-' + align);
     }
-  }
+  };
 
   /**
    * Wrapper for creating a draggable container
    *
-   * @param   DOMElement        el          The container
-   * @param   Function          onDown      On down action callback
-   * @param   Function          onMove      On move action callback
-   * @param   Function          onUp        On up action callback
+   * @function createDrag
+   * @memberof OSjs.GUI.Helpers
    *
-   * @api OSjs.GUI.Helpers.createDrag()
+   * @param   {Node}              el          The container
+   * @param   {Function}          onDown      On down action callback
+   * @param   {Function}          onMove      On move action callback
+   * @param   {Function}          onUp        On up action callback
    */
-  function createDrag(el, onDown, onMove, onUp) {
+  OSjs.GUI.Helpers.createDrag = function createDrag(el, onDown, onMove, onUp) {
     onDown = onDown || function() {};
     onMove = onMove || function() {};
     onUp = onUp || function() {};
@@ -477,20 +498,21 @@
     }
 
     Utils.$bind(el, 'mousedown', _onMouseDown, false);
-  }
+  };
 
   /**
    * Method for getting the next (or previous) element in sequence
    *
    * If you don't supply a current element, the first one will be taken!
    *
-   * @param   boolean           prev        Get previous element instead of next
-   * @param   DOMElement        el          The current element
-   * @param   DOMElement        root        The root container
+   * @function getNextElement
+   * @memberof OSjs.GUI.Helpers
    *
-   * @api OSjs.GUI.Helpers.getNextElement()
+   * @param   {Boolean}     prev        Get previous element instead of next
+   * @param   {Node}        el          The current element
+   * @param   {Node}        root        The root container
    */
-  function getNextElement(prev, current, root) {
+  GUI.Helpers.getNextElement = function getNextElement(prev, current, root) {
     function getElements() {
       var ignore_roles = ['menu', 'menuitem', 'grid', 'gridcell', 'listitem'];
       var list = [];
@@ -552,7 +574,7 @@
       return i;
     }
 
-    function getNextElement(els, i) {
+    function getNext(els, i) {
       var next = els[i];
 
       // Get "real" elements from input wrappers
@@ -576,32 +598,30 @@
 
         if ( currentIndex >= 0 ) {
           var nextIndex = getNextIndex(elements, currentParent, currentIndex);
-          return getNextElement(elements, nextIndex);
+          return getNext(elements, nextIndex);
         }
       }
     }
 
     return null;
-  }
+  };
 
   /**
    * Create a draggable DOM element
    *
-   * @param   DOMElement    el      DOMElement
-   * @param   Object        args    JSON of draggable params
+   * @function createDraggable
+   * @memberof OSjs.GUI.Helpers
    *
-   * @option  args     Object          data       The data (JSON by default)
-   * @option  args     String          type       (Optional) A custom drag event 'type'
-   * @option  args     String          effect     (Optional) The draggable effect (cursor) (Default=move)
-   * @option  args     String          mime       (Optional) The mime type of content (Default=application/json)
-   * @option  args     Function        onStart    Callback when drag started => fn(ev, el, args)
-   * @option  args     Function        onEnd      Callback when drag ended => fn(ev, el, args)
-   *
-   * @return  void
-   *
-   * @api     OSjs.GUI.Helpers.createDraggable()
+   * @param  {Node}          el      DOMElement
+   * @param  {Object}        args    JSON of draggable params
+   * @param  {Object}        args.data       The data (JSON by default)
+   * @param  {String}        [args.type]     A custom drag event 'type'
+   * @param  {String}        [args.effect]   The draggable effect (cursor) (Default=move)
+   * @param  {String}        [args.mime]     The mime type of content (Default=application/json)
+   * @param  {Function}      args.onStart    Callback when drag started => fn(ev, el, args)
+   * @param  {Function}      args.onEnd      Callback when drag ended => fn(ev, el, args)
    */
-  function createDraggable(el, args) {
+  GUI.Helpers.createDraggable = function createDraggable(el, args) {
     args = OSjs.Utils.argumentDefaults(args, {
       type       : null,
       effect     : 'move',
@@ -665,30 +685,28 @@
       this.style.opacity = '1.0';
       return args.onEnd(ev, this, args);
     }, false);
-  }
+  };
 
   /**
    * Create a droppable DOM element
    *
-   * @param   DOMElement    el      DOMElement
-   * @param   Object        args    JSON of droppable params
+   * @function createDroppable
+   * @memberof OSjs.GUI.Helpers
    *
-   * @option  args     String          accept             (Optional) Accept given drag event 'type'
-   * @option  args     String          effect             (Optional) The draggable effect (cursor) (Default=move)
-   * @option  args     String          mime               (Optional) The mime type of content (Default=application/json)
-   * @option  args     boolean         files              (Optional) Support file drops from OS (Default=true)
-   * @option  args     Function        onEnter            Callback when drag entered => fn(ev, el)
-   * @option  args     Function        onOver             Callback when drag over => fn(ev, el)
-   * @option  args     Function        onLeave            Callback when drag leave => fn(ev, el)
-   * @option  args     Function        onDrop             Callback when drag drop all => fn(ev, el)
-   * @option  args     Function        onFilesDropped     Callback when drag drop file => fn(ev, el, files, args)
-   * @option  args     Function        onItemDropped      Callback when drag drop internal object => fn(ev, el, item, args)
-   *
-   * @return  void
-   *
-   * @api     OSjs.GUI.Helpers.createDroppable()
+   * @param   {Node}            el                      DOMElement
+   * @param   {Object}          args                    JSON of droppable params
+   * @param   {String}          [args.accept]           Accept given drag event 'type'
+   * @param   {String}          [args.effect]           The draggable effect (cursor) (Default=move)
+   * @param   {String}          [args.mime]             The mime type of content (Default=application/json)
+   * @param   {Boolean}         [args.files]            Support file drops from OS (Default=true)
+   * @param   {Function}        args.onEnter            Callback when drag entered => fn(ev, el)
+   * @param   {Function}        args.onOver             Callback when drag over => fn(ev, el)
+   * @param   {Function}        args.onLeave            Callback when drag leave => fn(ev, el)
+   * @param   {Function}        args.onDrop             Callback when drag drop all => fn(ev, el)
+   * @param   {Function}        args.onFilesDropped     Callback when drag drop file => fn(ev, el, files, args)
+   * @param   {Function}        args.onItemDropped      Callback when drag drop internal object => fn(ev, el, item, args)
    */
-  function createDroppable(el, args) {
+  GUI.Helpers.createDroppable = function createDroppable(el, args) {
     args = OSjs.Utils.argumentDefaults(args, {
       accept         : null,
       effect         : 'move',
@@ -777,27 +795,6 @@
       //Utils.$removeClass(el, 'onDragEnter');
       return args.onLeave.call(this, ev, this, args);
     }, false);
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  GUI.Helpers = {
-    getNextElement: getNextElement,
-    getProperty: getProperty,
-    getValueLabel: getValueLabel,
-    getViewNodeValue: getViewNodeValue,
-    getLabel: getLabel,
-    getIcon: getIcon,
-    getWindowId: getWindowId,
-    createInputLabel: createInputLabel,
-    createElement: createElement,
-    createDrag: createDrag,
-    setProperty: setProperty,
-    setFlexbox: setFlexbox,
-    createDraggable: createDraggable,
-    createDroppable: createDroppable
   };
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

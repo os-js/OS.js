@@ -1,0 +1,6 @@
+{
+  "source": {
+    "include": ["src/client/javascript/", "src/client/javascript/vfs", "src/client/javascript/utils", "src/client/javascript/dialogs", "src/client/javascript/helpers", "src/client/javascript/gui"],
+    "excludePattern": ""
+  }
+}

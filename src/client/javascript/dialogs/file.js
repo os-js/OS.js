@@ -33,24 +33,23 @@
   /**
    * An 'File' dialog
    *
-   * @param   args      Object        An object with arguments
-   * @param   callback  Function      Callback when done => fn(ev, button, result)
+   * @param  {Object}           args              An object with arguments
+   * @param  {String}           args.title        Dialog title
+   * @param  {String}           args.title                Dialog title
+   * @param  {String}           args.type                 Dialog type (default=open, alternative=save)
+   * @param  {Boolean}          [args.multiple=false]     Multiple file selection (default=false)
+   * @param  {OSjs.VFS.File}    [args.file]               Current file
+   * @param  {String}           [args.path]               Default path
+   * @param  {String}           [args.filename]           Default filename
+   * @param  {String}           [args.extension]          Default file extension
+   * @param  {String}           [args.mime]               Default file MIME
+   * @param  {Array}            [args.filter]             Array of MIMIE filters
+   * @param  {Array}            [args.mfilter]            Array of function to filter module list
+   * @param  {String}           [args.select]             Selection type (file/dir)
+   * @param  {Function}         callback          Callback when done => fn(ev, button, result)
    *
-   * @option    args    title       String      Dialog title
-   * @option    args    type        String      Dialog type (default=open, alternative=save)
-   * @option    args    multiple    boolean     Multiple file selection (default=false)
-   * @option    args    file        VFS.File    (Optional) Current file
-   * @option    args    path        String      (Optional) Default path
-   * @option    args    filename    String      (Optional) Default filename
-   * @option    args    extension   String      (Optional) Default file extension
-   * @option    args    mime        String      (Optional) Default file MIME
-   * @option    args    filter      Array       (Optional) Array of MIMIE filters
-   * @option    args    mfilter     Array       (Optional) Array of function to filter module list
-   * @option    args    select      String      (Optional) Selection type (file/dir)
-   *
-   * @extends DialogWindow
-   * @class FileDialog
-   * @api OSjs.Dialogs.File
+   * @constructor File
+   * @memberof OSjs.Dialogs
    */
   function FileDialog(args, callback) {
     args = Utils.argumentDefaults(args, {

@@ -33,16 +33,14 @@
   /**
    * An 'Application Chooser' dialog
    *
-   * @param   args      Object        An object with arguments
-   * @param   callback  Function      Callback when done => fn(ev, button, result)
+   * @param  {Object}          args              An object with arguments
+   * @param  {String}          args.title        Dialog title
+   * @param  {String}          args.message      Dialog message
+   * @param  {OSjs.VFS.File}   args.file         The file to open
+   * @param  {Function}        callback          Callback when done => fn(ev, button, result)
    *
-   * @option    args    title       String      Dialog title
-   * @option    args    list        Array       The list of applications
-   * @option    args    file        VFS.File    The file to open
-   *
-   * @extends DialogWindow
-   * @class ApplicationChooserDialog
-   * @api OSjs.Dialogs.ApplicationChooser
+   * @constructor ApplicationChooser
+   * @memberof OSjs.Dialogs
    */
   function ApplicationChooserDialog(args, callback) {
     args = Utils.argumentDefaults(args, {});

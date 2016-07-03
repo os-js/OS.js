@@ -396,10 +396,15 @@
    * NEVER CONSTRUCT YOUR OWN INTANCE! To get one use:
    * OSjs.Core.getWindowManager();
    *
-   * @see     OSjs.Core.Process
-   * @api     OSjs.Core.WindowManager
-   * @extends Process
-   * @class
+   * @param   {String}                      name      Window Manager name
+   * @param   {OSjs.Core.WindowManager}     ref       Constructed instance ref
+   * @param   {Object}                      args      Constructed arguments
+   * @param   {Object}                      metadata  Package Metadata
+   * @param   {Object}                      settings  Restored settings
+   *
+   * @constructor
+   * @memberof OSjs.Core
+   * @extends OSjs.Core.Process
    */
   function WindowManager(name, ref, args, metadata, settings) {
     console.group('WindowManager::constructor()');
@@ -433,9 +438,8 @@
   /**
    * Destroy the WindowManager
    *
-   * @see Process::destroy()
-   *
-   * @method    WindowManager::destroy()
+   * @function destroy
+   * @memberof OSjs.Core.WindowManager#
    */
   WindowManager.prototype.destroy = function() {
     var self = this;
@@ -469,9 +473,8 @@
   /**
    * Initialize the WindowManager
    *
-   * @return  void
-   *
-   * @method  WindowManager::init()
+   * @function init
+   * @memberof OSjs.Core.WindowManager#
    */
   WindowManager.prototype.init = function() {
     console.debug('WindowManager::init()');
@@ -490,11 +493,10 @@
    *
    * THIS IS IMPLEMENTED IN COREWM
    *
-   * @param   Function  cb        Callback
+   * @function setup
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @return  void
-   *
-   * @method  WindowManager::setup()
+   * @param   {Function}  cb        Callback
    */
   WindowManager.prototype.setup = function(cb) {
     // Implement in your WM
@@ -503,11 +505,12 @@
   /**
    * Get a Window by name
    *
-   * @param   String      name        Window name
+   * @function getWindow
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @return  Window
+   * @param   {String}      name        Window name
    *
-   * @method  WindowManager::getWindow()
+   * @return  {OSjs.Core.Window}
    */
   WindowManager.prototype.getWindow = function(name) {
     var result = null;
@@ -523,12 +526,13 @@
   /**
    * Add a Window
    *
-   * @param   Window      w         Window reference
-   * @param   boolean     focus     Focus the window
+   * @function addWindow
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @return  Window                The added window
+   * @param   {OSjs.Core.Window}      w         Window reference
+   * @param   {Boolean}               focus     Focus the window
    *
-   * @method  WindowManager::addWindow()
+   * @return  {OSjs.Core.Window}                The added window
    */
   WindowManager.prototype.addWindow = function(w, focus) {
     if ( !(w instanceof Window) ) {
@@ -561,11 +565,12 @@
   /**
    * Remove a Window
    *
-   * @param   Window      w         Window reference
+   * @function removeWindow
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @return  boolean               On success
+   * @param   {OSjs.Core.Window}      w         Window reference
    *
-   * @method  WindowManager::removeWindow()
+   * @return  {Boolean}               On success
    */
   WindowManager.prototype.removeWindow = function(w) {
     var self = this;
@@ -592,14 +597,15 @@
    *
    * OVERRIDE THIS IN YOUR WM IMPLEMENTATION
    *
-   * @param   Object      settings        JSON Settings
-   * @param   boolean     force           If forced, no merging will take place
-   * @param   boolean     save            Saves settings
-   * @param   boolean     triggerWatch    (Optional) trigger change event for watchers (default=true)
+   * @function applySettings
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @return  boolean                     On success
+   * @param   {Object}      settings        JSON Settings
+   * @param   {Boolean}     force           If forced, no merging will take place
+   * @param   {Boolean}     save            Saves settings
+   * @param   {Boolean}     triggerWatch    (Optional) trigger change event for watchers (default=true)
    *
-   * @method  WindowManager::applySettings()
+   * @return  {Boolean}                     On success
    */
   WindowManager.prototype.applySettings = function(settings, force, save, triggerWatch) {
     settings = settings || {};
@@ -620,11 +626,11 @@
    *    }
    * }
    *
-   * @param   Object    styles      Style object
-   * @param   String    rawStyles   (Optional) raw CSS data
+   * @function createStylesheet
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @return  void
-   * @method  WindowManager::createStylesheet()
+   * @param   {Object}    styles      Style object
+   * @param   {String}    rawStyles   (Optional) raw CSS data
    */
   WindowManager.prototype.createStylesheet = function(styles, rawStyles) {
     this.destroyStylesheet();
@@ -657,8 +663,8 @@
   /**
    * Destroy Window Manager self-contained CSS
    *
-   * @return  void
-   * @method  WindowManager::destroyStylesheet()
+   * @function destroyStylesheet
+   * @memberof OSjs.Core.WindowManager#
    */
   WindowManager.prototype.destroyStylesheet = function() {
     if ( this._stylesheet ) {
@@ -672,12 +678,11 @@
   /**
    * When Key Down Event received
    *
-   * @param   DOMEvent      ev      DOM Event
-   * @param   Window        win     Active window
+   * @function onKeyDown
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @return  void
-   *
-   * @method  WindowManager::onKeyDown()
+   * @param   {Event}                  ev      DOM Event
+   * @param   {OSjs.CoreWindow}        win     Active window
    */
   WindowManager.prototype.onKeyDown = function(ev, win) {
     // Implement in your WM
@@ -698,37 +703,17 @@
    *
    * THIS IS IMPLEMENTED IN COREWM
    *
-   * @param   Object    opts      Notification options
+   * @function notification
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @option  opts      String    icon        What icon to display
-   * @option  opts      String    title       What title to display
-   * @option  opts      String    message     What message to display
-   * @option  opts      int       timeout     Timeout (default = 5000)
-   * @option  opts      Function  onClick     Event callback on click => fn(ev)
-   *
-   * @return  void
-   *
-   * @method  WindowManager::notification()
+   * @param   {Object}    opts             Notification options
+   * @param   {String}    opts.icon        What icon to display
+   * @param   {String}    opts.title       What title to display
+   * @param   {String}    opts.message     What message to display
+   * @param   {Number}    opts.timeout     Timeout (default = 5000)
+   * @param   {Function}  opts.onClick     Event callback on click => fn(ev)
    */
   WindowManager.prototype.notification = function() {
-    // Implement in your WM
-  };
-
-  /**
-   * Get a panel notification icon.
-   *
-   * THIS IS IMPLEMENTED IN COREWM
-   *
-   * @param   String    name      Internal name (unique)
-   * @param   int       panelId   (Optional) Panel ID
-   *
-   * @return  NotificationAreaItem
-   *
-   * @see NotificationAreaItem
-   *
-   * @method  WindowManager::createNotificationIcon()
-   */
-  WindowManager.prototype.createNotificationIcon = function() {
     // Implement in your WM
   };
 
@@ -739,15 +724,14 @@
    *
    * FOR OPTIONS SEE NotificationAreaItem IN CoreWM !
    *
-   * @param   String    name      Internal name (unique)
-   * @param   Object    opts      Notification options
-   * @param   int       panelId   (Optional) Panel ID
+   * @function createNotificationIcon
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @return  NotificationAreaItem
+   * @param   {String}    name      Internal name (unique)
+   * @param   {Object}    opts      Notification options
+   * @param   {Number}    [panelId] Panel ID
    *
-   * @see NotificationAreaItem
-   *
-   * @method  WindowManager::createNotificationIcon()
+   * @return  OSjs.Applications.CoreWM.NotificationAreaItem
    */
   WindowManager.prototype.createNotificationIcon = function() {
     // Implement in your WM
@@ -758,17 +742,31 @@
    *
    * THIS IS IMPLEMENTED IN COREWM
    *
-   * @param   String    name      Internal name (unique)
-   * @param   int       panelId   (Optional) Panel ID
+   * @function removeNotificationIcon
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @return  boolean
+   * @param   {String}    name      Internal name (unique)
+   * @param   {Number}    [panelId] Panel ID
    *
-   * @method  WindowManager::removeNotificationIcon()
+   * @return  {Boolean}
    */
   WindowManager.prototype.removeNotificationIcon = function() {
     // Implement in your WM
   };
 
+  /**
+   * Whenever a window event occurs
+   *
+   * THIS IS IMPLEMENTED IN COREWM
+   *
+   * @function eventWindow
+   * @memberof OSjs.Core.WindowManager#
+   *
+   * @param   {String}            ev      Event name
+   * @param   {OSjs.Core.Window}  win     Window ref
+   *
+   * @return  {Boolean}
+   */
   WindowManager.prototype.eventWindow = function(ev, win) {
     // Implement in your WM
   };
@@ -778,9 +776,8 @@
    *
    * THIS IS IMPLEMENTED IN COREWM
    *
-   * @return  void
-   *
-   * @method  WindowManager::showSettings()
+   * @function showSettings
+   * @memberof OSjs.Core.WindowManager#
    */
   WindowManager.prototype.showSettings = function() {
     // Implement in your WM
@@ -802,9 +799,10 @@
   /**
    * Get default Settings
    *
-   * @return  Object      JSON Data
+   * @function getDefaultSettings
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @method  WindowManager::getDefaultSettings()
+   * @return  {Object}      JSON Data
    */
   WindowManager.prototype.getDefaultSetting = function() {
     // Implement in your WM
@@ -814,7 +812,10 @@
   /**
    * Get panel
    *
-   * @method  WindowManager::getPanel()
+   * @function getPanel
+   * @memberof OSjs.Core.WindowManager#
+   *
+   * @return {OSjs.Applications.CoreWM.Panel}
    */
   WindowManager.prototype.getPanel = function() {
     // Implement in your WM
@@ -824,9 +825,10 @@
   /**
    * Gets all panels
    *
-   * @return  Array       Panel List
+   * @function getPanels
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @method  WindowManager::getPanels()
+   * @return  {Array}       Panel List
    */
   WindowManager.prototype.getPanels = function() {
     // Implement in your WM
@@ -836,11 +838,12 @@
   /**
    * Gets current Style theme
    *
-   * @param   bool    returnMetadata      Return theme metadata instead of name
+   * @function getStyleTheme
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @return  String                      Or JSON
+   * @param   {Boolean}    returnMetadata      Return theme metadata instead of name
    *
-   * @method  WindowManager::getStyleTheme()
+   * @return  {String}                      Or JSON
    */
   WindowManager.prototype.getStyleTheme = function(returnMetadata) {
     return returnMetadata ? {} : 'default';
@@ -849,9 +852,10 @@
   /**
    * Gets current Sound theme
    *
-   * @return  String
+   * @function getSoundTheme
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @method  WindowManager::getSoundTheme()
+   * @return  {String}
    */
   WindowManager.prototype.getSoundTheme = function() {
     return 'default';
@@ -860,9 +864,10 @@
   /**
    * Gets current Icon theme
    *
-   * @return  String
+   * @function getIconTheme
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @method  WindowManager::getIconTheme()
+   * @return  {String}
    */
   WindowManager.prototype.getIconTheme = function() {
     return 'default';
@@ -871,9 +876,10 @@
   /**
    * Gets a list of Style themes
    *
-   * @return  Array   The list of themes
+   * @function getStyleThemes
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @method  WindowManager::getStyleThemes()
+   * @return  {Array}   The list of themes
    */
   WindowManager.prototype.getStyleThemes = function() {
     return API.getConfig('Styles', []);
@@ -882,9 +888,10 @@
   /**
    * Gets a list of Sound themes
    *
-   * @return  Array   The list of themes
+   * @function getSoundThemes
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @method  WindowManager::getSoundThemes()
+   * @return  {Array}   The list of themes
    */
   WindowManager.prototype.getSoundThemes = function() {
     return API.getConfig('Sounds', []);
@@ -893,9 +900,10 @@
   /**
    * Gets a list of Icon themes
    *
-   * @return  Array   The list of themes
+   * @function getIconThemes
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @method  WindowManager::getIconThemes()
+   * @return  {Array}   The list of themes
    */
   WindowManager.prototype.getIconThemes = function() {
     return API.getConfig('Icons', []);
@@ -904,12 +912,13 @@
   /**
    * Sets a setting
    *
-   * @param   String      k       Key
-   * @param   Mixed       v       Value
+   * @function setSetting
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @return  boolean             On success
+   * @param   {String}      k       Key
+   * @param   {Mixed}       v       Value
    *
-   * @method  WindowManager::setSetting()
+   * @return  {Boolean}             On success
    */
   WindowManager.prototype.setSetting = function(k, v) {
     return this._settings.set(k, v);
@@ -918,9 +927,10 @@
   /**
    * Gets the rectangle for window space
    *
-   * @return    Object {top:, left:, width:, height:}
+   * @function getWindowSpace
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @method    WindowManager::getWindowSpace()
+   * @return    {Object} rectangle
    */
   WindowManager.prototype.getWindowSpace = function() {
     return Utils.getRect();
@@ -929,9 +939,10 @@
   /**
    * Get next window position
    *
-   * @return    Object    {x:, y:}
+   * @function getWindowPosition
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @method    WindowManager::getWindowPosition()
+   * @return    {Object} rectangle
    */
   WindowManager.prototype.getWindowPosition = (function() {
     var _LNEWX = 0;
@@ -947,11 +958,12 @@
   /**
    * Gets a setting
    *
-   * @param   String    k     Key
+   * @function getSetting
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @return  Mixed           Setting value or 'null'
+   * @param   {String}    k     Key
    *
-   * @method  WindowManager::getSetting()
+   * @return  {Mixed}           Setting value or 'null'
    */
   WindowManager.prototype.getSetting = function(k) {
     return this._settings.get(k);
@@ -960,9 +972,10 @@
   /**
    * Gets all settings
    *
-   * @return    Object        JSON With all settings
+   * @function getSettings
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @method    WindowManager::getSettings()
+   * @return    {Object}        JSON With all settings
    */
   WindowManager.prototype.getSettings = function() {
     return this._settings.get();
@@ -971,9 +984,10 @@
   /**
    * Gets all Windows
    *
-   * @return    Array           List of all Windows
+   * @function getWindows
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @method    WindowManager::getWindows()
+   * @return    {Array}           List of all Windows
    */
   WindowManager.prototype.getWindows = function() {
     return this._windows;
@@ -982,9 +996,10 @@
   /**
    * Gets current Window
    *
-   * @return      Window        Current Window or 'null'
+   * @function getCurrentWindow
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @method      WindowManager::getCurrentWindow()
+   * @return {OSjs.Core.Window}        Current Window or 'null'
    */
   WindowManager.prototype.getCurrentWindow = function() {
     return this._currentWin;
@@ -993,9 +1008,10 @@
   /**
    * Sets the current Window
    *
-   * @param   Window    w       Window
-   * @return  void
-   * @method  WindowManager::setCurrentWindow()
+   * @function setCurrentWindow
+   * @memberof OSjs.Core.WindowManager#
+   *
+   * @param   {OSjs.Core.Window}    w       Window
    */
   WindowManager.prototype.setCurrentWindow = function(w) {
     this._currentWin = w || null;
@@ -1004,9 +1020,10 @@
   /**
    * Gets previous Window
    *
-   * @return      Window        Current Window or 'null'
+   * @function getLastWindow
+   * @memberof OSjs.Core.WindowManager#
    *
-   * @method      WindowManager::getLastWindow()
+   * @return {OSjs.Core.Window}        Current Window or 'null'
    */
   WindowManager.prototype.getLastWindow = function() {
     return this._lastWin;
@@ -1015,9 +1032,10 @@
   /**
    * Sets the last Window
    *
-   * @param   Window    w       Window
-   * @return  void
-   * @method  WindowManager::setLastWindow()
+   * @function setLastWindow
+   * @memberof OSjs.Core.WindowManager#
+   *
+   * @param   {OSjs.Core.Window}    w       Window
    */
   WindowManager.prototype.setLastWindow = function(w) {
     this._lastWin = w || null;
@@ -1025,8 +1043,11 @@
 
   /**
    * Get CSS animation duration
-   * @return int Duration length in ms
-   * @method WindowManager::getAnimDuration()
+   *
+   * @function getAnimDuration
+   * @memberof OSjs.Core.WindowManager#
+   *
+   * @return {Number} Duration length in ms
    */
   WindowManager.prototype.getAnimDuration = function() {
     var theme = this.getStyleTheme(true);
@@ -1041,8 +1062,10 @@
   /**
    * If the pointer is inside the browser window
    *
-   * @return  boolean
-   * @method  WindowManager::getMouseLocked()
+   * @function getMouseLocked
+   * @memberof OSjs.Core.WindowManager#
+   *
+   * @return  {Boolean}
    */
   WindowManager.prototype.getMouseLocked = function() {
     return this._mouselock;
@@ -1057,8 +1080,10 @@
   /**
    * Get the current WindowManager instance
    *
-   * @return WindowManager
-   * @api OSjs.Core.getWindowManager()
+   * @function getWindowManager
+   * @memberof OSjs.Core
+   *
+   * @return {OSjs.Core.WindowManager}
    */
   OSjs.Core.getWindowManager  = function() {
     return _WM;

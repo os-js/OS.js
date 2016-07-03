@@ -134,11 +134,14 @@
    *
    * "Richt text" input area.
    *
-   * @getter    value   String        The value/contents
-   * @setter    value   String        The value/contents
+   * <pre><code>
+   *   getter    value   String        The value/contents
+   *   setter    value   String        The value/contents
+   * </code></pre>
    *
-   * @api OSjs.GUI.Elements.gui-richtext
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-richtext
    */
   GUI.Elements['gui-richtext'] = {
     bind: function(el, evName, callback, params) {

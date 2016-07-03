@@ -30,6 +30,11 @@
 (function(Utils, API) {
   'use strict';
 
+  /**
+   * @namespace OSjs
+   * @memberof OSjs.VFS.Transports
+   */
+
   /////////////////////////////////////////////////////////////////////////////
   // API
   /////////////////////////////////////////////////////////////////////////////
@@ -38,8 +43,6 @@
    * OSjs 'dist' VFS Transport Module
    *
    * This is just a custom version of 'Internal' module
-   *
-   * @api OSjs.VFS.Transports.OSjs
    */
   var Transport = {
     url: function(item, callback) {

@@ -31,6 +31,11 @@
 (function(Utils, API, VFS) {
   'use strict';
 
+  /**
+   * @namespace ZipArchiver
+   * @memberof OSjs.Helpers
+   */
+
   var requestFileSystem = window.webkitRequestFileSystem || window.mozRequestFileSystem || window.requestFileSystem;
   var URL = window.webkitURL || window.mozURL || window.URL;
 
@@ -147,11 +152,10 @@
    * Generally you want to create an instance of this helper
    * and when successfully created use `window.zip` use the instance helpers.
    *
-   * @see OSjs.Helpers.ZipArchiver.createInsatance()
-   * @api OSjs.Helpers.ZipArchiver.ZipArchiver
    *
-   * @private
-   * @class
+   * @constructor
+   * @memberof OSjs.Helpers
+   * @see OSjs.Helpers.ZipArchiver.createInsatance
    */
   function ZipArchiver(opts) {
     this.opts = opts;
@@ -190,11 +194,11 @@
   /**
    * Lists contents of a ZIP file
    *
-   * @param   OSjs.VFS.File     file          File to extract
-   * @param   Function          cb            Callback function => fn(error, entries)
+   * @function list
+   * @memberof OSjs.Helpers.ZipArchiver.Class#
    *
-   * @return  void
-   * @method  ZipArchiver::list()
+   * @param   {OSjs.VFS.File}     file          File to extract
+   * @param   {Function}          cb            Callback function => fn(error, entries)
    */
   ZipArchiver.prototype.list = function(file, cb) {
     VFS.download(file, function(error, result) {
@@ -215,12 +219,12 @@
   /**
    * Create a new blank ZIP file
    *
-   * @param   OSjs.VFS.File     file          File to extract
-   * @param   Function          cb            Callback function => fn(error)
-   * @param   Application       appRef        (Optional) Application reference
+   * @function create
+   * @memberof OSjs.Helpers.ZipArchiver.Class#
    *
-   * @return  void
-   * @method  ZipArchiver::create()
+   * @param   {OSjs.VFS.File}               file          File to extract
+   * @param   {Function}                    cb            Callback function => fn(error)
+   * @param   {OSjs.Core.Application}       [appRef]      Application reference
    */
   ZipArchiver.prototype.create = function(file, cb, appRef) {
     var writer = new zip.BlobWriter();
@@ -250,18 +254,16 @@
   /**
    * Add a entry to the ZIP file
    *
-   * TODO: Adding directory does not actually add files inside dirs yet
+   * @function add
+   * @memberof OSjs.Helpers.ZipArchiver.Class#
+   * @TODO Adding directory does not actually add files inside dirs yet
    *
-   * @param   OSjs.VFS.File     file          Archive File
-   * @param   OSjs.VFS.File     add           File to add
-   * @param   Object            args          Arguments
-   *
-   * @option  args    String      path            Root path to add to (default='/')
-   * @option  args    Function    onprogress      Callback on progress => fn(state[, args, ...])
-   * @option  args    Function    oncomplete      Callback on complete => fn(error, result)
-   *
-   * @return  void
-   * @method  ZipArchiver::add()
+   * @param   {OSjs.VFS.File}     file                Archive File
+   * @param   {OSjs.VFS.File}     add                 File to add
+   * @param   {Object}            args                Arguments
+   * @param   {String}            args.path           Root path to add to (default='/')
+   * @param   {Function}          args.onprogress     Callback on progress => fn(state[, args, ...])
+   * @param   {Function}          args.oncomplete     Callback on complete => fn(error, result)
    */
   ZipArchiver.prototype.add = function(file, add, args) {
     var cb = args.oncomplete || function() {};
@@ -376,12 +378,12 @@
   /**
    * Removes an entry from ZIP file
    *
-   * @param   OSjs.VFS.File     file          Archive File
-   * @param   String            path          Path
-   * @param   Function          cb            Callback function => fn(err, result)
+   * @function remove
+   * @memberof OSjs.Helpers.ZipArchiver.Class#
    *
-   * @return  void
-   * @method  ZipArchiver::remove()
+   * @param   {OSjs.VFS.File}     file          Archive File
+   * @param   {String}            path          Path
+   * @param   {Function}          cb            Callback function => fn(err, result)
    */
   ZipArchiver.prototype.remove = function(file, path, cb) {
 
@@ -428,13 +430,15 @@
   /**
    * Extract a File to destination
    *
-   * @param   OSjs.VFS.File     file          File to extract
-   * @param   String            destination   Destination path
-   * @param   Object            args          Arguments
+   * @function extract
+   * @memberof OSjs.Helpers.ZipArchiver.Class#
    *
-   * @option  args    Function    onprogress      Callback on progress => fn(filename, currentIndex, totalIndex)
-   * @option  args    Function    oncomplete      Callback on complete => fn(error, warnings, result)
-   * @option  args    Application app             (Optional) Application reference
+   * @param   {OSjs.VFS.File}         file                 File to extract
+   * @param   {String}                destination          Destination path
+   * @param   {Object}                args                 Arguments
+   * @param   {Function}              args.onprogress      Callback on progress => fn(filename, currentIndex, totalIndex)
+   * @param   {Function}              args.oncomplete      Callback on complete => fn(error, warnings, result)
+   * @param   {OSjs.Core.Application} [args.app]           Application reference
    *
    * @return  void
    * @method  ZipArchiver::extract()
@@ -595,9 +599,10 @@
   /**
    * Gets the currently running instance
    *
-   * @api OSjs.Helpers.ZipArchiver.getInstance()
+   * @function getInstance
+   * @memberof OSjs.Helpers.ZipArchiver
    *
-   * @return  ZipArchiver       Can also be null
+   * @return  {OSjs.Helpers.ZipArchiver.Class}       Can also be null
    */
   OSjs.Helpers.ZipArchiver.getInstance = function() {
     return SingletonInstance;
@@ -606,14 +611,11 @@
   /**
    * Create an instance of ZipArchiver
    *
-   * @param   Object    args      Arguments
-   * @param   Function  callback  Callback function => fn(error, instance)
+   * @function createInstance
+   * @memberof OSjs.Helpers.ZipArchiver
    *
-   * @option  args    Array     scope     What scope to load
-   *
-   * @api OSjs.Helpers.ZipArchiver.createInstance()
-   *
-   * @return  void
+   * @param   {Object}    args      Arguments
+   * @param   {Function}  callback  Callback function => fn(error, instance)
    */
   OSjs.Helpers.ZipArchiver.createInstance = function(args, callback) {
     args = args || {};

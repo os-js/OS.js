@@ -200,13 +200,15 @@
   /**
    * Find file(s)
    *
-   * @param   OSjs.VFS.File   item      Root path
-   * @param   Object          args      Search query
-   * @param   Function        callback  Callback function => fn(error, result)
-   * @param   Object          options   Optional set of options
+   * @function find
+   * @memberof OSjs.VFS
    *
-   * @option  args   String    query     The search query string
-   * @option  args   integer   limit     (Optional) Limit results to this amount
+   * @param  {OSjs.VFS.File}   item              Root path
+   * @param  {Object}          args              Search query
+   * @param  {Function}        callback          Callback function => fn(error, result)
+   * @param  {Object}          [options]         Set of options
+   * @param  {String}          options.query     The search query string
+   * @param  {Number}          [options.limit]   Limit results to this amount
    *
    * @return  void
    * @api     OSjs.VFS.find()
@@ -224,17 +226,16 @@
   /**
    * Scandir
    *
-   * @param   OSjs.VFS.File   item      File Metadata
-   * @param   Function        callback  Callback function => fn(error, result)
-   * @param   Object          options   Optional set of options
+   * @function scandir
+   * @memberof OSjs.VFS
    *
-   * @option  options     String      typeFilter      (Optional) Filter by 'file' or 'dir'
-   * @option  options     Array       mimeFilter      (Optional) Array of mime regex matchers
-   * @option  options     boolean     showHiddenFiles (Optional) Show hidden files (default=true)
-   * @option  options     boolean     backlink        (Optional) Return '..' when applicable (default=true)
-   *
-   * @return  void
-   * @api     OSjs.VFS.scandir()
+   * @param   {OSjs.VFS.File}   item                        File Metadata
+   * @param   {Function}        callback                    Callback function => fn(error, result)
+   * @param   {Object}          [options]                   Set of options
+   * @param   {String}          [options.typeFilter]        Filter by 'file' or 'dir'
+   * @param   {Array}           [options.mimeFilter]        Array of mime regex matchers
+   * @param   {Boolean}         [options.showHiddenFiles]   Show hidden files (default=true)
+   * @param   {Boolean}         [options.backlink]          Return '..' when applicable (default=true)
    */
   VFS.scandir = function(item, callback, options) {
     console.debug('VFS::scandir()', item, options);
@@ -251,14 +252,14 @@
    *
    * This function currently have no options.
    *
-   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
-   * @param   [File]          data      File Data (see supported types)
-   * @param   Function        callback  Callback function => fn(error, result)
-   * @param   Object          options   Optional set of options
-   * @param   Application     appRef    Optional reference to an Application
+   * @function write
+   * @memberof OSjs.VFS
    *
-   * @return  void
-   * @api     OSjs.VFS.write()
+   * @param   {OSjs.VFS.File}             item          File Metadata (you can also provide a string)
+   * @param   {File}                      data          File Data (see supported types)
+   * @param   {Function}                  callback      Callback function => fn(error, result)
+   * @param   {Object}                    [options]     Set of options
+   * @param   {OSjs.Core.Application}     [appRef]      Reference to an Application
    */
   VFS.write = function(item, data, callback, options, appRef) {
     console.debug('VFS::write()', item, options);
@@ -325,14 +326,13 @@
   /**
    * Read File
    *
-   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
-   * @param   Function        callback  Callback function => fn(error, result)
-   * @param   Object          options   Optional set of options
+   * @function read
+   * @memberof OSjs.VFS
    *
-   * @option  options     String      type    What to return, default: binary. Can also be: text, datasource
-   *
-   * @return  void
-   * @api     OSjs.VFS.read()
+   * @param   {OSjs.VFS.File}   item                File Metadata (you can also provide a string)
+   * @param   {Function}        callback            Callback function => fn(error, result)
+   * @param   {Object}          [options]           Set of options
+   * @param   {String}          [options.type]      What to return, default: binary. Can also be: text, datasource
    */
   VFS.read = function(item, callback, options) {
     console.debug('VFS::read()', item, options);
@@ -392,16 +392,15 @@
   /**
    * Copy File
    *
-   * @param   OSjs.VFS.File   src       Source File Metadata (you can also provide a string)
-   * @param   OSjs.VFS.File   dest      Destination File Metadata (you can also provide a string)
-   * @param   Function        callback  Callback function => fn(error, result)
-   * @param   Object          options   Optional set of options
-   * @param   Application     appRef    Optional reference to an Application
+   * @function copy
+   * @memberof OSjs.VFS
    *
-   * @option  options boolean overwrite   If set to true it will not check if the destination exists
-   *
-   * @return  void
-   * @api     OSjs.VFS.copy()
+   * @param   {OSjs.VFS.File}             src                   Source File Metadata (you can also provide a string)
+   * @param   {OSjs.VFS.File}             dest                  Destination File Metadata (you can also provide a string)
+   * @param   {Function}                  callback              Callback function => fn(error, result)
+   * @param   {Object}                    [options]             Set of options
+   * @param   {Boolean}                   [options.overwrite]   If set to true it will not check if the destination exists
+   * @param   {OSjs.Core.Application}     [appRef]              Seference to an Application
    */
   VFS.copy = function(src, dest, callback, options, appRef) {
     console.debug('VFS::copy()', src, dest, options);
@@ -494,16 +493,15 @@
   /**
    * Move File
    *
-   * @param   OSjs.VFS.File   src       Source File Metadata (you can also provide a string)
-   * @param   OSjs.VFS.File   dest      Destination File Metadata (you can also provide a string)
-   * @param   Function        callback  Callback function => fn(error, result)
-   * @param   Object          options   Optional set of options
-   * @param   Application     appRef    Optional reference to an Application
+   * @function move
+   * @memberof OSjs.VFS
    *
-   * @option  options boolean overwrite   If set to true it will not check if the destination exists
-   *
-   * @return  void
-   * @api     OSjs.VFS.move()
+   * @param   {OSjs.VFS.File}             src                   Source File Metadata (you can also provide a string)
+   * @param   {OSjs.VFS.File}             dest                  Destination File Metadata (you can also provide a string)
+   * @param   {Function}                  callback              Callback function => fn(error, result)
+   * @param   {Object}                    [options]             Set of options
+   * @param   {Boolean}                   [options.overwrite]   If set to true it will not check if the destination exists
+   * @param   {OSjs.Core.Application}     [appRef]              Seference to an Application
    */
   VFS.move = function(src, dest, callback, options, appRef) {
     var self = this;
@@ -579,13 +577,13 @@
    *
    * This function currently have no options.
    *
-   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
-   * @param   Function        callback  Callback function => fn(error, result)
-   * @param   Object          options   Optional set of options
-   * @param   Application     appRef    Optional reference to an Application
+   * @function unlink
+   * @memberof OSjs.VFS
    *
-   * @return  void
-   * @api     OSjs.VFS.unlink()
+   * @param   {OSjs.VFS.File}             item                  File Metadata (you can also provide a string)
+   * @param   {Function}                  callback              Callback function => fn(error, result)
+   * @param   {Object}                    [options]             Set of options
+   * @param   {OSjs.Core.Application}     [appRef]              Reference to an Application
    */
   VFS.unlink = function(item, callback, options, appRef) {
     console.debug('VFS::unlink()', item, options);
@@ -620,15 +618,14 @@
   /**
    * Create Directory
    *
-   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
-   * @param   Function        callback  Callback function => fn(error, result)
-   * @param   Object          options   Optional set of options
-   * @param   Application     appRef    Optional reference to an Application
+   * @function mkdir
+   * @memberof OSjs.VFS
    *
-   * @option  options boolean overwrite   If set to true it will not check if the destination exists
-   *
-   * @return  void
-   * @api     OSjs.VFS.mkdir()
+   * @param   {OSjs.VFS.File}             item                  File Metadata (you can also provide a string)
+   * @param   {Function}                  callback              Callback function => fn(error, result)
+   * @param   {Object}                    [options]             Set of options
+   * @param   {Boolean}                   [options.overwrite]   If set to true it will not check if the destination exists
+   * @param   {OSjs.Core.Application}     [appRef]              Reference to an Application
    */
   VFS.mkdir = function(item, callback, options, appRef) {
     console.debug('VFS::mkdir()', item, options);
@@ -654,11 +651,11 @@
   /**
    * Check if file exists
    *
-   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
-   * @param   Function        callback  Callback function => fn(error, result)
+   * @function exists
+   * @memberof OSjs.VFS
    *
-   * @return  void
-   * @api     OSjs.VFS.exists()
+   * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
+   * @param   {Function}        callback  Callback function => fn(error, result)
    */
   VFS.exists = function(item, callback) {
     console.debug('VFS::exists()', item);
@@ -673,11 +670,11 @@
   /**
    * Get file info
    *
-   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
-   * @param   Function        callback  Callback function => fn(error, result)
+   * @function fileinfo
+   * @memberof OSjs.VFS
    *
-   * @return  void
-   * @api     OSjs.VFS.fileinfo()
+   * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
+   * @param   {Function}        callback  Callback function => fn(error, result)
    */
   VFS.fileinfo = function(item, callback) {
     console.debug('VFS::fileinfo()', item);
@@ -692,11 +689,11 @@
   /**
    * Get file URL
    *
-   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
-   * @param   Function        callback  Callback function => fn(error, result)
+   * @function url
+   * @memberof OSjs.VFS
    *
-   * @return  void
-   * @api     OSjs.VFS.url()
+   * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
+   * @param   {Function}        callback  Callback function => fn(error, result)
    */
   VFS.url = function(item, callback) {
     console.debug('VFS::url()', item);
@@ -713,6 +710,9 @@
   /**
    * Upload file(s)
    *
+   * @function upload
+   * @memberof OSjs.VFS
+   *
    * @param   Object          args      Function arguments (see below)
    * @param   Function        callback  Callback function => fn(error, result)
    * @param   Object          options   Optional set of options
@@ -724,9 +724,6 @@
    * @option  args    Window      win           (optional) Save as above only will add as child to this window
    * @option  args    String      destination   Full path to destination
    * @option  args    Array       files         Array of 'File'
-   *
-   * @return  void
-   * @api     OSjs.VFS.upload()
    */
   VFS.upload = function(args, callback, options, appRef) {
     console.debug('VFS::upload()', args);
@@ -816,11 +813,11 @@
   /**
    * Download a file
    *
-   * @param   OSjs.VFS.File   args      File Metadata (you can also provide a string)
-   * @param   Function        callback  Callback function => fn(error, result)
+   * @function download
+   * @memberof OSjs.VFS
    *
-   * @return  void
-   * @api     OSjs.VFS.download()
+   * @param   {OSjs.VFS.File}   args      File Metadata (you can also provide a string)
+   * @param   {Function}        callback  Callback function => fn(error, result)
    */
   VFS.download = (function download() {
     var _didx = 1;
@@ -894,11 +891,11 @@
    *
    * THIS IS NOT USED FOR INTERNAL MODULES
    *
-   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
-   * @param   Function        callback  Callback function => fn(error, result)
+   * @function trash
+   * @memberof OSjs.VFS
    *
-   * @return  void
-   * @api     OSjs.VFS.trash()
+   * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
+   * @param   {Function}        callback  Callback function => fn(error, result)
    */
   VFS.trash = function(item, callback) {
     console.debug('VFS::trash()', item);
@@ -915,11 +912,11 @@
    *
    * THIS IS NOT USED FOR INTERNAL MODULES
    *
-   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
-   * @param   Function        callback  Callback function => fn(error, result)
+   * @function untrash
+   * @memberof OSjs.VFS
    *
-   * @return  void
-   * @api     OSjs.VFS.untrash()
+   * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
+   * @param   {Function}        callback  Callback function => fn(error, result)
    */
   VFS.untrash = function(item, callback) {
     console.debug('VFS::untrash()', item);
@@ -936,10 +933,10 @@
    *
    * THIS IS NOT USED FOR INTERNAL MODULES
    *
-   * @param   Function        callback  Callback function => fn(error, result)
+   * @function emptyTrash
+   * @memberof OSjs.VFS
    *
-   * @return  void
-   * @api     OSjs.VFS.emptyTrash()
+   * @param   {Function}        callback  Callback function => fn(error, result)
    */
   VFS.emptyTrash = function(callback) {
     console.debug('VFS::emptyTrash()');
@@ -955,11 +952,11 @@
    *
    * Result is -1 when unavailable
    *
-   * @param   OSjs.VFS.File   item      File Metadata (you can also provide a string)
-   * @param   Function        callback  Callback function => fn(error, result)
+   * @function freeSpace
+   * @memberof OSjs.VFS
    *
-   * @return  void
-   * @api     OSjs.VFS.freeSpace()
+   * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
+   * @param   {Function}        callback  Callback function => fn(error, result)
    */
   VFS.freeSpace = function(item, callback) {
     console.debug('VFS::freeSpace()', item);

@@ -355,18 +355,21 @@
    *
    * For more properties and events etc, see 'dataview'
    *
-   * @property  multiple    boolean       If multiple elements are selectable
-   * @property  type        String        Child type
-   * @property  filter      Array         MIME Filters
-   * @property  dotfiles    boolean       Show dotfiles (default=true)
-   * @property  extensions  boolean       Show file extensions (default=true)
-   * @action    chdir                     Change directory => fn(args)  (args = {path: '', done: function() })
+   * <pre><code>
+   *   property  multiple    boolean       If multiple elements are selectable
+   *   property  type        String        Child type
+   *   property  filter      Array         MIME Filters
+   *   property  dotfiles    boolean       Show dotfiles (default=true)
+   *   property  extensions  boolean       Show file extensions (default=true)
+   *   action    chdir                     Change directory => fn(args)  (args = {path: '', done: function() })
+   * </code></pre>
    *
-   * @api OSjs.GUI.Elements.gui-file-view
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-file-view
    * @see OSjs.GUI.Elements.gui-list-view
    * @see OSjs.GUI.Elements.gui-tree-view
    * @see OSjs.GUI.Elements.gui-icon-view
-   * @class
    */
   GUI.Elements['gui-file-view'] = {
     bind: function(el, evName, callback, params) {

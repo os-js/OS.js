@@ -355,7 +355,8 @@
   /**
    * This is the Dropbox VFS Abstraction for OS.js
    *
-   * @api OSjs.VFS.Modules.Dropbox
+   * @namespace Dropbox
+   * @memberof OSjs.VFS.Modules
    */
   OSjs.VFS.Modules.Dropbox = OSjs.VFS.Modules.Dropbox || OSjs.VFS._createMountpoint({
     readOnly: false,

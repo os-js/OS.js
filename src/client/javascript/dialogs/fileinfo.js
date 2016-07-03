@@ -33,15 +33,13 @@
   /**
    * An 'File Information' dialog
    *
-   * @param   args      Object        An object with arguments
-   * @param   callback  Function      Callback when done => fn(ev, button, result)
+   * @param  {Object}          args              An object with arguments
+   * @param  {String}          args.title        Dialog title
+   * @param  {OSjs.VFS.File}   args.file         File to use
+   * @param  {Function}        callback          Callback when done => fn(ev, button, result)
    *
-   * @option    args    title       String      Dialog title
-   * @optioin   args    file        VFS.File    File to use
-   *
-   * @extends DialogWindow
-   * @class FileInfoDialog
-   * @api OSjs.Dialogs.FileInfo
+   * @constructor FileInfo
+   * @memberof OSjs.Dialogs
    */
   function FileInfoDialog(args, callback) {
     args = Utils.argumentDefaults(args, {});

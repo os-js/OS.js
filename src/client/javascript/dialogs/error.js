@@ -33,17 +33,15 @@
   /**
    * An 'Error' dialog
    *
-   * @param   args      Object        An object with arguments
-   * @param   callback  Function      Callback when done => fn(ev, button, result)
+   * @param  {Object}          args              An object with arguments
+   * @param  {String}          args.title        Dialog title
+   * @param  {String}          args.message      Dialog message
+   * @param  {String}          args.error        Error message
+   * @param  {Error}           [args.exception]  Exception
+   * @param  {Function}        callback          Callback when done => fn(ev, button, result)
    *
-   * @option    args    title       String      Dialog title
-   * @option    args    message     String      Dialog message
-   * @option    args    error       String      Error message
-   * @option    args    exception   Object      (Optional) Exception object
-   *
-   * @extends DialogWindow
-   * @class ErrorDialog
-   * @api OSjs.Dialogs.Error
+   * @constructor Error
+   * @memberof OSjs.Dialogs
    */
   function ErrorDialog(args, callback) {
     args = Utils.argumentDefaults(args, {});

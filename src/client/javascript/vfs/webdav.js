@@ -30,6 +30,11 @@
 (function(Utils, API) {
   'use strict';
 
+  /**
+   * @namespace WebDAV
+   * @memberof OSjs.VFS.Transports
+   */
+
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -152,8 +157,6 @@
 
   /**
    * WebDAV (OwnCloud) VFS Transport Module
-   *
-   * @api OSjs.VFS.Transports.WebDAV
    */
   var Transport = {
     scandir: function(item, callback, options) {
@@ -290,11 +293,12 @@
   /**
    * Make a WebDAV HTTP URL for VFS
    *
-   * @param   Mixed       item        (Optional) Path of VFS.File object
+   * @param   {(String|OSjs.VFS.File)}    item        VFS File
    *
-   * @retun   String                  URL based on input
+   * @retun   {String}                  URL based on input
    *
-   * @api OSjs.VFS.Transports.WebDAV.path()
+   * @function path
+   * @memberof OSjs.VFS.Transports.WebDAV
    */
   function makePath(item) {
     if ( typeof item === 'string' ) {

@@ -31,6 +31,11 @@
 (function(API, Utils) {
   'use strict';
 
+  /**
+   * @namespace Handlers
+   * @memberof OSjs
+   */
+
   var _handlerInstance;
 
   /////////////////////////////////////////////////////////////////////////////
@@ -47,10 +52,11 @@
    * NEVER CONSTRUCT YOUR OWN INTANCE! To get one use:
    * OSjs.Core.getHandler();
    *
-   * @api   OSjs.Core._Handler
    * @link https://os.js.org/doc/manuals/man-multiuser.html
    * @link https://os.js.org/doc/tutorials/create-handler.html
-   * @class _Handler
+   *
+   * @constructor Handler
+   * @memberof OSjs.Core
    */
   var _Handler = function() {
     if ( _handlerInstance ) {
@@ -85,13 +91,11 @@
   /**
    * Initializes the handler
    *
-   * @param   Function      callback        Callback function
+   * @function init
+   * @memberof OSjs.Core.Handler#
+   * @see OSjs.API.initialize
    *
-   * @see OSjs.API.initialize()
-   *
-   * @return  void
-   *
-   * @method  _Handler::init()
+   * @param   {Function}      callback        Callback function
    */
   _Handler.prototype.init = function(callback) {
     console.debug('Handler::init()');
@@ -114,9 +118,8 @@
   /**
    * Destroy the handler
    *
-   * @return  void
-   *
-   * @method  _Handler::destroy()
+   * @function destroy
+   * @memberof OSjs.Core.Handler#
    */
   _Handler.prototype.destroy = function() {
     var self = this;
@@ -137,13 +140,12 @@
   /**
    * Default login method
    *
-   * @param   String    username      Login username
-   * @param   String    password      Login password
-   * @param   Function  callback      Callback function => fn(err)
+   * @function login
+   * @memberof OSjs.Core.Handler#
    *
-   * @return  void
-   *
-   * @method  _Handler::login()
+   * @param   {String}    username      Login username
+   * @param   {String}    password      Login password
+   * @param   {Function}  callback      Callback function => fn(err)
    */
   _Handler.prototype.login = function(username, password, callback) {
     console.info('Handler::login()', username);
@@ -164,12 +166,11 @@
   /**
    * Default logout method
    *
-   * @param   boolean   save          Save session?
-   * @param   Function  callback      Callback function => fn(err, result)
+   * @function logout
+   * @memberof OSjs.Core.Handler#
    *
-   * @return  void
-   *
-   * @method  _Handler::logout()
+   * @param   {Boolean}   save          Save session?
+   * @param   {Function}  callback      Callback function => fn(err, result)
    */
   _Handler.prototype.logout = function(save, callback) {
     console.info('Handler::logout()');
@@ -202,11 +203,10 @@
   /**
    * Default method for saving current sessions
    *
-   * @param   Function  callback      Callback function => fn(err)
+   * @function saveSession
+   * @memberof OSjs.Core.Handler#
    *
-   * @return  void
-   *
-   * @method  _Handler::saveSession()
+   * @param   {Function}  callback      Callback function => fn(err)
    */
   _Handler.prototype.saveSession = function(callback) {
     var data = [];
@@ -221,11 +221,10 @@
   /**
    * Get last saved sessions
    *
-   * @param   Function  callback      Callback function => fn(err,list)
+   * @function getLastSession
+   * @memberof OSjs.Core.Handler#
    *
-   * @return  void
-   *
-   * @method  _Handler::getLastSession()
+   * @param   {Function}  callback      Callback function => fn(err,list)
    */
   _Handler.prototype.getLastSession = function(callback) {
     callback = callback || function() {};
@@ -246,11 +245,10 @@
   /**
    * Default method to restore last running session
    *
-   * @param   Function  callback      Callback function => fn()
+   * @function loadSession
+   * @memberof OSjs.Core.Handler#
    *
-   * @return  void
-   *
-   * @method  _Handler::loadSession()
+   * @param   {Function}  callback      Callback function => fn()
    */
   _Handler.prototype.loadSession = function(callback) {
     callback = callback || function() {};
@@ -269,13 +267,12 @@
   /**
    * Default method to save given settings pool
    *
-   * @param   String    pool          (optional) Pool Name
-   * @param   Mixed     storage       Storage data
-   * @param   Function  callback      Callback function => fn(error, result)
+   * @function saveSettings
+   * @memberof OSjs.Core.Handler#
    *
-   * @return  void
-   *
-   * @method  _Handler::saveSettings()
+   * @param   {String}    pool          (optional) Pool Name
+   * @param   {Mixed}     storage       Storage data
+   * @param   {Function}  callback      Callback function => fn(error, result)
    */
   _Handler.prototype.saveSettings = function(pool, storage, callback) {
     var self = this;
@@ -302,10 +299,12 @@
    *
    * This should return the URL for given resource.
    *
-   * @param   OSjs.VFS.File       item      The File Object
+   * @function getVFSPath
+   * @memberof OSjs.Core.Handler#
    *
-   * @return  String
-   * @method  _Handler::getVFSPath()
+   * @param   {OSjs.VFS.File}       item      The File Object
+   *
+   * @return  {String}
    */
   _Handler.prototype.getVFSPath = function(item) {
     var base = API.getConfig('Connection.FSURI', '/');
@@ -321,12 +320,12 @@
    * Please note that this function is internal, and if you want to make
    * a actual API call, use "API.call()" instead.
    *
-   * @see OSjs.API.call()
-   *
-   * @see _Handler::__callNW()
-   * @see _Handler::_callAPI()
-   * @see _Handler::_callVFS()
-   * @method  _Handler::callAPI()
+   * @function callAPI
+   * @memberof OSjs.Core.Handler#
+   * @see OSjs.Core.Handler.__callNW
+   * @see OSjs.Core.Handler._callAPI
+   * @see OSjs.Core.Handler._callVFS
+   * @see OSjs.Core.API.call
    */
   _Handler.prototype.callAPI = function(method, args, cbSuccess, cbError, options) {
     args      = args      || {};
@@ -366,9 +365,11 @@
   /**
    * Calls NW "backend"
    *
-   * @return boolean
-   * @method _Handler::__callNW()
-   * @see  _Handler::callAPI()
+   * @function __callNW
+   * @memberof OSjs.Core.Handler#
+   * @see OSjs.Core.Handler.callAPI
+   *
+   * @return {Boolean}
    */
   _Handler.prototype.__callNW = function(method, args, options, cbSuccess, cbError) {
     cbError = cbError || function() {
@@ -389,9 +390,10 @@
   /**
    * Calls Normal "Backend"
    *
-   * @see _Handler::_callAPI()
-   * @see _Handler::_callVFS()
-   * @method  _Handler::__callXHR()
+   * @function __callXHR
+   * @memberof OSjs.Core.Handler#
+   * @see OSjs.Core.Handler._callAPI
+   * @see OSjs.Core.Handler._callVFS
    */
   _Handler.prototype.__callXHR = function(url, args, options, cbSuccess, cbError) {
     var self = this;
@@ -427,10 +429,12 @@
   /**
    * Wrapper for server API XHR calls
    *
-   * @return boolean
-   * @method _Handler::_callAPI()
-   * @see  _Handler::callAPI()
-   * @see  _Handler::__callXHR()
+   * @function _callAPI
+   * @memberof OSjs.Core.Handler#
+   * @see OSjs.Core.Handler.callAPI
+   * @see OSjs.Core.Handler.__callXHR
+   *
+   * @return {Boolean}
    */
   _Handler.prototype._callAPI = function(method, args, options, cbSuccess, cbError) {
     var url = API.getConfig('Connection.APIURI') + '/' + method;
@@ -440,12 +444,14 @@
   /**
    * Wrapper for server VFS XHR calls
    *
-   * @return boolean
-   * @method _Handler::_callVFS()
-   * @see  _Handler::callAPI()
-   * @see _Handler::__callGET()
-   * @see _Handler::__callPOST()
-   * @see  _Handler::__callXHR()
+   * @function _callVFS
+   * @memberof OSjs.Core.Handler#
+   * @see OSjs.Core.Handler.callAPI
+   * @see OSjs.Core.Handler.__callGET
+   * @see OSjs.Core.Handler.__callPOST
+   * @see OSjs.Core.Handler.__callXHR
+   *
+   * @return {Boolean}
    */
   _Handler.prototype._callVFS = function(method, args, options, cbSuccess, cbError) {
     if ( method === 'FS:get' ) {
@@ -461,9 +467,11 @@
   /**
    * Does a HTTP POST via XHR (For file uploading)
    *
-   * @return boolean
-   * @method _Handler::__callPOST()
-   * @see  _Handler::callAPI()
+   * @function __callPOST
+   * @memberof OSjs.Core.Handler#
+   * @see OSjs.Core.Handler.callAPI
+   *
+   * @return {Boolean}
    */
   _Handler.prototype.__callPOST = function(form, options, cbSuccess, cbError) {
     var onprogress = options.onprogress || function() {};
@@ -496,9 +504,11 @@
   /**
    * Does a HTTP GET via XHR (For file downloading);
    *
-   * @return boolean
-   * @method _Handler::__callGET()
-   * @see  _Handler::callAPI()
+   * @function __callGET
+   * @memberof OSjs.Core.Handler#
+   * @see OSjs.Core.Handler.callAPI
+   *
+   * @return {Boolean}
    */
   _Handler.prototype.__callGET = function(args, options, cbSuccess, cbError) {
     var self = this;
@@ -541,12 +551,11 @@
   /**
    * Called when login() is finished
    *
-   * @param   Object    data          JSON Data from login action (userData, userSettings, etc)
-   * @param   Function  callback      Callback function
+   * @function onLogin
+   * @memberof OSjs.Core.Handler#
    *
-   * @return  void
-   *
-   * @method  _Handler::onLogin()
+   * @param   {Object}    data          JSON Data from login action (userData, userSettings, etc)
+   * @param   {Function}  callback      Callback function
    */
   _Handler.prototype.onLogin = function(data, callback) {
     callback = callback || function() {};
@@ -591,14 +600,13 @@
    *
    * It is what gets called 'before' a VFS request takes place
    *
-   * @param   String    vfsModule     VFS Module Name
-   * @param   String    vfsMethod     VFS Method Name
-   * @param   Object    vfsArguments  VFS Method Arguments
-   * @param   Function  callback      Callback function
+   * @function onVFSRequest
+   * @memberof OSjs.Core.Handler#
    *
-   * @return  void
-   *
-   * @method  _Handler::onVFSRequest()
+   * @param   {String}    vfsModule     VFS Module Name
+   * @param   {String}    vfsMethod     VFS Method Name
+   * @param   {Object}    vfsArguments  VFS Method Arguments
+   * @param   {Function}  callback      Callback function
    */
   _Handler.prototype.onVFSRequest = function(vfsModule, vfsMethod, vfsArguments, callback) {
     // If you want to interrupt/hijack or modify somehow, just send the two arguments to the
@@ -611,16 +619,15 @@
    *
    * It is what gets called 'after' a VFS request has taken place
    *
-   * @param   String    vfsModule     VFS Module Name
-   * @param   String    vfsMethod     VFS Method Name
-   * @param   Object    vfsArguments  VFS Method Arguments
-   * @param   String    vfsError      VFS Response Error
-   * @param   Mixed     vfsResult     VFS Response Result
-   * @param   Function  callback      Callback function
+   * @function onVFSRequestCompleted
+   * @memberof OSjs.Core.Handler#
    *
-   * @return  void
-   *
-   * @method  _Handler::onVFSRequestCompleted()
+   * @param   {String}    vfsModule     VFS Module Name
+   * @param   {String}    vfsMethod     VFS Method Name
+   * @param   {Object}    vfsArguments  VFS Method Arguments
+   * @param   {String}    vfsError      VFS Response Error
+   * @param   {Mixed}     vfsResult     VFS Response Result
+   * @param   {Function}  callback      Callback function
    */
   _Handler.prototype.onVFSRequestCompleted = function(vfsModule, vfsMethod, vfsArguments, vfsError, vfsResult, callback) {
     // If you want to interrupt/hijack or modify somehow, just send the two arguments to the
@@ -631,7 +638,8 @@
   /**
    * When browser goes online
    *
-   * @method _Handler::onOnline()
+   * @function onOnline
+   * @memberof OSjs.Core.Handler#
    */
   _Handler.prototype.onOnline = function() {
     console.warn('Handler::onOnline()', 'Going online...');
@@ -646,7 +654,8 @@
   /**
    * When browser goes offline
    *
-   * @method _Handler::onOffline()
+   * @function onOffline
+   * @memberof OSjs.Core.Handler#
    */
   _Handler.prototype.onOffline = function() {
     console.warn('Handler::onOffline()', 'Going offline...');
@@ -661,9 +670,10 @@
   /**
    * Get data for logged in user
    *
-   * @return  Object      JSON With user data
+   * @function getUserData
+   * @memberof OSjs.Core.Handler#
    *
-   * @method  _Handler::getUserData()
+   * @return  {Object}      JSON With user data
    */
   _Handler.prototype.getUserData = function() {
     return this.userData || {};
@@ -672,7 +682,8 @@
   /**
    * Initializes login screen
    *
-   * @method  _Handler::initLoginScreen()
+   * @function initLoginScreen
+   * @memberof OSjs.Core.Handler#
    */
   _Handler.prototype.initLoginScreen = function(callback) {
     var self      = this;
@@ -735,9 +746,10 @@
    *
    * Usage: _Handler.use.<trait>(obj)
    *
-   * @method  Class   obj     Class reference
+   * @method  {Class}   obj     Class reference
    *
-   * @api   OSjs.Core._Handler.use
+   * @function use
+   * @memberof OSjs.Core.Handler
    */
   _Handler.use = (function() {
 
@@ -803,9 +815,10 @@
   /**
    * Get running 'Handler' instance
    *
-   * @return  Handler
+   * @function getHandler
+   * @memberof OSjs.Core
    *
-   * @api     OSjs.Core.getHandler()
+   * @return {OSjs.Core.Handler}
    */
   OSjs.Core.getHandler = function() {
     return _handlerInstance;

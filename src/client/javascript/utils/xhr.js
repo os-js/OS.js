@@ -38,27 +38,25 @@
    * Common function for handling all types of XHR calls
    * including download/upload and JSONP
    *
-   * @param   Object      args      Aguments (see below)
+   * @function ajax
+   * @memberof OSjs.Utils
    *
-   * @option args String     url                  The URL
-   * @option args String     method               HTTP Call method: (POST/GET, default = GET)
-   * @option args Mixed      body                 Optional body to send (for POST)
-   * @option args integer    timeout              Optional timeout (in milliseconds)
-   * @option args String     responseType         HTTP Response type (default = null)
-   * @option args Object     requestHeaders       Tuple with headers (default = null)
-   * @option args boolean    json                 Handle as a JSON request/response (default = false)
-   * @option args boolean    jsonp                Handle as a JSONP request (default = false)
-   * @option args Array      acceptcodes          Array of accepted status codes for success signal [arraybuffer] (Optional)
-   * @option args Function   onerror              onerror callback => fn(error, evt, request, url)
-   * @option args Function   onsuccess            onsuccess callback => fn(result, request, url)
-   * @option args Function   oncreated            oncreated callback => fn(request)
-   * @option args Function   onfailed             onfailed callback => fn(evt)
-   * @option args Function   oncanceled           oncanceled callback => fn(evt)
-   * @option args Function   ontimeout            ontimeout callback => fn(evt)
-   *
-   * @return  void
-   *
-   * @api     OSjs.Utils.ajax()
+   * @param   {Object}     args                      Aguments (see below)
+   * @param   {String}     args.url                  The URL
+   * @param   {String}     args.method               HTTP Call method: (POST/GET, default = GET)
+   * @param   {Mixed}      args.body                 Optional body to send (for POST)
+   * @param   {integer}    args.timeout              Optional timeout (in milliseconds)
+   * @param   {String}     args.responseType         HTTP Response type (default = null)
+   * @param   {Object}     args.requestHeaders       Tuple with headers (default = null)
+   * @param   {Boolean}    args.json                 Handle as a JSON request/response (default = false)
+   * @param   {Boolean}    args.jsonp                Handle as a JSONP request (default = false)
+   * @param   {Array}      args.acceptcodes          Array of accepted status codes for success signal [arraybuffer] (Optional)
+   * @param   {Function}   args.onerror              onerror callback => fn(error, evt, request, url)
+   * @param   {Function}   args.onsuccess            onsuccess callback => fn(result, request, url)
+   * @param   {Function}   args.oncreated            oncreated callback => fn(request)
+   * @param   {Function}   args.onfailed             onfailed callback => fn(evt)
+   * @param   {Function}   args.oncanceled           oncanceled callback => fn(evt)
+   * @param   {Function}   args.ontimeout            ontimeout callback => fn(evt)
    */
   OSjs.Utils.ajax = function(args) {
     var request;
@@ -226,7 +224,7 @@
   /**
    * Preload a list of resources
    *
-   * Format of list is:
+   * @example
    * [
    *  {
    *
@@ -235,13 +233,12 @@
    *  }
    * ]
    *
-   * @param   Array     list              The list of resources
-   * @param   Function  callback          Callback when done => fn(totalCount, failedArray, successArray)
-   * @param   Function  callbackProgress  Callback on progress => fn(currentNumber, totalNumber)
+   * @function preload
+   * @memberof OSjs.Utils
    *
-   * @return  void
-   *
-   * @api     OSjs.Utils.preload()
+   * @param   {Array}     list              The list of resources
+   * @param   {Function}  callback          Callback when done => fn(totalCount, failedArray, successArray)
+   * @param   {Function}  callbackProgress  Callback on progress => fn(currentNumber, totalNumber)
    */
   OSjs.Utils.preload = (function() {
     var _LOADED = {};

@@ -69,22 +69,22 @@
    *
    * A container for displaying icons with labels
    *
-   * Format for add():
-   * ```
-   * {
-   *    label: "Label",
-   *    icon: "Optional icon path",
-   *    value: "something or JSON or whatever"
-   * }
-   * ```
-   *
    * For more properties and events etc, see 'dataview'
    *
-   * @property  icon-size   integer       Icon size (default=16)
+   * <pre><code>
+   *   property  icon-size   integer       Icon size (default=16)
+   * </code></pre>
    *
-   * @api OSjs.GUI.Elements.gui-icon-view
-   * @see OSjs.GUI.Elements._dataview
-   * @class
+   * @example
+   *   .add([{
+   *      label: "Label",
+   *      icon: "Optional icon path",
+   *      value: "something or JSON or whatever"
+   *   }])
+   *
+   * @constructs OSjs.GUI.DataView
+   * @memberof OSjs.GUI.Elements
+   * @var gui-icon-view
    */
   GUI.Elements['gui-icon-view'] = {
     bind: GUI.Elements._dataview.bind,

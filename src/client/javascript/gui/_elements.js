@@ -31,6 +31,11 @@
   'use strict';
 
   /**
+   * @namespace Elements
+   * @memberof OSjs.GUI
+   */
+
+  /**
    * Wrapper for getting which element to focus/blur
    */
   function getFocusElement(inst) {
@@ -55,8 +60,60 @@
   /**
    * Base UIElement Class
    *
-   * @api OSjs.GUI.Element
-   * @class Element
+   * <pre><code>
+   * Available Elements:
+   *
+   * - gui-color-box
+   * - gui-color-swatch
+   * - gui-iframe
+   * - gui-progress-bar
+   * - gui-statusbar
+   * - gui-menu-entry
+   * - gui-menu
+   * - gui-menu-bar
+   * - gui-tabs
+   * - gui-label
+   * - gui-textarea
+   * - gui-text
+   * - gui-password
+   * - gui-file-upload
+   * - gui-radio
+   * - gui-checkbox
+   * - gui-switch
+   * - gui-button
+   * - gui-select
+   * - gui-select-list
+   * - gui-slider
+   * - gui-input-modal
+   * - gui-audio
+   * - gui-video
+   * - gui-image
+   * - gui-canvas
+   * - gui-file-view
+   * - gui-tree-view
+   * - gui-list-view
+   * - gui-icon-view
+   * - gui-richtext
+   * - gui-paned-view
+   * - gui-paned-view-container
+   * - gui-button-bar
+   * - gui-toolbar
+   * - gui-grid
+   * - gui-grid-row
+   * - gui-grid-entry
+   * - gui-vbox
+   * - gui-vbox-container
+   * - gui-hbox
+   * - gui-hbox-container
+   * - gui-expander
+   * </code></pre>
+   *
+   * @param {Node}      el      DOM Node
+   * @param {String}    [q]     Optional query that element came from
+   *
+   * @constructor Element
+   * @memberof OSjs.GUI
+   * @link https://os.js.org/doc/tutorials/gui.html
    */
   function UIElement(el, q) {
     this.$element = el || null;
@@ -71,8 +128,8 @@
   /**
    * Removes element from the DOM
    *
-   * @method Element::remove()
-   * @return void
+   * @function remove
+   * @memberof OSjs.GUI.Element#
    */
   UIElement.prototype.remove = function() {
     this.$element = Utils.$remove(this.$element);
@@ -81,8 +138,10 @@
   /**
    * Empties the DOM element
    *
-   * @method Element::empty()
-   * @return Element this
+   * @function empty
+   * @memberof OSjs.GUI.Element#
+   *
+   * @return {OSjs.GUI.Element} The current instance (this)
    */
   UIElement.prototype.empty = function() {
     Utils.$empty(this.$element);
@@ -92,8 +151,10 @@
   /**
    * Blur (unfocus)
    *
-   * @method Element::blur()
-   * @return Element this
+   * @function blur
+   * @memberof OSjs.GUI.Element#
+   *
+   * @return {OSjs.GUI.Element} The current instance (this)
    */
   UIElement.prototype.blur = function() {
     if ( this.$element ) {
@@ -108,8 +169,10 @@
   /**
    * Focus (focus)
    *
-   * @method Element::focus()
-   * @return Element this
+   * @function focus
+   * @memberof OSjs.GUI.Element#
+   *
+   * @return {OSjs.GUI.Element} The current instance (this)
    */
   UIElement.prototype.focus = function() {
     if ( this.$element ) {
@@ -124,8 +187,10 @@
   /**
    * Show
    *
-   * @method Element::show()
-   * @return Element this
+   * @function show
+   * @memberof OSjs.GUI.Element#
+   *
+   * @return {OSjs.GUI.Element} The current instance (this)
    */
   UIElement.prototype.show = function() {
     if ( this.$element && !this.$element.offsetParent ) {
@@ -143,8 +208,10 @@
   /**
    * Hide
    *
-   * @method Element::hide()
-   * @return Element this
+   * @function hide
+   * @memberof OSjs.GUI.Element#
+   *
+   * @return {OSjs.GUI.Element} The current instance (this)
    */
   UIElement.prototype.hide = function() {
     if ( this.$element && this.$element.offsetParent ) {
@@ -159,12 +226,14 @@
   /**
    * Register Event
    *
-   * @param   String      evName      Event Name
-   * @param   Function    callback    Callback function
-   * @param   Object      args        (Optional) binding arguments
+   * @function on
+   * @memberof OSjs.GUI.Element#
    *
-   * @method Element::on()
-   * @return Element this
+   * @param   {String}      evName      Event Name
+   * @param   {Function}    callback    Callback function
+   * @param   {Object}      [args]      Binding arguments
+   *
+   * @return {OSjs.GUI.Element} The current instance (this)
    */
   UIElement.prototype.on = function(evName, callback, args) {
     if ( GUI.Elements[this.tagName] && GUI.Elements[this.tagName].bind ) {
@@ -182,9 +251,11 @@
    * The callback produced from the event will the same as original, except
    * **the first parameter is always the GUI element**
    *
-   * @see Element::on()
-   * @method Element::son()
-   * @return Element this
+   * @function ons
+   * @memberof OSjs.GUI.Element#
+   * @see OSjs.GUI.Element#on
+   *
+   * @return {OSjs.GUI.Element} The current instance (this)
    */
   UIElement.prototype.son = function(evName, thisArg, callback, args) {
     return this.on(evName, function() {
@@ -197,13 +268,15 @@
   /**
    * Sets a parameter/property by name
    *
-   * @param   String    param     Parameter name
-   * @param   Mixed     value     Parameter value
-   * @param   Mixed     arg       (Optional) Extra argument ...
-   * @param   Mixed     arg2      (Optional) Extra argument ...
+   * @function set
+   * @memberof OSjs.GUI.Element#
    *
-   * @method Element::set()
-   * @return Element this
+   * @param   {String}    param     Parameter name
+   * @param   {Mixed}     value     Parameter value
+   * @param   {Mixed}     [arg]     Extra argument ...
+   * @param   {Mixed}     [arg2]    Extra argument ...
+   *
+   * @return {OSjs.GUI.Element} The current instance (this)
    */
   UIElement.prototype.set = function(param, value, arg, arg2) {
     if ( this.$element ) {
@@ -221,11 +294,13 @@
   /**
    * Get a parameter/property by name
    *
-   * @param   String    param     Parameter name
-   * @param   Mixed     arg       (Optional) Extra argument ...
+   * @function get
+   * @memberof OSjs.GUI.Element#
    *
-   * @method Element::get()
-   * @return Element this
+   * @param   {String}    param     Parameter name
+   * @param   {Mixed}     [arg]     Extra argument ...
+   *
+   * @return {OSjs.GUI.Element} The current instance (this)
    */
   UIElement.prototype.get = function() {
     if ( this.$element ) {
@@ -242,12 +317,14 @@
   /**
    * Triggers a custom function by name and arguments
    *
-   * @param   String    name      Name of function
-   * @param   Array     args      (Optional) Argument array (passed to apply())
-   * @param   Mixed     thisArg   (Optional) `this` argument (default=UIElement/this)
+   * @function fn
+   * @memberof OSjs.GUI.Element#
    *
-   * @method Element::fn()
-   * @return Mixed
+   * @param   {String}    name      Name of function
+   * @param   {Array}     [args]    Argument array (passed to apply())
+   * @param   {Mixed}     [thisArg] `this` argument (default=UIElement/this)
+   *
+   * @return {Mixed}
    */
   UIElement.prototype.fn = function(name, args, thisArg) {
     args = args || [];
@@ -262,10 +339,12 @@
   /**
    * Appends a childNode to this element
    *
-   * @param   Mixed     el        DOMEelement or UIElement
+   * @function append
+   * @memberof OSjs.GUI.Element#
    *
-   * @method Element::append()
-   * @return Element this
+   * @param   {(Node|OSjs.GUI.Element)}     el        Element
+   *
+   * @return {OSjs.GUI.Element} The current instance (this)
    */
   UIElement.prototype.append = function(el) {
     if ( el instanceof UIElement ) {
@@ -286,13 +365,15 @@
   /**
    * Appends (and builds) HTML into the node
    *
-   * @param   String              html        HTML code
-   * @param   OSjs.GUI.Scheme     scheme      (Optional) Reference to the Scheme
-   * @param   OSjs.Core.Window    win         (Optional) Reference to the Window
-   * @param   Object              args        (Optional) List of arguments to send to the parser
+   * @function appendHTML
+   * @memberof OSjs.GUI.Element#
    *
-   * @method Element::appendHTML()
-   * @return Element this
+   * @param   {String}              html        HTML code
+   * @param   {OSjs.GUI.Scheme}     [scheme]    Reference to the Scheme
+   * @param   {OSjs.Core.Window}    [win]       Reference to the Window
+   * @param   {Object}              [args]      List of arguments to send to the parser
+   *
+   * @return {OSjs.GUI.Element} The current instance (this)
    */
   UIElement.prototype.appendHTML = function(html, scheme, win, args) {
     var el = document.createElement('div');
@@ -319,11 +400,13 @@
   /**
    * Perform `querySelector`
    *
-   * @param     String      q     Query
-   * @param     boolean     rui   Return UI Element if possible (default=false)
+   * @function querySelector
+   * @memberof OSjs.GUI.Element#
    *
-   * @return    DOMElement
-   * @method    Element::querySelector()
+   * @param     {String}      q     Query
+   * @param     {Boolean}     rui   Return UI Element if possible (default=false)
+   *
+   * @return    {Node}
    */
   UIElement.prototype.querySelector = function(q, rui) {
     var el = this.$element.querySelector(q);
@@ -336,11 +419,13 @@
   /**
    * Perform `querySelectorAll`
    *
-   * @param     String      q     Query
-   * @param     boolean     rui   Return UI Element if possible (default=false)
+   * @function querySelectorAll
+   * @memberof OSjs.GUI.Element#
    *
-   * @return    DOMElementCollection
-   * @method    Element::querySelectorAll()
+   * @param     {String}      q     Query
+   * @param     {Boolean}     rui   Return UI Element if possible (default=false)
+   *
+   * @return    {NodeCollection}
    */
   UIElement.prototype.querySelectorAll = function(q, rui) {
     var el = this.$element.querySelectorAll(q);
@@ -362,9 +447,10 @@
 
   /**
    * Extended UIElement for ListView, TreeView, IconView, Select, SelectList
-   * @extends UIElement
-   * @api OSjs.GUI.ElementDataView
-   * @class ElementDataView
+   *
+   * @constructor ElementDataView
+   * @memberof OSjs.GUI
+   * @extends OSjs.GUI.Element
    */
   function UIElementDataView() {
     UIElement.apply(this, arguments);
@@ -373,18 +459,42 @@
   UIElementDataView.prototype = Object.create(UIElement.prototype);
   UIElementDataView.constructor = UIElement;
 
+  /**
+   * Clears the view
+   *
+   * @function clear
+   * @memberof OSjs.GUI.ElementDataView#
+   */
   UIElementDataView.prototype.clear = function() {
     return this._call('clear', []);
   };
 
+  /**
+   * Adds one or more elements
+   *
+   * @function add
+   * @memberof OSjs.GUI.ElementDataView#
+   */
   UIElementDataView.prototype.add = function(props) {
     return this._call('add', [props]);
   };
 
+  /**
+   * Do a diffed render
+   *
+   * @function patch
+   * @memberof OSjs.GUI.ElementDataView#
+   */
   UIElementDataView.prototype.patch = function(props) {
     return this._call('patch', [props]);
   };
 
+  /**
+   * Remove element
+   *
+   * @function remove
+   * @memberof OSjs.GUI.ElementDataView#
+   */
   UIElementDataView.prototype.remove = function(id, key) {
     return this._call('remove', [id, key]);
   };

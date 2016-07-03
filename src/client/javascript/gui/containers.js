@@ -43,8 +43,9 @@
    *
    * A view with resizable content boxes
    *
-   * @api OSjs.GUI.Elements.gui-paned-view
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-paned-view
    */
   GUI.Elements['gui-paned-view'] = {
     bind: function(el, evName, callback, params) {
@@ -120,14 +121,17 @@
   /**
    * Element: 'gui-paned-view-container'
    *
-   * @property  base      String        CSS base flexbox property
-   * @property  grow      integer       CSS grow flexbox property
-   * @property  shrink    integer       CSS shrink flexbox property
-   * @property  min-size  integer       Minimum size in pixels
-   * @property  max-size  integer       Maxmimum size in pixels
+   * <pre><code>
+   *   property  base      String        CSS base flexbox property
+   *   property  grow      integer       CSS grow flexbox property
+   *   property  shrink    integer       CSS shrink flexbox property
+   *   property  min-size  integer       Minimum size in pixels
+   *   property  max-size  integer       Maxmimum size in pixels
+   * </code></pre>
    *
-   * @api OSjs.GUI.Elements.gui-paned-view-container
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-paned-view-container
    */
   GUI.Elements['gui-paned-view-container'] = {
     build: function(el) {
@@ -138,8 +142,9 @@
   /**
    * Element: 'gui-button-bar'
    *
-   * @api OSjs.GUI.Elements.gui-button-bar
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-button-bar
    */
   GUI.Elements['gui-button-bar'] = {
     build: function(el) {
@@ -150,8 +155,9 @@
   /**
    * Element: 'gui-toolbar'
    *
-   * @api OSjs.GUI.Elements.gui-toolbar
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-toolbar
    */
   GUI.Elements['gui-toolbar'] = {
     build: function(el) {
@@ -164,8 +170,9 @@
    *
    * A grid-type container with equal-sized containers
    *
-   * @api OSjs.GUI.Elements.gui-grid
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-grid
    */
   GUI.Elements['gui-grid'] = {
     build: function(el) {
@@ -181,8 +188,9 @@
   /**
    * Element: 'gui-grid-row'
    *
-   * @api OSjs.GUI.Elements.gui-grid-row
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-grid-row
    */
   GUI.Elements['gui-grid-row'] = {
     build: function(el) {
@@ -192,8 +200,9 @@
   /**
    * Element: 'gui-grid-entry'
    *
-   * @api OSjs.GUI.Elements.gui-grid-entry
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-grid-entry
    */
   GUI.Elements['gui-grid-entry'] = {
     build: function(el) {
@@ -205,8 +214,9 @@
    *
    * Vertical boxed layout
    *
-   * @api OSjs.GUI.Elements.gui-vbox
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-vbox
    */
   GUI.Elements['gui-vbox'] = {
     build: function(el) {
@@ -218,14 +228,17 @@
    *
    * Vertical boxed layout container
    *
-   * @property  base      String        CSS base flexbox property
-   * @property  grow      integer       CSS grow flexbox property
-   * @property  shrink    integer       CSS shrink flexbox property
-   * @property  expand    boolean       Make content expand to full width
-   * @property  fill      boolean       Make content fill up entire space
+   * <pre><code>
+   *   property  base      String        CSS base flexbox property
+   *   property  grow      integer       CSS grow flexbox property
+   *   property  shrink    integer       CSS shrink flexbox property
+   *   property  expand    boolean       Make content expand to full width
+   *   property  fill      boolean       Make content fill up entire space
+   * </code></pre>
    *
-   * @api OSjs.GUI.Elements.gui-vbox-container
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-vbox-container
    */
   GUI.Elements['gui-vbox-container'] = {
     build: function(el) {
@@ -238,8 +251,9 @@
    *
    * Horizontal boxed layout
    *
-   * @api OSjs.GUI.Elements.gui-hbox
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-hbox
    */
   GUI.Elements['gui-hbox'] = {
     build: function(el) {
@@ -251,14 +265,17 @@
    *
    * Horizontal boxed layout container
    *
-   * @property  base      String        CSS base flexbox property
-   * @property  grow      integer       CSS grow flexbox property
-   * @property  shrink    integer       CSS shrink flexbox property
-   * @property  expand    boolean       Make content expand to full width
-   * @property  fill      boolean       Make content fill up entire space
+   * <pre><code>
+   *   property  base      String        CSS base flexbox property
+   *   property  grow      integer       CSS grow flexbox property
+   *   property  shrink    integer       CSS shrink flexbox property
+   *   property  expand    boolean       Make content expand to full width
+   *   property  fill      boolean       Make content fill up entire space
+   * </code></pre>
    *
-   * @api OSjs.GUI.Elements.gui-hbox-container
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-hbox-container
    */
   GUI.Elements['gui-hbox-container'] = {
     build: function(el) {
@@ -271,11 +288,14 @@
    *
    * A expandable/collapsable container with label and indicator
    *
-   * @property  label     String        The label
-   * @property  expanded  boolean       Expanded state (default=true)
+   * <pre><code>
+   *   property  label     String        The label
+   *   property  expanded  boolean       Expanded state (default=true)
+   * </code></pre>
    *
-   * @api OSjs.GUI.Elements.gui-expander
-   * @class
+   * @constructs OSjs.GUI.Element
+   * @memberof OSjs.GUI.Elements
+   * @var gui-expander
    */
   GUI.Elements['gui-expander'] = (function() {
     function toggleState(el, expanded) {

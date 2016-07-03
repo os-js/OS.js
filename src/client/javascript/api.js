@@ -30,6 +30,11 @@
 (function(Utils, API) {
   'use strict';
 
+  /**
+   * @namespace API
+   * @memberof OSjs
+   */
+
   /*@
    * Please note that there are some more methods defined in `process.js`
    */
@@ -61,9 +66,6 @@
    *
    * This is a private class and can only be retrieved through
    * OSjs.API.getServiceNotificationIcon()
-   *
-   * @see OSjs.API.getServiceNotificationIcon()
-   * @class
    */
   function ServiceNotificationIcon() {
     this.entries = {};
@@ -98,9 +100,6 @@
 
   /**
    * Destroys the notification icon
-   *
-   * @return  void
-   * @method  ServiceNotificationIcon::destroy()
    */
   ServiceNotificationIcon.prototype.destroy = function() {
     var wm = OSjs.Core.getWindowManager();
@@ -126,9 +125,6 @@
    * Show the menu
    *
    * @param   DOMEvent      ev      Event
-   *
-   * @return  void
-   * @method  ServiceNotificationIcon::displayMenu()
    */
   ServiceNotificationIcon.prototype.displayMenu = function(ev) {
     var menu = [];
@@ -146,13 +142,6 @@
 
   /**
    * Adds an entry
-   *
-   * @param   String      name      Name (unique)
-   * @param   Array       menu      Menu
-   *
-   * @see     OSjs.GUI.Menu
-   * @return  void
-   * @method  ServiceNotificationIcon::add()
    */
   ServiceNotificationIcon.prototype.add = function(name, menu) {
     if ( !this.entries[name] ) {
@@ -165,11 +154,6 @@
 
   /**
    * Removes an entry
-   *
-   * @param   String      name      Name (unique)
-   *
-   * @return  void
-   * @method  ServiceNotificationIcon::remove()
    */
   ServiceNotificationIcon.prototype.remove = function(name) {
     if ( this.entries[name] ) {
@@ -185,11 +169,14 @@
 
   /**
    * Translate given string
-   * @param  String   s     Translation key/string
-   * @param  Mixed    ...   Format values
    *
-   * @return String
-   * @api    OSjs.API._()
+   * @function _
+   * @memberof OSjs.API
+   *
+   * @param  {String}       s       Translation key/string
+   * @param  {...String}    sargs   Format values
+   *
+   * @return {String}
    */
   API._ = function _apiTranslate() {
     var s = arguments[0];
@@ -206,8 +193,10 @@
 
   /**
    * Same as _ only you can supply the list as first argument
-   * @see    OSjs.API._()
-   * @api    OSjs.API.__()
+   *
+   * @function __
+   * @memberof OSjs.API
+   * @see OSjs.API._
    */
   API.__ = function _apiTranslateList() {
     var l = arguments[0];
@@ -229,8 +218,10 @@
   /**
    * Get current locale
    *
-   * @return String
-   * @api    OSjs.API.getLocale()
+   * @function getLocale
+   * @memberof OSjs.API
+   *
+   * @return {String}
    */
   API.getLocale = function _apiGetLocale() {
     return CurrentLocale;
@@ -239,10 +230,10 @@
   /**
    * Set locale
    *
-   * @param  String   s     Locale name
+   * @function setLocale
+   * @memberof OSjs.API
    *
-   * @return void
-   * @api    OSjs.API.setLocale()
+   * @param  {String}   s     Locale name
    */
   API.setLocale = function _apiSetLocale(l) {
     if ( OSjs.Locales[l] ) {
@@ -269,13 +260,14 @@
    *
    * The response is in form of: {httpCode, body}
    *
-   * @param   Object    args      cURL Arguments (see docs)
-   * @param   Function  callback  Callback function => fn(error, response)
+   * @function curl
+   * @memberof OSjs.API
    *
-   * @return  void
    * @link    https://os.js.org/doc/tutorials/using-curl.html
    * @link    https://os.js.org/doc/server/srcservernodenode_modulesosjsapijs.html#api-curl
-   * @api     OSjs.API.curl()
+   *
+   * @param   {Object}    args      cURL Arguments (see docs)
+   * @param   {Function}  callback  Callback function => fn(error, response)
    */
   API.curl = function _apiCurl(args, callback) {
     args = args || {};
@@ -296,16 +288,15 @@
    *
    * You can call VFS functions by prefixing your method name with "FS:"
    *
-   * @param   String    m       Method name
-   * @param   Object    a       Method arguments
-   * @param   Function  cb      Callback on success => fn(err, res)
-   * @param   Object    options (Optional) Options to send to the XHR request
+   * @function call
+   * @memberof OSjs.API
+   * @see OSjs.Core.Handler#callAPI
+   * @see OSjs.Utils.ajax
    *
-   * @see     OSjs.Core.Handler.callAPI()
-   * @see     Utils.ajax()
-   *
-   * @return  void
-   * @api     OSjs.API.call()
+   * @param   {String}    m       Method name
+   * @param   {Object}    a       Method arguments
+   * @param   {Function}  cb      Callback on success => fn(err, res)
+   * @param   {Object}    options (Optional) Options to send to the XHR request
    */
   var _CALL_INDEX = 1;
   API.call = function _apiCall(m, a, cb, options) {
@@ -344,13 +335,12 @@
   /**
    * Open a file
    *
-   * @param   OSjs.VFS.File   file          The File reference (can also be a tuple with 'path' and 'mime')
-   * @param   Object          launchArgs    Arguments to send to process launch function
+   * @function open
+   * @memberof OSjs.API
+   * @see OSjs.API.launch
    *
-   * @see     OSjs.API.launch()
-   *
-   * @return  void
-   * @api     OSjs.API.open()
+   * @param   {OSjs.VFS.File}   file          The File reference (can also be a tuple with 'path' and 'mime')
+   * @param   {Object}          launchArgs    Arguments to send to process launch function
    */
   API.open = function _apiOpen(file, launchArgs) {
     launchArgs = launchArgs || {};
@@ -444,10 +434,10 @@
    *
    * This also reloads any metadata preload items defined in the application.
    *
-   * @param   String      n               Application Name
+   * @function relaunch
+   * @memberof OSjs.API
    *
-   * @return  void
-   * @api     OSjs.API.relaunch()
+   * @param   {String}      n               Application Name
    */
   API.relaunch = function _apiRelaunch(n) {
     function relaunch(p) {
@@ -480,14 +470,16 @@
   /**
    * Launch a Process
    *
-   * @param   String      name          Application Name
-   * @param   Object      args          Launch arguments
-   * @param   Function    ondone        Callback on success
-   * @param   Function    onerror       Callback on error
-   * @param   Function    onconstruct   Callback on application init
+   * @function launch
+   * @memberof OSjs.API
    *
-   * @return  bool
-   * @api     OSjs.API.launch()
+   * @param   {String}      name          Application Name
+   * @param   {Object}      [args]          Launch arguments
+   * @param   {Function}    [ondone]        Callback on success
+   * @param   {Function}    [onerror]       Callback on error
+   * @param   {Function}    [onconstruct]   Callback on application init
+   *
+   * @return  {Boolean}
    */
   API.launch = function _apiLaunch(name, args, ondone, onerror, onconstruct) {
     args = args || {};
@@ -768,14 +760,14 @@
   /**
    * Launch Processes from a List
    *
-   * @param   Array         list        List of launch application arguments
-   * @param   Function      onSuccess   Callback on success => fn(app, metadata, appName, appArgs)
-   * @param   Function      onError     Callback on error => fn(error, appName, appArgs)
-   * @param   Function      onFinished  Callback on finished running => fn()
+   * @function launchList
+   * @memberof OSjs.API
+   * @see OSjs.API.launch
    *
-   * @see     OSjs.API.launch()
-   * @return  void
-   * @api     OSjs.API.launchList()
+   * @param   {Array}         list        List of launch application arguments
+   * @param   {Function}      onSuccess   Callback on success => fn(app, metadata, appName, appArgs)
+   * @param   {Function}      onError     Callback on error => fn(error, appName, appArgs)
+   * @param   {Function}      onFinished  Callback on finished running => fn()
    */
   API.launchList = function _apiLaunchList(list, onSuccess, onError, onFinished) {
     list        = list        || []; /* idx => {name: 'string', args: 'object', data: 'mixed, optional'} */
@@ -827,14 +819,14 @@
   /**
    * Get a resource from application
    *
-   * @param   Process   app     Application instance reference
-   *                            You can also specify a name by String
-   * @param   String    name    Resource Name
-   * @param   boolean   vfspath Return a valid VFS path
+   * @function getApplicationResource
+   * @memberof OSjs.API
    *
-   * @return  String            The absolute URL of resource
+   * @param   {OSjs.Core.Process}   app     Application instance reference. You can also specify a name by String
+   * @param   {String}              name    Resource Name
+   * @param   {Boolean}             vfspath Return a valid VFS path
    *
-   * @api     OSjs.API.getApplicationResource()
+   * @return  {String}            The absolute URL of resource
    */
   API.getApplicationResource = function _apiGetAppResource(app, name, vfspath) {
     if ( name.match(/^\//) ) {
@@ -899,11 +891,12 @@
   /**
    * Get path to css theme
    *
-   * @param   String    name    CSS Stylesheet name (without extension)
+   * @function getThemeCSS
+   * @memberof OSjs.API
    *
-   * @return  String            The absolute URL of css file
+   * @param   {String}    name    CSS Stylesheet name (without extension)
    *
-   * @api     OSjs.API.getThemeCSS()
+   * @return  {String}            The absolute URL of css file
    */
   API.getThemeCSS = function _apiGetThemeCSS(name) {
     var root = OSjs.API.getConfig('Connection.RootURI', '/');
@@ -918,14 +911,14 @@
   /**
    * Get a icon based in file and mime
    *
-   * @param   [File]    file    File Data (see supported types)
-   * @param   String    size    (Optional) Icon size (default="16x16")
-   * @param   String    icon    (Optional) Default icon
+   * @function getFileIcon
+   * @memberof OSjs.API
    *
-   * @return  String            The absolute URL to the icon
+   * @param   {File}      file      File Data (see supported types)
+   * @param   {String}    [size]    Icon size (default="16x16")
+   * @param   {String}    [icon]    Default icon
    *
-   * @see     vfs.js
-   * @api     OSjs.API.getFileIcon()
+   * @return  {String}            The absolute URL to the icon
    */
   API.getFileIcon = function _apiGetFileIcon(file, size, icon) {
     icon = icon || 'mimetypes/gnome-fs-regular.png';
@@ -988,12 +981,13 @@
   /**
    * Default method for getting a resource from current theme
    *
-   * @param   String    name    Resource filename
-   * @param   String    type    Type ('base' or a sub-folder)
+   * @function getThemeResource
+   * @memberof OSjs.API
    *
-   * @return  String            The absolute URL to the resource
+   * @param   {String}    name    Resource filename
+   * @param   {String}    type    Type ('base' or a sub-folder)
    *
-   * @api     OSjs.API.getThemeResource()
+   * @return  {String}            The absolute URL to the resource
    */
   API.getThemeResource = function _apiGetThemeResource(name, type) {
     name = name || null;
@@ -1027,11 +1021,12 @@
   /**
    * Default method for getting a sound from theme
    *
-   * @param   String    name    Resource filename
+   * @function getSound
+   * @memberof OSjs.API
    *
-   * @return  String            The absolute URL to the resource
+   * @param   {String}    name    Resource filename
    *
-   * @api     OSjs.API.getSound()
+   * @return  {String}            The absolute URL to the resource
    */
   API.getSound = function _apiGetSound(name) {
     name = name || null;
@@ -1054,13 +1049,14 @@
   /**
    * Default method for getting a icon from theme
    *
-   * @param   String    name    Resource filename
-   * @param   String    size    (Optional) Icon size (default=16x16)
-   * @param   Process   app     (Optional) Application instance reference. Can also be String. For `name` starting with './'
+   * @function getIcon
+   * @memberof OSjs.API
    *
-   * @return  String            The absolute URL to the resource
+   * @param   {String}              name    Resource filename
+   * @param   {String}              [size]  Icon size (default=16x16)
+   * @param   {OSjs.Core.Process}   [app]   Application instance reference. Can also be String. For `name` starting with './'
    *
-   * @api     OSjs.API.getIcon()
+   * @return  {String}            The absolute URL to the resource
    */
   API.getIcon = function _apiGetIcon(name, size, app) {
     name = name || null;
@@ -1102,13 +1098,14 @@
   /**
    * Method for getting a config parameter by path (Ex: "VFS.Mountpoints.shared.enabled")
    *
-   * @param   String    path              (Optional) Path
-   * @param   Mixed     defaultValue      (Optional) Default value if undefined
+   * @function getConfig
+   * @memberof OSjs.API
+   * @see OSjs.Core.getConfig
    *
-   * @return  Mixed             Parameter value or entire tree on no path
+   * @param   {String}    path              (Optional) Path
+   * @param   {Mixed}     defaultValue      (Optional) Default value if undefined
    *
-   * @see     OSjs.Core.getConfig()
-   * @api     OSjs.API.getConfig()
+   * @return  {Mixed}             Parameter value or entire tree on no path
    */
   API.getConfig = function _apiGetConfig(path, defaultValue) {
     var config = Utils.cloneObject(OSjs.Core.getConfig());
@@ -1142,10 +1139,11 @@
   /**
    * Get default configured path
    *
-   * @param   String    fallback      Fallback path on error (default= "osjs:///")
-   * @return  String
+   * @function getDefaultPath
+   * @memberof OSjs.API
    *
-   * @api     OSjs.API.getDefaultPath()
+   * @param   {String}    fallback      Fallback path on error (default= "osjs:///")
+   * @return  {String}
    */
   API.getDefaultPath = function _apiGetDefaultPath(fallback) {
     if ( fallback && fallback.match(/^\//) ) {
@@ -1161,8 +1159,9 @@
   /**
    * Create a new Desktop Notification
    *
-   * @see  WindowManager::notification()
-   * @api OSjs.API.createNotification()
+   * @function createNotification
+   * @memberof OSjs.API
+   * @see OSjs.Core.WindowManager#notification
    */
   API.createNotification = function _apiCreateNotification(opts) {
     var wm = OSjs.Core.getWindowManager();
@@ -1174,14 +1173,15 @@
    *
    * You can also pass a function as `className` to return an instance of your own class
    *
-   * @param   String        className       Dialog Namespace Class Name
-   * @param   Object        args            Arguments you want to send to dialog
-   * @param   Function      callback        Callback on dialog action (close/ok etc) => fn(ev, button, result)
-   * @param   Mixed         parentObj       (Optional) A window or app (to make it a child window)
+   * @function createDialog
+   * @memberof OSjs.API
    *
-   * @return  Window
+   * @param   {String}        className       Dialog Namespace Class Name
+   * @param   {Object}        args            Arguments you want to send to dialog
+   * @param   {Function}      callback        Callback on dialog action (close/ok etc) => fn(ev, button, result)
+   * @param   {Mixed}         parentObj       (Optional) A window or app (to make it a child window)
    *
-   * @api     OSjs.API.createDialog()
+   * @return  {OSjs.Core.Window}
    */
   API.createDialog = function _apiCreateDialog(className, args, callback, parentObj) {
     callback = callback || function() {};
@@ -1227,12 +1227,14 @@
   /**
    * Create (or show) loading indicator
    *
-   * @param   String    name        Name of notification (unique)
-   * @param   Object    opts        Options
-   * @param   int       panelId     Panel ID (optional)
+   * @function createLoading
+   * @memberof OSjs.API
    *
-   * @return  String                Or false on error
-   * @api     OSjs.API.createLoading()
+   * @param   {String}    name          Name of notification (unique)
+   * @param   {Object}    opts          Options
+   * @param   {Number}    [panelId]     Panel ID
+   *
+   * @return  {String}                Or false on error
    */
   API.createLoading = function _apiCreateLoading(name, opts, panelId) {
     var wm = OSjs.Core.getWindowManager();
@@ -1247,11 +1249,13 @@
   /**
    * Destroy (or hide) loading indicator
    *
-   * @param   String    name        Name of notification (unique)
-   * @param   int       panelId     Panel ID (optional)
+   * @function destroyLoading
+   * @memberof OSjs.API
    *
-   * @return  boolean
-   * @api     OSjs.API.destroyLoading()
+   * @param   {String}    name          Name of notification (unique)
+   * @param   {Number}    [panelId]     Panel ID
+   *
+   * @return  {Boolean}
    */
   API.destroyLoading = function _apiDestroyLoading(name, panelId) {
     var wm = OSjs.Core.getWindowManager();
@@ -1268,9 +1272,10 @@
   /**
    * Checks the given permission (groups) against logged in user
    *
-   * @param   Mixed     group         Either a string or array of groups
+   * @function checkPermission
+   * @memberof OSjs.API
    *
-   * @api     OSjs.API.checkPermission()
+   * @param   {Mixed}     group         Either a string or array of groups
    */
   API.checkPermission = function _apiCheckPermission(group) {
     var user = OSjs.Core.getHandler().getUserData();
@@ -1297,14 +1302,15 @@
    *
    * Returns an object with the methods `update(precentage)` and `destroy()`
    *
-   * @param   String      name          The name to display
-   * @param   String      icon          The icon to display
-   * @param   String      label         (Optional) The label (default = 'Starting')
-   * @param   DOMElement  parentEl      (Optional) The parent element
+   * @function createSplash
+   * @memberof OSjs.API
    *
-   * @return  Object
+   * @param   {String}      name          The name to display
+   * @param   {String}      icon          The icon to display
+   * @param   {String}      [label]       The label (default = 'Starting')
+   * @param   {Node}        [parentEl]    The parent element
    *
-   * @api     OSjs.API.createSplash()
+   * @return  {Object}
    */
   API.createSplash = function _apiCreateSplash(name, icon, label, parentEl) {
     label = label || 'Starting';
@@ -1367,14 +1373,14 @@
   /**
    * Global function for showing an error dialog
    *
-   * @param   String    title       Dialog title
-   * @param   String    message     Dialog message
-   * @param   String    error       Error message
-   * @param   Object    exception   Exception reference (optional)
-   * @param   boolean   bugreport   Enable bugreporting for this error (default=fale)
+   * @function error
+   * @memberof OSjs.API
    *
-   * @return  null
-   * @api     OSjs.API.error()
+   * @param   {String}    title               Dialog title
+   * @param   {String}    message             Dialog message
+   * @param   {String}    error               Error message
+   * @param   {Object}    [exception]         Exception reference
+   * @param   {Boolean}   [bugreport=false]   Enable bugreporting for this error
    */
   API.error = function _apiError(title, message, error, exception, bugreport) {
     bugreport = (function() {
@@ -1432,11 +1438,13 @@
   /**
    * Global function for playing a sound
    *
-   * @param   String      name      Sound name
-   * @param   float       volume    Sound volume (0.0 - 1.0)
+   * @function playSound
+   * @memberof OSjs.API
    *
-   * @return  DOMAudio
-   * @api     OSjs.API.playSound()
+   * @param   {String}      name      Sound name
+   * @param   {Number}      volume    Sound volume (0.0 - 1.0)
+   *
+   * @return {Audio}
    */
   API.playSound = function _apiPlaySound(name, volume) {
     var compability = Utils.getCompability();
@@ -1468,9 +1476,10 @@
    *
    * NOTE: This does not set the operating system clipboard (yet...)
    *
-   * @param   Mixed       data      What data to set
-   * @return  void
-   * @api     OSjs.API.setClipboard()
+   * @function setClipboard
+   * @memberof OSjs.API
+   *
+   * @param   {Mixed}       data      What data to set
    */
   API.setClipboard = function _apiSetClipboard(data) {
     console.debug('OSjs.API.setClipboard()', data);
@@ -1482,8 +1491,10 @@
    *
    * NOTE: This does not the operating system clipboard (yet...)
    *
-   * @return  Mixed
-   * @api     OSjs.API.getClipboard()
+   * @function getClipboard
+   * @memberof OSjs.API
+   *
+   * @return  {Mixed}
    */
   API.getClipboard = function _apiGetClipboard() {
     return _CLIPBOARD;
@@ -1495,8 +1506,10 @@
    * This is the icon in the panel where external connections
    * etc gets a menu entry.
    *
-   * @return  ServiceNotificationIcon
-   * @api     OSjs.API.getServiceNotificationIcon()
+   * @function getServiceNotificationIcon
+   * @memberof OSjs.API
+   *
+   * @return  {ServiceNotificationIcon}
    */
   API.getServiceNotificationIcon = (function() {
     var _instance;
@@ -1516,8 +1529,8 @@
   /**
    * Signs the user out and shuts down OS.js
    *
-   * @return  void
-   * @method  OSjs.API.signOut()
+   * @function signOut
+   * @memberof OSjs.API
    */
   API.signOut = function _apiSignOut() {
     var handler = OSjs.Core.getHandler();
@@ -1551,12 +1564,12 @@
   /**
    * Method for triggering a hook
    *
-   * @param   String    name      Hook name
-   * @param   Array     args      List of arguments
-   * @param   Object    thisarg   'this' ref
+   * @function triggerHook
+   * @memberof OSjs.API
    *
-   * @return  void
-   * @api     OSjs.API.triggerHook()
+   * @param   {String}    name      Hook name
+   * @param   {Array}     args      List of arguments
+   * @param   {Object}    thisarg   'this' ref
    */
   API.triggerHook = function _apiTriggerHook(name, args, thisarg) {
     thisarg = thisarg || OSjs;
@@ -1580,11 +1593,13 @@
   /**
    * Method for adding a hook
    *
-   * @param   String    name    Hook name
-   * @param   Function  fn      Callback => fn()
+   * @function addHook
+   * @memberof OSjs.API
    *
-   * @return  int       The index of hook
-   * @api     OSjs.API.addHook()
+   * @param   {String}    name    Hook name
+   * @param   {Function}  fn      Callback => fn()
+   *
+   * @return  {Number}       The index of hook
    */
   API.addHook = function _apiAddHook(name, fn) {
     if ( typeof _hooks[name] !== 'undefined' ) {
@@ -1596,11 +1611,13 @@
   /**
    * Method for removing a hook
    *
-   * @param   String    name    Hook name
-   * @param   integer   index     Hook index
+   * @function removeHook
+   * @memberof OSjs.API
    *
-   * @return  bool
-   * @api     OSjs.API.removeHook()
+   * @param   {String}    name    Hook name
+   * @param   {Number}    index     Hook index
+   *
+   * @return  {Boolean}
    */
   API.removeHook = function _apiRemoveHook(name, index) {
     if ( typeof _hooks[name] !== 'undefined' ) {
@@ -1619,16 +1636,18 @@
   API.shutdown = API.shutdown || function() {}; // init.js
 
   /**
-   * @api OSjs.API.createMenu()
-   * @see OSjs.GUI.Helpers.createMenu()
+   * @function createMenu
+   * @memberof OSjs.API
+   * @see OSjs.GUI.Helpers.createMenu
    */
   API.createMenu = function() {
     return OSjs.GUI.Helpers.createMenu.apply(null, arguments);
   };
 
   /**
-   * @api OSjs.API.blurMenu()
-   * @see OSjs.GUI.Helpers.blurMenu()
+   * @function blurMenu
+   * @memberof OSjs.API
+   * @see OSjs.GUI.Helpers.blurMenu
    */
   API.blurMenu = function() {
     return OSjs.GUI.Helpers.blurMenu.apply(null, arguments);
