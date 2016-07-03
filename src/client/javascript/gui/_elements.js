@@ -119,8 +119,23 @@
    * @memberof OSjs.GUI
    */
   function UIElement(el, q) {
+
+    /**
+     * The DOM Node
+     * @name $element
+     * @memberof OSjs.GUI.Element#
+     * @type {Node}
+     */
     this.$element = el || null;
+
+    /**
+     * The DOM Tag Name
+     * @name tagName
+     * @memberof OSjs.GUI.Element#
+     * @type {String}
+     */
     this.tagName = el ? el.tagName.toLowerCase() : null;
+
     this.oldDisplay = null;
 
     if ( !el ) {

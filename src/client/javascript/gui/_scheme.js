@@ -153,8 +153,22 @@
   function UIScheme(url) {
     console.debug('UIScheme::construct()', url);
 
+    /**
+     * The URL of the Scheme file
+     * @name url
+     * @memberof OSjs.GUI.Scheme#
+     * @type {String}
+     */
     this.url = url;
+
+    /**
+     * The Scheme DOM Node
+     * @name scheme
+     * @memberof OSjs.GUI.Scheme#
+     * @type {DocumentFragment}
+     */
     this.scheme = null;
+
     this.triggers = {render: []};
   }
 

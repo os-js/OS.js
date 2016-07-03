@@ -65,9 +65,42 @@
 
     this._saveTimeout = null;
 
+    /**
+     * If user is logged in
+     * @name loggedId
+     * @memberof OSjs.Core.Handler#
+     * @type {Boolean}
+     */
     this.loggedIn   = false;
+
+    /**
+     * If browser is offline
+     * @name offline
+     * @memberof OSjs.Core.Handler#
+     * @type {Boolean}
+     */
     this.offline    = false;
+
+    /**
+     * NW reference
+     * @name nw
+     * @memberof OSjs.Core.Handler#
+     * @type {Object}
+     */
     this.nw         = null;
+
+    /**
+     * User data
+     * @name userData
+     * @memberof OSjs.Core.Handler#
+     * @type {Object}
+     * @example
+     * {
+     *  id: -1,
+     *  username: 'foo',
+     *  groups: []
+     * }
+     */
     this.userData   = {
       id      : 0,
       username: 'root',
