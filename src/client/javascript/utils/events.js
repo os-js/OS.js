@@ -294,9 +294,10 @@
    * @param   {Boolean}       [useCapture]  Use capture mode
    */
   OSjs.Utils.$bind = (function(msPointerEnabled) {
-    var touchstartName = msPointerEnabled ? 'pointerdown' : 'touchstart';
-    var touchendName   = msPointerEnabled ? 'pointerup'   : 'touchend';
-    var touchmoveName  = msPointerEnabled ? 'pointermove' : 'touchmove';
+    var touchstartName   = msPointerEnabled ? 'pointerdown'   : 'touchstart';
+    var touchendName     = msPointerEnabled ? 'pointerup'     : 'touchend';
+    var touchmoveName    = msPointerEnabled ? 'pointermove'   : 'touchmove';
+    var touchcancelName  = msPointerEnabled ? 'pointercancel' : 'touchcancel';
 
     function pos(ev, touchDevice) {
       function _getTouch() {
@@ -313,63 +314,83 @@
       return {x: dev.clientX, y: dev.clientY};
     }
 
-    function createTouchHandler(el, evName, collection, callback, signal) {
-      var holdTimeout = null;
-      var whenFinished = false;
-      var isDone = false;
+    function createTouchHandler(el, evName, collection, callback, signal, param) {
+      var touchStarted = false;
+      var touchEnded = false;
+      var cachedX = 0;
+      var oldPos = {};
+      var curPos = {};
 
-      function cbs(ev) {
-        isDone = false;
-        signal();
+      function _emitClick(ev) {
+        ev.stopPropagation();
 
-        if ( evName === 'click' ) {
-          whenFinished = function() {
-            if ( !isDone ) {
-              isDone = true;
-              callback.call(el, ev, pos(ev, true), true);
-            }
-          };
+        if ( (oldPos.x === curPos.x) && !touchStarted && (oldPos.y === curPos.y) ) {
+          callback.call(el, ev, curPos, true);
+        }
+        collection.timeout = clearTimeout(collection.timeout);
+      }
 
-          holdTimeout = setTimeout(function() {
-            whenFinished = false;
-          }, 300);
-        } else if ( evName === 'contextmenu' ) {
-          holdTimeout = setTimeout(function() {
-            if ( !isDone ) {
-              isDone = true;
-              ev.stopPropagation();
-              ev.preventDefault();
-              callback.call(el, ev, pos(ev, true), true);
-            }
-          }, 450);
-        } else if ( evName === 'dblclick' ) {
-          if ( el.getAttribute('data-tmp-clicked') !== 'true' ) {
-            el.setAttribute('data-tmp-clicked', 'true');
+      collection.add(el, [touchstartName, function(ev) {
+        var now = new Date();
 
-            setTimeout(function() {
-              el.removeAttribute('data-tmp-clicked');
-            }, 500);
-          } else {
-            ev.stopPropagation();
-            ev.preventDefault();
-            callback.call(el, ev, pos(ev, true), true);
+        ev.preventDefault();
+        collection.timeout = clearTimeout(collection.timeout);
+
+        if ( evName === 'dblclick' ) {
+          ev.stopPropagation();
+          if ( collection.firstTouch && ((now - collection.firstTouch) < 500) ) {
+            _emitClick(ev);
+            return;
           }
         }
-      }
 
-      function cbe(ev) {
-        signal();
+        collection.firstTouch = now;
+        oldPos = curPos = pos(ev, true);
+        touchStarted = true;
 
-        if ( typeof whenFinished === 'function' ) {
-          whenFinished();
+        if ( ['click', 'contextmenu'].indexOf(evName) !== -1 ) {
+          ev.stopPropagation();
+          collection.timeout = setTimeout(function() {
+            _emitClick(ev);
+          }, evName === 'click' ? 250 : 600);
+        } else if ( evName === 'mousedown' ) {
+          _emitClick(ev);
         }
+      }, param]);
 
-        holdTimeout = clearTimeout(holdTimeout);
-        whenFinished = false;
-      }
+      collection.add(el, [touchcancelName, function(ev) {
+        ev.preventDefault();
 
-      collection.add(el, [touchstartName, cbs, true]);
-      collection.add(el, [touchendName, cbe, true]);
+        touchEnded = true;
+        touchStarted = false;
+        collection.timeout = clearTimeout(collection.timeout);
+      }, param]);
+
+      collection.add(el, [touchendName, function(ev) {
+        ev.preventDefault();
+
+        touchStarted = false;
+        touchEnded = true;
+
+        if ( evName === 'mouseup' ) {
+          callback.call(el, ev, curPos, true);
+        } else if ( evName === 'contextmenu' ) {
+          collection.timeout = clearTimeout(collection.timeout);
+        }
+      }, param]);
+
+      collection.add(el, [touchmoveName, function(ev) {
+        ev.preventDefault();
+
+        curPos = pos(ev, true);
+        collection.timeout = clearTimeout(collection.timeout);
+
+        if ( !touchEnded ) {
+          if ( evName === 'mousemove' ) {
+            callback.call(el, ev, curPos, true);
+          }
+        }
+      }, param]);
     }
 
     var touchMap = {
@@ -402,7 +423,7 @@
         if ( typeof tev === 'function' ) {
           tev(el, type, collection, callback, function() {
             wasTouch = true;
-          });
+          }, param);
         } else if ( typeof tev === 'string' ) {
           collection.add(el, [tev, cbTouchEvent, param === true]);
         }

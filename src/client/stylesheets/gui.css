@@ -1207,6 +1207,7 @@ gui-menu.gui-root-menu {
     display : none;
   }
 
+  gui-menu > gui-menu-entry.gui-hover > gui-menu,
   gui-menu > gui-menu-entry:hover > gui-menu {
     display : inline-block;
     left : 100%;

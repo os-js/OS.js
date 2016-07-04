@@ -218,7 +218,11 @@
     sel.setAttribute('role', 'button');
     sel.setAttribute('aria-label', title);
 
-    Utils.$bind(sel, 'click', callback);
+    Utils.$bind(sel, 'mousedown', function(ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+    });
+    Utils.$bind(sel, 'click', callback, true);
     Utils.$bind(sel, 'contextmenu', function(ev) {
       ev.preventDefault();
       ev.stopPropagation();

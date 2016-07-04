@@ -151,7 +151,9 @@
      * When mouse button is pressed
      */
     function onMouseDown(ev, action, win, mousePosition) {
+      OSjs.API.blurMenu();
       ev.preventDefault();
+      console.error('fae');
 
       if ( win._state.maximized ) {
         return;
@@ -376,7 +378,7 @@
     if ( win._properties.allow_move ) {
       Utils.$bind(win._$top, 'mousedown', function(ev, pos) {
         onMouseDown(ev, 'move', win, pos);
-      });
+      }, true);
     }
     if ( win._properties.allow_resize ) {
       Utils.$bind(win._$resize, 'mousedown', function(ev, pos) {

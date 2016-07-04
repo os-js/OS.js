@@ -78,6 +78,9 @@
     },
     body_mousedown: function(ev) {
       ev.preventDefault();
+    },
+
+    body_click: function(ev) {
       OSjs.API.blurMenu();
     },
 
@@ -343,6 +346,7 @@
 
     document.body.addEventListener('contextmenu', events.body_contextmenu, false);
     document.body.addEventListener('mousedown', events.body_mousedown, false);
+    document.body.addEventListener('click', events.body_click, false);
     document.addEventListener('keydown', events.keydown, true);
     document.addEventListener('keypress', events.keypress, true);
     document.addEventListener('keyup', events.keyup, true);
@@ -696,6 +700,7 @@
 
     document.body.removeEventListener('contextmenu', events.body_contextmenu, false);
     document.body.removeEventListener('mousedown', events.body_mousedown, false);
+    document.body.removeEventListener('click', events.body_click, false);
     document.removeEventListener('keydown', events.keydown, true);
     document.removeEventListener('keypress', events.keypress, true);
     document.removeEventListener('keyup', events.keyup, true);

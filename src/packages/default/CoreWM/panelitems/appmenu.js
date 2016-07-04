@@ -62,6 +62,10 @@
     sel.setAttribute('role', 'button');
     sel.setAttribute('data-label', 'OS.js Application Menu');
 
+    Utils.$bind(sel, 'touchstart', function(ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+    });
     Utils.$bind(sel, 'click', function(ev) {
       ev.preventDefault();
       ev.stopPropagation();

@@ -66,6 +66,11 @@
       this.$container.title = this.opts.tooltip;
     }
 
+    Utils.$bind(this.$container, 'mousedown', function(ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+    });
+
     Utils.$bind(this.$container, 'click', function(ev) {
       ev.stopPropagation();
       ev.preventDefault();

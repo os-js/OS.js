@@ -1083,9 +1083,11 @@ gui-menu {
     padding : @gui_base_padding;
   }
 
+  gui-menu > gui-menu-entry.gui-hover,
   gui-menu > gui-menu-entry:hover {
     background-color: @gui_selected_background_color;
   }
+  gui-menu > gui-menu-entry.gui-hover > label,
   gui-menu > gui-menu-entry:hover > label {
     color: @gui_selected_foreground_color;
   }

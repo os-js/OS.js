@@ -52,24 +52,37 @@
     var hasInput = child.querySelector('input');
 
     Utils.$bind(child, 'mousedown', function(ev) {
+      ev.stopPropagation();
+    });
+
+    Utils.$bind(child, 'click', function(ev, pos, touch) {
       var target = ev.target || ev.srcElement;
       var isExpander = (target.tagName.toLowerCase() === 'gui-menu-entry' && Utils.$hasClass(target, 'gui-menu-expand'));
       var stopProp = hasInput || isExpander;
-
-      if ( hasInput ) {
-        ev.preventDefault();
-        hasInput.dispatchEvent(new MouseEvent('click'));
-      }
-      dispatcher.dispatchEvent(new CustomEvent('_select', {detail: {index: idx, id: id}}));
 
       if ( stopProp ) {
         ev.stopPropagation();
       }
 
+      if ( expand ) {
+        if ( touch ) {
+          child.parentNode.children.forEach(function(c) {
+            Utils.$removeClass(c, 'gui-hover');
+          });
+          Utils.$addClass(child, 'gui-hover');
+        }
+      } else {
+        if ( hasInput ) {
+          ev.preventDefault();
+          hasInput.dispatchEvent(new MouseEvent('click'));
+        }
+        dispatcher.dispatchEvent(new CustomEvent('_select', {detail: {index: idx, id: id}}));
+      }
+
       if ( !isExpander ) {
         blurMenu(ev);
       }
-    }, false);
+    });
   }
 
   /**
@@ -155,9 +168,11 @@
         if ( value ) {
           input.setAttribute('checked', 'checked');
         }
+        /*
         input.addEventListener('click', function(ev) {
           blurMenu();
         }, true);
+        */
 
         par.setAttribute('role', 'menuitem' + type);
         par.appendChild(input);
@@ -200,7 +215,7 @@
 
         var i = Utils.$index(child);
         var expand = _checkExpand(child);
-        bindSelectionEvent(child, span, i, expand);
+        bindSelectionEvent(child, span, i, expand, span);
       }
     };
   })();
@@ -335,10 +350,18 @@
         updateChildren(submenu, 2);
 
         Utils.$bind(mel, 'mousedown', function(ev) {
+          ev.preventDefault();
+          ev.stopPropagation();
+        });
+        Utils.$bind(mel, 'click', function(ev) {
           blurMenu();
 
           ev.preventDefault();
           ev.stopPropagation();
+
+          mel.querySelectorAll('gui-menu-entry').forEach(function(c) {
+            Utils.$removeClass(c, 'gui-hover');
+          });
 
           if ( submenu ) {
             lastMenu = function(ev) {
@@ -410,10 +433,9 @@
           entry.appendChild(nroot);
         }
         if ( iter.onClick ) {
-          Utils.$bind(entry, 'mousedown', function(ev) {
-            ev.stopPropagation();
+          Utils.$bind(entry, 'click', function(ev) {
             iter.onClick.apply(this, arguments);
-          }, false);
+          }, true);
         }
         par.appendChild(entry);
       });

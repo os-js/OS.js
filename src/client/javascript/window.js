@@ -55,7 +55,6 @@
    * @return boolean
    */
   function stopPropagation(ev) {
-    OSjs.API.blurMenu();
     if ( ev ) {
       ev.stopPropagation();
     }
@@ -703,6 +702,7 @@
     }
 
     function _noEvent(ev) {
+      OSjs.API.blurMenu();
       ev.preventDefault();
       ev.stopPropagation();
       return false;
@@ -737,6 +737,7 @@
     windowTitle.setAttribute('role', 'heading');
     windowTitle.appendChild(document.createTextNode(this._title));
 
+    Utils.$bind(windowTitle, 'mousedown', _noEvent);
     Utils.$bind(windowTitle, 'dblclick', function() {
       self._maximize();
     });
