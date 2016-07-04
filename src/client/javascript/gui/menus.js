@@ -205,7 +205,7 @@
         }
         child.appendChild(span);
 
-        createTyped(span);
+        createTyped(child, span);
 
         if ( child.getAttribute('data-labelhtml') === 'true' ) {
           span.innerHTML = label;
