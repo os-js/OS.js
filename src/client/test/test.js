@@ -405,7 +405,7 @@
 
           expect(f.filename).to.be.equal('foo');
           expect(f.path).to.be.equal('home:///foo');
-          expect(f.mime).to.be.null;
+          expect(f.mime).to.be.equal('application/octet-stream');
         });
         it('should validate File object (2)', function() {
           var f = new OSjs.VFS.File('home:///foo', 'some/mime');
