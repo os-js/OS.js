@@ -56,7 +56,7 @@
    *
    * @return  {Number}
    */
-  GUI.Helpers = function getWindowId(el) {
+  GUI.Helpers.getWindowId = function getWindowId(el) {
     while ( el.parentNode ) {
       var attr = el.getAttribute('data-window-id');
       if ( attr !== null ) {
