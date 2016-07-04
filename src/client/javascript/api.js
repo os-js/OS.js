@@ -422,7 +422,8 @@
     }
 
     if ( file.mime === 'osjs/application' ) {
-      API._(Utils.filename(file.path));
+      console.groupEnd();
+      API.launch(Utils.filename(file.path));
       return;
     }
 
