@@ -366,10 +366,10 @@
    * @function addFormFile
    * @memberof OSjs.VFS
    *
-   * @param   {FormData}          fd      FormData instance
-   * @param   {String}            key     FormData entry name
-   * @param   {(File|Blob)}       data    File Data (see supported types)
-   * @param   {OSjs.VFS.File}     file    File Metadata
+   * @param   {FormData}                        fd      FormData instance
+   * @param   {String}                          key     FormData entry name
+   * @param   {(window.File|window.Blob)}       data    File Data (see supported types)
+   * @param   {OSjs.VFS.File}                   file    File Metadata
    */
   function addFormFile(fd, key, data, file) {
     if ( data instanceof window.File ) {
