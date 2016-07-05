@@ -30,6 +30,10 @@
 (function(_path, _fs) {
   'use strict';
 
+  /**
+   * @namespace API
+   */
+
   /////////////////////////////////////////////////////////////////////////////
   // DEFAULT API METHODS
   /////////////////////////////////////////////////////////////////////////////
@@ -37,16 +41,14 @@
   /**
    * Login Wrapper. This is just a placeholder. The function is bound in the handler
    *
-   * @param   Object    server      Server object
-   * @param   Object    args        API Call Arguments
-   * @param   Function  callback    Callback function => fn(error, result)
+   * @param   {Object}    server          Server object
+   * @param   {Object}    args            API Call Arguments
+   * @param   {String}    args.username   Username
+   * @param   {String}    args.password   Password
+   * @param   {Function}  callback        Callback function => fn(error, result)
    *
-   * @option  args      String    username    Username
-   * @option  args      String    password    Password
-   *
-   * @return  void
-   *
-   * @api     api.login
+   * @function login
+   * @memberof API
    */
   module.exports.login = function(server, args, callback) {
     callback('No handler assigned', {});
@@ -59,9 +61,8 @@
    * @param   Object    args        API Call Arguments
    * @param   Function  callback    Callback function => fn(error, result)
    *
-   * @return  void
-   *
-   * @api     api.logout
+   * @function logout
+   * @memberof API
    */
   module.exports.logout = function(server, args, callback) {
     callback('No handler assigned', {});
@@ -76,9 +77,8 @@
    *
    * @option  args      Object    settings    Settings Tree
    *
-   * @return  void
-   *
-   * @api     api.settings
+   * @function settings
+   * @memberof API
    */
   module.exports.settings = function(server, args, callback) {
     callback('No handler assigned', {});
@@ -87,17 +87,15 @@
   /**
    * Application API Call
    *
-   * @param   Object    server      Server object
-   * @param   Object    args        API Call Arguments
-   * @param   Function  callback    Callback function => fn(error, result)
+   * @param   {Object}    server           Server object
+   * @param   {Object}    args             API Call Arguments
+   * @param   {String}    args.path        Package Path (ex: default/FileManager)
+   * @param   {String}    args.method      API Method name
+   * @param   {Array}     args.arguments   List of arguments to API Method
+   * @param   {Function}  callback         Callback function => fn(error, result)
    *
-   * @option  args      String    path        Package Path (ex: default/FileManager)
-   * @option  args      String    method      API Method name
-   * @option  args      Array     arguments   List of arguments to API Method
-   *
-   * @return  void
-   *
-   * @api     api.application
+   * @function application
+   * @memberof API
    */
   module.exports.application = function(server, args, callback) {
     var apath = args.path || null;
@@ -122,30 +120,30 @@
   /**
    * cURL API Call
    *
-   * Gives an object like: {httpCode: -1, body: '...'}
-   *
+   * <pre><code>
    * NOTE: If you do a non-POST request with a body (with type of object) and no
    * query string was defined in the url, this method will try to transform the
    * given body data and append to the url.
+   * </code></pre>
    *
-   * @param   Object    server      Server object
-   * @param   Object    args        API Call Arguments
-   * @param   Function  callback    Callback function => fn(error, result)
+   * @example
+   * Gives an object like: {httpCode: -1, body: '...'}
    *
-   * @option  args      String    method        HTTP Call method (GET/POST/HEAD)
-   * @option  args      String    url           HTTP Call URL
-   * @option  args      Object    body          HTTP POST Payload (alias: query)
-   * @option  args      int       timeout       Timeout in seconds (default=0)
-   * @option  args      boolean   binary        Return binary (default=false)
-   * @option  args      String    mime          (Optional) If binary, which MIME
-   * @option  args      Object    headers       (Optional) Custom HTTP headers ({key:val})
-   * @option  args      boolean   json          (Optional) Send request as JSON (autodetected)
-   * @option  args      String    contentType   (Optional) Specify the content-type (autodetected)
+   * @param   {Object}    server                     Server object
+   * @param   {Object}    args                       API Call Arguments
+   * @param   {String}    args.method                HTTP Call method (GET/POST/HEAD)
+   * @param   {String}    args.url                   HTTP Call URL
+   * @param   {Object}    args.body                  HTTP POST Payload (alias: query)
+   * @param   {Number}    args.timeout               Timeout in seconds (default=0)
+   * @param   {Boolean}   [args.binary=false]        Return binary (default=false)
+   * @param   {String}    [args.mime]                If binary, which MIME
+   * @param   {Object}    [args.headers]             Custom HTTP headers ({key:val})
+   * @param   {Boolean}   [args.json]                Send request as JSON (autodetected)
+   * @param   {String}    [args.contentType]         Specify the content-type (autodetected)
+   * @param   {Function}  callback                   Callback function => fn(error, result)
    *
-   * @return  void
-   * @link    http://os.js.org/doc/tutorials/using-curl.html
-   *
-   * @api     api.curl
+   * @function curl
+   * @memberof API
    */
   module.exports.curl = function(server, args, callback) {
     var url = args.url;

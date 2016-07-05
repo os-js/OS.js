@@ -30,6 +30,10 @@
 (function(_path, _fs) {
   'use strict';
 
+  /**
+   * Namespace Core
+   */
+
   var ignorePrivilegesAPI = ['login'];
   var ignorePrivilegesVFS = ['getMime', 'getRealPath'];
 
@@ -125,12 +129,12 @@
    * This is what is responsible for all API and VFS communication and user
    * session(s).
    *
-   * @param   Object      instance      Current server instance
-   * @param   Object      applyAPI      Apply these API methods
-   * @param   Object      applyVFS      Apply these VFS methods
+   * @param   {Object}      instance      Current server instance
+   * @param   {Object}      applyAPI      Apply these API methods
+   * @param   {Object}      applyVFS      Apply these VFS methods
    *
-   * @api handler.Handler
-   * @class
+   * @constructor Handler
+   * @memberof Core
    */
   function DefaultHandler(instance, applyAPI, applyVFS) {
     registerMethods(this, instance, applyAPI, applyVFS);
@@ -140,11 +144,12 @@
   /**
    * Creates the user home path from
    *
-   * @param   Object      server        Server object
+   * @param   {Object}      server        Server object
    *
-   * @return  String
+   * @return  {String}
    *
-   * @method Handler::getHomePath()
+   * @function getHomePath
+   * @memberof Core.Handler#
    */
   DefaultHandler.prototype.getHomePath = function(server) {
     var userdir = server.request.session.get('username');
@@ -157,9 +162,10 @@
   /**
    * Gets the username of currently active user
    *
-   * @param   Object      server        Server object
+   * @param   {Object}      server        Server object
    *
-   * @method Handler::getUserName()
+   * @function getUserName
+   * @memberof Core.Handler#
    */
   DefaultHandler.prototype.getUserName = function(server) {
     return server.request.session.get('username');
@@ -168,9 +174,10 @@
   /**
    * Gets the groups of currently active user
    *
-   * @param   Object      server        Server object
+   * @param   {Object}      server        Server object
    *
-   * @method Handler::getUserGroups()
+   * @function getUserGroups
+   * @memberof Core.Handler#
    */
   DefaultHandler.prototype.getUserGroups = function(server) {
     var groups = [];
@@ -185,12 +192,11 @@
   /**
    * Gets the blacklisted packages of active user
    *
-   * @param   Object      server        Server object
-   * @param   Function    callback      Callback function => fn(error, result)
+   * @param   {Object}      server        Server object
+   * @param   {Function}    callback      Callback function => fn(error, result)
    *
-   * @async
-   * @return  void
-   * @method  Handler::getUserBlacklistedPackages()
+   * @function getUserBlacklistedPackages
+   * @memberof Core.Handler#
    */
   DefaultHandler.prototype.getUserBlacklistedPackages = function(server, callback) {
     callback(false, []);
@@ -199,13 +205,12 @@
   /**
    * Sets the user data of active user
    *
-   * @param   Object      server        Server object
-   * @param   Object      data          Session data
-   * @param   Function    callback      Callback function => fn(error, result)
+   * @param   {Object}      server        Server object
+   * @param   {Object}      data          Session data
+   * @param   {Function}    callback      Callback function => fn(error, result)
    *
-   * @async
-   * @return void
-   * @method Handler::setUserData()
+   * @function setUserData
+   * @memberof Core.Handler#
    */
   DefaultHandler.prototype.setUserData = function(server, data, callback) {
     if ( data === null ) {
@@ -222,16 +227,18 @@
   /**
    * Check if request has access to given API request
    *
+   * <pre><code>
    * THIS IS THE METHOD CALLED FROM THE SERVER
+   * </pre></code>
    *
-   * @param   Object      server        Server object
-   * @param   Mixed       privilege     Check against given privilege(s)
-   * @param   Function    callback      Callback function => fn(err, result)
+   * @param   {Object}      server        Server object
+   * @param   {Mixed}       privilege     Check against given privilege(s)
+   * @param   {Function}    callback      Callback function => fn(err, result)
    *
-   * @return  boolean                   Return true for normal, false for custom callback
+   * @return  {Boolean}                   Return true for normal, false for custom callback
    *
-   * @async
-   * @method Handler::checkAPIPrivilege()
+   * @function checkAPIPrivilege
+   * @memberof Core.Handler#
    */
   DefaultHandler.prototype.checkAPIPrivilege = function(server, privilege, callback) {
     var self = this;
@@ -247,17 +254,19 @@
   /**
    * Check if request has access to given VFS request
    *
+   * <pre><code>
    * THIS IS THE METHOD CALLED FROM THE SERVER
+   * </pre></code>
    *
-   * @param   Object      server        Server object
-   * @param   String      method        VFS Method name
-   * @param   Object      args          VFS Method arguments
-   * @param   Function    callback      Callback function => fn(err, result)
+   * @param   {Object}      server        Server object
+   * @param   {String}      method        VFS Method name
+   * @param   {Object}      args          VFS Method arguments
+   * @param   {Function}    callback      Callback function => fn(err, result)
    *
-   * @return  boolean                   Return true for normal, false for custom callback
+   * @return  {Boolean}                   Return true for normal, false for custom callback
    *
-   * @async
-   * @method Handler::checkVFSPrivilege()
+   * @function checkVFSPrivilege
+   * @memberof Core.Handler#
    */
   DefaultHandler.prototype.checkVFSPrivilege = function(server, method, args, callback) {
     var self = this;
@@ -273,16 +282,18 @@
   /**
    * Check if request has access to given Package
    *
+   * <pre><code>
    * THIS IS THE METHOD CALLED FROM THE SERVER
+   * </pre></code>
    *
-   * @param   Object      server        Server object
-   * @param   String      packageName   Name of Package (ex: repo/name)
-   * @param   Function    callback      Callback function => fn(err, result)
+   * @param   {Object}      server        Server object
+   * @param   {String}      packageName   Name of Package (ex: repo/name)
+   * @param   {Function}    callback      Callback function => fn(err, result)
    *
-   * @return  boolean                   Return true for normal, false for custom callback
+   * @return  {Boolean}                   Return true for normal, false for custom callback
    *
-   * @async
-   * @method Handler::checkPackagePrivilege()
+   * @function checkPackagePrivilege
+   * @memberof Core.Handler#
    */
   DefaultHandler.prototype.checkPackagePrivilege = function(server, packageName, callback) {
     var self = this;
@@ -298,8 +309,8 @@
   /**
    * Event fired when server starts
    *
-   * @async
-   * @method Handler::onServerStart()
+   * @function onServerStart
+   * @memberof Core.Handler#
    */
   DefaultHandler.prototype.onServerStart = function(cb) {
     cb();
@@ -308,8 +319,8 @@
   /**
    * Event fired when server ends
    *
-   * @async
-   * @method Handler::onServerEnd()
+   * @function onServerEnd
+   * @memberof Core.Handler#
    */
   DefaultHandler.prototype.onServerEnd = function(cb) {
     cb();
@@ -318,12 +329,12 @@
   /**
    * Event fired when server gets a login
    *
-   * @param     Object        server        Server object
-   * @param     Object        data          The login data
-   * @param     Function      callback      Callback fuction
+   * @param     {Object}        server        Server object
+   * @param     {Object}        data          The login data
+   * @param     {Function}      callback      Callback fuction
    *
-   * @async
-   * @method Handler::onLogin()
+   * @function onLogin
+   * @memberof Core.Handler#
    */
   DefaultHandler.prototype.onLogin = function(server, data, callback) {
     var self = this;
@@ -353,11 +364,11 @@
   /**
    * Event fired when server gets a logout
    *
-   * @param     Object        server        Server object
-   * @param     Function      callback      Callback fuction
+   * @param     {Object}        server        Server object
+   * @param     {Function}      callback      Callback fuction
    *
-   * @async
-   * @method Handler::onLogout()
+   * @function onLogout
+   * @memberof Core.Handler#
    */
   DefaultHandler.prototype.onLogout = function(server, callback) {
     this.setUserData(server, null, function() {
@@ -368,13 +379,13 @@
   /**
    * Event fired when client requests a VFS event
    *
-   * @param     Object        server        Server object
-   * @param     String        vfsMethod     VFS Method
-   * @param     Object        vfsArguments  VFS Arguments
-   * @param     Function      callback      Callback fuction
+   * @param     {Object}        server        Server object
+   * @param     {String}        vfsMethod     VFS Method
+   * @param     {Object}        vfsArguments  VFS Arguments
+   * @param     {Function}      callback      Callback fuction
    *
-   * @async
-   * @method Handler::onVFSRequest()
+   * @function onVFSRequest
+   * @memberof Core.Handler#
    */
   DefaultHandler.prototype.onVFSRequest = function(server, vfsMethod, vfsArguments, callback) {
     // If you want to interrupt or modify somehow, just send the two arguments to the
@@ -385,16 +396,18 @@
   /**
    * Default method for checking if User has given group(s)
    *
+   * <pre><code>
    * If the user has group 'admin' it will automatically granted full access
+   * </pre></code>
    *
-   * @param   Object      server        Server object
-   * @param   String      groupname     Group name(s) (can also be an array)
-   * @param   Function    callback      Callback function => fn(err, result)
+   * @param   {Object}      server        Server object
+   * @param   {String}      groupname     Group name(s) (can also be an array)
+   * @param   {Function}    callback      Callback function => fn(err, result)
    *
-   * @return  boolean
+   * @return  {Boolean}
    *
-   * @async
-   * @method Handler::_checkHasGroup()
+   * @function _checkHasGroup
+   * @memberof Core.Handler#
    */
   DefaultHandler.prototype._checkHasGroup = function(server, groupnames, callback) {
     groupnames = groupnames || [];
@@ -427,11 +440,11 @@
   /**
    * Default method for checking if user has a session
    *
-   * @param   Object      server        Server object
-   * @param   Function    callback      Callback function => fn(err, result)
+   * @param   {Object}      server        Server object
+   * @param   {Function}    callback      Callback function => fn(err, result)
    *
-   * @async
-   * @method Handler::_checkHasSession()
+   * @function _checkHasSession
+   * @memberof Core.Handler#
    */
   DefaultHandler.prototype._checkHasSession = function(server, callback) {
     if ( !this.instance.setup.nw && !this.getUserName(server) ) {
@@ -444,12 +457,12 @@
   /**
    * Default method for checking blacklisted package permissions
    *
-   * @param   Object      server        Server object
-   * @param   String      packageName   Name of the package
-   * @param   Function    callback      Callback function => fn(err, result)
+   * @param   {Object}      server        Server object
+   * @param   {String}      packageName   Name of the package
+   * @param   {Function}    callback      Callback function => fn(err, result)
    *
-   * @async
-   * @method Handler::_checkHasBlacklistedPackage()
+   * @function _checkHasBlacklistedPackage
+   * @memberof Core.Handler#
    */
   DefaultHandler.prototype._checkHasBlacklistedPackage = function(server, packageName, callback) {
     this.getUserBlacklistedPackages(server, function(error, list) {
@@ -464,9 +477,8 @@
   /**
    * Check if active user has given API privilege
    *
-   * @async
-   * @see Handler::checkAPIPrivilege()
-   * @method Handler::_checkHasAPIPrivilege()
+   * @function _checkHasAPIPrivilege
+   * @memberof Core.Handler#
    */
   DefaultHandler.prototype._checkHasAPIPrivilege = function(server, privilege, callback) {
     var map = this.instance.config.api.groups;
@@ -486,12 +498,13 @@
   /**
    * Check if active user has given VFS privilege
    *
+   * <pre><code>
    * This method only checks for the 'mount' location. You can
    * override this to make it check for given method name as well
+   * </pre></code>
    *
-   * @async
-   * @see Handler::checkVFSPrivilege()
-   * @method Handler::_checkHasVFSPrivilege()
+   * @function _checkHasVFSPrivilege
+   * @memberof Core.Handler#
    */
   DefaultHandler.prototype._checkHasVFSPrivilege = function(server, method, args, callback) {
     var mount = this.instance.vfs.getRealPath(server, args.path || args.src);
@@ -518,11 +531,12 @@
   /**
    * Check if active user has given Package privilege
    *
+   * <pre><code>
    * This method checks user groups against the ones defined in package metadata
+   * </pre></code>
    *
-   * @async
-   * @see Handler::checkPackagePrivilege()
-   * @method Handler::_checkHasPackagePrivilege()
+   * @function _checkHasPackagePrivilege
+   * @memberof Core.Handler#
    */
   DefaultHandler.prototype._checkHasPackagePrivilege = function(server, packageName, callback) {
     var packages = this.instance.metadata;
@@ -559,6 +573,7 @@
   /**
    * Perform a system-type login event.
    *
+   * <pre><code>
    * Used for PAM and Shadow handler.
    *
    * This method will:
@@ -566,15 +581,16 @@
    * - Get the user groups from etc file
    * - Get user-blacklisted packages from home directory
    * - Gets user-id (external event)
+   * </pre></code>
    *
-   * @param     Object        server        Server object
-   * @param     Object        config        Handler config object
-   * @param     Object        login         The login object
-   * @param     Function      getUserId     Function for getting userid
-   * @param     Function      callback      Callback fuction
+   * @param     {Object}        server        Server object
+   * @param     {Object}        config        Handler config object
+   * @param     {Object}        login         The login object
+   * @param     {Function}      getUserId     Function for getting userid
+   * @param     {Function}      callback      Callback fuction
    *
-   * @async
-   * @method Handler::onSystemLogin()
+   * @function onSystemLogin
+   * @memberof Core.Handler#
    */
   DefaultHandler.prototype.onSystemLogin = function(server, config, login, getUserId, callback) {
     var self = this;
@@ -650,14 +666,14 @@
   /**
    * Stores the user setings into the home directory of user
    *
-   * @param     Object        server        Server object
-   * @param     Object        config        Handler config object
-   * @param     Object        settings      The settings object
-   * @param     Function      getUserId     Function for getting userid
-   * @param     Function      callback      Callback fuction
+   * @param     {Object}        server        Server object
+   * @param     {Object}        config        Handler config object
+   * @param     {Object}        settings      The settings object
+   * @param     {Function}      getUserId     Function for getting userid
+   * @param     {Function}      callback      Callback fuction
    *
-   * @async
-   * @method Handler::onSystemSettings()
+   * @function onSystemSettings
+   * @memberof Core.Handler#
    */
   DefaultHandler.prototype.onSystemSettings = function(server, config, settings, callback) {
     var uname = this.getUserName(server);
@@ -677,9 +693,9 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
-   * @api handler.NWHandler
-   * @see handler.Handler
-   * @class
+   * @constructor NWHandler
+   * @memberof Core
+   * @see Core.Handler
    */
   function NWHandler(instance) {
     DefaultHandler.call(this, instance, {

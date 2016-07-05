@@ -30,6 +30,10 @@
 (function(_path, _nfs, _fs) {
   'use strict';
 
+  /**
+   * @namespace VFS
+   */
+
   function readExif(path, mime, cb) {
     /*jshint nonew: false */
 
@@ -243,12 +247,13 @@
    *
    * NOT AVAILABLE FROM CLIENT
    *
-   * @param   Object    server      Server object
-   * @param   String    file        File path
+   * @param   {Object}    server      Server object
+   * @param   {String}    file        File path
    *
-   * @return  Object                With `root` (real path), `path` (virtual path), `protocol` (virtual protocol)
+   * @return  {Object}                With `root` (real path), `path` (virtual path), `protocol` (virtual protocol)
    *
-   * @api     vfs.getRealPath
+   * @function getRealPath
+   * @memberof VFS
    */
   module.exports.getRealPath = getRealPath;
 
@@ -257,30 +262,28 @@
    *
    * NOT AVAILABLE FROM CLIENT
    *
-   * @param   String    file        File path
-   * @param   Object    config      Server configuration object
+   * @param   {String}    file        File path
+   * @param   {Object}    config      Server configuration object
    *
-   * @return  String
+   * @return  {String}
    *
-   * @api     vfs.getMime
+   * @function getMime
+   * @memberof VFS
    */
   module.exports.getMime = getMime;
 
   /**
    * Read a file
    *
-   * @param   Object    server      Server object
-   * @param   Object    args        API Call Arguments
-   * @param   Function  callback    Callback function => fn(error, result)
+   * @param  {Object}    server                   Server object
+   * @param  {Object}    args                     API Call Arguments
+   * @param  {String}    args.path                Request path
+   * @param  {Object}    [args.options]           Request options
+   * @param  {Boolean}   [args.options.raw=false] Return raw/binary data
+   * @param  {Function}  callback                 Callback function => fn(error, result)
    *
-   * @option  args      String    path      Request path
-   * @option  args      Object    options   (Optional) Request options
-   *
-   * @option  opts      boolean   raw     Return raw/binary data (default=false)
-   *
-   * @return  void
-   *
-   * @api     vfs.read
+   * @function read
+   * @memberof VFS
    */
   module.exports.read = function(server, args, callback) {
     var realPath = getRealPath(server, args.path);
@@ -310,20 +313,17 @@
   /**
    * Write a file
    *
-   * @param   Object    server      Server object
-   * @param   Object    args        API Call Arguments
-   * @param   Function  callback    Callback function => fn(error, result)
+   * @param   {Object}    server                         Server object
+   * @param   {Object}    args                           API Call Arguments
+   * @param   {String}    args.path                      Request path
+   * @param   {Mixed}     args.data                      Request payload
+   * @param   {Object}    [args.options]                 Request options
+   * @param   {Boolean}   [args.options.raw=false]       Write raw/binary data
+   * @param   {String}    [args.options.rawtype=binary]  If raw, what type
+   * @param   {Function}  callback                       Callback function => fn(error, result)
    *
-   * @option  args      String    path      Request path
-   * @option  args      Mixed     data      Request payload
-   * @option  args      Object    options   (Optional) Request options
-   *
-   * @option  opts      boolean   raw       Write raw/binary data (default=false)
-   * @option  opts      string    rawtype   If raw, what type (default=binary)
-   *
-   * @return  void
-   *
-   * @api     vfs.write
+   * @function write
+   * @memberof VFS
    */
   module.exports.write = function(server, args, callback) {
     var data = args.data || '';
@@ -355,16 +355,14 @@
   /**
    * Delete a file
    *
-   * @param   Object    server      Server object
-   * @param   Object    args        API Call Arguments
-   * @param   Function  callback    Callback function => fn(error, result)
+   * @param  {Object}    server                   Server object
+   * @param  {Object}    args                     API Call Arguments
+   * @param  {String}    args.path                Request path
+   * @param  {Object}    [args.options]           Request options
+   * @param  {Function}  callback                 Callback function => fn(error, result)
    *
-   * @option  args      String    path      Request path
-   * @option  args      Object    options   (Optional) Request options
-   *
-   * @return  void
-   *
-   * @api     vfs.delete
+   * @function delete
+   * @memberof VFS
    */
   module.exports.delete = function(server, args, callback) {
     var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
@@ -396,17 +394,15 @@
   /**
    * Copy a file
    *
-   * @param   Object    server      Server object
-   * @param   Object    args        API Call Arguments
-   * @param   Function  callback    Callback function => fn(error, result)
+   * @param   {Object}    server         Server object
+   * @param   {Object}    args           API Call Arguments
+   * @param   {String}    args.src       Request source path
+   * @param   {String}    args.dest      Request destination path
+   * @param   {Object}    [args.options] Request options
+   * @param   {Function}  callback       Callback function => fn(error, result)
    *
-   * @option  args      String    src       Request source path
-   * @option  args      String    dest      Request destination path
-   * @option  args      Object    options   (Optional) Request options
-   *
-   * @return  void
-   *
-   * @api     vfs.copy
+   * @function copy
+   * @memberof VFS
    */
   module.exports.copy = function(server, args, callback) {
     var src  = args.src;
@@ -449,18 +445,16 @@
   /**
    * Uploads a file
    *
-   * @param   Object    server      Server object
-   * @param   Object    args        API Call Arguments
-   * @param   Function  callback    Callback function => fn(error, result)
+   * @param  {Object}    server                   Server object
+   * @param  {Object}    args                     API Call Arguments
+   * @param  {String}    args.src                 Uploaded file path
+   * @param  {String}    args.name                Destination filename
+   * @param  {String}    args.path                Destination path
+   * @param  {Boolean}   [args.overwrite=false]   Overwrite if already exists
+   * @param  {Function}  callback                 Callback function => fn(error, result)
    *
-   * @option  args      String    src         Uploaded file path
-   * @option  args      String    name        Destination filename
-   * @option  args      String    path        Destination path
-   * @option  args      boolean   overwrite   Overwrite (default=false)
-   *
-   * @return  void
-   *
-   * @api     vfs.upload
+   * @function upload
+   * @memberof VFS
    */
   module.exports.upload = function(server, args, callback) {
     var tmpPath = args.path;
@@ -520,17 +514,15 @@
   /**
    * Move a file
    *
-   * @param   Object    server      Server object
-   * @param   Object    args        API Call Arguments
-   * @param   Function  callback    Callback function => fn(error, result)
+   * @param   {Object}    server         Server object
+   * @param   {Object}    args           API Call Arguments
+   * @param   {String}    args.src       Request source path
+   * @param   {String}    args.dest      Request destination path
+   * @param   {Object}    [args.options] Request options
+   * @param   {Function}  callback       Callback function => fn(error, result)
    *
-   * @option  args      String    src       Request source path
-   * @option  args      String    dest      Request destination path
-   * @option  args      Object    options   (Optional) Request options
-   *
-   * @return  void
-   *
-   * @api     vfs.move
+   * @function move
+   * @memberof VFS
    */
   module.exports.move = function(server, args, callback) {
     var src  = args.src;
@@ -568,16 +560,14 @@
   /**
    * Creates a directory
    *
-   * @param   Object    server      Server object
-   * @param   Object    args        API Call Arguments
-   * @param   Function  callback    Callback function => fn(error, result)
+   * @param  {Object}    server                   Server object
+   * @param  {Object}    args                     API Call Arguments
+   * @param  {String}    args.src                 Request path
+   * @param  {Object}    [args.options]           Request options
+   * @param  {Function}  callback                 Callback function => fn(error, result)
    *
-   * @option  args      String    src       Request source path
-   * @option  args      Object    options   (Optional) Request options
-   *
-   * @return  void
-   *
-   * @api     vfs.mkdir
+   * @function mkdir
+   * @memberof VFS
    */
   module.exports.mkdir = function(server, args, callback) {
     var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
@@ -604,16 +594,14 @@
   /**
    * Check if file exists
    *
-   * @param   Object    server      Server object
-   * @param   Object    args        API Call Arguments
-   * @param   Function  callback    Callback function => fn(error, result)
+   * @param  {Object}    server                   Server object
+   * @param  {Object}    args                     API Call Arguments
+   * @param  {String}    args.src                 Request path
+   * @param  {Object}    [args.options]           Request options
+   * @param  {Function}  callback                 Callback function => fn(error, result)
    *
-   * @option  args      String    src       Request source path
-   * @option  args      Object    options   (Optional) Request options
-   *
-   * @return  void
-   *
-   * @api     vfs.exists
+   * @function exists
+   * @memberof VFS
    */
   module.exports.exists = function(server, args, callback) {
     var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
@@ -626,16 +614,14 @@
   /**
    * Search for file(s)
    *
-   * @param   Object    server      Server object
-   * @param   Object    args        API Call Arguments
-   * @param   Function  callback    Callback function => fn(error, result)
+   * @param  {Object}    server                   Server object
+   * @param  {Object}    args                     API Call Arguments
+   * @param  {String}    args.src                 Request path
+   * @param  {Object}    args.query               Query object
+   * @param  {Function}  callback                 Callback function => fn(error, result)
    *
-   * @option  args      String    src       Request source path
-   * @option  args      Object    query     Query object {query, limit}
-   *
-   * @return  void
-   *
-   * @api     vfs.find
+   * @function find
+   * @memberof VFS
    */
   module.exports.find = function(server, args, callback) {
     var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
@@ -716,16 +702,14 @@
   /**
    * Get metadata about a file
    *
-   * @param   Object    server      Server object
-   * @param   Object    args        API Call Arguments
-   * @param   Function  callback    Callback function => fn(error, result)
+   * @param  {Object}    server                   Server object
+   * @param  {Object}    args                     API Call Arguments
+   * @param  {String}    args.src                 Request path
+   * @param  {Object}    [args.options]           Request options
+   * @param  {Function}  callback                 Callback function => fn(error, result)
    *
-   * @option  args      String    src       Request source path
-   * @option  args      Object    options   (Optional) Request options
-   *
-   * @return  void
-   *
-   * @api     vfs.fileinfo
+   * @function fileinfo
+   * @memberof VFS
    */
   module.exports.fileinfo = function(server, args, callback) {
     var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
@@ -767,16 +751,14 @@
   /**
    * Scans given directory
    *
-   * @param   Object    server      Server object
-   * @param   Object    args        API Call Arguments
-   * @param   Function  callback    Callback function => fn(error, result)
+   * @param  {Object}    server                   Server object
+   * @param  {Object}    args                     API Call Arguments
+   * @param  {String}    args.src                 Request path
+   * @param  {Object}    [args.options]           Request options
+   * @param  {Function}  callback                 Callback function => fn(error, result)
    *
-   * @option  args      String    src       Request source path
-   * @option  args      Object    options   (Optional) Request options
-   *
-   * @return  void
-   *
-   * @api     vfs.scandir
+   * @function scandir
+   * @memberof VFS
    */
   module.exports.scandir = function(server, args, callback) {
     var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
@@ -794,16 +776,14 @@
   /**
    * Checks given root path for free space
    *
-   * @param   Object    server      Server object
-   * @param   Object    args        API Call Arguments
-   * @param   Function  callback    Callback function => fn(error, result)
+   * @param  {Object}    server                   Server object
+   * @param  {Object}    args                     API Call Arguments
+   * @param  {String}    args.root                Request root path
+   * @param  {Object}    [args.options]           Request options
+   * @param  {Function}  callback                 Callback function => fn(error, result)
    *
-   * @option  args      String    root      Request source path
-   * @option  args      Object    options   (Optional) Request options
-   *
-   * @return  void
-   *
-   * @api     vfs.freeSpace
+   * @function freeSpace
+   * @memberof VFS
    */
   module.exports.freeSpace = function(server, args, callback) {
     var opts = typeof args.options === 'undefined' ? {} : (args.options || {});

@@ -1,0 +1,6 @@
+{
+  "source": {
+    "include": ["src/server/node/core/"],
+    "excludePattern": ""
+  }
+}
