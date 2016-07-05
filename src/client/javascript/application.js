@@ -48,7 +48,7 @@
    *
    * @param   {String}    name      Process name
    * @param   {Object}    args      Process arguments
-   * @param   {Object}    metadata  Application metadata
+   * @param   {Metadata}  metadata  Application metadata
    * @param   {Object}    settings  Application settings
    *
    * @link https://os.js.org/doc/tutorials/create-application.html
@@ -90,7 +90,7 @@
      * Registered Windows
      * @name __windows
      * @memberof OSjs.Core.Application#
-     * @type {Array}
+     * @type {OSjs.Core.Window[]}
      */
     this.__windows    = [];
 
@@ -133,7 +133,7 @@
    * @memberof OSjs.Core.Application#
    *
    * @param   {Object}    settings      Settings JSON
-   * @param   {Object}    metadata      Metadata JSON
+   * @param   {Metadata}  metadata      Metadata JSON
    */
   Application.prototype.init = function(settings, metadata) {
 
@@ -394,7 +394,7 @@
    *
    * @param {String}  tag       Tag name
    *
-   * @return {Array}
+   * @return {OSjs.Core.Window[]}
    */
   Application.prototype._getWindowsByTag = function(tag) {
     return this._getWindow(tag, 'tag');
@@ -406,7 +406,7 @@
    * @function _getWindows
    * @memberof OSjs.Core.Application#
    *
-   * @retrun {Array}
+   * @return {OSjs.Core.Window[]}
    */
   Application.prototype._getWindows = function() {
     return this.__windows;

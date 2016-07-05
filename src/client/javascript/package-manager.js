@@ -31,6 +31,11 @@
 (function(Utils, VFS, API) {
   'use strict';
 
+  /**
+   * This is the contents of a 'metadata.json' file for a package.
+   * @typedef Metadata
+   */
+
   /////////////////////////////////////////////////////////////////////////////
   // PACKAGE MANAGER
   /////////////////////////////////////////////////////////////////////////////
@@ -367,7 +372,7 @@
        * @function setBlacklist
        * @memberof OSjs.Core.PackageManager#
        *
-       * @param   {Array}       list        List of package names
+       * @param   {String[]}       list        List of package names
        */
       setBlacklist: function(list) {
         blacklist = list || [];
@@ -381,7 +386,7 @@
        *
        * @param {String}    name      Package name
        *
-       * @return {Object}
+       * @return {Metadata}
        */
       getPackage: function(name) {
         if ( typeof packages[name] !== 'undefined' ) {
@@ -398,7 +403,7 @@
        *
        * @param {Boolean}     [filtered=true]      Returns filtered list
        *
-       * @return {Array}
+       * @return {Metadata[]}
        */
       getPackages: function(filtered) {
         var hidden = OSjs.Core.getSettingsManager().instance('Packages', {hidden: []}).get('hidden');
@@ -444,7 +449,7 @@
        *
        * @param {String}    mime      MIME string
        *
-       * @return  {Array}
+       * @return  {Metadata[]}
        */
       getPackagesByMime: function(mime) {
         var list = [];

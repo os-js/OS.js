@@ -36,6 +36,13 @@
    * @memberof OSjs
    */
 
+  /**
+   * Callback for all Handler methods
+   * @param {String} [error] Error from response (if any)
+   * @param {Mixed} result Result from response (if any)
+   * @callback CallbackHandler
+   */
+
   var _handlerInstance;
 
   /////////////////////////////////////////////////////////////////////////////
@@ -129,7 +136,7 @@
    * @memberof OSjs.Core.Handler#
    * @see OSjs.API.initialize
    *
-   * @param   {Function}      callback        Callback function
+   * @param   {CallbackHandler}      callback        Callback function
    */
   _Handler.prototype.init = function(callback) {
     console.debug('Handler::init()');
@@ -177,9 +184,9 @@
    * @function login
    * @memberof OSjs.Core.Handler#
    *
-   * @param   {String}    username      Login username
-   * @param   {String}    password      Login password
-   * @param   {Function}  callback      Callback function => fn(err)
+   * @param   {String}           username      Login username
+   * @param   {String}           password      Login password
+   * @param   {CallbackHandler}  callback      Callback function
    */
   _Handler.prototype.login = function(username, password, callback) {
     console.info('Handler::login()', username);
@@ -203,8 +210,8 @@
    * @function logout
    * @memberof OSjs.Core.Handler#
    *
-   * @param   {Boolean}   save          Save session?
-   * @param   {Function}  callback      Callback function => fn(err, result)
+   * @param   {Boolean}          save          Save session?
+   * @param   {CallbackHandler}  callback      Callback function
    */
   _Handler.prototype.logout = function(save, callback) {
     console.info('Handler::logout()');
@@ -240,7 +247,7 @@
    * @function saveSession
    * @memberof OSjs.Core.Handler#
    *
-   * @param   {Function}  callback      Callback function => fn(err)
+   * @param   {CallbackHandler}  callback      Callback function
    */
   _Handler.prototype.saveSession = function(callback) {
     var data = [];
@@ -258,7 +265,7 @@
    * @function getLastSession
    * @memberof OSjs.Core.Handler#
    *
-   * @param   {Function}  callback      Callback function => fn(err,list)
+   * @param   {CallbackHandler}  callback      Callback function
    */
   _Handler.prototype.getLastSession = function(callback) {
     callback = callback || function() {};
@@ -304,9 +311,9 @@
    * @function saveSettings
    * @memberof OSjs.Core.Handler#
    *
-   * @param   {String}    [pool]        Pool Name
-   * @param   {Mixed}     storage       Storage data
-   * @param   {Function}  callback      Callback function => fn(error, result)
+   * @param   {String}           [pool]        Pool Name
+   * @param   {Mixed}            storage       Storage data
+   * @param   {CallbackHandler}  callback      Callback function
    */
   _Handler.prototype.saveSettings = function(pool, storage, callback) {
     var self = this;
@@ -588,8 +595,8 @@
    * @function onLogin
    * @memberof OSjs.Core.Handler#
    *
-   * @param   {Object}    data          JSON Data from login action (userData, userSettings, etc)
-   * @param   {Function}  callback      Callback function
+   * @param   {Object}           data          JSON Data from login action (userData, userSettings, etc)
+   * @param   {CallbackHandler}  callback      Callback function
    */
   _Handler.prototype.onLogin = function(data, callback) {
     callback = callback || function() {};

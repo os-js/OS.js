@@ -30,6 +30,30 @@
 (function(Utils, API, GUI, Process) {
   'use strict';
 
+  /**
+   * The predefined events are as follows:
+   * <pre><code>
+   *  inited        When window has been inited and rendered  => ()
+   *  focus         When window gets focus                    => ()
+   *  blur          When window loses focus                   => ()
+   *  destroy       When window is closed                     => ()
+   *  maximize      When window is maxmimized                 => ()
+   *  minimize      When window is minimized                  => ()
+   *  restore       When window is restored                   => ()
+   *  resize        When window is resized                    => (w, h)
+   *  resized       Triggers after window is resized          => (w, h)
+   *  move          When window is moved                      => (x, y)
+   *  moved         Triggers after window is moved            => (x, y)
+   *  keydown       When keydown                              => (ev, keyCode, shiftKey, ctrlKey, altKey)
+   *  keyup         When keyup                                => (ev, keyCode, shiftKey, ctrlKey, altKey)
+   *  keypress      When keypress                             => (ev, keyCode, shiftKey, ctrlKey, altKey)
+   *  drop          When a drop event occurs                  => (ev, type, item, args, srcEl)
+   *  drop:upload   When a upload file was dropped            => (ev, <File>, args)
+   *  drop:file     When a internal file object was dropped   => (ev, VFS.File, args, srcEl)
+   * </code></pre>
+   * @typedef WindowEvent
+   */
+
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -170,27 +194,6 @@
    * <pre><b>
    * YOU CANNOT CANNOT USE THIS VIA 'new' KEYWORD.
    * </b></pre>
-   *
-   * <pre><code>
-   * Events:
-   *  inited        When window has been inited and rendered  => ()
-   *  focus         When window gets focus                    => ()
-   *  blur          When window loses focus                   => ()
-   *  destroy       When window is closed                     => ()
-   *  maximize      When window is maxmimized                 => ()
-   *  minimize      When window is minimized                  => ()
-   *  restore       When window is restored                   => ()
-   *  resize        When window is resized                    => (w, h)
-   *  resized       Triggers after window is resized          => (w, h)
-   *  move          When window is moved                      => (x, y)
-   *  moved         Triggers after window is moved            => (x, y)
-   *  keydown       When keydown                              => (ev, keyCode, shiftKey, ctrlKey, altKey)
-   *  keyup         When keyup                                => (ev, keyCode, shiftKey, ctrlKey, altKey)
-   *  keypress      When keypress                             => (ev, keyCode, shiftKey, ctrlKey, altKey)
-   *  drop          When a drop event occurs                  => (ev, type, item, args, srcEl)
-   *  drop:upload   When a upload file was dropped            => (ev, <File>, args)
-   *  drop:file     When a internal file object was dropped   => (ev, VFS.File, args, srcEl)
-   * </code></pre>
    *
    * @summary Class used for basis as a Window.
    *
@@ -453,7 +456,7 @@
        * Children
        * @name _children
        * @memberof OSjs.Core.Window#
-       * @type {Array}
+       * @return {OSjs.Core.Window[]}
        */
       this._children      = [];
 
@@ -1034,8 +1037,8 @@
    * @memberof OSjs.Core.Window#
    * @see OSjs.Helpers.EventHandler#emit
    *
-   * @param   {String}    k       Event name
-   * @param   {Array}     args    Send these arguments (fn.apply)
+   * @param   {WindowEvent}    k       Event name
+   * @param   {Array}          args    Send these arguments (fn.apply)
    *
    * @return {Boolean}
    */
@@ -1055,8 +1058,8 @@
    * @memberof OSjs.Core.Window#
    * @see OSjs.Helpers.EventHandler#on
    *
-   * @param   {String}    k       Event name
-   * @param   {Function}  func    Callback function
+   * @param   {WindowEvent}    k       Event name
+   * @param   {Function}       func    Callback function
    *
    * @return  {Number}
    */
@@ -1074,8 +1077,8 @@
    * @memberof OSjs.Core.Window#
    * @see OSjs.Helpers.EventHandler#off
    *
-   * @param   {String}    k       Event name
-   * @param   {Number}   idx     The hook index returned from _on()
+   * @param   {WindowEvent}    k       Event name
+   * @param   {Number}         idx     The hook index returned from _on()
    *
    * @return {Boolean}
    */
@@ -1202,7 +1205,7 @@
    *
    * @param {String} tag Tag name
    *
-   * @return  {Array}
+   * @return {OSjs.Core.Window[]}
    */
   Window.prototype._getChildrenByTag = function(tag) {
     return this._getChild(tag, 'tag');
@@ -1214,7 +1217,7 @@
    * @function _getChildren
    * @memberof OSjs.Core.Window#
    *
-   * @return  {Array}
+   * @return {OSjs.Core.Window[]}
    */
   Window.prototype._getChildren = function() {
     return this._children;

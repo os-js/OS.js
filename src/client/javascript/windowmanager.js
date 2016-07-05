@@ -840,7 +840,7 @@
    * @function getPanels
    * @memberof OSjs.Core.WindowManager#
    *
-   * @return  {Array}       Panel List
+   * @return  {OSjs.Packages.CoreWM.Panel[]}       Panel List
    */
   WindowManager.prototype.getPanels = function() {
     // Implement in your WM
@@ -891,7 +891,7 @@
    * @function getStyleThemes
    * @memberof OSjs.Core.WindowManager#
    *
-   * @return  {Array}   The list of themes
+   * @return  {String[]}   The list of themes
    */
   WindowManager.prototype.getStyleThemes = function() {
     return API.getConfig('Styles', []);
@@ -903,7 +903,7 @@
    * @function getSoundThemes
    * @memberof OSjs.Core.WindowManager#
    *
-   * @return  {Array}   The list of themes
+   * @return  {String[]}   The list of themes
    */
   WindowManager.prototype.getSoundThemes = function() {
     return API.getConfig('Sounds', []);
@@ -915,7 +915,7 @@
    * @function getIconThemes
    * @memberof OSjs.Core.WindowManager#
    *
-   * @return  {Array}   The list of themes
+   * @return  {String[]}   The list of themes
    */
   WindowManager.prototype.getIconThemes = function() {
     return API.getConfig('Icons', []);
@@ -999,7 +999,7 @@
    * @function getWindows
    * @memberof OSjs.Core.WindowManager#
    *
-   * @return    {Array}           List of all Windows
+   * @return    {OSjs.Core.Window[]}           List of all Windows
    */
   WindowManager.prototype.getWindows = function() {
     return this._windows;

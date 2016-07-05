@@ -166,7 +166,7 @@
    * @param   {Object}    opts                  Options
    * @param   {Boolean}   [opts.visible=true]   All visible modules only
    *
-   * @return  {Array}                   List of all Modules found
+   * @return  {Object{}}                   List of all Modules found
    */
   function getModules(opts) {
     opts = Utils.argumentDefaults(opts, {
@@ -232,7 +232,6 @@
    *
    * @param     {Array}     list                      List of results from scandir()
    * @param     {Object}    options                   Filter options
-   *
    * @param     {String}    options.typeFilter        `type` filter
    * @param     {Array}     options.mimeFilter        `mime` filter
    * @param     {Boolean}   options.showHiddenFiles   Show dotfiles

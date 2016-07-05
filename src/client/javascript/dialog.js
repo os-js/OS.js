@@ -44,7 +44,7 @@
    * You only get an event back if an actual button was pressed.
    * </pre>
    *
-   * @callback dialogCallback
+   * @callback CallbackDialog
    * @param {Event}   ev      Browser event that occured from action
    * @param {String}  button  Which button that was clicked
    * @param {Mixed}   result  Result from dialog input

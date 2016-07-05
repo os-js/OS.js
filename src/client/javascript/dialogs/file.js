@@ -50,7 +50,7 @@
    * @param  {Array}            [args.filter]             Array of MIMIE filters
    * @param  {Array}            [args.mfilter]            Array of function to filter module list
    * @param  {String}           [args.select]             Selection type (file/dir)
-   * @param  {dialogCallback}   callback                  Callback when done
+   * @param  {CallbackDialog}   callback                  Callback when done
    *
    * @constructor File
    * @memberof OSjs.Dialogs

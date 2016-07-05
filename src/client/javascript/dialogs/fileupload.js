@@ -41,7 +41,7 @@
    * @param  {String}          args.title        Dialog title
    * @param  {String}          args.dest         VFS destination
    * @param  {OSjs.VFS.File}   [args.file]       File to upload
-   * @param  {dialogCallback}  callback          Callback when done
+   * @param  {CallbackDialog}  callback          Callback when done
    *
    * @constructor FileUpload
    * @memberof OSjs.Dialogs

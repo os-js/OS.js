@@ -41,7 +41,7 @@
    * @param  {String}          args.title        Dialog title
    * @param  {String}          args.message      Dialog message
    * @param  {OSjs.VFS.File}   args.file         The file to open
-   * @param  {dialogCallback}  callback          Callback when done
+   * @param  {CallbackDialog}  callback          Callback when done
    *
    * @constructor ApplicationChooser
    * @memberof OSjs.Dialogs

@@ -40,7 +40,7 @@
    * @param  {Object}          args              An object with arguments
    * @param  {String}          args.title        Dialog title
    * @param  {OSjs.VFS.File}   args.file         File to use
-   * @param  {dialogCallback}  callback          Callback when done
+   * @param  {CallbackDialog}  callback          Callback when done
    *
    * @constructor FileInfo
    * @memberof OSjs.Dialogs

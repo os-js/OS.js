@@ -44,10 +44,10 @@
    */
 
   /**
-   * @property {Request}               request     HTTP Request
-   * @property {Response}              response    HTTP Response
-   * @property {Object}                config      OS.js Config (from src/conf)
-   * @property {Core.Handler.Handler}  handler     OS.js Handler
+   * @property {Request}             request     HTTP Request
+   * @property {Response}            response    HTTP Response
+   * @property {Object}              config      OS.js Config (from src/conf)
+   * @property {Core.Handler.Class}  handler     OS.js Handler
    * @typedef ServerObject
    */
 

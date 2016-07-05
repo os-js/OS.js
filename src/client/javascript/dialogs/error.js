@@ -42,7 +42,7 @@
    * @param  {String}          args.message      Dialog message
    * @param  {String}          args.error        Error message
    * @param  {Error}           [args.exception]  Exception
-   * @param  {dialogCallback}  callback          Callback when done
+   * @param  {CallbackDialog}  callback          Callback when done
    *
    * @constructor Error
    * @memberof OSjs.Dialogs

@@ -42,7 +42,7 @@
    * @param  {String}          args.message        Dialog message
    * @param  {String}          [args.value]        Input value
    * @param  {String}          [args.placeholder]  Input placeholder
-   * @param  {dialogCallback}  callback            Callback when done
+   * @param  {CallbackDialog}  callback            Callback when done
    *
    * @constructor Input
    * @memberof OSjs.Dialogs

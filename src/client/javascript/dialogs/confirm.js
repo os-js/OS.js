@@ -41,7 +41,7 @@
    * @param  {String}          args.title        Dialog title
    * @param  {String}          args.message      Dialog message
    * @param  {Array}           args.buttons      Dialog buttons (default=yes,no,cancel)
-   * @param  {dialogCallback}  callback          Callback when done
+   * @param  {CallbackDialog}  callback          Callback when done
    *
    * @constructor Confirm
    * @memberof OSjs.Dialogs

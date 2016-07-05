@@ -777,7 +777,7 @@
    * @function getMetadata
    * @memberof OSjs.Core
    *
-   * @return  {Object}
+   * @return  {Metadata[]}
    */
   OSjs.Core.getMetadata = OSjs.Core.getMetadata || function() {
     return {};

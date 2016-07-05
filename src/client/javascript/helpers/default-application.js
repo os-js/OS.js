@@ -159,7 +159,7 @@
 
     win._toggleLoading(true);
 
-    function vfsCallback(error, result) {
+    function CallbackVFS(error, result) {
       win._toggleLoading(false);
       if ( onError(error) ) {
         return;
@@ -168,9 +168,9 @@
     }
 
     if ( this.defaultOptions.readData ) {
-      VFS.read(file, vfsCallback, {type: this.defaultOptions.rawData ? 'binary' : 'text'});
+      VFS.read(file, CallbackVFS, {type: this.defaultOptions.rawData ? 'binary' : 'text'});
     } else {
-      VFS.url(file, vfsCallback);
+      VFS.url(file, CallbackVFS);
     }
 
     return true;

@@ -30,6 +30,29 @@
 (function(Utils, API) {
   'use strict';
 
+  /**
+   * The predefined events are as follows:
+   * <pre><code>
+   *  message       All events                               => (msg, object, options)
+   *  attention     When application gets attention signal   => (args)
+   *  hashchange    When URL hash has changed                => (args)
+   *  api           API event                                => (method)
+   *  destroy       Destruction event                        => (killed)
+   *  destroyWindow Attached window destruction event        => (win)
+   *  initedWindow  Attached window event                    => (win)
+   *  vfs           For all VFS events                       => (msg, object, options)
+   *  vfs:mount     VFS mount event                          => (module, options, msg)
+   *  vfs:unmount   VFS unmount event                        => (module, options, msg)
+   *  vfs:write     VFS write event                          => (dest, options, msg)
+   *  vfs:mkdir     VFS mkdir event                          => (dest, options, msg)
+   *  vfs:move      VFS move event                           => ({src,dest}, options, msg)
+   *  vfs:delete    VFS delete event                         => (dest, options, msg)
+   *  vfs:upload    VFS upload event                         => (file, options, msg)
+   *  vfs:update    VFS update event                         => (dir, options, msg)
+   * </code></pre>
+   * @typedef ProcessEvent
+   */
+
   /////////////////////////////////////////////////////////////////////////////
   // GLOBALS
   /////////////////////////////////////////////////////////////////////////////
@@ -172,7 +195,7 @@
    * @function getProcesses
    * @memberof OSjs.API
    *
-   * @return  {Array}
+   * @return  {OSjs.Core.Process[]}
    */
   function doGetProcesses() {
     return _PROCS;
@@ -189,31 +212,11 @@
    * YOU CANNOT CANNOT USE THIS VIA 'new' KEYWORD.
    * </b></pre>
    *
-   * <pre><code>
-   * Events:
-   *  message       All events                               => (msg, object, options)
-   *  attention     When application gets attention signal   => (args)
-   *  hashchange    When URL hash has changed                => (args)
-   *  api           API event                                => (method)
-   *  destroy       Destruction event                        => (killed)
-   *  destroyWindow Attached window destruction event        => (win)
-   *  initedWindow  Attached window event                    => (win)
-   *  vfs           For all VFS events                       => (msg, object, options)
-   *  vfs:mount     VFS mount event                          => (module, options, msg)
-   *  vfs:unmount   VFS unmount event                        => (module, options, msg)
-   *  vfs:write     VFS write event                          => (dest, options, msg)
-   *  vfs:mkdir     VFS mkdir event                          => (dest, options, msg)
-   *  vfs:move      VFS move event                           => ({src,dest}, options, msg)
-   *  vfs:delete    VFS delete event                         => (dest, options, msg)
-   *  vfs:upload    VFS upload event                         => (file, options, msg)
-   *  vfs:update    VFS update event                         => (dir, options, msg)
-   * </code></pre>
-   *
    * @summary Class used for basis as a Process.
    *
    * @param   {string}    name        Process Name
    * @param   {Object}    args        Process Arguments
-   * @param   {Object}    metadata    Package Metadata
+   * @param   {Metadata}  metadata    Package Metadata
    *
    * @abstract
    * @constructor
@@ -251,7 +254,7 @@
      * Package Metadata
      * @name __metadata
      * @memberof OSjs.Core.Process#
-     * @type {Object}
+     * @type {Metadata}
      */
     this.__metadata   = metadata || {};
 
@@ -352,8 +355,8 @@
    * @see OSjs.Core.Process#on
    * @see OSjs.Helpers.EventHandler#emit
    *
-   * @param   {string}    k       Event name
-   * @param   {Array}     args    Send these arguments (fn.apply)
+   * @param   {ProcessEvent}    k       Event name
+   * @param   {Array}           args    Send these arguments (fn.apply)
    */
   Process.prototype._emit = function(k, args) {
     return this.__evHandler.emit(k, args);
@@ -366,8 +369,8 @@
    * @memberof OSjs.Core.Process#
    * @see OSjs.Helpers.EventHandler#on
    *
-   * @param   {string}    k       Event name
-   * @param   {Function}  func    Callback function
+   * @param   {ProcessEvent}    k       Event name
+   * @param   {Function}        func    Callback function
    *
    * @return  {Number}
    */
@@ -383,8 +386,8 @@
    * @see OSjs.Core.Process#_on
    * @see OSjs.Helpers.EventHandler#off
    *
-   * @param   {String}    k       Event name
-   * @param   {Number}    idx     The hook index returned from _on()
+   * @param   {ProcessEvent}    k       Event name
+   * @param   {Number}          idx     The hook index returned from _on()
    */
   Process.prototype._off = function(k, idx) {
     return this.__evHandler.off(k, idx);
@@ -448,7 +451,7 @@
    * @function _getArguments
    * @memberof OSjs.Core.Process#
    *
-   * @return  {Array}
+   * @return  {Object}
    */
   Process.prototype._getArguments = function() {
     return this.__args;

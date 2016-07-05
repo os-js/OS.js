@@ -48,7 +48,7 @@
    * @param  {Number}          [args.maxSize=30]                   Maximum size
    * @param  {String}          [args.text]                         Preview text
    * @param  {String}          [args.unit=px]                      Size unit
-   * @param  {dialogCallback}  callback                            Callback when done
+   * @param  {CallbackDialog}  callback                            Callback when done
    *
    * @constructor Font
    * @memberof OSjs.Dialogs
