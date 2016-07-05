@@ -229,7 +229,7 @@
     }
 
     item = checkMetadataArgument(item);
-    requestWrapper([item.path, 'find', [item, args]], 'ERR_VFSMODULE_FIND_FMT', callback);
+    requestWrapper([item.path, 'find', [item, args]], 'ERR_VFSMODULE_FIND_FMT', callback, null, options);
   };
 
   /**
@@ -256,7 +256,7 @@
     }
 
     item = checkMetadataArgument(item);
-    requestWrapper([item.path, 'scandir', [item]], 'ERR_VFSMODULE_SCANDIR_FMT', callback);
+    requestWrapper([item.path, 'scandir', [item]], 'ERR_VFSMODULE_SCANDIR_FMT', callback, null, options);
   };
 
   /**
