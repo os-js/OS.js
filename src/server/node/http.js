@@ -30,6 +30,10 @@
 (function(_osjs, _path, _url, _util, _fs, _qs, _multipart, _sessions) {
   'use strict';
 
+  /**
+   * @namespace HTTP
+   */
+
   var instance, server, proxy, httpProxy;
 
   var colored = (function() {
@@ -434,16 +438,11 @@
   /**
    * Create HTTP server and listen
    *
-   * @param   Object    setup       Configuration (see osjs.js)
+   * @param   {SetupObject}    setup       Configuration
    *
-   * @option  setup     int       port        Listening port (default=null/auto)
-   * @option  setup     String    dirname     Server running dir (ex: /osjs/src/server/node)
-   * @option  setup     String    root        Installation root directory (ex: /osjs)
-   * @option  setup     String    dist        Build root directory (ex: /osjs/dist)
-   * @option  setup     boolean   nw          NW build (default=false)
-   * @option  setup     boolean   logging     Enable logging (default=true)
-   *
-   * @api     http.listen
+   * @memberof HTTP
+   * @function listen
+   * @see osjs.js
    */
   module.exports.listen = function(setup) {
     instance = _osjs.init(setup);
@@ -487,9 +486,10 @@
   /**
    * Closes the active HTTP server
    *
-   * @param   Function  cb          Callback function
+   * @param   {Function}  cb          Callback function
    *
-   * @api     http.close
+   * @memberof HTTP
+   * @function close
    */
   module.exports.close = function(cb) {
     cb = cb || function() {};

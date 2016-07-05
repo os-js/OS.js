@@ -247,8 +247,8 @@
    *
    * NOT AVAILABLE FROM CLIENT
    *
-   * @param   {Object}    server      Server object
-   * @param   {String}    file        File path
+   * @param   {ServerObject}    server      Server object
+   * @param   {String}          file        File path
    *
    * @return  {Object}                With `root` (real path), `path` (virtual path), `protocol` (virtual protocol)
    *
@@ -275,12 +275,12 @@
   /**
    * Read a file
    *
-   * @param  {Object}    server                   Server object
-   * @param  {Object}    args                     API Call Arguments
-   * @param  {String}    args.path                Request path
-   * @param  {Object}    [args.options]           Request options
-   * @param  {Boolean}   [args.options.raw=false] Return raw/binary data
-   * @param  {Function}  callback                 Callback function => fn(error, result)
+   * @param  {ServerObject}    server                   Server object
+   * @param  {Object}          args                     API Call Arguments
+   * @param  {String}          args.path                Request path
+   * @param  {Object}          [args.options]           Request options
+   * @param  {Boolean}         [args.options.raw=false] Return raw/binary data
+   * @param  {Function}        callback                 Callback function => fn(error, result)
    *
    * @function read
    * @memberof VFS
@@ -313,14 +313,14 @@
   /**
    * Write a file
    *
-   * @param   {Object}    server                         Server object
-   * @param   {Object}    args                           API Call Arguments
-   * @param   {String}    args.path                      Request path
-   * @param   {Mixed}     args.data                      Request payload
-   * @param   {Object}    [args.options]                 Request options
-   * @param   {Boolean}   [args.options.raw=false]       Write raw/binary data
-   * @param   {String}    [args.options.rawtype=binary]  If raw, what type
-   * @param   {Function}  callback                       Callback function => fn(error, result)
+   * @param  {ServerObject}    server                         Server object
+   * @param  {Object}          args                           API Call Arguments
+   * @param  {String}          args.path                      Request path
+   * @param  {Mixed}           args.data                      Request payload
+   * @param  {Object}          [args.options]                 Request options
+   * @param  {Boolean}         [args.options.raw=false]       Write raw/binary data
+   * @param  {String}          [args.options.rawtype=binary]  If raw, what type
+   * @param  {Function}        callback                       Callback function => fn(error, result)
    *
    * @function write
    * @memberof VFS
@@ -355,11 +355,11 @@
   /**
    * Delete a file
    *
-   * @param  {Object}    server                   Server object
-   * @param  {Object}    args                     API Call Arguments
-   * @param  {String}    args.path                Request path
-   * @param  {Object}    [args.options]           Request options
-   * @param  {Function}  callback                 Callback function => fn(error, result)
+   * @param  {ServerObject}    server                   Server object
+   * @param  {Object}          args                     API Call Arguments
+   * @param  {String}          args.path                Request path
+   * @param  {Object}          [args.options]           Request options
+   * @param  {Function}        callback                 Callback function => fn(error, result)
    *
    * @function delete
    * @memberof VFS
@@ -394,12 +394,12 @@
   /**
    * Copy a file
    *
-   * @param   {Object}    server         Server object
-   * @param   {Object}    args           API Call Arguments
-   * @param   {String}    args.src       Request source path
-   * @param   {String}    args.dest      Request destination path
-   * @param   {Object}    [args.options] Request options
-   * @param   {Function}  callback       Callback function => fn(error, result)
+   * @param  {ServerObject}    server         Server object
+   * @param  {Object}          args           API Call Arguments
+   * @param  {String}          args.src       Request source path
+   * @param  {String}          args.dest      Request destination path
+   * @param  {Object}          [args.options] Request options
+   * @param  {Function}        callback       Callback function => fn(error, result)
    *
    * @function copy
    * @memberof VFS
@@ -445,13 +445,13 @@
   /**
    * Uploads a file
    *
-   * @param  {Object}    server                   Server object
-   * @param  {Object}    args                     API Call Arguments
-   * @param  {String}    args.src                 Uploaded file path
-   * @param  {String}    args.name                Destination filename
-   * @param  {String}    args.path                Destination path
-   * @param  {Boolean}   [args.overwrite=false]   Overwrite if already exists
-   * @param  {Function}  callback                 Callback function => fn(error, result)
+   * @param  {ServerObject}    server                   Server object
+   * @param  {Object}          args                     API Call Arguments
+   * @param  {String}          args.src                 Uploaded file path
+   * @param  {String}          args.name                Destination filename
+   * @param  {String}          args.path                Destination path
+   * @param  {Boolean}         [args.overwrite=false]   Overwrite if already exists
+   * @param  {Function}        callback                 Callback function => fn(error, result)
    *
    * @function upload
    * @memberof VFS
@@ -514,12 +514,12 @@
   /**
    * Move a file
    *
-   * @param   {Object}    server         Server object
-   * @param   {Object}    args           API Call Arguments
-   * @param   {String}    args.src       Request source path
-   * @param   {String}    args.dest      Request destination path
-   * @param   {Object}    [args.options] Request options
-   * @param   {Function}  callback       Callback function => fn(error, result)
+   * @param  {ServerObject}    server         Server object
+   * @param  {Object}          args           API Call Arguments
+   * @param  {String}          args.src       Request source path
+   * @param  {String}          args.dest      Request destination path
+   * @param  {Object}          [args.options] Request options
+   * @param  {Function}        callback       Callback function => fn(error, result)
    *
    * @function move
    * @memberof VFS
@@ -560,11 +560,11 @@
   /**
    * Creates a directory
    *
-   * @param  {Object}    server                   Server object
-   * @param  {Object}    args                     API Call Arguments
-   * @param  {String}    args.src                 Request path
-   * @param  {Object}    [args.options]           Request options
-   * @param  {Function}  callback                 Callback function => fn(error, result)
+   * @param  {ServerObject}    server                   Server object
+   * @param  {Object}          args                     API Call Arguments
+   * @param  {String}          args.src                 Request path
+   * @param  {Object}          [args.options]           Request options
+   * @param  {Function}        callback                 Callback function => fn(error, result)
    *
    * @function mkdir
    * @memberof VFS
@@ -594,11 +594,11 @@
   /**
    * Check if file exists
    *
-   * @param  {Object}    server                   Server object
-   * @param  {Object}    args                     API Call Arguments
-   * @param  {String}    args.src                 Request path
-   * @param  {Object}    [args.options]           Request options
-   * @param  {Function}  callback                 Callback function => fn(error, result)
+   * @param  {ServerObject}    server                   Server object
+   * @param  {Object}          args                     API Call Arguments
+   * @param  {String}          args.src                 Request path
+   * @param  {Object}          [args.options]           Request options
+   * @param  {Function}        callback                 Callback function => fn(error, result)
    *
    * @function exists
    * @memberof VFS
@@ -614,11 +614,11 @@
   /**
    * Search for file(s)
    *
-   * @param  {Object}    server                   Server object
-   * @param  {Object}    args                     API Call Arguments
-   * @param  {String}    args.src                 Request path
-   * @param  {Object}    args.query               Query object
-   * @param  {Function}  callback                 Callback function => fn(error, result)
+   * @param  {ServerObject}    server                   Server object
+   * @param  {Object}          args                     API Call Arguments
+   * @param  {String}          args.src                 Request path
+   * @param  {Object}          args.query               Query object
+   * @param  {Function}        callback                 Callback function => fn(error, result)
    *
    * @function find
    * @memberof VFS
@@ -702,11 +702,11 @@
   /**
    * Get metadata about a file
    *
-   * @param  {Object}    server                   Server object
-   * @param  {Object}    args                     API Call Arguments
-   * @param  {String}    args.src                 Request path
-   * @param  {Object}    [args.options]           Request options
-   * @param  {Function}  callback                 Callback function => fn(error, result)
+   * @param  {ServerObject}    server                   Server object
+   * @param  {Object}          args                     API Call Arguments
+   * @param  {String}          args.src                 Request path
+   * @param  {Object}          [args.options]           Request options
+   * @param  {Function}        callback                 Callback function => fn(error, result)
    *
    * @function fileinfo
    * @memberof VFS
@@ -751,11 +751,11 @@
   /**
    * Scans given directory
    *
-   * @param  {Object}    server                   Server object
-   * @param  {Object}    args                     API Call Arguments
-   * @param  {String}    args.src                 Request path
-   * @param  {Object}    [args.options]           Request options
-   * @param  {Function}  callback                 Callback function => fn(error, result)
+   * @param  {ServerObject}    server                   Server object
+   * @param  {Object}          args                     API Call Arguments
+   * @param  {String}          args.src                 Request path
+   * @param  {Object}          [args.options]           Request options
+   * @param  {Function}        callback                 Callback function => fn(error, result)
    *
    * @function scandir
    * @memberof VFS
@@ -776,11 +776,11 @@
   /**
    * Checks given root path for free space
    *
-   * @param  {Object}    server                   Server object
-   * @param  {Object}    args                     API Call Arguments
-   * @param  {String}    args.root                Request root path
-   * @param  {Object}    [args.options]           Request options
-   * @param  {Function}  callback                 Callback function => fn(error, result)
+   * @param  {ServerObject}    server                   Server object
+   * @param  {Object}          args                     API Call Arguments
+   * @param  {String}          args.root                Request root path
+   * @param  {Object}          [args.options]           Request options
+   * @param  {Function}        callback                 Callback function => fn(error, result)
    *
    * @function freeSpace
    * @memberof VFS

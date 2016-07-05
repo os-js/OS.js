@@ -30,6 +30,10 @@
 (function(_path, _server) {
   'use strict';
 
+  /**
+   * @namespace Server
+   */
+
   var DIST = (process && process.argv.length > 2) ? process.argv[2] : 'dist';
   var ROOT = _path.join(__dirname, '/../../../');
   var PORT = null;

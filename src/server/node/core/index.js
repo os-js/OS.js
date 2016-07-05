@@ -30,6 +30,31 @@
 (function(_path, _fs, _cp) {
   'use strict';
 
+  /**
+   * @property   {Number}    [port=auto]     Listening port
+   * @property   {String}    dirname         Server running dir (ex: /osjs/src/server/node)
+   * @property   {String}    root            Installation root directory (ex: /osjs)
+   * @property   {String}    dist            Build root directory (ex: /osjs/dist)
+   * @property   {Boolean}   [nw=false]      NW build
+   * @property   {Boolean}   [logging=true]  Enable logging
+   * @property   {Mixed}     [settings]      Auto-detected. Path to Settings JSON file or Object
+   * @property   {String}    [repodir]       Auto-detected. Package repository root directory (ex: /osjs/src/packages)
+   * @property   {String}    [distdir]       Auto-detected. Build root directory (ex: /osjs/dist)
+   * @typedef SetupObject
+   */
+
+  /**
+   * @property {Request}               request     HTTP Request
+   * @property {Response}              response    HTTP Response
+   * @property {Object}                config      OS.js Config (from src/conf)
+   * @property {Core.Handler.Handler}  handler     OS.js Handler
+   * @typedef ServerObject
+   */
+
+  /**
+   * @namespace Core
+   */
+
   /////////////////////////////////////////////////////////////////////////////
   // GLOBALS
   /////////////////////////////////////////////////////////////////////////////
@@ -102,21 +127,12 @@
   /**
    * Initializes OS.js APIs and configurations
    *
-   * @param   Object    setup       Configuration
+   * @param   {SetupObject}    setup       Configuration
    *
-   * @option  setup     int       port        Listening port (default=null/auto)
-   * @option  setup     String    dist        Build name (default=dist)
-   * @option  setup     String    dirname     Server running dir (ex: /osjs/src/server/node)
-   * @option  setup     String    root        Installation root directory (ex: /osjs)
-   * @option  setup     boolean   nw          NW build (default=false)
-   * @option  setup     boolean   logging     Enable logging (default=true)
-   * @option  setup     Mixed     settings    (Optional) Auto-detected. Path to Settings JSON file or Object
-   * @option  setup     String    repodir     (Optional) Auto-detected. Package repository root directory (ex: /osjs/src/packages)
-   * @option  setup     String    distdir     (Optional) Auto-detected. Build root directory (ex: /osjs/dist)
+   * @return  {Object} Returns an object with `api`, `vfs`, `request`, `handler` and `config`/`setup` helpers
    *
-   * @return  Object                          Returns an object with `api`, `vfs`, `request`, `handler` and `config`/`setup` helpers
-   *
-   * @api     osjs.init
+   * @function init
+   * @memberof Core
    */
   module.exports.init = function(setup) {
     (function _setDefaultInitParams() {

@@ -31,7 +31,7 @@
   'use strict';
 
   /**
-   * Namespace Core
+   * @namespace Handler
    */
 
   var ignorePrivilegesAPI = ['login'];
@@ -133,8 +133,8 @@
    * @param   {Object}      applyAPI      Apply these API methods
    * @param   {Object}      applyVFS      Apply these VFS methods
    *
-   * @constructor Handler
-   * @memberof Core
+   * @constructor Class
+   * @memberof Handler
    */
   function DefaultHandler(instance, applyAPI, applyVFS) {
     registerMethods(this, instance, applyAPI, applyVFS);
@@ -149,7 +149,7 @@
    * @return  {String}
    *
    * @function getHomePath
-   * @memberof Core.Handler#
+   * @memberof Handler.Class#
    */
   DefaultHandler.prototype.getHomePath = function(server) {
     var userdir = server.request.session.get('username');
@@ -165,7 +165,7 @@
    * @param   {Object}      server        Server object
    *
    * @function getUserName
-   * @memberof Core.Handler#
+   * @memberof Handler.Class#
    */
   DefaultHandler.prototype.getUserName = function(server) {
     return server.request.session.get('username');
@@ -177,7 +177,7 @@
    * @param   {Object}      server        Server object
    *
    * @function getUserGroups
-   * @memberof Core.Handler#
+   * @memberof Handler.Class#
    */
   DefaultHandler.prototype.getUserGroups = function(server) {
     var groups = [];
@@ -196,7 +196,7 @@
    * @param   {Function}    callback      Callback function => fn(error, result)
    *
    * @function getUserBlacklistedPackages
-   * @memberof Core.Handler#
+   * @memberof Handler.Class#
    */
   DefaultHandler.prototype.getUserBlacklistedPackages = function(server, callback) {
     callback(false, []);
@@ -210,7 +210,7 @@
    * @param   {Function}    callback      Callback function => fn(error, result)
    *
    * @function setUserData
-   * @memberof Core.Handler#
+   * @memberof Handler.Class#
    */
   DefaultHandler.prototype.setUserData = function(server, data, callback) {
     if ( data === null ) {
@@ -238,7 +238,7 @@
    * @return  {Boolean}                   Return true for normal, false for custom callback
    *
    * @function checkAPIPrivilege
-   * @memberof Core.Handler#
+   * @memberof Handler.Class#
    */
   DefaultHandler.prototype.checkAPIPrivilege = function(server, privilege, callback) {
     var self = this;
@@ -266,7 +266,7 @@
    * @return  {Boolean}                   Return true for normal, false for custom callback
    *
    * @function checkVFSPrivilege
-   * @memberof Core.Handler#
+   * @memberof Handler.Class#
    */
   DefaultHandler.prototype.checkVFSPrivilege = function(server, method, args, callback) {
     var self = this;
@@ -293,7 +293,7 @@
    * @return  {Boolean}                   Return true for normal, false for custom callback
    *
    * @function checkPackagePrivilege
-   * @memberof Core.Handler#
+   * @memberof Handler.Class#
    */
   DefaultHandler.prototype.checkPackagePrivilege = function(server, packageName, callback) {
     var self = this;
@@ -310,7 +310,7 @@
    * Event fired when server starts
    *
    * @function onServerStart
-   * @memberof Core.Handler#
+   * @memberof Handler.Class#
    */
   DefaultHandler.prototype.onServerStart = function(cb) {
     cb();
@@ -320,7 +320,7 @@
    * Event fired when server ends
    *
    * @function onServerEnd
-   * @memberof Core.Handler#
+   * @memberof Handler.Class#
    */
   DefaultHandler.prototype.onServerEnd = function(cb) {
     cb();
@@ -334,7 +334,7 @@
    * @param     {Function}      callback      Callback fuction
    *
    * @function onLogin
-   * @memberof Core.Handler#
+   * @memberof Handler.Class#
    */
   DefaultHandler.prototype.onLogin = function(server, data, callback) {
     var self = this;
@@ -368,7 +368,7 @@
    * @param     {Function}      callback      Callback fuction
    *
    * @function onLogout
-   * @memberof Core.Handler#
+   * @memberof Handler.Class#
    */
   DefaultHandler.prototype.onLogout = function(server, callback) {
     this.setUserData(server, null, function() {
@@ -385,7 +385,7 @@
    * @param     {Function}      callback      Callback fuction
    *
    * @function onVFSRequest
-   * @memberof Core.Handler#
+   * @memberof Handler.Class#
    */
   DefaultHandler.prototype.onVFSRequest = function(server, vfsMethod, vfsArguments, callback) {
     // If you want to interrupt or modify somehow, just send the two arguments to the
@@ -407,7 +407,7 @@
    * @return  {Boolean}
    *
    * @function _checkHasGroup
-   * @memberof Core.Handler#
+   * @memberof Handler.Class#
    */
   DefaultHandler.prototype._checkHasGroup = function(server, groupnames, callback) {
     groupnames = groupnames || [];
@@ -444,7 +444,7 @@
    * @param   {Function}    callback      Callback function => fn(err, result)
    *
    * @function _checkHasSession
-   * @memberof Core.Handler#
+   * @memberof Handler.Class#
    */
   DefaultHandler.prototype._checkHasSession = function(server, callback) {
     if ( !this.instance.setup.nw && !this.getUserName(server) ) {
@@ -462,7 +462,7 @@
    * @param   {Function}    callback      Callback function => fn(err, result)
    *
    * @function _checkHasBlacklistedPackage
-   * @memberof Core.Handler#
+   * @memberof Handler.Class#
    */
   DefaultHandler.prototype._checkHasBlacklistedPackage = function(server, packageName, callback) {
     this.getUserBlacklistedPackages(server, function(error, list) {
@@ -478,7 +478,7 @@
    * Check if active user has given API privilege
    *
    * @function _checkHasAPIPrivilege
-   * @memberof Core.Handler#
+   * @memberof Handler.Class#
    */
   DefaultHandler.prototype._checkHasAPIPrivilege = function(server, privilege, callback) {
     var map = this.instance.config.api.groups;
@@ -504,7 +504,7 @@
    * </pre></code>
    *
    * @function _checkHasVFSPrivilege
-   * @memberof Core.Handler#
+   * @memberof Handler.Class#
    */
   DefaultHandler.prototype._checkHasVFSPrivilege = function(server, method, args, callback) {
     var mount = this.instance.vfs.getRealPath(server, args.path || args.src);
@@ -536,7 +536,7 @@
    * </pre></code>
    *
    * @function _checkHasPackagePrivilege
-   * @memberof Core.Handler#
+   * @memberof Handler.Class#
    */
   DefaultHandler.prototype._checkHasPackagePrivilege = function(server, packageName, callback) {
     var packages = this.instance.metadata;
@@ -590,7 +590,7 @@
    * @param     {Function}      callback      Callback fuction
    *
    * @function onSystemLogin
-   * @memberof Core.Handler#
+   * @memberof Handler.Class#
    */
   DefaultHandler.prototype.onSystemLogin = function(server, config, login, getUserId, callback) {
     var self = this;
@@ -673,7 +673,7 @@
    * @param     {Function}      callback      Callback fuction
    *
    * @function onSystemSettings
-   * @memberof Core.Handler#
+   * @memberof Handler.Class#
    */
   DefaultHandler.prototype.onSystemSettings = function(server, config, settings, callback) {
     var uname = this.getUserName(server);
@@ -693,9 +693,8 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
-   * @constructor NWHandler
-   * @memberof Core
-   * @see Core.Handler
+   * @constructor NWClass
+   * @memberof Handler
    */
   function NWHandler(instance) {
     DefaultHandler.call(this, instance, {
@@ -725,12 +724,12 @@
   /**
    * Initializes the handler
    *
-   * @param   Object      instance      Current server instance
+   * @param   {Object}      instance      Current server instance
    *
-   * @return  Handler
+   * @return  {Handler.Handler}
    *
-   * @see osjs.js
-   * @api handler.init()
+   * @function init
+   * @memberof Handler
    */
   module.exports.init = function(instance) {
 
