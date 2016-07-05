@@ -30,6 +30,11 @@
 (function(Utils, API) {
   'use strict';
 
+  /**
+   * @namespace LocalStorage
+   * @memberof OSjs.VFS.Modules
+   */
+
   /*
    * This storage works like this:
    *
@@ -646,9 +651,6 @@
    *
    * This is *experimental* at best. It involves making a real-ish filesystemwhich
    * I don't have much experience in :P This is why it is disabled by default!
-   *
-   * @namespace LocalStorage
-   * @memberof OSjs.VFS.Modules
    */
   OSjs.VFS.Modules.LocalStorage = OSjs.VFS.Modules.LocalStorage || OSjs.VFS._createMountpoint({
     readOnly: false,

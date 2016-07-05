@@ -30,6 +30,11 @@
 (function(Utils, API) {
   'use strict';
 
+  /**
+   * @namespace GoogleDrive
+   * @memberof OSjs.VFS.Modules
+   */
+
   var gapi = window.gapi = window.gapi  || {};
 
   // https://developers.google.com/drive/web/quickstart/quickstart-js
@@ -892,9 +897,6 @@
 
   /**
    * This is the Google Drive VFS Abstraction for OS.js
-   *
-   * @namespace GoogleDrive
-   * @memberof OSjs.VFS.Modules
    */
   OSjs.VFS.Modules.GoogleDrive = OSjs.VFS.Modules.GoogleDrive || OSjs.VFS._createMountpoint({
     readOnly: false,

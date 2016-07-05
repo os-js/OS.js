@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API) {
+(function(Utils, API, VFS) {
   'use strict';
 
   /**
@@ -73,7 +73,7 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.VFS.Transports.Applications = {
+  VFS.Transports.Applications = {
     module: Transport,
     defaults: function(opts) {
       opts.readOnly = true;
@@ -82,4 +82,4 @@
     }
   };
 
-})(OSjs.Utils, OSjs.API);
+})(OSjs.Utils, OSjs.API, OSjs.VFS);

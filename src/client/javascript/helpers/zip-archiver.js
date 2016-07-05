@@ -156,8 +156,11 @@
    *
    * @summary Helper for handling ZIP files.
    *
-   * @constructor
-   * @memberof OSjs.Helpers
+   * @example
+   * OSjs.Helpers.ZipArchiver.createInstance({}, (err, instance) => {});
+   *
+   * @constructor Class
+   * @memberof OSjs.Helpers.ZipArchiver
    * @see OSjs.Helpers.ZipArchiver.createInsatance
    */
   function ZipArchiver(opts) {
@@ -442,9 +445,6 @@
    * @param   {Function}              args.onprogress      Callback on progress => fn(filename, currentIndex, totalIndex)
    * @param   {Function}              args.oncomplete      Callback on complete => fn(error, warnings, result)
    * @param   {OSjs.Core.Application} [args.app]           Application reference
-   *
-   * @return  void
-   * @method  ZipArchiver::extract()
    */
   ZipArchiver.prototype.extract = function(file, destination, args) {
     args = args || {};

@@ -30,6 +30,11 @@
 (function(Utils, API) {
   'use strict';
 
+  /**
+   * @namespace Dropbox
+   * @memberof OSjs.VFS.Modules
+   */
+
   // https://github.com/bcherry/dropbox-js
   // https://github.com/apily/dropbox/blob/master/index.js
   // https://www.dropbox.com/developers/core/start/python
@@ -354,9 +359,6 @@
 
   /**
    * This is the Dropbox VFS Abstraction for OS.js
-   *
-   * @namespace Dropbox
-   * @memberof OSjs.VFS.Modules
    */
   OSjs.VFS.Modules.Dropbox = OSjs.VFS.Modules.Dropbox || OSjs.VFS._createMountpoint({
     readOnly: false,
