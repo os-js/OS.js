@@ -468,6 +468,7 @@
        *
        * @function addDummyPackage
        * @memberof OSjs.Core.PackageManager#
+       * @throws {Error} On invalid package name or callback
        *
        * @param   {String}      n             Name of your package
        * @param   {String}      title         The display title

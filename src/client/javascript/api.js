@@ -292,6 +292,7 @@
    * @memberof OSjs.API
    * @see OSjs.Core.Handler#callAPI
    * @see OSjs.Utils.ajax
+   * @throws {Error} On invalid arguments
    *
    * @param   {String}    m         Method name
    * @param   {Object}    a         Method arguments
@@ -338,6 +339,7 @@
    * @function open
    * @memberof OSjs.API
    * @see OSjs.API.launch
+   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}   file          The File reference (can also be a tuple with 'path' and 'mime')
    * @param   {Object}          launchArgs    Arguments to send to process launch function

@@ -71,6 +71,7 @@
    *
    * @function on
    * @memberof OSjs.Helpers.EventHandler#
+   * @throws {Error} On invalid callback
    *
    * @param   {String}    name        Event name
    * @param   {Function}  cb          Callback function
@@ -116,6 +117,7 @@
    *
    * @function off
    * @memberof OSjs.Helpers.EventHandler#
+   * @throws {Error} On event name
    *
    * @param   {String}    name        Event name
    * @param   {Number}    index       Event index (as returned by on())

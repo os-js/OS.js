@@ -43,6 +43,7 @@
    * </b></pre>
    *
    * @summary This is the class returned from SettingsManager getters.
+   * @throws {Error} If an invalid object was given
    *
    * @param   {Object}        obj         Settings tree
    * @param   {String}        poolName    Name of the pool
@@ -166,6 +167,7 @@
    *
    * @function instance
    * @memberof OSjs.Helpers.SettingsFragment#
+   * @throws {Error} If the given key does not exist
    *
    * @param     {String}        key     Key name
    *

@@ -228,6 +228,7 @@
    * @constructor
    * @memberof OSjs.Core
    * @mixes OSjs.Helpers.EventHandler
+   * @throws {Error} On invalid arguments
    */
   var Window = (function() {
     var _WID                = 0;

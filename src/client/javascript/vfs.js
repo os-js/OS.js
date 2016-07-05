@@ -528,6 +528,7 @@
    *
    * @function createMountpoint
    * @memberof OSjs.VFS
+   * @throws {Error} If the mountpoint is already mounted or the module is invalid
    *
    * @param {Object}     opts                           Mountpoint options
    * @param {String}     opts.name                      Mountpoint Name (unique)
@@ -620,6 +621,7 @@
    *
    * @function removeMountpoints
    * @memberof OSjs.VFS
+   * @throws {Error} If the mountpoint does not exist
    *
    * @param   {String}      moduleName        Name of registered module
    * @param   {Function}    cb                Callback function => fn(err, result)

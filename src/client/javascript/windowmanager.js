@@ -538,6 +538,7 @@
    *
    * @function addWindow
    * @memberof OSjs.Core.WindowManager#
+   * @throws {Error} If invalid window is given
    *
    * @param   {OSjs.Core.Window}      w         Window reference
    * @param   {Boolean}               focus     Focus the window
@@ -577,6 +578,7 @@
    *
    * @function removeWindow
    * @memberof OSjs.Core.WindowManager#
+   * @throws {Error} If invalid window is given
    *
    * @param   {OSjs.Core.Window}      w         Window reference
    *

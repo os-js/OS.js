@@ -210,6 +210,7 @@
    *
    * @function find
    * @memberof OSjs.VFS
+   * @throws {Error} On invalid arguments
    *
    * @param  {OSjs.VFS.File}   item              Root path
    * @param  {Object}          args              Search query
@@ -238,6 +239,7 @@
    *
    * @function scandir
    * @memberof OSjs.VFS
+   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}   item                             File Metadata
    * @param   {vfsCallback}     callback                         Callback function
@@ -264,6 +266,7 @@
    *
    * @function write
    * @memberof OSjs.VFS
+   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}             item          File Metadata (you can also provide a string)
    * @param   {File}                      data          File Data (see supported types)
@@ -340,6 +343,7 @@
    *
    * @function read
    * @memberof OSjs.VFS
+   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}   item                File Metadata (you can also provide a string)
    * @param   {vfsCallback}     callback            Callback function
@@ -408,6 +412,7 @@
    *
    * @function copy
    * @memberof OSjs.VFS
+   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}             src                   Source File Metadata (you can also provide a string)
    * @param   {OSjs.VFS.File}             dest                  Destination File Metadata (you can also provide a string)
@@ -511,6 +516,7 @@
    *
    * @function move
    * @memberof OSjs.VFS
+   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}             src                   Source File Metadata (you can also provide a string)
    * @param   {OSjs.VFS.File}             dest                  Destination File Metadata (you can also provide a string)
@@ -605,6 +611,7 @@
    *
    * @function unlink
    * @memberof OSjs.VFS
+   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}             item                  File Metadata (you can also provide a string)
    * @param   {vfsCallback}               callback              Callback function
@@ -656,6 +663,7 @@
    *
    * @function mkdir
    * @memberof OSjs.VFS
+   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}             item                  File Metadata (you can also provide a string)
    * @param   {vfsCallback}               callback              Callback function
@@ -691,6 +699,7 @@
    *
    * @function exists
    * @memberof OSjs.VFS
+   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
    * @param   {vfsCallback}     callback  Callback function
@@ -712,6 +721,7 @@
    *
    * @function fileinfo
    * @memberof OSjs.VFS
+   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
    * @param   {vfsCallback}     callback  Callback function
@@ -733,6 +743,7 @@
    *
    * @function url
    * @memberof OSjs.VFS
+   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
    * @param   {vfsCallback}     callback  Callback function
@@ -756,6 +767,7 @@
    *
    * @function upload
    * @memberof OSjs.VFS
+   * @throws {Error} On invalid arguments
    *
    * @param   {Object}                    args                Function arguments (see below)
    * @param   {String}                    args.destination    Full path to destination
@@ -937,6 +949,7 @@
    *
    * @function trash
    * @memberof OSjs.VFS
+   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
    * @param   {vfsCallback}     callback  Callback function
@@ -958,6 +971,7 @@
    *
    * @function untrash
    * @memberof OSjs.VFS
+   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
    * @param   {vfsCallback}     callback  Callback function
@@ -979,6 +993,7 @@
    *
    * @function emptyTrash
    * @memberof OSjs.VFS
+   * @throws {Error} On invalid arguments
    *
    * @param   {vfsCallback}     callback  Callback function
    */
@@ -1000,6 +1015,7 @@
    *
    * @function freeSpace
    * @memberof OSjs.VFS
+   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
    * @param   {vfsCallback}     callback  Callback function

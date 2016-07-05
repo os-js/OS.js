@@ -50,6 +50,7 @@
    * </b></pre>
    *
    * @summary Used for communication, resources, settings and session handling
+   * @throws {Error} If trying to construct multiple handlers
    *
    * @example
    * OSjs.Core.getHandler()
@@ -717,6 +718,7 @@
    *
    * @function initLoginScreen
    * @memberof OSjs.Core.Handler#
+   * @throws {Error} If the login dom element does not exist
    */
   _Handler.prototype.initLoginScreen = function(callback) {
     var self      = this;
