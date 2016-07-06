@@ -86,6 +86,22 @@
     };
   }
 
+  function filterMetadata(instance) {
+    var newo = {};
+    Object.keys(instance.metadata).forEach(function(pn) {
+      var aroot = _path.join(instance.setup.repodir, pn);
+      var fname = _path.join(aroot, 'api.js');
+      if ( instance.metadata[pn] !== false ) {
+        newo[pn] = instance.metadata[pn];
+
+        if ( _fs.existsSync(fname) ) {
+          newo[pn]._apiFile = fname;
+        }
+      }
+    });
+    return newo;
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // METHODS
   /////////////////////////////////////////////////////////////////////////////
@@ -174,6 +190,8 @@
       down: down
     };
 
+    instance._metadata = filterMetadata(instance);
+
     // Set tmpdir
     process.env.TMPDIR = config.tmpdir || '/tmp';
 
@@ -181,19 +199,13 @@
     instance.handler = require('./handler.js').init(instance);
 
     // Register package application APIs
-    Object.keys(metadata).forEach(function(pn) {
-      var aroot = _path.join(setup.repodir, pn);
-      var fpath = _path.join(aroot, 'api.js');
-
-      if ( metadata[pn].enabled !== false && _fs.existsSync(fpath) ) {
-        if ( setup.logging ) {
-          console.log('+++', '{ApplicationAPI}', fpath.replace(setup.root, '/'));
+    Object.keys(instance._metadata).forEach(function(pn) {
+      var p = instance._metadata[pn];
+      if ( p._apiFile ) {
+        if ( instance.setup.logging ) {
+          console.log('+++', '{ApplicationAPI}', p._apiFile.replace(instance.setup.root, '/'));
         }
-
-        var m = require(fpath);
-        if ( typeof m._onServerStart === 'function' ) {
-          m._onServerStart(instance);
-        }
+        require(p._apiFile);
       }
     });
 
@@ -202,7 +214,7 @@
       exts.forEach(function(f) {
         if ( f.match(/\.js$/) ) {
           if ( setup.logging ) {
-            console.info('+++', '{EXTENSION}', f);
+            console.info('+++', '{Extension}', f);
           }
           if ( _fs.existsSync(config.rootdir + f) ) {
             require(config.rootdir + f).register(instance.api, instance.vfs, instance);
@@ -217,7 +229,7 @@
       if ( p.type === 'extension' && p.enabled !== false && p.spawn && p.spawn.enabled ) {
         var dir = _path.join(setup.repodir, pn, p.spawn.exec);
         if ( setup.logging ) {
-          console.log('###', '{SPAWN}', pn, dir.replace(setup.root, '/'));
+          console.log('###', '{Spawn}', pn, dir.replace(setup.root, '/'));
         }
 
         children.push(_cp.fork(dir), [], {
@@ -230,12 +242,27 @@
     (function() {
       if ( config.proxies && setup.logging ) {
         Object.keys(config.proxies).forEach(function(k) {
-          console.info('---', '{PROXY}', k);
+          console.info('+++', '{Proxy}', k);
         });
       }
     })();
 
     return instance;
+  };
+
+  module.exports.after = function(server, instance) {
+    Object.keys(instance._metadata).forEach(function(pn) {
+      var p = instance._metadata[pn];
+      if ( p._apiFile ) {
+        var m = require(p._apiFile);
+        if ( typeof m._onServerStart === 'function' ) {
+          if ( instance.setup.logging ) {
+            console.log('###', '{Ping}', pn);
+          }
+          m._onServerStart(server, instance);
+        }
+      }
+    });
   };
 
 })(require('path'), require('fs'), require('child_process'));

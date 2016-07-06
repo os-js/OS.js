@@ -466,6 +466,11 @@
 
     instance.handler.onServerStart(function() {
       var port = setup.port || instance.config.port;
+
+      server.listen(port);
+
+      _osjs.after(server, instance);
+
       var msg = _util.format('OS.js is listening on %s:%d (handler:%s dir:%s mode:%s logging:%s)',
                              addr,
                              port,
@@ -478,7 +483,6 @@
       console.log('***', msg);
       console.log('***\n\n');
 
-      server.listen(port);
     });
 
   };
