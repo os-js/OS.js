@@ -269,7 +269,7 @@
    * The callback produced from the event will the same as original, except
    * **the first parameter is always the GUI element**
    *
-   * @function ons
+   * @function son
    * @memberof OSjs.GUI.Element#
    * @see OSjs.GUI.Element#on
    *
