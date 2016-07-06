@@ -33,6 +33,7 @@
 @base_foreground_color  : #242424;
 @base_shadow_unfocused  : 0px 0px 10px 1px rgba(0, 0, 0, .3);
 @base_shadow_focused    : 0px 0px 10px 1px rgba(0, 0, 0, .6);
+@base_font_size         : 12px;
 
 @menu_background_color : @base_background_color;
 @menu_foreground_color : @base_foreground_color;
@@ -168,6 +169,7 @@ body, input, button, textarea, label, select {
   font-family:Karla, Sans-serif;
   font-weight:normal;
   font-style:normal;
+  font-size : @base_font_size;
   color: @base_foreground_color;
 }
 
@@ -231,7 +233,7 @@ corewm-panel[data-orientation="vertical"] corewm-panel-container {
 
   corewm-panel corewm-panel-item .corewm-panel-buttons > li {
     cursor : pointer;
-    font-size : 12px;
+    font-size : @base_font_size;
   }
   corewm-panel[data-orientation="horizontal"] corewm-panel-item .corewm-panel-buttons > li {
     margin-right : @gui_base_padding;
@@ -626,7 +628,7 @@ gui-toolbar[data-orientation="vertical"] {
 
 /* Expander */
 gui-expander {
-  font-size : 12px;
+  font-size : @base_font_size;
 }
   gui-expander-label {
     cursor : pointer;
@@ -765,7 +767,7 @@ gui-checkbox {
 
   gui-checkbox input:checked:after {
     content: "\2713";
-    font-size: 12px;
+    font-size : @base_font_size;
   }
 
   gui-radio[data-disabled="true"] label,
