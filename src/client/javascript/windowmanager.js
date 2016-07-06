@@ -153,7 +153,6 @@
     function onMouseDown(ev, action, win, mousePosition) {
       OSjs.API.blurMenu();
       ev.preventDefault();
-      console.error('fae');
 
       if ( win._state.maximized ) {
         return;
