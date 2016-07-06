@@ -259,7 +259,7 @@
           if ( instance.setup.logging ) {
             console.log('###', '{Ping}', pn);
           }
-          m._onServerStart(server, instance);
+          m._onServerStart(server, instance, p);
         }
       }
     });

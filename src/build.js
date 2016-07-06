@@ -567,6 +567,18 @@
             json.build = json.build || {};
             json.repo = r;
 
+            if ( json.preload ) {
+              json.preload = json.preload.map(function(iter) {
+                if ( typeof iter === 'string' ) {
+                  return {
+                    src: iter,
+                    type: iter.match(/\.js/) ? 'javascript' : 'stylesheet'
+                  };
+                }
+                return iter;
+              });
+            }
+
             list[name] = json;
           }
 
