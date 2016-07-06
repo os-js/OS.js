@@ -139,7 +139,7 @@
    * @param   {Object}    opts            Options
    * @param   {Number}    [opts.source]   Source Process ID
    *
-   * @see     Process._onMessage()
+   * @see OSjs.Core.Process#_onMessage
    *
    * @function message
    * @memberof OSjs.API
@@ -159,7 +159,7 @@
    * @param   {String}    name    Process Name (or by number)
    * @param   {Boolean}   first   Return the first found
    *
-   * @return  {Process}           Or an Array of Processes
+   * @return  {(OSjs.Core.Process[]|OSjs.Core.Process)}  Array of Processes or a Process depending on arguments
    *
    * @function getProcess
    * @memberof OSjs.API
