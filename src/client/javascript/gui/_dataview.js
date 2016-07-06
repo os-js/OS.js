@@ -372,6 +372,7 @@
 
       function select(ev) {
         ev.stopPropagation();
+        API.blurMenu();
 
         var multipleSelect = el.getAttribute('data-multiple');
         multipleSelect = multipleSelect === null || multipleSelect === 'true';
@@ -382,6 +383,8 @@
 
       function activate(ev) {
         ev.stopPropagation();
+        API.blurMenu();
+
         el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected(el)}}));
       }
 
