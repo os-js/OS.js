@@ -180,12 +180,29 @@
     // Register handler
     instance.handler = require('./handler.js').init(instance);
 
+    // Register package application APIs
+    Object.keys(metadata).forEach(function(pn) {
+      var aroot = _path.join(setup.repodir, pn);
+      var fpath = _path.join(aroot, 'api.js');
+
+      if ( metadata[pn].enabled !== false && _fs.existsSync(fpath) ) {
+        if ( setup.logging ) {
+          console.log('+++', '{ApplicationAPI}', fpath.replace(setup.root, '/'));
+        }
+
+        var m = require(fpath);
+        if ( typeof m._onServerStart === 'function' ) {
+          m._onServerStart(instance);
+        }
+      }
+    });
+
     // Register package extensions
     (function(exts) {
       exts.forEach(function(f) {
         if ( f.match(/\.js$/) ) {
           if ( setup.logging ) {
-            console.info('+++', f);
+            console.info('+++', '{EXTENSION}', f);
           }
           if ( _fs.existsSync(config.rootdir + f) ) {
             require(config.rootdir + f).register(instance.api, instance.vfs, instance);
@@ -200,7 +217,7 @@
       if ( p.type === 'extension' && p.enabled !== false && p.spawn && p.spawn.enabled ) {
         var dir = _path.join(setup.repodir, pn, p.spawn.exec);
         if ( setup.logging ) {
-          console.log('###', 'Starting spawner', pn, dir.replace(setup.root, '/'));
+          console.log('###', '{SPAWN}', pn, dir.replace(setup.root, '/'));
         }
 
         children.push(_cp.fork(dir), [], {
@@ -213,7 +230,7 @@
     (function() {
       if ( config.proxies && setup.logging ) {
         Object.keys(config.proxies).forEach(function(k) {
-          console.info('---', k, 'is a proxy!');
+          console.info('---', '{PROXY}', k);
         });
       }
     })();
