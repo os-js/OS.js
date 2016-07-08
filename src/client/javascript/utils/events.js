@@ -30,6 +30,16 @@
 (function() {
   'use strict';
 
+  /**
+   * The callback for browser events bound by OS.js
+   * @see OSjs.Utils.$bind
+   * @see OSjs.Utils.$unbind
+   * @callback CallbackEvent
+   * @param {Event} ev Browser event
+   * @param {Object} pos Event pointer position in form of x and y
+   * @param {Boolean} isTouch If event was a Touch event
+   */
+
   /////////////////////////////////////////////////////////////////////////////
   // PRIVATES
   /////////////////////////////////////////////////////////////////////////////
@@ -288,10 +298,10 @@
    * @function $bind
    * @memberof OSjs.Utils
    *
-   * @param   {Node}          el            DOM Element to attach event to
-   * @param   {String}        ev            DOM Event Name
-   * @param   {Function}      callback      Callback on event
-   * @param   {Boolean}       [useCapture]  Use capture mode
+   * @param   {Node}            el            DOM Element to attach event to
+   * @param   {String}          ev            DOM Event Name
+   * @param   {CallbackEvent}   callback      Callback on event
+   * @param   {Boolean}         [useCapture]  Use capture mode
    */
   OSjs.Utils.$bind = (function(msPointerEnabled) {
     var touchstartName   = msPointerEnabled ? 'pointerdown'   : 'touchstart';

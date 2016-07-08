@@ -247,9 +247,12 @@
    * @function on
    * @memberof OSjs.GUI.Element#
    *
-   * @param   {String}      evName      Event Name
-   * @param   {Function}    callback    Callback function
-   * @param   {Object}      [args]      Binding arguments
+   * @example
+   * element.on('click', function() {});
+   *
+   * @param   {String}        evName      Event Name
+   * @param   {CallbackEvent} callback    Callback function
+   * @param   {Object}        [args]      Binding arguments
    *
    * @return {OSjs.GUI.Element} The current instance (this)
    */
@@ -269,9 +272,17 @@
    * The callback produced from the event will the same as original, except
    * **the first parameter is always the GUI element**
    *
+   * @example
+   * element.son('click', this, this.onClick);
+   *
    * @function son
    * @memberof OSjs.GUI.Element#
    * @see OSjs.GUI.Element#on
+   *
+   * @param   {String}        evName      Event Name
+   * @param   {Object}        thisArg     Which object instance to bind to
+   * @param   {CallbackEvent} callback    Callback function
+   * @param   {Object}        [args]      Binding arguments
    *
    * @return {OSjs.GUI.Element} The current instance (this)
    */
