@@ -266,14 +266,25 @@
   /**
    * Register Event with scope
    *
+   * <pre><code>
    * This is the same as on() except that you can proxy your callback.
    * Useful for binding UI events directly to a Window.
+   * </code></pre>
    *
+   * <b><code>
    * The callback produced from the event will the same as original, except
    * **the first parameter is always the GUI element**
    *
+   * fn(obj, ev, pos, isTouch)
+   * </code></b>
+   *
    * @example
    * element.son('click', this, this.onClick);
+   *
+   * @example
+   * MyWindow.prototype.onClick = function(obj, ev, pos, isTouch ) {
+   *  // obj = 'element'
+   * }
    *
    * @function son
    * @memberof OSjs.GUI.Element#
