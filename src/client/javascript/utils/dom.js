@@ -371,14 +371,60 @@
   };
 
   /**
-   * Alias
-   *
    * @function $isInput
    * @memberof OSjs.Utils
-   * @see OSjs.Utils.isFormElement
+   * @alias OSjs.Utils.isFormElement
+   * @deprecated Please use aliased method instead
    */
   OSjs.Utils.$isInput = function(ev) {
-    return this.$isFormElement(ev); //, ['TEXTAREA', 'INPUT']);
+    console.warn('Utils::$isInput is deprecated', 'Use Utils::$isFormElement instead');
+    return this.$isFormElement(ev);
+  };
+
+  /**
+   * Set or Get element CSS
+   *
+   * @param {Node}                  el      DOM Node
+   * @param {(String|Object)}       ink     CSS attribute name to get/set, or full dict to set
+   * @param {(String|Number)}       [inv]   If previous argument was a string, this is the value that will be set
+   *
+   * @return {String} CSS attribute value
+   *
+   * @example
+   * Utils.$css(element, {
+   *  backgroundColor: '#000',
+   *  'font-size': '14px' // You can also use CSS attributes like normal
+   * });
+   *
+   * @example
+   * Utils.$css(element, 'font-family', 'Arial');
+   *
+   * @example
+   * Utils.$css(element, 'font-family'); // -> 'Arial'. Same as $getStyle
+   *
+   * @function $css
+   * @memberof OSjs.Utils
+   */
+  OSjs.Utils.$css = function(el, ink, inv) {
+    function rep(k) {
+      return k.replace(/\-(\w)/g, function(strMatch, p1) {
+        return p1.toUpperCase();
+      });
+    }
+
+    var obj = {};
+    if ( arguments.length === 2 ) {
+      if ( typeof ink === 'string' ) {
+        return el.parentNode ? OSjs.Utils.$getStyle(el, ink) : el.style[rep(ink)];
+      }
+      obj = ink;
+    } else if ( arguments.length === 3 ) {
+      obj[ink] = inv;
+    }
+
+    Object.keys(obj).forEach(function(k) {
+      el.style[rep(k)] = String(obj[k]);
+    });
   };
 
 })();
