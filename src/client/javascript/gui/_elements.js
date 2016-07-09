@@ -446,7 +446,7 @@
    * @param     {String}      q             Query
    * @param     {Boolean}     [rui=false]   Return UI Element if possible
    *
-   * @return    {Node}
+   * @return    {(Node|OSjs.GUI.Element)} Depending on arguments
    */
   UIElement.prototype.querySelector = function(q, rui) {
     var el = this.$element.querySelector(q);
@@ -465,7 +465,7 @@
    * @param     {String}      q             Query
    * @param     {Boolean}     [rui=false]   Return UI Element if possible
    *
-   * @return    {NodeCollection}
+   * @return    {OSjs.GUI.Element[]}
    */
   UIElement.prototype.querySelectorAll = function(q, rui) {
     var el = this.$element.querySelectorAll(q);
@@ -475,6 +475,24 @@
       });
     }
     return el;
+  };
+
+  /**
+   * Set or get CSS attributes
+   * @function css
+   * @see OSjs.Utils.$css
+   */
+  UIElement.prototype.css = function(k, v) {
+    return Utils.$css(this.$element, k, v);
+  };
+
+  /**
+   * Get position
+   * @function position
+   * @see OSjs.Utils.$position
+   */
+  UIElement.prototype.position = function() {
+    return Utils.$position(this.$element);
   };
 
   UIElement.prototype._call = function(method, args) {
