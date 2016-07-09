@@ -230,6 +230,73 @@
     return response;
   };
 
+  /**
+   * Extends the given object
+   *
+   * <pre>
+   * If you give a `parentObj` and a prototype method exists
+   * in that target, the child object method will be wrapped
+   * to make sure the super object method is called.
+   * </pre>
+   *
+   * @example
+   * Utils.extend({
+   *  a: 'foo'
+   * }, {
+   *  b: 'bar'
+   * }); // -> {a: 'foo', b: 'bar'}
+   *
+   * @function extend
+   * @memberof OSjs.Utils
+   *
+   * @param {Object}    obj          The destination
+   * @param {Object}    methods      The source
+   * @param {Object}    [parentObj]  The parent object in case this is a class
+   */
+  OSjs.Utils.extend = function(obj, methods, parentObj) {
+    if ( obj && methods ) {
+      Object.keys(methods).forEach(function(k) {
+        if ( parentObj ) {
+          if ( typeof parentObj.prototype[k] === 'function' ) {
+            obj.prototype[k] = function extendedPrototypeMethod() {
+              methods[k].apply(this, arguments);
+              return parentObj.prototype[k].apply(this, arguments);
+            };
+            return;
+          }
+        }
+
+        obj[k] = methods[k];
+      });
+    }
+  };
+
+  /**
+   * Extends the given object by prototype chain
+   *
+   * @example
+   * var MyApp = Utils.inherit(OSjs.Core.Application, function(name, args, metadata) {
+   *  Application.apply(this, arguments);
+   * }, {
+   *  init: function() {
+   *    // then do your stuff here
+   *  }
+   * });
+   *
+   * @function inherit
+   * @memberof OSjs.Utils
+   * @see OSjs.Utils.extend
+   *
+   * @param {Object}    to        The class to inherit
+   * @param {Object}    from      The child class
+   * @param {Object}    [extend]  Extend the class with these methods
+   */
+  OSjs.Utils.inherit = function(to, from, extend) {
+    from.prototype = Object.create(to.prototype);
+    from.constructor = to;
+    return OSjs.Utils.extend(from.prototype, extend, from);
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // COLORS
   /////////////////////////////////////////////////////////////////////////////
