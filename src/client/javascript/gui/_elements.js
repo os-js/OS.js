@@ -480,6 +480,7 @@
   /**
    * Set or get CSS attributes
    * @function css
+   * @memberof OSjs.GUI.Element#
    * @see OSjs.Utils.$css
    */
   UIElement.prototype.css = function(k, v) {
@@ -489,6 +490,7 @@
   /**
    * Get position
    * @function position
+   * @memberof OSjs.GUI.Element#
    * @see OSjs.Utils.$position
    */
   UIElement.prototype.position = function() {
