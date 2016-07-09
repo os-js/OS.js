@@ -202,6 +202,35 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
+   * Gets mouse position in all cases (including touch)
+   *
+   * @example
+   * Utils.mousePosition(ev); // -> {x:1, y:1}
+   *
+   * @return {(Event|Object)}   ev      DOM Event or an Object
+   * @return Object
+   */
+  OSjs.Utils.mousePosition = function(ev) {
+    // If this is not an event object, but a x/y dict
+    if ( typeof ev.x !== 'undefined' && typeof ev.y !== 'undefined' ) {
+      return {x: ev.x, y: ev.y};
+    }
+
+    // If this is a custom event containing position
+    if ( ev.detail && typeof ev.detail.x !== 'undefined' && typeof ev.detail.y !== 'undefined' ) {
+      return {x: ev.detail.x, y: ev.detail.y};
+    }
+
+    // If this was a touch event
+    var touch = ev.touches || ev.changedTouches;
+    if ( touch && touch[0] ) {
+      return {x: touch[0].clientX, y: touch[0].clientY};
+    }
+
+    return {x: ev.clientX, y: ev.clientY};
+  };
+
+  /**
    * Get the mouse button pressed
    *
    * @function mouseButton
@@ -293,10 +322,30 @@
   /**
    * Wrapper for event-binding
    *
+   * <pre><b>
    * You can bind multiple events by separating types with a comma
+   * </b></pre>
+   *
+   * @example
+   * Utils.$bind(el, 'click', function(ev, pos, touch) {
+   *  // A click event
+   * });
+   *
+   * @example
+   * Utils.$bind(el, 'click:customname', function(ev, pos, touch) {
+   *  // A click event with custom namespace. Useful
+   *  // for when you want to separate events with same
+   *  // type.
+   * });
+   *
+   * @example
+   * Utils.$bind(el, 'click, mousedown, mouseup', function(ev, pos, touch) {
+   *  // You can bind multiple events in one go
+   * });
    *
    * @function $bind
    * @memberof OSjs.Utils
+   * @TODO Only bind one touch handler per event and dispatch
    *
    * @param   {Node}            el            DOM Element to attach event to
    * @param   {String}          ev            DOM Event Name
@@ -450,9 +499,20 @@
   /**
    * Unbinds the given event
    *
+   * <pre><b>
    * If you don't give a callback it will unbind *all* events in this category.
    *
    * You can unbind multiple events by separating types with a comma
+   * </b></pre>
+   *
+   * @example
+   * Utils.$unbind(el, 'click', function() {...}); // Unbinds spesific function
+   *
+   * @example
+   * Utils.$unbind(el, 'click'); // Unbinds all click events
+   *
+   * @example
+   * Utils.$unbind(el); // Unbinds all events
    *
    * @function $unbind
    * @memberof OSjs.Utils
