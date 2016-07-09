@@ -410,9 +410,9 @@
    *    }
    * ])
    *
-   * @param   {Array}       items             Array of items
-   * @param   {Event}       ev                DOM Event or dict with x/y
-   * @param   {Mixed}       [customInstance]  Show a custom created menu
+   * @param   {Array}                items             Array of items
+   * @param   {{Event|Object{}       ev                DOM Event or dict with x/y
+   * @param   {Mixed}                [customInstance]  Show a custom created menu
    *
    * @function createMenu
    * @memberof OSjs.GUI.Helpers
@@ -441,22 +441,6 @@
       });
     }
 
-    function getPosition() {
-      var x = typeof ev.clientX === 'undefined' ? ev.x : ev.clientX;
-      var y = typeof ev.clientY === 'undefined' ? ev.y : ev.clientY;
-      if ( typeof x === 'undefined' && typeof y === 'undefined' ) {
-        if ( ev.detail && typeof ev.detail.x !== 'undefined' ) {
-          x = ev.detail.x;
-          y = ev.detail.y;
-        } else {
-          var tpos = Utils.$position(ev.target);
-          x = tpos.left;
-          y = tpos.top;
-        }
-      }
-      return {x: x, y: y};
-    }
-
     if ( !root ) {
       root = GUI.Helpers.createElement('gui-menu', {});
       resolveItems(items || [], root);
@@ -470,7 +454,7 @@
 
     var wm = OSjs.Core.getWindowManager();
     var space = wm.getWindowSpace(true);
-    var pos = getPosition();
+    var pos = Utils.mousePosition(ev);
 
     Utils.$addClass(root, 'gui-root-menu');
     root.style.left = pos.x + 'px';
