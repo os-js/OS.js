@@ -181,7 +181,7 @@
           return;
         }
 
-        var dir = OSjs.VFS.getRelativeURL(Utils.dirname(found.path));
+        var dir = OSjs.VFS.Helpers.getRelativeURL(Utils.dirname(found.path));
         var foundFile = getMetadataFromItem(dir, found);
         callback(false, foundFile);
       } else {
@@ -202,7 +202,7 @@
       }
     }
 
-    var path = OSjs.VFS.getRelativeURL(item.path).replace(/\/+/, '/');
+    var path = OSjs.VFS.Helpers.getRelativeURL(item.path).replace(/\/+/, '/');
     if ( useParent ) {
       path = Utils.dirname(path);
     }
@@ -285,7 +285,7 @@
 
     console.info('OneDrive::scandir()', item);
 
-    var relativePath = OSjs.VFS.getRelativeURL(item.path);
+    var relativePath = OSjs.VFS.Helpers.getRelativeURL(item.path);
 
     function _finished(error, result) {
       console.groupEnd();
@@ -349,7 +349,7 @@
     var inst = OSjs.Helpers.WindowsLiveAPI.getInstance();
     var url = '//apis.live.net/v5.0/me/skydrive/files?access_token=' + inst.accessToken;
     var fd  = new FormData();
-    OSjs.VFS.addFormFile(fd, 'file', data, file);
+    OSjs.VFS.Helpers.addFormFile(fd, 'file', data, file);
 
     OSjs.Utils.ajax({
       url: url,

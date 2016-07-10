@@ -214,8 +214,8 @@
       this.scheme.find(this, 'FileInput').hide();
     }
 
-    var rootPath = VFS.getRootFromPath(this.path);
-    var modules = VFS.getModules().filter(function(m) {
+    var rootPath = VFS.Helpers.getRootFromPath(this.path);
+    var modules = VFS.Helpers.getModules().filter(function(m) {
       if ( self.args.mfilter.length ) {
         var success = false;
 
@@ -253,7 +253,7 @@
     var lastDir = this.path;
 
     function resetLastSelected() {
-      var rootPath = VFS.getRootFromPath(lastDir);
+      var rootPath = VFS.Helpers.getRootFromPath(lastDir);
       try {
         self.scheme.find(self, 'ModuleSelect').set('value', rootPath);
       } catch ( e ) {

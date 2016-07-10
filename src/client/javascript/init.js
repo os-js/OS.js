@@ -59,7 +59,7 @@
     OSjs.GUI[ns] = OSjs.GUI[ns] || {};
   });
 
-  (['Transports', 'Modules']).forEach(function(ns) {
+  (['Helpers', 'Transports', 'Modules']).forEach(function(ns) {
     OSjs.VFS[ns] = OSjs.VFS[ns] || {};
   });
 
@@ -466,8 +466,8 @@
    */
   function initVFS(config, callback) {
     console.debug('initVFS()');
-    if ( OSjs.VFS.registerMountpoints ) {
-      OSjs.VFS.registerMountpoints();
+    if ( OSjs.VFS.Helpers.registerMountpoints ) {
+      OSjs.VFS.Helpers.registerMountpoints();
     }
 
     callback();

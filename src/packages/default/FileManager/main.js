@@ -81,7 +81,7 @@
       };
 
       try {
-        VFS.createMountpoint(conn);
+        VFS.Helpers.createMountpoint(conn);
       } catch ( e ) {
         API.error(self._title, 'An error occured while trying to mount', e);
         console.warn(e.stack, e);
@@ -384,7 +384,7 @@
       this.renderSideView();
     }
 
-    VFS.getModules({special: true}).forEach(function(m, i) {
+    VFS.Helpers.getModules({special: true}).forEach(function(m, i) {
       if ( path.match(m.module.match) ) {
         found = m.module.root;
       }
@@ -400,7 +400,7 @@
     }
 
     var sideViewItems = [];
-    VFS.getModules({special: true}).forEach(function(m, i) {
+    VFS.Helpers.getModules({special: true}).forEach(function(m, i) {
       if ( m.module.dynamic && !m.module.mounted() ) {
         return;
       }

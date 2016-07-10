@@ -173,7 +173,7 @@
           if ( args.acceptcodes.indexOf(request.status) >= 0 ) {
             args.onsuccess(request.response, request, args.url);
           } else {
-            OSjs.VFS.abToText(request.response, 'text/plain', function(err, txt) {
+            OSjs.VFS.Helpers.abToText(request.response, 'text/plain', function(err, txt) {
               var error = txt || err || OSjs.API._('ERR_UTILS_XHR_FATAL');
               args.onerror(error, evt, request, args.url);
             });

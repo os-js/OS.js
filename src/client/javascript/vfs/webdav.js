@@ -40,7 +40,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   function getModule(item) {
-    var module = OSjs.VFS.getModuleFromPath(item.path);
+    var module = OSjs.VFS.Helpers.getModuleFromPath(item.path);
     if ( !module || !OSjs.VFS.Modules[module] ) {
       throw new Error(API._('ERR_VFSMODULE_INVALID_FMT', module));
     }
@@ -134,7 +134,7 @@
         }
 
         if ( opts.binary ) {
-          OSjs.VFS.dataSourceToAb(result.body, mime, callback);
+          OSjs.VFS.Helpers.dataSourceToAb(result.body, mime, callback);
         } else {
           var doc = parseDocument(result.body);
           callback(false, doc);
@@ -164,7 +164,7 @@
         var ns = getNamespace(item);
         var list = [];
         var reqpath = resolvePath(item);
-        var root = OSjs.VFS.getRootFromPath(item.path);
+        var root = OSjs.VFS.Helpers.getRootFromPath(item.path);
 
         if ( item.path !== root ) {
           list.push({
@@ -232,7 +232,7 @@
           }
         });
 
-        return OSjs.VFS.filterScandir(list, options);
+        return OSjs.VFS.Helpers.filterScandir(list, options);
       }
 
       davCall('PROPFIND', {path: item.path}, function(error, doc) {

@@ -51,7 +51,7 @@
         root = '';
       }
 
-      var module = OSjs.VFS.Modules[OSjs.VFS.getModuleFromPath(item.path)];
+      var module = OSjs.VFS.Modules[OSjs.VFS.Helpers.getModuleFromPath(item.path)];
       var url = item.path.replace(module.match, root);
       callback(false, url);
     }

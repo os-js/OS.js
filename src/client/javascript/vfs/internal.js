@@ -50,7 +50,7 @@
       internalRequest('scandir', {path: item.path}, function(error, result) {
         var list = [];
         if ( result ) {
-          result = VFS.filterScandir(result, options);
+          result = VFS.Helpers.filterScandir(result, options);
           result.forEach(function(iter) {
             list.push(new VFS.File(iter));
           });
@@ -83,7 +83,7 @@
         return;
       }
 
-      VFS.abToDataSource(data, item.mime, function(error, dataSource) {
+      VFS.Helpers.abToDataSource(data, item.mime, function(error, dataSource) {
         if ( error ) {
           callback(error);
           return;
@@ -211,7 +211,7 @@
       });
     }
 
-    VFS.addFormFile(fd, 'upload', file);
+    VFS.Helpers.addFormFile(fd, 'upload', file);
 
     OSjs.Core.getHandler().callAPI('FS:upload', fd, callback, null, options);
   }
@@ -264,9 +264,9 @@
         return;
       }
 
-      VFS.dataSourceToAb(response.body, mime, function(error, response) {
+      VFS.Helpers.dataSourceToAb(response.body, mime, function(error, response) {
         if ( options.type === 'text' ) {
-          VFS.abToText(response, mime, function(error, text) {
+          VFS.Helpers.abToText(response, mime, function(error, text) {
             callback(error, text);
           });
           return;

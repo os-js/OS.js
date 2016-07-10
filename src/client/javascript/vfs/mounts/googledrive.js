@@ -95,7 +95,7 @@
         body: createBody(data.toBase64())
       });
     } else {
-      OSjs.VFS.abToBinaryString(data, contentType, function(error, response) {
+      OSjs.VFS.Helpers.abToBinaryString(data, contentType, function(error, response) {
         callback(error, error ? false : {
           contentType: reqContentType,
           body: createBody(btoa(response))
@@ -200,7 +200,7 @@
         result.push(createItem(iter, i));
       });
     }
-    return result ? OSjs.VFS.filterScandir(result, options) : [];
+    return result ? OSjs.VFS.Helpers.filterScandir(result, options) : [];
   }
 
   /**

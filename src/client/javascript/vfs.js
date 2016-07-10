@@ -36,6 +36,11 @@
    */
 
   /**
+   * @namespace Helpers
+   * @memberof OSjs.VFS
+   */
+
+  /**
    * @namespace Transports
    * @memberof OSjs.VFS
    */
@@ -111,13 +116,13 @@
    * Check if given path is an internal module
    *
    * @function isInternalModule
-   * @memberof OSjs.VFS
+   * @memberof OSjs.VFS.Helpers
    *
    * @param   {String}    test        Module Name
    *
    * @return  {Boolean}
    */
-  function isInternalModule(test) {
+  VFS.Helpers.isInternalModule = function isInternalModule(test) {
     test = test || '';
 
     var m = VFS.Modules;
@@ -135,19 +140,19 @@
     }
 
     return d;
-  }
+  };
 
   /**
    * Checks if internal module is enabled
    *
    * @function isInternalEnabled
-   * @memberof OSjs.VFS
+   * @memberof OSjs.VFS.Helpers
    *
    * @param   {String}    module        Module Name
    *
    * @return  {Boolean}
    */
-  function isInternalEnabled(module) {
+  VFS.isInternalEnabled = function isInternalEnabled(module) {
     try {
       if ( API.getConfig('VFS.Internal.' + module + '.enabled') === false ) {
         return false;
@@ -155,20 +160,20 @@
     } catch ( e ) {}
 
     return true;
-  }
+  };
 
   /**
    * Returns a list of all enabled VFS modules
    *
    * @function getModules
-   * @memberof OSjs.VFS
+   * @memberof OSjs.VFS.Helpers
    *
    * @param   {Object}    opts                  Options
    * @param   {Boolean}   [opts.visible=true]   All visible modules only
    *
    * @return  {Object{}}                   List of all Modules found
    */
-  function getModules(opts) {
+  VFS.Helpers.getModules = function getModules(opts) {
     opts = Utils.argumentDefaults(opts, {
       visible: true,
       special: false
@@ -190,13 +195,13 @@
       }
     });
     return a;
-  }
+  };
 
   /**
    * Get module name from path
    *
    * @function getModuleFromPath
-   * @memberof OSjs.VFS
+   * @memberof OSjs.VFS.Helpers
    *
    * @param   {String}    test               Path name
    * @param   {Boolean}   [retdef=true]      Return default upon failure
@@ -204,7 +209,7 @@
    *
    * @return  {Mixed}                 Module name or object based on arguments
    */
-  function getModuleFromPath(test, retdef, retobj) {
+  VFS.Helpers.getModuleFromPath = function getModuleFromPath(test, retdef, retobj) {
     retdef = typeof retdef === 'undefined' ? true : (retdef === true);
 
     var d = null;
@@ -222,13 +227,13 @@
 
     var moduleName = d || (retdef ? DefaultModule : null);
     return retobj ? VFS.Modules[moduleName] : moduleName;
-  }
+  };
 
   /**
    * Filters a scandir() request
    *
    * @function filterScandir
-   * @memberof OSjs.VFS
+   * @memberof OSjs.VFS.Helpers
    *
    * @param     {Array}     list                      List of results from scandir()
    * @param     {Object}    options                   Filter options
@@ -238,7 +243,7 @@
    *
    * @return  {Boolean}
    */
-  function filterScandir(list, options) {
+  VFS.Helpers.filterScandir = function filterScandir(list, options) {
 
     var defaultOptions = Utils.cloneObject(OSjs.Core.getSettingsManager().get('VFS') || {});
 
@@ -303,32 +308,36 @@
     }
 
     return tree.dirs.concat(tree.files);
-  }
-
-  /**
-   * Returns the URL without protocol
-   *
-   * @param   String    orig        Path name
-   *
-   * @return  String
-   * @api     OSjs.VFS.getRelativeURL()
-   */
-  function getRelativeURL(orig) {
-    return orig.replace(/^([A-z0-9\-_]+)\:\/\//, '');
-  }
+  };
 
   /**
    * Get root from path (ex: foo:///)
    *
-   * @param   String    path        Path name
+   * @function getRootFromPath
+   * @memberof OSjs.VFS.Helpers
    *
-   * @return  String
+   * @param   {String}    path        Path name
+   * @return  {String}
    * @api     OSjs.VFS.getRootFromPath()
    */
-  function getRootFromPath(path) {
-    var module = getModuleFromPath(path);
+  OSjs.VFS.Helpers.getRootFromPath = function getRootFromPath(path) {
+    var module = VFS.Helpers.getModuleFromPath(path);
     return VFS.Modules[module].root;
-  }
+  };
+
+  /**
+   * Returns the URL without protocol
+   *
+   * @function getRelativeURL
+   * @memberof OSjs.VFS.Helpers
+   *
+   * @param   {String}    orig        Path name
+   *
+   * @return  {String}
+   */
+  VFS.Helpers.getRelativeURL = function getRelativeURL(orig) {
+    return orig.replace(/^([A-z0-9\-_]+)\:\/\//, '');
+  };
 
   /**
    * Creates a regexp matcher for a VFS module (from string)
@@ -363,14 +372,14 @@
    * This is a helper to add a File to FormData
    *
    * @function addFormFile
-   * @memberof OSjs.VFS
+   * @memberof OSjs.VFS.Helpers
    *
    * @param   {FormData}                        fd      FormData instance
    * @param   {String}                          key     FormData entry name
    * @param   {(window.File|window.Blob)}       data    File Data (see supported types)
    * @param   {OSjs.VFS.File}                   file    File Metadata
    */
-  function addFormFile(fd, key, data, file) {
+  VFS.Helpers.addFormFile = function addFormFile(fd, key, data, file) {
     if ( data instanceof window.File ) {
       fd.append(key, data);
     } else {
@@ -390,19 +399,19 @@
         }
       }
     }
-  }
+  };
 
   /**
    * Convert DataSourceURL to ArrayBuffer
    *
    * @function dataSourceToAb
-   * @memberof OSjs.VFS
+   * @memberof OSjs.VFS.Helpers
    *
    * @param   {String}        data        The datasource string
    * @param   {String}        mime        The mime type
    * @param   {Function}      callback    Callback function => fn(error, result)
    */
-  function dataSourceToAb(data, mime, callback) {
+  VFS.Helpers.dataSourceToAb = function dataSourceToAb(data, mime, callback) {
     var byteString = atob(data.split(',')[1]);
     var mimeString = data.split(',')[0].split(':')[1].split(';')[0];
 
@@ -413,75 +422,75 @@
     }
 
     callback(false, ab);
-  }
+  };
 
   /**
    * Convert PlainText to ArrayBuffer
    *
    * @function textToAb
-   * @memberof OSjs.VFS
+   * @memberof OSjs.VFS.Helpers
    *
    * @param   {String}        data        The plaintext string
    * @param   {String}        mime        The mime type
    * @param   {Function}      callback    Callback function => fn(error, result)
    */
-  function textToAb(data, mime, callback) {
+  VFS.Helpers.textToAb = function textToAb(data, mime, callback) {
     _abToSomething('readAsArrayBuffer', data, mime, callback);
-  }
+  };
 
   /**
    * Convert ArrayBuffer to DataSourceURL
    *
    * @function abToDataSource
-   * @memberof OSjs.VFS
+   * @memberof OSjs.VFS.Helpers
    *
    * @param   {ArrayBuffer}   arrayBuffer The ArrayBuffer
    * @param   {String}        mime        The mime type
    * @param   {Function}      callback    Callback function => fn(error, result)
    */
-  function abToDataSource(arrayBuffer, mime, callback) {
+  VFS.Helpers.abToDataSource = function abToDataSource(arrayBuffer, mime, callback) {
     _abToSomething('readAsDataURL', arrayBuffer, mime, callback);
-  }
+  };
 
   /**
    * Convert ArrayBuffer to PlainText
    *
    * @function abToText
-   * @memberof OSjs.VFS
+   * @memberof OSjs.VFS.Helpers
    *
    * @param   {ArrayBuffer}   arrayBuffer The ArrayBuffer
    * @param   {String}        mime        The mime type
    * @param   {Function}      callback    Callback function => fn(error, result)
    */
-  function abToText(arrayBuffer, mime, callback) {
+  VFS.Helpers.abToText = function abToText(arrayBuffer, mime, callback) {
     _abToSomething('readAsText', arrayBuffer, mime, callback);
-  }
+  };
 
   /**
    * Convert ArrayBuffer to BinaryString
    *
    * @function abToBinaryString
-   * @memberof OSjs.VFS
+   * @memberof OSjs.VFS.Helpers
    *
    * @param   {ArrayBuffer}   arrayBuffer The ArrayBuffer
    * @param   {String}        mime        The mime type
    * @param   {Function}      callback    Callback function => fn(error, result)
    */
-  function abToBinaryString(arrayBuffer, mime, callback) {
+  VFS.Helpers.abToBinaryString = function abToBinaryString(arrayBuffer, mime, callback) {
     _abToSomething('readAsBinaryString', arrayBuffer, mime, callback);
-  }
+  };
 
   /**
    * Convert ArrayBuffer to Blob
    *
    * @function abToBlob
-   * @memberof OSjs.VFS
+   * @memberof OSjs.VFS.Helpers
    *
    * @param   {ArrayBuffer}   arrayBuffer The ArrayBuffer
    * @param   {String}        mime        The mime type
    * @param   {Function}      callback    Callback function => fn(error, result)
    */
-  function abToBlob(arrayBuffer, mime, callback) {
+  VFS.Helpers.abToBlob = function abToBlob(arrayBuffer, mime, callback) {
     mime = mime || 'application/octet-stream';
 
     try {
@@ -491,18 +500,18 @@
       console.warn(e, e.stack);
       callback(e);
     }
-  }
+  };
 
   /**
    * Convert Blob to ArrayBuffer
    *
    * @function blobToAb
-   * @memberof OSjs.VFS
+   * @memberof OSjs.VFS.Helpers
    *
    * @param   {Blob}          data        The blob
    * @param   {Function}      callback    Callback function => fn(error, result)
    */
-  function blobToAb(data, callback) {
+  VFS.Helpers.blobToAb = function blobToAb(data, callback) {
     try {
       var r       = new FileReader();
       r.onerror   = function(e) { callback(e);               };
@@ -512,7 +521,7 @@
       console.warn(e, e.stack);
       callback(e);
     }
-  }
+  };
 
   /////////////////////////////////////////////////////////////////////////////
   // MOUNTPOINTS
@@ -526,7 +535,7 @@
    * If you want to configure default mountpoints, look at the manual linked below.
    *
    * @function createMountpoint
-   * @memberof OSjs.VFS
+   * @memberof OSjs.VFS.Helpers
    * @throws {Error} If the mountpoint is already mounted or the module is invalid
    *
    * @param {Object}     opts                           Mountpoint options
@@ -543,7 +552,7 @@
    *
    * @link  https://os.js.org/doc/manuals/man-mountpoints.html
    */
-  function createMountpoint(opts, cb) {
+  VFS.Helpers.createMountpoint = function createMountpoint(opts, cb) {
     opts = Utils.argumentDefaults(opts, {
       description: 'My VFS Module',
       transport: 'Internal',
@@ -611,7 +620,7 @@
     API.message('vfs:mount', opts.name, {source: null});
 
     (cb || function() {})(false, true);
-  }
+  };
 
   /**
    * Unmounts given mountpoint
@@ -619,26 +628,26 @@
    * Only mountpoints mounted via `createMountpoint` is supported
    *
    * @function removeMountpoints
-   * @memberof OSjs.VFS
+   * @memberof OSjs.VFS.Helpers
    * @throws {Error} If the mountpoint does not exist
    *
    * @param   {String}      moduleName        Name of registered module
    * @param   {Function}    cb                Callback function => fn(err, result)
    */
-  function removeMountpoint(moduleName, cb) {
+  VFS.removeMountpoint = function removeMountpoint(moduleName, cb) {
     if ( !VFS.Modules[moduleName] || !VFS.Modules[moduleName].dynamic ) {
       throw new Error(API._('ERR_VFSMODULE_NOT_MOUNTED_FMT', moduleName));
     }
     VFS.Modules[moduleName].unmount(cb);
-  }
+  };
 
   /**
    * Registeres all configured mount points
    *
    * @function registerMountpoints
-   * @memberof OSjs.VFS
+   * @memberof OSjs.VFS.Helpers
    */
-  function registerMountpoints() {
+  VFS.Helpers.registerMountpoints = function registerMountpoints() {
     if ( MountsRegistered ) { return; }
     MountsRegistered = true;
 
@@ -672,18 +681,12 @@
         }
       });
     }
-  }
+  };
 
   /**
    * Wrapper for creating a new VFS module
    *
    * THIS IS ONLY USED INTERNALLY
-   *
-   * @param   Object  params      Module parameters
-   *
-   * @return  Object              Module parameters
-   *
-   * @api   OSjs.VFS.createMountpoint()
    */
   function _createMountpoint(params) {
     var target = VFS.Transports[params.transport];
@@ -741,26 +744,6 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  VFS.filterScandir         = filterScandir;
-  VFS.getModules            = getModules;
-  VFS.getModuleFromPath     = getModuleFromPath;
-  VFS.isInternalModule      = isInternalModule;
-  VFS.isInternalEnabled     = isInternalEnabled;
-  VFS.getRelativeURL        = getRelativeURL;
-  VFS.getRootFromPath       = getRootFromPath;
-  VFS.addFormFile           = addFormFile;
-
-  VFS.abToBinaryString      = abToBinaryString;
-  VFS.abToDataSource        = abToDataSource;
-  VFS.abToText              = abToText;
-  VFS.textToAb              = textToAb;
-  VFS.abToBlob              = abToBlob;
-  VFS.blobToAb              = blobToAb;
-  VFS.dataSourceToAb        = dataSourceToAb;
-
   VFS._createMountpoint     = _createMountpoint;
-  VFS.createMountpoint      = createMountpoint;
-  VFS.removeMountpoint      = removeMountpoint;
-  VFS.registerMountpoints   = registerMountpoints;
 
 })(OSjs.Utils, OSjs.API, OSjs.VFS);

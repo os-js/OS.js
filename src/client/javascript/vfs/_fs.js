@@ -74,7 +74,7 @@
    * Perform VFS request
    */
   function request(test, method, args, callback, options) {
-    var d = VFS.getModuleFromPath(test, false);
+    var d = VFS.Helpers.getModuleFromPath(test, false);
 
     if ( !d ) {
       throw new Error(API._('ERR_VFSMODULE_NOT_FOUND_FMT', test));
@@ -137,7 +137,7 @@
       throw new TypeError(err || API._('ERR_VFS_EXPECT_FILE'));
     }
 
-    if ( !VFS.getModuleFromPath(item.path, false) ) {
+    if ( !VFS.Helpers.getModuleFromPath(item.path, false) ) {
       throw new Error(API._('ERR_VFSMODULE_NOT_FOUND_FMT', item.path));
     }
 
@@ -149,13 +149,13 @@
    */
   function hasSameTransport(src, dest) {
     // Modules using the normal server API
-    if ( VFS.isInternalModule(src.path) && VFS.isInternalModule(dest.path) ) {
+    if ( VFS.Helpers.isInternalModule(src.path) && VFS.Helpers.isInternalModule(dest.path) ) {
       return true;
     }
 
-    var msrc = VFS.getModuleFromPath(src.path);
+    var msrc = VFS.Helpers.getModuleFromPath(src.path);
     var isrc = VFS.Modules[msrc] || {};
-    var mdst = VFS.getModuleFromPath(dest.path);
+    var mdst = VFS.Helpers.getModuleFromPath(dest.path);
     var idst = VFS.Modules[mdst] || {};
 
     // If mounts are labeled with a name
@@ -197,7 +197,7 @@
    * Check if destination is readOnly
    */
   function isReadOnly(item) {
-    var m = VFS.getModuleFromPath(item.path);
+    var m = VFS.Helpers.getModuleFromPath(item.path);
     return (VFS.Modules[m] || {}).readOnly === true;
   }
 
@@ -311,7 +311,7 @@
     try {
       if ( typeof data === 'string' ) {
         if ( data.length ) {
-          VFS.textToAb(data, item.mime, function(error, response) {
+          VFS.Helpers.textToAb(data, item.mime, function(error, response) {
             _converted(error, response);
           });
         } else {
@@ -319,12 +319,12 @@
         }
       } else {
         if ( data instanceof VFS.FileDataURL ) {
-          VFS.dataSourceToAb(data.toString(), item.mime, function(error, response) {
+          VFS.Helpers.dataSourceToAb(data.toString(), item.mime, function(error, response) {
             _converted(error, response);
           });
           return;
         } else if ( window.Blob && data instanceof window.Blob ) {
-          VFS.blobToAb(data, function(error, response) {
+          VFS.Helpers.blobToAb(data, function(error, response) {
             _converted(error, response);
           });
           return;
@@ -370,17 +370,17 @@
       if ( options.type ) {
         var types = {
           datasource: function readToDataSource() {
-            VFS.abToDataSource(response, item.mime, function(error, dataSource) {
+            VFS.Helpers.abToDataSource(response, item.mime, function(error, dataSource) {
               callback(error, error ? null : dataSource);
             });
           },
           text: function readToText() {
-            VFS.abToText(response, item.mime, function(error, text) {
+            VFS.Helpers.abToText(response, item.mime, function(error, text) {
               callback(error, error ? null : text);
             });
           },
           blob: function readToBlob() {
-            VFS.abToBlob(response, item.mime, function(error, blob) {
+            VFS.Helpers.abToBlob(response, item.mime, function(error, blob) {
               callback(error, error ? null : blob);
             });
           }
@@ -428,7 +428,7 @@
     }
 
     if ( isReadOnly(dest) ) {
-      callback(API._('ERR_VFSMODULE_READONLY_FMT', VFS.getModuleFromPath(dest.path)));
+      callback(API._('ERR_VFSMODULE_READONLY_FMT', VFS.Helpers.getModuleFromPath(dest.path)));
       return;
     }
 
@@ -465,8 +465,8 @@
           _finished(error, response);
         }, options);
       } else {
-        var msrc = VFS.getModuleFromPath(src.path);
-        var mdst = VFS.getModuleFromPath(dest.path);
+        var msrc = VFS.Helpers.getModuleFromPath(src.path);
+        var mdst = VFS.Helpers.getModuleFromPath(dest.path);
 
         // FIXME: This does not work for folders
         if ( src.type === 'dir' ) {
@@ -537,7 +537,7 @@
     dest = checkMetadataArgument(dest, API._('ERR_VFS_EXPECT_DST_FILE'));
 
     if ( isReadOnly(dest) ) {
-      callback(API._('ERR_VFSMODULE_READONLY_FMT', VFS.getModuleFromPath(dest.path)));
+      callback(API._('ERR_VFSMODULE_READONLY_FMT', VFS.Helpers.getModuleFromPath(dest.path)));
       return;
     }
 
@@ -557,8 +557,8 @@
           _finished(error, error ? null : response);
         }, options);
       } else {
-        var msrc = VFS.getModuleFromPath(src.path);
-        var mdst = VFS.getModuleFromPath(dest.path);
+        var msrc = VFS.Helpers.getModuleFromPath(src.path);
+        var mdst = VFS.Helpers.getModuleFromPath(dest.path);
 
         dest.mime = src.mime;
 
@@ -814,7 +814,7 @@
       callback(false, file);
     }
 
-    if ( !VFS.isInternalModule(args.destination) ) {
+    if ( !VFS.Helpers.isInternalModule(args.destination) ) {
       args.files.forEach(function(f, i) {
         request(args.destination, 'upload', [f, args.destination], callback, options);
       });
@@ -896,8 +896,8 @@
 
       API.createLoading(lname, {className: 'BusyNotification', tooltip: API._('TOOLTIP_VFS_DOWNLOAD_NOTIFICATION')});
 
-      var dmodule = VFS.getModuleFromPath(args.path);
-      if ( !VFS.isInternalModule(args.path) ) {
+      var dmodule = VFS.Helpers.getModuleFromPath(args.path);
+      if ( !VFS.Helpers.isInternalModule(args.path) ) {
         var file = args;
         if ( !(file instanceof VFS.File) ) {
           file = new VFS.File(args.path);
@@ -1028,7 +1028,7 @@
 
     item = checkMetadataArgument(item);
 
-    var m = VFS.getModuleFromPath(item.path, false);
+    var m = VFS.Helpers.getModuleFromPath(item.path, false);
     m = VFS.Modules[m];
 
     requestWrapper([item.path, 'freeSpace', [m.root]], 'ERR_VFSMODULE_FREESPACE_FMT', callback);

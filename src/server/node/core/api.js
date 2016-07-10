@@ -214,12 +214,14 @@
       };
     })();
 
+    console.warn(curlRequest.opts);
     require('request')(curlRequest.opts, function(error, response, body) {
       if ( error ) {
         callback(error);
         return;
       }
 
+      console.warn(body);
       if ( curlRequest.binary && body ) {
         body = 'data:' + curlRequest.mime + ';base64,' + (body.toString('base64'));
       }

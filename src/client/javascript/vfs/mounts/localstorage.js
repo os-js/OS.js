@@ -68,7 +68,7 @@
       throw new TypeError('Expected p as String');
     }
 
-    p = OSjs.VFS.getRelativeURL(p).replace(/\/+/g, '/');
+    p = OSjs.VFS.Helpers.getRelativeURL(p).replace(/\/+/g, '/');
 
     var path = par ? (Utils.dirname(p) || '/') : p;
     if ( path !== '/' ) {
@@ -351,12 +351,12 @@
           if ( data ) {
 
             var ds  = 'data:' + metadata.mime + ',' + data;
-            OSjs.VFS.dataSourceToAb(ds, metadata.mime, function(err, res) {
+            OSjs.VFS.Helpers.dataSourceToAb(ds, metadata.mime, function(err, res) {
               if ( err ) {
                 cb(err);
               } else {
                 if ( options.url ) {
-                  OSjs.VFS.abToBlob(res, metadata.mime, function(err, blob) {
+                  OSjs.VFS.Helpers.abToBlob(res, metadata.mime, function(err, blob) {
                     cb(err, URL.createObjectURL(blob));
                   });
                 } else {
@@ -386,7 +386,7 @@
         if ( options.isds ) {
           cb(false, data);
         } else {
-          OSjs.VFS.abToDataSource(data, mime, function(err, res) {
+          OSjs.VFS.Helpers.abToDataSource(data, mime, function(err, res) {
             if ( err ) {
               callback(err, false);
             } else {
