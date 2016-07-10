@@ -366,7 +366,7 @@
         return false;
       }
 
-      API.open(new VFS.File(f.data.path, f.data.mime));
+      API.open(new VFS.File(f.data));
 
       return true;
     });
