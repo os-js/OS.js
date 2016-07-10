@@ -246,8 +246,7 @@
     API.curl({
       url: url,
       binary: true,
-      mime: mime,
-      method: 'POST'
+      mime: mime
     }, function(error, response) {
       if ( error ) {
         callback(error);
