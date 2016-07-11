@@ -51,15 +51,12 @@
     var id = child.getAttribute('data-id');
     var hasInput = child.querySelector('input');
 
-    Utils.$bind(child, 'mousedown', function(ev) {
-      ev.stopPropagation();
-    });
-
     Utils.$bind(child, 'click', function(ev, pos, touch) {
       var target = ev.target || ev.srcElement;
       var isExpander = (target.tagName.toLowerCase() === 'gui-menu-entry' && Utils.$hasClass(target, 'gui-menu-expand'));
       var stopProp = hasInput || isExpander;
 
+      ev.preventDefault();
       if ( stopProp ) {
         ev.stopPropagation();
       }
@@ -349,10 +346,6 @@
         mel.setAttribute('aria-haspopup', String(!!submenu));
         updateChildren(submenu, 2);
 
-        Utils.$bind(mel, 'mousedown', function(ev) {
-          ev.preventDefault();
-          ev.stopPropagation();
-        });
         Utils.$bind(mel, 'click', function(ev) {
           blurMenu();
 
@@ -435,7 +428,7 @@
         if ( iter.onClick ) {
           Utils.$bind(entry, 'click', function(ev) {
             iter.onClick.apply(this, arguments);
-          }, true);
+          });
         }
         par.appendChild(entry);
       });
@@ -477,6 +470,11 @@
     }, 1);
 
     lastMenu = function() {
+      if ( root ) {
+        root.querySelectorAll('gui-menu-entry').forEach(function(el) {
+          Utils.$unbind(el);
+        });
+      }
       Utils.$remove(root);
     };
   };

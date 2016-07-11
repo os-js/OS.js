@@ -37,104 +37,7 @@
    * @callback CallbackEvent
    * @param {Event} ev Browser event
    * @param {Object} pos Event pointer position in form of x and y
-   * @param {Boolean} isTouch If event was a Touch event
    */
-
-  /////////////////////////////////////////////////////////////////////////////
-  // PRIVATES
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * This is just a helper object for managing bound events.
-   *
-   * Let's say you bind the 'mousedown' event, this will result in both
-   * 'mousedown' *and* 'touchstart' being bound due to how the cross-platform
-   * system works. This object holds a reference to all of these.
-   *
-   * It is used together with the EventTarget extensions below.
-   */
-  function EventCollection() {
-    this.collection = [];
-  }
-
-  EventCollection.prototype.add = function(el, iter) {
-    el.addEventListener.apply(el, iter);
-    this.collection.push([el, iter]);
-
-  };
-
-  EventCollection.prototype.clear = function() {
-    this.collection.forEach(function(iter) {
-      iter[0].removeEventListener.apply(iter[0], iter[1]);
-    });
-    this.collection = [];
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // EXTEND EVENT BINDING
-  /////////////////////////////////////////////////////////////////////////////
-
-  function _initObject(self, type) {
-    if ( typeof self._boundEvents === 'undefined' ) {
-      self._boundEvents = {};
-    }
-    if ( typeof self._boundEvents[type] === 'undefined' ) {
-      self._boundEvents[type] = [];
-    }
-  }
-
-  function bindEventListener(el, type, listener, useCapture) {
-    _initObject(el, type);
-
-    // Make sure no duplicate listeners take place
-    for ( var i = 0; i < el._boundEvents[type].length; i++ ) {
-      if ( el._boundEvents[type][i] === listener ) {
-        return;
-      }
-    }
-
-    el._boundEvents[type].push(listener);
-    el.addEventListener(type, listener, useCapture);
-  }
-
-  function bindVirtualListneners(el, type, collection) {
-    _initObject(el, type);
-    el._boundEvents[type].push(collection);
-  }
-
-  function unbindEventListeners(el) {
-    if ( el._boundEvents ) {
-      Object.keys(el._boundEvents).forEach(function(type) {
-        unbindEventListener(el, type);
-      });
-      delete el._boundEvents;
-    }
-  }
-
-  function unbindEventListener(el, type, listener, useCapture) {
-    if ( typeof listener === 'function' ) {
-      el.removeEventListener(type, listener, useCapture);
-    } else {
-      if ( type ) {
-        if ( el._boundEvents ) {
-          var list = el._boundEvents || [];
-
-          for ( var i = 0; i < list[type].length; i++ ) {
-            if ( list[type][i] instanceof EventCollection ) {
-              list[type][i].clear();
-            } else {
-              el.removeEventListener(type, list[type][i], useCapture);
-            }
-
-            list[type].splice(i, 1);
-            i++;
-          }
-        }
-      } else {
-        unbindEventListeners(el);
-      }
-    }
-  }
 
   /////////////////////////////////////////////////////////////////////////////
   // MISC
@@ -322,9 +225,18 @@
   /**
    * Wrapper for event-binding
    *
-   * <pre><b>
-   * You can bind multiple events by separating types with a comma
-   * </b></pre>
+   * <pre><code>
+   * You can bind multiple events by separating types with a comma.
+   *
+   * This also automatically binds Touch events.
+   *
+   *   mousedown = touchstart
+   *   mouseup = touchend
+   *   mousemove = touchend
+   *   contextmenu = long-hold
+   *   dblclick = double-tap
+   *   click = tap
+   * </code></pre>
    *
    * @example
    * Utils.$bind(el, 'click', function(ev, pos, touch) {
@@ -345,156 +257,228 @@
    *
    * @function $bind
    * @memberof OSjs.Utils
-   * @TODO Only bind one touch handler per event and dispatch
+   * @TODO Implement MS Pointer events
    *
    * @param   {Node}            el            DOM Element to attach event to
    * @param   {String}          ev            DOM Event Name
    * @param   {CallbackEvent}   callback      Callback on event
    * @param   {Boolean}         [useCapture]  Use capture mode
    */
-  OSjs.Utils.$bind = (function(msPointerEnabled) {
-    var touchstartName   = msPointerEnabled ? 'pointerdown'   : 'touchstart';
-    var touchendName     = msPointerEnabled ? 'pointerup'     : 'touchend';
-    var touchmoveName    = msPointerEnabled ? 'pointermove'   : 'touchmove';
-    var touchcancelName  = msPointerEnabled ? 'pointercancel' : 'touchcancel';
+  OSjs.Utils.$bind = (function() {
+    // Default timeouts
+    var TOUCH_CONTEXTMENU = 1000;
+    var TOUCH_CLICK_MIN = 30;
+    var TOUCH_CLICK_MAX = 1000;
+    var TOUCH_DBLCLICK = 400;
 
-    function pos(ev, touchDevice) {
-      function _getTouch() {
-        var t = {};
-        if ( ev.changedTouches ) {
-          t = ev.changedTouches[0];
-        } else if ( ev.touches ) {
-          t = ev.touches[0];
-        }
-        return t;
-      }
+    /**
+     * This is the wrapper for using addEventListener
+     */
+    function addEventHandler(el, n, t, callback, handler, useCapture, realType) {
+      var args = [t, handler, useCapture];
 
-      var dev = touchDevice ? _getTouch() : ev;
-      return {x: dev.clientX, y: dev.clientY};
+      el.addEventListener.apply(el, args);
+
+      el._boundEvents[n].push({
+        realType: realType,
+        args: args,
+        callback: callback
+      });
     }
 
-    function createTouchHandler(el, evName, collection, callback, signal, param) {
-      var touchStarted = false;
-      var touchEnded = false;
-      var cachedX = 0;
-      var oldPos = {};
-      var curPos = {};
+    /**
+     * Creates touch gestures for emulating mouse input
+     */
+    function createGestureHandler(el, n, t, callback, useCapture) {
+      var started;
+      var contextTimeout;
+      var dblTimeout;
+      var moved = false;
+      var clicks = 0;
 
-      function _emitClick(ev) {
-        ev.stopPropagation();
+      // Wrapper for destroying` the event
+      function _done() {
+        contextTimeout = clearTimeout(contextTimeout);
+        started = null;
+        moved = false;
 
-        if ( (oldPos.x === curPos.x) && !touchStarted && (oldPos.y === curPos.y) ) {
-          callback.call(el, ev, curPos, true);
-        }
-        collection.timeout = clearTimeout(collection.timeout);
+        el.removeEventListener('touchend', _touchend, false);
+        el.removeEventListener('touchmove', _touchmove, false);
+        el.removeEventListener('touchcancel', _touchcancel, false);
       }
 
-      collection.add(el, [touchstartName, function(ev) {
+      // Figure out what kind of event we're supposed to handle on start
+      function _touchstart(ev) {
+        ev.preventDefault();
+
+        contextTimeout = clearTimeout(contextTimeout);
+        started = new Date();
+        moved = false;
+
+        if ( t === 'contextmenu' ) {
+          contextTimeout = setTimeout(function() {
+            emitTouchEvent(ev, t, {button: 2, which: 3, buttons: 2});
+            _done();
+          }, TOUCH_CONTEXTMENU);
+        } else if ( t === 'dblclick' ) {
+          if ( clicks === 0 ) {
+            dblTimeout = clearTimeout(dblTimeout);
+            dblTimeout = setTimeout(function() {
+              clicks = 0;
+            }, TOUCH_DBLCLICK);
+
+            clicks++;
+          } else {
+            if ( !moved ) {
+              emitTouchEvent(ev, t);
+            }
+            clicks = 0;
+          }
+        }
+
+        el.addEventListener('touchend', _touchend, false);
+        el.addEventListener('touchmove', _touchmove, false);
+        el.addEventListener('touchcancel', _touchcancel, false);
+      }
+
+      // Tapping is registered when you let go of the screen
+      function _touchend(ev) {
+        contextTimeout = clearTimeout(contextTimeout);
+        if ( !started ) {
+          return _done();
+        }
+
         var now = new Date();
+        var diff = now - started;
 
-        ev.preventDefault();
-        collection.timeout = clearTimeout(collection.timeout);
+        console.warn('<takeonme>', moved, now - started, '@', el.tagName);
 
-        if ( evName === 'dblclick' ) {
-          ev.stopPropagation();
-          if ( collection.firstTouch && ((now - collection.firstTouch) < 500) ) {
-            _emitClick(ev);
-            return;
+        if ( !moved && t === 'click' ) {
+          if ( (diff > TOUCH_CLICK_MIN) && (diff < TOUCH_CLICK_MAX) ) {
+            ev.stopPropagation();
+            emitTouchEvent(ev, t);
           }
         }
 
-        collection.firstTouch = now;
-        oldPos = curPos = pos(ev, true);
-        touchStarted = true;
+        return _done();
+      }
 
-        if ( ['click', 'contextmenu'].indexOf(evName) !== -1 ) {
-          ev.stopPropagation();
-          collection.timeout = setTimeout(function() {
-            _emitClick(ev);
-          }, evName === 'click' ? 250 : 600);
-        } else if ( evName === 'mousedown' ) {
-          _emitClick(ev);
+      // Whenever a movement has occured make sure to avoid clicks
+      function _touchmove(ev) {
+        if ( !started ) {
+          return;
         }
-      }, param]);
 
-      collection.add(el, [touchcancelName, function(ev) {
-        ev.preventDefault();
+        contextTimeout = clearTimeout(contextTimeout);
+        dblTimeout = clearTimeout(dblTimeout);
+        clicks = 0;
+        moved = true;
+      }
 
-        touchEnded = true;
-        touchStarted = false;
-        collection.timeout = clearTimeout(collection.timeout);
-      }, param]);
+      // In case touch is canceled we reset our clickers
+      function _touchcancel(ev) {
+        dblTimeout = clearTimeout(dblTimeout);
+        clicks = 0;
 
-      collection.add(el, [touchendName, function(ev) {
-        ev.preventDefault();
+        _done();
+      }
 
-        touchStarted = false;
-        touchEnded = true;
-
-        if ( evName === 'mouseup' ) {
-          callback.call(el, ev, curPos, true);
-        } else if ( evName === 'contextmenu' ) {
-          collection.timeout = clearTimeout(collection.timeout);
-        }
-      }, param]);
-
-      collection.add(el, [touchmoveName, function(ev) {
-        ev.preventDefault();
-
-        curPos = pos(ev, true);
-        collection.timeout = clearTimeout(collection.timeout);
-
-        if ( !touchEnded ) {
-          if ( evName === 'mousemove' ) {
-            callback.call(el, ev, curPos, true);
-          }
-        }
-      }, param]);
+      addEventHandler(el, n, 'touchstart', callback, _touchstart, false, 'touchstart');
     }
 
-    var touchMap = {
-      click: createTouchHandler,
-      contextmenu: createTouchHandler,
-      dblclick: createTouchHandler,
-      mouseup: touchendName,
-      mousemove: touchmoveName,
-      mousedown: touchstartName
-    };
+    /**
+     * Emits a normal mouse event from touches
+     *
+     * This basically emulates mouse behaviour on touch events
+     */
+    function emitTouchEvent(ev, type, combineWith) {
+      ev.preventDefault();
 
-    return function(el, evName, callback, param) {
+      if ( !ev.currentTarget || ev.changedTouches.length > 1 || (ev.type === 'touchend' && ev.changedTouches > 0) ) {
+        return;
+      }
 
-      evName.replace(/\s/g, '').split(',').forEach(function(part) {
-        var collection = new EventCollection();
-        var type = part.split(':')[0];
-        var tev = touchMap[type];
-        var wasTouch = false;
+      // Make sure we copy the keyboard attributes as well
+      var copy = ['ctrlKey', 'altKey', 'shiftKey', 'metaKey', 'screenX', 'screenY'];
+      var touch = ev.changedTouches[0];
+      var evtArgs = {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+      };
 
-        function cbTouchEvent(ev) {
-          callback.call(el, ev, pos(ev, true), true);
-        }
-
-        function cbMouseEvent(ev) {
-          if ( !wasTouch ) {
-            callback.call(el, ev, pos(ev), false);
-          }
-        }
-
-        if ( typeof tev === 'function' ) {
-          tev(el, type, collection, callback, function() {
-            wasTouch = true;
-          }, param);
-        } else if ( typeof tev === 'string' ) {
-          collection.add(el, [tev, cbTouchEvent, param === true]);
-        }
-
-        collection.add(el, [type, cbMouseEvent, param === true]);
-
-        bindVirtualListneners(el, part, collection);
+      copy.forEach(function(k) {
+        evtArgs[k] = ev[k];
       });
 
+      if ( combineWith ) {
+        Object.keys(combineWith).forEach(function(k) {
+          evtArgs[k] = combineWith[k];
+        });
+      }
+
+      ev.currentTarget.dispatchEvent(new MouseEvent(type, evtArgs));
+    }
+
+    /**
+     * Map of touch events
+     */
+    var customEvents = {
+      mousedown: 'touchstart',
+      mouseup: 'touchend',
+      mousemove: 'touchmove',
+      contextmenu: createGestureHandler,
+      click: createGestureHandler,
+      dblclick: createGestureHandler
     };
-  })(false);
-  //})(window.navigator.msPointerEnabled);
+
+    return function(el, evName, callback, useCapture) {
+      useCapture = (useCapture === true);
+
+      function addEvent(nsType, type) {
+        addEventHandler(el, nsType, type, callback, function mouseEventHandler(ev) {
+          return callback(ev, OSjs.Utils.mousePosition(ev));
+        }, useCapture);
+
+        if ( customEvents[type] ) {
+          if ( typeof customEvents[type] === 'function' ) {
+            customEvents[type](el, nsType, type, callback, useCapture);
+          } else {
+            addEventHandler(el, nsType, customEvents[type], callback, function touchEventHandler(ev) {
+              emitTouchEvent(ev, type);
+            }, useCapture, customEvents[type]);
+          }
+        }
+      }
+
+      function initNamespace(ns) {
+        if ( !el._boundEvents ) {
+          el._boundEvents = {};
+        }
+
+        if ( !el._boundEvents[ns] ) {
+          el._boundEvents[ns] = [];
+        }
+
+        var found = el._boundEvents[ns].filter(function(iter) {
+          return iter.callback === callback;
+        });
+
+        return found.length === 0;
+      }
+
+      evName.replace(/\s/g, '').split(',').forEach(function(ns) {
+        var type = ns.split(':')[0];
+
+        if ( !initNamespace(ns) ) {
+          console.warn('Utils::$bind()', 'This event was already bound, skipping');
+          return;
+        }
+
+        console.warn('$bind', ns, '@', el.tagName);
+        addEvent(ns, type);
+      });
+    };
+  })();
 
   /**
    * Unbinds the given event
@@ -524,13 +508,47 @@
    * @param   {Boolean}       [useCapture]  Use capture mode
    */
   OSjs.Utils.$unbind = function(el, evName, callback, param) {
+
+    function unbindAll() {
+      if ( el._boundEvents ) {
+        Object.keys(el._boundEvents).forEach(function(type) {
+          unbindNamed(type);
+        });
+        delete el._boundEvents;
+      }
+    }
+
+    function unbindNamed(type) {
+      if ( el._boundEvents ) {
+        var list = el._boundEvents || {};
+
+        if ( list[type] ) {
+          for ( var i = 0; i < list[type].length; i++ ) {
+            var iter = list[type][i];
+
+            // If a callback/handler was applied make sure we remove the correct one
+            if ( callback && iter.callback !== callback ) {
+              continue;
+            }
+            console.warn('$unbind', i, iter.realType + '%' + type, '@', el.tagName);
+
+            // We stored the event binding earlier
+            el.removeEventListener.apply(el, iter.args);
+
+            list[type].splice(i, 1);
+            i++;
+          }
+        }
+      }
+    }
+
     if ( el ) {
       if ( evName ) {
         evName.replace(/\s/g, '').split(',').forEach(function(type) {
-          unbindEventListener(el, type, callback, param);
+          unbindNamed(type);
         });
       } else {
-        unbindEventListeners(el);
+        unbindAll();
       }
     }
   };
