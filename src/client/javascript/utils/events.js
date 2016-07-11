@@ -351,8 +351,6 @@
         var now = new Date();
         var diff = now - started;
 
-        console.warn('<takeonme>', moved, now - started, '@', el.tagName);
-
         if ( !moved && t === 'click' ) {
           if ( (diff > TOUCH_CLICK_MIN) && (diff < TOUCH_CLICK_MAX) ) {
             ev.stopPropagation();
@@ -474,7 +472,6 @@
           return;
         }
 
-        console.warn('$bind', ns, '@', el.tagName);
         addEvent(ns, type);
       });
     };
@@ -530,7 +527,6 @@
             if ( callback && iter.callback !== callback ) {
               continue;
             }
-            console.warn('$unbind', i, iter.realType + '%' + type, '@', el.tagName);
 
             // We stored the event binding earlier
             el.removeEventListener.apply(el, iter.args);
