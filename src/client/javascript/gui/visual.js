@@ -59,7 +59,7 @@
         if ( (nodeType === 'video' || nodeType === 'audio') && k === 'load' ) {
           k = 'loadedmetadata';
         }
-        Utils.$bind(img, k, val, false);
+        Utils.$bind(img, k, val.bind(img), false);
       } else {
         if ( typeof applyArgs[k] === 'boolean' ) {
           val = val ? 'true' : 'false';
