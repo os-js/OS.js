@@ -71,7 +71,12 @@
       } else {
         if ( hasInput ) {
           ev.preventDefault();
-          hasInput.dispatchEvent(new MouseEvent('click'));
+          if ( document.createEvent ) {
+            var nev = document.createEvent('MouseEvent');
+            nev.initMouseEvent('click', true, true, window, 0, 0, 0, pos.x, pos.y, ev.ctrlKey, ev.altKey, ev.shiftKey, ev.metaKey, ev.button, null);
+          } else {
+            hasInput.dispatchEvent(new MouseEvent('click'));
+          }
         }
         dispatcher.dispatchEvent(new CustomEvent('_select', {detail: {index: idx, id: id}}));
       }
