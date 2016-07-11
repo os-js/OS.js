@@ -129,7 +129,7 @@
       var txt = document.createElement('div');
       txt.appendChild(document.createTextNode(iter.name)); //.replace(/([^\s-]{8})([^\s-]{8})/, '$1-$2')));
 
-      Utils.$bind(entry, 'mousedown', function(ev) {
+      Utils.$bind(entry, 'click', function(ev) {
         ev.stopPropagation();
         API.launch(a);
         API.blurMenu();
