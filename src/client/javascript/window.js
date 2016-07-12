@@ -191,10 +191,6 @@
   /**
    * Window Class
    *
-   * <pre><b>
-   * YOU CANNOT CANNOT USE THIS VIA 'new' KEYWORD.
-   * </b></pre>
-   *
    * @summary Class used for basis as a Window.
    *
    * @param   {String}                    name                     Window name (unique)
