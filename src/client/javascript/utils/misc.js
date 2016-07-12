@@ -251,21 +251,10 @@
    *
    * @param {Object}    obj          The destination
    * @param {Object}    methods      The source
-   * @param {Object}    [parentObj]  The parent object in case this is a class
    */
-  OSjs.Utils.extend = function(obj, methods, parentObj) {
+  OSjs.Utils.extend = function(obj, methods) {
     if ( obj && methods ) {
       Object.keys(methods).forEach(function(k) {
-        if ( parentObj ) {
-          if ( typeof parentObj.prototype[k] === 'function' ) {
-            obj.prototype[k] = function extendedPrototypeMethod() {
-              methods[k].apply(this, arguments);
-              return parentObj.prototype[k].apply(this, arguments);
-            };
-            return;
-          }
-        }
-
         obj[k] = methods[k];
       });
     }
@@ -294,7 +283,12 @@
   OSjs.Utils.inherit = function(to, from, extend) {
     from.prototype = Object.create(to.prototype);
     from.constructor = to;
-    return OSjs.Utils.extend(from.prototype, extend, from);
+
+    if ( extend ) {
+      OSjs.Utils.extend(from.prototype, extend);
+    }
+
+    return from;
   };
 
   /////////////////////////////////////////////////////////////////////////////
