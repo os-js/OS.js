@@ -1411,6 +1411,7 @@ gui-list-view {
     display : table-header-group;
     width : 100%;
     visibility : hidden;
+    pointer-events: none;
   }
 
     gui-list-view-row {
@@ -1467,6 +1468,7 @@ gui-list-view {
       bottom : 0;
       left : 0;
       z-index : 999999999;
+      pointer-events: all;
     }
       gui-list-view-column-resizer:after {
         content : '';
