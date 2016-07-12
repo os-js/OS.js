@@ -1343,6 +1343,7 @@ gui-icon-view {
   }
 
     gui-icon-view-entry > div {
+      pointer-events: none;
       position : relative;
     }
 
@@ -1423,14 +1424,7 @@ gui-list-view {
       background-repeat : no-repeat;
       background-position : left center;
       background-size : 16px;
-      overflow : hidden;
       line-height : 16px;
-
-      -webkit-text-overflow: ellipsis;
-         -moz-text-overflow: ellipsis;
-          -ms-text-overflow: ellipsis;
-           -o-text-overflow: ellipsis;
-              text-overflow: ellipsis;
     }
     gui-list-view[data-icon-size="32"] gui-list-view-column {
       line-height : 32px;
@@ -1439,6 +1433,14 @@ gui-list-view {
       gui-list-view-column > span {
         pointer-events: none;
         white-space: nowrap;
+        display : block;
+
+        overflow : hidden;
+        -webkit-text-overflow: ellipsis;
+           -moz-text-overflow: ellipsis;
+            -ms-text-overflow: ellipsis;
+             -o-text-overflow: ellipsis;
+                text-overflow: ellipsis;
       }
 
     /*gui-list-view-column.gui-has-image {
@@ -1498,20 +1500,22 @@ gui-tree-view {
     position : relative;
 
   }
-    /*gui-tree-view-entry > div {
-    }*/
-    gui-tree-view-entry > div > span {
-      background-repeat : no-repeat;
-      background-position : left center;
-      display : inline-block;
-      vertical-align : middle;
-
-      -webkit-text-overflow: ellipsis;
-         -moz-text-overflow: ellipsis;
-          -ms-text-overflow: ellipsis;
-           -o-text-overflow: ellipsis;
-              text-overflow: ellipsis;
+    gui-tree-view-entry > div {
+      pointer-events: none;
     }
+      gui-tree-view-entry > div > span {
+        pointer-events: none;
+        background-repeat : no-repeat;
+        background-position : left center;
+        display : inline-block;
+        vertical-align : middle;
+
+        -webkit-text-overflow: ellipsis;
+           -moz-text-overflow: ellipsis;
+            -ms-text-overflow: ellipsis;
+             -o-text-overflow: ellipsis;
+                text-overflow: ellipsis;
+      }
     /*gui-tree-view-entry > div > span.gui-has-image {
     }
     gui-tree-view-entry > gui-tree-view-entry {

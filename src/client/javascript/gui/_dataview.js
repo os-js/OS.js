@@ -107,7 +107,6 @@
 
           API.setClipboard(data);
         }
-        console.warn();
       }
     };
 
@@ -368,31 +367,6 @@
 
     bindEntryEvents: function(el, row, className) {
 
-      var singleClick = el.getAttribute('data-single-click') === 'true';
-
-      function select(ev) {
-        ev.stopPropagation();
-        API.blurMenu();
-
-        var multipleSelect = el.getAttribute('data-multiple');
-        multipleSelect = multipleSelect === null || multipleSelect === 'true';
-        var idx = Utils.$index(row);
-        el._selected = handleItemSelection(ev, row, idx, className, el._selected, el, multipleSelect);
-        el.dispatchEvent(new CustomEvent('_select', {detail: {entries: getSelected(el)}}));
-      }
-
-      function activate(ev) {
-        ev.stopPropagation();
-        API.blurMenu();
-
-        el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected(el)}}));
-      }
-
-      function context(ev) {
-        select(ev);
-        el.dispatchEvent(new CustomEvent('_contextmenu', {detail: {entries: getSelected(el), x: ev.clientX, y: ev.clientY}}));
-      }
-
       function createDraggable() {
         var value = row.getAttribute('data-value');
         if ( value !== null ) {
@@ -420,22 +394,6 @@
           row.setAttribute('title', tooltip);
         }
       }
-
-      if ( singleClick ) {
-        Utils.$bind(row, 'click', function(ev) {
-          select(ev);
-          activate(ev);
-        });
-      } else {
-        Utils.$bind(row, 'click', select, false);
-        Utils.$bind(row, 'dblclick', activate, false);
-      }
-
-      Utils.$bind(row, 'contextmenu', function(ev) {
-        ev.preventDefault();
-        context(ev);
-        return false;
-      }, false);
 
       el.dispatchEvent(new CustomEvent('_render', {detail: {
         element: row,
@@ -509,6 +467,55 @@
 
       Utils.$addClass(el, 'gui-data-view');
 
+      var singleClick = el.getAttribute('data-single-click') === 'true';
+      var multipleSelect = el.getAttribute('data-multiple');
+      multipleSelect = multipleSelect === null || multipleSelect === 'true';
+
+      function select(ev) {
+        ev.stopPropagation();
+        API.blurMenu();
+
+        var row = (function(t) {
+          var tn = t.tagName.toLowerCase();
+          if ( tn.match(/view$/) ) {
+            return null;
+          }
+
+          if ( tn === 'gui-list-view-column' ) {
+            return t.parentNode;
+          }
+
+          return t;
+        })(ev.isTrusted ? ev.target : ev.relatedTarget);
+
+        var className = row ? row.tagName.toLowerCase() : null;
+
+        if ( className === 'gui-tree-view-expander' ) {
+          OSjs.GUI.Elements[el.tagName.toLowerCase()].call(el, 'expand', {ev: ev, entry: row.parentNode});
+          return;
+        }
+
+        var idx = Utils.$index(row);
+        el._selected = handleItemSelection(ev, row, idx, className, el._selected, el, multipleSelect);
+        el.dispatchEvent(new CustomEvent('_select', {detail: {entries: getSelected(el)}}));
+      }
+
+      function activate(ev) {
+        ev.stopPropagation();
+        API.blurMenu();
+
+        if ( singleClick ) {
+          select(ev);
+        }
+
+        el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected(el)}}));
+      }
+
+      function context(ev) {
+        select(ev);
+        el.dispatchEvent(new CustomEvent('_contextmenu', {detail: {entries: getSelected(el), x: ev.clientX, y: ev.clientY}}));
+      }
+
       if ( !el.querySelector('textarea.gui-focus-element') && !el.getAttribute('no-selection') ) {
         var underlay = document.createElement('textarea');
         underlay.setAttribute('aria-label', '');
@@ -530,6 +537,19 @@
         Utils.$bind(underlay, 'keypress', function(ev) {
           ev.preventDefault();
         });
+
+        if ( singleClick ) {
+          Utils.$bind(el, 'click', activate, true);
+        } else {
+          Utils.$bind(el, 'click', select, true);
+          Utils.$bind(el, 'dblclick', activate, true);
+        }
+
+        Utils.$bind(el, 'contextmenu', function(ev) {
+          ev.preventDefault();
+          context(ev);
+          return false;
+        }, true);
 
         this.bind(el, 'select', function(ev) {
           if ( Utils.$hasClass(el, 'gui-element-focused') ) {

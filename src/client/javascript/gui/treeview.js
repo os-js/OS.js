@@ -39,6 +39,34 @@
     return entry;
   }
 
+  function handleItemExpand(ev, el, root, expanded) {
+    if ( typeof expanded === 'undefined' ) {
+      expanded = !Utils.$hasClass(root, 'gui-expanded');
+    }
+
+    Utils.$removeClass(root, 'gui-expanded');
+    if ( expanded ) {
+      Utils.$addClass(root, 'gui-expanded');
+    }
+
+    var children = root.children;
+    for ( var i = 0; i < children.length; i++ ) {
+      if ( children[i].tagName.toLowerCase() === 'gui-tree-view-entry' ) {
+        children[i].style.display = expanded ? 'block' : 'none';
+      }
+    }
+
+    var selected = {
+      index: Utils.$index(root),
+      data: GUI.Helpers.getViewNodeValue(root)
+    };
+
+    root.setAttribute('data-expanded', String(expanded));
+    root.setAttribute('aria-expanded', String(expanded));
+
+    el.dispatchEvent(new CustomEvent('_expand', {detail: {entries: [selected], expanded: expanded, element: root}}));
+  } // handleItemExpand()
+
   function initEntry(el, sel) {
     if ( sel._rendered ) {
       return;
@@ -51,34 +79,6 @@
     var next = sel.querySelector('gui-tree-view-entry');
     var container = document.createElement('div');
     var dspan = document.createElement('span');
-
-    function handleItemExpand(ev, root, expanded) {
-      if ( typeof expanded === 'undefined' ) {
-        expanded = !Utils.$hasClass(root, 'gui-expanded');
-      }
-
-      Utils.$removeClass(root, 'gui-expanded');
-      if ( expanded ) {
-        Utils.$addClass(root, 'gui-expanded');
-      }
-
-      var children = root.children;
-      for ( var i = 0; i < children.length; i++ ) {
-        if ( children[i].tagName.toLowerCase() === 'gui-tree-view-entry' ) {
-          children[i].style.display = expanded ? 'block' : 'none';
-        }
-      }
-
-      var selected = {
-        index: Utils.$index(root),
-        data: GUI.Helpers.getViewNodeValue(root)
-      };
-
-      root.setAttribute('data-expanded', String(expanded));
-      root.setAttribute('aria-expanded', String(expanded));
-
-      el.dispatchEvent(new CustomEvent('_expand', {detail: {entries: [selected], expanded: expanded, element: root}}));
-    } // handleItemExpand()
 
     function onDndEnter(ev) {
       ev.stopPropagation();
@@ -100,15 +100,6 @@
     if ( next ) {
       Utils.$addClass(sel, 'gui-expandable');
       var expander = document.createElement('gui-tree-view-expander');
-      Utils.$bind(expander, 'dblclick', function(ev) {
-        ev.preventDefault();
-        ev.stopPropagation();
-      });
-
-      Utils.$bind(expander, 'click', function(ev) {
-        handleItemExpand(ev, sel);
-      });
-
       sel.insertBefore(container, next);
       sel.insertBefore(expander, container);
     } else {
@@ -155,7 +146,7 @@
       });
     }
 
-    handleItemExpand(null, sel, expanded);
+    handleItemExpand(null, el, sel, expanded);
 
     GUI.Elements._dataview.bindEntryEvents(el, sel, 'gui-tree-view-entry');
   }
@@ -280,6 +271,8 @@
         GUI.Elements._dataview.patch(el, args, 'gui-tree-view-entry', body, createEntry, initEntry);
       } else if ( method === 'focus' ) {
         GUI.Elements._dataview.focus(el);
+      } else if ( method === 'expand' ) {
+        handleItemExpand(args.ev, el, args.entry);
       }
       return this;
     }

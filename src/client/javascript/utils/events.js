@@ -401,7 +401,8 @@
       var touch = ev.changedTouches[0];
       var evtArgs = {
         clientX: touch.clientX,
-        clientY: touch.clientY
+        clientY: touch.clientY,
+        relatedTarget: ev.target
       };
 
       copy.forEach(function(k) {
