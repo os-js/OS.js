@@ -1127,11 +1127,8 @@
         }
       });
 
-      if ( typeof result === 'undefined' ) {
+      if ( typeof result === 'undefined' && typeof defaultValue !== 'undefined' ) {
         return defaultValue;
-      }
-      if ( typeof defaultValue !== 'undefined' ) {
-        return result || defaultValue;
       }
 
       return result;

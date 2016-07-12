@@ -610,7 +610,14 @@
 
     // Ensure we get the user-selected locale configured from WM
     function getUserLocale() {
-      var curLocale = Utils.getUserLocale() || API.getConfig('Locale');
+      var curLocale = API.getConfig('Locale');
+      var detectedLocale = Utils.getUserLocale();
+
+      if ( API.getConfig('LocaleDetect', true) && detectedLocale ) {
+        console.info('Auto-detected user locale via browser', detectedLocale);
+        curLocale = detectedLocale;
+      }
+
       var result = OSjs.Core.getSettingsManager().get('CoreWM');
       if ( !result ) {
         try {

@@ -1,6 +1,7 @@
 {
   "client" : {
     "Locale": "en_EN",
+    "LocaleDetect": true,
     "Languages": {
       "en_EN": "English",
       "bg_BG": "Bulgarian (Bulgaria)",
