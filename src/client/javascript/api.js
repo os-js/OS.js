@@ -346,8 +346,15 @@
    */
   API.open = function _apiOpen(file, launchArgs) {
     launchArgs = launchArgs || {};
-    if ( !file.path ) { throw new Error('Cannot API::open() without a path'); }
-    if ( !file.mime )  { throw new Error('Cannot API::open() without a mime type'); }
+
+    if ( !file.path ) {
+      throw new Error('Cannot API::open() without a path');
+    }
+
+    var settingsManager = OSjs.Core.getSettingsManager();
+    var wm = OSjs.Core.getWindowManager();
+    var handler = OSjs.Core.getHandler();
+    var args = {file: file};
 
     function getApplicationNameByFile(file, forceList, callback) {
       if ( !(file instanceof OSjs.VFS.File) ) {
@@ -355,7 +362,7 @@
       }
 
       var pacman = OSjs.Core.getPackageManager();
-      var val = OSjs.Core.getSettingsManager().get('DefaultApplication', file.mime);
+      var val = settingsManager.get('DefaultApplication', file.mime);
 
       console.debug('getApplicationNameByFile()', 'default application', val);
       if ( !forceList && val ) {
@@ -367,29 +374,22 @@
       callback(pacman.getPackagesByMime(file.mime));
     }
 
-    var wm = OSjs.Core.getWindowManager();
-    var handler = OSjs.Core.getHandler();
-    var args = {file: file};
-
-    if ( launchArgs.args ) {
-      Object.keys(launchArgs.args).forEach(function(i) {
-        args[i] = launchArgs.args[i];
-      });
-    }
-
-    console.group('API::open()', file);
-
     function setDefaultApplication(mime, app, callback) {
       callback = callback || function() {};
       console.debug('setDefaultApplication()', mime, app);
-      OSjs.Core.getSettingsManager().set('DefaultApplication', mime, app);
-      OSjs.Core.getSettingsManager().save('DefaultApplication', callback);
+      settingsManager.set('DefaultApplication', mime, app);
+      settingsManager.save('DefaultApplication', callback);
     }
 
     function _launch(name) {
       if ( name ) {
         OSjs.API.launch(name, args, launchArgs.onFinished, launchArgs.onError, launchArgs.onConstructed);
       }
+    }
+
+    function _launchApp(name, ar) {
+      console.groupEnd();
+      API.launch(name, ar);
     }
 
     function _onDone(app) {
@@ -423,13 +423,22 @@
       }
     }
 
-    if ( file.mime === 'osjs/application' ) {
-      console.groupEnd();
-      API.launch(Utils.filename(file.path));
-      return;
-    }
+    console.group('API::open()', file);
 
-    getApplicationNameByFile(file, launchArgs.forceList, _onDone);
+    if ( file.mime === 'osjs/application' ) {
+      _launchApp(Utils.filename(file.path), {});
+    } else if ( file.type === 'dir' ) {
+      var fm = settingsManager.instance('DefaultApplication').get('dir', 'ApplicationFileManager');
+      _launchApp(fm, {path: file.path});
+    } else {
+      if ( launchArgs.args ) {
+        Object.keys(launchArgs.args).forEach(function(i) {
+          args[i] = launchArgs.args[i];
+        });
+      }
+
+      getApplicationNameByFile(file, launchArgs.forceList, _onDone);
+    }
   };
 
   /**

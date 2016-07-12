@@ -67,16 +67,14 @@
    * @function get
    * @memberof OSjs.Helpers.SettingsFragment#
    *
-   * @param   {String}        [key]     name of key
+   * @param   {String}        [key]              Name of key
+   * @param   {Mixed}         [defaultValue]     Default value if result is undefined
    *
    * @return  {Mixed}                   Either an entry or entire tree
    */
-  SettingsFragment.prototype.get = function(key) {
-    if ( !key ) {
-      return this._settings;
-    }
-
-    return this._settings[key];
+  SettingsFragment.prototype.get = function(key, defaultValue) {
+    var ret = key ? this._settings[key] : this._settings;
+    return (typeof ret === 'undefined') ? defaultValue : ret;
   };
 
   /**
