@@ -90,11 +90,11 @@
 
   PanelItemClock.prototype.createInterval = function() {
     var self = this;
-    var clock = this.$clock;
     var timeFmt = this._settings.get('format');
     var tooltipFmt = this._settings.get('tooltip');
 
     function update() {
+      var clock = self.$clock;
       if ( clock ) {
         var now = new Date();
         var t = OSjs.Helpers.Date.format(now, timeFmt);
@@ -104,10 +104,12 @@
         clock.setAttribute('aria-label', String(t));
         clock.title = d;
       }
+      clock = null;
     }
 
     function create(interval) {
       clearInterval(self.clockInterval);
+      self.clockInterval = clearInterval(self.clockInterval);
       self.clockInterval = setInterval(function() {
         update();
       }, interval);
@@ -143,6 +145,7 @@
 
   PanelItemClock.prototype.destroy = function() {
     this.clockInterval = clearInterval(this.clockInterval);
+    this.$clock = Utils.$remove(this.$clock);
     PanelItem.prototype.destroy.apply(this, arguments);
   };
 
