@@ -1236,6 +1236,9 @@ gui-menu-bar {
   }
   /*gui-menu-bar-entry:hover {
   }*/
+  gui-menu-bar-entry > span {
+    pointer-events : none;
+  }
 
   gui-menu-bar-entry > gui-menu {
     display : none;

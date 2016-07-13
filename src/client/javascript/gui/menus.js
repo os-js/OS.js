@@ -333,9 +333,44 @@
         }
       }
 
+      function _onClick(ev, mel) {
+        blurMenu();
+
+        ev.preventDefault();
+        ev.stopPropagation();
+
+        var submenu = mel.querySelector('gui-menu');
+        var id = mel.getAttribute('data-id');
+        var idx = parseInt(mel.getAttribute('data-index'), 10);
+
+        mel.querySelectorAll('gui-menu-entry').forEach(function(c) {
+          Utils.$removeClass(c, 'gui-hover');
+        });
+
+        if ( submenu ) {
+          lastMenu = function(ev) {
+            if ( ev ) {
+              ev.stopPropagation();
+            }
+            Utils.$removeClass(mel, 'gui-active');
+          };
+        }
+
+        if ( Utils.$hasClass(mel, 'gui-active') ) {
+          if ( submenu ) {
+            Utils.$removeClass(mel, 'gui-active');
+          }
+        } else {
+          if ( submenu ) {
+            Utils.$addClass(mel, 'gui-active');
+          }
+
+          mel.dispatchEvent(new CustomEvent('_select', {detail: {index: idx, id: id}}));
+        }
+      }
+
       el.querySelectorAll('gui-menu-bar-entry').forEach(function(mel, idx) {
         var label = GUI.Helpers.getLabel(mel);
-        var id = mel.getAttribute('data-id');
 
         var span = document.createElement('span');
         span.appendChild(document.createTextNode(label));
@@ -349,41 +384,17 @@
         clampSubmenuPositions(submenu);
 
         mel.setAttribute('aria-haspopup', String(!!submenu));
+        mel.setAttribute('data-index', String(idx));
+
         updateChildren(submenu, 2);
-
-        Utils.$bind(mel, 'click', function(ev) {
-          blurMenu();
-
-          ev.preventDefault();
-          ev.stopPropagation();
-
-          mel.querySelectorAll('gui-menu-entry').forEach(function(c) {
-            Utils.$removeClass(c, 'gui-hover');
-          });
-
-          if ( submenu ) {
-            lastMenu = function(ev) {
-              if ( ev ) {
-                ev.stopPropagation();
-              }
-              Utils.$removeClass(mel, 'gui-active');
-            };
-          }
-
-          if ( Utils.$hasClass(mel, 'gui-active') ) {
-            if ( submenu ) {
-              Utils.$removeClass(mel, 'gui-active');
-            }
-          } else {
-            if ( submenu ) {
-              Utils.$addClass(mel, 'gui-active');
-            }
-
-            mel.dispatchEvent(new CustomEvent('_select', {detail: {index: idx, id: id}}));
-          }
-        }, false);
-
       });
+
+      Utils.$bind(el, 'click', function(ev) {
+        var t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
+        if ( t && t.tagName === 'GUI-MENU-BAR-ENTRY' ) {
+          _onClick(ev, t);
+        }
+      }, true);
     }
   };
 
