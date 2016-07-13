@@ -365,7 +365,9 @@
 
       // Whenever a movement has occured make sure to avoid clicks
       function _touchmove(ev) {
-        ev.preventDefault();
+        if ( ev.target === document.body || !moved ) {
+          ev.preventDefault();
+        }
 
         if ( !started ) {
           return;
