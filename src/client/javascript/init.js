@@ -739,6 +739,12 @@
         window.location.reload();
       }
     }
+
+    Object.keys(OSjs).forEach(function(k) {
+      try {
+        delete OSjs[k];
+      } catch ( e ) {}
+    });
   };
 
   /////////////////////////////////////////////////////////////////////////////
