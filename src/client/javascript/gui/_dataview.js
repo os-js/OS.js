@@ -486,7 +486,7 @@
           }
 
           return t;
-        })(ev.isTrusted ? ev.target : ev.relatedTarget);
+        })(ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target));
 
         var className = row ? row.tagName.toLowerCase() : null;
 

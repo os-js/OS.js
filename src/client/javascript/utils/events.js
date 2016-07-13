@@ -309,7 +309,9 @@
 
       // Figure out what kind of event we're supposed to handle on start
       function _touchstart(ev) {
-        ev.preventDefault();
+        if ( ev.target === document.body ) {
+          ev.preventDefault();
+        }
 
         contextTimeout = clearTimeout(contextTimeout);
         started = new Date();
@@ -390,7 +392,9 @@
      * This basically emulates mouse behaviour on touch events
      */
     function emitTouchEvent(ev, type, combineWith) {
-      ev.preventDefault();
+      if ( ev.target === document.body ) {
+        ev.preventDefault();
+      }
 
       if ( !ev.currentTarget || ev.changedTouches.length > 1 || (ev.type === 'touchend' && ev.changedTouches > 0) ) {
         return;

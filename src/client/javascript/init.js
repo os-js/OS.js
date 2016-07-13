@@ -76,12 +76,17 @@
       }
       return true;
     },
-    body_mousedown: function(ev) {
-      ev.preventDefault();
-    },
 
     body_click: function(ev) {
       OSjs.API.blurMenu();
+
+      if ( ev.target === document.body ) {
+        var wm = OSjs.Core.getWindowManager();
+        var win = wm ? wm.getCurrentWindow() : null;
+        if ( win ) {
+          win._blur();
+        }
+      }
     },
 
     message: function(ev) {
@@ -111,14 +116,6 @@
           notif.opts._isFullscreen = true;
           notif.setImage(OSjs.API.getIcon('actions/gtk-leave-fullscreen.png', '16x16'));
         }
-      }
-    },
-
-    mousedown: function(ev) {
-      var wm = OSjs.Core.getWindowManager();
-      var win = wm ? wm.getCurrentWindow() : null;
-      if ( win ) {
-        win._blur();
       }
     },
 
@@ -345,12 +342,10 @@
     console.debug('initEvents()');
 
     document.body.addEventListener('contextmenu', events.body_contextmenu, false);
-    document.body.addEventListener('mousedown', events.body_mousedown, false);
     document.body.addEventListener('click', events.body_click, false);
     document.addEventListener('keydown', events.keydown, true);
     document.addEventListener('keypress', events.keypress, true);
     document.addEventListener('keyup', events.keyup, true);
-    document.addEventListener('mousedown', events.mousedown, false);
     window.addEventListener('hashchange', events.hashchange, false);
     window.addEventListener('resize', events.resize, false);
     window.addEventListener('scroll', events.scroll, false);
@@ -699,12 +694,10 @@
     signingOut = true;
 
     document.body.removeEventListener('contextmenu', events.body_contextmenu, false);
-    document.body.removeEventListener('mousedown', events.body_mousedown, false);
     document.body.removeEventListener('click', events.body_click, false);
     document.removeEventListener('keydown', events.keydown, true);
     document.removeEventListener('keypress', events.keypress, true);
     document.removeEventListener('keyup', events.keyup, true);
-    document.removeEventListener('mousedown', events.mousedown, false);
     window.removeEventListener('hashchange', events.hashchange, false);
     window.removeEventListener('resize', events.resize, false);
     window.removeEventListener('scroll', events.scroll, false);
