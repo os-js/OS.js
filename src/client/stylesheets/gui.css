@@ -1238,6 +1238,7 @@ gui-menu-bar {
   }*/
   gui-menu-bar-entry > span {
     pointer-events : none;
+    display : block;
   }
 
   gui-menu-bar-entry > gui-menu {

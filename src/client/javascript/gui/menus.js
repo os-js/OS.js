@@ -75,11 +75,14 @@
 
       var hasInput = target.querySelector('input');
       if ( hasInput ) {
-        if ( document.createEvent ) {
-          var nev = document.createEvent('MouseEvent');
-          nev.initMouseEvent('click', true, true, window, 0, 0, 0, pos.x, pos.y, ev.ctrlKey, ev.altKey, ev.shiftKey, ev.metaKey, ev.button, null);
+        if ( !Utils.isIE() && window.MouseEvent ) {
+          hasInput.dispatchEvent(new MouseEvent('click', {
+            clientX: pos.x,
+            clientY: pos.y
+          }));
         } else {
-          hasInput.dispatchEvent(new MouseEvent('click'));
+          var nev = document.createEvent('MouseEvent');
+          nev.initMouseEvent('click', true, true, window, 0, 0, 0, pos.x, pos.y, ev.ctrlKey, ev.altKey, ev.shiftKey, ev.metaKey, ev.button, hasInput);
         }
       }
 
@@ -247,7 +250,6 @@
       OSjs.GUI.Helpers.createMenu(null, ev, newNode);
 
       Utils.$bind(newNode, 'click', function(ev, pos) {
-        console.warn('faefea');
         clickWrapper(ev, pos, onEntryClick, el);
       }, true);
     },
@@ -320,7 +322,6 @@
           for ( var i = 0; i < children.length; i++ ) {
             child = children[i];
             if ( child.tagName === 'GUI-MENU-ENTRY' ) {
-
               child.setAttribute('aria-haspopup', String(!!child.firstChild));
               updateChildren(child.firstChild, level + 1);
             }
@@ -417,7 +418,7 @@
    * ])
    *
    * @param   {Array}                items             Array of items
-   * @param   {{Event|Object{}       ev                DOM Event or dict with x/y
+   * @param   {(Event|Object)}       ev                DOM Event or dict with x/y
    * @param   {Mixed}                [customInstance]  Show a custom created menu
    *
    * @function createMenu

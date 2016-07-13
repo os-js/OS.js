@@ -292,8 +292,8 @@
    * @api       OSjs.Utils.isIE()
    */
   OSjs.Utils.isIE = function() {
-    var myNav = navigator.userAgent.toLowerCase();
-    return (myNav.indexOf('msie') !== -1) ? parseInt(myNav.split('msie')[1], 10) : false;
+    var dm = parseInt(document.documentMode, 10);
+    return dm <= 11 || !!navigator.userAgent.match(/(MSIE|Edge)/);
   };
 
   /**
