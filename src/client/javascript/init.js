@@ -461,11 +461,8 @@
    */
   function initVFS(config, callback) {
     console.debug('initVFS()');
-    if ( OSjs.VFS.Helpers.registerMountpoints ) {
-      OSjs.VFS.Helpers.registerMountpoints();
-    }
 
-    callback();
+    OSjs.Core.getMountManager().init(callback);
   }
 
   /**

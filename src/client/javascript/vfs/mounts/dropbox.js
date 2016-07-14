@@ -114,7 +114,7 @@
   DropboxVFS.prototype.scandir = function(item, callback) {
     console.info('DropboxVFS::scandir()', item);
 
-    var path = OSjs.VFS.Helpers.getRelativeURL(item.path);
+    var path = Utils.getRelativeURL(item.path);
     var isOnRoot = path === '/';
 
     function _finish(entries) {
@@ -156,7 +156,7 @@
   DropboxVFS.prototype.write = function(item, data, callback) {
     console.info('DropboxVFS::write()', item);
 
-    var path = OSjs.VFS.Helpers.getRelativeURL(item.path);
+    var path = Utils.getRelativeURL(item.path);
     this.client.writeFile(path, data, function(error, stat) {
       callback(error, true);
     });
@@ -167,7 +167,7 @@
     options.arrayBuffer = true;
 
     console.info('DropboxVFS::read()', item, options);
-    var path = OSjs.VFS.Helpers.getRelativeURL(item.path);
+    var path = Utils.getRelativeURL(item.path);
 
     this.client.readFile(path, options, function(error, entries) {
       callback(error, (error ? false : (entries instanceof Array ? entries.join('\n') : entries)));
@@ -176,8 +176,8 @@
 
   DropboxVFS.prototype.copy = function(src, dest, callback) {
     console.info('DropboxVFS::copy()', src, dest);
-    var spath = OSjs.VFS.Helpers.getRelativeURL(src.path);
-    var dpath = OSjs.VFS.Helpers.getRelativeURL(dest.path);
+    var spath = Utils.getRelativeURL(src.path);
+    var dpath = Utils.getRelativeURL(dest.path);
     this.client.copy(spath, dpath, function(error) {
       callback(error, !error);
     });
@@ -185,8 +185,8 @@
 
   DropboxVFS.prototype.move = function(src, dest, callback) {
     console.info('DropboxVFS::move()', src, dest);
-    var spath = OSjs.VFS.Helpers.getRelativeURL(src.path);
-    var dpath = OSjs.VFS.Helpers.getRelativeURL(dest.path);
+    var spath = Utils.getRelativeURL(src.path);
+    var dpath = Utils.getRelativeURL(dest.path);
     this.client.move(spath, dpath, function(error) {
       callback(error, !error);
     });
@@ -194,7 +194,7 @@
 
   DropboxVFS.prototype.unlink = function(item, callback) {
     console.info('DropboxVFS::unlink()', item);
-    var path = OSjs.VFS.Helpers.getRelativeURL(item.path);
+    var path = Utils.getRelativeURL(item.path);
     this.client.unlink(path, function(error, stat) {
       callback(error, !error);
     });
@@ -202,7 +202,7 @@
 
   DropboxVFS.prototype.mkdir = function(item, callback) {
     console.info('DropboxVFS::mkdir()', item);
-    var path = OSjs.VFS.Helpers.getRelativeURL(item.path);
+    var path = Utils.getRelativeURL(item.path);
     this.client.mkdir(path, function(error, stat) {
       callback(error, !error);
     });
@@ -219,7 +219,7 @@
   DropboxVFS.prototype.fileinfo = function(item, callback) {
     console.info('DropboxVFS::fileinfo()', item);
 
-    var path = OSjs.VFS.Helpers.getRelativeURL(item.path);
+    var path = Utils.getRelativeURL(item.path);
     this.client.stat(path, path, function(error, response) {
       var fileinfo = null;
       if ( !error && response ) {
@@ -237,7 +237,7 @@
 
   DropboxVFS.prototype.url = function(item, callback) {
     console.info('DropboxVFS::url()', item);
-    var path = (typeof item === 'string') ? OSjs.VFS.Helpers.getRelativeURL(item) : OSjs.VFS.Helpers.getRelativeURL(item.path);
+    var path = (typeof item === 'string') ? Utils.getRelativeURL(item) : Utils.getRelativeURL(item.path);
     this.client.makeUrl(path, {downloadHack: true}, function(error, url) {
       callback(error, url ? url.url : false);
     });
@@ -360,8 +360,9 @@
   /**
    * This is the Dropbox VFS Abstraction for OS.js
    */
-  OSjs.VFS.Modules.Dropbox = OSjs.VFS.Modules.Dropbox || OSjs.VFS._createMountpoint({
+  OSjs.Core.getMountManager()._add({
     readOnly: false,
+    name: 'Dropbox',
     transport: 'Dropbox',
     description: 'Dropbox',
     visible: true,

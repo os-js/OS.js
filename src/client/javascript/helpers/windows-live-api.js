@@ -226,9 +226,7 @@
 
     WL.logout();
 
-    if ( OSjs.VFS.Modules.OneDrive ) {
-      OSjs.VFS.Modules.OneDrive.unmount();
-    }
+    OSjs.Core.getMountManager().remove('OneDrive');
   };
 
   /**

@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API, VFS) {
+(function(Utils, API, VFS, Core) {
   'use strict';
 
   /**
@@ -74,7 +74,7 @@
    * Perform VFS request
    */
   function request(test, method, args, callback, options) {
-    var d = VFS.Helpers.getModuleFromPath(test, false);
+    var d = Core.getMountManager().getModuleFromPath(test, false);
 
     if ( !d ) {
       throw new Error(API._('ERR_VFSMODULE_NOT_FOUND_FMT', test));
@@ -92,7 +92,7 @@
       throw new TypeError(API._('ERR_ARGUMENT_FMT', 'VFS::' + method, 'options', 'Object', typeof options));
     }
 
-    var h = OSjs.Core.getHandler();
+    var h = Core.getHandler();
     h.onVFSRequest(d, method, args, function vfsRequestCallback(err, response) {
       if ( arguments.length === 2 ) {
         console.warn('VFS::request()', 'Core::onVFSRequest hijacked the VFS request');
@@ -137,7 +137,7 @@
       throw new TypeError(err || API._('ERR_VFS_EXPECT_FILE'));
     }
 
-    if ( !VFS.Helpers.getModuleFromPath(item.path, false) ) {
+    if ( !Core.getMountManager().getModuleFromPath(item.path, false) ) {
       throw new Error(API._('ERR_VFSMODULE_NOT_FOUND_FMT', item.path));
     }
 
@@ -149,21 +149,15 @@
    */
   function hasSameTransport(src, dest) {
     // Modules using the normal server API
-    if ( VFS.Helpers.isInternalModule(src.path) && VFS.Helpers.isInternalModule(dest.path) ) {
+    var mm = Core.getMountManager();
+    if ( mm.isInternal(src.path) && mm.isInternal(dest.path) ) {
       return true;
     }
 
-    var msrc = VFS.Helpers.getModuleFromPath(src.path);
-    var isrc = VFS.Modules[msrc] || {};
-    var mdst = VFS.Helpers.getModuleFromPath(dest.path);
-    var idst = VFS.Modules[mdst] || {};
+    var msrc = mm.getModuleFromPath(src.path, false, true) || {};
+    var mdst = mm.getModuleFromPath(dest.path, false, true) || {};
 
-    // If mounts are labeled with a name
-    if ( isrc.transport === idst.transport ) {
-      return true;
-    }
-
-    return msrc === mdst;
+    return (msrc.transport === mdst.transport) || (msrc.name === mdst.name);
   }
 
   /**
@@ -197,7 +191,7 @@
    * Check if destination is readOnly
    */
   function isReadOnly(item) {
-    var m = VFS.Helpers.getModuleFromPath(item.path);
+    var m = Core.getMountManager().getModuleFromPath(item.path);
     return (VFS.Modules[m] || {}).readOnly === true;
   }
 
@@ -427,8 +421,9 @@
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
     }
 
+    var mm = Core.getMountManager();
     if ( isReadOnly(dest) ) {
-      callback(API._('ERR_VFSMODULE_READONLY_FMT', VFS.Helpers.getModuleFromPath(dest.path)));
+      callback(API._('ERR_VFSMODULE_READONLY_FMT', mm.getModuleFromPath(dest.path)));
       return;
     }
 
@@ -465,8 +460,8 @@
           _finished(error, response);
         }, options);
       } else {
-        var msrc = VFS.Helpers.getModuleFromPath(src.path);
-        var mdst = VFS.Helpers.getModuleFromPath(dest.path);
+        var msrc = mm.getModuleFromPath(src.path);
+        var mdst = mm.getModuleFromPath(dest.path);
 
         // FIXME: This does not work for folders
         if ( src.type === 'dir' ) {
@@ -533,11 +528,13 @@
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
     }
 
+    var mm = Core.getMountManager();
+
     src = checkMetadataArgument(src, API._('ERR_VFS_EXPECT_SRC_FILE'));
     dest = checkMetadataArgument(dest, API._('ERR_VFS_EXPECT_DST_FILE'));
 
     if ( isReadOnly(dest) ) {
-      callback(API._('ERR_VFSMODULE_READONLY_FMT', VFS.Helpers.getModuleFromPath(dest.path)));
+      callback(API._('ERR_VFSMODULE_READONLY_FMT', mm.getModuleFromPath(dest.path)));
       return;
     }
 
@@ -557,8 +554,8 @@
           _finished(error, error ? null : response);
         }, options);
       } else {
-        var msrc = VFS.Helpers.getModuleFromPath(src.path);
-        var mdst = VFS.Helpers.getModuleFromPath(dest.path);
+        var msrc = mm.getModuleFromPath(src.path);
+        var mdst = mm.getModuleFromPath(dest.path);
 
         dest.mime = src.mime;
 
@@ -631,7 +628,7 @@
       var idir = Utils.dirname(item.path);
 
       if ( idir === chkdir.path ) {
-        OSjs.Core.getPackageManager().generateUserMetadata(function() {});
+        Core.getPackageManager().generateUserMetadata(function() {});
       }
     }
 
@@ -772,7 +769,7 @@
    * @param   {Object}                    args                Function arguments (see below)
    * @param   {String}                    args.destination    Full path to destination
    * @param   {Array}                     args.files          Array of 'File'
-   * @param   {OSjs.CoreApplication}      [args.app]          If specified (Application ref) it will create a Dialog window
+   * @param   {OSjs.Core.Application}     [args.app]          If specified (Application ref) it will create a Dialog window
    * @param   {OSjs.Core.Window}          [args.win]          Save as above only will add as child to this window
    * @param   {CallbackVFS}               callback            Callback function
    * @param   {Object}                    [options]           Set of options
@@ -814,7 +811,8 @@
       callback(false, file);
     }
 
-    if ( !VFS.Helpers.isInternalModule(args.destination) ) {
+    var mm = Core.getMountManager();
+    if ( !mm.isInternal(args.destination) ) {
       args.files.forEach(function(f, i) {
         request(args.destination, 'upload', [f, args.destination], callback, options);
       });
@@ -896,8 +894,9 @@
 
       API.createLoading(lname, {className: 'BusyNotification', tooltip: API._('TOOLTIP_VFS_DOWNLOAD_NOTIFICATION')});
 
-      var dmodule = VFS.Helpers.getModuleFromPath(args.path);
-      if ( !VFS.Helpers.isInternalModule(args.path) ) {
+      var mm = Core.getMountManager();
+      var dmodule = mm.getModuleFromPath(args.path);
+      if ( !mm.isInternal(args.path) ) {
         var file = args;
         if ( !(file instanceof VFS.File) ) {
           file = new VFS.File(args.path);
@@ -1028,10 +1027,9 @@
 
     item = checkMetadataArgument(item);
 
-    var m = VFS.Helpers.getModuleFromPath(item.path, false);
-    m = VFS.Modules[m];
+    var m = Core.getMountManager().getModuleFromPath(item.path, false, true);
 
     requestWrapper([item.path, 'freeSpace', [m.root]], 'ERR_VFSMODULE_FREESPACE_FMT', callback);
   };
 
-})(OSjs.Utils, OSjs.API, OSjs.VFS);
+})(OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.Core);

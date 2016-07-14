@@ -898,8 +898,9 @@
   /**
    * This is the Google Drive VFS Abstraction for OS.js
    */
-  OSjs.VFS.Modules.GoogleDrive = OSjs.VFS.Modules.GoogleDrive || OSjs.VFS._createMountpoint({
+  OSjs.Core.getMountManager()._add({
     readOnly: false,
+    name: 'GoogleDrive',
     transport: 'GoogleDrive',
     description: 'Google Drive',
     visible: true,

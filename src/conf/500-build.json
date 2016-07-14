@@ -42,6 +42,7 @@
     "src/client/javascript/windowmanager.js",
     "src/client/javascript/package-manager.js",
     "src/client/javascript/settings-manager.js",
+    "src/client/javascript/mount-manager.js",
     "src/client/javascript/search-engine.js",
     "src/client/javascript/gui.js",
     "src/client/javascript/gui/_scheme.js",

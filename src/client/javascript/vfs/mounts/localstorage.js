@@ -68,7 +68,7 @@
       throw new TypeError('Expected p as String');
     }
 
-    p = OSjs.VFS.Helpers.getRelativeURL(p).replace(/\/+/g, '/');
+    p = Utils.getRelativeURL(p).replace(/\/+/g, '/');
 
     var path = par ? (Utils.dirname(p) || '/') : p;
     if ( path !== '/' ) {
@@ -652,8 +652,9 @@
    * This is *experimental* at best. It involves making a real-ish filesystemwhich
    * I don't have much experience in :P This is why it is disabled by default!
    */
-  OSjs.VFS.Modules.LocalStorage = OSjs.VFS.Modules.LocalStorage || OSjs.VFS._createMountpoint({
+  OSjs.Core.getMountManager()._add({
     readOnly: false,
+    name: 'LocalStorage',
     transport: 'LocalStorage',
     description: API.getConfig('VFS.LocalStorage.Options.description', 'LocalStorage'),
     visible: true,

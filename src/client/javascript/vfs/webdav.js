@@ -40,11 +40,12 @@
   /////////////////////////////////////////////////////////////////////////////
 
   function getModule(item) {
-    var module = OSjs.VFS.Helpers.getModuleFromPath(item.path);
-    if ( !module || !OSjs.VFS.Modules[module] ) {
-      throw new Error(API._('ERR_VFSMODULE_INVALID_FMT', module));
+    var mm = OSjs.Core.getMountManager();
+    var module = mm.getModuleFromPath(item.path, false, true);
+    if ( !module ) {
+      throw new Error(API._('ERR_VFSMODULE_INVALID_FMT', item.path));
     }
-    return OSjs.VFS.Modules[module];
+    return module;
   }
 
   function getNamespace(item) {
@@ -160,11 +161,13 @@
    */
   var Transport = {
     scandir: function(item, callback, options) {
+      var mm = OSjs.Core.getMountManager();
+
       function parse(doc) {
         var ns = getNamespace(item);
         var list = [];
         var reqpath = resolvePath(item);
-        var root = OSjs.VFS.Helpers.getRootFromPath(item.path);
+        var root = mm.getRootFromPath(item.path);
 
         if ( item.path !== root ) {
           list.push({

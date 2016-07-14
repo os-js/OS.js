@@ -88,7 +88,8 @@
    */
   var Transport = {
     scandir: function(item, callback, options) {
-      var root = OSjs.VFS.Helpers.getRootFromPath(item.path);
+      var mm = OSjs.Core.getMountManager();
+      var root = mm.getRootFromPath(item.path);
 
       httpCall('scandir', item, function(error, response) {
         var list = null;
@@ -106,7 +107,7 @@
               return iter;
             });
 
-            var rel = OSjs.VFS.Helpers.getRelativeURL(item.path);
+            var rel = Utils.getRelativeURL(item.path);
             if ( rel !== '/' ) {
               list.unshift({
                 filename: '..',
@@ -165,10 +166,10 @@
    * @memberof OSjs.VFS.Transports.Web
    */
   function makePath(file) {
-    var root = OSjs.VFS.Helpers.getRootFromPath(file.path);
-    var rel = OSjs.VFS.Helpers.getRelativeURL(file.path);
-    var moduleName = OSjs.VFS.Helpers.getModuleFromPath(file.path);
-    var module = OSjs.VFS.Modules[moduleName];
+    var mm = OSjs.Core.getMountManager();
+    var root = mm.getRootFromPath(file.path);
+    var rel = mm.getRelativeURL(file.path);
+    var module = mm.getModuleFromPath(file.path, false, true);
     var base = (module.options || {}).url;
     return base + rel.replace(/^\/+/, '/');
   }
@@ -180,6 +181,7 @@
   OSjs.VFS.Transports.Web = {
     defaults: function(iter) {
       iter.readOnly = true;
+      iter.match = /^https?\:\/\//;
     },
     module: Transport,
     path: makePath

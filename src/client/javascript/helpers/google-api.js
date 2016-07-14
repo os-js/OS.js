@@ -232,9 +232,7 @@
       }
     }
 
-    if ( OSjs.VFS.Modules.GoogleDrive ) {
-      OSjs.VFS.Modules.GoogleDrive.unmount();
-    }
+    OSjs.Core.getMountManager().remove('GoogleDrive');
 
     cb(false, true);
   };

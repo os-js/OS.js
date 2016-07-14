@@ -384,7 +384,7 @@
       this.renderSideView();
     }
 
-    VFS.Helpers.getModules({special: true}).forEach(function(m, i) {
+    OSjs.Core.getMountManager().getModules({special: true}).forEach(function(m, i) {
       if ( path.match(m.module.match) ) {
         found = m.module.root;
       }
@@ -400,7 +400,7 @@
     }
 
     var sideViewItems = [];
-    VFS.Helpers.getModules({special: true}).forEach(function(m, i) {
+    OSjs.Core.getMountManager().getModules({special: true}).forEach(function(m, i) {
       if ( m.module.dynamic && !m.module.mounted() ) {
         return;
       }

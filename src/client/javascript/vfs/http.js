@@ -53,8 +53,9 @@
   /**
    * A hidden mountpoint for making HTTP requests via VFS
    */
-  VFS.Modules.HTTP = VFS.Modules.HTTP || OSjs.VFS._createMountpoint({
+  OSjs.Core.getMountManager()._add({
     readOnly: true,
+    name: 'HTTP',
     transport: 'HTTP',
     description: 'HTTP',
     visible: false,
