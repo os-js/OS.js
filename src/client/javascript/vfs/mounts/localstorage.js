@@ -144,17 +144,19 @@
     var dirname = Utils.dirname(path);
 
     var type = typeof data === 'undefined' || data === null ? 'dir' : 'file';
-    var mime = null;
     var mimeConfig = API.getConfig('MIME.mapping');
 
-    if ( iter.type !== 'dir' ) {
-      if ( iter.mime ) {
-        mime = iter.mime;
-      } else {
-        var ext = Utils.filext(iter.filename);
-        mime = mimeConfig['.' + ext] || 'application/octet-stream';
+    var mime = (function(type) {
+      if ( type !== 'dir' ) {
+        if ( iter.mime ) {
+          return iter.mime;
+        } else {
+          var ext = Utils.filext(iter.filename);
+          return mimeConfig['.' + ext] || 'application/octet-stream';
+        }
       }
-    }
+      return null;
+    })(iter.type);
 
     var file = {
       size: iter.size || (type === 'file' ? (dab.byteLength || dab.length || 0) : 0),
@@ -167,12 +169,13 @@
       _cache[dirname] = [];
     }
 
-    var found = findInCache(iter);
-    if ( found !== false) {
-      _cache[dirname][found] = file;
-    } else {
-      _cache[dirname].push(file);
-    }
+    (function(found) {
+      if ( found !== false) {
+        _cache[dirname][found] = file;
+      } else {
+        _cache[dirname].push(file);
+      }
+    })(findInCache(iter));
 
     if ( file.type === 'dir' ) {
       if ( _fileCache[path] ) {

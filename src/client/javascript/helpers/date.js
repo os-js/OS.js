@@ -83,6 +83,8 @@
    *
    * @summary Class for date manipulation and formatting.
    *
+   * @param {(Date|Ojs.Helpers.Date)} [date] Create new instance from this date
+   *
    * @constructor Date
    * @memberof OSjs.Helpers
    */

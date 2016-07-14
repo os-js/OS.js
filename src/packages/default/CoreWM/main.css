@@ -290,6 +290,7 @@ corewm-panel-container {
 
   -webkit-box-align: center;
      -moz-box-align: center;
+      -ms-box-align: center;
        -o-box-align: center;
           box-align: center;
 
