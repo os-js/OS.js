@@ -483,13 +483,15 @@
     // Make sure it stays within viewport
     setTimeout(function() {
       var pos = Utils.$position(root);
-      if ( pos.right > space.width ) {
-        var newLeft = Math.round(space.width - pos.width);
-        root.style.left = Math.max(0, newLeft) + 'px';
-      }
-      if ( pos.bottom > space.height ) {
-        var newTop = Math.round(space.height - pos.height);
-        root.style.top = Math.max(0, newTop) + 'px';
+      if ( pos ) {
+        if ( pos.right > space.width ) {
+          var newLeft = Math.round(space.width - pos.width);
+          root.style.left = Math.max(0, newLeft) + 'px';
+        }
+        if ( pos.bottom > space.height ) {
+          var newTop = Math.round(space.height - pos.height);
+          root.style.top = Math.max(0, newTop) + 'px';
+        }
       }
 
       clampSubmenuPositions(root);
