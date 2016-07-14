@@ -273,7 +273,7 @@
         }
       });
 
-      var resolves = root.replace(OSjs.VFS.Modules.GoogleDrive.match, '').replace(/^\/+/, '').split('/');
+      var resolves = Utils.getRelativeURL(root).replace(/^\/+/, '').split('/');
       resolves = resolves.filter(function(el) {
         return el !== '';
       });
@@ -292,14 +292,7 @@
             quotaBytesUsed: 0,
             mimeType: 'application/vnd.google-apps.folder'
           });
-        }/* else {
-          result.push({
-            title: 'Trash',
-            path: OSjs.VFS.Modules.GoogleDrive.root + '.trash',
-            id: null,
-            mimeType: 'application/vnd.google-apps.trash'
-          });
-        }*/
+        }
 
         list.forEach(function(iter) {
           if ( iter && parentList[iter.id] && parentList[iter.id].indexOf(foundId) !== -1 ) {
@@ -740,7 +733,8 @@
       });
     }
 
-    if ( Utils.dirname(dir.path) !== OSjs.VFS.Modules.GoogleDrive.root ) {
+    var mm = OSjs.Core.getMountManager();
+    if ( Utils.dirname(dir.path) !== Utils.getRelativeURL(mm.getModuleProperty('GoogleDrive', 'root')) ) {
       getParentPathId(dir, function(error, id) {
         console.debug('GoogleDrive::mkdir()->getParentPathId()', id, 'of', dir);
         if ( error || !id ) {

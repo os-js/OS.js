@@ -59,7 +59,7 @@
     OSjs.GUI[ns] = OSjs.GUI[ns] || {};
   });
 
-  (['Helpers', 'Transports', 'Modules']).forEach(function(ns) {
+  (['Helpers', 'Transports']).forEach(function(ns) {
     OSjs.VFS[ns] = OSjs.VFS[ns] || {};
   });
 

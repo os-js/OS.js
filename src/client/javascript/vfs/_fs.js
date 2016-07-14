@@ -74,7 +74,8 @@
    * Perform VFS request
    */
   function request(test, method, args, callback, options) {
-    var d = Core.getMountManager().getModuleFromPath(test, false);
+    var mm = Core.getMountManager();
+    var d = mm.getModuleFromPath(test, false);
 
     if ( !d ) {
       throw new Error(API._('ERR_VFSMODULE_NOT_FOUND_FMT', test));
@@ -101,7 +102,7 @@
       }
 
       try {
-        VFS.Modules[d].request(method, args, function(err, res) {
+        mm.getModule(d).request(method, args, function(err, res) {
           h.onVFSRequestCompleted(d, method, args, err, res, function(e, r) {
             if ( arguments.length === 2 ) {
               console.warn('VFS::request()', 'Core::onVFSRequestCompleted hijacked the VFS request');
@@ -191,8 +192,8 @@
    * Check if destination is readOnly
    */
   function isReadOnly(item) {
-    var m = Core.getMountManager().getModuleFromPath(item.path);
-    return (VFS.Modules[m] || {}).readOnly === true;
+    var m = Core.getMountManager().getModuleFromPath(item.path, false, true) || {};
+    return m.readOnly === true;
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -471,7 +472,7 @@
 
         dest.mime = src.mime;
 
-        VFS.Modules[msrc].request('read', [src], function(error, data) {
+        mm.getModule(msrc).request('read', [src], function(error, data) {
           dialogProgress(50);
 
           if ( error ) {
@@ -479,7 +480,7 @@
             return;
           }
 
-          VFS.Modules[mdst].request('write', [dest, data], function(error, result) {
+          mm.getModule(mdst).request('write', [dest, data], function(error, result) {
             dialogProgress(100);
 
             if ( error ) {
@@ -565,7 +566,7 @@
             return _finished(error);
           }
 
-          VFS.Modules[msrc].request('unlink', [src], function(error, result) {
+          mm.getModule(msrc).request('unlink', [src], function(error, result) {
             if ( error ) {
               error = API._('ERR_VFS_TRANSFER_FMT', error);
             }
@@ -905,7 +906,7 @@
           }
         }
 
-        VFS.Modules[dmodule].request('read', [file], function(error, result) {
+        mm.getModule(dmodule).request('read', [file], function(error, result) {
           API.destroyLoading(lname);
 
           if ( error ) {

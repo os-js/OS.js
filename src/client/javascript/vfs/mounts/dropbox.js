@@ -114,6 +114,7 @@
   DropboxVFS.prototype.scandir = function(item, callback) {
     console.info('DropboxVFS::scandir()', item);
 
+    var mm = OSjs.Core.getMountManager();
     var path = Utils.getRelativeURL(item.path);
     var isOnRoot = path === '/';
 
@@ -132,7 +133,7 @@
         console.info(iter);
         result.push(new OSjs.VFS.File({
           filename: iter.name,
-          path: OSjs.VFS.Modules.Dropbox.root.replace(/\/$/, '') + iter.path,
+          path: mm.getModuleProperty('Dropbox', 'root').replace(/\/$/, '') + iter.path,
           size: iter.size,
           mime: iter.isFolder ? null : iter.mimeType,
           type: iter.isFolder ? 'dir' : 'file'
@@ -244,7 +245,9 @@
   };
 
   DropboxVFS.prototype.upload = function(file, dest, callback) {
-    var ndest = dest.replace(OSjs.VFS.Modules.Dropbox.match, '');
+    var mm = OSjs.Core.getMountManager();
+    var ndest = Utils.getRelativeURL(dest);
+
     if ( !ndest.match(/\/$/) ) {
       ndest += '/';
     }

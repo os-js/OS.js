@@ -433,7 +433,7 @@
   };
 
   ApplicationFileManagerWindow.prototype.onMountEvent = function(module, msg) {
-    var m = OSjs.VFS.Modules[module];
+    var m = OSjs.Core.getMountManager().getModule(module);
     if ( m ) {
       if ( msg === 'vfs:unmount' ) {
         if ( this.currentPath.match(m.match) ) {
