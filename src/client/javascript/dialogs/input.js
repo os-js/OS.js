@@ -104,7 +104,6 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Dialogs = OSjs.Dialogs || {};
   OSjs.Dialogs.Input = Object.seal(InputDialog);
 
 })(OSjs.API, OSjs.Utils, OSjs.Core.DialogWindow);

@@ -93,7 +93,6 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Dialogs = OSjs.Dialogs || {};
   OSjs.Dialogs.Confirm = Object.seal(ConfirmDialog);
 
 })(OSjs.API, OSjs.Utils, OSjs.Core.DialogWindow);

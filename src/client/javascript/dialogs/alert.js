@@ -69,7 +69,6 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Dialogs = OSjs.Dialogs || {};
   OSjs.Dialogs.Alert = Object.seal(AlertDialog);
 
 })(OSjs.API, OSjs.Utils, OSjs.Core.DialogWindow);

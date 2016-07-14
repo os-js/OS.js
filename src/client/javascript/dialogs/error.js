@@ -122,7 +122,6 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Dialogs = OSjs.Dialogs || {};
   OSjs.Dialogs.Error = Object.seal(ErrorDialog);
 
 })(OSjs.API, OSjs.Utils, OSjs.Core.DialogWindow);
