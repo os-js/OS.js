@@ -460,8 +460,7 @@
        * @api     OSjs.VFS.getRootFromPath()
        */
       getRootFromPath: function getRootFromPath(path) {
-        var module = MountManager.getModuleFromPath(path, false, true);
-        return _modules[module].root;
+        return MountManager.getModuleFromPath(path, false, true).root;
       },
 
       getModuleProperty: function(module, property) {
