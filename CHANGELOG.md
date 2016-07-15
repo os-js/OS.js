@@ -1,5 +1,52 @@
 # 2.0.0-alpha77
 
+New event handling and touch system, VFS improvements, bugfixes and entire codebase now uses JSDoc.
+
+Digest:
+
+* UI: Entirely new touch event handling system
+* UI: Updated IE support
+* UI: General performance improvements
+* Utils: Added `$css()` method
+* Utils: Added extend and inherit methods
+* Core: XHR requests now always responds with correct errors
+* Core: Added `LocaleDetect` config for automatic locale detection
+* Core: Added `MountManager` Class for maintining mounts
+* CoreWM: Bugfixes
+* Themes: Added `@base_font_size` variable
+* API: `getConfig()` no longer throws errors and instead return defined default value
+* API: `open()` now supports directories
+* VFS: Added `LocalStorage` module
+* VFS: Added `Web Transport` module
+* VFS: Improvements to read-only mounts
+* VFS: Reworked internal Transport APIs
+* VFS: Better configuration support
+* VFS: Can now natively use http/https paths
+* VFS: `File` now guesses MIME type automatically
+* VFS: Fixes to `OneDrive`
+* Handler: More extension support
+* GUI: Added more helpers to `UIElement`
+* GUI: Reworked `gui-menu` event handling
+* GUI: Rewroked `gui-menu-bar` event handling
+* GUI: Reworked `DataView` event handling
+* GUI: Added programatic support for all menu elements
+* GUI: Rewrote expensive CSS rules
+* locales: Updated `vi_VN`
+* server-node: Now possible to override home path resolver
+* server-node: Application apis now loaded when server starts
+* server-node: Added pre-init support for application APIs
+* server-php: Better Windows support
+* misc: Updated `src/conf` organization
+* misc: Split up some namespaces/files
+* misc: General cleanups
+* misc: Removed unused and deprecated functions
+* misc: General bugfixes based on feedback from community
+* build: Improved package preload parsing in Grunt
+* doc: Entire codebase now uses JSDoc
+* doc: Added examples
+
+# 2.0.0-alpha77
+
 A ton of new features, massive amount of cleanups. General bugfixes and improvements
 to documentation and developer features.
 
