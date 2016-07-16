@@ -199,53 +199,55 @@
     instance.handler = require('./handler.js').init(instance);
 
     // Register package application APIs
-    Object.keys(instance._metadata).forEach(function(pn) {
-      var p = instance._metadata[pn];
-      if ( p._apiFile ) {
-        if ( instance.setup.logging ) {
-          console.log('+++', '{ApplicationAPI}', p._apiFile.replace(instance.setup.root, '/'));
-        }
-        require(p._apiFile);
-      }
-    });
-
-    // Register package extensions
-    (function(exts) {
-      exts.forEach(function(f) {
-        if ( f.match(/\.js$/) ) {
-          if ( setup.logging ) {
-            console.info('+++', '{Extension}', f);
+    if ( setup.testing !== true ) {
+      Object.keys(instance._metadata).forEach(function(pn) {
+        var p = instance._metadata[pn];
+        if ( p._apiFile ) {
+          if ( instance.setup.logging ) {
+            console.log('+++', '{ApplicationAPI}', p._apiFile.replace(instance.setup.root, '/'));
           }
-          if ( _fs.existsSync(config.rootdir + f) ) {
-            require(config.rootdir + f).register(instance.api, instance.vfs, instance);
-          }
+          require(p._apiFile);
         }
       });
-    })(config.extensions || []);
 
-    // Package spawners
-    Object.keys(metadata).forEach(function(pn) {
-      var p = metadata[pn];
-      if ( p.type === 'extension' && p.enabled !== false && p.spawn && p.spawn.enabled ) {
-        var dir = _path.join(setup.repodir, pn, p.spawn.exec);
-        if ( setup.logging ) {
-          console.log('###', '{Spawn}', pn, dir.replace(setup.root, '/'));
+      // Register package extensions
+      (function(exts) {
+        exts.forEach(function(f) {
+          if ( f.match(/\.js$/) ) {
+            if ( setup.logging ) {
+              console.info('+++', '{Extension}', f);
+            }
+            if ( _fs.existsSync(config.rootdir + f) ) {
+              require(config.rootdir + f).register(instance.api, instance.vfs, instance);
+            }
+          }
+        });
+      })(config.extensions || []);
+
+      // Package spawners
+      Object.keys(metadata).forEach(function(pn) {
+        var p = metadata[pn];
+        if ( p.type === 'extension' && p.enabled !== false && p.spawn && p.spawn.enabled ) {
+          var dir = _path.join(setup.repodir, pn, p.spawn.exec);
+          if ( setup.logging ) {
+            console.log('###', '{Spawn}', pn, dir.replace(setup.root, '/'));
+          }
+
+          children.push(_cp.fork(dir), [], {
+            stdio: 'pipe'
+          });
         }
+      });
 
-        children.push(_cp.fork(dir), [], {
-          stdio: 'pipe'
-        });
-      }
-    });
-
-    // Proxies
-    (function() {
-      if ( config.proxies && setup.logging ) {
-        Object.keys(config.proxies).forEach(function(k) {
-          console.info('+++', '{Proxy}', k);
-        });
-      }
-    })();
+      // Proxies
+      (function() {
+        if ( config.proxies && setup.logging ) {
+          Object.keys(config.proxies).forEach(function(k) {
+            console.info('+++', '{Proxy}', k);
+          });
+        }
+      })();
+    }
 
     return instance;
   };

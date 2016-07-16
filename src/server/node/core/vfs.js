@@ -35,7 +35,7 @@
    */
 
   function readExif(path, mime, cb) {
-    /*jshint nonew: false */
+    /*eslint no-new: "warn"*/
 
     if ( mime.match(/^image/) ) {
       try {
@@ -174,9 +174,10 @@
   }
 
   function getMime(file, config) {
-    var i = file.lastIndexOf('.'),
-        ext = (i === -1) ? 'default' : file.substr(i),
-        mimeTypes = config.mimes;
+    var i = file.lastIndexOf('.');
+    var ext = (i === -1) ? 'default' : file.substr(i);
+    var mimeTypes = config.mimes;
+
     return mimeTypes[ext.toLowerCase()] || mimeTypes.default;
   }
 
