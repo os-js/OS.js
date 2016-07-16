@@ -87,12 +87,12 @@
           if ( ev.keyCode === Utils.Keys.ENTER ) {
             input.dispatchEvent(new CustomEvent('_enter', {detail: input.value}));
           } else if ( ev.keyCode === Utils.Keys.C && ev.ctrlKey ) {
-            API.setClipboard(this.value);
+            API.setClipboard(input.value);
           }
 
           if ( type === 'textarea' && ev.keyCode === Utils.Keys.TAB ) {
             ev.preventDefault();
-            this.value += '\t';
+            input.value += '\t';
           }
         }, false);
       }
