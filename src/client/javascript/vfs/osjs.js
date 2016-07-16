@@ -59,7 +59,7 @@
   };
 
   // Inherit non-restricted methods
-  var restricted = ['write', 'copy', 'move', 'unlink', 'mkdir', 'exists', 'fileinfo', 'trash', 'untrash', 'emptyTrash', 'freeSpace'];
+  var restricted = ['write', 'move', 'unlink', 'mkdir', 'exists', 'fileinfo', 'trash', 'untrash', 'emptyTrash', 'freeSpace'];
   var internal = OSjs.VFS.Transports.Internal.module;
   Object.keys(internal).forEach(function(n) {
     if ( restricted.indexOf(n) === -1 ) {

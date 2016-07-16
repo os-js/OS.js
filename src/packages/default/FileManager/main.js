@@ -144,7 +144,7 @@
         if ( clip && (clip instanceof Array) ) {
           clip.forEach(function(c) {
             if ( c && (c instanceof VFS.File) ) {
-              var dst = new VFS.File((self.currentPath + '/' + c.filename));
+              var dst = new VFS.File(Utils.pathJoin(self.currentPath, c.filename));
               app.copy(c, dst, self);
             }
           });

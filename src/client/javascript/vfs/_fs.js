@@ -423,13 +423,14 @@
     }
 
     var mm = Core.getMountManager();
+
+    src = checkMetadataArgument(src, API._('ERR_VFS_EXPECT_SRC_FILE'));
+    dest = checkMetadataArgument(dest, API._('ERR_VFS_EXPECT_DST_FILE'));
+
     if ( isReadOnly(dest) ) {
       callback(API._('ERR_VFSMODULE_READONLY_FMT', mm.getModuleFromPath(dest.path)));
       return;
     }
-
-    src = checkMetadataArgument(src, API._('ERR_VFS_EXPECT_SRC_FILE'));
-    dest = checkMetadataArgument(dest, API._('ERR_VFS_EXPECT_DST_FILE'));
 
     options = Utils.argumentDefaults(options, {
       type: 'binary',

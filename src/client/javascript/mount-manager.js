@@ -109,6 +109,22 @@
           target.defaults(params);
         }
 
+        function _checkReadOnly(name, params, args) {
+          if ( params.readOnly ) {
+            var restricted = ['upload', 'unlink', 'write', 'mkdir', 'move', 'trash', 'untrash', 'emptyTrash'];
+
+            if ( name === 'copy' ) {
+              var dest = MountManager.getModuleFromPath(args[1].path, false, true);
+              return dest.internal !== params.internal;
+            }
+
+            if ( restricted.indexOf(name) !== -1 ) {
+              return true;
+            }
+          }
+          return false;
+        }
+
         var cfg = Utils.argumentDefaults(params, {
           request: function(name, args, callback, options) {
             callback = callback || function() {
@@ -120,12 +136,9 @@
               return;
             }
 
-            if ( params.readOnly ) {
-              var restricted = ['upload', 'unlink', 'write', 'mkdir', 'copy', 'move', 'trash', 'untrash', 'emptyTrash'];
-              if ( restricted.indexOf(name) !== -1 ) {
-                callback(API._('ERR_VFSMODULE_READONLY'));
-                return;
-              }
+            if ( _checkReadOnly(name, params, args) ) {
+              callback(API._('ERR_VFSMODULE_READONLY'));
+              return;
             }
 
             var module = target.module || {};
