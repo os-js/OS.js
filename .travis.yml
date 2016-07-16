@@ -2,7 +2,7 @@ language: node_js
 node_js:
   - "5.12.0"
 before_script:
-  - npm install mocha -g
+  - npm install mocha
   - npm install grunt-cli -g
   - grunt config manifest dist-files
 after_success:
