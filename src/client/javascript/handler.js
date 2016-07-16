@@ -67,6 +67,8 @@
    * @see OSjs.Core.getHandler
    */
   var _Handler = function() {
+    /*eslint consistent-this: "warn"*/
+
     if ( _handlerInstance ) {
       throw Error('Cannot create another Handler Instance');
     }

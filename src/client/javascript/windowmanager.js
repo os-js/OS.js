@@ -143,7 +143,6 @@
    * Window Behavour Abstraction
    */
   function createWindowBehaviour(win, wm) {
-
     var current = null;
     var newRect = {};
 
@@ -177,7 +176,6 @@
       Utils.$bind(document, 'mousemove:movewindow', _onMouseMove, false);
       Utils.$bind(document, 'mouseup:movewindowstop', _onMouseUp, false);
 
-      var outside = false;
       function _onMouseMove(ev, pos) {
         if ( wm._mouselock ) {
           onMouseMove(ev, action, win, pos);

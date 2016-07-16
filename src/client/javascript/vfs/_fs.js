@@ -43,34 +43,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
-   * Just a helper function to reduce codesize by wrapping the general
-   * request flow into one handy-dandy function.
-   */
-  function requestWrapper(args, errstr, callback, onfinished, options) {
-    function _finished(error, response) {
-      if ( error ) {
-        error = API._(errstr, error);
-      }
-
-      if ( onfinished ) {
-        response = onfinished(error, response);
-      }
-      callback(error, response);
-    }
-
-    args.push(_finished);
-    if ( typeof options !== 'undefined' ) {
-      args.push(options);
-    }
-
-    try {
-      request.apply(null, args);
-    } catch ( e ) {
-      _finished(e);
-    }
-  }
-
-  /**
    * Perform VFS request
    */
   function request(test, method, args, callback, options) {
@@ -119,6 +91,34 @@
         console.warn('VFS::request()', 'exception', e.stack, e);
       }
     });
+  }
+
+  /**
+   * Just a helper function to reduce codesize by wrapping the general
+   * request flow into one handy-dandy function.
+   */
+  function requestWrapper(args, errstr, callback, onfinished, options) {
+    function _finished(error, response) {
+      if ( error ) {
+        error = API._(errstr, error);
+      }
+
+      if ( onfinished ) {
+        response = onfinished(error, response);
+      }
+      callback(error, response);
+    }
+
+    args.push(_finished);
+    if ( typeof options !== 'undefined' ) {
+      args.push(options);
+    }
+
+    try {
+      request.apply(null, args);
+    } catch ( e ) {
+      _finished(e);
+    }
   }
 
   /**

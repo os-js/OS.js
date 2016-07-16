@@ -28,7 +28,6 @@
  * @licence Simplified BSD License
  */
 (function(API, Utils, VFS, GUI) {
-  /*jshint latedef: false */
   'use strict';
 
   var dialogScheme;
@@ -118,24 +117,6 @@
         resolving = _resolve();
       }
     }
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
-  // API
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Shortcut for creating a new UIScheme class
-   *
-   * @function createScheme
-   * @memberof OSjs.GUI
-   *
-   * @param {String}    url     URL to scheme file
-   *
-   * @return {OSjs.GUI.Scheme}
-   */
-  function createScheme(url) {
-    return new UIScheme(url);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -688,6 +669,24 @@
     };
 
   })();
+
+  /////////////////////////////////////////////////////////////////////////////
+  // API
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Shortcut for creating a new UIScheme class
+   *
+   * @function createScheme
+   * @memberof OSjs.GUI
+   *
+   * @param {String}    url     URL to scheme file
+   *
+   * @return {OSjs.GUI.Scheme}
+   */
+  function createScheme(url) {
+    return new UIScheme(url);
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS

@@ -147,7 +147,7 @@
   function doProcessMessage(msg, obj, opts) {
     console.debug('doProcessMessage', msg, opts);
     _PROCS.forEach(function(p, i) {
-      if ( p && (p instanceof OSjs.Core.Application || p instanceof Process) ) {
+      if ( p && (p instanceof OSjs.Core.Application || p instanceof OSjs.Core.Process) ) {
         p._onMessage(msg, obj, opts);
       }
     });

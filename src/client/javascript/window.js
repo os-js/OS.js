@@ -474,11 +474,11 @@
       this._queryTimer    = null;
 
       this._evHandler     = new OSjs.Helpers.EventHandler(name, [
-                              'focus', 'blur', 'destroy', 'maximize', 'minimize', 'restore',
-                              'move', 'moved', 'resize', 'resized',
-                              'keydown', 'keyup', 'keypress',
-                              'drop', 'drop:upload', 'drop:file'
-                            ]);
+        'focus', 'blur', 'destroy', 'maximize', 'minimize', 'restore',
+        'move', 'moved', 'resize', 'resized',
+        'keydown', 'keyup', 'keypress',
+        'drop', 'drop:upload', 'drop:file'
+      ]);
 
       /**
        * Window Properties

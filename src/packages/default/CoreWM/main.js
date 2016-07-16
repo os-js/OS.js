@@ -221,6 +221,8 @@
   };
 
   CoreWM.prototype.destroy = function(force) {
+    /*eslint new-cap: "warn"*/
+
     if ( !force && !window.confirm(OSjs.Applications.CoreWM._('Killing this process will stop things from working!')) ) {
       return false;
     }
@@ -243,6 +245,7 @@
     try {
       settings.background = 'color';
     } catch ( e ) {}
+
     this.applySettings(OSjs.Applications.CoreWM.DefaultSettings(settings), true);
 
     // Clear DOM
@@ -516,6 +519,8 @@
   CoreWM.prototype.onDropItem = function(ev, el, item, args) {
     document.body.setAttribute('data-attention', 'false');
 
+    var self = this;
+
     var _applyWallpaper = function(data) {
       this.applySettings({wallpaper: data.path}, false, true);
     };
@@ -526,7 +531,7 @@
       }
     };
 
-    var _openMenu = function(data, self) {
+    var _openMenu = function(data) {
       var pos = {x: ev.clientX, y: ev.clientY};
       OSjs.API.createMenu([{
         title: OSjs.Applications.CoreWM._('Create shortcut'),
@@ -547,7 +552,7 @@
         if ( data && data.mime ) {
           if ( data.mime.match(/^image/) ) {
             if ( this.iconView ) {
-              _openMenu.call(this, data, this);
+              _openMenu(data);
             } else {
               _applyWallpaper.call(this, data);
             }

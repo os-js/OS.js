@@ -541,6 +541,7 @@
     }
 
     var map = {
+      /*eslint new-cap: "warn"*/
 
       //
       // DAY
@@ -640,12 +641,13 @@
 
       // Difference to Greenwich time (GMT) in hours (Example: +0200)
       O: function(s) {
-        var tzo = -date.getTimezoneOffset(),
-            dif = tzo >= 0 ? '+' : '-',
-            ppad = function(num) {
-              var norm = Math.abs(Math.floor(num));
-              return (norm < 10 ? '0' : '') + norm;
-            };
+        var tzo = -date.getTimezoneOffset();
+        var dif = tzo >= 0 ? '+' : '-';
+
+        function ppad(num) {
+          var norm = Math.abs(Math.floor(num));
+          return (norm < 10 ? '0' : '') + norm;
+        }
 
         var str = dif + ppad(tzo / 60) + ':' + ppad(tzo % 60);
         return str;
@@ -653,12 +655,13 @@
 
       // Timezone abbreviation (Examples: EST, MDT ...)
       T: function(s) {
-        var timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g,
-            timezoneClip = /(\+|\-)[0-9]+$/;
+        if ( utc ) {
+          return 'UTC';
+        }
 
-        if ( utc ) { return 'UTC'; }
+        var timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g;
         var zones = String(date.date).match(timezone) || [''];
-        return zones.pop().replace(timezoneClip, '');
+        return zones.pop().replace(/(\+|\-)[0-9]+$/, '');
       },
 
       //

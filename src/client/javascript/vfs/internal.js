@@ -36,115 +36,6 @@
    */
 
   /////////////////////////////////////////////////////////////////////////////
-  // API
-  /////////////////////////////////////////////////////////////////////////////
-
-  /*
-   * Default VFS Transport Module
-   *
-   * All mountpoints without a spesified Transport module is routed through
-   * here. This means the node/php server handles the request directly
-   */
-  var Transport = {
-    scandir: function(item, callback, options) {
-      internalRequest('scandir', {path: item.path}, function(error, result) {
-        var list = [];
-        if ( result ) {
-          result = VFS.Helpers.filterScandir(result, options);
-          result.forEach(function(iter) {
-            list.push(new VFS.File(iter));
-          });
-        }
-        callback(error, list);
-      });
-    },
-
-    write: function(item, data, callback, options) {
-      options = options || {};
-      options.onprogress = options.onprogress || function() {};
-
-      function _write(dataSource) {
-        var wopts = {path: item.path, data: dataSource};
-
-        /*
-        if ( API.getConfig('Connection.Type') === 'nw' ) {
-          OSjs.Core.getHandler().nw.request(true, 'write', wopt, function(err, res) {
-            callback(err, res);
-          });
-          return;
-        }
-        */
-
-        internalRequest('write', wopts, callback, options);
-      }
-
-      if ( typeof data === 'string' && !data.length ) {
-        _write(data);
-        return;
-      }
-
-      VFS.Helpers.abToDataSource(data, item.mime, function(error, dataSource) {
-        if ( error ) {
-          callback(error);
-          return;
-        }
-
-        _write(dataSource);
-      });
-    },
-
-    read: function(item, callback, options) {
-      if ( API.getConfig('Connection.Type') === 'nw' ) {
-        OSjs.Core.getHandler().nw.request(true, 'read', {
-          path: item.path,
-          options: {raw: true}
-        }, function(err, res) {
-          callback(err, res);
-        });
-        return;
-      }
-
-      internalRequest('get', {path: item.path}, callback, options);
-    },
-
-    copy: function(src, dest, callback) {
-      internalRequest('copy', {src: src.path, dest: dest.path}, callback);
-    },
-
-    move: function(src, dest, callback) {
-      internalRequest('move', {src: src.path, dest: dest.path}, callback);
-    },
-
-    unlink: function(item, callback) {
-      internalRequest('delete', {path: item.path}, callback);
-    },
-
-    mkdir: function(item, callback) {
-      internalRequest('mkdir', {path: item.path}, callback);
-    },
-
-    exists: function(item, callback) {
-      internalRequest('exists', {path: item.path}, callback);
-    },
-
-    fileinfo: function(item, callback) {
-      internalRequest('fileinfo', {path: item.path}, callback);
-    },
-
-    find: function(item, args, callback) {
-      internalRequest('find', {path: item.path, args: args}, callback);
-    },
-
-    url: function(item, callback) {
-      callback(false, VFS.Transports.Internal.path(item));
-    },
-
-    freeSpace: function(root, callback) {
-      internalRequest('freeSpace', {root: root}, callback);
-    }
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
   // WRAPPERS
   /////////////////////////////////////////////////////////////////////////////
 
@@ -274,6 +165,115 @@
       });
     });
   }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // API
+  /////////////////////////////////////////////////////////////////////////////
+
+  /*
+   * Default VFS Transport Module
+   *
+   * All mountpoints without a spesified Transport module is routed through
+   * here. This means the node/php server handles the request directly
+   */
+  var Transport = {
+    scandir: function(item, callback, options) {
+      internalRequest('scandir', {path: item.path}, function(error, result) {
+        var list = [];
+        if ( result ) {
+          result = VFS.Helpers.filterScandir(result, options);
+          result.forEach(function(iter) {
+            list.push(new VFS.File(iter));
+          });
+        }
+        callback(error, list);
+      });
+    },
+
+    write: function(item, data, callback, options) {
+      options = options || {};
+      options.onprogress = options.onprogress || function() {};
+
+      function _write(dataSource) {
+        var wopts = {path: item.path, data: dataSource};
+
+        /*
+        if ( API.getConfig('Connection.Type') === 'nw' ) {
+          OSjs.Core.getHandler().nw.request(true, 'write', wopt, function(err, res) {
+            callback(err, res);
+          });
+          return;
+        }
+        */
+
+        internalRequest('write', wopts, callback, options);
+      }
+
+      if ( typeof data === 'string' && !data.length ) {
+        _write(data);
+        return;
+      }
+
+      VFS.Helpers.abToDataSource(data, item.mime, function(error, dataSource) {
+        if ( error ) {
+          callback(error);
+          return;
+        }
+
+        _write(dataSource);
+      });
+    },
+
+    read: function(item, callback, options) {
+      if ( API.getConfig('Connection.Type') === 'nw' ) {
+        OSjs.Core.getHandler().nw.request(true, 'read', {
+          path: item.path,
+          options: {raw: true}
+        }, function(err, res) {
+          callback(err, res);
+        });
+        return;
+      }
+
+      internalRequest('get', {path: item.path}, callback, options);
+    },
+
+    copy: function(src, dest, callback) {
+      internalRequest('copy', {src: src.path, dest: dest.path}, callback);
+    },
+
+    move: function(src, dest, callback) {
+      internalRequest('move', {src: src.path, dest: dest.path}, callback);
+    },
+
+    unlink: function(item, callback) {
+      internalRequest('delete', {path: item.path}, callback);
+    },
+
+    mkdir: function(item, callback) {
+      internalRequest('mkdir', {path: item.path}, callback);
+    },
+
+    exists: function(item, callback) {
+      internalRequest('exists', {path: item.path}, callback);
+    },
+
+    fileinfo: function(item, callback) {
+      internalRequest('fileinfo', {path: item.path}, callback);
+    },
+
+    find: function(item, args, callback) {
+      internalRequest('find', {path: item.path, args: args}, callback);
+    },
+
+    url: function(item, callback) {
+      callback(false, VFS.Transports.Internal.path(item));
+    },
+
+    freeSpace: function(root, callback) {
+      internalRequest('freeSpace', {root: root}, callback);
+    }
+  };
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS

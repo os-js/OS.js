@@ -159,10 +159,10 @@
     }
 
     function detectCSSFeature(featurename) {
-      var feature             = false,
-          domPrefixes         = 'Webkit Moz ms O'.split(' '),
-          elm                 = document.createElement('div'),
-          featurenameCapital  = null;
+      var feature = false;
+      var domPrefixes = 'Webkit Moz ms O'.split(' ');
+      var elm = document.createElement('div');
+      var featurenameCapital = null;
 
       featurename = featurename.toLowerCase();
 

@@ -52,6 +52,28 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * Make a Web HTTP URL for VFS
+   *
+   * @param   {(String|OSjs.VFS.File)}    item        VFS File
+   *
+   * @retun   {String}                  URL based on input
+   *
+   * @function path
+   * @memberof OSjs.VFS.Transports.Web
+   */
+  function makePath(file) {
+    var mm = OSjs.Core.getMountManager();
+    var root = mm.getRootFromPath(file.path);
+    var rel = mm.getRelativeURL(file.path);
+    var module = mm.getModuleFromPath(file.path, false, true);
+    var base = (module.options || {}).url;
+    return base + rel.replace(/^\/+/, '/');
+  }
+
+  /*
+   * Wrapper for making a request
+   */
   function httpCall(func, item, callback) {
     var url = makePath(item);
 
@@ -150,29 +172,6 @@
       callback(false, makePath(item));
     }
   };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // WRAPPERS
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Make a Web HTTP URL for VFS
-   *
-   * @param   {(String|OSjs.VFS.File)}    item        VFS File
-   *
-   * @retun   {String}                  URL based on input
-   *
-   * @function path
-   * @memberof OSjs.VFS.Transports.Web
-   */
-  function makePath(file) {
-    var mm = OSjs.Core.getMountManager();
-    var root = mm.getRootFromPath(file.path);
-    var rel = mm.getRelativeURL(file.path);
-    var module = mm.getModuleFromPath(file.path, false, true);
-    var base = (module.options || {}).url;
-    return base + rel.replace(/^\/+/, '/');
-  }
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
