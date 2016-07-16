@@ -126,7 +126,7 @@ corewm-window-switcher > div > img {
   pointer-events : none;
 }
 
-#CoreWMDesktopIconView > gui-icon-view-body > * {
+#CoreWMDesktopIconView gui-icon-view-entry {
   pointer-events : all;
 }
 

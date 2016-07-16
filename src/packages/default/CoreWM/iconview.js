@@ -100,7 +100,7 @@
     this.dialog = null;
     this.$element = document.createElement('gui-icon-view');
     this.$element.setAttribute('data-multiple', 'false');
-    this.$element.setAttribute('no-selection', 'true');
+    //this.$element.setAttribute('no-selection', 'true');
     this.$element.id = 'CoreWMDesktopIconView';
 
     GUI.Elements['gui-icon-view'].build(this.$element);
