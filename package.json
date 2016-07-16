@@ -43,8 +43,7 @@
     "time-grunt": ">=1.3.0",
     "grunt-mocha-test": ">=0.12.7",
     "grunt-contrib-watch": ">=1.0.0",
-    "grunt-contrib-jshint": ">=1.0.0",
-    "grunt-jscs": ">=3.0.0",
+    "grunt-eslint": ">=19.0.0",
     "grunt-contrib-csslint": "1.0.0",
     "grunt-contrib-validate-xml": ">=0.0.1"
   }

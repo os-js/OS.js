@@ -48,13 +48,12 @@
     } catch (e) { }
 
     // Make sure we only load required modules (ignore warnings)
-    var checks = ['test', 'jshint', 'jscs', 'csslint', 'validate_xml', 'mochaTest'];
+    var checks = ['test', 'eslint', 'csslint', 'validate_xml', 'mochaTest'];
     checks.forEach(function(k) {
       if ( grunt.cli.tasks.indexOf(k) >= 0 ) {
-        grunt.loadNpmTasks('grunt-contrib-jshint');
+        grunt.loadNpmTasks('grunt-eslint');
         grunt.loadNpmTasks('grunt-mocha-test');
         //grunt.loadNpmTasks('grunt-mocha');
-        grunt.loadNpmTasks('grunt-jscs');
         grunt.loadNpmTasks('grunt-contrib-csslint');
         grunt.loadNpmTasks('grunt-contrib-validate-xml');
         return false;
@@ -74,11 +73,11 @@
     // Load tasks
     //
     grunt.initConfig({
-      jshint: {
+      eslint: {
         options: {
-          jshintrc: true
+          configFile: '.eslintrc'
         },
-        all: [
+        target: [
           'Gruntfile.js',
           'src/*.js',
           'src/server/node/*.js',
@@ -156,23 +155,6 @@
             'src/packages/*/*/metadata.json'
           ],
           tasks: ['config', 'manifest']
-        }
-      },
-      jscs: {
-        src: [
-          'Gruntfile.js',
-          'src/*.js',
-          'src/server/node/*.js',
-          'src/server/node/**/*.js',
-          'src/client/javascript/*.js',
-          'src/client/javascript/**/*.js',
-          'src/packages/default/**/*.js',
-          '!src/packages/default/Broadway/**'
-        ],
-        options: {
-          config: '.jscsrc',
-          fix: false,
-          requireCurlyBraces: ['if']
         }
       },
       validate_xml: {
@@ -320,7 +302,7 @@
     grunt.registerTask('nw', ['config', 'core:nw', 'themes', 'packages', 'manifest', 'standalone:nw', 'nwjs']);
     grunt.registerTask('dist', ['config', 'dist-files:dist', 'core', 'themes', 'packages', 'manifest']);
     grunt.registerTask('dist-dev', ['config', 'dist-files:dist-dev', 'themes:fonts', 'themes:styles', 'manifest']);
-    grunt.registerTask('test', ['jshint', 'jscs', 'csslint', 'validate_xml', 'mochaTest'/*, 'mocha'*/]);
+    grunt.registerTask('test', ['eslint', 'csslint', 'validate_xml', 'mochaTest'/*, 'mocha'*/]);
   };
 
 })(require('node-fs-extra'), require('path'), require('./src/build.js'), require('grunt'), require('less'));
