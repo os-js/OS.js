@@ -268,8 +268,30 @@
       return false;
     },
     build: function(el) {
-      var lbl = el.getAttribute('data-label') || el.getAttribute('data-value') || el.innerHTML || '';
       var span = document.createElement('gui-statusbar-label');
+
+      var lbl = el.getAttribute('data-label') || el.getAttribute('data-value');
+      if ( !lbl ) {
+        lbl = (function() {
+          var textNodes = [];
+          var node, value;
+          for ( var i = 0; i < el.childNodes.length; i++ ) {
+            node = el.childNodes[i];
+            if ( node.nodeType === Node.TEXT_NODE ) {
+              value = node.nodeValue.replace(/\s+/g, '').replace(/^\s+/g, '');
+              if ( value.length > 0 ) {
+                textNodes.push(value);
+              }
+
+              el.removeChild(node);
+              i++;
+            }
+          }
+
+          return textNodes.join(' ');
+        })();
+      }
+
       span.innerHTML = lbl;
       el.setAttribute('role', 'log');
       el.appendChild(span);
