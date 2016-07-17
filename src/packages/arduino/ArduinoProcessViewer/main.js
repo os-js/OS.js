@@ -79,18 +79,20 @@
 
         if ( result ) {
           (result || []).forEach(function(p) {
-            var iter = {
-              value: p.PID,
-              id: p.PID,
-              columns: [
-                {label: p.PID.toString()},
-                {label: p.COMMAND},
-                {label: p['%CPU'].toString()},
-                {label: p['%MEM'].toString()}
-              ]
-            };
+            if ( p ) {
+              var iter = {
+                value: p.PID,
+                id: p.PID,
+                columns: [
+                  {label: p.PID.toString()},
+                  {label: p.COMMAND},
+                  {label: p['%CPU'].toString()},
+                  {label: p['%MEM'].toString()}
+                ]
+              };
 
-            rows.push(iter);
+              rows.push(iter);
+            }
           });
         }
 
