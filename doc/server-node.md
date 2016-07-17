@@ -30,8 +30,8 @@ Create your certificates and place them in `src/server/` (as ex "server.key" and
 ```
 
 npm install http2
-grunt config:set:server.http.mode:http2
-grunt config:set:server.http.cert.name:server
+grunt config --set=server.http.mode --value=http2
+grunt config --set=server.http.cert.name --value=server
 grunt config
 
 ```

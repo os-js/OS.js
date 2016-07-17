@@ -16,7 +16,7 @@ $ edit /etc/osjs/groups.json
 $ edit /etc/osjs/blacklist.json
 
 # Change `handler` to `pam`
-$ grunt config:set:handler:pam
+$ grunt config --set=handler --value=pam
 
 # Optionally configure the paths used
 $ edit src/conf/190-handler.json

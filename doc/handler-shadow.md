@@ -15,7 +15,7 @@ $ edit /etc/osjs/groups.json
 $ edit /etc/osjs/blacklist.json
 
 # Change `handler` to `shadow`
-$ grunt config:set:handler:shadow
+$ grunt config --set=handler --value=shadow
 
 # Optionally configure the paths used
 $ edit src/conf/190-handler.json
