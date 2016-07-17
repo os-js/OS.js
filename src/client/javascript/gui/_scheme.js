@@ -399,7 +399,7 @@
   UIScheme.prototype.create = function(win, tagName, params, parentNode, applyArgs) {
     tagName = tagName || '';
     params = params || {};
-    parentNode = parentNode || win.getRoot();
+    parentNode = parentNode || win._getRoot();
     if ( parentNode instanceof GUI.Element ) {
       parentNode = parentNode.$element;
     }
