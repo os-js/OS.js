@@ -146,7 +146,9 @@
       });
 
       setTimeout(function() {
-        if ( progressDialog ) { progressDialog._focus(); }
+        if ( progressDialog ) {
+          progressDialog._focus();
+        }
       }, 100);
     }
   };

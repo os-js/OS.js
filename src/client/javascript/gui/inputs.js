@@ -140,8 +140,11 @@
   }
 
   function bindInputEvents(el, evName, callback, params) {
-    if ( evName === 'enter' ) { evName = '_enter'; }
-    if ( evName === 'change' ) { evName = '_change'; }
+    if ( evName === 'enter' ) {
+      evName = '_enter';
+    } else if ( evName === 'change' ) {
+      evName = '_change';
+    }
 
     var target = el.querySelector('textarea, input, select');
     Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
@@ -789,7 +792,9 @@
    */
   GUI.Elements['gui-input-modal'] = {
     bind: function(el, evName, callback, params) {
-      if ( evName === 'open' ) { evName = '_open'; }
+      if ( evName === 'open' ) {
+        evName = '_open';
+      }
       Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
     },
     get: function(el, param) {

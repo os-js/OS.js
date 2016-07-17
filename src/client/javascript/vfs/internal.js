@@ -130,7 +130,9 @@
 
     console.debug('VFS::Transports::Internal::fetch()', url, mime);
 
-    if ( arguments.length < 1 ) { throw new Error(API._('ERR_VFS_NUM_ARGS')); }
+    if ( arguments.length < 1 ) {
+      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+    }
 
     options = options || {};
 

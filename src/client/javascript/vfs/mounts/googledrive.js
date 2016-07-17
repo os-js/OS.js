@@ -196,7 +196,9 @@
 
     if ( list ) {
       list.forEach(function(iter, i) {
-        if ( !iter ) { return; }
+        if ( !iter ) {
+          return;
+        }
         result.push(createItem(iter, i));
       });
     }

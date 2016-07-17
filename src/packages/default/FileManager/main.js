@@ -193,29 +193,75 @@
     //
 
     var menuMap = {
-      MenuClose:          function() { self._close(); },
-      MenuCreateFile:     function() { app.mkfile(self.currentPath, self); },
-      MenuCreateDirectory:function() { app.mkdir(self.currentPath, self); },
-      MenuMount:          function() { app.mount(self); },
-      MenuUpload:         function() { app.upload(self.currentPath, null, self); },
-      MenuRename:         function() { app.rename(getSelected(view), self); },
-      MenuDelete:         function() { app.rm(getSelected(view), self); },
-      MenuInfo:           function() { app.info(getSelected(view), self); },
-      MenuOpen:           function() { app.open(getSelected(view), self); },
-      MenuDownload:       function() { app.download(getSelected(view), self); },
-      MenuRefresh:        function() { self.changePath(); },
-      MenuViewList:       function() { self.changeView('gui-list-view', true); },
-      MenuViewTree:       function() { self.changeView('gui-tree-view', true); },
-      MenuViewIcon:       function() { self.changeView('gui-icon-view', true); },
-      MenuShowSidebar:    function() { viewSide = self.toggleSidebar(!viewSide, true); },
-      MenuShowNavigation: function() { viewNav = self.toggleNavbar(!viewNav, true); },
-      MenuShowHidden:     function() { viewHidden = self.toggleHidden(!viewHidden, true); },
-      MenuShowExtension:  function() { viewExtension = self.toggleExtension(!viewExtension, true); },
-      MenuColumnFilename: function() { self.toggleColumn('filename', true); },
-      MenuColumnMIME:     function() { self.toggleColumn('mime', true); },
-      MenuColumnCreated:  function() { self.toggleColumn('ctime', true); },
-      MenuColumnModified: function() { self.toggleColumn('mtime', true); },
-      MenuColumnSize:     function() { self.toggleColumn('size', true); }
+      MenuClose: function() {
+        self._close();
+      },
+      MenuCreateFile: function() {
+        app.mkfile(self.currentPath, self);
+      },
+      MenuCreateDirectory:function() {
+        app.mkdir(self.currentPath, self);
+      },
+      MenuMount: function() {
+        app.mount(self);
+      },
+      MenuUpload: function() {
+        app.upload(self.currentPath, null, self);
+      },
+      MenuRename: function() {
+        app.rename(getSelected(view), self);
+      },
+      MenuDelete: function() {
+        app.rm(getSelected(view), self);
+      },
+      MenuInfo: function() {
+        app.info(getSelected(view), self);
+      },
+      MenuOpen: function() {
+        app.open(getSelected(view), self);
+      },
+      MenuDownload: function() {
+        app.download(getSelected(view), self);
+      },
+      MenuRefresh: function() {
+        self.changePath();
+      },
+      MenuViewList: function() {
+        self.changeView('gui-list-view', true);
+      },
+      MenuViewTree: function() {
+        self.changeView('gui-tree-view', true);
+      },
+      MenuViewIcon: function() {
+        self.changeView('gui-icon-view', true);
+      },
+      MenuShowSidebar: function() {
+        viewSide = self.toggleSidebar(!viewSide, true);
+      },
+      MenuShowNavigation: function() {
+        viewNav = self.toggleNavbar(!viewNav, true);
+      },
+      MenuShowHidden: function() {
+        viewHidden = self.toggleHidden(!viewHidden, true);
+      },
+      MenuShowExtension: function() {
+        viewExtension = self.toggleExtension(!viewExtension, true);
+      },
+      MenuColumnFilename: function() {
+        self.toggleColumn('filename', true);
+      },
+      MenuColumnMIME: function() {
+        self.toggleColumn('mime', true);
+      },
+      MenuColumnCreated: function() {
+        self.toggleColumn('ctime', true);
+      },
+      MenuColumnModified: function() {
+        self.toggleColumn('mtime', true);
+      },
+      MenuColumnSize: function() {
+        self.toggleColumn('size', true);
+      }
     };
 
     function menuEvent(ev) {
@@ -740,7 +786,9 @@
       message: Utils.format(OSjs.Applications.ApplicationFileManager._('Delete **{0}** ?'), files)
     }, function(ev, button) {
       win._toggleDisabled(false);
-      if ( button !== 'ok' && button !== 'yes' ) { return; }
+      if ( button !== 'ok' && button !== 'yes' ) {
+        return;
+      }
 
       items.forEach(function(item) {
         item = new VFS.File(item);

@@ -628,8 +628,12 @@
       data       : null,
       mime       : 'application/json',
       dragImage  : null,
-      onStart    : function() { return true; },
-      onEnd      : function() { return true; }
+      onStart    : function() {
+        return true;
+      },
+      onEnd      : function() {
+        return true;
+      }
     });
 
     if ( OSjs.Utils.isIE() ) {
@@ -712,12 +716,24 @@
       effect         : 'move',
       mime           : 'application/json',
       files          : true,
-      onFilesDropped : function() { return true; },
-      onItemDropped  : function() { return true; },
-      onEnter        : function() { return true; },
-      onOver         : function() { return true; },
-      onLeave        : function() { return true; },
-      onDrop         : function() { return true; }
+      onFilesDropped : function() {
+        return true;
+      },
+      onItemDropped  : function() {
+        return true;
+      },
+      onEnter        : function() {
+        return true;
+      },
+      onOver         : function() {
+        return true;
+      },
+      onLeave        : function() {
+        return true;
+      },
+      onDrop         : function() {
+        return true;
+      }
     });
 
     if ( OSjs.Utils.isIE() ) {
@@ -725,7 +741,10 @@
     }
 
     function getParent(start, matcher) {
-      if ( start === matcher ) { return true; }
+      if ( start === matcher ) {
+        return true;
+      }
+
       var i = 10;
 
       while ( start && i > 0 ) {
@@ -743,7 +762,9 @@
       ev.preventDefault();
 
       args.onDrop(ev, el);
-      if ( !ev.dataTransfer ) { return true; }
+      if ( !ev.dataTransfer ) {
+        return true;
+      }
 
       if ( args.files ) {
         var files = ev.dataTransfer.files;

@@ -199,8 +199,12 @@
     try {
       var blob    = new Blob([arrayBuffer], {type: mime});
       var r       = new FileReader();
-      r.onerror   = function(e) { callback(e);               };
-      r.onloadend = function()  { callback(false, r.result); };
+      r.onerror   = function(e) {
+        callback(e);
+      };
+      r.onloadend = function()  {
+        callback(false, r.result);
+      };
       r[m](blob);
     } catch ( e ) {
       console.warn(e, e.stack);
@@ -358,8 +362,12 @@
   VFS.Helpers.blobToAb = function blobToAb(data, callback) {
     try {
       var r       = new FileReader();
-      r.onerror   = function(e) { callback(e);               };
-      r.onloadend = function()  { callback(false, r.result); };
+      r.onerror   = function(e) {
+        callback(e);
+      };
+      r.onloadend = function() {
+        callback(false, r.result);
+      };
       r.readAsArrayBuffer(data);
     } catch ( e ) {
       console.warn(e, e.stack);

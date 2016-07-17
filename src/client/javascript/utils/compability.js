@@ -166,7 +166,9 @@
 
       featurename = featurename.toLowerCase();
 
-      if ( elm.style[featurename] ) { feature = true; }
+      if ( elm.style[featurename] ) {
+        feature = true;
+      }
 
       if ( feature === false ) {
         featurenameCapital = featurename.charAt(0).toUpperCase() + featurename.substr(1);

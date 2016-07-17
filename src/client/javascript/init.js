@@ -199,7 +199,9 @@
     },
 
     beforeunload: function(ev) {
-      if ( signingOut ) { return; }
+      if ( signingOut ) {
+        return;
+      }
 
       try {
         if ( OSjs.API.getConfig('ShowQuitWarning') ) {
@@ -213,7 +215,10 @@
 
       function _resize(ev, wasInited) {
         var wm = OSjs.Core.getWindowManager();
-        if ( !wm ) { return; }
+        if ( !wm ) {
+          return;
+        }
+
         wm.resize(ev, wm.getWindowSpace(), wasInited);
       }
 

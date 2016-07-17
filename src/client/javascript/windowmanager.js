@@ -312,7 +312,9 @@
       var cornerSnapSize = current.snapping.cornerSize;
       var windowSnapSize = current.snapping.windowSize;
 
-      if ( newTop < current.rectWorkspace.top ) { newTop = current.rectWorkspace.top; }
+      if ( newTop < current.rectWorkspace.top ) {
+        newTop = current.rectWorkspace.top;
+      }
 
       var newRight = newLeft + current.rectWindow.w + (borderSize * 2);
       var newBottom = newTop + current.rectWindow.h + topMargin + (borderSize);
@@ -698,7 +700,10 @@
   };
 
   WindowManager.prototype.onSessionLoaded = function() {
-    if ( this._sessionLoaded ) { return false; }
+    if ( this._sessionLoaded ) {
+      return false;
+    }
+
     this._sessionLoaded = true;
     return true;
   };
@@ -958,8 +963,12 @@
     var _LNEWY = 0;
 
     return function() {
-      if ( _LNEWY >= (window.innerHeight - 100) ) { _LNEWY = 0; }
-      if ( _LNEWX >= (window.innerWidth - 100) )  { _LNEWX = 0; }
+      if ( _LNEWY >= (window.innerHeight - 100) ) {
+        _LNEWY = 0;
+      }
+      if ( _LNEWX >= (window.innerWidth - 100) )  {
+        _LNEWX = 0;
+      }
       return {x: _LNEWX += 10, y: _LNEWY += 10};
     };
   })();

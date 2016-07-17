@@ -405,7 +405,10 @@
               file: file,
               list: app
             }, function(ev, btn, result) {
-              if ( btn !== 'ok' ) { return; }
+              if ( btn !== 'ok' ) {
+                return;
+              }
+
               _launch(result.name);
 
               setDefaultApplication(file.mime, result.useDefault ? result.name : null);
@@ -1365,7 +1368,10 @@
       },
 
       update: function(p, c) {
-        if ( !splash || !splashBar ) { return; }
+        if ( !splash || !splashBar ) {
+          return;
+        }
+
         var per = c ? 0 : 100;
         if ( c ) {
           per = (p / c) * 100;

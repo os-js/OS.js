@@ -402,8 +402,12 @@
    * @param   {Function}    ondone    Callback on done => fn()
    */
   OSjs.Utils.asyncs = function(queue, onentry, ondone) {
-    onentry = onentry || function(e, i, n) { n(); };
-    ondone  = ondone  || function() {};
+    onentry = onentry || function(e, i, n) {
+      n();
+    };
+
+    ondone  = ondone  || function() {
+    };
 
     function next(i) {
       if ( i >= queue.length ) {

@@ -129,7 +129,9 @@
    */
   DefaultApplication.prototype.openFile = function(file, win) {
     var self = this;
-    if ( !file ) { return; }
+    if ( !file ) {
+      return;
+    }
 
     function onError(error) {
       if ( error ) {
@@ -188,7 +190,9 @@
    */
   DefaultApplication.prototype.saveFile = function(file, value, win) {
     var self = this;
-    if ( !file ) { return; }
+    if ( !file ) {
+      return;
+    }
 
     win._toggleLoading(true);
     VFS.write(file, value || '', function(error, result) {

@@ -395,8 +395,7 @@
     var colorParam = null;
     if (param === 'background') {
       colorParam = doTranslate('Set background color');
-    }
-    else if (param === 'foreground') {
+    } else if (param === 'foreground') {
       colorParam = doTranslate('Set foreground color');
     }
 
@@ -404,7 +403,9 @@
       title: colorParam,
       color: self.tool[param]
     }, function(ev, button, result) {
-      if ( button !== 'ok' ) { return; }
+      if ( button !== 'ok' ) {
+        return;
+      }
       self.setToolProperty(param, result.hex);
     }, this);
   };

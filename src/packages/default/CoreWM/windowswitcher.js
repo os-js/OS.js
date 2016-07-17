@@ -129,7 +129,9 @@
   };
 
   WindowSwitcher.prototype.hide = function(ev, win, wm) {
-    if ( !this.showing ) { return; }
+    if ( !this.showing ) {
+      return;
+    }
 
     ev.preventDefault();
 

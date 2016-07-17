@@ -59,7 +59,9 @@
 
       function bindResizer(resizer, idx, cel) {
         var resizeEl = resizer.previousElementSibling;
-        if ( !resizeEl ) { return; }
+        if ( !resizeEl ) {
+          return;
+        }
 
         var startWidth = resizeEl.offsetWidth;
         var startHeight = resizeEl.offsetHeight;

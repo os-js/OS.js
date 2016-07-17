@@ -156,7 +156,9 @@
   };
 
   ApplicationMenu.prototype.show = function(pos) {
-    if ( !this.$element ) { return; }
+    if ( !this.$element ) {
+      return;
+    }
 
     if ( !this.$element.parentNode ) {
       document.body.appendChild(this.$element);

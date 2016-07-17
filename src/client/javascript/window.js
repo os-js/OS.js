@@ -1523,8 +1523,9 @@
    */
   Window.prototype._resizeTo = function(dw, dh, limit, move, container, force) {
     var self = this;
-    if ( !this._$element ) { return; }
-    if ( dw <= 0 || dh <= 0 ) { return; }
+    if ( !this._$element || (dw <= 0 || dh <= 0) ) {
+      return;
+    }
 
     limit = (typeof limit === 'undefined' || limit === true);
 
@@ -1600,6 +1601,7 @@
     _resizeFinished();
   };
 
+  // TODO: Optimize
   Window.prototype._resize = function(w, h, force) {
     if ( !this._$element || this._destroyed  ) {
       return false;
@@ -1608,21 +1610,31 @@
     var p = this._properties;
 
     if ( !force ) {
-      if ( !p.allow_resize ) { return false; }
+      if ( !p.allow_resize ) {
+        return false;
+      }
       (function() {
         if ( !isNaN(w) && w ) {
-          if ( w < p.min_width ) { w = p.min_width; }
+          if ( w < p.min_width ) {
+            w = p.min_width;
+          }
           if ( p.max_width !== null ) {
-            if ( w > p.max_width ) { w = p.max_width; }
+            if ( w > p.max_width ) {
+              w = p.max_width;
+            }
           }
         }
       })();
 
       (function() {
         if ( !isNaN(h) && h ) {
-          if ( h < p.min_height ) { h = p.min_height; }
+          if ( h < p.min_height ) {
+            h = p.min_height;
+          }
           if ( p.max_height !== null ) {
-            if ( h > p.max_height ) { h = p.max_height; }
+            if ( h > p.max_height ) {
+              h = p.max_height;
+            }
           }
         }
       })();
@@ -1785,8 +1797,9 @@
    * @param     {Boolean}     t       Toggle
    */
   Window.prototype._toggleAttentionBlink = function(t) {
-    if ( !this._$element || this._destroyed  ) { return false; }
-    if ( this._state.focused ) { return false; }
+    if ( !this._$element || this._destroyed || this._state.focused ) {
+      return false;
+    }
 
     var el     = this._$element;
     var self   = this;

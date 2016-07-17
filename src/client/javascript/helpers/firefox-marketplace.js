@@ -145,7 +145,10 @@
       var url = response.manifest_url;
 
       apiCall(url, function(error, metadata) {
-        if ( error ) { callback(error); }
+        if ( error ) {
+          callback(error);
+          return;
+        }
 
         callback(false, metadata, url);
       });

@@ -420,7 +420,9 @@
       this.iconView = null;
     }
 
-    if ( !this.getSetting('enableIconView') ) { return; }
+    if ( !this.getSetting('enableIconView') ) {
+      return;
+    }
 
     this.iconView = new OSjs.Applications.CoreWM.DesktopIconView(this);
     document.body.appendChild(this.iconView.getRoot());
@@ -449,10 +451,13 @@
 
       for ( i; i < l; i++ ) {
         iter = windows[i];
-        if ( !iter ) { continue; }
+        if ( !iter ) {
+          continue;
+        }
         wrect = iter._getViewRect();
-        if ( wrect === null ) { continue; }
-        if ( iter._state.mimimized ) { continue; }
+        if ( wrect === null || iter._state.mimimized ) {
+          continue;
+        }
 
         // Move the window into view if outside of view
         mx = iter._position.x;
@@ -469,8 +474,12 @@
         }
 
         if ( moved ) {
-          if ( mx < space.left ) { mx = space.left; }
-          if ( my < space.top  ) { my = space.top;  }
+          if ( mx < space.left ) {
+            mx = space.left;
+          }
+          if ( my < space.top  ) {
+            my = space.top;
+          }
           iter._move(mx, my);
         }
 
@@ -595,7 +604,9 @@
   };
 
   CoreWM.prototype.onKeyUp = function(ev, win) {
-    if ( !ev ) { return; }
+    if ( !ev ) {
+      return;
+    }
 
     if ( !ev.altKey ) {
       if ( this.switcher ) {
@@ -605,7 +616,9 @@
   };
 
   CoreWM.prototype.onKeyDown = function(ev, win) {
-    if ( !ev ) { return; }
+    if ( !ev ) {
+      return;
+    }
 
     var map = this.generatedHotkeyMap;
     for ( var i in map ) {
@@ -764,7 +777,9 @@
 
   CoreWM.prototype.createNotificationIcon = function(name, opts, panelId) {
     opts = opts || {};
-    if ( !name ) { return false; }
+    if ( !name ) {
+      return false;
+    }
 
     var pitem = this._getNotificationArea(panelId);
     if ( pitem ) {
@@ -774,7 +789,9 @@
   };
 
   CoreWM.prototype.removeNotificationIcon = function(name, panelId) {
-    if ( !name ) { return false; }
+    if ( !name ) {
+      return false;
+    }
 
     var pitem = this._getNotificationArea(panelId);
     if ( pitem ) {
@@ -785,7 +802,10 @@
   };
 
   CoreWM.prototype.getNotificationIcon = function(name, panelId) {
-    if ( !name ) { return false; }
+    if ( !name ) {
+      return false;
+    }
+
     var pitem = this._getNotificationArea(panelId);
     if ( pitem ) {
       return pitem.getNotification(name);

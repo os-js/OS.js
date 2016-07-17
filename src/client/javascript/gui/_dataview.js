@@ -86,7 +86,9 @@
     var entries = root.querySelectorAll(className);
     var count = entries.length;
 
-    if ( !count ) { return; }
+    if ( !count ) {
+      return;
+    }
 
     if ( key === Utils.Keys.ENTER ) {
       el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected(el)}}));
@@ -176,7 +178,9 @@
         map[Utils.Keys.RIGHT] = next;
       }
 
-      if ( map[key] ) { map[key](ev); }
+      if ( map[key] ) {
+        map[key](ev);
+      }
     }
 
     handleKey();

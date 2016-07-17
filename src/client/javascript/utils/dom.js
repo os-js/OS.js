@@ -212,8 +212,13 @@
    * @param     {Number}    end       End position
    */
   OSjs.Utils.$selectRange = function(field, start, end) {
-    if ( !field ) { throw new Error('Cannot select range: missing element'); }
-    if ( typeof start === 'undefined' || typeof end === 'undefined' ) { throw new Error('Cannot select range: mising start/end'); }
+    if ( !field ) {
+      throw new Error('Cannot select range: missing element');
+    }
+
+    if ( typeof start === 'undefined' || typeof end === 'undefined' ) {
+      throw new Error('Cannot select range: mising start/end');
+    }
 
     if ( field.createTextRange ) {
       var selRange = field.createTextRange();

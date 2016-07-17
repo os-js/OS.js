@@ -548,22 +548,34 @@
       //
 
       // Day of the month, 2 digits with leading zeros (01 to 31)
-      d: function(s) { return pad(map.j(s)); },
+      d: function(s) {
+        return pad(map.j(s));
+      },
 
       // A textual representation of a day, three letters (Mon through Sun)
-      D: function(s) { return ExtendedDate.dayNames[utc ? date.getUTCDay() : date.getDay()]; },
+      D: function(s) {
+        return ExtendedDate.dayNames[utc ? date.getUTCDay() : date.getDay()];
+      },
 
       // Day of the month without leading zeros (1 to 31)
-      j: function(s) { return (utc ? date.getUTCDate() : date.getDate()); },
+      j: function(s) {
+        return (utc ? date.getUTCDate() : date.getDate());
+      },
 
       // A full textual representation of the day of the week (Sunday through Saturday)
-      l: function(s) { return ExtendedDate.dayNames[(utc ? date.getUTCDay() : date.getDay()) + 7]; },
+      l: function(s) {
+        return ExtendedDate.dayNames[(utc ? date.getUTCDay() : date.getDay()) + 7];
+      },
 
       // Numeric representation of the day of the week (0 (for Sunday) through 6 (for Saturday))
-      w: function(s) { return (utc ? date.getUTCDay() : date.getDay()); },
+      w: function(s) {
+        return (utc ? date.getUTCDay() : date.getDay());
+      },
 
       // The day of the year (starting from 0) (0 through 365)
-      z: function(s) { return date.getDayOfTheYear(); },
+      z: function(s) {
+        return date.getDayOfTheYear();
+      },
 
       // S English ordinal suffix for the day of the month, 2 characters (st, nd, rd or th. Works well with j)
       S: function(s) {
@@ -576,64 +588,96 @@
       //
 
       // ISO-8601 week number of year, weeks starting on Monday (Example: 42 (the 42nd week in the year))
-      W: function(s) { return date.getWeekNumber(); },
+      W: function(s) {
+        return date.getWeekNumber();
+      },
 
       //
       // MONTH
       //
 
       // A full textual representation of a month, such as January or March (January through December)
-      F: function(s) { return ExtendedDate.monthNames[(utc ? date.getUTCMonth() : date.getMonth()) + 12]; },
+      F: function(s) {
+        return ExtendedDate.monthNames[(utc ? date.getUTCMonth() : date.getMonth()) + 12];
+      },
 
       // Numeric representation of a month, with leading zeros (01 through 12)
-      m: function(s) { return pad(map.n(s)); },
+      m: function(s) {
+        return pad(map.n(s));
+      },
 
       // A short textual representation of a month, three letters (Jan through Dec)
-      M: function(s) { return ExtendedDate.monthNames[(utc ? date.getUTCMonth() : date.getMonth())]; },
+      M: function(s) {
+        return ExtendedDate.monthNames[(utc ? date.getUTCMonth() : date.getMonth())];
+      },
 
       // Numeric representation of a month, without leading zeros (1 through 12)
-      n: function(s) { return (utc ? date.getUTCMonth() : date.getMonth()) + 1; },
+      n: function(s) {
+        return (utc ? date.getUTCMonth() : date.getMonth()) + 1;
+      },
 
       // Number of days in the given month (28 through 31)
-      t: function(s) { return date.getDaysInMonth(); },
+      t: function(s) {
+        return date.getDaysInMonth();
+      },
 
       //
       // YEAR
       //
 
       // A full numeric representation of a year, 4 digits (Examples: 1999 or 2003)
-      Y: function(s) { return (utc ? date.getUTCFullYear() : date.getFullYear()); },
+      Y: function(s) {
+        return (utc ? date.getUTCFullYear() : date.getFullYear());
+      },
 
       // A two digit representation of a year (Examples: 99 or 03)
-      y: function(s) { return String(map.Y(s)).slice(2); },
+      y: function(s) {
+        return String(map.Y(s)).slice(2);
+      },
 
       //
       // TIME
       //
 
       // Lowercase Ante meridiem and Post meridiem (am or pm)
-      a: function(s) { return map.G(s) < 12 ? 'am' : 'pm'; },
+      a: function(s) {
+        return map.G(s) < 12 ? 'am' : 'pm';
+      },
 
       // Uppercase Ante meridiem and Post meridiem (AM or PM)
-      A: function(s) { return map.a(s).toUpperCase(); },
+      A: function(s) {
+        return map.a(s).toUpperCase();
+      },
 
       // 12-hour format of an hour without leading zeros (1 through 12)
-      g: function(s) { return map.G(s) % 12 || 12; },
+      g: function(s) {
+        return map.G(s) % 12 || 12;
+      },
 
       // 24-hour format of an hour without leading zeros (0 through 23)
-      G: function(s) { return (utc ? date.getUTCHours() : date.getHours()); },
+      G: function(s) {
+        return (utc ? date.getUTCHours() : date.getHours());
+      },
 
       // 12-hour format of an hour with leading zeros (01 through 12)
-      h: function(s) { return pad(map.g(s)); },
+      h: function(s) {
+        return pad(map.g(s));
+      },
 
       // 24-hour format of an hour with leading zeros (00 through 23)
-      H: function(s) { return pad(map.G(s)); },
+      H: function(s) {
+        return pad(map.G(s));
+      },
 
       // Minutes with leading zeros (00 to 59)
-      i: function(s) { return pad(utc ? date.getUTCMinutes() : date.getMinutes()); },
+      i: function(s) {
+        return pad(utc ? date.getUTCMinutes() : date.getMinutes());
+      },
 
       // Seconds, with leading zeros (00 through 59)
-      s: function(s) { return pad(utc ? date.getUTCSeconds() : date.getSeconds()); },
+      s: function(s) {
+        return pad(utc ? date.getUTCSeconds() : date.getSeconds());
+      },
 
       //
       // ZONE
@@ -669,7 +713,9 @@
       //
 
       // Seconds since the Unix Epoch (January 1 1970 00:00:00 GMT)
-      U: function(s) { return date.getTime(); }
+      U: function(s) {
+        return date.getTime();
+      }
     };
 
     var result = [];

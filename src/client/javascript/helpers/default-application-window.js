@@ -84,15 +84,27 @@
     var app = this._app;
 
     var menuMap = {
-      MenuNew:    function() { app.newDialog(self.currentFile, self); },
-      MenuSave:   function() { app.saveDialog(self.currentFile, self); },
-      MenuSaveAs: function() { app.saveDialog(self.currentFile, self, true); },
-      MenuOpen:   function() { app.openDialog(self.currentFile, self); },
-      MenuClose:  function() { self._close(); }
+      MenuNew:    function() {
+        app.newDialog(self.currentFile, self);
+      },
+      MenuSave:   function() {
+        app.saveDialog(self.currentFile, self);
+      },
+      MenuSaveAs: function() {
+        app.saveDialog(self.currentFile, self, true);
+      },
+      MenuOpen:   function() {
+        app.openDialog(self.currentFile, self);
+      },
+      MenuClose:  function() {
+        self._close();
+      }
     };
 
     this._scheme.find(this, 'SubmenuFile').on('select', function(ev) {
-      if ( menuMap[ev.detail.id] ) { menuMap[ev.detail.id](); }
+      if ( menuMap[ev.detail.id] ) {
+        menuMap[ev.detail.id]();
+      }
     });
 
     this._scheme.find(this, 'MenuSave').set('disabled', true);
@@ -111,7 +123,9 @@
    * On Drag-And-Drop Event
    */
   DefaultApplicationWindow.prototype._onDndEvent = function(ev, type, item, args) {
-    if ( !Window.prototype._onDndEvent.apply(this, arguments) ) { return; }
+    if ( !Window.prototype._onDndEvent.apply(this, arguments) ) {
+      return;
+    }
 
     if ( type === 'itemDrop' && item ) {
       var data = item.data;

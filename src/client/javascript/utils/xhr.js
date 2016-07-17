@@ -121,11 +121,15 @@
           args.onsuccess();
         }
       }, function() {
-        if ( loaded ) { return; }
+        if ( loaded ) {
+          return;
+        }
         loaded = true;
         args.onsuccess();
       }, function() {
-        if ( loaded ) { return; }
+        if ( loaded ) {
+          return;
+        }
         loaded = true;
         args.onerror();
       });
@@ -307,11 +311,15 @@
           _finished(true);
         }
       }, function() {
-        if ( loaded ) { return; }
+        if ( loaded ) {
+          return;
+        }
         loaded = true;
         _finished(true);
       }, function() {
-        if ( loaded ) { return; }
+        if ( loaded ) {
+          return;
+        }
         loaded = true;
         _finished(false);
       });

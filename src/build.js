@@ -990,7 +990,9 @@
     var tpl = createWebserverConfig(grunt, dist, src, function(mime) {
       var mimes = [];
       Object.keys(mime.mapping).forEach(function(i) {
-        if ( !i.match(/^\./) ) { return; }
+        if ( !i.match(/^\./) ) {
+          return;
+        }
         mimes.push('  "' + i + '" => "' + mime.mapping[i] + '"');
       });
       return mimes.join(',\n');

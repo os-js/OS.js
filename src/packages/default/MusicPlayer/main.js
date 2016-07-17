@@ -162,7 +162,9 @@
   };
 
   ApplicationMusicPlayerWindow.prototype.showFile = function(file, content) {
-    if ( !file || !content ) { return; }
+    if ( !file || !content ) {
+      return;
+    }
 
     var self = this;
     var scheme = this._scheme;
@@ -186,9 +188,15 @@
     function getInfo() {
       self._app._api('info', {filename: file.path}, function(err, info) {
         if ( info ) {
-          if ( info.Artist ) { labelArtist.set('value', info.Artist); }
-          if ( info.Album ) { labelAlbum.set('value', info.Album); }
-          if ( info.Title ) { labelTitle.set('value', info.Track); }
+          if ( info.Artist ) {
+            labelArtist.set('value', info.Artist);
+          }
+          if ( info.Album ) {
+            labelAlbum.set('value', info.Album);
+          }
+          if ( info.Title ) {
+            labelTitle.set('value', info.Track);
+          }
         }
       });
     }
@@ -199,7 +207,9 @@
   };
 
   ApplicationMusicPlayerWindow.prototype.updateTime = function(label, seeker) {
-    if ( this._destroyed ) { return; } // Important because async
+    if ( this._destroyed ) {
+      return; // Important because async
+    }
 
     var player = this._scheme.find(this, 'Player');
     var audio = player.$element.firstChild;

@@ -60,7 +60,10 @@
 
     function showPreview(item) {
       Utils.$empty(preview.$element);
-      if ( !item ) { return; }
+      if ( !item ) {
+        return;
+      }
+
       scheme.render(self, 'FirefoxMarketplacePreview', preview);
       scheme.find(self, 'LabelName').set('value', item.name);
       scheme.find(self, 'LabelAuthor').set('value', item.author);
@@ -194,7 +197,9 @@
           var preview;
           if ( i.previews ) {
             i.previews.forEach(function(p) {
-              if ( preview ) { return; }
+              if ( preview ) {
+                return;
+              }
 
               if ( p && p.thumbnail_url ) {
                 preview = p.thumbnail_url;

@@ -16,6 +16,7 @@
     "ArrayBuffer": true
   },
   "rules": {
+    "brace-style": 2,
     "curly": [
       2,
       "all"
@@ -31,8 +32,8 @@
       }
     ],
     "no-new": 2,
-    "dot-notation": 0,
-    "no-undef": 2,
+    "dot-notation": 1,
+    "no-undef": 1,
     "no-unused-vars": 0,
     "no-irregular-whitespace": 2,
     "no-cond-assign": [
