@@ -242,6 +242,8 @@
         _build.togglePackage(grunt, enable, true);
       } else if ( disable ) {
         _build.togglePackage(grunt, disable, false);
+      } else if ( grunt.option('list' ) ) {
+        _build.listPackages(grunt);
       } else {
         var done = this.async();
         _build.buildPackages(grunt, done, arg);
