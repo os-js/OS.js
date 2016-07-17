@@ -287,6 +287,23 @@
     }
 
     /**
+     * Creates mousewheel handler
+     */
+    function createWheelHandler(el, n, t, callback, useCapture) {
+
+      function _wheel(ev) {
+        var pos = OSjs.Utils.mousePosition(ev);
+        var direction = (ev.detail < 0 || ev.wheelDelta > 0) ? 1 : -1;
+        pos.z = direction;
+
+        return callback(ev, pos);
+      }
+
+      addEventHandler(el, n, 'mousewheel', callback, _wheel, useCapture, 'mousewheel');
+      addEventHandler(el, n, 'DOMMouseScroll', callback, _wheel, useCapture, 'DOMMouseScroll');
+    }
+
+    /**
      * Creates touch gestures for emulating mouse input
      */
     function createGestureHandler(el, n, t, callback, useCapture) {
@@ -433,6 +450,7 @@
       mousedown: 'touchstart',
       mouseup: 'touchend',
       mousemove: 'touchmove',
+      mousewheel: createWheelHandler,
       contextmenu: createGestureHandler,
       click: createGestureHandler,
       dblclick: createGestureHandler
@@ -440,6 +458,16 @@
 
     return function(el, evName, callback, useCapture) {
       useCapture = (useCapture === true);
+
+      if ( arguments.length < 3 ) {
+        throw new Error('$bind expects 3 or more arguments');
+      }
+      if ( typeof evName !== 'string' ) {
+        throw new Error('Given event type was not a string');
+      }
+      if ( typeof callback !== 'function' ) {
+        throw new Error('Given callback was not a function');
+      }
 
       function addEvent(nsType, type) {
         addEventHandler(el, nsType, type, callback, function mouseEventHandler(ev) {
