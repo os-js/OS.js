@@ -569,7 +569,7 @@
             el.removeEventListener.apply(el, iter.args);
 
             list[type].splice(i, 1);
-            i++;
+            i--;
           }
         }
       }
