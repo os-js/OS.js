@@ -180,39 +180,46 @@
     grunt.registerTask('clean', 'Clean up all build files', function(arg) {
     });
 
-    grunt.registerTask('config', 'Build config files (or modify `set:path.to.key:value`, `get:path.to.key`, `preload:name:path:type`, `(add|remove)-repository:name)', function(fn, key, value, arg) {
-      if ( fn ) {
-        var result;
-        if ( fn === 'get' ) {
-          grunt.log.writeln('Path: ' + key);
+    grunt.registerTask('config', 'Modify and build config files', function(fn, key, value, arg) {
+      var getPath = grunt.option('get');
+      var setPath = grunt.option('set');
+      var value = grunt.option('value');
+      var preload = grunt.option('preload');
+      var mount = grunt.option('mount');
 
-          result = _build.getConfigPath(grunt, key);
-          grunt.log.writeln('Type: ' + typeof result);
-          console.log(result);
-        } else if ( fn === 'set' ) {
-          grunt.log.writeln('Path: ' + key);
+      var result;
+      if ( getPath ) {
+        grunt.log.writeln('Path: ' + getPath);
 
-          result = _build.setConfigPath(grunt, key, value);
+        result = _build.getConfigPath(grunt, getPath);
+        grunt.log.writeln('Type: ' + typeof result);
+        console.log(result);
+      } else if ( setPath ) {
+        if ( value ) {
+          grunt.log.writeln('Path: ' + setPath);
+
+          result = _build.setConfigPath(grunt, setPath, value);
           console.log(result);
-        } else if ( fn === 'preload' ) {
-          result = _build.addPreload(grunt, key, value, arg);
-          console.log(result);
-        } else if ( fn === 'mount' ) {
-          result = _build.addMountpoint(grunt, key, value, arg);
-        } else if ( fn === 'add-repository' ) {
-          result = _build.addRepository(grunt, key);
-          console.log(result);
-        } else if ( fn === 'remove-repository' ) {
-          result = _build.removeRepository(grunt, key);
-          console.log(result);
-        } else {
-          throw new TypeError('Invalid config operation \'' + fn + '\'');
         }
-        return;
+      } else if ( preload ) {
+        result = _build.addPreload(grunt, preload, grunt.option('path'), grunt.option('type'));
+        console.log(result);
+      } else if ( mount ) {
+        result = _build.addMountpoint(grunt, mount, grunt.option('description'), grunt.option('path'));
+      } else if ( grunt.option('repository') ) {
+        var add = grunt.option('add');
+        var remove = grunt.option('remove');
+        if ( add ) {
+          result = _build.addRepository(grunt, add);
+          console.log(result);
+        } else if ( remove ) {
+          result = _build.removeRepository(grunt, remove);
+          console.log(result);
+        }
+      } else {
+        grunt.log.writeln('Writing configuration files...');
+        _build.createConfigurationFiles(grunt, fn);
       }
-
-      grunt.log.writeln('Writing configuration files...');
-      _build.createConfigurationFiles(grunt, fn);
     });
 
     grunt.registerTask('core', 'Build dist core files', function(arg) {
@@ -228,16 +235,17 @@
 
     grunt.registerTask('packages', 'Build dist package files (or a single package, ex: grunt packages:default/About. Also enable/disable)', function(arg, arg2) {
       grunt.log.writeln('Building packages...');
-      if ( arg === 'disable' || arg === 'enable' ) {
-        _build.togglePackage(grunt, arg2, arg === 'enable');
-        return;
-      } else if ( arg === 'list' ) {
-        _build.listPackages(grunt);
-        return;
-      }
+      var enable = grunt.option('enable');
+      var disable = grunt.option('disable');
 
-      var done = this.async();
-      _build.buildPackages(grunt, done, arg);
+      if ( enable ) {
+        _build.togglePackage(grunt, enable, true);
+      } else if ( disable ) {
+        _build.togglePackage(grunt, disable, false);
+      } else {
+        var done = this.async();
+        _build.buildPackages(grunt, done, arg);
+      }
     });
 
     grunt.registerTask('themes', 'Build theme files (arguments: resources, fonts. Or a single theme, ex: grunt themes:MyThemename)', function(arg) {
