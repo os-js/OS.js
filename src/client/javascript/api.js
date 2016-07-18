@@ -1538,7 +1538,7 @@
   })();
 
   /**
-   * Returns an instance of ServiceNotificationIcon
+   * Toggles fullscreen of an element
    *
    * @function toggleFullscreen
    * @memberof OSjs.API
