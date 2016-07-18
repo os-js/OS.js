@@ -153,7 +153,9 @@
     if ( typeof label === 'function' ) {
       nel.appendChild(label.call(nel, nel, v));
     } else {
-      nel.appendChild(document.createTextNode(label));
+      var span = document.createElement('span');
+      span.appendChild(document.createTextNode(label));
+      nel.appendChild(span);
     }
 
     return nel;
