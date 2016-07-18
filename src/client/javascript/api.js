@@ -476,7 +476,11 @@
 
       args.__preload__ = {force: true};
 
-      OSjs.API.launch(n, args);
+      //setTimeout with 500 ms is used to allow applications that might need
+      //  some time to destroy resources before it can be relaunched.
+      setTimeout(function() {
+        OSjs.API.launch(n, args);
+      }, 500);
     }
 
     OSjs.API.getProcess(n).forEach(relaunch);
