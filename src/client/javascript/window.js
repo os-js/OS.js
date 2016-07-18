@@ -61,6 +61,12 @@
     return false;
   }
 
+  function camelCased(str) {
+    return str.replace(/_([a-z])/g, function(g) {
+      return g[1].toUpperCase();
+    });
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -227,6 +233,8 @@
    * @param   {boolean}                   [opts.max_width]         Maximum allowed width
    * @param   {boolean}                   [opts.max_height]        Maximum allowed height
    * @param   {Object}                    [opts.media_queries]     Media queries to apply CSS attribute => {name: fn(w,h,win) => Boolean }
+   * @param   {String}                    [opts.sound]             Sound name when window is displayed
+   * @param   {Number}                    [opts.sound_volume]      Sound volume
    * @param   {OSjs.Core.Application}     appRef                   Application Reference
    * @param   {OSjs.GUI.Scheme}           schemeRef                GUI Scheme Reference
    *
@@ -277,7 +285,7 @@
        * @memberof OSjs.Core.Window#
        * @type {Node}
        */
-      this._$element      = null;
+      this._$element = null;
 
       /**
        * The inner (content) container
@@ -285,7 +293,7 @@
        * @memberof OSjs.Core.Window#
        * @type {Node}
        */
-      this._$root         = null;
+      this._$root = null;
 
       /**
        * The top container
@@ -293,7 +301,7 @@
        * @memberof OSjs.Core.Window#
        * @type {Node}
        */
-      this._$top          = null;
+      this._$top = null;
 
       /**
        * The icon element
@@ -301,7 +309,7 @@
        * @memberof OSjs.Core.Window#
        * @type {Node}
        */
-      this._$winicon      = null;
+      this._$winicon = null;
 
       /**
        * The loading overlay
@@ -309,7 +317,7 @@
        * @memberof OSjs.Core.Window#
        * @type {Node}
        */
-      this._$loading      = null;
+      this._$loading = null;
 
       /**
        * The disabled overlay
@@ -317,7 +325,7 @@
        * @memberof OSjs.Core.Window#
        * @type {Node}
        */
-      this._$disabled     = null;
+      this._$disabled = null;
 
       /**
        * The resize underlay
@@ -325,7 +333,7 @@
        * @memberof OSjs.Core.Window#
        * @type {Node}
        */
-      this._$resize       = null;
+      this._$resize = null;
 
       /**
        * The warning overlay
@@ -333,7 +341,7 @@
        * @memberof OSjs.Core.Window#
        * @type {Node}
        */
-      this._$warning      = null;
+      this._$warning = null;
 
       /**
        * Constructor options copy
@@ -341,7 +349,7 @@
        * @memberof OSjs.Core.Window#
        * @type {Object}
        */
-      this._opts          = opts;
+      this._opts = opts;
 
       /**
        * Application reference
@@ -349,7 +357,7 @@
        * @memberof OSjs.Core.Window#
        * @type {OSjs.Core.Application}
        */
-      this._app           = appRef || null;
+      this._app = appRef || null;
 
       /**
        * Scheme reference
@@ -357,7 +365,7 @@
        * @memberof OSjs.Core.Window#
        * @type {OSjs.GUI.Scheme}
        */
-      this._scheme        = schemeRef || null;
+      this._scheme = schemeRef || null;
 
       /**
        * If Window has been destroyed
@@ -365,7 +373,7 @@
        * @memberof OSjs.Core.Window#
        * @type {Boolean}
        */
-      this._destroyed     = false;
+      this._destroyed = false;
 
       /**
        * If Window was restored
@@ -373,7 +381,7 @@
        * @memberof OSjs.Core.Window#
        * @type {Boolean}
        */
-      this._restored      = false;
+      this._restored = false;
 
       /**
        * If Window is finished loading
@@ -381,7 +389,7 @@
        * @memberof OSjs.Core.Window#
        * @type {Boolean}
        */
-      this._loaded        = false;
+      this._loaded = false;
 
       /**
        * If Window is currently disabled
@@ -389,7 +397,7 @@
        * @memberof OSjs.Core.Window#
        * @type {Boolean}
        */
-      this._disabled      = true;
+      this._disabled = true;
 
       /**
        * If Window is currently loading
@@ -397,7 +405,7 @@
        * @memberof OSjs.Core.Window#
        * @type {Boolean}
        */
-      this._loading       = false;
+      this._loading = false;
 
       /**
        * Window ID (Internal)
@@ -405,7 +413,7 @@
        * @memberof OSjs.Core.Window#
        * @type {Number}
        */
-      this._wid           = _WID;
+      this._wid = _WID;
 
       /**
        * Window Icon
@@ -413,7 +421,7 @@
        * @memberof OSjs.Core.Window#
        * @type {String}
        */
-      this._icon          = opts.icon;
+      this._icon = opts.icon;
 
       /**
        * Window Name
@@ -421,7 +429,7 @@
        * @memberof OSjs.Core.Window#
        * @type {String}
        */
-      this._name          = name;
+      this._name = name;
 
       /**
        * Window Title
@@ -429,7 +437,7 @@
        * @memberof OSjs.Core.Window#
        * @type {String}
        */
-      this._title         = opts.title;
+      this._title = opts.title;
 
       /**
        * Window Tag (ex. Use this when you have a group of windows)
@@ -437,7 +445,7 @@
        * @memberof OSjs.Core.Window#
        * @type {String}
        */
-      this._tag           = opts.tag;
+      this._tag = opts.tag;
 
       /**
        * Window Position With x and y
@@ -445,7 +453,7 @@
        * @memberof OSjs.Core.Window#
        * @type {Object}
        */
-      this._position      = {x:opts.x, y:opts.y};
+      this._position = {x:opts.x, y:opts.y};
 
       /**
        * Window Dimension With w and h
@@ -461,7 +469,7 @@
        * @memberof OSjs.Core.Window#
        * @return {OSjs.Core.Window[]}
        */
-      this._children      = [];
+      this._children = [];
 
       /**
        * Parent
@@ -469,23 +477,47 @@
        * @memberof OSjs.Core.Window#
        * @type {OSjs.Core.Window}
        */
-      this._parent        = null;
+      this._parent = null;
 
-      this._origtitle     = this._title;                    // Backup window title
-      this._lastDimension = this._dimension;                // Last Window Dimension
-      this._lastPosition  = this._position;                 // Last Window Position
-      this._tmpPosition   = null;
-      this._sound         = null;                           // Play this sound when window opens
-      this._soundVolume   = _DEFAULT_SND_VOLUME;            // ... using this volume
-      this._blinkTimer    = null;
-      this._queryTimer    = null;
+      /**
+       * Original Window title (The one set on construct)
+       * @name _origtitle
+       * @memberof OSjs.Core.Window#
+       * @type {String}
+       */
+      this._origtitle = this._title;
 
-      this._evHandler     = new OSjs.Helpers.EventHandler(name, [
-        'focus', 'blur', 'destroy', 'maximize', 'minimize', 'restore',
-        'move', 'moved', 'resize', 'resized',
-        'keydown', 'keyup', 'keypress',
-        'drop', 'drop:upload', 'drop:file'
-      ]);
+      /**
+       * Last dimension (before window movement)
+       * @name _lastDimension
+       * @memberof OSjs.Core.Window#
+       * @type {Object}
+       */
+      this._lastDimension = this._dimension;
+
+      /**
+       * Last position (before window movement)
+       * @name _lastPosition
+       * @memberof OSjs.Core.Window#
+       * @type {Object}
+       */
+      this._lastPosition = this._position;
+
+      /**
+       * The sound this window makes when it is created
+       * @name _sound
+       * @memberof OSjs.Core.Window#
+       * @type {String}
+       */
+      this._sound = null;
+
+      /**
+       * The volume of the window sound
+       * @name _soundVolume
+       * @memberof OSjs.Core.Window#
+       * @type {Number} Between 0.0 and 1.0
+       */
+      this._soundVolume   = _DEFAULT_SND_VOLUME;
 
       /**
        * Window Properties
@@ -530,33 +562,101 @@
         onbottom  : false
       };
 
+      //
+      // Internals
+      //
+
+      this._queryTimer = null;
+
+      this._evHandler = new OSjs.Helpers.EventHandler(name, [
+        'focus', 'blur', 'destroy', 'maximize', 'minimize', 'restore',
+        'move', 'moved', 'resize', 'resized',
+        'keydown', 'keyup', 'keypress',
+        'drop', 'drop:upload', 'drop:file'
+      ]);
+
+      //
+      // Inherit properties given in arguments
+      //
+
       Object.keys(opts).forEach(function(k) {
         if ( typeof self._properties[k] !== 'undefined' ) {
           self._properties[k] = opts[k];
-        }
-        if ( typeof self._state[k] !== 'undefined' ) {
+        } else if ( typeof self._state[k] !== 'undefined' && k !== 'focused' ) {
           self._state[k] = opts[k];
+        } else if ( ('sound', 'sound_volume').indexOf(k) !== -1 ) {
+          self['_' + camelCased(k)] = opts[k];
         }
       });
 
-      // Internals for restoring previous state (session)
-      if ( appRef && appRef.__args && appRef.__args.__windows__ ) {
-        appRef.__args.__windows__.forEach(function(restore) {
-          if ( !self._restored && restore.name && restore.name === self._name ) {
-            self._position.x = restore.position.x;
-            self._position.y = restore.position.y;
-            if ( self._properties.allow_resize ) {
-              self._dimension.w = restore.dimension.w;
-              self._dimension.h = restore.dimension.h;
+      //
+      // Make sure that properties are correct according to requested arguments
+      //
+
+      (function _initPosition(properties, position) {
+        if ( !properties.gravity && (typeof position.x === 'undefined') || (typeof position.y === 'undefined') ) {
+          var wm = OSjs.Core.getWindowManager();
+          var np = wm ? wm.getWindowPosition() : {x:0, y:0};
+
+          position.x = np.x;
+          position.y = np.y;
+        }
+      })(this._properties, this._position);
+
+      (function _initDimension(properties, dimension) {
+        if ( properties.min_height && (dimension.h < properties.min_height) ) {
+          dimension.h = properties.min_height;
+        }
+        if ( properties.max_width && (dimension.w < properties.max_width) ) {
+          dimension.w = properties.max_width;
+        }
+        if ( properties.max_height && (dimension.h > properties.max_height) ) {
+          dimension.h = properties.max_height;
+        }
+        if ( properties.max_width && (dimension.w > properties.max_width) ) {
+          dimension.w = properties.max_width;
+        }
+      })(this._properties, this._dimension);
+
+      (function _initRestore(position, dimension) {
+        if ( appRef && appRef.__args && appRef.__args.__windows__ ) {
+          appRef.__args.__windows__.forEach(function(restore) {
+            if ( !self._restored && restore.name && restore.name === self._name ) {
+              position.x = restore.position.x;
+              position.y = restore.position.y;
+              if ( self._properties.allow_resize ) {
+                dimension.w = restore.dimension.w;
+                dimension.h = restore.dimension.h;
+              }
+
+              console.info('RESTORED FROM SESSION', restore);
+              self._restored = true;
             }
+          });
+        }
+      })(this._position, this._dimension);
 
-            console.info('RESTORED FROM SESSION', restore);
-            self._restored = true;
+      (function _initGravity(properties, position, dimension, restored) {
+        var grav = properties.gravity;
+        if ( grav && !restored ) {
+          if ( grav === 'center' ) {
+            position.y = (window.innerHeight / 2) - (self._dimension.h / 2);
+            position.x = (window.innerWidth / 2) - (self._dimension.w / 2);
+          } else {
+            var space = getWindowSpace();
+            if ( grav.match(/^south/) ) {
+              position.y = space.height - dimension.h;
+            } else {
+              position.y = space.top;
+            }
+            if ( grav.match(/west$/) ) {
+              position.x = space.left;
+            } else {
+              position.x = space.width - dimension.w;
+            }
           }
-        });
-      }
-
-      this._state.focused = false; // Make sure it is focused by WM
+        }
+      })(this._properties, this._position, this._dimension, this._restored);
 
       console.groupEnd();
 
@@ -582,75 +682,22 @@
    */
   Window.prototype.init = function(_wm, _app, _scheme) {
     var self = this;
-    var compability = OSjs.Utils.getCompability();
-    var isTouch = compability.touch;
-    var wm = OSjs.Core.getWindowManager();
-
-    (function _initPosition() {
-      if ( !self._properties.gravity ) {
-        if ( (typeof self._position.x === 'undefined') || (typeof self._position.y === 'undefined') ) {
-          var np = wm ? wm.getWindowPosition() : {x:0, y:0};
-          self._position.x = np.x;
-          self._position.y = np.y;
-        }
-      }
-    })();
-
-    (function _initDimension() {
-      if ( self._properties.min_height && (self._dimension.h < self._properties.min_height) ) {
-        self._dimension.h = self._properties.min_height;
-      }
-      if ( self._properties.max_width && (self._dimension.w < self._properties.max_width) ) {
-        self._dimension.w = self._properties.max_width;
-      }
-      if ( self._properties.max_height && (self._dimension.h > self._properties.max_height) ) {
-        self._dimension.h = self._properties.max_height;
-      }
-      if ( self._properties.max_width && (self._dimension.w > self._properties.max_width) ) {
-        self._dimension.w = self._properties.max_width;
-      }
-    })();
-
-    (function _initGravity() {
-      var grav = self._properties.gravity;
-      if ( grav && !self._restored ) {
-        if ( grav === 'center' ) {
-          self._position.y = (window.innerHeight / 2) - (self._dimension.h / 2);
-          self._position.x = (window.innerWidth / 2) - (self._dimension.w / 2);
-        } else {
-          var space = getWindowSpace();
-          if ( grav.match(/^south/) ) {
-            self._position.y = space.height - self._dimension.h;
-          } else {
-            self._position.y = space.top;
-          }
-          if ( grav.match(/west$/) ) {
-            self._position.x = space.left;
-          } else {
-            self._position.x = space.width - self._dimension.w;
-          }
-        }
-      }
-    })();
 
     console.group('Window::init()');
     console.debug('Properties', this._properties);
     console.debug('Position', this._position);
     console.debug('Dimension', this._dimension);
 
-    //
     // Create DOM
-    //
 
     this._$element = document.createElement('application-window');
-    this._$element.className = (function() {
-      var classNames = ['Window'];
-      classNames.push(Utils.$safeName(self._name));
-      if ( self._tag && (self._name !== self._tag) ) {
-        classNames.push(Utils.$safeName(self._tag));
+    this._$element.className = (function(n, t) {
+      var classNames = ['Window', Utils.$safeName(n)];
+      if ( t && (n !== t) ) {
+        classNames.push(Utils.$safeName(t));
       }
       return classNames;
-    })().join(' ');
+    })(this._name, this._tag).join(' ');
 
     this._$element.style.width = this._dimension.w + 'px';
     this._$element.style.height = this._dimension.h + 'px';
@@ -665,24 +712,6 @@
     this._$element.setAttribute('data-allow-minimize', String(this._properties.allow_minimize));
     this._$element.setAttribute('data-allow-maximize', String(this._properties.allow_maximize));
     this._$element.setAttribute('data-allow-close', String(this._properties.allow_close));
-
-    Utils.$bind(this._$element, 'mousedown', function(ev) {
-      self._focus();
-      return stopPropagation(ev);
-    });
-
-    Utils.$bind(this._$element, 'contextmenu', function(ev) {
-      var r = Utils.$isInput(ev);
-
-      if ( !r ) {
-        ev.preventDefault();
-        ev.stopPropagation();
-      }
-
-      OSjs.API.blurMenu();
-
-      return !!r;
-    });
 
     var buttonMinimize = document.createElement('application-window-button-minimize');
     buttonMinimize.className = 'application-window-button-entry';
@@ -716,20 +745,6 @@
 
     this._$top = document.createElement('application-window-top');
 
-    Utils.$bind(this._$top, 'click', function(ev) {
-      var t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
-
-      ev.preventDefault();
-      if ( t ) {
-        if ( t.tagName.match(/^APPLICATION\-WINDOW\-BUTTON/) ) {
-          self._onWindowButtonClick(ev, t, t.getAttribute('data-action'));
-        } else if ( t.tagName === 'APPLICATION-WINDOW-ICON' ) {
-          ev.stopPropagation();
-          self._onWindowIconClick(ev, t);
-        }
-      }
-    }, true);
-
     this._$winicon = document.createElement('application-window-icon');
     this._$winicon.setAttribute('role', 'button');
     this._$winicon.setAttribute('aria-haspopup', 'true');
@@ -738,11 +753,6 @@
     var windowTitle = document.createElement('application-window-title');
     windowTitle.setAttribute('role', 'heading');
     windowTitle.appendChild(document.createTextNode(this._title));
-
-    Utils.$bind(windowTitle, 'mousedown', _noEvent);
-    Utils.$bind(windowTitle, 'dblclick', function() {
-      self._maximize();
-    });
 
     this._$top.appendChild(this._$winicon);
     this._$top.appendChild(windowTitle);
@@ -757,8 +767,47 @@
     this._$element.appendChild(this._$resize);
     this._$element.appendChild(this._$disabled);
 
-    (function _initDnD(main) {
-      if ( self._properties.allow_drop && compability.dnd ) {
+    // Bind events
+
+    Utils.$bind(this._$element, 'mousedown', function(ev) {
+      self._focus();
+      return stopPropagation(ev);
+    });
+
+    Utils.$bind(this._$element, 'contextmenu', function(ev) {
+      var r = Utils.$isInput(ev);
+
+      if ( !r ) {
+        ev.preventDefault();
+        ev.stopPropagation();
+      }
+
+      OSjs.API.blurMenu();
+
+      return !!r;
+    });
+
+    Utils.$bind(this._$top, 'click', function(ev) {
+      var t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
+
+      ev.preventDefault();
+      if ( t ) {
+        if ( t.tagName.match(/^APPLICATION\-WINDOW\-BUTTON/) ) {
+          self._onWindowButtonClick(ev, t, t.getAttribute('data-action'));
+        } else if ( t.tagName === 'APPLICATION-WINDOW-ICON' ) {
+          ev.stopPropagation();
+          self._onWindowIconClick(ev, t);
+        }
+      }
+    }, true);
+
+    Utils.$bind(windowTitle, 'mousedown', _noEvent);
+    Utils.$bind(windowTitle, 'dblclick', function() {
+      self._maximize();
+    });
+
+    (function _initDnD(properties, main, compability) {
+      if ( properties.allow_drop && compability.dnd ) {
         var border = document.createElement('div');
         border.className = 'WindowDropRect';
 
@@ -785,11 +834,9 @@
           }
         });
       }
-    })(this._$element);
+    })(this._properties, this._$element, Utils.getCompability());
 
-    //
-    // Finish
-    //
+    // Final stuff
 
     document.body.appendChild(this._$element);
 
@@ -797,12 +844,11 @@
     this._toggleLoading(false);
     this._toggleDisabled(false);
     this._setIcon(API.getIcon(this._icon, null, this._app));
+    this._updateMarkup();
 
     if ( this._sound ) {
       API.playSound(this._sound, this._soundVolume);
     }
-
-    this._updateMarkup();
 
     console.groupEnd();
 
@@ -1770,27 +1816,6 @@
       }
       self._onChange(stat ? 'attention_on' : 'attention_off');
     }
-
-    /*
-    if ( t ) {
-      if ( !this._blinkTimer ) {
-        console.debug(this._name, '>', 'Window::_toggleAttentionBlink()', t);
-        this._blinkTimer = setInterval(function() {
-          s = !s;
-
-          _blink(s);
-        }, 1000);
-        _blink(true);
-      }
-    } else {
-      if ( this._blinkTimer ) {
-        console.debug(this._name, '>', 'Window::_toggleAttentionBlink()', t);
-        clearInterval(this._blinkTimer);
-        this._blinkTimer = null;
-      }
-      _blink(false);
-    }
-    */
 
     _blink(t);
 
