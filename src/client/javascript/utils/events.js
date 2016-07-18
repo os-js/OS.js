@@ -367,6 +367,8 @@
           return _done();
         }
 
+        ev.preventDefault();
+
         var now = new Date();
         var diff = now - started;
 
