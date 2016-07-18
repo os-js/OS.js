@@ -1537,6 +1537,65 @@
     };
   })();
 
+  /**
+   * Returns an instance of ServiceNotificationIcon
+   *
+   * @function toggleFullscreen
+   * @memberof OSjs.API
+   *
+   * @param {Node}      el    The DOM Node
+   * @param {Boolean}   [t]   Toggle value (auto-detected)
+   */
+  API.toggleFullscreen = (function() {
+
+    var _prev;
+
+    function trigger(el, state) {
+      function _request() {
+        if ( el.requestFullscreen ) {
+          el.requestFullscreen();
+        } else if ( el.mozRequestFullScreen ) {
+          el.mozRequestFullScreen();
+        } else if ( el.webkitRequestFullScreen ) {
+          el.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+        }
+      }
+
+      function _restore() {
+        if ( el.webkitCancelFullScreen ) {
+          el.webkitCancelFullScreen();
+        } else if ( el.mozCancelFullScreen ) {
+          el.mozCancelFullScreen();
+        } else if ( el.exitFullscreen ) {
+          el.exitFullscreen();
+        }
+      }
+
+      if ( el ) {
+        if ( state ) {
+          _request();
+        } else {
+          _restore();
+        }
+      }
+    }
+
+    return function _apiToggleFullscreen(el, t) {
+      if ( typeof t === 'boolean' ) {
+        trigger(el, t);
+      } else {
+        if ( _prev && _prev !== el ) {
+          trigger(_prev, false);
+        }
+
+        trigger(el, _prev !== el);
+      }
+
+      _prev = el;
+    };
+
+  })();
+
   /////////////////////////////////////////////////////////////////////////////
   // MISC
   /////////////////////////////////////////////////////////////////////////////

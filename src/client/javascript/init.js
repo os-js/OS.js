@@ -708,6 +708,7 @@
     window.onerror = null;
     window.onbeforeunload = null;
 
+    OSjs.API.toggleFullscreen();
     OSjs.API.blurMenu();
     OSjs.API.killAll();
     OSjs.GUI.DialogScheme.destroy();
