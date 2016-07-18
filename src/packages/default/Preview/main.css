@@ -46,3 +46,10 @@
   width : 100%;
   display : inline-block;
 }
+
+.ApplicationPreviewWindow gui-image {
+  width : auto;
+}
+.ApplicationPreviewWindow gui-image[data-zoom="fit"] > img {
+  width : 100%;
+}
