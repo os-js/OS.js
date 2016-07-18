@@ -88,7 +88,7 @@
       'text-underline': {
         command: 'underline'
       },
-      'text-strikethorugh': {
+      'text-strikethrough': {
         command: 'strikeThrough'
       },
 
