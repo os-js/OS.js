@@ -728,7 +728,7 @@
           self._onWindowIconClick(ev, t);
         }
       }
-    });
+    }, true);
 
     this._$winicon = document.createElement('application-window-icon');
     this._$winicon.setAttribute('role', 'button');
