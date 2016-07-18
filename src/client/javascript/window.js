@@ -54,6 +54,13 @@
    * @typedef WindowEvent
    */
 
+  function _noEvent(ev) {
+    OSjs.API.blurMenu();
+    ev.preventDefault();
+    ev.stopPropagation();
+    return false;
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -549,6 +556,8 @@
         });
       }
 
+      this._state.focused = false; // Make sure it is focused by WM
+
       console.groupEnd();
 
       _WID++;
@@ -577,9 +586,7 @@
     var isTouch = compability.touch;
     var wm = OSjs.Core.getWindowManager();
 
-    var main, buttonMaximize, buttonMinimize, buttonClose;
-
-    function _initPosition() {
+    (function _initPosition() {
       if ( !self._properties.gravity ) {
         if ( (typeof self._position.x === 'undefined') || (typeof self._position.y === 'undefined') ) {
           var np = wm ? wm.getWindowPosition() : {x:0, y:0};
@@ -587,9 +594,9 @@
           self._position.y = np.y;
         }
       }
-    }
+    })();
 
-    function _initDimension() {
+    (function _initDimension() {
       if ( self._properties.min_height && (self._dimension.h < self._properties.min_height) ) {
         self._dimension.h = self._properties.min_height;
       }
@@ -602,9 +609,9 @@
       if ( self._properties.max_width && (self._dimension.w > self._properties.max_width) ) {
         self._dimension.w = self._properties.max_width;
       }
-    }
+    })();
 
-    function _initGravity() {
+    (function _initGravity() {
       var grav = self._properties.gravity;
       if ( grav && !self._restored ) {
         if ( grav === 'center' ) {
@@ -624,54 +631,133 @@
           }
         }
       }
-    }
+    })();
 
-    function _initMinButton() {
-      buttonMinimize            = document.createElement('application-window-button-minimize');
-      buttonMinimize.className  = 'application-window-button-entry';
-      if ( self._properties.allow_minimize ) {
-        Utils.$bind(buttonMinimize, 'click', function(ev) {
-          ev.preventDefault();
+    console.group('Window::init()');
+    console.debug('Properties', this._properties);
+    console.debug('Position', this._position);
+    console.debug('Dimension', this._dimension);
+
+    //
+    // Create DOM
+    //
+
+    this._$element = document.createElement('application-window');
+    this._$element.className = (function() {
+      var classNames = ['Window'];
+      classNames.push(Utils.$safeName(self._name));
+      if ( self._tag && (self._name !== self._tag) ) {
+        classNames.push(Utils.$safeName(self._tag));
+      }
+      return classNames;
+    })().join(' ');
+
+    this._$element.style.width = this._dimension.w + 'px';
+    this._$element.style.height = this._dimension.h + 'px';
+    this._$element.style.top = this._position.y + 'px';
+    this._$element.style.left = this._position.x + 'px';
+    this._$element.style.zIndex = getNextZindex(this._state.ontop);
+    this._$element.setAttribute('data-window-id', this._wid);
+    this._$element.setAttribute('data-allow-resize', this._properties.allow_resize ? 'true' : 'false');
+    this._$element.setAttribute('role', 'application');
+    this._$element.setAttribute('aria-live', 'polite');
+    this._$element.setAttribute('aria-hidden', 'false');
+    this._$element.setAttribute('data-allow-minimize', String(this._properties.allow_minimize));
+    this._$element.setAttribute('data-allow-maximize', String(this._properties.allow_maximize));
+    this._$element.setAttribute('data-allow-close', String(this._properties.allow_close));
+
+    Utils.$bind(this._$element, 'mousedown', function(ev) {
+      self._focus();
+      return stopPropagation(ev);
+    });
+
+    Utils.$bind(this._$element, 'contextmenu', function(ev) {
+      var r = Utils.$isInput(ev);
+
+      if ( !r ) {
+        ev.preventDefault();
+        ev.stopPropagation();
+      }
+
+      OSjs.API.blurMenu();
+
+      return !!r;
+    });
+
+    var buttonMinimize = document.createElement('application-window-button-minimize');
+    buttonMinimize.className = 'application-window-button-entry';
+    buttonMinimize.setAttribute('role', 'button');
+    buttonMinimize.setAttribute('aria-label', 'Minimize Window');
+    buttonMinimize.setAttribute('data-action', 'minimize');
+
+    var buttonMaximize = document.createElement('application-window-button-maximize');
+    buttonMaximize.className = 'application-window-button-entry';
+    buttonMaximize.setAttribute('role', 'button');
+    buttonMaximize.setAttribute('aria-label', 'Maximize Window');
+    buttonMaximize.setAttribute('data-action', 'maximize');
+
+    var buttonClose = document.createElement('application-window-button-close');
+    buttonClose.className = 'application-window-button-entry';
+    buttonClose.setAttribute('role', 'button');
+    buttonClose.setAttribute('aria-label', 'Close Window');
+    buttonClose.setAttribute('data-action', 'close');
+
+    this._$root = document.createElement('application-window-content');
+
+    this._$resize = document.createElement('application-window-resize');
+
+    this._$loading = document.createElement('application-window-loading');
+    Utils.$bind(this._$loading, 'mousedown', _noEvent);
+
+    var windowLoadingImage = document.createElement('application-window-loading-indicator');
+
+    this._$disabled = document.createElement('application-window-disabled');
+    Utils.$bind(this._$disabled, 'mousedown', _noEvent);
+
+    this._$top = document.createElement('application-window-top');
+
+    Utils.$bind(this._$top, 'click', function(ev) {
+      var t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
+
+      ev.preventDefault();
+      if ( t ) {
+        if ( t.tagName.match(/^APPLICATION\-WINDOW\-BUTTON/) ) {
+          self._onWindowButtonClick(ev, t, t.getAttribute('data-action'));
+        } else if ( t.tagName === 'APPLICATION-WINDOW-ICON' ) {
           ev.stopPropagation();
-          self._onWindowButtonClick(ev, this, 'minimize');
-          return false;
-        });
-      } else {
-        buttonMinimize.style.display = 'none';
+          self._onWindowIconClick(ev, t);
+        }
       }
-    }
+    });
 
-    function _initMaxButton() {
-      buttonMaximize            = document.createElement('application-window-button-maximize');
-      buttonMaximize.className  = 'application-window-button-entry';
-      if ( !self._properties.allow_maximize ) {
-        buttonMaximize.style.display = 'none';
-      }
+    this._$winicon = document.createElement('application-window-icon');
+    this._$winicon.setAttribute('role', 'button');
+    this._$winicon.setAttribute('aria-haspopup', 'true');
+    this._$winicon.setAttribute('aria-label', 'Window Menu');
 
-      Utils.$bind(buttonMaximize, 'click', function(ev) {
-        ev.preventDefault();
-        ev.stopPropagation();
-        self._onWindowButtonClick(ev, this, 'maximize');
-        return false;
-      });
-    }
+    var windowTitle = document.createElement('application-window-title');
+    windowTitle.setAttribute('role', 'heading');
+    windowTitle.appendChild(document.createTextNode(this._title));
 
-    function _initCloseButton() {
-      buttonClose           = document.createElement('application-window-button-close');
-      buttonClose.className = 'application-window-button-entry';
-      if ( !self._properties.allow_close ) {
-        buttonClose.style.display = 'none';
-      }
+    Utils.$bind(windowTitle, 'mousedown', _noEvent);
+    Utils.$bind(windowTitle, 'dblclick', function() {
+      self._maximize();
+    });
 
-      Utils.$bind(buttonClose, 'click', function(ev) {
-        ev.preventDefault();
-        ev.stopPropagation();
-        self._onWindowButtonClick(ev, this, 'close');
-        return false;
-      });
-    }
+    this._$top.appendChild(this._$winicon);
+    this._$top.appendChild(windowTitle);
+    this._$top.appendChild(buttonMinimize);
+    this._$top.appendChild(buttonMaximize);
+    this._$top.appendChild(buttonClose);
 
-    function _initDnD() {
+    this._$loading.appendChild(windowLoadingImage);
+
+    this._$element.appendChild(this._$top);
+    this._$element.appendChild(this._$root);
+    this._$element.appendChild(this._$resize);
+    this._$element.appendChild(this._$disabled);
+
+    (function _initDnD(main) {
       if ( self._properties.allow_drop && compability.dnd ) {
         var border = document.createElement('div');
         border.className = 'WindowDropRect';
@@ -699,148 +785,18 @@
           }
         });
       }
-    }
-
-    function _noEvent(ev) {
-      OSjs.API.blurMenu();
-      ev.preventDefault();
-      ev.stopPropagation();
-      return false;
-    }
-
-    console.group('Window::init()');
-
-    this._state.focused = false;
-    this._icon = API.getIcon(this._icon, null, this._app);
-
-    _initPosition();
-    _initDimension();
-    _initGravity();
-
-    console.debug('Properties', this._properties);
-    console.debug('Position', this._position);
-    console.debug('Dimension', this._dimension);
-
-    main = document.createElement('application-window');
-    main.setAttribute('data-window-id', this._wid);
-    main.setAttribute('data-allow-resize', this._properties.allow_resize ? 'true' : 'false');
-
-    var windowWrapper       = document.createElement('application-window-content');
-    var windowResize        = document.createElement('application-window-resize');
-    var windowLoading       = document.createElement('application-window-loading');
-    var windowLoadingImage  = document.createElement('application-window-loading-indicator');
-    var windowDisabled      = document.createElement('application-window-disabled');
-    var windowTop           = document.createElement('application-window-top');
-    var windowIcon          = document.createElement('application-window-icon');
-    var windowTitle         = document.createElement('application-window-title');
-
-    windowTitle.setAttribute('role', 'heading');
-    windowTitle.appendChild(document.createTextNode(this._title));
-
-    Utils.$bind(windowTitle, 'mousedown', _noEvent);
-    Utils.$bind(windowTitle, 'dblclick', function() {
-      self._maximize();
-    });
-
-    // Append stuff
-    var classNames = ['Window'];
-    classNames.push(Utils.$safeName(this._name));
-    if ( this._tag && (this._name !== this._tag) ) {
-      classNames.push(Utils.$safeName(this._tag));
-    }
-
-    //
-    // Event binding
-    //
-
-    Utils.$bind(main, 'contextmenu', function(ev) {
-      var r = Utils.$isInput(ev);
-
-      if ( !r ) {
-        ev.preventDefault();
-        ev.stopPropagation();
-      }
-
-      OSjs.API.blurMenu();
-
-      return !!r;
-    });
-
-    Utils.$bind(windowIcon, 'dblclick', function(ev) {
-      ev.preventDefault();
-    });
-    Utils.$bind(windowIcon, 'click', function(ev) {
-      ev.preventDefault();
-      ev.stopPropagation();
-      self._onWindowIconClick(ev, this);
-    });
-
-    Utils.$bind(windowLoading, 'mousedown', _noEvent);
-    Utils.$bind(windowDisabled, 'mousedown', _noEvent);
-
-    Utils.$bind(main, 'mousedown', function(ev) {
-      self._focus();
-      return stopPropagation(ev);
-    });
+    })(this._$element);
 
     //
     // Finish
     //
-
-    _initMinButton();
-    _initMaxButton();
-    _initCloseButton();
-
-    _initDnD();
-
-    main.className    = classNames.join(' ');
-    main.style.width  = this._dimension.w + 'px';
-    main.style.height = this._dimension.h + 'px';
-    main.style.top    = this._position.y + 'px';
-    main.style.left   = this._position.x + 'px';
-    main.style.zIndex = getNextZindex(this._state.ontop);
-
-    main.setAttribute('role', 'application');
-    main.setAttribute('aria-live', 'polite');
-    main.setAttribute('aria-hidden', 'false');
-    windowIcon.setAttribute('role', 'button');
-    windowIcon.setAttribute('aria-haspopup', 'true');
-    windowIcon.setAttribute('aria-label', 'Window Menu');
-    buttonClose.setAttribute('role', 'button');
-    buttonClose.setAttribute('aria-label', 'Close Window');
-    buttonMinimize.setAttribute('role', 'button');
-    buttonMinimize.setAttribute('aria-label', 'Minimize Window');
-    buttonMaximize.setAttribute('role', 'button');
-    buttonMaximize.setAttribute('aria-label', 'Maximize Window');
-
-    windowTop.appendChild(windowIcon);
-    windowTop.appendChild(windowTitle);
-    windowTop.appendChild(buttonMinimize);
-    windowTop.appendChild(buttonMaximize);
-    windowTop.appendChild(buttonClose);
-
-    windowLoading.appendChild(windowLoadingImage);
-
-    main.appendChild(windowTop);
-    main.appendChild(windowWrapper);
-    main.appendChild(windowResize);
-    main.appendChild(windowLoading);
-    main.appendChild(windowDisabled);
-
-    this._$element  = main;
-    this._$root     = windowWrapper;
-    this._$top      = windowTop;
-    this._$loading  = windowLoading;
-    this._$winicon  = windowIcon;
-    this._$disabled = windowDisabled;
-    this._$resize   = windowResize;
 
     document.body.appendChild(this._$element);
 
     this._onChange('create');
     this._toggleLoading(false);
     this._toggleDisabled(false);
-    this._setIcon(this._icon);
+    this._setIcon(API.getIcon(this._icon, null, this._app));
 
     if ( this._sound ) {
       API.playSound(this._sound, this._soundVolume);

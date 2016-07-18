@@ -110,7 +110,7 @@
     }
 
     var pos = Utils.$position(r);
-    if ( (window.innerWidth - pos.right) < r.offsetWidth ) {
+    if ( pos && (window.innerWidth - pos.right) < r.offsetWidth ) {
       Utils.$addClass(r, 'gui-overflowing');
       _clamp(r);
     }
