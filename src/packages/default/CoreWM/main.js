@@ -799,6 +799,11 @@
 
   CoreWM.prototype.openDesktopMenu = function(ev) {
     var self = this;
+
+    if ( this._emit('wm:contextmenu', [ev, this]) === false ) {
+      return;
+    }
+
     var menu = [
       {title: OSjs.Applications.CoreWM._('Open settings'), onClick: function(ev) {
         self.showSettings();

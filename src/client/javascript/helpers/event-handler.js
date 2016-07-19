@@ -142,21 +142,26 @@
    *
    * @param   {String}    name        Event name
    * @param   {Array}     args        List of arguments to send to .apply()
+   *
+   * @return {Boolean} If none of the handlers returned false
    */
   EventHandler.prototype.emit = function(name, args) {
     args = args || [];
 
     if ( !(this.events[name] instanceof Array) ) {
-      return;
+      return true;
     }
 
-    (this.events[name]).forEach(function(fn) {
+    return (this.events[name]).every(function(fn) {
+      var result;
       try {
-        fn(args);
+        result = fn(args);
       } catch ( e ) {
         console.warn('EventHandler::emit() exception', name, e);
         console.warn(e.stack);
       }
+
+      return typeof result === 'undefined' || result === true;
     });
   };
 
