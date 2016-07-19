@@ -736,10 +736,12 @@
       throw new Error(err);
     }
 
-    console.group('newLauncher()', name);
-    console.debug('args', args);
-    console.debug('metadata', metadata);
-    console.debug('preloads', preloads);
+    console.group('API::launch()', {
+      name: name,
+      args: args,
+      metadata: metadata,
+      preloads: preloads
+    });
 
     if ( args.__preload__ ) { // This is for relaunch()
       pargs = args.__preload__;

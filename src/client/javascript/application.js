@@ -60,7 +60,7 @@
    * @extends OSjs.Core.Process
    */
   function Application(name, args, metadata, settings) {
-    console.group('Application::constructor()', name);
+    console.group('Application::constructor()', arguments);
 
     /**
      * If Application was inited

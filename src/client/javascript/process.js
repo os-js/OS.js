@@ -224,7 +224,7 @@
    * @mixes OSjs.Helpers.EventHandler
    */
   function Process(name, args, metadata) {
-    console.group('Process::constructor()', name);
+    console.group('Process::constructor()', _PROCS.length, arguments);
 
     /**
      * Process ID
@@ -232,7 +232,7 @@
      * @memberof OSjs.Core.Process#
      * @type {Number}
      */
-    this.__pid        = _PROCS.push(this) - 1;
+    this.__pid = _PROCS.push(this) - 1;
 
     /**
      * Process Name
@@ -240,7 +240,7 @@
      * @memberof OSjs.Core.Process#
      * @type {String}
      */
-    this.__pname      = name;
+    this.__pname = name;
 
     /**
      * Process Arguments
@@ -248,7 +248,7 @@
      * @memberof OSjs.Core.Process#
      * @type {Object}
      */
-    this.__args       = args || {};
+    this.__args = args || {};
 
     /**
      * Package Metadata
@@ -256,7 +256,7 @@
      * @memberof OSjs.Core.Process#
      * @type {Metadata}
      */
-    this.__metadata   = metadata || {};
+    this.__metadata = metadata || {};
 
     /**
      * Started timestamp
@@ -264,7 +264,7 @@
      * @memberof OSjs.Core.Process#
      * @type {Date}
      */
-    this.__started    = new Date();
+    this.__started = new Date();
 
     /**
      * If process was destroyed
@@ -272,9 +272,9 @@
      * @memberof OSjs.Core.Process#
      * @type {Boolean}
      */
-    this.__destroyed  = false;
+    this.__destroyed = false;
 
-    this.__evHandler  = new OSjs.Helpers.EventHandler(name, [
+    this.__evHandler = new OSjs.Helpers.EventHandler(name, [
       'message', 'attention', 'hashchange', 'api', 'destroy', 'destroyWindow', 'vfs',
       'vfs:mount', 'vfs:unmount', 'vfs:mkdir', 'vfs:write', 'vfs:move',
       'vfs:copy', 'vfs:delete', 'vfs:upload', 'vfs:update'
@@ -284,9 +284,6 @@
     this.__path     = this.__metadata.path;
     this.__scope    = this.__metadata.scope || 'system';
     this.__iter     = this.__metadata.className;
-
-    console.debug('id', this.__pid);
-    console.debug('args', this.__args);
 
     console.groupEnd();
   }

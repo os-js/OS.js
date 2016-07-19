@@ -276,8 +276,7 @@
         tag: name
       });
 
-      console.group('Window::constructor()', _WID);
-      console.debug(name, opts);
+      console.group('Window::constructor()', _WID, arguments);
 
       /**
        * The outer container
@@ -658,6 +657,10 @@
         }
       })(this._properties, this._position, this._dimension, this._restored);
 
+      console.debug('State', this._state);
+      console.debug('Properties', this._properties);
+      console.debug('Position', this._position);
+      console.debug('Dimension', this._dimension);
       console.groupEnd();
 
       _WID++;
@@ -682,11 +685,6 @@
    */
   Window.prototype.init = function(_wm, _app, _scheme) {
     var self = this;
-
-    console.group('Window::init()');
-    console.debug('Properties', this._properties);
-    console.debug('Position', this._position);
-    console.debug('Dimension', this._dimension);
 
     // Create DOM
 
@@ -849,8 +847,6 @@
     if ( this._sound ) {
       API.playSound(this._sound, this._soundVolume);
     }
-
-    console.groupEnd();
 
     return this._$root;
   };
