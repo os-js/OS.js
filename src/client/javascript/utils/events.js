@@ -458,7 +458,7 @@
       dblclick: createGestureHandler
     };
 
-    return function(el, evName, callback, useCapture) {
+    return function(el, evName, callback, useCapture, noBind) {
       useCapture = (useCapture === true);
 
       if ( arguments.length < 3 ) {
@@ -473,7 +473,10 @@
 
       function addEvent(nsType, type) {
         addEventHandler(el, nsType, type, callback, function mouseEventHandler(ev) {
-          return callback(ev, OSjs.Utils.mousePosition(ev));
+          if ( noBind ) {
+            return callback(ev, OSjs.Utils.mousePosition(ev));
+          }
+          return callback.call(el, ev, OSjs.Utils.mousePosition(ev));
         }, useCapture);
 
         if ( customEvents[type] ) {
