@@ -247,8 +247,10 @@
    * @param   {String}    name    The class name
    */
   OSjs.Utils.$addClass = function(el, name) {
-    if ( el && name && !this.$hasClass(el, name) ) {
-      el.className += (el.className ? ' ' : '') + name;
+    if ( el ) {
+      name.split(' ').forEach(function(n) {
+        el.classList.add(n);
+      });
     }
   };
 
@@ -262,9 +264,10 @@
    * @param   {String}    name    The class name
    */
   OSjs.Utils.$removeClass = function(el, name) {
-    if ( el && name && this.$hasClass(el, name) ) {
-      var re = new RegExp('\\s?' + name);
-      el.className = el.className.replace(re, '');
+    if ( el ) {
+      name.split(' ').forEach(function(n) {
+        el.classList.remove(n);
+      });
     }
   };
 
@@ -279,7 +282,9 @@
    */
   OSjs.Utils.$hasClass = function(el, name) {
     if ( el && name ) {
-      return el.className.replace(/\s+/, ' ').split(' ').indexOf(name) >= 0;
+      return name.split(' ').every(function(n) {
+        return el.classList.contains(n);
+      });
     }
     return false;
   };
