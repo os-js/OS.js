@@ -99,6 +99,7 @@
 
   "stylesheets": [
     "src/client/stylesheets/core.css",
-    "src/client/stylesheets/gui.css"
+    "src/client/stylesheets/gui.css",
+    "dev:src/client/stylesheets/debug.css"
   ]
 }

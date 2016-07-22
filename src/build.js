@@ -905,7 +905,13 @@
         addScript(i.replace(/src\/client\/(.*)/, 'client/$1'));
       });
       cfg.stylesheets.forEach(function(i) {
-        addStyle(i.replace(/src\/client\/(.*)/, 'client/$1'));
+        if ( i.match(/^dev:/) && dist !== 'dist-dev' ) {
+          return;
+        } else if ( i.match(/^prod:/) && dist !== 'dist' ) {
+          return;
+        }
+
+        addStyle(i.replace(/^(dev|prod):/, '').replace(/src\/client\/(.*)/, 'client/$1'));
       });
     }
 

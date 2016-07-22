@@ -98,6 +98,7 @@
           src: [
             'src/client/stylesheets/*.css',
             '!src/client/stylesheets/gui.css',
+            '!src/client/stylesheets/debug.css',
             'src/client/themes/fonts/*/*.css',
             'src/client/themes/styles/*/*.css',
             'src/packages/default/*/*.css',
@@ -110,7 +111,8 @@
             'compatible-vendor-prefixes': false
           },
           src: [
-            'src/client/stylesheets/gui.css'
+            'src/client/stylesheets/gui.css',
+            'src/client/stylesheets/debug.css'
           ]
         }
       },
