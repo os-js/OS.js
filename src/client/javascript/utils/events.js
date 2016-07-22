@@ -114,11 +114,6 @@
    * @return Object
    */
   OSjs.Utils.mousePosition = function(ev) {
-    // If this is not an event object, but a x/y dict
-    if ( typeof ev.x !== 'undefined' && typeof ev.y !== 'undefined' ) {
-      return {x: ev.x, y: ev.y};
-    }
-
     // If this is a custom event containing position
     if ( ev.detail && typeof ev.detail.x !== 'undefined' && typeof ev.detail.y !== 'undefined' ) {
       return {x: ev.detail.x, y: ev.detail.y};
