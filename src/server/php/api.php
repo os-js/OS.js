@@ -157,7 +157,7 @@ class APIRequest
 
     $settings = Settings::get();
     if ( !empty($settings["basedir"]) ) {
-      $this->uri = str_replace($this->uri, $settings["basedir"], "");
+      $this->uri = '/' . preg_replace('/^\/+/', '', str_replace($settings["basedir"], '', $this->uri));
     }
   }
 
