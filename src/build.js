@@ -1273,6 +1273,11 @@
     function _concat(list, type) {
       var data = [];
       list.forEach(function(iter) {
+        if ( iter.match(/^dev:/) ) {
+          return;
+        }
+        iter = iter.replace(/^(dev|prod):/, '');
+
         var path = _path.join(ROOT, iter);
         try {
           data.push(_cleanup(path, type));
