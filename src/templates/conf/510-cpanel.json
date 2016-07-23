@@ -1,7 +1,0 @@
-{
-  "client" : {
-  },
-  "server": {
-    "basedir": "OS.js/dist"
-  }
-}

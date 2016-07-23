@@ -156,9 +156,13 @@ class APIRequest
     $this->data   = $this->method === 'POST' ? file_get_contents("php://input") : (empty($_SERVER['REQUEST_URI']) ? '' : $this->uri);
 
     $settings = Settings::get();
-    if ( !empty($settings["basedir"]) ) {
-      $this->uri = '/' . preg_replace('/^\/+/', '', str_replace($settings["basedir"], '', $this->uri));
+    if ( !empty($_SERVER) && !empty($_SERVER['PHP_SELF']) ) {
+      $basedir = dirname($_SERVER['PHP_SELF']);
+      if ( $basedir != '/' ) {
+        $this->uri = '/' . preg_replace('/^\/+/', '', str_replace($basedir, '', $this->uri));
+      }
     }
+
   }
 
   /**

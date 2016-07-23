@@ -44,8 +44,7 @@ git clone https://github.com/os-js/OS.js.git
 cd OS.js
 npm install --production
 
-cp src/templates/conf/500-cpanel.json src/conf/500-cpanel.json
-
+# Important for Apache
 grunt apache-htaccess
 
 grunt
@@ -54,8 +53,6 @@ grunt
 ## 2: Transfer files
 
 Now copy the entire `OS.js` directory to your host
-
-**If your directory is not named "OS.js" you must change the config the 500-cpanel file and rebuild**
 
 ## 3: Run
 
