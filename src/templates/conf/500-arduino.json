@@ -51,7 +51,7 @@
       "args": {
         "defaults": {
           "icon"            : "arduino.png",
-          "wallpaper"       : "osjs:///themes/wallpapers/arduino-infinite-boards.jpg",
+          "wallpaper"       : "osjs:///themes/wallpapers/arduino-logo.jpg",
           "backgroundColor" : "#ebebeb",
           "theme"           : "material",
           "icons"           : "default",
