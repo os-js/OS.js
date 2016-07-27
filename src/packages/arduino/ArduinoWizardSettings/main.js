@@ -576,7 +576,7 @@
 
     ApplicationArduinoWizardSettings.prototype.destroy = function () {
       var that = this;
-      API.createDialog("Confirm", {buttons: ['yes', 'no'], message: "Do you want shown this application again?" },
+      API.createDialog("Confirm", {buttons: ['yes', 'no'], message: "Do you want Arduino Configuration Wizard to be shown next time?" },
         function(ev, button) {
           var pool = OSjs.Core.getSettingsManager().instance('Wizard');
           pool.set('completed', button=="yes"? false : true, function(){
