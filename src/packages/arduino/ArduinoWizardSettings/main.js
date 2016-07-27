@@ -115,6 +115,8 @@
         scheme.find(this, "ID_LBL_WS2_PASSWORD").set("value", OSjs.Applications.ApplicationArduinoWizardSettings._('LBL_PASSWORD'));
         txtSystemPassword.set("placeholder", OSjs.Applications.ApplicationArduinoWizardSettings._('PLHL_PASSWORD'));
         txtSystemPasswordConfirm.set("placeholder", OSjs.Applications.ApplicationArduinoWizardSettings._('PLHL_CONF_PASSWORD'));
+        txtSystemPassword.set("autocomplete", "off");
+        txtSystemPasswordConfirm.set("autocomplete", "off");
 
         /* Step 3 - WiFi Setting */
         scheme.find(this, "ID_LBL_WS3_LN1").set("value", OSjs.Applications.ApplicationArduinoWizardSettings._('LBL_WIFI_1LN'));
