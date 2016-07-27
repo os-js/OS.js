@@ -281,7 +281,7 @@
           dialog._close();
         } catch ( e ) {}
 
-        if ( wm ) {
+        if ( wm && stdout ) {
           wm.notification({
             icon: 'apps/update-manager.png',
             title: 'opkg result',
