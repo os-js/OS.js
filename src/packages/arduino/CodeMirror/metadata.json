@@ -13,7 +13,7 @@
     "application\\/javascript"
   ],
 
-  "icon":       "arduino-ideino.png",
+  "icon":       "arduino/arduino-codemirror.png",
   "category":   "development",
   "preload":    [
     {"src": "vendor/CodeMirror/lib/codemirror.js", "type": "javascript"},

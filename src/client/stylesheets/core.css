@@ -36,7 +36,7 @@ html, body {
 body {
   margin : 0;
   padding : 0;
-  background-color : #00796B;
+  background-color : #31989D;
 }
 body, input, button, textarea, label, select {
   font-size : 12px;
@@ -193,7 +193,7 @@ application-splash {
       display : none;
     }
     #LoadingScreen application-splash > gui-progress-bar > div {
-      background : rgb(87, 42, 121);
+      background : #c5ab7c;//rgb(87, 42, 121);
     }
 
 /**

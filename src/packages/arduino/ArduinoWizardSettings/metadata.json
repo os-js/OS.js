@@ -2,8 +2,8 @@
   "className":  "ApplicationArduinoWizardSettings",
   "name":       "Arduino Configuration Wizard",
   "mime":       null,
-  "icon":       "categories/applications-system.png",
-  "category":   "utilities",
+  "icon":       "arduino/arduino-wand.png",
+  "category":   "arduino",
   "preload":    [
     {"src": "main.js", "type": "javascript"},
     {"src": "locales.js", "type": "javascript"},

@@ -2,7 +2,7 @@
   "className":  "ApplicationArduinoSettings",
   "name":       "Arduino Settings",
   "mime":       null,
-  "icon":       "arduino-settings.png",
+  "icon":       "arduino/arduino-settings.png",
   "singular":   true,
   "category":   "arduino",
   "preload":    [

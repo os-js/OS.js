@@ -1,7 +1,7 @@
 @import 'src/client/stylesheets/theme.less';
 @import 'src/client/themes/styles/material/materialColors.less';
 
-@base_background_color  : @clr-teal-700;
+@base_background_color  : @clr-arduino-700;
 @base_foreground_color  : #242424;
 @base_shadow_unfocused  : 0px 0px 10px 1px rgba(0, 0, 0, .3);
 @base_shadow_focused    : 0px 0px 10px 1px rgba(0, 0, 0, .6);
@@ -15,8 +15,8 @@
 
 @menu_background_color : #fff;
 
-@gui_selected_background_color       : rgb(45, 115, 210);
-@gui_selected_blur_background_color  : rgba(45, 115, 210, .8);
+@gui_selected_background_color       : @clr-arduino-700;//rgb(45, 115, 210);
+@gui_selected_blur_background_color  : @clr-arduino-700;//rgba(45, 115, 210, .8);
 @gui_selected_foreground_color       : #ffffff;
 
 @gui_border_color                    : #dbdbdb;
@@ -62,20 +62,20 @@ gui-progress-bar{
 }
 application-window{
   &:before {
-    background: @clr-teal-700;
+    background: @clr-arduino-700;
   }
   application-window-content {
     background: #fff;
     padding-top: 0;
 
     &[data-focused="false"] {
-      border: 1px solid @clr-teal-500;
+      border: 1px solid @clr-arduino-500;
     }
     &[data-focused="true"] {
       border: 1px solid #dadada;
     }
     gui-menu-bar {
-      background: @clr-teal-600;
+      background: @clr-arduino-600;
       color: #fff;
 
       gui-menu-bar-entry{
@@ -83,15 +83,15 @@ application-window{
       }
       gui-menu-bar-entry:hover,
       .gui-active {
-        background: @clr-teal-700;
+        background: @clr-arduino-700;
       }
       gui-menu {
         min-width: 100px;
-        background: @clr-teal-600;
+        background: @clr-arduino-600;
 
         gui-menu-entry{
           &:hover {
-            background-color: @clr-teal-700;
+            background-color: @clr-arduino-700;
           }
           > * {
             color: #fff;
@@ -163,7 +163,7 @@ application-window{
       &:after {
         width: 11px;
         height: 9px;
-        background: @clr-blue-700;
+        background: @clr-arduino-700
         border: 1px solid @fadedWhite;
         border-top-width: 2px;
         transform: translate(-50%, -50%);
@@ -179,7 +179,7 @@ application-window{
         &:after {
           width: 11px;
           height: 9px;
-          background: @clr-teal-700;
+          background: @clr-arduino-700;
           border: 1px solid @fadedWhite;
           border-top-width: 2px;
           transform: translate(-50%, -50%);
@@ -194,7 +194,8 @@ application-window{
           &:before,
           &:after{
             border-color: #fff;
-            background: #468FD8;
+            //background: #468FD8;
+            background: @clr-arduino-700;
           }
         }
       }
@@ -237,7 +238,7 @@ application-splash{
   }
 }
 gui-menu {
-  background: @clr-teal-500;
+  background: @clr-arduino-500;
 
   gui-menu-entry {
     &:after{
@@ -248,7 +249,7 @@ gui-menu {
       color: #fff;
     }
     &:hover {
-      background-color: @clr-teal-700;
+      background-color: @clr-arduino-700;
     }
   }
 }
@@ -262,10 +263,10 @@ gui-tabs .gui-active:after {
   border: 1px solid @clr-amber-500 !important;
 }
 gui-list-view gui-list-view-row.gui-active {
-  background-color: @clr-teal-700 !important;
+  background-color: @clr-arduino-700 !important;
 }
 gui-icon-view-entry.gui-active {
-  background-color: @clr-teal-700 !important;
+  background-color: @clr-arduino-700 !important;
   > div > span {
     background: rgba(0, 0, 0, 0) !important;
   }
@@ -334,11 +335,11 @@ gui-select:after {
 }
 
 corewm-notification-entry:before {
-  background: @clr-teal-700 !important;
+  background: @clr-arduino-700 !important;
 }
 corewm-panel{
   &:before {
-    background: @clr-teal-700 !important;
+    background: @clr-arduino-700 !important;
     background-color: #00979C !important;
   }
   .PanelItemWindowList .Button {
