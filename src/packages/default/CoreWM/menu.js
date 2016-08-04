@@ -34,7 +34,7 @@
   * rdenniston 08/03/2016
   * Move the default menu into the config file 140-windowmanager.json
   */
-  var DefaultCategories = API.getConfig("WM.args.defaults.menu");
+  var DefaultCategories = API.getConfig('WM.args.defaults.menu');
 
   function _createIcon(aiter, aname, arg) {
     return API.getIcon(aiter.icon, arg, aiter);
