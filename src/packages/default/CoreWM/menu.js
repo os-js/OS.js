@@ -30,12 +30,6 @@
 (function(WindowManager, Window, GUI, Utils, API, VFS) {
   'use strict';
 
-  /*
-  * rdenniston 08/03/2016
-  * Move the default menu into the config file 140-windowmanager.json
-  */
-  var DefaultCategories = API.getConfig('WM.args.defaults.menu');
-
   function _createIcon(aiter, aname, arg) {
     return API.getIcon(aiter.icon, arg, aiter);
   }
@@ -45,6 +39,8 @@
    */
   function doBuildCategoryMenu(ev) {
     var apps = OSjs.Core.getPackageManager().getPackages();
+    var wm = OSjs.Core.getWindowManager();
+    var cfgCategories = wm.getSetting('menu');
 
     function createEvent(iter) {
       return function(el) {
@@ -65,7 +61,7 @@
 
     var cats = {};
 
-    Object.keys(DefaultCategories).forEach(function(c) {
+    Object.keys(cfgCategories).forEach(function(c) {
       cats[c] = [];
     });
 
@@ -93,8 +89,8 @@
 
       if ( submenu.length ) {
         list.push({
-          title: OSjs.Applications.CoreWM._(DefaultCategories[c].title),
-          icon:  API.getIcon(DefaultCategories[c].icon, '16x16'),
+          title: OSjs.Applications.CoreWM._(cfgCategories[c].title),
+          icon:  API.getIcon(cfgCategories[c].icon, '16x16'),
           menu:  submenu
         });
       }
