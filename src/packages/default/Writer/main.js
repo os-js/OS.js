@@ -253,6 +253,8 @@
       if ( button ) {
         (new GUI.Element(b)).on('click', function() {
           text._call('command', [button.command]);
+        }).on('mousedown', function(ev) {
+          ev.preventDefault();
         });
       }
     });
