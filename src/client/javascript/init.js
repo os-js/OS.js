@@ -274,6 +274,23 @@
           });
         }
       }
+    },
+
+    orientationchange: function(ev) {
+      var orientation = 'landscape';
+
+      if ( window.screen && window.screen.orientation ) {
+        if ( window.screen.orientation.type.indexOf('portrait') !== -1 ) {
+          orientation = 'portrait';
+        }
+      }
+
+      var wm = OSjs.Core.getWindowManager();
+      if ( wm ) {
+        wm.onOrientationChange(ev, orientation);
+      }
+
+      document.body.setAttribute('data-orientation', orientation);
     }
   };
 
@@ -351,6 +368,7 @@
     document.addEventListener('keydown', events.keydown, true);
     document.addEventListener('keypress', events.keypress, true);
     document.addEventListener('keyup', events.keyup, true);
+    window.addEventListener('orientationchange', events.orientationchange, false);
     window.addEventListener('hashchange', events.hashchange, false);
     window.addEventListener('resize', events.resize, false);
     window.addEventListener('scroll', events.scroll, false);
@@ -360,6 +378,8 @@
     window.addEventListener('msfullscreenchange', events.fullscreen, false);
     window.addEventListener('message', events.message, false);
     window.onbeforeunload = events.beforeunload;
+
+    events.orientationchange();
 
     window.onerror = function(message, url, linenumber, column, exception) {
       if ( typeof exception === 'string' ) {
@@ -700,6 +720,7 @@
     document.removeEventListener('keydown', events.keydown, true);
     document.removeEventListener('keypress', events.keypress, true);
     document.removeEventListener('keyup', events.keyup, true);
+    window.removeEventListener('orientationchange', events.orientationchange, false);
     window.removeEventListener('hashchange', events.hashchange, false);
     window.removeEventListener('resize', events.resize, false);
     window.removeEventListener('scroll', events.scroll, false);

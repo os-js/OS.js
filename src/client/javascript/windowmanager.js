@@ -699,6 +699,25 @@
     // Implement in your WM
   };
 
+  /**
+   * When orientation of device has changed
+   *
+   * @function onOrientationChange
+   * @memberof OSjs.Core.WindowManager#
+   *
+   * @param   {Event}    ev             DOM Event
+   * @param   {String}   orientation    Orientation string
+   */
+  WindowManager.prototype.onOrientationChange = function(ev, orientation) {
+    console.info('ORIENTATION CHANGED', ev, orientation);
+  };
+
+  /**
+   * When session has been loaded
+   *
+   * @function onSessionLoaded
+   * @memberof OSjs.Core.WindowManager#
+   */
   WindowManager.prototype.onSessionLoaded = function() {
     if ( this._sessionLoaded ) {
       return false;
