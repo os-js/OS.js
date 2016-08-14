@@ -213,86 +213,88 @@
   GUI.Helpers.setProperty = function setProperty(el, param, value, tagName) {
     tagName = tagName || el.tagName.toLowerCase();
 
-    function _setInputProperty() {
-      var firstChild = el.querySelector('textarea, input, select, button');
+    function _setKnownAttribute(i, k, v, a) {
+      if ( v ) {
+        i.setAttribute(k, k);
+      } else {
+        i.removeAttribute(k);
+      }
 
-      var inpMap = {
+      if ( a ) {
+        el.setAttribute('aria-' + k, String(value === true));
+      }
+    }
+
+    function _setValueAttribute(i, k, v) {
+      if ( typeof v === 'object' ) {
+        try {
+          v = JSON.stringify(value);
+        } catch ( e ) {}
+      }
+
+      i.setAttribute(k, String(v));
+    }
+
+    // Generics for input elements
+    var inner = el.children[0];
+    var accept = ['gui-slider', 'gui-text', 'gui-password', 'gui-textarea', 'gui-checkbox', 'gui-radio', 'gui-select', 'gui-select-list', 'gui-button'];
+
+    (function() {
+      var firstChild;
+
+      var params = {
+        readonly: function() {
+          _setKnownAttribute(firstChild, 'readonly', value, true);
+        },
+
+        disabled: function() {
+          _setKnownAttribute(firstChild, 'disabled', value, true);
+        },
+
         value: function() {
           if ( tagName === 'gui-radio' || tagName === 'gui-checkbox' ) {
-            if ( value ) {
-              firstChild.setAttribute('checked', 'checked');
-              firstChild.checked = true;
-            } else {
-              firstChild.removeAttribute('checked');
-              firstChild.checked = false;
-            }
+            _setKnownAttribute('checked', value);
+
+            firstChild.checked = !!value;
           }
           firstChild.value = value;
         },
 
-        disabled: function() {
-          if ( value ) {
-            firstChild.setAttribute('disabled', 'disabled');
-          } else {
-            firstChild.removeAttribute('disabled');
-          }
-          el.setAttribute('aria-disabled', String(value === true));
+        label: function() {
+          el.appendChild(firstChild);
+          Utils.$remove(el.querySelector('label'));
+          GUI.Helpers.createInputLabel(el, tagName.replace(/^gui\-/, ''), firstChild, value);
         }
       };
 
-      if ( firstChild ) {
-        if ( inpMap[param] ) {
-          inpMap[param]();
-          return;
+      if ( accept.indexOf(tagName) >= 0 ) {
+        firstChild = el.querySelector('textarea, input, select, button');
+
+        if ( firstChild ) {
+          if ( params[param] ) {
+            params[param]();
+          } else {
+            _setValueAttribute(firstChild, param, value || '');
+          }
         }
-
-        firstChild.setAttribute(param, value || '');
       }
-    }
-
-    function _setElementProperty() {
-      if ( typeof value === 'boolean' ) {
-        value = value ? 'true' : 'false';
-      } else if ( typeof value === 'object' ) {
-        try {
-          value = JSON.stringify(value);
-        } catch ( e ) {}
-      }
-      el.setAttribute('data-' + param, value);
-    }
-
-    function _createInputLabel() {
-      if ( param === 'label' ) {
-        var firstChild = el.querySelector('textarea, input, select');
-        el.appendChild(firstChild);
-        Utils.$remove(el.querySelector('label'));
-        GUI.Helpers.createInputLabel(el, tagName.replace(/^gui\-/, ''), firstChild, value);
-      }
-    }
-
-    // Generics for input elements
-    var firstChild = el.children[0];
-    var accept = ['gui-slider', 'gui-text', 'gui-password', 'gui-textarea', 'gui-checkbox', 'gui-radio', 'gui-select', 'gui-select-list', 'gui-button'];
-    if ( accept.indexOf(tagName) >= 0 ) {
-      _setInputProperty();
-      _createInputLabel();
-    }
+    })();
 
     // Other types of elements
     accept = ['gui-image', 'gui-audio', 'gui-video'];
     if ( (['src', 'controls', 'autoplay', 'alt']).indexOf(param) >= 0 && accept.indexOf(tagName) >= 0 ) {
-      firstChild[param] = value;
+      inner[param] = value;
     }
 
     // Normal DOM attributes
     if ( (['_id', '_class', '_style']).indexOf(param) >= 0 ) {
-      firstChild.setAttribute(param.replace(/^_/, ''), value);
+      inner.setAttribute(param.replace(/^_/, ''), value);
       return;
     }
 
     // Set the actual root element property value
     if ( param !== 'value' ) {
-      _setElementProperty();
+      _setValueAttribute(el, 'data-' + param, value);
     }
   };
 
