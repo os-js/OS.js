@@ -113,6 +113,12 @@ corewm-window-switcher > div > img {
   width : 16px;
 }
 
+/**
+ * ===========================================================================
+ *                                ICON VIEW
+ * ===========================================================================
+ */
+
 #CoreWMDesktopIconView {
   background : transparent !important;
   position : absolute;
@@ -130,41 +136,68 @@ corewm-window-switcher > div > img {
   pointer-events : all;
 }
 
+/**
+ * ===========================================================================
+ *                            APPLICATION MENU
+ * ===========================================================================
+ */
+
 #CoreWMApplicationMenu {
   z-index : 9999999999;
   position : absolute;
-  min-width : 100px;
-  min-height : 100px;
-  width : 504px;
-  max-width : 100%;
-  max-height : 100%;
-  overflow : hidden;
+  left : 5%;
+  right : 5%;
+  top : 5% !important;
+  bottom : 5%;
+  width : 90%;
+  height : 90%;
+  overflow-x : hidden;
+  overflow-y : auto;
   padding : 0;
-}
-
-#CoreWMApplicationMenu gui-menu-entry {
-  width : 84px;
-  height : 84px;
-  padding : 4px;
-  display : inline-block;
-  overflow : hidden;
-  line-height : 16px;
-  position : relative;
-  box-sizing : border-box;
+  margin : 0;
+  background : transparent;
+  border : 0 none;
+  box-shadow : none;
   text-align : center;
 }
 
-#CoreWMApplicationMenu gui-menu-entry img {
-  margin-top : 5px;
-  width : 32px;
-  height : 32px;
+#CoreWMApplicationMenu:before {
+  z-index : -1;
+  position : fixed;
+  top : 0;
+  left : 0;
+  right : 0;
+  bottom : 0;
+  overflow : hidden;
+  background : rgba(0, 0, 0, .8);
+  content : '';
 }
-#CoreWMApplicationMenu gui-menu-entry div {
-  white-space : normal;
-  max-height : 30px;
-  box-sizing : border-box;
-  margin-top : 5px;
-}
+
+  #CoreWMApplicationMenu gui-menu-entry {
+    width : 84px;
+    height : 84px;
+    padding : 4px;
+    display : inline-block;
+    overflow : hidden;
+    line-height : 16px;
+    position : relative;
+    box-sizing : border-box;
+    text-align : center;
+  }
+
+    #CoreWMApplicationMenu gui-menu-entry img {
+      margin-top : 5px;
+      width : 32px;
+      height : 32px;
+    }
+
+    #CoreWMApplicationMenu gui-menu-entry div {
+      white-space : normal;
+      max-height : 30px;
+      box-sizing : border-box;
+      margin-top : 5px;
+      color : #fff;
+    }
 
 /**
  * ===========================================================================
@@ -633,11 +666,6 @@ corewm-panel .PanelItemNotificationArea .BusyNotification > div > div:after {
 
   .PanelItemWindowList > ul > li > span {
     display: none;
-  }
-
-  #CoreWMApplicationMenu {
-    overflow : auto;
-    text-align : center;
   }
 
 }
