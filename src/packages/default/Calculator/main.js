@@ -116,7 +116,7 @@
           self.operation(keys[keyCode]);
         }
       }
-    }).focus();
+    }).set('readonly', true).focus();
 
     root.querySelectorAll('gui-button').forEach(function(el, idx) {
       var r = parseInt(idx / 4, 10);
