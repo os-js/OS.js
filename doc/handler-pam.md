@@ -3,6 +3,9 @@ With the *pam* handler you can enable a login prompt for OS.js and connect it to
 ## Setup
 
 ```
+# You need the PAM developer package to build node gyp module
+$ sudo apt-get install libpam0g-dev
+
 # Install node dependencies (you need PAM development package on your system)
 $ npm install nan@1.1.0
 $ npm install authenticate-pam
