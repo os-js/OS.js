@@ -598,13 +598,15 @@
     function getUserGroups(cb) {
       _fs.readFile(config.groups, function(err, gdata) {
         var list = {};
+        var defaultGroups = config.defaultGroups || [];
+
         if ( !err ) {
           try {
             list = JSON.parse(gdata.toString());
           } catch ( e ) {}
         }
 
-        cb(list[login.username] || []);
+        cb(list[login.username] || defaultGroups);
       });
     }
 
