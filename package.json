@@ -34,13 +34,13 @@
     "findit": ">=2.0.0",
     "diskspace": ">=1.0.3",
     "formidable": ">=1.0.17",
-    "request": ">=2.72.0"
+    "request": ">=2.74.0"
   },
   "devDependencies": {
-    "clean-css": ">=3.4.18",
-    "uglify-js": ">=2.6.2",
+    "clean-css": ">=3.4.19",
+    "uglify-js": ">=2.7.3",
     "colors": ">=1.1.2",
-    "time-grunt": ">=1.3.0",
+    "time-grunt": ">=1.4.0",
     "grunt-mocha-test": ">=0.12.7",
     "grunt-contrib-watch": ">=1.0.0",
     "grunt-eslint": ">=19.0.0",
