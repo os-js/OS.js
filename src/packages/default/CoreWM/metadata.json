@@ -26,10 +26,6 @@
       "type": "javascript"
     },
     {
-      "src": "settings.js",
-      "type": "javascript"
-    },
-    {
       "src": "iconview.js",
       "type": "javascript"
     },
