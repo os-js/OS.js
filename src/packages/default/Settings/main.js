@@ -491,7 +491,7 @@
     }
 
     view.on('select', function(ev) {
-      if ( ev && ev.detail && ev.detail.entries ) {
+      if ( ev && ev.detail && ev.detail.entries && ev.detail.entries.length ) {
         checkSelection(ev.detail.entries[0].index);
       }
     });
