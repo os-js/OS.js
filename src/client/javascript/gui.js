@@ -253,7 +253,7 @@
 
         value: function() {
           if ( tagName === 'gui-radio' || tagName === 'gui-checkbox' ) {
-            _setKnownAttribute('checked', value);
+            _setKnownAttribute(firstChild, 'checked', value);
 
             firstChild.checked = !!value;
           }
