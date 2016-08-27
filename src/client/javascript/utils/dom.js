@@ -313,19 +313,23 @@
    * @function $createCSS
    * @memberof OSjs.Utils
    *
-   * @param   {String}      src     The URL of resource
+   * @param   {String}      src           The URL of resource
+   * @param   {Function}    onload        onload callback
+   * @param   {Function}    onerror       onerror callback
    *
    * @return  {Node}                The tag
    */
-  OSjs.Utils.$createCSS = function(src) {
-    var res    = document.createElement('link');
-    document.getElementsByTagName('head')[0].appendChild(res);
+  OSjs.Utils.$createCSS = function(src, onload, onerror) {
+    var link = document.createElement('link');
+    link.setAttribute('rel', 'stylesheet');
+    link.setAttribute('type', 'text/css');
+    link.onload = onload || function() {};
+    link.onerror = onerror || function() {};
+    link.setAttribute('href', src);
 
-    res.rel    = 'stylesheet';
-    res.type   = 'text/css';
-    res.href   = src;
+    document.getElementsByTagName('head')[0].appendChild(link);
 
-    return res;
+    return link;
   };
 
   /**
@@ -338,17 +342,26 @@
    * @param   {Function}    onreadystatechange    readystatechange callback
    * @param   {Function}    onload                onload callback
    * @param   {Function}    onerror               onerror callback
+   * @param   {Object}      [attrs]               dict with optional arguments
    *
    * @return  {Node}                              The tag
    */
-  OSjs.Utils.$createJS = function(src, onreadystatechange, onload, onerror) {
-    var res                = document.createElement('script');
-    res.type               = 'text/javascript';
-    res.charset            = 'utf-8';
+  OSjs.Utils.$createJS = function(src, onreadystatechange, onload, onerror, attrs) {
+    var res = document.createElement('script');
+
     res.onreadystatechange = onreadystatechange || function() {};
-    res.onload             = onload             || function() {};
-    res.onerror            = onerror            || function() {};
-    res.src                = src;
+    res.onerror = onerror || function() {};
+    res.onload = onload || function() {};
+
+    attrs = OSjs.Utils.mergeObject({
+      type: 'text/javascript',
+      charset: 'utf-9',
+      src: src
+    }, attrs || {});
+
+    Object.keys(attrs).forEach(function(k) {
+      res[k] = String(attrs[k]);
+    });
 
     document.getElementsByTagName('head')[0].appendChild(res);
 

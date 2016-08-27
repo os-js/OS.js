@@ -233,173 +233,156 @@
    *  {
    *
    *    "type": "javascript" // or "stylesheet",
-   *    "src": "url/uri"
-   *  }
+   *    "src": "url/uri",
+   *    "force": true // force to load even (reload)
+   *  },
+   *  "mycoolscript.js",
+   *  "mycoolstyle.css"
    * ]
    *
    * @function preload
    * @memberof OSjs.Utils
    *
-   * @param   {Array}     list              The list of resources
-   * @param   {Function}  callback          Callback when done => fn(totalCount, failedArray, successArray)
-   * @param   {Function}  callbackProgress  Callback on progress => fn(currentNumber, totalNumber)
+   * @param   {Array}     list                The list of resources
+   * @param   {Function}  ondone              Callback when done => fn(totalCount, failedArray, successArray)
+   * @param   {Function}  onprogress          Callback on progress => fn(currentNumber, totalNumber)
+   * @param   {Object}    [args]              Set of options
+   * @param   {Boolean}   [args.force=false]  Force reloading of file if it was already added
    */
   OSjs.Utils.preload = (function() {
     var _LOADED = {};
 
-    function isCSSLoaded(path) {
-      var result = false;
-      (document.styleSheet || []).forEach(function(iter, i) {
-        if ( iter.href.indexOf(path) !== -1 ) {
-          result = true;
-          return false;
-        }
-        return true;
-      });
-      return result;
-    }
+    function createStylesheet(src, cb) {
+      var loaded = false;
+      var timeout;
 
-    function createStyle(src, callback, opts) {
-      opts = opts || {};
-      opts.check = (typeof opts.check === 'undefined') ? true : (opts.check === true);
-      opts.interval = opts.interval || 50;
-      opts.maxTries = opts.maxTries || 10;
-
-      function _finished(result) {
-        _LOADED[src] = result;
-        console.info('Stylesheet', src, result);
-        callback(result, src);
-      }
-
-      /*
-      if ( document.createStyleSheet ) {
-        document.createStyleSheet(src);
-        _finished(true);
-        return;
-      }
-      */
-
-      OSjs.Utils.$createCSS(src);
-      if ( opts.check === false || (typeof document.styleSheet === 'undefined') || isCSSLoaded(src) ) {
-        _finished(true);
-        return;
-      }
-
-      var tries = opts.maxTries;
-      var ival = setInterval(function() {
-        console.debug('Stylesheet', 'check', src);
-        if ( isCSSLoaded(src) || (tries <= 0) ) {
-          ival = clearInterval(ival);
-          _finished(tries > 0);
-          return;
-        }
-        tries--;
-      }, opts.interval);
-    }
-
-    function createScript(src, callback) {
-      var _finished = function(result) {
-        _LOADED[src] = result;
-        console.info('JavaScript', src, result);
-        callback(result, src);
-      };
-
-      var loaded  = false;
-      OSjs.Utils.$createJS(src, function() {
-        if ( (this.readyState === 'complete' || this.readyState === 'loaded') && !loaded) {
+      function _done(res) {
+        timeout = clearTimeout(timeout);
+        if ( !loaded ) {
           loaded = true;
-          _finished(true);
+          cb(res, src);
         }
+      }
+
+      function _check(path) {
+        var result = false;
+        (document.styleSheet || []).forEach(function(iter, i) {
+          if ( iter.href.indexOf(path) !== -1 ) {
+            result = true;
+            return false;
+          }
+          return true;
+        });
+        return result;
+      }
+
+      OSjs.Utils.$createCSS(src, function() {
+        _done(true);
       }, function() {
-        if ( loaded ) {
-          return;
-        }
-        loaded = true;
-        _finished(true);
-      }, function() {
-        if ( loaded ) {
-          return;
-        }
-        loaded = true;
-        _finished(false);
+        _done(false);
       });
-    }
 
-    function checkType(item) {
-      if ( typeof item === 'string' ) {
-        item = {src: item};
+      // This probably always fires. The official docs on this is a bit vague
+      if ( typeof document.styleSheet === 'undefined' || (!loaded && _check(src)) ) {
+        return _done(true);
       }
 
-      if ( !item.type ) {
-        item.type = (function(src) {
-          if ( src.match(/\.js$/i) ) {
-            return 'javascript';
-          } else if ( src.match(/\.css$/i) ) {
-            return 'stylesheet';
-          }
-          return 'unknown';
-        })(item.src);
-      }
-
-      return item;
+      // Fall back to a timeout, just in case
+      timeout = setTimeout(function() {
+        _done(false);
+      }, 30000);
     }
 
-    return function(list, callback, callbackProgress, args) {
-      list = (list || []).slice();
+    function createScript(src, cb) {
+      var loaded = false;
+
+      function _done(res) {
+        if ( !loaded ) {
+          loaded = true;
+          cb(res, src);
+        }
+      }
+
+      OSjs.Utils.$createJS(src, function() {
+        if ( (this.readyState === 'complete' || this.readyState === 'loaded') ) {
+          _done(true);
+        }
+      }, function() {
+        _done(true);
+      }, function() {
+        _done(false);
+      }, {async: false});
+    }
+
+    function checkCache(item, args) {
+      if ( _LOADED[item.src] === true ) {
+        if ( item.force !== true && args.force !== true ) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function preloadList(list, ondone, onprogress, args) {
       args = args || {};
+      ondone = ondone || function() {};
+      onprogress = onprogress || function() {};
 
-      var successes = [];
+      var succeeded  = [];
       var failed = [];
+      var len = list.length;
 
-      console.group('Utils::preload()', list.length);
-
-      function getSource(item) {
-        var src = item.src;
-        if ( src.substr(0, 1) !== '/' && !src.match(/^(https?|ftp)/) ) {
-          src = window.location.pathname + src;
+      list = (list || []).map(function(item) {
+        if ( typeof item === 'string' ) {
+          item = {src: item};
         }
 
-        if ( !src.match(/^(https?|ftp)/) && src.indexOf('?') === -1 ) {
-          if ( OSjs.API.getConfig('Connection.Dist') === 'dist' && OSjs.API.getConfig('Connection.AppendVersion') ) {
-            src += '?ver=' + OSjs.API.getConfig('Connection.AppendVersion');
-          }
+        if ( !item.type ) {
+          item.type = (function(src) {
+            if ( src.match(/\.js$/i) ) {
+              return 'javascript';
+            } else if ( src.match(/\.css$/i) ) {
+              return 'stylesheet';
+            }
+            return 'unknown';
+          })(item.src);
         }
-        return src;
-      }
+
+        return item;
+      });
+
+      console.group('Utils::preload()', len);
 
       OSjs.Utils.asyncs(list, function(item, index, next) {
-        function _loaded(success, src) {
-          (callbackProgress || function() {})(index, list.length);
-          (success ? successes : failed).push(src);
+        function _onentryloaded(state, src) {
+          onprogress(index, len, src);
+          (state ? succeeded : failed).push(src);
           next();
         }
 
-        if ( item ) {
-          item = checkType(item);
+        console.debug('->', item);
 
-          if ( _LOADED[item.src] === true && (item.force !== true && args.force !== true) ) {
-            _loaded(true);
-            return;
-          }
-
-          var src = getSource(item);
+        if ( checkCache(item, args) ) {
+          return _onentryloaded(true, item.src);
+        } else {
           if ( item.type.match(/^style/) ) {
-            createStyle(src, _loaded);
-            return;
+            return createStylesheet(item.src, _onentryloaded);
           } else if ( item.type.match(/script$/) ) {
-            createScript(src, _loaded);
-            return;
+            return createScript(item.src, _onentryloaded);
           } else {
-            failed.push(src);
+            failed.push(item.src);
           }
         }
 
-        next();
+        return next();
       }, function() {
         console.groupEnd();
-        (callback || function() {})(list.length, failed, successes);
+
+        ondone(len, failed, succeeded);
       });
-    };
+    }
+
+    return preloadList;
   })();
 
 })();
