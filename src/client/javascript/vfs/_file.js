@@ -214,7 +214,7 @@
   };
 
   FileMetadata.prototype._guessMime = function() {
-    if ( this.mime || this.type === 'dir' || this.path.match(/\/$/) ) {
+    if ( this.mime || this.type === 'dir' || (!this.path || this.path.match(/\/$/)) ) {
       return;
     }
 

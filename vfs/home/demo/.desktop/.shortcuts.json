@@ -1,0 +1,31 @@
+[
+    {
+        "path": "applications:///ApplicationAbout",
+        "filename": "About OS.js",
+        "type": "application",
+        "size": null,
+        "mime": "osjs/application",
+        "id": null,
+        "args": {}
+    },
+    {
+        "path": "applications:///ApplicationMusicPlayer",
+        "filename": "Music PlayerZ",
+        "type": "application",
+        "size": null,
+        "mime": "osjs/application",
+        "id": null,
+        "args": {}
+    },
+    {
+        "path": "applications:///ApplicationFileManager",
+        "filename": "Home",
+        "type": "application",
+        "size": null,
+        "mime": "osjs/application",
+        "id": null,
+        "args": {
+          "path": "home:///"
+        }
+    }
+]

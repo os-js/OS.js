@@ -37,6 +37,16 @@
           "description": "Applications"
         },
 
+        "desktop": {
+          "enabled": true,
+          "icon": "places/desktop.png",
+          "description": "Desktop",
+          "options": {
+            "alias": "home:///.desktop",
+            "path": "home:///.desktop"
+          }
+        },
+
         "osjs": {
           "enabled": true,
           "transport": "OSjs",
@@ -51,9 +61,9 @@
         },
 
         "shared": {
-          "enabled":     true,
+          "enabled": true,
           "description": "Shared",
-          "icon":        "places/folder-publicshare.png"
+          "icon": "places/folder-publicshare.png"
         }
       }
     }

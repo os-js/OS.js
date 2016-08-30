@@ -125,6 +125,16 @@
           return false;
         }
 
+        var mparams = (function() {
+          var o = {};
+          Object.keys(params).forEach(function(k) {
+            if ( typeof params[k] !== 'function' ) {
+              o[k] = params[k];
+            }
+          });
+          return Object.freeze(o);
+        })();
+
         var cfg = Utils.argumentDefaults(params, {
           request: function(name, args, callback, options) {
             callback = callback || function() {
@@ -150,6 +160,7 @@
             var fargs = args || [];
             fargs.push(callback);
             fargs.push(options);
+            fargs.push(mparams);
             module[name].apply(module, fargs);
           },
           unmount: function(cb) {

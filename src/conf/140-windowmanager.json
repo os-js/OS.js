@@ -7,6 +7,7 @@
         "fullscreen": true,
         "desktopMargin": 5,
         "wallpaper": "osjs:///themes/wallpapers/wallpaper.png",
+        "desktopPath": "desktop:///",
         "icon": "osjs-white.png",
         "backgroundColor": "#572a79",
         "fontFamily": "Karla",
@@ -22,7 +23,6 @@
         "enableSounds": true,
         "invertIconViewColor": false,
         "moveOnResize": true,
-        "desktopIcons": [],
         "hotkeys": {
           "WINDOW_MOVE_UP": "ALT+UP",
           "WINDOW_MOVE_DOWN": "ALT+DOWN",

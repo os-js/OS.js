@@ -46,7 +46,11 @@
     }]);
 
     this.scheme = scheme;
-    this.item = Utils.cloneObject(item);
+    this.values = {
+      path: item.path,
+      filename: item.filename,
+      args: item.args || {}
+    };
     this.cb = closeCallback || function() {};
   }
 
@@ -58,9 +62,9 @@
     var root = Window.prototype.init.apply(this, arguments);
     this.scheme.render(this, this._name);
 
-    this.scheme.find(this, 'InputShortcutLaunch').set('value', this.item.data.launch);
-    this.scheme.find(this, 'InputShortcutLabel').set('value', this.item.data.label);
-    this.scheme.find(this, 'InputTooltipFormatString').set('value', JSON.stringify(this.item.data.args || {}));
+    this.scheme.find(this, 'InputShortcutLaunch').set('value', this.values.path);
+    this.scheme.find(this, 'InputShortcutLabel').set('value', this.values.filename);
+    this.scheme.find(this, 'InputTooltipFormatString').set('value', JSON.stringify(this.values.args || {}));
 
     this.scheme.find(this, 'ButtonApply').on('click', function() {
       self.applySettings();
@@ -75,13 +79,13 @@
   };
 
   IconViewShortcutDialog.prototype.applySettings = function() {
-    this.item.data.launch = this.scheme.find(this, 'InputShortcutLaunch').get('value');
-    this.item.data.label = this.scheme.find(this, 'InputShortcutLabel').get('value');
-    this.item.data.args = JSON.parse(this.scheme.find(this, 'InputTooltipFormatString').get('value') || null);
+    this.values.path = this.scheme.find(this, 'InputShortcutLaunch').get('value');
+    this.values.filename = this.scheme.find(this, 'InputShortcutLabel').get('value');
+    this.values.args = JSON.parse(this.scheme.find(this, 'InputTooltipFormatString').get('value') || {});
   };
 
   IconViewShortcutDialog.prototype._close = function(button) {
-    this.cb(button, this.item);
+    this.cb(button, this.values);
     return Window.prototype._close.apply(this, arguments);
   };
 
@@ -98,10 +102,12 @@
     var self = this;
 
     this.dialog = null;
+    this.$iconview = null;
     this.$element = document.createElement('gui-icon-view');
     this.$element.setAttribute('data-multiple', 'false');
     //this.$element.setAttribute('no-selection', 'true');
     this.$element.id = 'CoreWMDesktopIconView';
+    this.shortcutCache = [];
 
     GUI.Elements['gui-icon-view'].build(this.$element);
 
@@ -127,55 +133,36 @@
       }
     });
 
-    var cel = new GUI.ElementDataView(this.$element);
-    cel.on('activate', function(ev) {
+    this.$iconview = new GUI.ElementDataView(this.$element);
+    this.$iconview.on('activate', function(ev) {
       if ( ev && ev.detail ) {
         ev.detail.entries.forEach(function(entry) {
           var item = entry.data;
-          if ( item.launch ) {
-            API.launch(item.launch, item.args);
-          } else {
-            var file = new VFS.File(item);
-            API.open(file);
-          }
+          var file = new VFS.File(item);
+          API.open(file, item.args);
         });
       }
-    });
-
-    var defaults = [{
-      icon: API.getIcon('places/folder_home.png', '32x32'),
-      label: 'Home',
-      value: {
-        restricted: true,
-        launch: 'ApplicationFileManager',
-        args: {path: 'home:///'}
-      }
-    }];
-
-    cel.on('contextmenu', function(ev) {
+    }).on('contextmenu', function(ev) {
       if ( ev && ev.detail && ev.detail.entries ) {
-        self.createContextMenu(ev.detail.entries[0], {x: ev.detail.x, y: ev.detail.y});
+        self.createContextMenu(ev.detail.entries[0], ev);
       }
     });
 
-    cel.add(defaults);
-
-    var icons = wm.getSetting('desktopIcons') || [];
-    icons.forEach(function(icon) {
-      self.addShortcut(icon, wm);
-    });
-
+    this._refresh();
     this.resize(wm);
   }
 
   DesktopIconView.prototype.destroy = function() {
     Utils.$remove(this.$element);
     this.$element = null;
+    this.$iconview = null;
 
     if ( this.dialog ) {
       this.dialog.destroy();
     }
     this.dialog = null;
+
+    this.shortcutCache = [];
   };
 
   DesktopIconView.prototype.blur = function() {
@@ -199,138 +186,174 @@
     }
   };
 
-  DesktopIconView.prototype._save = function() {
-    var cel = new GUI.ElementDataView(this.$element);
-    var icons = [];
-    try {
-      var entries = cel.querySelectorAll('gui-icon-view-entry');
+  DesktopIconView.prototype._refresh = function(wm) {
+    var self = this;
+    var pm = OSjs.Core.getPackageManager();
 
-      entries.forEach(function(e) {
-        var val = e.getAttribute('data-value');
-        var value = null;
-        try {
-          value = JSON.parse(val);
-        } catch ( exc ) {
-        }
-        if ( value !== null && !value.restricted ) {
-          icons.push(value);
+    var desktopPath = OSjs.Core.getWindowManager().getSetting('desktopPath');
+    var shortcutPath = Utils.pathJoin(desktopPath, '.shortcuts.json');
+
+    VFS.read(shortcutPath, function(e, r) {
+      var entries = [];
+
+      if ( r && r instanceof Array ) {
+        self.shortcutCache = r;
+
+        entries = r.map(function(i) {
+          var iter = new VFS.File(i);
+          var type = 'shortcut';
+          var icon;
+
+          if ( iter.type === 'application' ) {
+            var appname = Utils.filename(iter.path);
+            var meta = pm.getPackage(appname);
+            if ( meta ) {
+              icon = API.getIcon(meta.icon, '32x32', appname);
+            }
+            type = 'application';
+          }
+
+          return {
+            _type: type,
+            icon: icon || API.getFileIcon(iter, '32x32'),
+            label: iter.filename,
+            value: iter,
+            args: iter.args || {}
+          };
+        });
+      }
+
+      VFS.scandir(desktopPath, function(error, result) {
+        if ( self.$iconview && !error ) {
+
+          entries = entries.concat(result.map(function(iter) {
+            return {
+              _type: 'vfs',
+              icon: API.getFileIcon(iter, '32x32'),
+              label: iter.filename,
+              value: iter
+            };
+          }).filter(function(iter) {
+            if ( iter.value.path === shortcutPath ) {
+              return false;
+            }
+            return true;
+          }));
+
+          entries.sort(function(a, b) {
+            return (a.filename > b.filename) ? 1 : ((b.filename > a.filename) ? -1 : 0);
+          });
+
+          self.$iconview.clear().add(entries);
         }
       });
-    } catch ( e ) {
-      console.warn(e.stack, e);
-    }
-
-    var wm = OSjs.Core.getWindowManager();
-    wm.applySettings({
-      desktopIcons: icons
-    }, false, true);
+    }, {type: 'json'});
   };
 
-  DesktopIconView.prototype.updateShortcut = function(data) {
-    var cel = new GUI.ElementDataView(this.$element);
-    var entries = cel.querySelectorAll('gui-icon-view-entry');
+  DesktopIconView.prototype._save = function(refresh) {
+    var self = this;
 
-    if ( entries[data.index] ) {
-      entries[data.index].setAttribute('data-value', JSON.stringify(data.data));
-      this._save();
+    var desktopPath = OSjs.Core.getWindowManager().getSetting('desktopPath');
+    var path = Utils.pathJoin(desktopPath, '.shortcuts.json');
+
+    VFS.write(path, JSON.stringify(this.shortcutCache, null, 4), function(e, r) {
+      if ( refresh ) {
+        //self._refresh(); // Caught by VFS message in main.js
+      }
+    });
+  };
+
+  DesktopIconView.prototype.updateShortcut = function(data, values) {
+    var found = this.getShortcutByPath(data.path);
+    if ( found.item ) {
+      var o = this.shortcutCache[found.index];
+      Object.keys(values).forEach(function(k) {
+        o[k] = values[k];
+      });
+
+      this._save(true);
     }
+  };
+
+  DesktopIconView.prototype.getShortcutByPath = function(path) {
+    var found = null;
+    var index = -1;
+
+    this.shortcutCache.forEach(function(i, idx) {
+      if ( !found ) {
+        if ( i.path === path ) {
+          found = i;
+          index = idx;
+        }
+      }
+    });
+
+    return {item: found, index: index};
   };
 
   DesktopIconView.prototype.addShortcut = function(data, wm, save) {
-    var cel = new GUI.ElementDataView(this.$element);
-    var iter = {};
+    var found = this.getShortcutByPath(data.path);
+    if ( !found.item ) {
+      (['icon']).forEach(function(k) {
+        if ( data[k] ) {
+          delete data[k];
+        }
+      });
 
-    // TODO: Check for duplicates
-
-    try {
-      if ( data.mime === 'osjs/application' || data.launch ) {
-        var appname = data.launch || Utils.filename(data.path);
-        var meta = OSjs.Core.getPackageManager().getPackage(appname);
-        var lbl = data.label || meta.name;
-
-        iter = {
-          icon: API.getIcon(meta.icon, '32x32', appname),
-          id: appname,
-          label: lbl,
-          value: {
-            launch: appname,
-            label: lbl,
-            args: data.args || {}
-          }
-        };
-      } else {
-        iter = {
-          icon: API.getFileIcon(data, '32x32'),
-          id: data.filename,
-          label: data.filename,
-          value: {
-            filename: data.filename,
-            path: data.path,
-            type: data.type,
-            mime: data.mime
-          }
-        };
+      if ( data.type === 'application' ) {
+        data.args = data.args || {};
       }
 
-      cel.add(iter);
+      this.shortcutCache.push(data);
+      this._save(true);
+    }
+  };
 
-      if ( save ) {
-        this._save();
-      }
-    } catch ( e ) {
-      console.warn(e, e.stack);
+  DesktopIconView.prototype.removeShortcut = function(data, wm) {
+    var found = this.getShortcutByPath(data.path);
+
+    if ( !found.item ) {
+      this.shortcutCache.splice(found.index, 1);
+      this._save(true);
     }
   };
 
   DesktopIconView.prototype.createContextMenu = function(item, ev) {
     var self = this;
+    var menu = [];
+    var file = item.data;
+    var mm = OSjs.Core.getMountManager();
+    var desktopPath = OSjs.Core.getWindowManager().getSetting('desktopPath');
 
-    var menu = [{
-      title: OSjs.Applications.CoreWM._('Remove shortcut'),
-      disabled: item.data.restricted,
-      onClick: function() {
-        if ( !item.data.restricted ) {
-          self.removeShortcut(item);
-        }
-      }
-    }];
-
-    if ( item.data.launch ) {
+    if ( file.type === 'application' ) {
       menu.push({
         title: OSjs.Applications.CoreWM._('Edit shortcut'),
-        disabled: item.data.restricted,
         onClick: function() {
-          if ( !item.data.restricted ) {
-            self.openShortcutEdit(item);
-          }
+          self.openShortcutEdit(file);
+        }
+      });
+    }
+
+    if ( mm.getRootFromPath(file.path) !== desktopPath  ) {
+      menu.push({
+        title: OSjs.Applications.CoreWM._('Remove shortcut'),
+        onClick: function() {
+          self.removeShortcut(file);
+        }
+      });
+    } else {
+      menu.push({
+        title: API._('LBL_DELETE'),
+        onClick: function() {
+          VFS.unlink(file, function() {
+            //self._refresh(); // Caught by VFS message in main.js
+          });
         }
       });
     }
 
     if ( menu.length )  {
       API.createMenu(menu, ev);
-    }
-  };
-
-  DesktopIconView.prototype.removeShortcut = function(data, wm) {
-    var cel = new GUI.ElementDataView(this.$element);
-    cel.remove(data.index);
-    this._save();
-  };
-
-  DesktopIconView.prototype.removeShortcutByPath = function(path) {
-    var cel = new GUI.ElementDataView(this.$element);
-    var self = this;
-    try {
-      var entries = cel.querySelectorAll('gui-icon-view-entry');
-      entries.forEach(function(e, idx) {
-        var value = JSON.parse(e.getAttribute('data-value'));
-        if ( value.path === path ) {
-          self.removeShortcut({index: idx});
-        }
-      });
-    } catch ( e ) {
-      console.warn(e.stack, e);
     }
   };
 
@@ -344,7 +367,7 @@
 
     this.dialog = new IconViewShortcutDialog(item, wm.scheme, function(button, values) {
       if ( button === 'ok' ) {
-        self.updateShortcut(values);
+        self.updateShortcut(item, values);
       }
       self.dialog = null;
     });

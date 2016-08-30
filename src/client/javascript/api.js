@@ -429,7 +429,7 @@
     console.group('API::open()', file);
 
     if ( file.mime === 'osjs/application' ) {
-      _launchApp(Utils.filename(file.path), {});
+      _launchApp(Utils.filename(file.path), launchArgs);
     } else if ( file.type === 'dir' ) {
       var fm = settingsManager.instance('DefaultApplication').get('dir', 'ApplicationFileManager');
       _launchApp(fm, {path: file.path});

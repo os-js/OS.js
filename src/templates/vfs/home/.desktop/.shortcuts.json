@@ -1,0 +1,13 @@
+[
+    {
+        "path": "applications:///ApplicationFileManager",
+        "filename": "Home",
+        "type": "application",
+        "size": null,
+        "mime": "osjs/application",
+        "id": null,
+        "args": {
+          "path": "home:///"
+        }
+    }
+]

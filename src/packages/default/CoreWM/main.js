@@ -203,6 +203,33 @@
 
     this.applySettings(this._settings.get());
 
+    this._on('vfs', function(msg, obj) {
+      if ( !obj || msg.match(/^vfs\:un?mount/) ) {
+        return;
+      }
+
+      var wasTouched = false;
+      var desktopPath = self.getSetting('desktopPath');
+
+      function _check(f) {
+        var t = Utils.dirname(f.path);
+        return f.path.substr(0, desktopPath.length) === desktopPath;
+      }
+
+      if ( obj.destination ) {
+        wasTouched = _check(obj.destination);
+        if ( !wasTouched ) {
+          wasTouched = _check(obj.source);
+        }
+      } else {
+        wasTouched = _check(obj);
+      }
+
+      if ( wasTouched && self.iconView ) {
+        self.iconView._refresh();
+      }
+    });
+
     initScheme(function() {
       self.initSwitcher();
       self.initDesktop();
@@ -411,17 +438,16 @@
   CoreWM.prototype.initIconView = function() {
     var self = this;
 
-    if ( this.iconView ) {
+    if ( !this.getSetting('enableIconView') && this.iconView ) {
       this.iconView.destroy();
       this.iconView = null;
-    }
-
-    if ( !this.getSetting('enableIconView') ) {
       return;
     }
 
-    this.iconView = new OSjs.Applications.CoreWM.DesktopIconView(this);
-    document.body.appendChild(this.iconView.getRoot());
+    if ( !this.iconView ) {
+      this.iconView = new OSjs.Applications.CoreWM.DesktopIconView(this);
+      document.body.appendChild(this.iconView.getRoot());
+    }
 
     setTimeout(function() {
       if ( self.iconView ) {
@@ -575,12 +601,10 @@
     var self = this;
 
     VFS.upload({
-      destination: API.getDefaultPath(),
+      destination: 'desktop:///',
       files: files
     }, function(error, file) {
-      if ( !error && file && self.iconView ) {
-        self.iconView.addShortcut(file, self, true);
-      }
+      // Do nothing as the message API will catch this
     });
   };
 
