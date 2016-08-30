@@ -133,7 +133,7 @@
 
     this._on('drop:file', function(ev, src) {
       if ( Utils.dirname(src.path) !== self.currentPath ) {
-        var dst = new VFS.File((self.currentPath + '/' + src.filename));
+        var dst = new VFS.File(Utils.pathJoin(self.currentPath, src.filename));
         app.copy(src, dst, self);
       }
     });
