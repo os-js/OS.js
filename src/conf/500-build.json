@@ -93,8 +93,7 @@
     "src/client/javascript/helpers/google-api.js",
     "src/client/javascript/helpers/windows-live-api.js",
     "src/client/javascript/helpers/zip-archiver.js",
-    "src/client/javascript/helpers/settings-fragment.js",
-    "src/client/javascript/helpers/firefox-marketplace.js"
+    "src/client/javascript/helpers/settings-fragment.js"
   ],
 
   "stylesheets": [
