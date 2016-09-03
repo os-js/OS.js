@@ -22,7 +22,7 @@ $ grunt config --set=client.ReloadOnShutdown --value=true
 $ grunt config
 
 # Rebuild (only required if you use `dist`)
-# grunt core
+# grunt dist
 
 ```
 
