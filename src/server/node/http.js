@@ -35,6 +35,7 @@
    */
 
   var instance, server, proxy, httpProxy;
+  var socketConnection = [];
 
   var colored = (function() {
     var colors;
@@ -70,6 +71,21 @@
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
+
+  function createSessionObject(sid) {
+    return {
+      set: function(k, v) {
+        return _sessions.set(sid, k, v === null ? null : String(v));
+      },
+      get: function(k) {
+        var v = _sessions.get(sid, k);
+        if ( v !== false ) {
+          return v[0];
+        }
+        return false;
+      }
+    };
+  }
 
   /**
    * Respond to HTTP Call
@@ -219,6 +235,34 @@
   // HTTP
   /////////////////////////////////////////////////////////////////////////////
 
+  /**
+   * On WebSocket request
+   */
+  function wsCall(ws, msg) {
+    var sid = msg.sid;
+    var path = msg.path;
+    var idx = msg._index;
+    var isVfsCall = path.match(/^\/FS/) !== null;
+    var relPath = path.replace(/^\/(FS|API)\/?/, '');
+
+    if ( instance.config.logging ) {
+      log(timestamp(), colored('<<<', 'bold'), '[WS]', path);
+    }
+
+    instance.request(isVfsCall, relPath, msg.args, function(error, result) {
+      ws.send(JSON.stringify({
+        _index: idx,
+        result: result,
+        error: error
+      }));
+    }, {
+      session: createSessionObject(sid)
+    }, null, instance.handler);
+  }
+
+  /**
+   * On Proxy request
+   */
   function proxyCall(request, response) {
 
     function _getMatcher(k) {
@@ -282,7 +326,7 @@
   }
 
   /**
-   * Handles a HTTP Request
+   * On HTTP Request
    */
   function httpCall(request, response) {
     var server = {request: request, response: response, config: instance.config, handler: instance.handler};
@@ -378,22 +422,11 @@
       return;
     }
 
-    var url       = _url.parse(request.url, true);
-    var path      = decodeURIComponent(url.pathname);
-    var sid       = _sessions.init(request, response);
+    var url  = _url.parse(request.url, true);
+    var path = decodeURIComponent(url.pathname);
+    var sid  = _sessions.init(request, response);
 
-    request.session = {
-      set: function(k, v) {
-        return _sessions.set(sid, k, v === null ? null : String(v));
-      },
-      get: function(k) {
-        var v = _sessions.get(sid, k);
-        if ( v !== false ) {
-          return v[0];
-        }
-        return false;
-      }
-    };
+    request.session = createSessionObject(sid);
 
     if ( path === '/' ) {
       path += 'index.html';
@@ -449,6 +482,7 @@
 
     var httpConfig = instance.config.http || {};
     var addr = 'http://localhost';
+    var wss = null;
 
     if ( httpConfig.mode === 'http2' || httpConfig.mode === 'https' ) {
       var rdir = httpConfig.cert.path || _path.dirname(setup.dirname);
@@ -464,20 +498,39 @@
       server = require('http').createServer(httpCall);
     }
 
+    if ( instance.config.http.connection === 'ws' ) {
+      wss = new (require('ws')).Server({server: server});
+      wss.on('connection', function(ws) {
+        log(timestamp(), colored('---', 'bold'), '[WS]', 'WebSocket connection...');
+
+        ws.on('message', function(msg) {
+          wsCall(ws, JSON.parse(msg));
+        });
+
+        ws.on('close', function() {
+          log(timestamp(), colored('---', 'bold'), '[WS]', 'WebSocket closed...');
+        });
+      });
+    }
+
     instance.handler.onServerStart(function() {
-      var port = setup.port || instance.config.port;
+      var port = 8000;
+      try {
+        port = setup.port || instance.config.http.port;
+      } catch ( e ) {}
 
       server.listen(port);
 
       _osjs.after(server, instance);
 
-      var msg = _util.format('OS.js is listening on %s:%d (handler:%s dir:%s mode:%s logging:%s)',
+      var msg = _util.format('OS.js listening on %s:%d (handler:%s dir:%s mode:%s logging:%s ws:%s)',
                              addr,
                              port,
                              instance.config.handler,
                              instance.setup.dist,
                              (httpConfig.mode || 'http'),
-                             String(setup.logging));
+                             String(setup.logging),
+                             String(!!wss));
 
       console.log('\n\n***');
       console.log('***', msg);

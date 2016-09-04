@@ -31,6 +31,28 @@
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
+  // COOKIES
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Gets a cookie by key, or all cookies
+   *
+   * @function getCookie
+   * @memberof OSjs.Utils
+   *
+   * @param {String} [k] What key to get
+   * @return {String|Object}  Depending on 'k' parameter
+   */
+  OSjs.Utils.getCookie = function(k) {
+    var map = {};
+    document.cookie.split(/;\s+?/g).forEach(function(i) {
+      var idx = i.indexOf('=');
+      map[i.substr(i, idx)] = i.substr(idx + 1);
+    });
+    return k ? map[k] : map;
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
   // STRING
   /////////////////////////////////////////////////////////////////////////////
 

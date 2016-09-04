@@ -45,6 +45,328 @@
 
   var _handlerInstance;
 
+  /**
+   * Attaches options to a XHR call
+   */
+  function appendRequestOptions(data, options) {
+    options = options || {};
+
+    var onprogress = options.onprogress || function() {};
+    var ignore = ['onsuccess', 'onerror', 'onprogress', 'oncanceled'];
+
+    Object.keys(options).forEach(function(key) {
+      if ( ignore.indexOf(key) !== -1 ) {
+        data[key] = options[key];
+      }
+    });
+
+    data.onprogress = function(ev) {
+      if ( ev.lengthComputable ) {
+        onprogress(ev, ev.loaded / ev.total);
+      } else {
+        onprogress(ev, -1);
+      }
+    };
+
+    return data;
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // DEFAULT CONNECTION CODE
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Default Handler Connection Implementation
+   *
+   * <pre><b>
+   * You only have access to this via the 'Handler' instance
+   * </b></pre>
+   *
+   * @summary Wrappers for communicating over HTTP, WS and NW
+   *
+   * @constructor HandlerConnection
+   * @memberof OSjs.Core
+   */
+  function HandlerConnection(handler) {
+    this.index = 0;
+    this.handler = handler;
+    this.nw = null;
+    this.ws = null;
+
+    if ( (API.getConfig('Connection.Type') === 'nw') ) {
+      this.nw = require('osjs').init({
+        root: process.cwd(),
+        settings: {
+          mimes: API.getConfig('MIME.mapping')
+        },
+        nw: true
+      });
+    }
+
+    this.wsqueue = {};
+  }
+
+  /**
+   * Initializes the instance
+   *
+   * @function init
+   * @memberof OSjs.Core.HandlerConnection#
+   */
+  HandlerConnection.prototype.init = function(callback) {
+    var self = this;
+
+    if ( API.getConfig('Connection.Type') === 'ws' ) {
+      var url = window.location.protocol.replace('http', 'ws') + '//' + window.location.host;
+      var connected = false;
+
+      console.info('Using WebSocket', url);
+
+      this.ws = new WebSocket(url);
+
+      this.ws.onopen = function() {
+        connected = true;
+
+        callback();
+      };
+
+      this.ws.onmessage = function(ev) {
+        var data = JSON.parse(ev.data);
+        var idx = data._index;
+
+        if ( self.wsqueue[idx] ) {
+          delete data._index;
+
+          self.wsqueue[idx](data);
+
+          delete self.wsqueue[idx];
+        }
+      };
+
+      this.ws.onclose = function(ev) {
+        if ( !connected && ev.code !== 3001 ) {
+          callback('WebSocket connection error'); // FIXME: Locale
+        }
+      };
+
+    } else {
+      callback();
+    }
+  };
+
+  /**
+   * Destroys the instance
+   *
+   * @function destroy
+   * @memberof OSjs.Core.HandlerConnection#
+   */
+  HandlerConnection.prototype.destroy = function() {
+    if ( this.ws ) {
+      this.ws.close();
+    }
+
+    this.nw = null;
+    this.ws = null;
+    this._wsRequest = {};
+  };
+
+  /**
+   * Makes a HTTP POST call
+   *
+   * @function callPOST
+   * @memberof OSjs.Core.HandlerConnection#
+   *
+   * @return {Boolean}
+   */
+  HandlerConnection.prototype.callPOST = function(form, options, onsuccess, onerror) {
+    onerror = onerror || function() {
+      console.warn('HandlerConnection::callPOST()', 'error', arguments);
+    };
+
+    var self = this;
+
+    Utils.ajax(appendRequestOptions({
+      url: OSjs.VFS.Transports.Internal.path(),
+      method: 'POST',
+      body: form,
+      onsuccess: function(result) {
+        onsuccess(false, result);
+      },
+      onerror: function(result) {
+        onerror('error', null, result);
+      },
+      oncanceled: function(evt) {
+        onerror('canceled', null, evt);
+      }
+    }, options));
+
+    return true;
+  };
+
+  /**
+   * Makes a HTTP GET call
+   *
+   * @function callGET
+   * @memberof OSjs.Core.HandlerConnection#
+   *
+   * @return {Boolean}
+   */
+  HandlerConnection.prototype.callGET = function(args, options, onsuccess, onerror) {
+    onerror = onerror || function() {
+      console.warn('HandlerConnection::callGET()', 'error', arguments);
+    };
+
+    var self = this;
+
+    Utils.ajax(appendRequestOptions({
+      url: args.url || OSjs.VFS.Transports.Internal.path(args.path),
+      method: args.method || 'GET',
+      responseType: 'arraybuffer',
+      onsuccess: function(response, xhr) {
+        if ( !xhr || xhr.status === 404 || xhr.status === 500 ) {
+          onsuccess({error: xhr.statusText || response, result: null});
+          return;
+        }
+        onsuccess({error: false, result: response});
+      },
+      onerror: function() {
+        onerror.apply(self, arguments);
+      }
+    }, options));
+
+    return true;
+  };
+
+  /**
+   * Makes a HTTP XHR call
+   *
+   * @function callXHR
+   * @memberof OSjs.Core.HandlerConnection#
+   *
+   * @return {Boolean}
+   */
+  HandlerConnection.prototype.callXHR = function(url, args, options, onsuccess, onerror) {
+    onerror = onerror || function() {
+      console.warn('HandlerConnection::callXHR()', 'error', arguments);
+    };
+
+    var self = this;
+
+    Utils.ajax(appendRequestOptions({
+      url: url,
+      method: 'POST',
+      json: true,
+      body: args,
+      onsuccess: function(/*response, request, url*/) {
+        onsuccess.apply(self.handler, arguments);
+      },
+      onerror: function(/*error, response, request, url*/) {
+        onerror.apply(self.handler, arguments);
+      }
+    }, options));
+
+    return true;
+  };
+
+  /**
+   * Makes a WebSocket call
+   *
+   * @function callWS
+   * @memberof OSjs.Core.HandlerConnection#
+   *
+   * @return {Boolean}
+   */
+  HandlerConnection.prototype.callWS = function(path, args, options, onsuccess, onerror) {
+    onerror = onerror || function() {
+      console.warn('HandlerConnection::callWS()', 'error', arguments);
+    };
+
+    var idx = this.index++;
+
+    try {
+      this.ws.send(JSON.stringify({
+        _index: idx,
+        sid: Utils.getCookie('session'),
+        path: '/' + path,
+        args: args
+      }));
+
+      this.wsqueue[idx] = onsuccess || function() {};
+
+      return true;
+    } catch ( e ) {
+      console.warn('callWS() Warning', e.stack, e);
+      onerror(e);
+    }
+
+    return false;
+  };
+
+  /**
+   * Makes a Node NW call
+   *
+   * @function callNW
+   * @memberof OSjs.Core.HandlerConnection#
+   *
+   * @return {Boolean}
+   */
+  HandlerConnection.prototype.callNW = function(method, args, options, onsuccess, onerror) {
+    onerror = onerror || function() {
+      console.warn('HandlerConnection::callNW()', 'error', arguments);
+    };
+
+    try {
+      this.nw.request(method.match(/^FS\:/) !== null, method.replace(/^FS\:/, ''), args, function(err, res) {
+        onsuccess({error: err, result: res});
+      });
+
+      return true;
+    } catch ( e ) {
+      console.warn('callNW() Warning', e.stack, e);
+      onerror(e);
+    }
+
+    return false;
+  };
+
+  /**
+   * Wrapper for OS.js API calls
+   *
+   * @function request
+   * @memberof OSjs.Core.HandlerConnection#
+   *
+   * @return {Boolean}
+   */
+  HandlerConnection.prototype.request = function(isVfs, method, args, options, onsuccess, onerror) {
+
+    // Proxy all requests to NW module if required
+    if ( API.getConfig('Connection.Type') === 'nw' ) {
+      return this.callNW(method, args, options, onsuccess, onerror);
+    }
+
+    // Some methods can only be handled via HTTP
+    if ( isVfs ) {
+      if ( method === 'FS:get' ) {
+        return this.callGET(args, options, onsuccess, onerror);
+      } else if ( method === 'FS:upload' ) {
+        return this.callPOST(args, options, onsuccess, onerror);
+      }
+    }
+
+    // Use AJAX or WebSocket for everything else
+    var url = (function() {
+      if ( isVfs ) {
+        return API.getConfig('Connection.FSURI') + '/' + method.replace(/^FS\:/, '');
+      }
+      return API.getConfig('Connection.APIURI') + '/' + method;
+    })();
+
+    if ( API.getConfig('Connection.Type') === 'ws' ) {
+      return this.callWS(url, args, options, onsuccess, onerror);
+    }
+
+    return this.callXHR(url, args, options, onsuccess, onerror);
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // DEFAULT HANDLING CODE
   /////////////////////////////////////////////////////////////////////////////
@@ -92,14 +414,6 @@
     this.offline    = false;
 
     /**
-     * NW reference
-     * @name nw
-     * @memberof OSjs.Core.Handler#
-     * @type {Object}
-     */
-    this.nw         = null;
-
-    /**
      * User data
      * @name userData
      * @memberof OSjs.Core.Handler#
@@ -118,15 +432,13 @@
       groups  : ['admin']
     };
 
-    if ( (API.getConfig('Connection.Type') === 'nw') ) {
-      this.nw = require('osjs').init({
-        root: process.cwd(),
-        settings: {
-          mimes: API.getConfig('MIME.mapping')
-        },
-        nw: true
-      });
-    }
+    /**
+     * Connection management
+     * @name connection
+     * @memberof OSjs.Core.Handler#
+     * @type {HandlerConnection}
+     */
+    this.connection = new HandlerConnection();
 
     _handlerInstance = this;
   };
@@ -141,21 +453,25 @@
    * @param   {CallbackHandler}      callback        Callback function
    */
   _Handler.prototype.init = function(callback) {
-    console.debug('Handler::init()');
+    console.group('Handler::init()');
 
     var self = this;
     API.setLocale(API.getConfig('Locale'));
 
     if ( typeof navigator.onLine !== 'undefined' ) {
-      window.addEventListener('offline', function(ev) {
+      Utils.$bind(window, 'offline', function(ev) {
         self.onOffline();
       });
-      window.addEventListener('online', function(ev) {
+      Utils.$bind(window, 'online', function(ev) {
         self.onOnline();
       });
     }
 
-    callback();
+    this.connection.init(function(err, res) {
+      console.groupEnd();
+
+      callback(err, res);
+    });
   };
 
   /**
@@ -166,16 +482,14 @@
    */
   _Handler.prototype.destroy = function() {
     var self = this;
-    if ( typeof navigator.onLine !== 'undefined' ) {
-      window.removeEventListener('offline', function(ev) {
-        self.onOffline();
-      });
-      window.removeEventListener('online', function(ev) {
-        self.onOnline();
-      });
-    }
 
-    this.nw = null;
+    Utils.$unbind(window, 'offline');
+    Utils.$unbind(window, 'online');
+
+    if ( this.connection ) {
+      this.connection.destroy();
+    }
+    this.connection = null;
 
     _handlerInstance = null;
   };
@@ -358,115 +672,54 @@
   };
 
   /**
+   * Gets the default options for API calls
+   *
+   * @function getAPICallOptions
+   * @memberof OSjs.Core.Handler#
+   *
+   * @return  {Object}
+   */
+  _Handler.prototype.getAPICallOptions = function() {
+    return {};
+  };
+
+  /**
    * Default method to perform a call to the backend (API)
    *
    * Please note that this function is internal, and if you want to make
    * a actual API call, use "API.call()" instead.
    *
+   * @param {String}    method      API method name
+   * @param {Object}    args        API method arguments
+   * @param {Function}  cbSuccess   On success
+   * @param {Function}  cbError     On error
+   * @param {Object}    [options]   Options passed on to the connection request method (ex: Utils.ajax)
+   *
    * @function callAPI
    * @memberof OSjs.Core.Handler#
-   * @see OSjs.Core.Handler.__callNW
-   * @see OSjs.Core.Handler._callAPI
-   * @see OSjs.Core.Handler._callVFS
+   * @see OSjs.Core.handler#getAPICallOptions
+   * @see OSjs.Core.Handler#_callAPI
+   * @see OSjs.Core.Handler#_callVFS
    * @see OSjs.Core.API.call
    */
   _Handler.prototype.callAPI = function(method, args, cbSuccess, cbError, options) {
-    args      = args      || {};
-    options   = options   || {};
+    args = args || {};
+    options = Utils.mergeObject(this.getAPICallOptions(), options || {});
     cbSuccess = cbSuccess || function() {};
-    cbError   = cbError   || function() {};
+    cbError = cbError || function() {};
 
-    var self = this;
-
-    function checkState() {
-      if ( self.offline ) {
-        cbError('You are currently off-line and cannot perform this operation!');
-        return false;
-      } else if ( (API.getConfig('Connection.Type') === 'standalone') ) {
-        cbError('You are currently running locally and cannot perform this operation!');
-        return false;
-      }
-      return true;
-    }
-
-    function _call() {
-      if ( (API.getConfig('Connection.Type') === 'nw') ) {
-        return self.__callNW(method, args, options, cbSuccess, cbError);
-      }
-
+    if ( this.offline ) {
+      cbError('You are currently off-line and cannot perform this operation!');
+    } else if ( (API.getConfig('Connection.Type') === 'standalone') ) {
+      cbError('You are currently running locally and cannot perform this operation!');
+    } else {
       if ( method.match(/^FS/) ) {
-        return self._callVFS(method, args, options, cbSuccess, cbError);
+        return this._callVFS(method, args, options, cbSuccess, cbError);
       }
-      return self._callAPI(method, args, options, cbSuccess, cbError);
+      return this._callAPI(method, args, options, cbSuccess, cbError);
     }
 
-    console.info('Handler::callAPI()', method);
-
-    return checkState() ? _call() : false;
-  };
-
-  /**
-   * Calls NW "backend"
-   *
-   * @function __callNW
-   * @memberof OSjs.Core.Handler#
-   * @see OSjs.Core.Handler.callAPI
-   *
-   * @return {Boolean}
-   */
-  _Handler.prototype.__callNW = function(method, args, options, cbSuccess, cbError) {
-    cbError = cbError || function() {
-      console.warn('Handler::__callNW()', 'error', arguments);
-    };
-
-    try {
-      this.nw.request(method.match(/^FS\:/) !== null, method.replace(/^FS\:/, ''), args, function(err, res) {
-        cbSuccess({error: err, result: res});
-      });
-    } catch ( e ) {
-      console.warn('callAPI() NW.js Warning', e.stack, e);
-      cbError(e);
-    }
-    return true;
-  };
-
-  /**
-   * Calls Normal "Backend"
-   *
-   * @function __callXHR
-   * @memberof OSjs.Core.Handler#
-   * @see OSjs.Core.Handler._callAPI
-   * @see OSjs.Core.Handler._callVFS
-   */
-  _Handler.prototype.__callXHR = function(url, args, options, cbSuccess, cbError) {
-    var self = this;
-
-    cbError = cbError || function() {
-      console.warn('Handler::__callXHR()', 'error', arguments);
-    };
-
-    var data = {
-      url: url,
-      method: 'POST',
-      json: true,
-      body: args,
-      onsuccess: function(/*response, request, url*/) {
-        cbSuccess.apply(self, arguments);
-      },
-      onerror: function(/*error, response, request, url*/) {
-        cbError.apply(self, arguments);
-      }
-    };
-
-    if ( options ) {
-      Object.keys(options).forEach(function(key) {
-        data[key] = options[key];
-      });
-    }
-
-    Utils.ajax(data);
-
-    return true;
+    return false;
   };
 
   /**
@@ -475,13 +728,11 @@
    * @function _callAPI
    * @memberof OSjs.Core.Handler#
    * @see OSjs.Core.Handler.callAPI
-   * @see OSjs.Core.Handler.__callXHR
    *
    * @return {Boolean}
    */
   _Handler.prototype._callAPI = function(method, args, options, cbSuccess, cbError) {
-    var url = API.getConfig('Connection.APIURI') + '/' + method;
-    return this.__callXHR(url, args, options, cbSuccess, cbError);
+    return this.connection.request(false, method, args, options, cbSuccess, cbError);
   };
 
   /**
@@ -490,101 +741,11 @@
    * @function _callVFS
    * @memberof OSjs.Core.Handler#
    * @see OSjs.Core.Handler.callAPI
-   * @see OSjs.Core.Handler.__callGET
-   * @see OSjs.Core.Handler.__callPOST
-   * @see OSjs.Core.Handler.__callXHR
    *
    * @return {Boolean}
    */
   _Handler.prototype._callVFS = function(method, args, options, cbSuccess, cbError) {
-    if ( method === 'FS:get' ) {
-      return this.__callGET(args, options, cbSuccess, cbError);
-    } else if ( method === 'FS:upload' ) {
-      return this.__callPOST(args, options, cbSuccess, cbError);
-    }
-
-    var url = API.getConfig('Connection.FSURI') + '/' + method.replace(/^FS\:/, '');
-    return this.__callXHR(url, args, options, cbSuccess, cbError);
-  };
-
-  /**
-   * Does a HTTP POST via XHR (For file uploading)
-   *
-   * @function __callPOST
-   * @memberof OSjs.Core.Handler#
-   * @see OSjs.Core.Handler.callAPI
-   *
-   * @return {Boolean}
-   */
-  _Handler.prototype.__callPOST = function(form, options, cbSuccess, cbError) {
-    var onprogress = options.onprogress || function() {};
-
-    cbError = cbError || function() {
-      console.warn('Handler::__callPOST()', 'error', arguments);
-    };
-
-    OSjs.Utils.ajax({
-      url: OSjs.VFS.Transports.Internal.path(),
-      method: 'POST',
-      body: form,
-      onsuccess: function(result) {
-        cbSuccess(false, result);
-      },
-      onerror: function(result) {
-        cbError('error', null, result);
-      },
-      onprogress: function(evt) {
-        onprogress(evt);
-      },
-      oncanceled: function(evt) {
-        cbError('canceled', null, evt);
-      }
-    });
-
-    return true;
-  };
-
-  /**
-   * Does a HTTP GET via XHR (For file downloading);
-   *
-   * @function __callGET
-   * @memberof OSjs.Core.Handler#
-   * @see OSjs.Core.Handler.callAPI
-   *
-   * @return {Boolean}
-   */
-  _Handler.prototype.__callGET = function(args, options, cbSuccess, cbError) {
-    var self = this;
-    var onprogress = args.onprogress || function() {};
-
-    cbError = cbError || function() {
-      console.warn('Handler::__callGET()', 'error', arguments);
-    };
-
-    Utils.ajax({
-      url: args.url || OSjs.VFS.Transports.Internal.path(args.path),
-      method: args.method || 'GET',
-      responseType: 'arraybuffer',
-      onprogress: function(ev) {
-        if ( ev.lengthComputable ) {
-          onprogress(ev, ev.loaded / ev.total);
-        } else {
-          onprogress(ev, -1);
-        }
-      },
-      onsuccess: function(response, xhr) {
-        if ( !xhr || xhr.status === 404 || xhr.status === 500 ) {
-          cbSuccess({error: xhr.statusText || response, result: null});
-          return;
-        }
-        cbSuccess({error: false, result: response});
-      },
-      onerror: function() {
-        cbError.apply(self, arguments);
-      }
-    });
-
-    return true;
+    return this.connection.request(true, method, args, options, cbSuccess, cbError);
   };
 
   //

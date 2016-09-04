@@ -24,6 +24,8 @@
     },
     "http": {
       "mode": "http",
+      "connection": "%CONNECTION%",
+      "port" : 8000,
       "cert": {
         "path": null,
         "name": "localhost",
@@ -34,7 +36,6 @@
       }
     },
     "handler" : "%HANDLER%",
-    "port" : 8000,
     "basedir": ""
   }
 }
