@@ -55,7 +55,7 @@
     var ignore = ['onsuccess', 'onerror', 'onprogress', 'oncanceled'];
 
     Object.keys(options).forEach(function(key) {
-      if ( ignore.indexOf(key) !== -1 ) {
+      if ( ignore.indexOf(key) === -1 ) {
         data[key] = options[key];
       }
     });
