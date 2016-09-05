@@ -742,9 +742,7 @@
       handler = new NWHandler(instance);
     } else {
       var hs = _path.join(instance.setup.dirname, 'handlers', instance.config.handler, 'handler.js');
-      if ( instance.setup.logging ) {
-        console.info('+++', '{Handler}', hs.replace(instance.setup.root, '/'));
-      }
+      instance.logger.lognt(instance.logger.INFO, '+++', '{Handler}', hs.replace(instance.setup.root, '/'));
       handler = require(hs).register(instance, DefaultHandler);
     }
 

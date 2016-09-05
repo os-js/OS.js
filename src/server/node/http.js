@@ -94,7 +94,7 @@
     if ( instance.config.logging ) {
       var okCodes = [200, 301, 302, 304];
 
-      log(timestamp(), colored('>>>', 'grey', 'bold'), colored(String(code) + ' ' + mime, okCodes.indexOf(code) >= 0 ? 'green' : 'red'), (pipeFile ? '=> ' + colored(pipeFile.replace(instance.setup.root, '/'), 'magenta') : typeof data));
+      instance.logger.log(instance.logger.VERBOSE, colored('>>>', 'grey', 'bold'), colored(String(code) + ' ' + mime, okCodes.indexOf(code) >= 0 ? 'green' : 'red'), (pipeFile ? '=> ' + colored(pipeFile.replace(instance.setup.root, '/'), 'magenta') : typeof data));
     }
 
     function done() {
@@ -153,8 +153,8 @@
         try {
           require('request')(path).pipe(response);
         } catch ( e ) {
-          console.error('!!! Caught exception', e);
-          console.warn(e.stack);
+          instance.logger.log(instance.logger.WARNING, 'respondFile exception', e, e.stack);
+
           respondError(e, response);
         }
       } else {
@@ -174,8 +174,8 @@
         }
       });
     } catch ( e ) {
-      console.error('!!! Caught exception', e);
-      console.warn(e.stack);
+      instance.logger.log(instance.logger.WARNING, 'respondFile exception', e, e.stack);
+
       respondError(e, response, true);
     }
   }
@@ -224,13 +224,6 @@
     return now.toISOString();
   }
 
-  /**
-   * Logs a line
-   */
-  function log() {
-    console.log(Array.prototype.slice.call(arguments).join(' '));
-  }
-
   /////////////////////////////////////////////////////////////////////////////
   // HTTP
   /////////////////////////////////////////////////////////////////////////////
@@ -245,9 +238,7 @@
     var isVfsCall = path.match(/^\/FS/) !== null;
     var relPath = path.replace(/^\/(FS|API)\/?/, '');
 
-    if ( instance.config.logging ) {
-      log(timestamp(), colored('<<<', 'bold'), '[WS]', path);
-    }
+    instance.logger.log(instance.logger.VERBOSE, colored('<<<', 'bold'), '[WS]', path);
 
     instance.request(isVfsCall, relPath, msg.args, function(error, result) {
       ws.send(JSON.stringify({
@@ -272,7 +263,7 @@
       } else {
         var check = k.match(/\/(.*)\/([a-z]+)?/);
         if ( !check || !check[1] ) {
-          console.warn('Invalid proxy route', k);
+          instance.logger.log(instance.logger.WARNING, 'Invalid proxy route', k);
         }
         matcher = new RegExp(check[1], check[2] || '');
       }
@@ -309,8 +300,8 @@
 
           stop = true;
 
-          log(timestamp(), colored('<<<', 'bold'), request.url);
-          log(timestamp(), colored('>>>', 'grey', 'bold'), colored(('PROXY ' + k + ' => ' + pots.target), 'yellow'));
+          instance.logger.log(instance.logger.INFO, colored('<<<', 'bold'), request.url);
+          instance.logger.log(instance.logger.INFO, colored('>>>', 'grey', 'bold'), colored(('PROXY ' + k + ' => ' + pots.target), 'yellow'));
 
           proxy.web(request, response, pots);
         }
@@ -344,8 +335,8 @@
             respondJSON({result: result, error: error}, response);
           }, request, response, instance.handler);
         } catch ( e ) {
-          console.error('!!! Caught exception', e);
-          console.warn(e.stack);
+          instance.logger.log(instance.logger.WARNING, 'httpCall exception', e, e.stack);
+
           respondError(e, response, true, 200);
         }
       });
@@ -431,9 +422,7 @@
       path += 'index.html';
     }
 
-    if ( instance.config.logging ) {
-      log(timestamp(), colored('<<<', 'bold'), path);
-    }
+    instance.logger.log(instance.logger.VERBOSE, colored('<<<', 'bold'), path);
 
     if ( instance.handler && instance.handler.onRequestStart ) {
       instance.handler.onRequestStart(request, response);
@@ -500,14 +489,14 @@
     if ( instance.config.http.connection === 'ws' ) {
       wss = new (require('ws')).Server({server: server});
       wss.on('connection', function(ws) {
-        log(timestamp(), colored('---', 'bold'), '[WS]', 'WebSocket connection...');
+        instance.logger.log(instance.logger.INFO, colored('---', 'bold'), '[WS]', 'WebSocket connection...');
 
         ws.on('message', function(msg) {
           wsCall(ws, JSON.parse(msg));
         });
 
         ws.on('close', function() {
-          log(timestamp(), colored('---', 'bold'), '[WS]', 'WebSocket closed...');
+          instance.logger.log(instance.logger.INFO, colored('---', 'bold'), '[WS]', 'WebSocket closed...');
         });
       });
     }
@@ -522,18 +511,15 @@
 
       _osjs.after(server, instance);
 
-      var msg = _util.format('OS.js listening on %s:%d (handler:%s dir:%s mode:%s logging:%s ws:%s)',
+      var msg = _util.format('OS.js listening on %s:%d (handler:%s dir:%s mode:%s ws:%s)',
                              addr,
                              port,
                              instance.config.handler,
                              instance.setup.dist,
                              (httpConfig.mode || 'http'),
-                             String(setup.logging),
                              String(!!wss));
 
-      console.log('\n\n***');
-      console.log('***', msg);
-      console.log('***\n\n');
+      instance.logger.lognt(instance.logger.INFO, '\n\n***\n***', msg, '\n***\n');
 
     });
 

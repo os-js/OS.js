@@ -110,9 +110,8 @@
         callback(error, result);
       }, server.request, server.response, server.config, server.handler);
     } catch ( e ) {
-      if ( server.config.logging !== false ) {
-        console.warn(e.stack, e.trace);
-      }
+      server.logger.log(server.logger.WARNING, e.stack, e.trace);
+
       callback('Application API error or missing: ' + e.toString(), null);
     }
   };
@@ -189,7 +188,7 @@
                 return encodeURIComponent(k) + '=' + encodeURIComponent(query[k]);
               }).join('&');
             } catch ( e ) {
-              console.warn('Failed to transform curl query', e.stack, e);
+              server.logger.log(server.logger.WARNING, 'Failed to transform curl query', e.stack, e);
             }
           }
         }
@@ -214,14 +213,12 @@
       };
     })();
 
-    console.warn(curlRequest.opts);
     require('request')(curlRequest.opts, function(error, response, body) {
       if ( error ) {
         callback(error);
         return;
       }
 
-      console.warn(body);
       if ( curlRequest.binary && body ) {
         body = 'data:' + curlRequest.mime + ';base64,' + (body.toString('base64'));
       }
