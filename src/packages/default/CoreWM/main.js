@@ -204,7 +204,7 @@
     this.applySettings(this._settings.get());
 
     this._on('vfs', function(msg, obj) {
-      if ( !obj || msg.match(/^vfs\:un?mount/) ) {
+      if ( !obj || msg.match(/^vfs:(un)?mount/) ) {
         return;
       }
 
