@@ -332,15 +332,14 @@
     var server = {request: request, response: response, config: instance.config, handler: instance.handler};
 
     function handleCall(rp, isVfs) {
-      var body = '';
-
+      var body = [];
       request.on('data', function(data) {
-        body += data;
+        body.push(data);
       });
 
       request.on('end', function() {
         try {
-          var args = JSON.parse(body);
+          var args = JSON.parse(Buffer.concat(body));
           instance.request(isVfs, rp, args, function(error, result) {
             respondJSON({result: result, error: error}, response);
           }, request, response, instance.handler);
