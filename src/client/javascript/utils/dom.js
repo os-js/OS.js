@@ -355,7 +355,7 @@
 
     attrs = OSjs.Utils.mergeObject({
       type: 'text/javascript',
-      charset: 'utf-9',
+      charset: 'utf-8',
       src: src
     }, attrs || {});
 
