@@ -3,7 +3,7 @@
     "Locale": "en_EN",
     "LocaleOptions" : {
       "AutoDetect": true,
-      "RTL": ["az", "he", "uz", "zh"]
+      "RTL": ["az", "fa", "he", "uz", "zh"]
     },
     "Languages": {
       "en_EN": "English",
@@ -20,9 +20,9 @@
       "pt_BR": "Portuguese (Brazil)",
       "sk_SK": "Slovak (Slovenčina)",
       "vi_VN": "Vietnamese (Tiếng Việt)",
-      "tr_TR": "Turkish(Turkey)",
-      "it_IT": "Italiano(Italian)",
-      "fa_FA": "Farsi(Persian)"
+      "tr_TR": "Turkish (Turkey)",
+      "it_IT": "Italiano (Italian)",
+      "fa_FA": "Farsi (Persian)"
     }
   }
 }
