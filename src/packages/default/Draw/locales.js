@@ -228,6 +228,57 @@
       'Radius' : 'Rayon',
       'Iterations' : 'Itérations'
     },
+    ar_DZ : {
+      'Toggle tools toolbar' : 'إظهار شريط الأدوات',
+      'Toggle layers toolbar' : 'إظهار شريط الشفائف',
+      'Layer' : 'شفيفة',
+      'Effect' : 'تأثير',
+      'Flip Horizontally' : 'دوران أفقي',
+      'Flip Vertically' : 'دوران عمودي',
+      'Foreground' : 'الأمامي',
+      'Background' : 'الخلفية',
+      'Foreground (Fill) Color' : 'اللون الأمامي (التعبئة)',
+      'Background (Stroke) Color' : 'لون الخلفية (الخط)',
+      'Line join' : 'مفصل خطي',
+      'Line width' : 'عرض الخط',
+      'Toggle Stroke' : 'إظهار الخطوط',
+      'Enable stroke' : 'تفعيل الخطوط',
+      'Round' : 'دائري',
+      'Miter' : 'مذبب',
+      'Bevel' : 'شطف',
+      'Stroked' : 'مشطوب',
+      'No stroke' : 'بدون خط',
+
+      'Pointer' : 'المؤشر',
+      'Move active layer' : 'نقل الشفيفة المفعلة',
+
+      'Picker' : 'المرشح',
+      'LMB: Pick foreground-, RMB: Pick background color' : 'ضغط باليسار: إختيار اللون الأمامي, ضغط باليمين: إختيار لون الخلفية',
+
+      'Pencil' : 'القلم',
+      'LMB: Use foreground-, RMB: Use background color' : 'ضغط باليسار: إستعمال اللون الأمامي, ضغط باليمين: إستعمال لون الخلفية',
+      'Path' : 'المسار',
+
+      'Square/Rectangle' : 'مربع/مستطيل',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode' : 'ضغط باليسار: إستعمال اللون الأمامي, ضغط باليمين: إستعمال لون الخلفية، SHIFT : تحويل بين مربع/مستطيل',
+
+      'Circle/Ellipse' : 'دائرة/قطع ناقص',
+      'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode' : 'ضغط باليسار: إستعمال اللون الأمامي, ضغط باليمين: إستعمال لون الخلفية، SHIFT : تحويل بين دائرة/قطع ناقص',
+
+      'LMB: Fill with foreground-, RMB: Fill with background color': 'ضغط باليسار: ملئ باللون الأمامي, ضغط باليمين: ملئ بلون الخلفية',
+      'Set foreground color': 'إستعمال كلون أمامي',
+      'Set background color': 'إستعمال كلون للخلفية',
+
+      'Blur' : 'ضبابي',
+      'Noise' : 'ضجيج',
+      'Invert colors' : 'عكس الألوان',
+      'Grayscale' : 'مستوى الرمادي',
+      'Sharpen' : 'صفاء',
+      'Simple Blur' : 'ضباب عادي',
+
+      'Radius' : 'القطر',
+      'Iterations' : 'عدد العمليات'
+    },
     it_IT : {
       'Toggle tools toolbar' : 'Mostra la barra strumenti',
       'Toggle layers toolbar' : 'Mostra la barra dei livelli',

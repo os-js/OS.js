@@ -96,6 +96,21 @@
       'seek unavailable in format' : 'recherche indisponible dans ce format',
       'The audio type is not supported: {0}' : 'Le type audio n\'est pas pris en charge: {0}'
     },
+      ar_DZ : {
+      'Playlist' : 'قائمة القرائة',
+      'Playback aborted' : 'قطع التشغيل',
+      'Network or communication error' : 'خطأ في الإتصال بالشبكة',
+      'Decoding failed. Corruption or unsupported media' : 'فشل في فك التشفير. وسائط غير صالحة أو غير مدعومة',
+      'Media source not supported' : 'وسائط غير مدعومة',
+      'Failed to play file' : 'لايمكن قراءة الملف',
+      'Artist' : 'الفنان',
+      'Album' : 'الألبوم',
+      'Track' : 'المقطع',
+      'Time' : 'المدة',
+      'Media information query failed' : 'خطأ في قراءة معلومات الوسائط',
+      'seek unavailable in format' : 'بحث غير ممكن في هذا النوع',
+      'The audio type is not supported: {0}' : 'نوع الملف الصوتي غير مدعوم: {0}'
+    },
     it_IT : {
       'Playlist' : 'Playlist',
       'Playback aborted' : 'Riproduzione terminata',

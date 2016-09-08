@@ -66,6 +66,18 @@
       'Selected {0} files, {1} dirs, {2}' : '{0} fichier(s) selectionné(s), {1} dossier(s), {2}',
       'Showing {0} files ({1} hidden), {2} dirs, {3}' : '{0} fichier(s) affiché(s) ({1} caché(s)), {2} dossier(s), {3}'
     },
+    ar_DZ : {
+      'Copying file...' : 'جاري نسخ الملف...',
+      "Copying **{0}** to **{1}**" : "نسخ من **{0}** إلى **{1}**",
+      "Refreshing..." : "جاري التحديث...",
+      "Loading..." : "جاري التحميل...",
+      "Create a new file in **{0}**" : "إنشاء ملف جديد في **{0}**",
+      "Create a new directory in **{0}**" : "إنشاء مجلد جديد في **{0}**",
+      "Rename **{0}**" : "إعادة التسمية **{0}**",
+      "Delete **{0}** ?" : "حذف **{0}** ?",
+      'Selected {0} files, {1} dirs, {2}' : '{0} ملف مختار, {1} مجلد, {2}',
+      'Showing {0} files ({1} hidden), {2} dirs, {3}' : '{0} ملف مرئي ({1} مخفي(s)), {2} مجلد, {3}'
+    },
     it_IT : {
       'Copying file...' : 'Copiamento file...',
       "Copying **{0}** to **{1}**" : "Copia **{0}** in **{1}**",

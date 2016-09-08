@@ -114,6 +114,27 @@
       'Utilities' : 'Utilitaires',
       'Other' : 'Autre'
     },
+    ar_DZ : {
+      'Killing this process will stop things from working!' : 'إنهاء هذا البرنامج سيوقف الأشياء عن العمل',
+      'Open settings' : 'فتح الإعدادات',
+      'Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)' : 'لايوجد أي شيء في لوحتك، إذهب إلى إعدادات وقم بإستعادة الأشياء إلى الحالة الإفتراضية أو غيرها يدويا (يحدث هذا أحيانا عند تحديث الـ OS.js)',
+      'Create shortcut' : 'إنشاء إختصار',
+      'Set as wallpaper' : 'وضع كخلفية سطح المكتب',
+      'An error occured while creating PanelItem: {0}' : 'حدث خطأ أثناء إنشاء عنصر في اللوحة : {0}',
+      'Show Icons' : 'إظهار الأيقونات',
+      'Hide Icons' : 'إخفاء الأيقونات',
+
+      'Development' : 'تطوير',
+      'Education' : 'تعليم',
+      'Games' : 'ألعاب',
+      'Graphics' : 'رسومات',
+      'Network' : 'شبكة',
+      'Multimedia' : 'تعدد الوسائط',
+      'Office' : 'مكتبيات',
+      'System' : 'نظام',
+      'Utilities' : 'أدوات',
+      'Other' : 'أخرى'
+    },
     it_IT : {
       'Killing this process will stop things from working!' : 'Terminare questo processo bloccherà altre funzionalità!',
       'Open settings' : 'Apri settaggi',
