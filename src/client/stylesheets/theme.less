@@ -259,6 +259,10 @@ corewm-panel .PanelItemWindowList li.Focused {
 corewm-panel .PanelItemWindowList li img {
   margin-right : @gui_base_padding;
 }
+html[dir="rtl"] corewm-panel .PanelItemWindowList li img {
+  margin-right : 0;
+  margin-left : @gui_base_padding;
+}
 
 /* Notifications */
 application-splash {
@@ -384,9 +388,9 @@ application-window-top {
     width: @window_top_height;
   }
 }
-application-window-content {
-  overflow : hidden;
-}
+
+/* application-window-content {overflow : hidden;}*/
+
 application-window-top:active {
   cursor : move;
   cursor : pointer;
@@ -1078,6 +1082,12 @@ gui-menu {
   gui-menu > gui-menu-entry.gui-menu-expand {
     padding-right : 16px;
   }
+  html[dir="rtl"] gui-menu > gui-menu-entry.gui-menu-expand {
+    padding-right : 0;
+  }
+  html[dir="rtl"] gui-menu > gui-menu-entry[data-icon] {
+    padding-right : 16px;
+  }
   gui-menu > gui-menu-entry.gui-menu-expand:after {
     content : '►';
     font-family : sans-serif;
@@ -1095,6 +1105,9 @@ gui-menu {
   }
     gui-menu > gui-menu-entry {
       background-position : @gui_base_padding center;
+    }
+    html[dir="rtl"] gui-menu > gui-menu-entry {
+      background-position : right @gui_base_padding center;
     }
     gui-menu > gui-menu-entry > label.gui-has-image {
       padding-left : 22px;
@@ -1207,8 +1220,18 @@ gui-list-view {
         padding-left : 24px;
         background-position : @gui_base_padding;
       }
+      html[dir="rtl"] gui-list-view gui-list-view-column.gui-has-image {
+        padding-left : 0;
+        padding-right : 24px;
+        background-position : right @gui_base_padding center;
+      }
+
       gui-list-view[data-icon-size="32"] gui-list-view-column.gui-has-image {
         padding-left : 40px;
+      }
+      html[dir="rtl"] gui-list-view[data-icon-size="32"] gui-list-view-column.gui-has-image {
+        padding-left : 0;
+        padding-right : 40px;
       }
 
     gui-list-view-row.gui-active {

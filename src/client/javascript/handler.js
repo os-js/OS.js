@@ -776,7 +776,7 @@
       var curLocale = API.getConfig('Locale');
       var detectedLocale = Utils.getUserLocale();
 
-      if ( API.getConfig('LocaleDetect', true) && detectedLocale ) {
+      if ( API.getConfig('LocaleOptions.AutoDetect', true) && detectedLocale ) {
         console.info('Auto-detected user locale via browser', detectedLocale);
         curLocale = detectedLocale;
       }

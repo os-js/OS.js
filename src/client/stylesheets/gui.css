@@ -1175,6 +1175,15 @@ gui-menu.gui-root-menu {
     top : 0;
     bottom : 0;
   }
+  html[dir="rtl"] gui-menu > .gui-menu-expand:after {
+    right : auto;
+    left : 0;
+
+    -webkit-transform: rotate(180deg);
+       -moz-transform: rotate(180deg);
+        -ms-transform: rotate(180deg);
+            transform: rotate(180deg);
+  }
 
   /*gui-menu > gui-menu-entry:hover {
   }*/

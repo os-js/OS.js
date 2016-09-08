@@ -236,6 +236,8 @@
    * @param  {String}   s     Locale name
    */
   API.setLocale = function _apiSetLocale(l) {
+    var RTL = API.getConfig('LocaleOptions.RTL', []);
+
     if ( OSjs.Locales[l] ) {
       CurrentLocale = l;
     } else {
@@ -243,9 +245,11 @@
       CurrentLocale = DefaultLocale;
     }
 
+    var major = CurrentLocale.split('_')[0];
     var html = document.querySelector('html');
     if ( html ) {
       html.setAttribute('lang', l);
+      html.setAttribute('dir', RTL.indexOf(major) !== -1 ? 'rtl' : 'ltr');
     }
 
     console.info('API::setLocale()', CurrentLocale);
