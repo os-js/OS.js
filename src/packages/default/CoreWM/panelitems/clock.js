@@ -83,11 +83,6 @@
   PanelItemClock.prototype = Object.create(PanelItem.prototype);
   PanelItemClock.constructor = PanelItem;
 
-  PanelItemClock.Name = 'Clock'; // Static name
-  PanelItemClock.Description = 'View the time'; // Static description
-  PanelItemClock.Icon = 'status/appointment-soon.png'; // Static icon
-  PanelItemClock.HasOptions = true;
-
   PanelItemClock.prototype.createInterval = function() {
     var self = this;
     var timeFmt = this._settings.get('format');
@@ -153,10 +148,10 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Applications                                    = OSjs.Applications || {};
-  OSjs.Applications.CoreWM                             = OSjs.Applications.CoreWM || {};
-  OSjs.Applications.CoreWM.PanelItems                  = OSjs.Applications.CoreWM.PanelItems || {};
-  OSjs.Applications.CoreWM.PanelItems.Clock            = PanelItemClock;
+  OSjs.Applications = OSjs.Applications || {};
+  OSjs.Applications.CoreWM = OSjs.Applications.CoreWM || {};
+  OSjs.Applications.CoreWM.PanelItems = OSjs.Applications.CoreWM.PanelItems || {};
+  OSjs.Applications.CoreWM.PanelItems.Clock = PanelItemClock;
 
 })(
   OSjs.Applications.CoreWM.Class,

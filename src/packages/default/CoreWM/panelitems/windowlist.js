@@ -188,10 +188,6 @@
   PanelItemWindowList.prototype = Object.create(PanelItem.prototype);
   PanelItemWindowList.constructor = PanelItem;
 
-  PanelItemWindowList.Name = 'Window List'; // Static name
-  PanelItemWindowList.Description = 'Toggle between open windows'; // Static description
-  PanelItemWindowList.Icon = 'apps/xfwm4.png'; // Static icon
-
   PanelItemWindowList.prototype.init = function() {
     var root = PanelItem.prototype.init.apply(this, arguments);
 
@@ -261,9 +257,9 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Applications                                    = OSjs.Applications || {};
-  OSjs.Applications.CoreWM                             = OSjs.Applications.CoreWM || {};
-  OSjs.Applications.CoreWM.PanelItems                  = OSjs.Applications.CoreWM.PanelItems || {};
-  OSjs.Applications.CoreWM.PanelItems.WindowList       = PanelItemWindowList;
+  OSjs.Applications = OSjs.Applications || {};
+  OSjs.Applications.CoreWM = OSjs.Applications.CoreWM || {};
+  OSjs.Applications.CoreWM.PanelItems = OSjs.Applications.CoreWM.PanelItems || {};
+  OSjs.Applications.CoreWM.PanelItems.WindowList = PanelItemWindowList;
 
 })(OSjs.Applications.CoreWM.Class, OSjs.Applications.CoreWM.Panel, OSjs.Applications.CoreWM.PanelItem, OSjs.Utils, OSjs.API, OSjs.GUI, OSjs.VFS);

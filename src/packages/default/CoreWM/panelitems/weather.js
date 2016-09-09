@@ -61,10 +61,6 @@
   PanelItemWeather.prototype = Object.create(PanelItem.prototype);
   PanelItemWeather.constructor = PanelItem;
 
-  PanelItemWeather.Name = 'Weather'; // Static name
-  PanelItemWeather.Description = 'Weather notification'; // Static description
-  PanelItemWeather.Icon = 'status/weather-few-clouds.png'; // Static icon
-
   PanelItemWeather.prototype.init = function() {
     var root = PanelItem.prototype.init.apply(this, arguments);
     this.$element = document.createElement('li');
@@ -205,9 +201,9 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Applications                                    = OSjs.Applications || {};
-  OSjs.Applications.CoreWM                             = OSjs.Applications.CoreWM || {};
-  OSjs.Applications.CoreWM.PanelItems                  = OSjs.Applications.CoreWM.PanelItems || {};
-  OSjs.Applications.CoreWM.PanelItems.Weather          = PanelItemWeather;
+  OSjs.Applications = OSjs.Applications || {};
+  OSjs.Applications.CoreWM = OSjs.Applications.CoreWM || {};
+  OSjs.Applications.CoreWM.PanelItems = OSjs.Applications.CoreWM.PanelItems || {};
+  OSjs.Applications.CoreWM.PanelItems.Weather = PanelItemWeather;
 
 })(OSjs.Applications.CoreWM.Class, OSjs.Applications.CoreWM.Panel, OSjs.Applications.CoreWM.PanelItem, OSjs.Utils, OSjs.API, OSjs.VFS);

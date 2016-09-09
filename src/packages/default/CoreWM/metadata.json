@@ -77,5 +77,51 @@
       "src": "main.css",
       "type": "stylesheet"
     }
-  ]
+  ],
+  "panelItems": {
+    "AppMenu": {
+      "Name": "AppMenu",
+      "Description": "Application Menu",
+      "Icon": "actions/stock_about.png",
+      "HasOptions": false
+    },
+
+    "Buttons": {
+      "Name": "Buttons",
+      "Description": "Button Bar",
+      "Icon": "actions/stock_about.png"
+    },
+
+    "Clock": {
+      "Name": "Clock",
+      "Description": "View the time",
+      "Icon": "status/appointment-soon.png",
+      "HasOptions": true
+    },
+
+    "NotificationArea": {
+      "Name": "NotificationArea",
+      "Description": "View notifications",
+      "Icon": "apps/gnome-panel-notification-area.png"
+    },
+
+    "Search": {
+      "Name": "Search",
+      "Description": "Perform searches",
+      "Icon": "actions/find.png",
+      "HasOptions": true
+    },
+
+    "Weather": {
+      "Name": "Weather",
+      "Description": "Weather notification",
+      "Icon": "status/weather-few-clouds.png"
+    },
+
+    "WindowList": {
+      "Name": "Window List",
+      "Description": "Toggle between open windows",
+      "Icon": "apps/xfwm4.png"
+    }
+  }
 }

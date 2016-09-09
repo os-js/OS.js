@@ -52,10 +52,6 @@
   PanelItemButtons.prototype = Object.create(PanelItem.prototype);
   PanelItemButtons.constructor = PanelItem;
 
-  PanelItemButtons.Name = 'Buttons'; // Static name
-  PanelItemButtons.Description = 'Button Bar'; // Static description
-  PanelItemButtons.Icon = 'actions/stock_about.png'; // Static icon
-
   PanelItemButtons.prototype.init = function() {
     var self = this;
     var root = PanelItem.prototype.init.apply(this, arguments);
@@ -238,9 +234,9 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Applications                                    = OSjs.Applications || {};
-  OSjs.Applications.CoreWM                             = OSjs.Applications.CoreWM || {};
-  OSjs.Applications.CoreWM.PanelItems                  = OSjs.Applications.CoreWM.PanelItems || {};
-  OSjs.Applications.CoreWM.PanelItems.Buttons          = PanelItemButtons;
+  OSjs.Applications = OSjs.Applications || {};
+  OSjs.Applications.CoreWM = OSjs.Applications.CoreWM || {};
+  OSjs.Applications.CoreWM.PanelItems = OSjs.Applications.CoreWM.PanelItems || {};
+  OSjs.Applications.CoreWM.PanelItems.Buttons = PanelItemButtons;
 
 })(OSjs.Applications.CoreWM.Class, OSjs.Applications.CoreWM.Panel, OSjs.Applications.CoreWM.PanelItem, OSjs.Utils, OSjs.API, OSjs.GUI, OSjs.VFS);

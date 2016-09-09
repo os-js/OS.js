@@ -152,10 +152,6 @@
   PanelItemNotificationArea.prototype = Object.create(PanelItem.prototype);
   PanelItemNotificationArea.constructor = PanelItem;
 
-  PanelItemNotificationArea.Name = 'NotificationArea'; // Static name
-  PanelItemNotificationArea.Description = 'View notifications'; // Static description
-  PanelItemNotificationArea.Icon = 'apps/gnome-panel-notification-area.png'; // Static icon
-
   PanelItemNotificationArea.prototype.init = function() {
     var self = this;
 
@@ -227,9 +223,9 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Applications                                    = OSjs.Applications || {};
-  OSjs.Applications.CoreWM                             = OSjs.Applications.CoreWM || {};
-  OSjs.Applications.CoreWM.PanelItems                  = OSjs.Applications.CoreWM.PanelItems || {};
+  OSjs.Applications = OSjs.Applications || {};
+  OSjs.Applications.CoreWM = OSjs.Applications.CoreWM || {};
+  OSjs.Applications.CoreWM.PanelItems = OSjs.Applications.CoreWM.PanelItems || {};
   OSjs.Applications.CoreWM.PanelItems.NotificationArea = PanelItemNotificationArea;
 
 })(OSjs.Applications.CoreWM.Class, OSjs.Applications.CoreWM.Panel, OSjs.Applications.CoreWM.PanelItem, OSjs.Utils, OSjs.API, OSjs.VFS);

@@ -45,11 +45,6 @@
   PanelItemAppMenu.prototype = Object.create(PanelItem.prototype);
   PanelItemAppMenu.constructor = PanelItem;
 
-  PanelItemAppMenu.Name = 'AppMenu'; // Static name
-  PanelItemAppMenu.Description = 'Application Menu'; // Static description
-  PanelItemAppMenu.Icon = 'actions/stock_about.png'; // Static icon
-  PanelItemAppMenu.HasOptions = false;
-
   PanelItemAppMenu.prototype.init = function() {
     var self = this;
     var root = PanelItem.prototype.init.apply(this, arguments);
@@ -82,9 +77,9 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Applications                                    = OSjs.Applications || {};
-  OSjs.Applications.CoreWM                             = OSjs.Applications.CoreWM || {};
-  OSjs.Applications.CoreWM.PanelItems                  = OSjs.Applications.CoreWM.PanelItems || {};
-  OSjs.Applications.CoreWM.PanelItems.AppMenu          = PanelItemAppMenu;
+  OSjs.Applications = OSjs.Applications || {};
+  OSjs.Applications.CoreWM = OSjs.Applications.CoreWM || {};
+  OSjs.Applications.CoreWM.PanelItems = OSjs.Applications.CoreWM.PanelItems || {};
+  OSjs.Applications.CoreWM.PanelItems.AppMenu = PanelItemAppMenu;
 
 })(OSjs.Applications.CoreWM.Class, OSjs.Applications.CoreWM.Panel, OSjs.Applications.CoreWM.PanelItem, OSjs.Utils, OSjs.API, OSjs.VFS);

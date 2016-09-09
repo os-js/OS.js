@@ -59,11 +59,6 @@
   PanelItemSearch.prototype = Object.create(PanelItem.prototype);
   PanelItemSearch.constructor = PanelItem;
 
-  PanelItemSearch.Name = 'Search'; // Static name
-  PanelItemSearch.Description = 'Perform searches'; // Static description
-  PanelItemSearch.Icon = 'actions/find.png'; // Static icon
-  PanelItemSearch.HasOptions = true;
-
   PanelItemSearch.prototype.init = function() {
     var self = this;
     var root = PanelItem.prototype.init.apply(this, arguments);
@@ -362,10 +357,10 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Applications                                    = OSjs.Applications || {};
-  OSjs.Applications.CoreWM                             = OSjs.Applications.CoreWM || {};
-  OSjs.Applications.CoreWM.PanelItems                  = OSjs.Applications.CoreWM.PanelItems || {};
-  OSjs.Applications.CoreWM.PanelItems.Search           = PanelItemSearch;
+  OSjs.Applications = OSjs.Applications || {};
+  OSjs.Applications.CoreWM = OSjs.Applications.CoreWM || {};
+  OSjs.Applications.CoreWM.PanelItems = OSjs.Applications.CoreWM.PanelItems || {};
+  OSjs.Applications.CoreWM.PanelItems.Search = PanelItemSearch;
 
 })(
   OSjs.Applications.CoreWM.Class,
