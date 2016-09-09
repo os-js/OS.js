@@ -259,6 +259,7 @@
       function _done(res) {
         timeout = clearTimeout(timeout);
         if ( !loaded ) {
+          _LOADED[src] = true;
           loaded = true;
           cb(res, src);
         }
@@ -298,6 +299,7 @@
 
       function _done(res) {
         if ( !loaded ) {
+          _LOADED[src] = true;
           loaded = true;
           cb(res, src);
         }
