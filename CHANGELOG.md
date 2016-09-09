@@ -1,4 +1,52 @@
-# 2.0.0-alpha77
+# 2.0.0-alpha79
+
+Core API WebSocket support, Desktop now uses VFS mount, New touch menu, Bugfixes, Improvements and optimizations.
+
+Relevant:
+
+- http://community.os.js.org/t/update-version-bump-alpha79/92
+- http://community.os.js.org/t/feature-api-over-websocket/91
+- http://community.os.js.org/t/feature-widgets/90
+
+Digest:
+
+* UI: Support for RTL languages
+* CoreWM: Now uses core fullscreen handling
+* CoreWM: Added hook for contextmenu
+* CoreWM: All settings moved to src/conf
+* CoreWM: New touchmenu
+* CoreWM: Desktop now uses real path from VFS
+* Writer: Bugfixes and UIX improvements
+* Preview: Added zooming capabilities for images
+* Calculator: Prevent device keyboard to come up on mobile
+* FirefoxMarketplace: Moved to the 'experimental' repo
+* Utils: Added mousewheel to the event handler
+* Utils: Added getCookie() function
+* Core: Added support for WebSocket API calls
+* Handler: New connection code abstraction
+* API: Added 'toggleFullscreen' method
+* VFS: Added support for aliases in mounts
+* VFS: Added Desktop mount alias
+* GUI: gui-statusbar now handles its children better
+* GUI: Bugfixes from any changes in previous release
+* GUI: gui-list-view now has text ellipse just like the body content
+* server-node: Added 'testing' mode
+* server-node: Updated unit tests
+* server-node: Added default groups for system logins
+* server-node: Added proper logging
+* server-php: Fixes for installations in sub-directories
+* build: Added package listing grunt command
+* build: Updated grunt commands
+* locales: Updated Korean (ko_KR) translations
+" locales; Added Arabic (ar_DZ) translations
+* misc: Now using eslint instead of jslint+jscs
+* misc: Updated Travis CI
+* misc: General linting and cleanups
+* misc: Optimizations
+* misc: Updated documentation
+* misc: Updated dependencies
+
+# 2.0.0-alpha78
 
 New event handling and touch system, VFS improvements, bugfixes and entire codebase now uses JSDoc.
 

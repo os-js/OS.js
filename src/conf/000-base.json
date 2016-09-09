@@ -3,7 +3,7 @@
   "connection": "http",
 
   "client" : {
-    "Version" : "2.0-alpha78",
+    "Version" : "2.0-alpha79",
     "SettingsManager": {},
     "PackageManager": {},
     "Preloads": {},
