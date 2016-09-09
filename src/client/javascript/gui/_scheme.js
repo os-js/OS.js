@@ -31,6 +31,7 @@
   'use strict';
 
   var dialogScheme;
+  var schemeCache = {};
 
   /////////////////////////////////////////////////////////////////////////////
   // INTERNAL HELPERS
@@ -238,8 +239,6 @@
   UIScheme.prototype.load = function(cb) {
     var self = this;
 
-    console.debug('UIScheme::load()', this.url);
-
     if ( window.location.protocol.match(/^file/) ) {
       var url = this.url;
       if ( !url.match(/^\//) ) {
@@ -250,6 +249,23 @@
       return;
     }
 
+    function _done(html, saveCache) {
+      if ( saveCache ) {
+        schemeCache[self.url] = html;
+      }
+
+      self._load(html);
+      cb(false, self.scheme);
+    }
+
+    if ( schemeCache[this.url] ) {
+      console.debug('UIScheme::load()', this.url, 'WAS CACHED!');
+      _done(schemeCache[this.url]);
+      return;
+    }
+
+    console.debug('UIScheme::load()', this.url);
+
     var src = this.url;
     if ( src.substr(0, 1) !== '/' && !src.match(/^(https?|ftp)/) ) {
       src = window.location.pathname + src;
@@ -258,8 +274,7 @@
     Utils.ajax({
       url: src,
       onsuccess: function(html) {
-        self._load(html);
-        cb(false, self.scheme);
+        _done(html, true);
       },
       onerror: function() {
         cb('Failed to fetch scheme');
@@ -593,6 +608,14 @@
       }
     }
     return new GUI.Element(el, q);
+  };
+
+  /**
+   * @function clearCache
+   * @memberof OSjs.GUI.Scheme
+   */
+  UIScheme.clearCache = function() {
+    schemeCache = {};
   };
 
   /////////////////////////////////////////////////////////////////////////////

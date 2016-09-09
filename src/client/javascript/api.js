@@ -487,6 +487,8 @@
       }, 500);
     }
 
+    OSjs.GUI.Scheme.clearCache(); // TODO Only for requested application
+
     OSjs.API.getProcess(n).forEach(relaunch);
   };
 
