@@ -438,13 +438,14 @@
   CoreWM.prototype.initIconView = function() {
     var self = this;
 
-    if ( !this.getSetting('enableIconView') && this.iconView ) {
+    var en = this.getSetting('enableIconView');
+    if ( !en && this.iconView ) {
       this.iconView.destroy();
       this.iconView = null;
       return;
     }
 
-    if ( !this.iconView ) {
+    if ( en && !this.iconView ) {
       this.iconView = new OSjs.Applications.CoreWM.DesktopIconView(this);
       document.body.appendChild(this.iconView.getRoot());
     }
