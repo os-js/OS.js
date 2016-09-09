@@ -169,8 +169,8 @@
     var output = (function() {
       // Kudos http://codepen.io/GeoffStorbeck/pen/zxgaqw
 
-      if ( !isNaN(val) || val === '.' ) { // Number
-        self.temp += val;
+      if ( !isNaN(val) || val === 'dec' ) { // Number
+        self.temp += val === 'dec' ? ops[val] : val;
 
         return self.temp.substring(0,10);
       } else if ( val === 'AC' ) { // Clear
