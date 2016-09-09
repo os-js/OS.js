@@ -102,7 +102,7 @@
       'Enable Icon View' : 'Activar la vista de icono',
       'General': 'General'
     },
-        ar_DZ : {
+    ar_DZ : {
       'Theme' : 'القالب',
       'Sounds' : 'أصوات',
       'Icons' : 'أيقونات',

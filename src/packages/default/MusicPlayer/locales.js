@@ -96,7 +96,7 @@
       'seek unavailable in format' : 'recherche indisponible dans ce format',
       'The audio type is not supported: {0}' : 'Le type audio n\'est pas pris en charge: {0}'
     },
-      ar_DZ : {
+    ar_DZ : {
       'Playlist' : 'قائمة القرائة',
       'Playback aborted' : 'قطع التشغيل',
       'Network or communication error' : 'خطأ في الإتصال بالشبكة',
