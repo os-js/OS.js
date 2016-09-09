@@ -197,7 +197,7 @@
         grunt.log.writeln('Type: ' + typeof result);
         console.log(result);
       } else if ( setPath ) {
-        if ( value ) {
+        if ( typeof value !== 'undefined' ) {
           grunt.log.writeln('Path: ' + setPath);
 
           result = _build.setConfigPath(grunt, setPath, value);
