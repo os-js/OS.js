@@ -48,6 +48,9 @@
     fr_FR : {
       'Insert URL' : 'Insérer une URL'
     },
+    ar_DZ : {
+      'Insert URL' : 'أدخل رابط'
+    },
     it_IT : {
       'Insert URL' : 'Inserisci URL'
     },
