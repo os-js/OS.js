@@ -161,6 +161,10 @@
     if ( !this.__inited ) {
       console.debug('Application::init()', this.__pname);
 
+      if ( scheme ) {
+        this._setScheme(scheme);
+      }
+
       this.__settings.set(null, settings);
 
       focusLastWindow();

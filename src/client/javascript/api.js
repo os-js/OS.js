@@ -485,8 +485,6 @@
       }, 500);
     }
 
-    OSjs.GUI.Scheme.clearCache(); // TODO Only for requested application
-
     OSjs.API.getProcess(n).forEach(relaunch);
   };
 
@@ -764,10 +762,6 @@
     if ( args.__preload__ ) { // This is for relaunch()
       pargs = args.__preload__;
       delete args.__preload__;
-    }
-
-    if ( name === 'ApplicationCalculator' ) {
-      console.clear();
     }
 
     // Main blob

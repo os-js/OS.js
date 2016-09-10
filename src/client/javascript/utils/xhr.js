@@ -251,6 +251,7 @@
    */
   OSjs.Utils.preload = (function() {
     var _LOADED = {};
+    var _CACHE = {};
 
     function checkCache(item, args) {
       if ( _LOADED[item.src] === true ) {
@@ -337,11 +338,22 @@
       //
       // Scheme
       //
-      scheme: function createHTML(item, cb) {
-        var scheme = new OSjs.GUI.Scheme(item.src);
-        scheme.load(function(err, res) {
-          cb(err ? false : true, item.src, scheme);
-        });
+      scheme: function createHTML(item, cb, args) {
+        var scheme;
+        if ( _CACHE[item.src] && item.force !== true && args.force !== true  ) {
+          scheme = new OSjs.GUI.Scheme();
+          scheme.loadString(_CACHE[item.src]);
+          cb(true, item.src, scheme);
+        } else {
+          scheme = new OSjs.GUI.Scheme(item.src);
+          scheme.load(function(err, res) {
+            cb(err ? false : true, item.src, scheme);
+          }, function(err, html) {
+            if ( !err && html ) {
+              _CACHE[item.src] = html;
+            }
+          });
+        }
       }
     };
 
@@ -410,7 +422,7 @@
           return _onentryloaded(true, item.src);
         } else {
           if ( preloadTypes[item.type] ) {
-            return preloadTypes[item.type](item, _onentryloaded);
+            return preloadTypes[item.type](item, _onentryloaded, args);
           }
         }
 

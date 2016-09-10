@@ -30,8 +30,6 @@
 (function(API, Utils, VFS, GUI) {
   'use strict';
 
-  var schemeCache = {};
-
   /////////////////////////////////////////////////////////////////////////////
   // INTERNAL HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -100,14 +98,14 @@
       if ( nodes.length ) {
         nodes.forEach(function(el) {
           var id = el.getAttribute('data-fragment-id');
-          var frag = scheme.getFragment(id, 'application-fragment').cloneNode(true);
-
-          addChildren(frag, el.parentNode);
-          Utils.$remove(el);
+          if ( id ) {
+            var frag = scheme.getFragment(id, 'application-fragment').cloneNode(true);
+            addChildren(frag, el.parentNode);
+            Utils.$remove(el);
+          }
         });
         return true;
       }
-
       return false;
     }
 
@@ -224,7 +222,9 @@
   UIScheme.prototype.loadString = function(html, cb) {
     console.debug('UIScheme::loadString()');
     this._load(html);
-    cb(false, this.scheme);
+    if ( cb ) {
+      cb(false, this.scheme);
+    }
   };
 
   /**
@@ -234,37 +234,24 @@
    * @memberof OSjs.GUI.Scheme#
    *
    * @param   {Function}    cb      callback => fn(error, scheme)
+   * @param   {Function}    [cbxhr] callback on ajax => fn(error, html)
    */
-  UIScheme.prototype.load = function(cb) {
-    var self = this;
+  UIScheme.prototype.load = function(cb, cbxhr) {
+    cbxhr = cbxhr || function() {};
 
     if ( window.location.protocol.match(/^file/) ) {
       var url = this.url;
       if ( !url.match(/^\//) ) {
         url = '/' + url;
       }
-      self._load(OSjs.API.getDefaultSchemes(url.replace(/^\/packages/, '')));
-      cb(false, self.scheme);
-      return;
-    }
-
-    function _done(html, saveCache) {
-      if ( saveCache ) {
-        schemeCache[self.url] = html;
-      }
-
-      self._load(html);
-      cb(false, self.scheme);
-    }
-
-    if ( schemeCache[this.url] ) {
-      console.debug('UIScheme::load()', this.url, 'WAS CACHED!');
-      _done(schemeCache[this.url]);
+      this._load(OSjs.API.getDefaultSchemes(url.replace(/^\/packages/, '')));
+      cb(false, this.scheme);
       return;
     }
 
     console.debug('UIScheme::load()', this.url);
 
+    var self = this;
     var src = this.url;
     if ( src.substr(0, 1) !== '/' && !src.match(/^(https?|ftp)/) ) {
       src = window.location.pathname + src;
@@ -273,10 +260,14 @@
     Utils.ajax({
       url: src,
       onsuccess: function(html) {
-        _done(html, true);
+        cbxhr(false, html);
+
+        self._load(html);
+        cb(false, self.scheme);
       },
       onerror: function() {
         cb('Failed to fetch scheme');
+        cbxhr(true);
       }
     });
   };
@@ -606,14 +597,6 @@
       }
     }
     return new GUI.Element(el, q);
-  };
-
-  /**
-   * @function clearCache
-   * @memberof OSjs.GUI.Scheme
-   */
-  UIScheme.clearCache = function() {
-    schemeCache = {};
   };
 
   /////////////////////////////////////////////////////////////////////////////
