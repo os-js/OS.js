@@ -338,16 +338,9 @@
       // HTML
       //
       html: function createHTML(item, cb) {
-        OSjs.Utils.ajax({
-          url: item.src,
-          onsuccess: function(html) {
-            _LOADED[item.src] = true;
-
-            cb(true, item.src, html);
-          },
-          onerror: function() {
-            cb(false, item.src);
-          }
+        var scheme = new OSjs.GUI.Scheme(item.src);
+        scheme.load(function(err, res) {
+          cb(err ? false : true, item.src, scheme);
         });
       }
     };
@@ -397,16 +390,12 @@
 
       var data = {};
       OSjs.Utils.asyncs(list, function(item, index, next) {
-
         function _onentryloaded(state, src, setData) {
           onprogress(index, len, src);
           (state ? succeeded : failed).push(src);
 
           if ( setData ) {
-            data[item._src] = {
-              item: item,
-              data: setData
-            };
+            data[item._src] = setData;
           }
 
           next();
