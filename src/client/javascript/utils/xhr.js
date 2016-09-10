@@ -252,70 +252,6 @@
   OSjs.Utils.preload = (function() {
     var _LOADED = {};
 
-    function createStylesheet(src, cb) {
-      var loaded = false;
-      var timeout;
-
-      function _done(res) {
-        timeout = clearTimeout(timeout);
-        if ( !loaded ) {
-          _LOADED[src] = true;
-          loaded = true;
-          cb(res, src);
-        }
-      }
-
-      function _check(path) {
-        var result = false;
-        (document.styleSheet || []).forEach(function(iter, i) {
-          if ( iter.href.indexOf(path) !== -1 ) {
-            result = true;
-            return false;
-          }
-          return true;
-        });
-        return result;
-      }
-
-      OSjs.Utils.$createCSS(src, function() {
-        _done(true);
-      }, function() {
-        _done(false);
-      });
-
-      // This probably always fires. The official docs on this is a bit vague
-      if ( typeof document.styleSheet === 'undefined' || (!loaded && _check(src)) ) {
-        return _done(true);
-      }
-
-      // Fall back to a timeout, just in case
-      timeout = setTimeout(function() {
-        _done(false);
-      }, 30000);
-    }
-
-    function createScript(src, cb) {
-      var loaded = false;
-
-      function _done(res) {
-        if ( !loaded ) {
-          _LOADED[src] = true;
-          loaded = true;
-          cb(res, src);
-        }
-      }
-
-      OSjs.Utils.$createJS(src, function() {
-        if ( (this.readyState === 'complete' || this.readyState === 'loaded') ) {
-          _done(true);
-        }
-      }, function() {
-        _done(true);
-      }, function() {
-        _done(false);
-      }, {async: false});
-    }
-
     function checkCache(item, args) {
       if ( _LOADED[item.src] === true ) {
         if ( item.force !== true && args.force !== true ) {
@@ -323,6 +259,118 @@
         }
       }
       return false;
+    }
+
+    var preloadTypes = {
+      //
+      // CSS
+      //
+      stylesheet: function createStylesheet(item, cb) {
+        var src = item.src;
+        var loaded = false;
+        var timeout;
+
+        function _done(res) {
+          timeout = clearTimeout(timeout);
+          if ( !loaded ) {
+            _LOADED[src] = true;
+            loaded = true;
+            cb(res, src);
+          }
+        }
+
+        function _check(path) {
+          var result = false;
+          (document.styleSheet || []).forEach(function(iter, i) {
+            if ( iter.href.indexOf(path) !== -1 ) {
+              result = true;
+              return false;
+            }
+            return true;
+          });
+          return result;
+        }
+
+        OSjs.Utils.$createCSS(src, function() {
+          _done(true);
+        }, function() {
+          _done(false);
+        });
+
+        // This probably always fires. The official docs on this is a bit vague
+        if ( typeof document.styleSheet === 'undefined' || (!loaded && _check(src)) ) {
+          return _done(true);
+        }
+
+        // Fall back to a timeout, just in case
+        timeout = setTimeout(function() {
+          _done(false);
+        }, 30000);
+      },
+
+      //
+      // JS
+      //
+      javascript: function createScript(item, cb) {
+        var src = item.src;
+        var loaded = false;
+
+        function _done(res) {
+          if ( !loaded ) {
+            _LOADED[src] = true;
+            loaded = true;
+            cb(res, src);
+          }
+        }
+
+        OSjs.Utils.$createJS(src, function() {
+          if ( (this.readyState === 'complete' || this.readyState === 'loaded') ) {
+            _done(true);
+          }
+        }, function() {
+          _done(true);
+        }, function() {
+          _done(false);
+        }, {async: false});
+      },
+
+      //
+      // HTML
+      //
+      html: function createHTML(item, cb) {
+        OSjs.Utils.ajax({
+          url: item.src,
+          onsuccess: function(html) {
+            _LOADED[item.src] = true;
+
+            cb(true, item.src, html);
+          },
+          onerror: function() {
+            cb(false, item.src);
+          }
+        });
+      }
+    };
+
+    function getType(src) {
+      if ( src.match(/\.js$/i) ) {
+        return 'javascript';
+      } else if ( src.match(/\.css$/i) ) {
+        return 'stylesheet';
+      } else if ( src.match(/\.html?$/i) ) {
+        return 'html';
+      }
+      return 'unknown';
+    }
+
+    function getTypeCorrected(t) {
+      var typemap = {
+        script: 'javascript',
+        js: 'javascript',
+        style: 'stylesheet',
+        css: 'stylesheet'
+      };
+      return typemap[t] || t;
     }
 
     function preloadList(list, ondone, onprogress, args) {
@@ -339,26 +387,28 @@
           item = {src: item};
         }
 
-        if ( !item.type ) {
-          item.type = (function(src) {
-            if ( src.match(/\.js$/i) ) {
-              return 'javascript';
-            } else if ( src.match(/\.css$/i) ) {
-              return 'stylesheet';
-            }
-            return 'unknown';
-          })(item.src);
-        }
+        item._src = item.src;
+        item.type = item.type ? getTypeCorrected(item.type) : getType(item.src);
 
         return item;
       });
 
       console.group('Utils::preload()', len);
 
+      var data = {};
       OSjs.Utils.asyncs(list, function(item, index, next) {
-        function _onentryloaded(state, src) {
+
+        function _onentryloaded(state, src, setData) {
           onprogress(index, len, src);
           (state ? succeeded : failed).push(src);
+
+          if ( setData ) {
+            data[item._src] = {
+              item: item,
+              data: setData
+            };
+          }
+
           next();
         }
 
@@ -367,20 +417,17 @@
         if ( checkCache(item, args) ) {
           return _onentryloaded(true, item.src);
         } else {
-          if ( item.type.match(/^style/) ) {
-            return createStylesheet(item.src, _onentryloaded);
-          } else if ( item.type.match(/script$/) ) {
-            return createScript(item.src, _onentryloaded);
-          } else {
-            failed.push(item.src);
+          if ( preloadTypes[item.type] ) {
+            return preloadTypes[item.type](item, _onentryloaded);
           }
         }
 
+        failed.push(item.src);
         return next();
       }, function() {
         console.groupEnd();
 
-        ondone(len, failed, succeeded);
+        ondone(len, failed, succeeded, data);
       });
     }
 
