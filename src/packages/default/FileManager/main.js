@@ -110,6 +110,7 @@
       height: 420
     }, app, scheme]);
 
+    this.wasFileDropped = false;
     this.currentPath = path;
     this.currentSummary = {};
     this.viewOptions = Utils.argumentDefaults(settings || {}, {
@@ -133,6 +134,7 @@
     this._on('drop:file', function(ev, src) {
       if ( Utils.dirname(src.path) !== self.currentPath ) {
         var dst = new VFS.File(Utils.pathJoin(self.currentPath, src.filename));
+        self.wasFileDropped = dst;
         app.copy(src, dst, self);
       }
     });
@@ -489,9 +491,9 @@
     }
   };
 
-  ApplicationFileManagerWindow.prototype.onFileEvent = function(chk) {
+  ApplicationFileManagerWindow.prototype.onFileEvent = function(chk, isDest) {
     if ( (this.currentPath === Utils.dirname(chk.path)) || (this.currentPath === chk.path) ) {
-      this.changePath(null);
+      this.changePath(null, this.wasFileDropped, false, false, !this.wasFileDroped);
     }
   };
 
@@ -511,10 +513,11 @@
     }
   };
 
-  ApplicationFileManagerWindow.prototype.changePath = function(dir, selectFile, isNav, isInput) {
+  ApplicationFileManagerWindow.prototype.changePath = function(dir, selectFile, isNav, isInput, applyScroll) {
     if ( this._destroyed || !this._scheme ) {
       return;
     }
+    this.wasFileDropped = false;
 
     //if ( dir === this.currentPath ) { return; }
     dir = dir || this.currentPath;
@@ -576,7 +579,9 @@
         self.updateSideView();
 
         if ( selectFile && view ) {
-          view.set('selected', selectFile.filename, 'filename');
+          view.set('selected', selectFile.filename, 'filename', {
+            scroll: applyScroll
+          });
         }
 
         updateNavigation();
@@ -743,7 +748,7 @@
           win.onMountEvent(obj, msg);
         } else {
           if ( obj.destination ) {
-            win.onFileEvent(obj.destination);
+            win.onFileEvent(obj.destination, true);
             win.onFileEvent(obj.source);
           } else {
             win.onFileEvent(obj);
@@ -949,7 +954,7 @@
           API.error(API._('ERR_GENERIC_APP_FMT', self.__label), API._('ERR_GENERIC_APP_REQUEST'), error);
           return;
         }
-        win.changePath(null, file);
+        win.changePath(null, file, false, false, true);
       });
     }
 
@@ -960,7 +965,7 @@
         dest: dest
       }, function(ev, button, result) {
         if ( result ) {
-          win.changePath(null, result.filename);
+          win.changePath(null, result);
         }
       }, win);
     }
