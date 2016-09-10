@@ -50,7 +50,6 @@
    * @param   {Object}            args        Process arguments
    * @param   {Metadata}          metadata    Application metadata
    * @param   {Object}            [settings]  Application settings
-   * @param   {OSjs.GUI.Scheme}   [scheme]    Application scheme
    *
    * @link https://os.js.org/doc/tutorials/create-application.html
    * @link https://os.js.org/doc/tutorials/application-with-server-api.html
@@ -60,7 +59,7 @@
    * @memberof OSjs.Core
    * @extends OSjs.Core.Process
    */
-  function Application(name, args, metadata, settings, scheme) {
+  function Application(name, args, metadata, settings) {
     console.group('Application::constructor()', arguments);
 
     /**
@@ -85,7 +84,7 @@
      * @memberof OSjs.Core.Application#
      * @type {OSjs.GUI.Scheme}
      */
-    this.__scheme     = scheme || null;
+    this.__scheme     = null;
 
     /**
      * Registered Windows
@@ -133,10 +132,11 @@
    * @function init
    * @memberof OSjs.Core.Application#
    *
-   * @param   {Object}    settings      Settings JSON
-   * @param   {Metadata}  metadata      Metadata JSON
+   * @param   {Object}            settings      Settings JSON
+   * @param   {Metadata}          metadata      Metadata JSON
+   * @param   {OSjs.GUI.Scheme}   [scheme]      GUI Scheme instance
    */
-  Application.prototype.init = function(settings, metadata) {
+  Application.prototype.init = function(settings, metadata, scheme) {
 
     var wm = OSjs.Core.getWindowManager();
     var self = this;

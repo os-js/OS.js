@@ -697,7 +697,7 @@
 
       function __onschemesloaded(scheme) {
         try {
-          instance = new OSjs.Applications[name].Class(args, metadata, scheme);
+          instance = new OSjs.Applications[name].Class(args, metadata);
 
           (onconstruct || function() {})(instance, metadata);
         } catch ( e ) {
@@ -709,7 +709,7 @@
 
         try {
           var settings = OSjs.Core.getSettingsManager().get(instance.__pname) || {};
-          instance.init(settings, metadata, function() {}); // NOTE: Empty function is for backward-compability
+          instance.init(settings, metadata, scheme);
 
           API.triggerHook('onApplicationLaunched', [{
             application: instance,
