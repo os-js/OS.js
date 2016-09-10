@@ -428,10 +428,20 @@
       n();
     };
 
-    ondone  = ondone  || function() {
+    ondone = ondone || function() {
     };
 
+    var finished = [];
+
     function next(i) {
+
+      // Ensure that the given index is not run again!
+      // This might occur if something is out of time
+      if ( finished.indexOf(i) !== -1 ) {
+        return;
+      }
+      finished.push(i);
+
       if ( i >= queue.length ) {
         ondone();
         return;
