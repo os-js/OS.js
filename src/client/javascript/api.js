@@ -657,12 +657,12 @@
     }
 
     function _preload(cb) {
-      Utils.preload(preloads, function(total, failed) {
+      Utils.preload(preloads, function(total, failed, succeeded, data) {
         if ( failed.length ) {
           cb(OSjs.API._('ERR_APP_PRELOAD_FAILED_FMT', name, failed.join(',')));
         } else {
           setTimeout(function() {
-            cb(false);
+            cb(false, data);
           }, 0);
         }
       }, function(progress, count) {
@@ -672,7 +672,7 @@
       }, pargs);
     }
 
-    function _createProcess(cb) {
+    function _createProcess(preloadData, cb) {
       function __onprocessinitfailed() {
         if ( instance ) {
           try {
@@ -695,36 +695,51 @@
         return;
       }
 
-      try {
-        instance = new OSjs.Applications[name].Class(args, metadata);
+      function __onschemesloaded(scheme) {
+        try {
+          instance = new OSjs.Applications[name].Class(args, metadata, scheme);
 
-        (onconstruct || function() {})(instance, metadata);
-      } catch ( e ) {
-        console.warn('Error on constructing application', e, e.stack);
-        __onprocessinitfailed();
-        cb(OSjs.API._('ERR_APP_CONSTRUCT_FAILED_FMT', name, e), e);
-        return;
+          (onconstruct || function() {})(instance, metadata);
+        } catch ( e ) {
+          console.warn('Error on constructing application', e, e.stack);
+          __onprocessinitfailed();
+          cb(OSjs.API._('ERR_APP_CONSTRUCT_FAILED_FMT', name, e), e);
+          return false;
+        }
+
+        try {
+          var settings = OSjs.Core.getSettingsManager().get(instance.__pname) || {};
+          instance.init(settings, metadata, function() {}); // NOTE: Empty function is for backward-compability
+
+          API.triggerHook('onApplicationLaunched', [{
+            application: instance,
+            name: name,
+            args: args,
+            settings: settings,
+            metadata: metadata
+          }]);
+        } catch ( ex ) {
+          console.warn('Error on init() application', ex, ex.stack);
+          __onprocessinitfailed();
+          cb(OSjs.API._('ERR_APP_INIT_FAILED_FMT', name, ex.toString()), ex);
+          return false;
+        }
+
+        return true;
       }
 
-      try {
-        var settings = OSjs.Core.getSettingsManager().get(instance.__pname) || {};
-        instance.init(settings, metadata, function() {}); // NOTE: Empty function is for backward-compability
-
-        API.triggerHook('onApplicationLaunched', [{
-          application: instance,
-          name: name,
-          args: args,
-          settings: settings,
-          metadata: metadata
-        }]);
-      } catch ( ex ) {
-        console.warn('Error on init() application', ex, ex.stack);
-        __onprocessinitfailed();
-        cb(OSjs.API._('ERR_APP_INIT_FAILED_FMT', name, ex.toString()), ex);
-        return;
+      var scheme = null;
+      if ( preloadData ) {
+        Object.keys(preloadData).forEach(function(f) {
+          if ( !scheme && Utils.filext(f) === 'html' ) {
+            scheme = preloadData[f];
+          }
+        });
       }
 
-      cb(false, true);
+      if ( __onschemesloaded(scheme) ) {
+        cb(false, true);
+      }
     }
 
     if ( !name ) {
@@ -751,6 +766,10 @@
       delete args.__preload__;
     }
 
+    if ( name === 'ApplicationCalculator' ) {
+      console.clear();
+    }
+
     // Main blob
     try {
       _preLaunch(function() {
@@ -759,7 +778,7 @@
             _onError(err, res);
           } else {
             try {
-              _createProcess(function(err, res) {
+              _createProcess(res, function(err, res) {
                 if ( err ) {
                   _onError(err, res);
                 } else {

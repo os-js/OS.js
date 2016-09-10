@@ -46,10 +46,11 @@
    *
    * @summary Class used for basis as an Application.
    *
-   * @param   {String}    name      Process name
-   * @param   {Object}    args      Process arguments
-   * @param   {Metadata}  metadata  Application metadata
-   * @param   {Object}    settings  Application settings
+   * @param   {String}            name        Process name
+   * @param   {Object}            args        Process arguments
+   * @param   {Metadata}          metadata    Application metadata
+   * @param   {Object}            [settings]  Application settings
+   * @param   {OSjs.GUI.Scheme}   [scheme]    Application scheme
    *
    * @link https://os.js.org/doc/tutorials/create-application.html
    * @link https://os.js.org/doc/tutorials/application-with-server-api.html
@@ -59,7 +60,7 @@
    * @memberof OSjs.Core
    * @extends OSjs.Core.Process
    */
-  function Application(name, args, metadata, settings) {
+  function Application(name, args, metadata, settings, scheme) {
     console.group('Application::constructor()', arguments);
 
     /**
@@ -84,7 +85,7 @@
      * @memberof OSjs.Core.Application#
      * @type {OSjs.GUI.Scheme}
      */
-    this.__scheme     = null;
+    this.__scheme     = scheme || null;
 
     /**
      * Registered Windows
@@ -461,6 +462,17 @@
     });
 
     return data;
+  };
+
+  /**
+   * Gets the scheme instance
+   *
+   * @function _getScheme
+   * @memberof OSjs.Core.Application#
+   * @return OSjs.GUI.Scheme
+   */
+  Application.prototype._getScheme = function() {
+    return this.__scheme;
   };
 
   /**
