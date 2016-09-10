@@ -76,11 +76,10 @@
   ApplicationHTMLViewer.prototype = Object.create(DefaultApplication.prototype);
   ApplicationHTMLViewer.constructor = DefaultApplication;
 
-  ApplicationHTMLViewer.prototype.init = function(settings, metadata) {
-    var self = this;
-    DefaultApplication.prototype.init.call(this, settings, metadata, function(scheme, file) {
-      self._addWindow(new ApplicationHTMLViewerWindow(self, metadata, scheme, file));
-    });
+  ApplicationHTMLViewer.prototype.init = function(settings, metadata, scheme) {
+    Application.prototype.init.call(this, settings, metadata, scheme);
+    var file = this._getArgument('file');
+    this._addWindow(new ApplicationHTMLViewerWindow(this, metadata, scheme, file));
   };
 
   /////////////////////////////////////////////////////////////////////////////

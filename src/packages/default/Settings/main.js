@@ -751,26 +751,18 @@
     return Application.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationSettings.prototype.init = function(settings, metadata) {
+  ApplicationSettings.prototype.init = function(settings, metadata, scheme) {
     Application.prototype.init.apply(this, arguments);
 
-    var self = this;
-    var url = API.getApplicationResource(this, './scheme.html');
-    var scheme = GUI.createScheme(url);
     var category = this._getArgument('category') || settings.category;
+    var win = this._addWindow(new ApplicationSettingsWindow(this, metadata, scheme, category));
 
-    scheme.load(function(error, result) {
-      var win = self._addWindow(new ApplicationSettingsWindow(self, metadata, scheme, category));
-
-      self._on('attention', function(args) {
-        if ( win && args.category ) {
-          win.setContainer(args.category, true);
-          win._focus();
-        }
-      });
+    this._on('attention', function(args) {
+      if ( win && args.category ) {
+        win.setContainer(args.category, true);
+        win._focus();
+      }
     });
-
-    this._setScheme(scheme);
   };
 
   ApplicationSettings.prototype.panelItemsDialog = function(callback) {

@@ -102,11 +102,10 @@
   ApplicationTextpad.prototype = Object.create(DefaultApplication.prototype);
   ApplicationTextpad.constructor = DefaultApplication;
 
-  ApplicationTextpad.prototype.init = function(settings, metadata) {
-    var self = this;
-    DefaultApplication.prototype.init.call(this, settings, metadata, function(scheme, file) {
-      self._addWindow(new ApplicationTextpadWindow(self, metadata, scheme, file));
-    });
+  ApplicationTextpad.prototype.init = function(settings, metadata, scheme) {
+    Application.prototype.init.call(this, settings, metadata, scheme);
+    var file = this._getArgument('file');
+    this._addWindow(new ApplicationTextpadWindow(this, metadata, scheme, file));
   };
 
   /////////////////////////////////////////////////////////////////////////////

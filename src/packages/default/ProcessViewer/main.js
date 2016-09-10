@@ -121,17 +121,9 @@
     return Application.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationProcessViewer.prototype.init = function(settings, metadata) {
+  ApplicationProcessViewer.prototype.init = function(settings, metadata, scheme) {
     Application.prototype.init.apply(this, arguments);
-
-    var self = this;
-    var url = API.getApplicationResource(this, './scheme.html');
-    var scheme = GUI.createScheme(url);
-    scheme.load(function(error, result) {
-      self._addWindow(new ApplicationProcessViewerWindow(self, metadata, scheme));
-    });
-
-    this._setScheme(scheme);
+    this._addWindow(new ApplicationProcessViewerWindow(this, metadata, scheme));
   };
 
   /////////////////////////////////////////////////////////////////////////////

@@ -16,14 +16,8 @@
   },
   "icon": "apps/calc.png",
   "category": "office",
-  "preload": [
-    {
-      "src": "main.js",
-      "type": "javascript"
-    },
-    {
-      "src": "main.css",
-      "type": "stylesheet"
-    }
-  ]
+  "preload": ["main.js", "main.css", {
+    "src": "scheme.html",
+    "type": "scheme"
+  }]
 }

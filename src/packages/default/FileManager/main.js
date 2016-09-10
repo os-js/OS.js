@@ -732,14 +732,11 @@
     return Application.prototype.destroy.apply(this, arguments);
   };
 
-  ApplicationFileManager.prototype.init = function(settings, metadata) {
+  ApplicationFileManager.prototype.init = function(settings, metadata, scheme) {
     Application.prototype.init.apply(this, arguments);
 
     var self = this;
     var path = this._getArgument('path') || API.getDefaultPath();
-
-    var url = API.getApplicationResource(this, './scheme.html');
-    var scheme = GUI.createScheme(url);
 
     this._on('vfs', function(msg, obj) {
       var win = self._getMainWindow();
@@ -757,11 +754,7 @@
       }
     });
 
-    scheme.load(function(error, result) {
-      self._addWindow(new ApplicationFileManagerWindow(self, metadata, scheme, path, settings));
-    });
-
-    this._setScheme(scheme);
+    this._addWindow(new ApplicationFileManagerWindow(this, metadata, scheme, path, settings));
   };
 
   ApplicationFileManager.prototype.download = function(items) {
