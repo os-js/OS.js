@@ -34,7 +34,9 @@
     "no-new": 2,
     "dot-notation": 1,
     "no-undef": 1,
-    "no-unused-vars": 0,
+    "no-unused-vars": [2, {
+      "args": "none"
+    }],
     "no-irregular-whitespace": 2,
     "no-cond-assign": [
       2,

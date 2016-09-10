@@ -50,7 +50,6 @@
 
   ApplicationProcessViewerWindow.prototype.init = function(wm, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
-    var self = this;
 
     // Load and set up scheme (GUI) here
     scheme.render(this, 'ProcessViewerWindow', root);

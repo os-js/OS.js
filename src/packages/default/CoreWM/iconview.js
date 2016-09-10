@@ -251,8 +251,6 @@
   };
 
   DesktopIconView.prototype._save = function(refresh) {
-    var self = this;
-
     var desktopPath = OSjs.Core.getWindowManager().getSetting('desktopPath');
     var path = Utils.pathJoin(desktopPath, '.shortcuts.json');
 

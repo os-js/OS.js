@@ -332,7 +332,6 @@
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
     }
 
-    var mm = OSjs.Core.getMountManager();
     var oitem = new VFS.File(item);
     var alias = hasAlias(oitem, true);
     item = checkMetadataArgument(item);
@@ -676,7 +675,7 @@
         }, options);
       } else {
         var msrc = mm.getModuleFromPath(src.path);
-        var mdst = mm.getModuleFromPath(dest.path);
+        //var mdst = mm.getModuleFromPath(dest.path);
 
         dest.mime = src.mime;
 

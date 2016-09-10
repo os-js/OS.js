@@ -100,13 +100,7 @@
    * Applies DOM changes for a row to be rendered properly
    */
   function initRow(el, row) {
-    var cols = el.querySelectorAll('gui-list-view-head gui-list-view-column');
-    var headContainer = el.querySelector('gui-list-view-head');
-
     row.querySelectorAll('gui-list-view-column').forEach(function(cel, idx) {
-      var cl = cols.length;
-      var x = cl ? idx % cl : idx;
-
       var icon = cel.getAttribute('data-icon');
       if ( icon && icon !== 'null' ) {
         Utils.$addClass(cel, 'gui-has-image');

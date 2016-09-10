@@ -177,8 +177,6 @@
    * @see OSjs.Core.Process#destroy
    */
   Application.prototype.destroy = function(sourceWid) {
-    var self = this;
-
     if ( this.__destroying || this.__destroyed ) { // From 'process.js'
       return true;
     }

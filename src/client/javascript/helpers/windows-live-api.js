@@ -233,7 +233,6 @@
    * Authenticates the user
    */
   WindowsLiveAPI.prototype.login = function(scope, callback) {
-    var self = this;
     var WL = window.WL || {};
 
     if ( this.hasSession ) {

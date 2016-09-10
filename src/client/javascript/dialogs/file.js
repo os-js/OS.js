@@ -286,7 +286,6 @@
 
   FileDialog.prototype.checkFileExtension = function() {
     var filename = this.scheme.find(this, 'Filename');
-    var filetypes = this.scheme.find(this, 'Filetypes');
 
     var mime = this.args.mime;
     var input = filename.get('value');
@@ -298,7 +297,6 @@
 
       if ( input.length ) {
         var extension = input.split('.').pop();
-        var current = filetypes.get('value');
         var found = false;
 
         this.args.filetypes.forEach(function(f) {

@@ -42,7 +42,6 @@
   var DefaultLocale = 'en_EN';
   var CurrentLocale = 'en_EN';
 
-  var _MENU;              // Current open 'OSjs.GUI.Menu'
   var _CLIPBOARD;         // Current 'clipboard' data
 
   var _hooks = {
@@ -357,7 +356,6 @@
 
     var settingsManager = OSjs.Core.getSettingsManager();
     var wm = OSjs.Core.getWindowManager();
-    var handler = OSjs.Core.getHandler();
     var args = {file: file};
 
     function getApplicationNameByFile(file, forceList, callback) {
@@ -515,7 +513,6 @@
     var instance = null;
     var pargs = {};
 
-    var handler = OSjs.Core.getHandler();
     var packman = OSjs.Core.getPackageManager();
     var compability = Utils.getCompability();
     var metadata = packman.getPackage(name);

@@ -563,7 +563,6 @@
       scheme.find(this, 'UserLocale').add(langs);
     }
 
-    var data = OSjs.Core.getHandler().getUserData();
     scheme.find(this, 'UserID').set('value', user.id);
     scheme.find(this, 'UserName').set('value', user.name);
     scheme.find(this, 'UserUsername').set('value', user.username);
@@ -575,10 +574,6 @@
    * File View
    */
   ApplicationSettingsWindow.prototype.initFileViewTab = function(wm, scheme, init) {
-    var self = this;
-    var handler = OSjs.Core.getHandler();
-    var pacman = OSjs.Core.getPackageManager();
-
     var vfsOptions = Utils.cloneObject(OSjs.Core.getSettingsManager().get('VFS') || {});
     var scandirOptions = vfsOptions.scandir || {};
 

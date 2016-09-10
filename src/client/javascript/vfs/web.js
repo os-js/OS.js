@@ -64,7 +64,6 @@
    */
   function makePath(file) {
     var mm = OSjs.Core.getMountManager();
-    var root = mm.getRootFromPath(file.path);
     var rel = mm.getRelativeURL(file.path);
     var module = mm.getModuleFromPath(file.path, false, true);
     var base = (module.options || {}).url;

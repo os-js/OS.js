@@ -87,7 +87,7 @@
 
     function onMouseDown(ev) {
       function insertTextAtCursor(text) {
-        var sel, range, html;
+        var sel, range;
         if (window.getSelection) {
           sel = window.getSelection();
           if (sel.getRangeAt && sel.rangeCount) {

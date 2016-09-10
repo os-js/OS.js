@@ -83,16 +83,16 @@
     var player = scheme.find(this, 'Player');
     var audio = player.$element.firstChild;
 
-    var buttonStart = scheme.find(this, 'ButtonStart').set('disabled', true);
-    var buttonRew = scheme.find(this, 'ButtonRew').set('disabled', true);
+    scheme.find(this, 'ButtonStart').set('disabled', true);
+    scheme.find(this, 'ButtonRew').set('disabled', true);
     var buttonPlay = scheme.find(this, 'ButtonPlay').set('disabled', true).on('click', function() {
       audio.play();
     });
     var buttonPause = scheme.find(this, 'ButtonPause').set('disabled', true).on('click', function() {
       audio.pause();
     });
-    var buttonFwd = scheme.find(this, 'ButtonFwd').set('disabled', true);
-    var buttonEnd = scheme.find(this, 'ButtonEnd').set('disabled', true);
+    scheme.find(this, 'ButtonFwd').set('disabled', true);
+    scheme.find(this, 'ButtonEnd').set('disabled', true);
 
     seeker.on('change', function(ev) {
       if ( audio && !audio.paused ) {

@@ -245,7 +245,6 @@
   };
 
   DropboxVFS.prototype.upload = function(file, dest, callback) {
-    var mm = OSjs.Core.getMountManager();
     var ndest = Utils.getRelativeURL(dest);
 
     if ( !ndest.match(/\/$/) ) {

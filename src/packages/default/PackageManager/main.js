@@ -40,7 +40,6 @@
   }
 
   function installSelected(download, cb) {
-    var handler = OSjs.Core.getHandler();
     var pacman = OSjs.Core.getPackageManager();
 
     var file = new VFS.File(download, 'application/zip');
@@ -99,7 +98,6 @@
     // Load and set up scheme (GUI) here
     scheme.render(this, 'PackageManagerWindow', root);
 
-    var handler = OSjs.Core.getHandler();
     var pacman = OSjs.Core.getPackageManager();
     var sm = OSjs.Core.getSettingsManager();
 

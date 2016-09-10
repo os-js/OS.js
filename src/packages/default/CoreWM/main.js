@@ -212,7 +212,6 @@
       var desktopPath = self.getSetting('desktopPath');
 
       function _check(f) {
-        var t = Utils.dirname(f.path);
         return f.path.substr(0, desktopPath.length) === desktopPath;
       }
 
@@ -599,8 +598,6 @@
   };
 
   CoreWM.prototype.onDropFile = function(ev, el, files, args) {
-    var self = this;
-
     VFS.upload({
       destination: 'desktop:///',
       files: files
@@ -788,7 +785,6 @@
   CoreWM.prototype._getNotificationArea = function(panelId) {
     panelId = panelId || 0;
     var panel  = this.panels[panelId];
-    var result = null;
     if ( panel ) {
       return panel.getItem(OSjs.Applications.CoreWM.PanelItems.NotificationArea, false);
     }

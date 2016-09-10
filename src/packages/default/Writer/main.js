@@ -76,7 +76,6 @@
     });
 
     var text = scheme.find(this, 'Text');
-    var frame = text.querySelector('iframe');
 
     var buttons = {
       'text-bold': {

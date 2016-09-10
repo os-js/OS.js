@@ -36,9 +36,6 @@
    * @memberof OSjs.Helpers
    */
 
-  var requestFileSystem = window.webkitRequestFileSystem || window.mozRequestFileSystem || window.requestFileSystem;
-  var URL = window.webkitURL || window.mozURL || window.URL;
-
   function getEntries(file, callback) {
     zip.createReader(new zip.BlobReader(file), function(zipReader) {
       zipReader.getEntries(function(entries) {

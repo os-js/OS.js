@@ -510,7 +510,7 @@
         method = 'PUT';
       }
 
-      var fileData = createBoundary(file, data, function(error, fileData) {
+      createBoundary(file, data, function(error, fileData) {
         if ( error ) {
           callback(error);
           return;

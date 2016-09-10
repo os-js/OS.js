@@ -119,7 +119,6 @@
 
   WindowListEntry.prototype.event = function(ev, win, parentEl) {
     var cn = 'WindowList_Window_' + win._wid;
-    var el = this.$element;
 
     function _change(cn, callback) {
       var els = parentEl.getElementsByClassName(cn);
@@ -218,7 +217,6 @@
   };
 
   PanelItemWindowList.prototype.update = function(ev, win) {
-    var self = this;
     if ( !this._$container || (win && win._properties.allow_windowlist === false) ) {
       return;
     }

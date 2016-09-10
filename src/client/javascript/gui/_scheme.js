@@ -30,7 +30,6 @@
 (function(API, Utils, VFS, GUI) {
   'use strict';
 
-  var dialogScheme;
   var schemeCache = {};
 
   /////////////////////////////////////////////////////////////////////////////
@@ -321,7 +320,6 @@
    * @return  {Node}
    */
   UIScheme.prototype.parse = function(id, type, win, onparse, args) {
-    var self = this;
     var content = this.getFragment(id, type);
 
     console.debug('UIScheme::parse()', id);

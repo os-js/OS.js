@@ -46,7 +46,6 @@
   PanelItemAppMenu.constructor = PanelItem;
 
   PanelItemAppMenu.prototype.init = function() {
-    var self = this;
     var root = PanelItem.prototype.init.apply(this, arguments);
     var wm = OSjs.Core.getWindowManager();
 

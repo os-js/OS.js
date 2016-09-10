@@ -55,7 +55,6 @@
   MountWindow.prototype.init = function(wm, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
-    var view;
 
     // Load and set up scheme (GUI) here
     scheme.render(this, 'MountWindow', root, null, null, {
@@ -984,7 +983,6 @@
     notificationWasDisplayed[type] = true;
 
     var wm = OSjs.Core.getWindowManager();
-    var ha = OSjs.Core.getHandler();
     if ( wm ) {
       wm.notification({
         title: 'External Storage',

@@ -35,7 +35,6 @@
    */
 
   var instance, server, proxy, httpProxy;
-  var socketConnection = [];
 
   var colored = (function() {
     var colors;
@@ -214,14 +213,6 @@
   function respondNotFound(message, response, fullPath) {
     message = message || '404 Not Found';
     respond(message, null, response, [], 404, false);
-  }
-
-  /**
-   * Gets timestamp
-   */
-  function timestamp() {
-    var now = new Date();
-    return now.toISOString();
   }
 
   /////////////////////////////////////////////////////////////////////////////

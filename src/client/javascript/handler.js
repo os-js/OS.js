@@ -182,8 +182,6 @@
       console.warn('HandlerConnection::callPOST()', 'error', arguments);
     };
 
-    var self = this;
-
     Utils.ajax(appendRequestOptions({
       url: OSjs.VFS.Transports.Internal.path(),
       method: 'POST',
@@ -481,8 +479,6 @@
    * @memberof OSjs.Core.Handler#
    */
   _Handler.prototype.destroy = function() {
-    var self = this;
-
     Utils.$unbind(window, 'offline');
     Utils.$unbind(window, 'online');
 

@@ -261,7 +261,7 @@
    */
   VFS.Helpers.dataSourceToAb = function dataSourceToAb(data, mime, callback) {
     var byteString = atob(data.split(',')[1]);
-    var mimeString = data.split(',')[0].split(':')[1].split(';')[0];
+    //var mimeString = data.split(',')[0].split(':')[1].split(';')[0];
 
     var ab = new ArrayBuffer(byteString.length);
     var ia = new Uint8Array(ab);

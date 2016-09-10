@@ -288,7 +288,6 @@
    */
   module.exports.read = function(server, args, callback) {
     var realPath = getRealPath(server, args.path);
-    var path = realPath.path;
     var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
 
     _fs.exists(realPath.root, function(exists) {
@@ -330,7 +329,6 @@
     var data = args.data || '';
     var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
     var realPath = getRealPath(server, args.path);
-    var path = realPath.path;
 
     checkProtectedPath(args.path);
 
@@ -366,9 +364,8 @@
    * @memberof VFS
    */
   module.exports.delete = function(server, args, callback) {
-    var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
+    //var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
     var realPath = getRealPath(server, args.path);
-    var path = realPath.path;
 
     checkProtectedPath(args.path);
 
@@ -408,7 +405,7 @@
   module.exports.copy = function(server, args, callback) {
     var src  = args.src;
     var dst  = args.dest;
-    var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
+    //var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
 
     checkProtectedPath(dst);
 
@@ -528,7 +525,7 @@
   module.exports.move = function(server, args, callback) {
     var src  = args.src;
     var dst  = args.dest;
-    var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
+    //var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
 
     checkProtectedPath(dst);
 
@@ -571,9 +568,8 @@
    * @memberof VFS
    */
   module.exports.mkdir = function(server, args, callback) {
-    var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
+    //var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
     var realPath = getRealPath(server, args.path);
-    var path = realPath.path;
 
     checkProtectedPath(args.path);
 
@@ -605,7 +601,7 @@
    * @memberof VFS
    */
   module.exports.exists = function(server, args, callback) {
-    var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
+    //var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
     var realPath = getRealPath(server, args.path);
     _fs.exists(realPath.root, function(exists) {
       callback(false, exists);
@@ -625,7 +621,7 @@
    * @memberof VFS
    */
   module.exports.find = function(server, args, callback) {
-    var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
+    //var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
     var qargs = args.args || {};
     var query = (qargs.query || '').toLowerCase();
     var realPath = getRealPath(server, args.path);
@@ -713,9 +709,9 @@
    * @memberof VFS
    */
   module.exports.fileinfo = function(server, args, callback) {
-    var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
+    //var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
     var realPath = getRealPath(server, args.path);
-    var path = realPath.path;
+
     _fs.exists(realPath.root, function(exists) {
       if ( !exists ) {
         callback('No such file or directory!');
@@ -762,7 +758,7 @@
    * @memberof VFS
    */
   module.exports.scandir = function(server, args, callback) {
-    var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
+    //var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
     var realPath = getRealPath(server, args.path);
 
     _fs.readdir(realPath.root, function(error, files) {
@@ -787,7 +783,7 @@
    * @memberof VFS
    */
   module.exports.freeSpace = function(server, args, callback) {
-    var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
+    //var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
     var realPath = getRealPath(server, args.root);
 
     try {

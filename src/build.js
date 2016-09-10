@@ -1192,7 +1192,6 @@
 
   function listPackages(grunt) {
     var packages = readPackageMetadata(grunt, null, true);
-    var epackages = readPackageMetadata(grunt, null, false);
     var currentEnabled = getConfigPath(grunt, 'packages.ForceEnable') || [];
     var currentDisabled = getConfigPath(grunt, 'packages.ForceDisable') || [];
 
@@ -1254,7 +1253,6 @@
    */
   function buildCore(grunt, arg) {
     var cfg = generateBuildConfig(grunt);
-    var header;
 
     function _cleanup(path, type) {
       var src = readFile(path);
@@ -1771,7 +1769,6 @@
 
       Object.keys(packages).forEach(function(p) {
         var manifest = packages[p];
-        var name = p;
         var preload = [];
 
         if ( manifest.preload && manifest.preload.length ) {

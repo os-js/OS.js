@@ -165,7 +165,6 @@
    * @memberof OSjs.API
    */
   function doGetProcess(name, first) {
-    var p;
     var result = first ? null : [];
 
     if ( typeof name === 'number' ) {

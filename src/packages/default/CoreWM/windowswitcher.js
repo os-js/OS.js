@@ -61,7 +61,6 @@
 
     var height = 0;
     var items  = [];
-    var total  = 0;
     var index  = 0;
 
     // Render
