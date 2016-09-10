@@ -574,10 +574,20 @@
             if ( json.preload ) {
               json.preload = json.preload.map(function(iter) {
                 if ( typeof iter === 'string' ) {
-                  return {
+                  var niter = {
                     src: iter,
-                    type: iter.match(/\.js/) ? 'javascript' : 'stylesheet'
+                    type: null
                   };
+
+                  if ( iter.match(/\.js/) ) {
+                    niter.type = 'javascript';
+                  } else if ( iter.match(/\.css/) ) {
+                    niter.type = 'stylesheet';
+                  } else if ( iter.match(/\.html/) ) {
+                    niter.type = 'html';
+                  }
+
+                  return niter;
                 }
                 return iter;
               });
