@@ -87,13 +87,9 @@
     return false;
   };
 
-  ApplicationEXAMPLE.prototype.init = function(settings, metadata) {
+  ApplicationEXAMPLE.prototype.init = function(settings, metadata, scheme) {
     Application.prototype.init.apply(this, arguments);
-
-    var self = this;
-    this._loadScheme('./scheme.html', function(scheme) {
-      self._addWindow(new ApplicationEXAMPLEWindow(self, metadata, scheme));
-    });
+    this._addWindow(new ApplicationEXAMPLEWindow(self, metadata, scheme));
   };
 
   /////////////////////////////////////////////////////////////////////////////
