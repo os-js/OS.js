@@ -243,6 +243,8 @@
   /**
    * Default method for loading a Scheme file
    *
+   * @TODO DEPRECATED This is kept for backward compability
+   *
    * @function _loadScheme
    * @memberof OSjs.Core.Application#
    *
