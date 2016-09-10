@@ -920,13 +920,13 @@
       });
     }
 
-    function _dialogClose(btn, filename, mime, size) {
+    function _dialogClose(ev, btn, ufile) {
       if ( btn !== 'ok' && btn !== 'complete' ) {
         callback(false, false);
         return;
       }
 
-      var file = _createFile(filename, mime, size);
+      var file = _createFile(ufile.name, ufile.mime, ufile.size);
       broadcastMessage('vfs:upload', file, args.app);
       callback(false, file);
     }
