@@ -730,9 +730,9 @@
 
       var scheme = null;
       if ( preloadData ) {
-        Object.keys(preloadData).forEach(function(f) {
-          if ( !scheme && Utils.filext(f) === 'html' ) {
-            scheme = preloadData[f];
+        preloadData.forEach(function(f) {
+          if ( !scheme && f.item.type === 'scheme' ) {
+            scheme = f.data;
           }
         });
       }

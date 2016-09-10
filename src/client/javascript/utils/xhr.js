@@ -335,9 +335,9 @@
       },
 
       //
-      // HTML
+      // Scheme
       //
-      html: function createHTML(item, cb) {
+      scheme: function createHTML(item, cb) {
         var scheme = new OSjs.GUI.Scheme(item.src);
         scheme.load(function(err, res) {
           cb(err ? false : true, item.src, scheme);
@@ -350,9 +350,9 @@
         return 'javascript';
       } else if ( src.match(/\.css$/i) ) {
         return 'stylesheet';
-      } else if ( src.match(/\.html?$/i) ) {
+      }/* else if ( src.match(/\.html?$/i) ) {
         return 'html';
-      }
+      }*/
       return 'unknown';
     }
 
@@ -388,14 +388,17 @@
 
       console.group('Utils::preload()', len);
 
-      var data = {};
+      var data = [];
       OSjs.Utils.asyncs(list, function(item, index, next) {
         function _onentryloaded(state, src, setData) {
           onprogress(index, len, src);
           (state ? succeeded : failed).push(src);
 
           if ( setData ) {
-            data[item._src] = setData;
+            data.push({
+              item: item,
+              data: setData
+            });
           }
 
           next();
