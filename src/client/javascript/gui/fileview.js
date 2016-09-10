@@ -383,7 +383,7 @@
 
       Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
     },
-    set: function(el, param, value, arg) {
+    set: function(el, param, value, arg, arg2) {
       if ( param === 'type' ) {
         var firstChild = el.children[0];
         if ( firstChild && firstChild.tagName.toLowerCase() === value ) {
@@ -432,7 +432,7 @@
       var target = getChildView(el);
       if ( target ) {
         var tagName = target.tagName.toLowerCase();
-        GUI.Elements[tagName].set(target, param, value, arg);
+        GUI.Elements[tagName].set(target, param, value, arg, arg2);
         return true;
       }
 
