@@ -86,10 +86,8 @@
         }
       }
 
-      var id = target.getAttribute('data-id');
-      var idx = Utils.$index(target);
       var dispatcher = (original || target).querySelector('label');
-      dispatcher.dispatchEvent(new CustomEvent('_select', {detail: {index: idx, id: id}}));
+      dispatcher.dispatchEvent(new CustomEvent('_select', {detail: getSelectionEventAttribs(target, true)}));
     }
   }
 
@@ -130,6 +128,27 @@
         cb(child, level);
       }
     });
+  }
+
+  function getSelectionEventAttribs(mel, didx) {
+    var id = mel.getAttribute('data-id');
+    var idx = Utils.$index(mel)
+
+    if ( !didx ) {
+      idx = parseInt(mel.getAttribute('data-index'), 10);
+    }
+
+    var result = {index: idx, id: id};
+    Array.prototype.slice.call(mel.attributes).forEach(function(item) {
+      if ( item.name.match(/^data\-/) ) {
+        var an = item.name.replace(/^data\-/, '');
+        if ( typeof result[an] === 'undefined' ) {
+          result[an] = item.value;
+        }
+      }
+    });
+
+    return result;
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -339,8 +358,6 @@
         ev.stopPropagation();
 
         var submenu = mel.querySelector('gui-menu');
-        var id = mel.getAttribute('data-id');
-        var idx = parseInt(mel.getAttribute('data-index'), 10);
 
         mel.querySelectorAll('gui-menu-entry').forEach(function(c) {
           Utils.$removeClass(c, 'gui-hover');
@@ -364,7 +381,7 @@
             Utils.$addClass(mel, 'gui-active');
           }
 
-          mel.dispatchEvent(new CustomEvent('_select', {detail: {index: idx, id: id}}));
+          mel.dispatchEvent(new CustomEvent('_select', {detail: getSelectionEventAttribs(mel)}));
         }
       }
 
