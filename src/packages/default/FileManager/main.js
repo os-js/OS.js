@@ -327,7 +327,6 @@
         self.checkSelection(ev.detail.entries);
       }
       contextMenu.show(ev);
-      //editMenu.show(ev);
     });
 
     //

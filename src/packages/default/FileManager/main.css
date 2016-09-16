@@ -34,3 +34,6 @@
 .ApplicationFileManagerWindow .unmounted {
   opacity : .6;
 }
+.ApplicationFileManagerWindow gui-menu-entry[data-id="SubmenuContext"] {
+  display : none;
+}
