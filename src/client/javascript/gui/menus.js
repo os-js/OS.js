@@ -413,7 +413,7 @@
    *      title: "Title",
    *      icon: "Icon",
    *      onClick: function() {}, // Callback
-   *      items: [] // Recurse :)
+   *      menu: [] // Recurse :)
    *    }
    * ])
    *
