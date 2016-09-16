@@ -1212,7 +1212,7 @@ gui-menu.gui-root-menu {
     position : absolute;
     z-index : 99999;
   }
-  .gui-showing > gui-menu-entry > gui-menu {
+  .gui-showing gui-menu-entry > gui-menu {
     display : none;
   }
 

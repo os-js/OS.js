@@ -275,9 +275,12 @@
 
       runChildren(el, 0, winRef, function(child, level) {
         if ( customMenu ) {
-          var sub = child.querySelector('gui-menu');
-          if ( sub ) {
-            runChildren(sub, level + 1, winRef);
+          if ( child ) {
+            child.getElementsByTagName('gui-menu').forEach(function(sub) {
+              if ( sub ) {
+                runChildren(sub, level + 1, winRef);
+              }
+            });
           }
         }
       });
