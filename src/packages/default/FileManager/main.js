@@ -265,7 +265,7 @@
     };
 
     function menuEvent(ev) {
-      var f = ev.data.func || ev.data.id;
+      var f = ev.detail.func || ev.detail.id;
       if ( menuMap[f] ) {
         menuMap[f]();
       }
