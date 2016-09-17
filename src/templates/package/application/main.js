@@ -89,7 +89,7 @@
 
   ApplicationEXAMPLE.prototype.init = function(settings, metadata, scheme) {
     Application.prototype.init.apply(this, arguments);
-    this._addWindow(new ApplicationEXAMPLEWindow(self, metadata, scheme));
+    this._addWindow(new ApplicationEXAMPLEWindow(this, metadata, scheme));
   };
 
   /////////////////////////////////////////////////////////////////////////////
