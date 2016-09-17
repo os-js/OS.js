@@ -274,7 +274,7 @@
 
     scheme.find(this, 'SubmenuFile').on('select', menuEvent);
     var contextMenu = scheme.find(this, 'SubmenuContext').on('select', menuEvent);
-    var editMenu = scheme.find(this, 'SubmenuEdit').on('select', menuEvent);
+    scheme.find(this, 'SubmenuEdit').on('select', menuEvent);
     var viewMenu = scheme.find(this, 'SubmenuView').on('select', menuEvent);
 
     viewMenu.set('checked', 'MenuViewList', viewType === 'gui-list-view');
