@@ -30,6 +30,16 @@
 (function(Utils, API, Process) {
   'use strict';
 
+  /**
+   * Look at the 'ProcessEvent' for more.
+   * The predefined events are as follows:
+   *
+   * <pre><code>
+   *  init        When application was inited              => (settings, metadata, scheme)
+   * </code></pre>
+   * @typedef ApplicationEvent
+   */
+
   /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
@@ -167,9 +177,11 @@
 
       this.__settings.set(null, settings);
 
-      focusLastWindow();
-
       this.__inited = true;
+
+      this.__evHandler.emit('init', [settings, metadata, scheme]);
+
+      focusLastWindow();
     }
   };
 
