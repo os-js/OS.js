@@ -33,7 +33,8 @@
   /**
    * The predefined events are as follows:
    * <pre><code>
-   *  inited        When window has been inited and rendered  => ()
+   *  init          When window is being inited and rendered  => (root, scheme)
+   *  inited        When window has been inited and rendered  => (scheme)
    *  focus         When window gets focus                    => ()
    *  blur          When window loses focus                   => ()
    *  destroy       When window is closed                     => ()
@@ -391,6 +392,14 @@
       this._loaded = false;
 
       /**
+       * If Window is finished initing
+       * @name _initialized
+       * @memberof OSjs.Core.Window#
+       * @type {Boolean}
+       */
+      this._initialized = false;
+
+      /**
        * If Window is currently disabled
        * @name _disabled
        * @memberof OSjs.Core.Window#
@@ -686,6 +695,10 @@
   Window.prototype.init = function(_wm, _app, _scheme) {
     var self = this;
 
+    if ( this._initialized || this._loaded ) {
+      return this._$root;
+    }
+
     // Create DOM
 
     this._$element = document.createElement('application-window');
@@ -848,6 +861,9 @@
       API.playSound(this._sound, this._soundVolume);
     }
 
+    this._initialized = true;
+    this._emit('init', [this._$root, _scheme]);
+
     return this._$root;
   };
 
@@ -858,6 +874,10 @@
    * @memberof OSjs.Core.Window#
    */
   Window.prototype._inited = function() {
+    if ( this._loaded ) {
+      return;
+    }
+
     this._loaded = true;
 
     this._onResize();
@@ -870,7 +890,7 @@
       }
     }
 
-    this._emit('inited');
+    this._emit('inited', [this._scheme]);
 
     if ( this._app ) {
       this._app._onMessage('initedWindow', this, {});
