@@ -101,8 +101,8 @@
           if ( id ) {
             var frag = scheme.getFragment(id, 'application-fragment').cloneNode(true);
             addChildren(frag, el.parentNode);
-            Utils.$remove(el);
           }
+          Utils.$remove(el); // Or else we'll never get out of the loop!
         });
         return true;
       }
@@ -115,6 +115,58 @@
         resolving = _resolve();
       }
     }
+  }
+
+  /**
+   * Makes sure "external include" fragments are rendered correctly.
+   *
+   * Currently this only supports one level deep.
+   *
+   * This occurs on the load() function instead on runtime due to
+   * performance concerns.
+   */
+  function resolveExternalFragments(root, html, cb) {
+    var doc = document.createElement('div');
+    doc.innerHTML = html;
+
+    var nodes = doc.querySelectorAll('gui-fragment[data-fragment-external]');
+
+    Utils.asyncs(nodes.map(function(el) {
+      return {
+        element: el,
+        uri: el.getAttribute('data-fragment-external')
+      };
+    }), function(iter, index, next) {
+      var uri = iter.uri;
+      if ( uri.length < 3 || uri.match(/^[^A-Za-z0-9]/) ) {
+        console.warn('resolveExternalFragments()', 'invalid', iter);
+        return next();
+      }
+
+      var url = Utils.pathJoin(root, uri);
+
+      Utils.ajax({
+        url: url,
+        onsuccess: function(h) {
+          var tmp = document.createElement('div');
+          tmp.innerHTML = h;
+
+          addChildren(tmp, iter.element.parentNode);
+          Utils.$remove(iter.element);
+          tmp = null;
+
+          next();
+        },
+        onerror: function() {
+          next();
+        }
+      });
+    }, function() {
+      cb(doc.innerHTML);
+
+      doc = null;
+      nodes = null;
+    });
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -233,7 +285,7 @@
    * @function load
    * @memberof OSjs.GUI.Scheme#
    *
-   * @param   {Function}    cb      callback => fn(error, scheme)
+   * @param   {Function}    cb      callback => fn(error, DocumentFragment)
    * @param   {Function}    [cbxhr] callback on ajax => fn(error, html)
    */
   UIScheme.prototype.load = function(cb, cbxhr) {
@@ -257,13 +309,20 @@
       src = window.location.pathname + src;
     }
 
+    var root = Utils.dirname(src);
     Utils.ajax({
       url: src,
       onsuccess: function(html) {
-        cbxhr(false, html);
+        resolveExternalFragments(root, html, function(result) {
+          // This is normally used for the preloader for caching
+          cbxhr(false, result);
 
-        self._load(html);
-        cb(false, self.scheme);
+          // Then we run some manipulations
+          self._load(result);
+
+          // And finally, finish
+          cb(false, self.scheme);
+        });
       },
       onerror: function() {
         cb('Failed to fetch scheme');
