@@ -42,23 +42,56 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
+  function getEntryTagName(type) {
+    if ( typeof type !== 'string' ) {
+      type = type.tagName.toLowerCase();
+    }
+
+    var className = _classMap[type];
+    if ( !className ) {
+      className = type + '-entry';
+    }
+
+    return className;
+  }
+
+  function getEntryFromEvent(ev) {
+    var t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
+    var tn = t.tagName.toLowerCase();
+
+    if ( tn.match(/(view|textarea|body)$/) ) {
+      return null;
+    } else if ( tn === 'gui-list-view-column' ) {
+      return t.parentNode;
+    }
+
+    return t;
+  }
+
   function handleItemSelection(ev, item, idx, className, selected, root, multipleSelect) {
     root = root || item.parentNode;
 
-    if ( !multipleSelect || !ev.shiftKey ) {
-      root.querySelectorAll(className).forEach(function(i) {
-        Utils.$removeClass(i, 'gui-active');
+    if ( idx === -1 ) {
+      root.querySelectorAll(getEntryTagName(root)).forEach(function(e) {
+        Utils.$removeClass(e, 'gui-active');
       });
       selected = [];
-    }
-
-    var findex = selected.indexOf(idx);
-    if ( findex >= 0 ) {
-      selected.splice(findex, 1);
-      Utils.$removeClass(item, 'gui-active');
     } else {
-      selected.push(idx);
-      Utils.$addClass(item, 'gui-active');
+      if ( !multipleSelect || !ev.shiftKey ) {
+        root.querySelectorAll(className).forEach(function(i) {
+          Utils.$removeClass(i, 'gui-active');
+        });
+        selected = [];
+      }
+
+      var findex = selected.indexOf(idx);
+      if ( findex >= 0 ) {
+        selected.splice(findex, 1);
+        Utils.$removeClass(item, 'gui-active');
+      } else {
+        selected.push(idx);
+        Utils.$addClass(item, 'gui-active');
+      }
     }
 
     selected.sort(function(a, b) {
@@ -76,12 +109,7 @@
     var map = {};
     var key = ev.keyCode;
     var type = el.tagName.toLowerCase();
-
-    var className = _classMap[type];
-    if ( !className ) {
-      className = type + '-entry';
-    }
-
+    var className = getEntryTagName(type);
     var root = el.querySelector(type + '-body');
     var entries = root.querySelectorAll(className);
     var count = entries.length;
@@ -479,19 +507,7 @@
         ev.stopPropagation();
         API.blurMenu();
 
-        var row = (function(t) {
-          var tn = t.tagName.toLowerCase();
-          if ( tn.match(/view$/) ) {
-            return null;
-          }
-
-          if ( tn === 'gui-list-view-column' ) {
-            return t.parentNode;
-          }
-
-          return t;
-        })(ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target));
-
+        var row = getEntryFromEvent(ev);
         var className = row ? row.tagName.toLowerCase() : null;
 
         if ( className === 'gui-tree-view-expander' ) {
