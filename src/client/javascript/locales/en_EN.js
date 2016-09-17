@@ -256,6 +256,8 @@
     'ERR_VFSMODULE_FILEINFO_FMT'   : 'Failed to get file information: {0}',
     'ERR_VFSMODULE_MKDIR'          : 'Failed to create directory',
     'ERR_VFSMODULE_MKDIR_FMT'      : 'Failed to create directory: {0}',
+    'ERR_VFSMODULE_MKFILE'         : 'Failed to create file',
+    'ERR_VFSMODULE_MKFILE_FMT'     : 'Failed to create file: {0}',
     'ERR_VFSMODULE_URL'            : 'Failed to get URL for file',
     'ERR_VFSMODULE_URL_FMT'        : 'Failed to get URL for file: {0}',
     'ERR_VFSMODULE_TRASH'          : 'Failed to move file to trash',

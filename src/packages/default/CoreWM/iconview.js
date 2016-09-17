@@ -33,7 +33,7 @@
   function createCreateDialog(title, dir, cb) {
     API.createDialog('Input', {
       value: title,
-      message: API._('Create in {0}', dir) // TODO
+      message: OSjs.Applications.CoreWM._('Create in {0}', dir)
     }, function(ev, button, result) {
       if ( result ) {
         cb(new VFS.File(Utils.pathJoin(dir, result)));
@@ -331,7 +331,7 @@
     var self = this;
     var mm = OSjs.Core.getMountManager();
     var desktopPath = OSjs.Core.getWindowManager().getSetting('desktopPath');
-    var menu = [ // TODO: Locales
+    var menu = [
       {
         title: API._('LBL_UPLOAD'),
         onClick: function() {
@@ -350,7 +350,7 @@
             createCreateDialog('New file', desktopPath, function(f) {
               VFS.write(f, '', function(err) {
                 if ( err ) {
-                  API.error('CoreWM', 'Failed to create file', err);
+                  API.error('CoreWM', API._('ERR_VFSMODULE_MKFILE'), err);
                 }
               });
             });
@@ -361,7 +361,7 @@
             createCreateDialog('New directory', desktopPath, function(f) {
               VFS.mkdir(f, function(err) {
                 if ( err ) {
-                  API.error('CoreWM', 'Failed to create directory', err);
+                  API.error('CoreWM', API._('ERR_VFSMODULE_MKDIR'), err);
                 }
               });
             });

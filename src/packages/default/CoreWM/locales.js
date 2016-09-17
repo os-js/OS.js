@@ -203,6 +203,7 @@
       'An error occured while creating PanelItem: {0}' : 'En feil oppstod under lasting av PanelItem: {0}',
       'Show Icons' : 'Vis Ikoner',
       'Hide Icons' : 'Skjul Ikoner',
+      'Create in {0}' : 'Opprett i {0}',
 
       'Development' : 'Utvikling',
       'Education' : 'Utdanning',
