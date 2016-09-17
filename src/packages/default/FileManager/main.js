@@ -266,12 +266,14 @@
     };
 
     function menuEvent(ev) {
-      if ( menuMap[ev.detail.id] ) {
-        menuMap[ev.detail.id]();
+      var f = ev.detail.func || ev.detail.id;
+      if ( menuMap[f] ) {
+        menuMap[f]();
       }
     }
 
     scheme.find(this, 'SubmenuFile').on('select', menuEvent);
+    var contextMenu = scheme.find(this, 'SubmenuContext').on('select', menuEvent);
     var editMenu = scheme.find(this, 'SubmenuEdit').on('select', menuEvent);
     var viewMenu = scheme.find(this, 'SubmenuView').on('select', menuEvent);
 
@@ -325,7 +327,7 @@
       if ( ev && ev.detail && ev.detail.entries ) {
         self.checkSelection(ev.detail.entries);
       }
-      editMenu.show(ev);
+      contextMenu.show(ev);
     });
 
     //
@@ -375,6 +377,12 @@
       scheme.find(self, 'MenuInfo').set('disabled', MODE_FD);  // TODO: Directory info must be supported
       scheme.find(self, 'MenuDownload').set('disabled', MODE_F);
       scheme.find(self, 'MenuOpen').set('disabled', MODE_F);
+
+      scheme.find(self, 'ContextMenuRename').set('disabled', MODE_FD);
+      scheme.find(self, 'ContextMenuDelete').set('disabled', MODE_FD);
+      scheme.find(self, 'ContextMenuInfo').set('disabled', MODE_FD);  // TODO: Directory info must be supported
+      scheme.find(self, 'ContextMenuDownload').set('disabled', MODE_F);
+      scheme.find(self, 'ContextMenuOpen').set('disabled', MODE_F);
     }
 
     if ( files && files.length ) {

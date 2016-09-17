@@ -57,9 +57,25 @@
             </gui-menu-entry>
           </gui-menu>
         </gui-menu-bar-entry>
-
-      </gui-menu-bar>
-    </gui-vbox-container>
+        <!-- CONTEXT MENU -->
+        <gui-menu-bar-entry data-id="ContextMenu" data-label="LBL_CONTEXT">
+            <gui-menu data-id="SubmenuContext">
+              <gui-menu-entry data-id="MenuCreate" data-label="LBL_CREATE">
+            <gui-menu data-id="SubmenuCreate">
+              <gui-menu-entry data-id="MenuCreateDirectory" data-label="LBL_DIRECTORY" data-func="MenuCreateDirectory"></gui-menu-entry>
+              <gui-menu-entry data-id="MenuCreateFile" data-label="LBL_FILE" data-func="MenuCreateFile"></gui-menu-entry>
+            </gui-menu>
+            </gui-menu-entry>
+            <gui-menu-entry data-id="ContextMenuUpload" data-label="LBL_UPLOAD" data-func="MenuUpload"></gui-menu-entry>
+            <gui-menu-entry data-id="ContextMenuRename" data-label="LBL_RENAME" data-func="MenuRename"></gui-menu-entry>
+            <gui-menu-entry data-id="ContextMenuDelete" data-label="LBL_DELETE" data-func="MenuDelete"></gui-menu-entry>
+            <gui-menu-entry data-id="ContextMenuInfo" data-label="LBL_INFORMATION" data-func="MenuInfo"></gui-menu-entry>
+            <gui-menu-entry data-id="ContextMenuOpen" data-label="LBL_OPENWITH" data-func="MenuOpen"></gui-menu-entry>
+            <gui-menu-entry data-id="ContextMenuDownload" data-label="LBL_DOWNLOAD_COMP" data-func="MenuDownload"></gui-menu-entry>
+          </gui-menu>
+        </gui-menu-bar-entry>
+    </gui-menu-bar>
+  </gui-vbox-container>
 
     <!-- TOOLBAR -->
     <gui-vbox-container data-grow="0" data-shrink="1" data-basis="auto" data-id="ToolbarContainer">
