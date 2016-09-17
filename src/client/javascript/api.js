@@ -695,7 +695,12 @@
 
       function __onschemesloaded(scheme) {
         try {
-          instance = new OSjs.Applications[name].Class(args, metadata);
+          if ( metadata.classType === 'simple' ) {
+            instance = new OSjs.Core.Application(name, args, metadata);
+            OSjs.Applications[name].run(instance);
+          } else {
+            instance = new OSjs.Applications[name].Class(args, metadata);
+          }
 
           (onconstruct || function() {})(instance, metadata);
         } catch ( e ) {
