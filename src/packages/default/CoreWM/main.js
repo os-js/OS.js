@@ -830,18 +830,20 @@
     return false;
   };
 
-  CoreWM.prototype.openDesktopMenu = function(ev) {
+  CoreWM.prototype._getContextMenu = function(arg) {
     var self = this;
+    var menu = [];
 
-    if ( this._emit('wm:contextmenu', [ev, this]) === false ) {
-      return;
+    if ( this.iconView ) {
+      menu = this.iconView._getContextMenu(arg);
     }
 
-    var menu = [
-      {title: OSjs.Applications.CoreWM._('Open settings'), onClick: function(ev) {
+    menu.push({
+      title: OSjs.Applications.CoreWM._('Open settings'),
+      onClick: function(ev) {
         self.showSettings();
-      }}
-    ];
+      }
+    });
 
     if ( this.getSetting('enableIconView') === true ) {
       menu.push({
@@ -859,6 +861,15 @@
       });
     }
 
+    return menu;
+  };
+
+  CoreWM.prototype.openDesktopMenu = function(ev) {
+    if ( this._emit('wm:contextmenu', [ev, this]) === false ) {
+      return;
+    }
+
+    var menu = this._getContextMenu();
     API.createMenu(menu, ev);
   };
 

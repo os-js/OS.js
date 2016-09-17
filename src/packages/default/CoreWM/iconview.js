@@ -30,6 +30,17 @@
 (function(WindowManager, Window, GUI, Utils, API, VFS) {
   'use strict';
 
+  function createCreateDialog(title, dir, cb) {
+    API.createDialog('Input', {
+      value: title,
+      message: API._('Create in {0}', dir) // TODO
+    }, function(ev, button, result) {
+      if ( result ) {
+        cb(new VFS.File(Utils.pathJoin(dir, result)));
+      }
+    });
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // SHORTCUT DIALOG
   /////////////////////////////////////////////////////////////////////////////
@@ -316,43 +327,87 @@
     }
   };
 
-  DesktopIconView.prototype.createContextMenu = function(item, ev) {
+  DesktopIconView.prototype._getContextMenu = function(item) {
     var self = this;
-    var menu = [];
-    var file = item.data;
     var mm = OSjs.Core.getMountManager();
     var desktopPath = OSjs.Core.getWindowManager().getSetting('desktopPath');
-
-    if ( file.type === 'application' ) {
-      menu.push({
-        title: OSjs.Applications.CoreWM._('Edit shortcut'),
+    var menu = [ // TODO: Locales
+      {
+        title: API._('LBL_UPLOAD'),
         onClick: function() {
-          self.openShortcutEdit(file);
-        }
-      });
-    }
-
-    if ( mm.getRootFromPath(file.path) !== desktopPath  ) {
-      menu.push({
-        title: OSjs.Applications.CoreWM._('Remove shortcut'),
-        onClick: function() {
-          self.removeShortcut(file);
-        }
-      });
-    } else {
-      menu.push({
-        title: API._('LBL_DELETE'),
-        onClick: function() {
-          VFS.unlink(file, function() {
-            //self._refresh(); // Caught by VFS message in main.js
+          API.createDialog('FileUpload', {
+            dest: desktopPath
+          }, function() {
+            self._refresh();
           });
         }
-      });
+      },
+      {
+        title: API._('LBL_CREATE'),
+        menu: [{
+          title: API._('LBL_FILE'),
+          onClick: function() {
+            createCreateDialog('New file', desktopPath, function(f) {
+              VFS.write(f, '', function(err) {
+                if ( err ) {
+                  API.error('CoreWM', 'Failed to create file', err);
+                }
+              });
+            });
+          }
+        }, {
+          title: API._('LBL_DIRECTORY'),
+          onClick: function() {
+            createCreateDialog('New directory', desktopPath, function(f) {
+              VFS.mkdir(f, function(err) {
+                if ( err ) {
+                  API.error('CoreWM', 'Failed to create directory', err);
+                }
+              });
+            });
+          }
+        }]
+      }
+    ];
+
+    if ( item ) {
+      var file = item.data;
+
+      if ( file.type === 'application' ) {
+        menu.push({
+          title: OSjs.Applications.CoreWM._('Edit shortcut'),
+          onClick: function() {
+            self.openShortcutEdit(file);
+          }
+        });
+      }
+
+      if ( mm.getRootFromPath(file.path) !== desktopPath  ) {
+        menu.push({
+          title: OSjs.Applications.CoreWM._('Remove shortcut'),
+          onClick: function() {
+            self.removeShortcut(file);
+          }
+        });
+      } else {
+        menu.push({
+          title: API._('LBL_DELETE'),
+          onClick: function() {
+            VFS.unlink(file, function() {
+              //self._refresh(); // Caught by VFS message in main.js
+            });
+          }
+        });
+      }
     }
 
-    if ( menu.length )  {
-      API.createMenu(menu, ev);
-    }
+    return menu;
+  };
+
+  DesktopIconView.prototype.createContextMenu = function(item, ev) {
+    var wm = OSjs.Core.getWindowManager();
+    var menu = wm._getContextMenu(item);
+    API.createMenu(menu, ev);
   };
 
   DesktopIconView.prototype.openShortcutEdit = function(item) {
