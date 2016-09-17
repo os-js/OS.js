@@ -1,0 +1,15 @@
+{
+  "className": "ApplicationEXAMPLE",
+  "classType": "simple",
+  "name": "EXAMPLE",
+  "mime": null,
+  "icon": "categories/applications-system.png",
+  "preload": [
+    {"src": "main.js", "type": "javascript"},
+    {"src": "main.css", "type": "stylesheet"},
+    {"src": "scheme.html", "type": "scheme"}
+  ]
+}
+
+
+

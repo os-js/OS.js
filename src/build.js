@@ -1126,6 +1126,10 @@
         src: 'application',
         cpy: ['api.js', 'main.js', 'main.css', 'metadata.json', 'scheme.html']
       },
+      simple: {
+        src: 'simple-application',
+        cpy: ['api.js', 'main.js', 'main.css', 'metadata.json', 'scheme.html']
+      },
       service: {
         src: 'service',
         cpy: ['api.js', 'main.js', 'metadata.json']
