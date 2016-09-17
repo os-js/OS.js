@@ -137,8 +137,8 @@
         uri: el.getAttribute('data-fragment-external')
       };
     }), function(iter, index, next) {
-      var uri = iter.uri;
-      if ( uri.length < 3 || uri.match(/^[^A-Za-z0-9]/) ) {
+      var uri = iter.uri.replace(/^\//, '');
+      if ( uri.length < 3 ) {
         console.warn('resolveExternalFragments()', 'invalid', iter);
         return next();
       }
