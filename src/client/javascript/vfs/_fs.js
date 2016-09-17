@@ -946,7 +946,7 @@
           file: f
         }, _dialogClose, args.win || args.app);
       } else {
-        VFS.Transports.Internal.upload(f, args.destination, function(err, result, ev) {
+        VFS.Transports.Internal.upload(f, hasAlias(new VFS.File(args.destination)), function(err, result, ev) {
           if ( err ) {
             if ( err === 'canceled' ) {
               callback(API._('ERR_VFS_UPLOAD_CANCELLED'), null, ev);
