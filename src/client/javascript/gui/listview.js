@@ -356,6 +356,10 @@
           size: cel.getAttribute('data-size')
         };
 
+        if ( iter.size ) {
+          cel.style.width = iter.size;
+        }
+
         el._columns.push(iter);
 
         if ( !iter.visible ) {
