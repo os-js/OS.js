@@ -134,10 +134,11 @@
    *
    * Example: VFS uses this to signal file changes etc.
    *
-   * @param   {String}    msg             Message name
-   * @param   {Object}    obj             Message object
-   * @param   {Object}    opts            Options
-   * @param   {Number}    [opts.source]   Source Process ID
+   * @param   {String}                    msg             Message name
+   * @param   {Object}                    obj             Message object
+   * @param   {Object}                    opts            Options
+   * @param   {Process|Window|Number}    [opts.source]    Source Process, Window or ID
+   * @param   {String|Function}          [opts.filter]    Filter by string or fn(process)
    *
    * @see OSjs.Core.Process#_onMessage
    *
@@ -145,10 +146,26 @@
    * @memberof OSjs.API
    */
   function doProcessMessage(msg, obj, opts) {
+    opts = opts || {};
+
     console.debug('doProcessMessage', msg, opts);
+
+    var filter = opts.filter || function() {
+      return true;
+    };
+
+    if ( typeof filter === 'string' ) {
+      var s = filter;
+      filter = function(p) {
+        return p.__pname === s;
+      };
+    }
+
     _PROCS.forEach(function(p, i) {
       if ( p && (p instanceof OSjs.Core.Application || p instanceof OSjs.Core.Process) ) {
-        p._onMessage(msg, obj, opts);
+        if ( filter(p) ) {
+          p._onMessage(msg, obj, opts);
+        }
       }
     });
   }
@@ -332,13 +349,26 @@
   Process.prototype._onMessage = function(msg, obj, opts) {
     opts = opts || {};
 
-    if ( this.__evHandler && opts.source !== this.__pid ) {
+    var sourceId = opts.source;
+    if ( sourceId instanceof Process ) {
+      sourceId = sourceId.__pid;
+    } else if ( sourceId instanceof OSjs.Core.Window ) {
+      sourceId = sourceId._app ? sourceId._app.__pid : -1;
+    }
+
+    if ( this.__evHandler && sourceId !== this.__pid ) {
       console.debug('Process::_onMessage()', msg, obj, opts, this.__pid, this.__pname);
 
+      // => fn('message', msg, obj, opts)
       this.__evHandler.emit('message', [msg, obj, opts]);
+
+      // Emit another message for VFS events
       if ( msg.substr(0, 3) === 'vfs' ) {
         this.__evHandler.emit('vfs', [msg, obj, opts]);
       }
+
+      // => fn(msg, obj, opts)
+      // for custom events bound with _on(evname)
       this.__evHandler.emit(msg, [obj, opts, msg]);
     }
   };
