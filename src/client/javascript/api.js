@@ -879,18 +879,11 @@
     function getName() {
       var appname = null;
       if ( app instanceof OSjs.Core.Process ) {
-        if ( app.__path ) {
-          appname = app.__path;
-        }
+        appname = app.__pname;
       } else if ( typeof app === 'string' ) {
         appname = app;
-
-        var pacman = OSjs.Core.getPackageManager();
-        var packs = pacman ? pacman.getPackages() : {};
-        if ( packs[appname] ) {
-          appname = packs[appname].path;
-        }
       }
+
       return appname;
     }
 
@@ -909,22 +902,20 @@
     }
 
     function getResourcePath() {
+      var pacman = OSjs.Core.getPackageManager();
       var appname = getName();
+      var pkg = pacman.getPackage(appname);
       var path = '';
 
-      var root, sub;
-      if ( appname ) {
-        if ( appname.match(/^(.*)\/(.*)$/) ) {
-          root = OSjs.API.getConfig('Connection.PackageURI');
-          path = root + '/' + appname + '/' + name;
+      if ( pkg ) {
+        if ( pkg.scope === 'user' ) {
+          path = OSjs.API.getConfig('Connection.FSURI') + '/get/' + Utils.pathJoin(pkg.path, name);
         } else {
-          root = OSjs.API.getConfig('Connection.FSURI');
-          sub = OSjs.API.getConfig('PackageManager.UserPackages');
-          path = root + '/get/' + Utils.pathJoin(sub, appname, name);
+          path = OSjs.API.getConfig('Connection.PackageURI') + '/' + pkg.path + '/' + name;
         }
       }
 
-      return getResultPath(path, !!sub);
+      return getResultPath(path, pkg.scope === 'user');
     }
 
     return getResourcePath();

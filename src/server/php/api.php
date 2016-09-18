@@ -578,9 +578,91 @@ class CoreAPIHandler
     }
     return Array($error, $result);
   }
+
+  protected static function _listPackages(Array $args) {
+    $packages = [];
+    $scope = empty($args['scope']) ? null : $args['scope'];
+    $paths = empty($args['paths']) ? [] : $args['paths'];
+
+    if ( !$scope || $scope == 'system' ) {
+      $path = SERVERDIR . '/packages.json';
+      $metadata = json_decode(file_get_contents($path), true);
+      foreach ( $metadata as $k => $v ) {
+        $packages[$k] = $v;
+        $packages[$k]['scope'] = 'system';
+      }
+    }
+
+    if ( !$scope || $scope == 'user' ) {
+      foreach ( $paths as $p ) {
+        $path = implode('/', [$p . $item['filename'], 'packages.json']);
+        list($_d, $_r, $_p, $realpath) = getRealPath($path);
+
+        if ( file_exists($realpath) ) {
+          $metadata = json_decode(file_get_contents($realpath), true);
+          foreach ( $metadata as $k => $v ) {
+            $packages[$k] = $v;
+            $packages[$k]['scope'] = 'user';
+          }
+        }
+      }
+    }
+
+    return [false, $packages];
+  }
+
+  protected static function _cachePackages(Array $args) {
+    $scope = empty($args['scope']) ? null : $args['scope'];
+    $paths = empty($args['paths']) ? [] : $args['paths'];
+
+    if ( $scope == 'user' ) {
+      foreach ( $paths as $p ) {
+        $metadata = [];
+        foreach ( FS::scandir($p) as $item ) {
+          if ( substr($item['filename'], 0, 1) != '.' && $item['type'] == 'dir' ) {
+            $path = implode('/', [$p, $item['filename'], 'metadata.json']);
+            list($_d, $_r, $_p, $realpath) = getRealPath($path);
+
+            if ( file_exists($realpath) ) {
+              $m = json_decode(file_get_contents($realpath), true);
+              $m['path'] = $p . '/' . $item['filename'];
+              $metadata[$m['className']] = $m;
+            }
+          }
+        }
+
+        $dest = implode('/', [$p, 'packages.json']);
+        list($_d, $_r, $_p, $realpath) = getRealPath($dest);
+        file_put_contents($realpath, json_encode($metadata));
+      }
+    }
+
+    return [false, true];
+  }
+
+  public static function packages(Array $arguments) {
+    $error = null;
+    $result = null;
+
+    if ( empty($arguments['action']) ) {
+      $error = 'Unavailable';
+    } else {
+      switch ( $arguments['action'] ) {
+        case 'list':
+          list($error, $result) = self::_listPackages($arguments['args']);
+          break;
+        case 'cache':
+          list($error, $result) = self::_cachePackages($arguments['args']);
+          break;
+      }
+    }
+
+    return Array($error, $result);
+  }
 }
 
 API::AddHandler('application', Array('CoreAPIHandler', 'application'));
 API::AddHandler('curl', Array('CoreAPIHandler', 'curl'));
+API::AddHandler('packages', Array('CoreAPIHandler', 'packages'));
 
 ?>

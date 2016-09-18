@@ -30,15 +30,6 @@
 (function(Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
-  function fetchJSON(cb) {
-    var url = window.location.protocol + '//builds.os.js.org/store/packages.json';
-
-    API.curl({
-      url: url,
-      method: 'GET'
-    }, cb);
-  }
-
   function installSelected(download, cb) {
     var pacman = OSjs.Core.getPackageManager();
 
@@ -191,29 +182,25 @@
 
     function renderStore() {
       self._toggleLoading(true);
-      fetchJSON(function(error, result) {
+
+      pacman.getStorePackages({}, function(error, result) {
+        var rows = result.map(function(i, idx) {
+          var a = document.createElement('a');
+          a.href = i._repository;
+
+          return {
+            index: idx,
+            value: i.download,
+            columns: [
+              {label: i.name},
+              {label: a.hostname},
+              {label: i.version},
+              {label: i.author}
+            ]
+          };
+        });
+
         self._toggleLoading(false);
-
-        if ( error ) {
-          alert('Failed getting packages: ' + error); // FIXME
-          return;
-        }
-
-        var jsn = Utils.fixJSON(result.body);
-        var rows = [];
-        if ( jsn instanceof Array ) {
-          jsn.forEach(function(i, idx) {
-            rows.push({
-              index: idx,
-              value: i.download,
-              columns: [
-                {label: i.name},
-                {label: i.version},
-                {label: i.author}
-              ]
-            });
-          });
-        }
 
         storeView.clear();
         storeView.add(rows);

@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(_path, _fs) {
+(function(_path, _fs, _packagemanager) {
   'use strict';
 
   /**
@@ -82,6 +82,27 @@
    */
   module.exports.settings = function(server, args, callback) {
     callback('No handler assigned', {});
+  };
+
+  /**
+   * Enumerate user packages
+   *
+   * @param   {Object}    server          Server object
+   * @param   {Object}    args            API Call Arguments
+   * @param   {String}    args.action     Action name
+   * @param   {Object}    args.args       Action arguments
+   * @param   {Function}  callback        Callback function => fn(error, result)
+   *
+   * @function login
+   * @memberof API
+   */
+  module.exports.packages = function(server, args, callback) {
+    var action = args.action;
+    if ( _packagemanager[action] ) {
+      _packagemanager[action](server, args.args || {}, callback);
+    } else {
+      callback('No such action', {});
+    }
   };
 
   /**
@@ -236,5 +257,6 @@
 
 })(
   require('path'),
-  require('node-fs-extra')
+  require('node-fs-extra'),
+  require('./packagemanager.js')
 );

@@ -60,8 +60,7 @@
    */
   var PackageManager = (function() {
     var blacklist = [];
-    var packages = [];
-    var uri = Utils.checkdir(API.getConfig('Connection.MetadataURI'));
+    var packages = {};
 
     return Object.seal({
 
@@ -141,55 +140,68 @@
        * @param  {Function} callback      callback
        */
       _loadMetadata: function(callback) {
-        var self = this;
+        var rootURI = (window.location.pathname || '/').replace(/\/$/, '/packages/'); // FIXME
 
-        packages = {};
+        function checkEntry(key, iter, scope) {
+          iter = Utils.cloneObject(iter);
 
-        function _loadSystemMetadata(cb) {
-          var preload = [{type: 'javascript', src: uri}];
-          Utils.preload(preload, function(total, failed) {
+          iter.type = iter.type || 'application';
+
+          if ( scope ) {
+            iter.scope = scope;
+          }
+
+          if ( iter.preload ) {
+            iter.preload.forEach(function(it) {
+              if ( it.src && !it.src.match(/^(\/)|(http)|(ftp)/) ) {
+                if ( iter.scope === 'user' ) {
+                  it.src = Utils.pathJoin(iter.path, it.src);
+                } else {
+                  it.src = Utils.pathJoin(rootURI, key, it.src);
+                }
+              }
+            });
+          }
+
+          return iter;
+        }
+
+        if ( window.location.protocol === 'file:' ) {
+          var uri = Utils.checkdir(API.getConfig('Connection.MetadataURI'));
+          Utils.preload([uri], function(total, failed) {
             if ( failed.length ) {
               callback('Failed to load package manifest', failed);
               return;
             }
-            var packages = OSjs.Core.getMetadata();
-            self._addPackages(packages, 'system');
-            cb();
-          });
-        }
 
-        function _loadUserMetadata(cb) {
-          var path = API.getConfig('PackageManager.UserMetadata');
-          var file = new OSjs.VFS.File(path, 'application/json');
-          OSjs.VFS.exists(file, function(err, exists) {
-            if ( err || !exists ) {
-              cb();
-              return;
-            }
+            packages = {};
 
-            OSjs.VFS.read(file, function(err, resp) {
-              resp = OSjs.Utils.fixJSON(resp || '');
-              if ( err ) {
-                console.warn('Failed to read user package metadata', err);
-              } else {
-                if ( resp ) {
-                  self._addPackages(resp, 'user');
-                }
-              }
-              cb();
-            }, {type: 'text'});
-          });
-        }
+            var list = OSjs.Core.getMetadata();
+            Object.keys(list).forEach(function(name) {
+              var iter = list[name];
+              packages[iter.className] = checkEntry(name, iter);
+            });
 
-        _loadSystemMetadata(function(err) {
-          if ( err ) {
-            callback(err);
-            return;
-          }
-
-          _loadUserMetadata(function() {
             callback();
           });
+          return;
+        }
+
+        var paths = [API.getConfig('PackageManager.UserPackages')];
+
+        API.call('packages', {action: 'list', args: {paths: paths}}, function(err, res) {
+          if ( res ) {
+            packages = {};
+
+            Object.keys(res).forEach(function(key) {
+              var iter = res[key];
+              if ( iter && !packages[iter.className] ) {
+                packages[iter.className] = checkEntry(key, iter);
+              }
+            });
+          }
+
+          callback();
         });
       },
 
@@ -202,81 +214,10 @@
        * @param  {Function} callback      callback
        */
       generateUserMetadata: function(callback) {
-        var dir = new OSjs.VFS.File(API.getConfig('PackageManager.UserPackages'));
-        var found = {};
-        var queue = [];
         var self = this;
-
-        console.debug('PackageManager::generateUserMetadata()');
-
-        function _enumPackages(cb) {
-
-          function __runQueue(done) {
-            console.debug('PackageManager::generateUserMetadata()', '__runQueue()');
-
-            Utils.asyncs(queue, function(iter, i, next) {
-              var file = new OSjs.VFS.File(iter, 'application/json');
-              var rpath = iter.replace(/\/metadata\.json$/, '');
-              console.debug('PackageManager::generateUserMetadata()', '__runQueue()', 'next()', queue.length, iter);
-
-              OSjs.VFS.read(file, function(err, resp) {
-                var meta = OSjs.Utils.fixJSON(resp);
-                if ( !err && meta ) {
-                  console.debug('PackageManager::generateUserMetadata()', 'ADDING PACKAGE', meta);
-                  meta.path = OSjs.Utils.filename(rpath);
-                  meta.scope = 'user';
-                  meta.preload = meta.preload.map(function(p) {
-                    if ( p.src.substr(0, 1) !== '/' && !p.src.match(/^(https?|ftp)/) ) {
-                      p.src = rpath + '/' + p.src.replace(/^(\.\/)?/, '');
-                    }
-                    return p;
-                  });
-
-                  found[meta.className] = meta;
-                }
-
-                next();
-              }, {type: 'text'});
-            }, done);
-          }
-
-          console.debug('PackageManager::generateUserMetadata()', '_enumPackages()');
-
-          OSjs.VFS.scandir(dir, function(err, resp) {
-            if ( err ) {
-              console.error('_enumPackages()', err);
-            }
-
-            if ( resp && (resp instanceof Array) ) {
-              resp.forEach(function(iter) {
-                if ( !iter.filename.match(/^\./) && iter.type === 'dir' ) {
-                  queue.push(Utils.pathJoin(dir.path, iter.filename, 'metadata.json'));
-                }
-              });
-            }
-            __runQueue(cb);
-          });
-        }
-
-        function _writeMetadata(cb) {
-          console.debug('PackageManager::generateUserMetadata()', '_writeMetadata()');
-
-          var path = API.getConfig('PackageManager.UserMetadata');
-          var file = new OSjs.VFS.File(path, 'application/json');
-          var meta = JSON.stringify(found, null, 4);
-          OSjs.VFS.write(file, meta, function() {
-            cb();
-          });
-        }
-
-        OSjs.VFS.mkdir(dir, function() {
-          _enumPackages(function() {
-            _writeMetadata(function() {
-              self._loadMetadata(function() {
-                callback();
-              });
-            });
-          });
+        var paths = [API.getConfig('PackageManager.UserPackages')];
+        API.call('packages', {action: 'cache', args: {action: 'generate', scope: 'user', paths: paths}}, function() {
+          self._loadMetadata(callback);
         });
       },
 
@@ -376,6 +317,43 @@
        */
       setBlacklist: function(list) {
         blacklist = list || [];
+      },
+
+      /**
+       * Get a list of packges from online repositories
+       *
+       * @function getStorePackages
+       * @memberof OSjs.Core.PackageManager#
+       *
+       * @param {Object}    opts      Options
+       * @param {Function}  callback  Callback => fn(error, result)
+       *
+       * @return {Metadata}
+       */
+      getStorePackages: function(opts, callback) {
+        var sm = OSjs.Core.getSettingsManager();
+        var repos = sm.instance('PackageManager').get('Repositories', []);
+        var entries = [];
+
+        Utils.asyncs(repos, function(url, idx, next) {
+          API.curl({
+            url: url,
+            method: 'GET'
+          }, function(error, result) {
+            if ( !error ) {
+              var jsn = Utils.fixJSON(result.body);
+              if ( jsn instanceof Array ) {
+                entries = entries.concat(jsn.map(function(iter) {
+                  iter._repository = url;
+                  return iter;
+                }));
+              }
+            }
+            next();
+          });
+        }, function() {
+          callback(false, entries);
+        });
       },
 
       /**

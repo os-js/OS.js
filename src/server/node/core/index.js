@@ -172,6 +172,10 @@
 
     // Register configuration
     config = require('./config.js').init(setup);
+    config._repodir = setup.repodir;
+    config._distdir = setup.distdir;
+    config._rootdir = setup.root;
+    config._cfgdir  = _path.dirname(setup.dirname);
 
     function down() {
       children.forEach(function(c) {

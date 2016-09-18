@@ -744,10 +744,18 @@
     item = checkMetadataArgument(item);
 
     function _checkPath() {
-      var chkdir = new VFS.File(API.getConfig('PackageManager.UserPackages'));
-      var idir = Utils.dirname(item.path);
+      var pkgdir = API.getConfig('PackageManager.UserPackages');
+      if ( typeof pkgdir === 'string' ) {
+        pkgdir = [pkgdir];
+      }
 
-      if ( idir === chkdir.path ) {
+      var found = pkgdir.some(function(i) {
+        var chkdir = new VFS.File();
+        var idir = Utils.dirname(item.path);
+        return idir === chkdir.path;
+      });
+
+      if ( found ) {
         Core.getPackageManager().generateUserMetadata(function() {});
       }
     }

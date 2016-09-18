@@ -758,7 +758,6 @@
    * @memberof VFS
    */
   module.exports.scandir = function(server, args, callback) {
-    //var opts = typeof args.options === 'undefined' ? {} : (args.options || {});
     var realPath = getRealPath(server, args.path);
 
     _fs.readdir(realPath.root, function(error, files) {
