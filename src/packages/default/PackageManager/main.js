@@ -102,6 +102,8 @@
     }
 
     function renderInstalled() {
+      scheme.find(self, 'ButtonUninstall').set('disabled', true);
+
       updateEnabledStates();
 
       var rows = [];
@@ -141,6 +143,39 @@
         });
       });
     }
+
+    scheme.find(this, 'ButtonUninstall').on('click', function() {
+      var selected = view.get('selected');
+      if ( selected ) {
+        var pkg = pacman.getPackage(selected[0].data);
+        if ( pkg && pkg.scope === 'user' ) {
+          self._toggleLoading(true);
+
+          var file = new VFS.File(pkg.path);
+          pacman.uninstall(file, function(e) {
+            self._toggleLoading(false);
+            renderInstalled();
+
+            if ( e ) {
+              alert(e);
+            }
+          });
+        }
+      }
+    });
+
+    view.on('select', function(ev) {
+      var d = true;
+      var e = ev.detail.entries || [];
+      if ( e.length ) {
+        var pkg = pacman.getPackage(e[0].data);
+        if ( pkg && pkg.scope === 'user' ) {
+          d = false;
+        }
+      }
+
+      scheme.find(self, 'ButtonUninstall').set('disabled', d);
+    });
 
     scheme.find(this, 'ButtonSaveHidden').on('click', function() {
       self._toggleLoading(true);

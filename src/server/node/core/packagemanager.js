@@ -194,7 +194,12 @@
    * @memberof PackageManager
    */
   module.exports.uninstall = function(server, args, cb) {
-    cb('Unavailable');
+    if ( args.path ) {
+      var destPath = _vfs.getRealPath(server, args.path);
+      _fs.remove(destPath.root, cb);
+    } else {
+      cb('Invalid uninstall action');
+    }
   };
 
   /**

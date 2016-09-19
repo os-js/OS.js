@@ -640,27 +640,43 @@ class CoreAPIHandler
     return [false, true];
   }
 
+  protected static function _uninstallPackage(Array $args) {
+    $path = empty($args['path']) ? null : $args['path'];
+    if ( $path ) {
+      list($_d, $_r, $_p, $realpath) = getRealPath($path);
+
+      if ( file_exists($realpath) && is_dir($realpath) ) {
+        @unlink($realpath);
+        return [false, true];
+      }
+    }
+
+    return [false, false];
+  }
+
   protected static function _installPackage(Array $args) {
     $dest = empty($args['dest']) ? null : $args['dest'];
     $zip = empty($args['zip']) ? null : $args['zip'];
 
-    list($_d, $_r, $_p, $realDest) = getRealPath($dest);
-    list($_d, $_r, $_p, $realZip) = getRealPath($zip);
+    if ( $dest && $zip ) {
+      list($_d, $_r, $_p, $realDest) = getRealPath($dest);
+      list($_d, $_r, $_p, $realZip) = getRealPath($zip);
 
-    if ( file_exists($realDest) ) {
-      return ['Package is already installed', false];
-    }
+      if ( file_exists($realDest) ) {
+        return ['Package is already installed', false];
+      }
 
-    mkdir($realDest);
+      mkdir($realDest);
 
-    $zip = new ZipArchive;
-    if ( $zip->open($realZip) === true ) {
-      $zip->extractTo($realDest);
-      $zip->close();
-      return [false, true];
-    } else {
-      @unlink($realDest);
-      return ['An error occured while unzipping', true];
+      $zip = new ZipArchive;
+      if ( $zip->open($realZip) === true ) {
+        $zip->extractTo($realDest);
+        $zip->close();
+        return [false, true];
+      } else {
+        @unlink($realDest);
+        return ['An error occured while unzipping', true];
+      }
     }
 
     return [false, true];
@@ -682,6 +698,9 @@ class CoreAPIHandler
           break;
         case 'install':
           list($error, $result) = self::_installPackage($arguments['args']);
+          break;
+        case 'uninstall':
+          list($error, $result) = self::_uninstallPackage($arguments['args']);
           break;
         default:
           $error = 'Invalid command';

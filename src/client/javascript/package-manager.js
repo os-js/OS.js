@@ -287,6 +287,26 @@
       },
 
       /**
+       * Uninstalls given package
+       *
+       * @function uninstall
+       * @memberof OSjs.Core.PackageManager#
+       *
+       * @param {OSjs.VFS.File}   file        The path
+       * @param {Function}        cb          Callback function
+       */
+      uninstall: function(file, cb) {
+        var self = this;
+        API.call('packages', {command: 'uninstall', args: {path: file.path}}, function(e, r) {
+          if ( e ) {
+            cb(e);
+          } else {
+            self.generateUserMetadata(cb);
+          }
+        });
+      },
+
+      /**
        * Sets the package blacklist
        *
        * @function setBlacklist
