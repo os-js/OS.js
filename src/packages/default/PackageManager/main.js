@@ -197,7 +197,7 @@
       self._toggleDisabled(true);
 
       API.createDialog('File', {
-        mime: ['application/zip']
+        filter: ['application/zip']
       }, function(ev, button, result) {
         if ( button !== 'ok' || !result ) {
           self._toggleDisabled(false);
