@@ -141,6 +141,10 @@
   ApplicationCalculatorWindow.prototype.operation = function(val) {
     var self = this;
 
+    if (this.temp == '' && ['plus', 'minus', 'multiply', 'divide'].indexOf(val) !== -1) {
+      this.temp = this._scheme.find(this, 'Output').get('value');
+    }
+
     function getAnswer() {
       var nt = Number(self.entries[0]);
 
@@ -160,7 +164,7 @@
       }
 
       if ( nt < 0 ) {
-        nt = Math.abs(nt) + '-';
+        nt = '-' + Math.abs(nt);
       }
 
       return nt;
