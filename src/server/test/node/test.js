@@ -297,6 +297,73 @@
     });
 
     /*
+    describe('Package Management API', function() {
+      describe('#list', function() {
+        it('should return data', function(done) {
+          instance.api.packages(serverObject, {
+            command: 'list',
+            args: {
+              scope: 'system'
+            }
+          }, function(error, result) {
+            assert.equal(false, error);
+            assert.notEqual(0, Object.keys(result).length);
+            done();
+          });
+        });
+      });
+
+      describe('#install', function() {
+        it('should install', function(done) {
+          instance.api.packages(serverObject, {
+            command: 'install',
+            args: {
+              zip: 'osjs:///Test.zip',
+              dest: 'home:///.packages/Test',
+              paths: [1, 2, 3]
+            }
+          }, function(error, result) {
+            assert.equal(false, error);
+            assert.equal(true, result);
+            done();
+          });
+        });
+
+        it('should trigger error', function(done) {
+          instance.api.packages(serverObject, {
+            command: 'install',
+            args: {
+              zip: 'osjs:///Test.zip',
+              dest: 'home:///.packages',
+              paths: [1, 2, 3]
+            }
+          }, function(error, result) {
+            assert.notEqual(false, error);
+            done();
+          });
+        });
+      });
+
+      describe('#uninstall', function() {
+        it('should uninstall', function(done) {
+          instance.api.packages(serverObject, {
+            command: 'uninstall',
+            args: {
+              path: 'home:///.packages/Test',
+              paths: [1, 2, 3]
+            }
+          }, function(error, result) {
+            assert.equal(false, error);
+            assert.equal(true, result);
+            done();
+          });
+        });
+      });
+
+    });
+    */
+
+    /*
     describe('cURL', function() {
       describe('#HEAD', function() {
         it('successfull HEAD request', function(done) {
@@ -358,6 +425,8 @@
     */
 
   });
+
+  return;
 
   /////////////////////////////////////////////////////////////////////////////
   // SERVER

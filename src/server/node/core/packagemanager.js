@@ -196,7 +196,9 @@
   module.exports.uninstall = function(server, args, cb) {
     if ( args.path ) {
       var destPath = _vfs.getRealPath(server, args.path);
-      _fs.remove(destPath.root, cb);
+      _fs.remove(destPath.root, function(e) {
+        cb(e ? e : false, !e);
+      });
     } else {
       cb('Invalid uninstall action');
     }
