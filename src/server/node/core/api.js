@@ -89,19 +89,19 @@
    *
    * @param   {Object}    server          Server object
    * @param   {Object}    args            API Call Arguments
-   * @param   {String}    args.action     Action name
-   * @param   {Object}    args.args       Action arguments
+   * @param   {String}    args.command    Command name
+   * @param   {Object}    args.args       Command arguments
    * @param   {Function}  callback        Callback function => fn(error, result)
    *
    * @function login
    * @memberof API
    */
   module.exports.packages = function(server, args, callback) {
-    var action = args.action;
-    if ( _packagemanager[action] ) {
-      _packagemanager[action](server, args.args || {}, callback);
+    var command = args.command;
+    if ( _packagemanager[command] ) {
+      _packagemanager[command](server, args.args || {}, callback);
     } else {
-      callback('No such action', {});
+      callback('No such command', {});
     }
   };
 

@@ -27,14 +27,15 @@
     "test": "grunt test"
   },
   "dependencies": {
+    "diskspace": ">=1.0.3",
+    "findit": ">=2.0.0",
+    "formidable": ">=1.0.17",
     "grunt": ">=1.0.1",
     "less": ">=2.7.1",
-    "simple-session": ">=0.0.1",
     "node-fs-extra": ">=0.8.1",
-    "findit": ">=2.0.0",
-    "diskspace": ">=1.0.3",
-    "formidable": ">=1.0.17",
-    "request": ">=2.74.0"
+    "request": ">=2.74.0",
+    "simple-session": ">=0.0.1",
+    "unzip": "^0.1.11"
   },
   "devDependencies": {
     "clean-css": ">=3.4.19",

@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(_path, _fs, _vfs) {
+(function(_path, _fs, _unzip, _vfs) {
   'use strict';
 
   /**
@@ -136,13 +136,51 @@
    *
    * @param   {Object}    server          Server object
    * @param   {Object}    args            API Call Arguments
+   * @param   {String}    args.zip        Package zip path
+   * @param   {String}    args.dest       Package destination path
+   * @param   {Array}     args.paths      Package paths (for user scope)
    * @param   {Function}  callback        Callback function => fn(error, result)
    *
    * @function install
    * @memberof PackageManager
    */
   module.exports.install = function(server, args, cb) {
-    cb('Unavailable');
+    /*eslint new-cap: "warn"*/
+
+    function _onerror(root, e) {
+      _fs.remove(root, function() {
+        cb(e);
+      });
+    }
+
+    if ( args.zip && args.dest && args.paths ) {
+      var destPath = _vfs.getRealPath(server, args.dest);
+      var zipPath = _vfs.getRealPath(server, args.zip);
+
+      _fs.exists(destPath.root, function(exists) {
+        if ( exists ) {
+          cb('Package is already installed');
+          return;
+        }
+
+        _fs.mkdir(destPath.root, function() {
+          try {
+            _fs.createReadStream(zipPath.root).pipe(_unzip.Extract({
+              path: destPath.root
+            })).on('finish', function() {
+              cb(false, true);
+            }).on('error', function(e) {
+              _onerror(destPath.root, 'Error occured while unzipping: ' + e);
+            });
+          } catch ( e ) {
+            _onerror(destPath.root, 'Exception occured while unzipping: ' + e);
+          }
+        });
+      });
+
+      return;
+    }
+    cb('Invalid install action');
   };
 
   /**
@@ -228,4 +266,4 @@
     }
   };
 
-})(require('path'), require('node-fs-extra'), require('./vfs.js'));
+})(require('path'), require('node-fs-extra'), require('unzip'), require('./vfs.js'));

@@ -8,8 +8,9 @@
       }
     },
     "PackageManager": {
-      "UserPackages":  "home:///.packages",
-      "UserMetadata":  "home:///.packages/packages.json"
+      "UserPackages":  [
+        "home:///.packages"
+      ]
     }
   }
 }

@@ -53,7 +53,7 @@
           return;
         }
 
-        OSjs.Core.getPackageManager().install(dest, function(error) {
+        OSjs.Core.getPackageManager().install(dest, true, function(error) {
           if ( error ) {
             cb('Failed to install package: ' + error); // FIXME
             return;
@@ -167,9 +167,13 @@
         if ( button !== 'ok' || !result ) {
           self._toggleDisabled(false);
         } else {
-          OSjs.Core.getPackageManager().install(result, function() {
+          OSjs.Core.getPackageManager().install(result, true, function(e) {
             self._toggleDisabled(false);
             renderInstalled();
+
+            if ( e ) {
+              alert(e);
+            }
           });
         }
       }, self);

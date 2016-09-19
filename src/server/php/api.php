@@ -640,19 +640,51 @@ class CoreAPIHandler
     return [false, true];
   }
 
+  protected static function _installPackage(Array $args) {
+    $dest = empty($args['dest']) ? null : $args['dest'];
+    $zip = empty($args['zip']) ? null : $args['zip'];
+
+    list($_d, $_r, $_p, $realDest) = getRealPath($dest);
+    list($_d, $_r, $_p, $realZip) = getRealPath($zip);
+
+    if ( file_exists($realDest) ) {
+      return ['Package is already installed', false];
+    }
+
+    mkdir($realDest);
+
+    $zip = new ZipArchive;
+    if ( $zip->open($realZip) === true ) {
+      $zip->extractTo($realDest);
+      $zip->close();
+      return [false, true];
+    } else {
+      @unlink($realDest);
+      return ['An error occured while unzipping', true];
+    }
+
+    return [false, true];
+  }
+
   public static function packages(Array $arguments) {
     $error = null;
     $result = null;
 
-    if ( empty($arguments['action']) ) {
+    if ( empty($arguments['command']) ) {
       $error = 'Unavailable';
     } else {
-      switch ( $arguments['action'] ) {
+      switch ( $arguments['command'] ) {
         case 'list':
           list($error, $result) = self::_listPackages($arguments['args']);
           break;
         case 'cache':
           list($error, $result) = self::_cachePackages($arguments['args']);
+          break;
+        case 'install':
+          list($error, $result) = self::_installPackage($arguments['args']);
+          break;
+        default:
+          $error = 'Invalid command';
           break;
       }
     }

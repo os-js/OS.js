@@ -187,9 +187,8 @@
           return;
         }
 
-        var paths = [API.getConfig('PackageManager.UserPackages')];
-
-        API.call('packages', {action: 'list', args: {paths: paths}}, function(err, res) {
+        var paths = API.getConfig('PackageManager.UserPackages');
+        API.call('packages', {command: 'list', args: {paths: paths}}, function(err, res) {
           if ( res ) {
             packages = {};
 
@@ -215,8 +214,8 @@
        */
       generateUserMetadata: function(callback) {
         var self = this;
-        var paths = [API.getConfig('PackageManager.UserPackages')];
-        API.call('packages', {action: 'cache', args: {action: 'generate', scope: 'user', paths: paths}}, function() {
+        var paths = API.getConfig('PackageManager.UserPackages');
+        API.call('packages', {command: 'cache', args: {action: 'generate', scope: 'user', paths: paths}}, function() {
           self._loadMetadata(callback);
         });
       },
@@ -267,43 +266,23 @@
        * @memberof OSjs.Core.PackageManager#
        *
        * @param {OSjs.VFS.File}   file        The ZIP file
+       * @param {String}          root        Packge install root (defaults to first path)
        * @param {Function}        cb          Callback function
        */
-      install: function(file, cb) {
-        var root = API.getConfig('PackageManager.UserPackages');
-        var dest = Utils.pathJoin(root, file.filename.replace(/\.zip$/i, ''));
-
-        function installFromZip() {
-          OSjs.Helpers.ZipArchiver.createInstance({}, function(error, instance) {
-            if ( error ) {
-              cb(error);
-              return;
-            }
-
-            if ( instance ) {
-              instance.extract(file, dest, {
-                onprogress: function() {
-                },
-                oncomplete: function() {
-                  cb();
-                }
-              });
-            }
-          });
+      install: function(file, root, cb) {
+        var self = this;
+        var paths = API.getConfig('PackageManager.UserPackages');
+        if ( typeof root !== 'string' ) {
+          root = paths[0];
         }
 
-        VFS.mkdir(new VFS.File(root), function() {
-          VFS.exists(new VFS.File(dest), function(error, exists) {
-            if ( error ) {
-              cb(error);
-            } else {
-              if ( exists ) {
-                cb(API._('ERR_PACKAGE_EXISTS'));
-              } else {
-                installFromZip();
-              }
-            }
-          });
+        var dest = Utils.pathJoin(root, file.filename.replace(/\.zip$/i, ''));
+        API.call('packages', {command: 'install', args: {zip: file.path, dest: dest, paths: paths}}, function(e, r) {
+          if ( e ) {
+            cb(e);
+          } else {
+            self.generateUserMetadata(cb);
+          }
         });
       },
 
