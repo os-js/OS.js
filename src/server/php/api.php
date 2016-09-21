@@ -237,10 +237,10 @@ class APIResponse
         case E_CORE_WARNING: // 32
           $type = 'E_CORE_WARNING';
         break;
-        case E_CORE_ERROR: // 64
+        case E_COMPILE_ERROR: // 64
           $type = 'E_COMPILE_ERROR';
         break;
-        case E_CORE_WARNING: // 128
+        case E_COMPILE_WARNING: // 128
           $type = 'E_COMPILE_WARNING';
         break;
         case E_USER_ERROR: // 256
