@@ -92,7 +92,7 @@
   /**
    * Makes sure "include" fragments are rendered correctly
    */
-  function resolveFragments(scheme, node, el) {
+  function resolveFragments(scheme, node) {
     function _resolve() {
       var nodes = node.querySelectorAll('gui-fragment');
       if ( nodes.length ) {
@@ -437,6 +437,10 @@
 
     var content = this.parse(id, type, win, onparse, args);
     addChildren(content, root);
+
+    root.querySelectorAll('application-fragment').forEach(function(e) {
+      Utils.$remove(e);
+    });
 
     if ( !win._restored ) {
       setWindowProperties(this.getFragment(id));
