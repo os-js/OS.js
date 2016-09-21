@@ -118,6 +118,26 @@
   }
 
   /**
+   * Removes self-closing tags from HTML string
+   */
+  function removeSelfClosingTags(str) {
+    var split = (str || '').split('/>');
+    var newhtml = '';
+    for (var i = 0; i < split.length - 1;i++) {
+      var edsplit = split[i].split('<');
+      newhtml += split[i] + '></' + edsplit[edsplit.length - 1].split(' ')[0] + '>';
+    }
+    return newhtml + split[split.length - 1];
+  }
+
+  /**
+   * Cleans a HTML string
+   */
+  function cleanScheme(html) {
+    return Utils.cleanHTML(removeSelfClosingTags(html));
+  }
+
+  /**
    * Makes sure "external include" fragments are rendered correctly.
    *
    * Currently this only supports one level deep.
@@ -148,14 +168,9 @@
       Utils.ajax({
         url: url,
         onsuccess: function(h) {
-          var tmp = document.createElement('div');
-          tmp.innerHTML = h;
-
-          addChildren(tmp, iter.element.parentNode);
-          Utils.$remove(iter.element);
-          tmp = null;
-
-          next();
+          var tmp = document.createRange().createContextualFragment(cleanScheme(h));
+          iter.element.parentNode.replaceChild(tmp, iter.element);
+          tmp = next();
         },
         onerror: function() {
           next();
@@ -241,19 +256,9 @@
   };
 
   UIScheme.prototype._load = function(html) {
-    function removeSelfClosingTags(str) {
-      var split = (str || '').split('/>');
-      var newhtml = '';
-      for (var i = 0; i < split.length - 1;i++) {
-        var edsplit = split[i].split('<');
-        newhtml += split[i] + '></' + edsplit[edsplit.length - 1].split(' ')[0] + '>';
-      }
-      return newhtml + split[split.length - 1];
-    }
-
     var doc = document.createDocumentFragment();
     var wrapper = document.createElement('div');
-    wrapper.innerHTML = Utils.cleanHTML(removeSelfClosingTags(html));
+    wrapper.innerHTML = html;
     doc.appendChild(wrapper);
 
     this.scheme = doc.cloneNode(true);
@@ -273,7 +278,7 @@
    */
   UIScheme.prototype.loadString = function(html, cb) {
     console.debug('UIScheme::loadString()');
-    this._load(html);
+    this._load(cleanScheme(html));
     if ( cb ) {
       cb(false, this.scheme);
     }
@@ -313,6 +318,8 @@
     Utils.ajax({
       url: src,
       onsuccess: function(html) {
+        html = cleanScheme(html);
+
         resolveExternalFragments(root, html, function(result) {
           // This is normally used for the preloader for caching
           cbxhr(false, result);
