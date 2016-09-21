@@ -99,8 +99,12 @@
         nodes.forEach(function(el) {
           var id = el.getAttribute('data-fragment-id');
           if ( id ) {
-            var frag = scheme.getFragment(id, 'application-fragment').cloneNode(true);
-            addChildren(frag, el.parentNode);
+            var frag = scheme.getFragment(id, 'application-fragment');
+            if ( frag ) {
+              addChildren(frag.cloneNode(true), el.parentNode);
+            } else {
+              console.warn('Fragment', id, 'not found');
+            }
           }
           Utils.$remove(el); // Or else we'll never get out of the loop!
         });
