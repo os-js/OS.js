@@ -46,7 +46,7 @@ class MysqlAPIHandler
 
     $dsn = sprintf("mysql:host=%s;dbname=%s", $mysqlSettings["host"], $mysqlSettings["database"]);
     if ( !($db = new PDO($dsn, $mysqlSettings["user"], $mysqlSettings["password"], $args)) ) {
-      throw "Could not set up database connection";
+      throw new Exception("Could not set up database connection");
     }
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     return $db;
