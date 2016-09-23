@@ -314,6 +314,7 @@
 
           return MountManager._create({
             readOnly: opts.readOnly,
+            transport: opts.transport,
             name: opts.name,
             description: opts.description,
             visible: opts.visible,

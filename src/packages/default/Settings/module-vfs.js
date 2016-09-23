@@ -106,7 +106,7 @@
         scheme.find(self, 'MountDescription').set('value', selected.description);
         if ( selected.options ) {
           scheme.find(self, 'MountHost').set('value', selected.options.host);
-          scheme.find(self, 'MountNamespace').set('value', selected.options.host);
+          scheme.find(self, 'MountNamespace').set('value', selected.options.ns);
           scheme.find(self, 'MountUsername').set('value', selected.options.username);
           scheme.find(self, 'MountPassword').set('value', selected.options.password);
           scheme.find(self, 'MountCORS').set('value', selected.options.cors);
