@@ -218,13 +218,13 @@
       ]);
 
       win._find('PanelBackgroundColor').on('open', function(ev) {
-        createColorDialog(ev.detail, function(result) {
+        createColorDialog(win, ev.detail, function(result) {
           win._find('PanelBackgroundColor').set('value', result);
         });
       });
 
       win._find('PanelForegroundColor').on('open', function(ev) {
-        createColorDialog(ev.detail, function(result) {
+        createColorDialog(win, ev.detail, function(result) {
           win._find('PanelForegroundColor').set('value', result);
         });
       });
