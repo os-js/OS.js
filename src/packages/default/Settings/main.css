@@ -42,10 +42,12 @@
   display : none;
 }
 
+.ApplicationSettingsWindow application-window-content [data-id="InstalledPackages"],
+.ApplicationSettingsWindow application-window-content [data-id="PackagePaths"],
 .ApplicationSettingsWindow application-window-content [data-id="PanelItems"],
 .ApplicationSettingsWindow application-window-content [data-id="MountList"],
 .ApplicationSettingsWindow application-window-content [data-id="SearchPaths"] {
-  min-height : 140px;
+  height : 140px;
 }
 
 .ApplicationSettingsWindow application-window-content [data-id="ContainerContent"] > div {

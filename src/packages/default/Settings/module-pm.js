@@ -86,6 +86,58 @@
     });
   }
 
+  function renderPaths(win, scheme) {
+    var sm = OSjs.Core.getSettingsManager();
+    var paths = sm.instance('PackageManager').get('PackagePaths', []);
+    win._find('PackagePaths').clear().add(paths.map(function(iter, idx) {
+      return {
+        value: idx,
+        columns: [
+          {label: iter}
+        ]
+      };
+    }));
+  }
+
+  function _save(sf, win, scheme, paths) {
+    win._toggleLoading(true);
+    sf.set(null, {PackagePaths: paths}, function() {
+      renderPaths(win, scheme);
+      win._toggleLoading(false);
+    }, false);
+  }
+
+  function addPath(win, scheme) {
+    var sm = OSjs.Core.getSettingsManager();
+    var sf = sm.instance('PackageManager');
+    var paths = sf.get('PackagePaths', []);
+
+    win._toggleDisabled(true);
+    API.createDialog('Input', {
+      message: 'Enter path',
+      placeholder: 'mount:///path'
+    }, function(ev, btn, value) {
+      win._toggleDisabled(false);
+
+      if ( value ) {
+        if ( paths.indexOf(value) === -1 ) {
+          paths.push(value);
+          _save(sf, win, scheme, paths);
+        }
+      }
+    });
+  }
+
+  function removePath(win, scheme, index) {
+    var sm = OSjs.Core.getSettingsManager();
+    var sf = sm.instance('PackageManager');
+    var paths = sf.get('PackagePaths', []);
+    if ( typeof paths[index] !== 'undefined' ) {
+      paths.splice(index, 1);
+      _save(sf, win, scheme, paths);
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // MODULE
   /////////////////////////////////////////////////////////////////////////////
@@ -100,12 +152,13 @@
 
     update: function(win, scheme, settings, wm) {
       renderInstalled(win, scheme);
+      renderPaths(win, scheme);
     },
 
     render: function(win, scheme, root, settings, wm) {
       var pacman = OSjs.Core.getPackageManager();
       var sm = OSjs.Core.getSettingsManager();
-      var pool = sm.instance('Packages', {hidden: []});
+      var pool = sm.instance('Packages', {hidden: []}); // TODO: Move to PackageManager pool
 
       win._find('ButtonUninstall').on('click', function() {
         var selected = win._find('InstalledPackages').get('selected');
@@ -175,6 +228,17 @@
             });
           }
         }, win);
+      });
+
+      win._find('PackagePathsRemove').on('click', function() {
+        var sel = win._find('PackagePaths').get('selected');
+        if ( sel && sel.length ) {
+          removePath(win, scheme, sel[0].data);
+        }
+      });
+
+      win._find('PackagePathsAdd').on('click', function() {
+        addPath(win, scheme);
       });
     },
 

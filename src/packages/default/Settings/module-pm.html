@@ -1,6 +1,15 @@
 <div data-module="Packages">
+  <gui-expander data-label="Package Visibility">
+    <gui-fragment data-fragment-id="ModulePackageVisibilityFragment"></gui-fragment>
+  </gui-expander>
+  <gui-expander data-label="Package Locations">
+    <gui-fragment data-fragment-id="ModulePackagePathsFragment"></gui-fragment>
+  </gui-expander>
+</div>
+
+<application-fragment data-id="ModulePackageVisibilityFragment">
   <gui-vbox class="block-label">
-    <gui-vbox-container data-shrink="1" data-grow="1" data-fill="true">
+    <gui-vbox-container data-shrink="1" data-grow="1">
       <gui-list-view data-id="InstalledPackages" data-multiple="false">
         <gui-list-view-head>
           <gui-list-view-row>
@@ -22,4 +31,19 @@
       </gui-button-bar>
     </gui-vbox-container>
   </gui-vbox>
-</div>
+</application-fragment>
+
+<application-fragment data-id="ModulePackagePathsFragment">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-grow="1">
+      <gui-list-view data-id="PackagePaths" data-multiple="false"></gui-list-view>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-button-bar>
+        <gui-button data-id="PackagePathsAdd" data-icon="stock://16x16/actions/add.png"></gui-button>
+        <gui-button data-id="PackagePathsRemove" data-icon="stock://16x16/actions/remove.png"></gui-button>
+      </gui-button-bar>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
