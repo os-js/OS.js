@@ -634,6 +634,9 @@
       initSettingsManager,
       initSearch,
       function(cfg, cb) {
+        OSjs.Core.getMountManager().restore(cb);
+      },
+      function(cfg, cb) {
         return OSjs.GUI.DialogScheme.init(cb);
       }
     ];

@@ -6,7 +6,8 @@
           "showHiddenFiles": true,
           "showFileExtensions": true,
           "columns": ["filename", "mime", "size"]
-        }
+        },
+        "mounts":[]
       }
     },
     "VFS": {
