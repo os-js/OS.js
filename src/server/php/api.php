@@ -587,7 +587,7 @@ class CoreAPIHandler
     if ( !$scope || $scope == 'system' ) {
       $path = SERVERDIR . '/packages.json';
       $metadata = json_decode(file_get_contents($path), true);
-      foreach ( $metadata as $k => $v ) {
+      foreach ( $metadata[DIST] as $k => $v ) {
         $packages[$k] = $v;
         $packages[$k]['scope'] = 'system';
       }

@@ -55,6 +55,8 @@ if ( !defined("TIMEZONE") )   define("TIMEZONE",    "Europe/Oslo");             
 if ( !defined("SHOWERRORS") ) define("SHOWERRORS",  true);                                            // Show error reports from backend
 if ( !defined("ERRHANDLER") ) define("ERRHANDLER",  false);                                           // Report non-errors (warnings, notices etc)
 
+define("DIST", strpos(DISTDIR, "dist-dev") !== false ? "dist-dev" : "dist");
+
 $settings = Settings::get();
 
 if ( !empty($settings['handler']) ) {

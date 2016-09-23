@@ -1855,17 +1855,13 @@
       var tpl = readFile(_path.join(PATHS.templates, 'dist', 'packages.js')).toString();
       var content = tpl.replace('%PACKAGES%', JSON.stringify(list, null, 4));
       writeFile(out, content);
+      return list;
     }
 
-    generate(PATHS.out_client_manifest, 'dist');
-    generate(PATHS.out_client_dev_manifest, 'dist-dev');
-
-    var packages = readPackageMetadata(grunt);
-    var pout = {};
-    Object.keys(packages).forEach(function(k) {
-      pout[k] = packages[k];
-    });
-    writeFile(PATHS.out_server_manifest, JSON.stringify(pout, null, 4));
+    writeFile(PATHS.out_server_manifest, JSON.stringify({
+      'dist': generate(PATHS.out_client_manifest, 'dist'),
+      'dist-dev': generate(PATHS.out_client_dev_manifest, 'dist-dev')
+    }, null, 4));
   }
 
   /**

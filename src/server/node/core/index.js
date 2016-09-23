@@ -167,11 +167,12 @@
     }
 
     // Register manifest
-    var metadata = JSON.parse(_fs.readFileSync(_path.join(_path.dirname(setup.dirname), 'packages.json')));
+    var metadata = JSON.parse(_fs.readFileSync(_path.join(_path.dirname(setup.dirname), 'packages.json')))[setup.dist];
     var children = [];
 
     // Register configuration
     config = require('./config.js').init(setup);
+    config._env     = setup.dist;
     config._repodir = setup.repodir;
     config._distdir = setup.distdir;
     config._rootdir = setup.root;

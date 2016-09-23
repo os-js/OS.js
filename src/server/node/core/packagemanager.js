@@ -55,7 +55,7 @@
       if ( e ) {
         cb(e);
       } else {
-        var meta = JSON.parse(data);
+        var meta = JSON.parse(data)[server.config._env];
         Object.keys(meta).forEach(function(k) {
           meta[k].scope = 'system';
         });
