@@ -744,10 +744,7 @@
     item = checkMetadataArgument(item);
 
     function _checkPath() {
-      var pkgdir = API.getConfig('PackageManager.UserPackages');
-      if ( typeof pkgdir === 'string' ) {
-        pkgdir = [pkgdir];
-      }
+      var pkgdir = OSjs.Core.getSettingsManager().instance('PackageManager').get('PackagePaths', []);
 
       var found = pkgdir.some(function(i) {
         var chkdir = new VFS.File();

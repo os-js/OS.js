@@ -187,7 +187,7 @@
           return;
         }
 
-        var paths = API.getConfig('PackageManager.UserPackages');
+        var paths = OSjs.Core.getSettingsManager().instance('PackageManager').get('PackagePaths', []);
         API.call('packages', {command: 'list', args: {paths: paths}}, function(err, res) {
           if ( res ) {
             packages = {};
@@ -214,7 +214,7 @@
        */
       generateUserMetadata: function(callback) {
         var self = this;
-        var paths = API.getConfig('PackageManager.UserPackages');
+        var paths = OSjs.Core.getSettingsManager().instance('PackageManager').get('PackagePaths', []);
         API.call('packages', {command: 'cache', args: {action: 'generate', scope: 'user', paths: paths}}, function() {
           self._loadMetadata(callback);
         });
@@ -271,7 +271,7 @@
        */
       install: function(file, root, cb) {
         var self = this;
-        var paths = API.getConfig('PackageManager.UserPackages');
+        var paths = OSjs.Core.getSettingsManager().instance('PackageManager').get('PackagePaths', []);
         if ( typeof root !== 'string' ) {
           root = paths[0];
         }
