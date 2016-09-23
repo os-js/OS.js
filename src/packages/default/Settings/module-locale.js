@@ -57,6 +57,7 @@
     },
 
     save: function(win, scheme, settings, wm) {
+      settings.language = win._find('UserLocale').get('value');
     }
   };
 
