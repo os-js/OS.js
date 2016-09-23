@@ -43,8 +43,9 @@
 }
 
 .ApplicationSettingsWindow application-window-content [data-id="PanelItems"],
+.ApplicationSettingsWindow application-window-content [data-id="MountList"],
 .ApplicationSettingsWindow application-window-content [data-id="SearchPaths"] {
-  min-height : 200px;
+  min-height : 140px;
 }
 
 .ApplicationSettingsWindow application-window-content [data-id="ContainerContent"] > div {
