@@ -47,6 +47,15 @@
     }
   };
 
+  var categoryMap = {
+    'theme': 'Theme',
+    'desktop': 'Desktop',
+    'panel': 'Panel',
+    'user': 'User',
+    'fileview': 'VFS',
+    'search': 'Search'
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
@@ -152,7 +161,8 @@
     return false;
   };
 
-  ApplicationSettingsWindow.prototype.onWindowInited = function(modules) {
+  ApplicationSettingsWindow.prototype.onWindowInited = function(modules, cat) {
+    this.onExternalAttention(cat);
   };
 
   ApplicationSettingsWindow.prototype.onModuleSelect = function(name) {
@@ -231,6 +241,11 @@
 
   ApplicationSettingsWindow.prototype.onButtonCancel = function() {
     this.onModuleSelect(null);
+  };
+
+  ApplicationSettingsWindow.prototype.onExternalAttention = function(cat) {
+    this.onModuleSelect(categoryMap[cat] || cat);
+    this._focus();
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -313,8 +328,16 @@
 
     var self = this;
     var win = this._addWindow(new ApplicationSettingsWindow(this, metadata, scheme));
-    win._on('init', function() {
-      win.onWindowInited(self.modules);
+    var category = this._getArgument('category') || settings.category;
+
+    win._on('inited', function() {
+      win.onWindowInited(self.modules, category);
+    });
+
+    this._on('attention', function(args) {
+      if ( win && args.category ) {
+        win.onExternalAttention(args.category);
+      }
     });
   };
 
