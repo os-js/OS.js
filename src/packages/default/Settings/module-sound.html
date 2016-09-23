@@ -1,0 +1,20 @@
+<div data-module="Sounds">
+  <gui-expander data-label="Sound Theme">
+    <gui-fragment data-fragment-id="ModuleSoundThemeFragment"></gui-fragment>
+  </gui-expander>
+</div>
+
+<application-fragment data-id="ModuleSoundThemeFragment">
+  <gui-vbox class="block-label">
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-select data-id="SoundThemeName"></gui-select>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Enable Sounds</gui-label>
+      <gui-switch data-id="EnableSounds"></gui-switch>
+    </gui-vbox-container>
+
+  </gui-vbox>
+</application-fragment>

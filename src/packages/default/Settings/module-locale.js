@@ -1,5 +1,5 @@
 /*!
- * OS.js - JavaScript Cloud/Web Desktop Platform
+ * OS.js - JavaScript Cloud/Web Locale Platform
  *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
@@ -27,25 +27,46 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function() {
+(function(Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
-  /*
-   * See http://os.js.org/doc/tutorials/application-with-server-api.html
-   */
+  /////////////////////////////////////////////////////////////////////////////
+  // MODULE
+  /////////////////////////////////////////////////////////////////////////////
 
-  //
-  // Run `app._api('test', {}, fn)` in client to reach this
-  //
-  module.exports.test = function(args, callback, request, response) {
-    callback(false, 'test');
+  var module = {
+    group: 'user',
+    name: 'Locale',
+    icon: 'apps/locale.png',
+
+    init: function() {
+    },
+
+    update: function(win, scheme, settings, wm) {
+      var config = OSjs.Core.getConfig();
+      var locales = config.Languages;
+
+      win._find('UserLocale').clear().add(Object.keys(locales).filter(function(l) {
+        return !!OSjs.Locales[l];
+      }).map(function(l) {
+        return {label: locales[l], value: l};
+      })).set('value', API.getLocale());
+    },
+
+    render: function(win, scheme, root, settings, wm) {
+    },
+
+    save: function(win, scheme, settings, wm) {
+    }
   };
 
-  //
-  // This is called whenever the HTTP server starts up
-  //
-  module.exports._onServerStart = function(server, instance, metadata) {
-  };
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
 
-})();
+  OSjs.Applications = OSjs.Applications || {};
+  OSjs.Applications.ApplicationSettings = OSjs.Applications.ApplicationSettings || {};
+  OSjs.Applications.ApplicationSettings.Modules = OSjs.Applications.ApplicationSettings.Modules || {};
+  OSjs.Applications.ApplicationSettings.Modules.Locale = module;
 
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

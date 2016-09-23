@@ -1,0 +1,54 @@
+
+<div data-module="Theme">
+  <gui-expander data-label="Theme">
+    <gui-fragment data-fragment-id="ModuleThemeFragment"></gui-fragment>
+  </gui-expander>
+  <gui-expander data-label="Background">
+    <gui-fragment data-fragment-id="ModuleBackgroundFragment"></gui-fragment>
+  </gui-expander>
+  <gui-expander data-label="Fonts">
+    <gui-fragment data-fragment-id="ModuleFontFragment"></gui-fragment>
+  </gui-expander>
+</div>
+
+<application-fragment data-id="ModuleThemeFragment">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Theme</gui-label>
+      <gui-select data-id="StyleThemeName"></gui-select>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Icons</gui-label>
+      <gui-select data-id="IconThemeName"></gui-select>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
+
+<application-fragment data-id="ModuleBackgroundFragment">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>LBL_BACKGROUND_IMAGE</gui-label>
+      <gui-input-modal data-id="BackgroundImage"></gui-input-modal>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>LBL_BACKGROUND_COLOR</gui-label>
+      <gui-input-modal data-id="BackgroundColor"></gui-input-modal>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Background Type</gui-label>
+      <gui-select data-id="BackgroundStyle"></gui-select>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
+
+<application-fragment data-id="ModuleFontFragment">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>LBL_FONT</gui-label>
+      <gui-input-modal data-id="FontName"></gui-input-modal>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>

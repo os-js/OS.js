@@ -1,0 +1,26 @@
+<div data-module="VFS">
+  <gui-expander data-label="File View Options">
+    <gui-fragment data-fragment-id="ModuleVFSViewOptionsFragment"></gui-fragment>
+    <gui-fragment data-fragment-id="ModuleVFSMountsFragment"></gui-fragment>
+  </gui-expander>
+</div>
+
+<application-fragment data-id="ModuleVFSViewOptionsFragment">
+  <gui-vbox class="block-label">
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>LBL_SHOW_HIDDENFILES</gui-label>
+      <gui-switch data-id="ShowHiddenFiles"></gui-switch>
+    </gui-vbox-container>
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>LBL_SHOW_FILEEXTENSIONS</gui-label>
+      <gui-switch data-id="ShowFileExtensions"></gui-switch>
+    </gui-vbox-container>
+
+  </gui-vbox>
+</application-fragment>
+
+<application-fragment data-id="ModuleVFSMountsFragment">
+  <gui-vbox class="block-label">
+  </gui-vbox>
+</application-fragment>

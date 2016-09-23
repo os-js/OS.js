@@ -27,25 +27,40 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function() {
+(function(Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
-  /*
-   * See http://os.js.org/doc/tutorials/application-with-server-api.html
-   */
+  /////////////////////////////////////////////////////////////////////////////
+  // MODULE
+  /////////////////////////////////////////////////////////////////////////////
 
-  //
-  // Run `app._api('test', {}, fn)` in client to reach this
-  //
-  module.exports.test = function(args, callback, request, response) {
-    callback(false, 'test');
+  var module = {
+    group: 'personal',
+    name: 'Input',
+    icon: 'apps/key_bindings.png',
+
+    init: function() {
+    },
+
+    update: function(win, scheme, settings, wm) {
+      win._find('EnableHotkeys').set('value', settings.enableHotkeys);
+    },
+
+    render: function(win, scheme, root, settings, wm) {
+    },
+
+    save: function(win, scheme, settings, wm) {
+      settings.enableHotkeys = win._find('EnableHotkeys').get('value');
+    }
   };
 
-  //
-  // This is called whenever the HTTP server starts up
-  //
-  module.exports._onServerStart = function(server, instance, metadata) {
-  };
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
 
-})();
+  OSjs.Applications = OSjs.Applications || {};
+  OSjs.Applications.ApplicationSettings = OSjs.Applications.ApplicationSettings || {};
+  OSjs.Applications.ApplicationSettings.Modules = OSjs.Applications.ApplicationSettings.Modules || {};
+  OSjs.Applications.ApplicationSettings.Modules.Input = module;
 
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

@@ -1,0 +1,63 @@
+<div data-module="Desktop">
+  <gui-expander data-label="Window Manager">
+    <gui-fragment data-fragment-id="ModuleDesktopWMFragment"></gui-fragment>
+  </gui-expander>
+  <gui-expander data-label="Desktop">
+    <gui-fragment data-fragment-id="ModuleDesktopFragment"></gui-fragment>
+  </gui-expander>
+  <gui-expander data-label="Icon View">
+    <gui-fragment data-fragment-id="ModuleDesktopIconViewFragment"></gui-fragment>
+  </gui-expander>
+</div>
+
+<application-fragment data-id="ModuleDesktopWMFragment">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label data-id="DesktopMarginLabel">Desktop Margin</gui-label>
+      <gui-slider data-id="DesktopMargin" data-min="0" data-max="50"></gui-slider>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label data-id="CornerSnappingLabel">Desktop Corner Snapping</gui-label>
+      <gui-slider data-id="CornerSnapping" data-min="0" data-max="50"></gui-slider>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label data-id="WindowSnappingLabel">Window Snapping</gui-label>
+      <gui-slider data-id="WindowSnapping" data-min="0" data-max="50"></gui-slider>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Enable Window Switcher</gui-label>
+      <gui-switch data-id="EnableWindowSwitcher"></gui-switch>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Enable Animations</gui-label>
+      <gui-switch data-id="EnableAnimations"></gui-switch>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
+
+<application-fragment data-id="ModuleDesktopIconViewFragment">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Enable Icon View</gui-label>
+      <gui-switch data-id="EnableIconView"></gui-switch>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Invert Text Color</gui-label>
+      <gui-switch data-id="EnableIconViewInvert"></gui-switch>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
+
+<application-fragment data-id="ModuleDesktopFragment">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Enable TouchMenu</gui-label>
+      <gui-switch data-id="EnableTouchMenu"></gui-switch>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>

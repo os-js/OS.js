@@ -28,27 +28,78 @@
  * @licence Simplified BSD License
  */
 
-/*.ApplicationSettingsWindow application-window-content {
-}*/
-
-.ApplicationSettingsWindow gui-label[data-id="Header"] {
-  padding-top : 10px;
-  padding-bottom : 10px;
-  height : auto !important;
-}
-.ApplicationSettingsWindow gui-label[data-id="Header"] label {
-  font-size : 20px !important;
-  line-height : 30px !important;
-  height : auto !important;
-  font-weight : bold;
+.ApplicationSettingsWindow application-window-content {
+  overflow : hidden;
 }
 
-.ApplicationSettingsWindow .block-label label {
-  display : block;
+.ApplicationSettingsWindow application-window-content gui-expander {
+  margin-bottom : 5px;
 }
-.ApplicationSettingsWindow gui-vbox-container[data-id="TabsContainer"] > gui-tabs {
+
+.ApplicationSettingsWindow application-window-content [data-id="ContainerButtons"],
+.ApplicationSettingsWindow application-window-content [data-id="ContainerContent"] {
+  overflow : hidden;
   display : none;
 }
-.ApplicationSettingsWindow gui-vbox-container[data-id="TabsContainer"] > .active {
-  display : block;
+
+.ApplicationSettingsWindow application-window-content [data-id="PanelItems"],
+.ApplicationSettingsWindow application-window-content [data-id="SearchPaths"] {
+  min-height : 200px;
 }
+
+.ApplicationSettingsWindow application-window-content [data-id="ContainerContent"] > div {
+  overflow : auto;
+  height : 100%;
+  width : 100%;
+  padding : 10px;
+}
+
+.ApplicationSettingsWindow application-window-content [data-id="ContainerSelection"] {
+  background : #fff;
+}
+
+.ApplicationSettingsWindow application-window-content .ListView {
+  overflow : hidden;
+  height : 100%;
+}
+  .ApplicationSettingsWindow application-window-content .ListView > div {
+    background : #f7f7f7;
+    min-height : 32px;
+    padding : 10px;
+    pointer-events: none;
+  }
+  .ApplicationSettingsWindow application-window-content .ListView > div:nth-child(2n+1) {
+    background : #fff;
+  }
+    .ApplicationSettingsWindow application-window-content .ListView > div > ul {
+      list-style : none;
+      margin : 0;
+      padding : 0;
+      pointer-events: none;
+    }
+      .ApplicationSettingsWindow application-window-content .ListView > div > ul > li {
+        display : inline-block;
+        margin : 0;
+        padding : 10px;
+        text-align : center;
+        cursor : pointer;
+        width : 70px;
+        height : 70px;
+        pointer-events: all;
+      }
+      .ApplicationSettingsWindow application-window-content .ListView > div > ul > li:hover {
+        background : #eee;
+      }
+        .ApplicationSettingsWindow application-window-content .ListView > div > ul > li * {
+          pointer-events : none;
+        }
+        .ApplicationSettingsWindow application-window-content .ListView > div > ul > li > span {
+          display : block;
+        }
+
+    .ApplicationSettingsWindow application-window-content .ListView > div > span {
+      display : block;
+      font-weight : bold;
+      margin-bottom : 5px;
+      pointer-events: none;
+    }

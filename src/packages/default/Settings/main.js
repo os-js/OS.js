@@ -30,745 +30,315 @@
 (function(Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
-  var categories = ['theme', 'desktop', 'panel', 'user', 'fileview', 'search'];
+  var DEFAULT_GROUP = 'misc';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // WINDOWS
-  /////////////////////////////////////////////////////////////////////////////
-
-  function PanelItemDialog(app, metadata, scheme, callback) {
-    Window.apply(this, ['ApplicationSettingsPanelItemsWindow', {
-      icon: metadata.icon,
-      title: metadata.name + ' - Panel Items',
-      width: 400,
-      height: 300
-    }, app, scheme]);
-
-    this.callback = callback;
-    this.closed = false;
-  }
-
-  PanelItemDialog.prototype = Object.create(Window.prototype);
-  PanelItemDialog.constructor = Window;
-
-  PanelItemDialog.prototype.init = function(wm, app, scheme) {
-    var self = this;
-    var root = Window.prototype.init.apply(this, arguments);
-
-    // Load and set up scheme (GUI) here
-    scheme.render(this, 'PanelSettingWindow', root);
-
-    var view = scheme.find(this, 'List');
-
-    var items = OSjs.Applications.CoreWM.PanelItems;
-    var list = [];
-    Object.keys(items).forEach(function(i, idx) {
-      list.push({
-        value: i,
-        columns: [{
-          icon: API.getIcon(items[i].Icon),
-          label: Utils.format('{0} ({1})', items[i].Name, items[i].Description)
-        }]
-      });
-    });
-    view.clear();
-    view.add(list);
-
-    scheme.find(this, 'ButtonOK').on('click', function() {
-      this.closed = true;
-      var selected = view.get('selected');
-      self.callback('ok', selected.length ? selected[0] : null);
-      self._close();
-    });
-
-    scheme.find(this, 'ButtonCancel').on('click', function() {
-      self._close();
-    });
-
-    return root;
-  };
-  PanelItemDialog.prototype._close = function() {
-    if ( !this.closed ) {
-      this.callback('cancel');
+  var _groups = {
+    personal: {
+      label: 'Personal'
+    },
+    system: {
+      label: 'System'
+    },
+    user: {
+      label: 'User'
+    },
+    misc: {
+      label: 'Misc'
     }
-    return Window.prototype._close.apply(this, arguments);
   };
 
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
 
-  function ApplicationSettingsWindow(app, metadata, scheme, category) {
+  function ApplicationSettingsWindow(app, metadata, scheme) {
     Window.apply(this, ['ApplicationSettingsWindow', {
       icon: metadata.icon,
       title: metadata.name,
-      width: 500,
-      height: 500
+      width: 400,
+      height: 400,
+      allow_resize: true
     }, app, scheme]);
-
-    this.category = category;
-    this.settings = {};
-    this.panelItems = [];
-    this.watches = {};
-
-    var self = this;
-
-    this.watches.corewm = OSjs.Core.getSettingsManager().watch('CoreWM', function() {
-      self.updateSettings();
-    });
-    this.watches.vfs = OSjs.Core.getSettingsManager().watch('VFS', function() {
-      self.updateSettings();
-    });
   }
 
   ApplicationSettingsWindow.prototype = Object.create(Window.prototype);
   ApplicationSettingsWindow.constructor = Window.prototype;
 
-  /**
-   * Init
-   */
-  ApplicationSettingsWindow.prototype.init = function(wm, app, scheme) {
-    var root = Window.prototype.init.apply(this, arguments);
+  ApplicationSettingsWindow.prototype.init = function(wmRef, app, scheme) {
     var self = this;
+    var root = Window.prototype.init.apply(this, arguments);
+    var wm = OSjs.Core.getWindowManager();
+    var _ = OSjs.Applications.ApplicationSettings._;
 
-    // Load and set up scheme (GUI) here
-    scheme.render(this, 'SettingsWindow', root, null, null, {
-      _: OSjs.Applications.ApplicationSettings._
+    // Load and render `scheme.html` file
+    scheme.render(this, 'SettingsWindow', root, null, null, {_: _});
+
+    this._find('ButtonOK').son('click', this, this.onButtonOK);
+    this._find('ButtonCancel').son('click', this, this.onButtonCancel);
+
+    // Adds all groups and their respective entries
+    var container = document.createElement('div');
+    container.className = 'ListView';
+
+    var containers = {};
+    var tmpcontent = document.createDocumentFragment();
+
+    Object.keys(_groups).forEach(function(k) {
+      var c = document.createElement('ul');
+      var h = document.createElement('span');
+      var d = document.createElement('div');
+
+      h.appendChild(document.createTextNode(_(_groups[k].label)));
+
+      containers[k] = c;
+
+      d.appendChild(h);
+      d.appendChild(c);
+      container.appendChild(d);
     });
 
-    var view = scheme.find(this, 'IconMenu');
-    view.on('select', function(ev) {
-      if ( ev.detail && ev.detail.entries && ev.detail.entries.length ) {
-        var sel = ev.detail.entries[0].index;
-        self.setContainer(sel, true);
+    app.modules.forEach(function(m) {
+      if ( containers[m.group] ) {
+        var i = document.createElement('img');
+        i.setAttribute('src', API.getIcon(m.icon, '32x32'));
+        i.setAttribute('title', m.name);
+
+        var s = document.createElement('span');
+        s.appendChild(document.createTextNode(_(m.name)));
+
+        var c = document.createElement('li');
+        c.setAttribute('data-module', String(m.name));
+        c.appendChild(i);
+        c.appendChild(s);
+
+        containers[m.group].appendChild(c);
+
+        var settings = Utils.cloneObject(wm.getSettings());
+        m.render(self, scheme, tmpcontent, settings, wm);
+        m.update(self, scheme, settings, wm);
+        m._inited = true;
       }
     });
-    scheme.find(this, 'ButtonApply').on('click', function() {
-      self.applySettings(wm, scheme);
-    });
-    scheme.find(this, 'ButtonCancel').on('click', function() {
-      self._close();
+
+    Object.keys(containers).forEach(function(k) {
+      if ( !containers[k].children.length ) {
+        containers[k].parentNode.style.display = 'none';
+      }
     });
 
-    var cat = Math.max(0, categories.indexOf(this.category));
-    this.updateSettings(true);
-    this.setContainer(cat);
+    Utils.$bind(container, 'click', function(ev) {
+      if ( ev.target && ev.target.tagName === 'LI' && ev.target.hasAttribute('data-module') ) {
+        var m = ev.target.getAttribute('data-module');
+        self.onModuleSelect(m);
+      }
+    }, true);
+
+    root.querySelector('[data-id="ContainerSelection"]').appendChild(container);
+
+    containers = {};
+    tmpcontent = null;
 
     return root;
   };
 
-  ApplicationSettingsWindow.prototype.setContainer = function(idx, save) {
-    if ( !this._scheme ) {
-      return;
+  ApplicationSettingsWindow.prototype.destroy = function() {
+    // This is where you remove objects, dom elements etc attached to your
+    // instance. You can remove this if not used.
+    if ( Window.prototype.destroy.apply(this, arguments) ) {
+      this.currentModule = null;
+
+      return true;
     }
+    return false;
+  };
+
+  ApplicationSettingsWindow.prototype.onWindowInited = function(modules) {
+  };
+
+  ApplicationSettingsWindow.prototype.onModuleSelect = function(name) {
+    var wm = OSjs.Core.getWindowManager();
+    var root = this._$element;
+    var self = this;
+
+    function _d(d) {
+      root.querySelector('[data-id="ContainerSelection"]').style.display = d ? 'block' : 'none';
+      root.querySelector('[data-id="ContainerContent"]').style.display = d ? 'none' : 'block';
+      root.querySelector('[data-id="ContainerButtons"]').style.display = d ? 'none' : 'block';
+    }
+
+    root.querySelectorAll('div[data-module]').forEach(function(mod) {
+      mod.style.display = 'none';
+    });
+
+    _d(true);
+
+    this._setTitle(null);
 
     var found;
-    var indexes = ['TabsTheme', 'TabsDesktop', 'TabsPanel', 'TabsUser', 'TabsFileView', 'TabsSearch'];
-    if ( typeof idx === 'string' ) {
-      idx = Math.max(0, categories.indexOf(idx));
+    if ( name ) {
+      this._app.modules.forEach(function(m) {
+        if ( !found && m.name === name ) {
+          found = m;
+        }
+      });
     }
 
-    var view = this._scheme.find(this, 'IconMenu');
-    var header = this._scheme.find(this, 'Header');
-    var container = this._scheme.find(this, 'TabsContainer');
+    if ( found ) {
+      var mod = root.querySelector('div[data-module="' + found.name +  '"]');
+      if ( mod ) {
+        mod.style.display = 'block';
+        var settings = Utils.cloneObject(wm.getSettings());
+        found.update(this, this._scheme, settings, wm, true);
 
-    container.$element.querySelectorAll('gui-tabs').forEach(function(el, i) {
-      Utils.$removeClass(el, 'active');
-      if ( i === idx ) {
-        found = el;
+        _d(false);
+        this._setTitle(found.name, true);
       }
-    });
-
-    if ( found && save ) {
-      this._app._setArgument('category', categories[idx]);
-    }
-
-    header.set('value', indexes[idx].replace(/^Tabs/, ''));
-    Utils.$addClass(found, 'active');
-
-    view.set('value', idx);
-  };
-
-  ApplicationSettingsWindow.prototype.updateSettings = function(init) {
-    var scheme = this._scheme;
-    var wm = OSjs.Core.getWindowManager();
-
-    this.settings = Utils.cloneObject(wm.getSettings());
-    delete this.settings.desktopIcons;
-    delete this.settings.fullscreen;
-    delete this.settings.moveOnResize;
-
-    this.initThemeTab(wm, scheme, init);
-    this.initDesktopTab(wm, scheme, init);
-    this.initPanelTab(wm, scheme, init);
-    this.initUserTab(wm, scheme, init);
-    this.initFileViewTab(wm, scheme, init);
-    this.initSearchTab(wm, scheme, init);
-  };
-
-  /**
-   * Destroy
-   */
-  ApplicationSettingsWindow.prototype.destroy = function() {
-    try {
-      OSjs.Core.getSettingsManager().unwatch(this.watches.corewm);
-    } catch ( e ) {}
-    try {
-      OSjs.Core.getSettingsManager().unwatch(this.watches.vfs);
-    } catch ( e ) {}
-
-    this.watches = {};
-
-    Window.prototype.destroy.apply(this, arguments);
-  };
-
-  /**
-   * Theme
-   */
-  ApplicationSettingsWindow.prototype.initThemeTab = function(wm, scheme, init) {
-    var self = this;
-    var _ = OSjs.Applications.ApplicationSettings._;
-
-    if ( init ) {
-      var styleThemes = [];
-      var soundThemes = [];
-      var iconThemes = [];
-      var backgroundTypes = [
-        {value: 'image',        label: API._('LBL_IMAGE')},
-        {value: 'image-repeat', label: _('Image (Repeat)')},
-        {value: 'image-center', label: _('Image (Centered)')},
-        {value: 'image-fill',   label: _('Image (Fill)')},
-        {value: 'image-strech', label: _('Image (Streched)')},
-        {value: 'color',        label: API._('LBL_COLOR')}
-      ];
-
-      var tmp;
-
-      wm.getStyleThemes().forEach(function(t) {
-        styleThemes.push({label: t.title, value: t.name});
-      });
-
-      tmp = wm.getSoundThemes();
-      Object.keys(tmp).forEach(function(t) {
-        soundThemes.push({label: tmp[t], value: t});
-      });
-
-      tmp = wm.getIconThemes();
-      Object.keys(tmp).forEach(function(t) {
-        iconThemes.push({label: tmp[t], value: t});
-      });
-
-      scheme.find(this, 'StyleThemeName').add(styleThemes);
-      scheme.find(this, 'SoundThemeName').add(soundThemes);
-      scheme.find(this, 'IconThemeName').add(iconThemes);
-
-      var backImage = scheme.find(this, 'BackgroundImage').set('value', this.settings.wallpaper).on('open', function(ev) {
-        self._toggleDisabled(true);
-
-        API.createDialog('File', {
-          mime: ['^image'],
-          file: new VFS.File(ev.detail)
-        }, function(ev, button, result) {
-          self._toggleDisabled(false);
-          if ( button === 'ok' && result ) {
-            backImage.set('value', result.path);
+    } else {
+      if ( !name ) { // Resets values to original (or current)
+        var settings = Utils.cloneObject(wm.getSettings());
+        this._app.modules.forEach(function(m) {
+          if ( m._inited ) {
+            m.update(self, self._scheme, settings, wm);
           }
-        }, self);
-      });
-      var backColor = scheme.find(this, 'BackgroundColor').set('value', this.settings.backgroundColor).on('open', function(ev) {
-        self._toggleDisabled(true);
-
-        API.createDialog('Color', {
-          color: ev.detail
-        }, function(ev, button, result) {
-          self._toggleDisabled(false);
-          if ( button === 'ok' && result ) {
-            backColor.set('value', result.hex);
-          }
-        }, self);
-      });
-
-      var fontName = scheme.find(this, 'FontName').set('value', this.settings.fontFamily);
-
-      fontName.on('click', function() {
-        self._toggleDisabled(true);
-        API.createDialog('Font', {
-          fontName: self.settings.fontFamily,
-          fontSize: -1
-        }, function(ev, button, result) {
-          self._toggleDisabled(false);
-          if ( button === 'ok' && result ) {
-            fontName.set('value', result.fontName);
-          }
-        }, self);
-      });
-
-      scheme.find(this, 'BackgroundStyle').add(backgroundTypes);
-    }
-
-    scheme.find(this, 'StyleThemeName').set('value', this.settings.theme);
-    scheme.find(this, 'SoundThemeName').set('value', this.settings.sounds);
-    scheme.find(this, 'IconThemeName').set('value', this.settings.icons);
-
-    scheme.find(this, 'EnableAnimations').set('value', this.settings.animations);
-    scheme.find(this, 'EnableSounds').set('value', this.settings.enableSounds);
-    scheme.find(this, 'EnableTouchMenu').set('value', this.settings.useTouchMenu);
-
-    scheme.find(this, 'BackgroundStyle').set('value', this.settings.background);
-    scheme.find(this, 'BackgroundImage').set('value', this.settings.wallpaper);
-    scheme.find(this, 'BackgroundColor').set('value', this.settings.backgroundColor);
-  };
-
-  /**
-   * Desktop
-   */
-  ApplicationSettingsWindow.prototype.initDesktopTab = function(wm, scheme, init) {
-    var self = this;
-    var _ = OSjs.Applications.ApplicationSettings._;
-
-    function updateLabel(lbl, value) {
-      var map = {
-        DesktopMargin: 'Desktop Margin ({0}px)',
-        CornerSnapping: 'Desktop Corner Snapping ({0}px)',
-        WindowSnapping: 'Window Snapping ({0}px)'
-      };
-
-      var label = Utils.format(_(map[lbl]), value);
-      scheme.find(self, lbl + 'Label').set('value', label);
-    }
-
-    var inputSnap = scheme.find(this, 'WindowSnapping');
-    var inputCorner = scheme.find(this, 'CornerSnapping');
-    var inputDesktop = scheme.find(this, 'DesktopMargin');
-
-    if ( init ) {
-      inputDesktop.on('change', function(ev) {
-        updateLabel('DesktopMargin', ev.detail);
-      });
-      inputCorner.on('change', function(ev) {
-        updateLabel('CornerSnapping', ev.detail);
-      });
-      inputSnap.on('change', function(ev) {
-        updateLabel('WindowSnapping', ev.detail);
-      });
-    }
-
-    scheme.find(this, 'EnableHotkeys').set('value', this.settings.enableHotkeys);
-    //scheme.find(this, 'EnableWindowSwitcher').set('value', this.settings.enableSwitcher);
-
-    inputDesktop.set('value', this.settings.desktopMargin);
-    inputCorner.set('value', this.settings.windowCornerSnap);
-    inputSnap.set('value', this.settings.windowSnap);
-
-    updateLabel('DesktopMargin', this.settings.desktopMargin);
-    updateLabel('CornerSnapping', this.settings.windowCornerSnap);
-    updateLabel('WindowSnapping', this.settings.windowSnap);
-
-    scheme.find(this, 'EnableIconView').set('value', this.settings.enableIconView);
-    scheme.find(this, 'EnableIconViewInvert').set('value', this.settings.invertIconViewColor);
-  };
-
-  /**
-   * Panel
-   */
-  ApplicationSettingsWindow.prototype.initPanelTab = function(wm, scheme, init) {
-    var self = this;
-    var panel = this.settings.panels[0];
-
-    if ( !init ) {
-      return; // TODO
-    }
-
-    var panelPositions = [
-      {value: 'top',    label: API._('LBL_TOP')},
-      {value: 'bottom', label: API._('LBL_BOTTOM')}
-    ];
-
-    var opacity = 85;
-    if ( typeof panel.options.opacity === 'number' ) {
-      opacity = panel.options.opacity;
-    }
-
-    // Style
-    scheme.find(this, 'PanelPosition').add(panelPositions).set('value', panel.options.position);
-    scheme.find(this, 'PanelAutoHide').set('value', panel.options.autohide);
-    scheme.find(this, 'PanelOntop').set('value', panel.options.ontop);
-    var panelFg = scheme.find(this, 'PanelBackgroundColor').set('value', panel.options.background || '#101010').on('open', function(ev) {
-      self._toggleDisabled(true);
-
-      API.createDialog('Color', {
-        color: ev.detail
-      }, function(ev, button, result) {
-        self._toggleDisabled(false);
-        if ( button === 'ok' && result ) {
-          panelFg.set('value', result.hex);
-        }
-      }, self);
-    });
-    var panelBg = scheme.find(this, 'PanelForegroundColor').set('value', panel.options.foreground || '#ffffff').on('open', function(ev) {
-      self._toggleDisabled(true);
-
-      API.createDialog('Color', {
-        color: ev.detail
-      }, function(ev, button, result) {
-        self._toggleDisabled(false);
-        if ( button === 'ok' && result ) {
-          panelBg.set('value', result.hex);
-        }
-      }, self);
-    });
-    scheme.find(this, 'PanelOpacity').set('value', opacity);
-
-    // Items
-    var view = scheme.find(this, 'PanelItems');
-    var buttonAdd = scheme.find(this, 'PanelButtonAdd');
-    var buttonRemove = scheme.find(this, 'PanelButtonRemove');
-    var buttonUp = scheme.find(this, 'PanelButtonUp');
-    var buttonDown = scheme.find(this, 'PanelButtonDown');
-    var buttonReset = scheme.find(this, 'PanelButtonReset');
-    var buttonOptions = scheme.find(this, 'PanelButtonOptions');
-
-    var max = 0;
-    var items = OSjs.Core.getPackageManager().getPackage('CoreWM').panelItems;
-
-    this.panelItems = panel.items || [];
-
-    function openOptions(idx) {
-      // FIXME
-      try {
-        wm.panels[0]._items[idx].openSettings();
-      } catch ( e ) {}
-    }
-
-    function checkSelection(idx) {
-      var hasOptions = true;
-
-      try {
-        var it = items[panel.items[idx].name];
-        hasOptions = it.HasOptions === true;
-      } catch ( e ) {}
-
-      buttonOptions.set('disabled', idx < 0 || !hasOptions);
-      buttonRemove.set('disabled', idx < 0);
-      buttonUp.set('disabled', idx <= 0);
-      buttonDown.set('disabled', idx < 0 || idx >= max);
-    }
-
-    function renderItems(setSelected) {
-      var list = [];
-      self.panelItems.forEach(function(i, idx) {
-        var name = i.name;
-
-        if ( items[name] ) {
-          list.push({
-            value: idx,
-            columns: [{
-              icon: API.getIcon(items[name].Icon),
-              label: Utils.format('{0} ({1})', items[name].Name, items[name].Description)
-            }]
-          });
-        }
-      });
-      max = self.panelItems.length - 1;
-
-      view.clear();
-      view.add(list);
-
-      if ( typeof setSelected !== 'undefined' ) {
-        view.set('selected', setSelected);
-        checkSelection(setSelected);
-      } else {
-        checkSelection(-1);
-      }
-    }
-
-    function movePanelItem(index, pos) {
-      var value = self.panelItems[index];
-      var newIndex = index + pos;
-      self.panelItems.splice(index, 1);
-      self.panelItems.splice(newIndex, 0, value);
-      renderItems(newIndex);
-    }
-
-    view.on('select', function(ev) {
-      if ( ev && ev.detail && ev.detail.entries && ev.detail.entries.length ) {
-        checkSelection(ev.detail.entries[0].index);
-      }
-    });
-
-    buttonAdd.on('click', function() {
-      self._toggleDisabled(true);
-      self._app.panelItemsDialog(function(ev, result) {
-        self._toggleDisabled(false);
-
-        if ( result ) {
-          self.panelItems.push({name: result.data});
-          renderItems();
-        }
-      });
-    });
-
-    buttonRemove.on('click', function() {
-      var selected = view.get('selected');
-      if ( selected.length ) {
-        self.panelItems.splice(selected[0].index, 1);
-        renderItems();
-      }
-    });
-
-    buttonUp.on('click', function() {
-      var selected = view.get('selected');
-      if ( selected.length ) {
-        movePanelItem(selected[0].index, -1);
-      }
-    });
-    buttonDown.on('click', function() {
-      var selected = view.get('selected');
-      if ( selected.length ) {
-        movePanelItem(selected[0].index, 1);
-      }
-    });
-
-    buttonReset.on('click', function() {
-      var defaults = wm.getDefaultSetting('panels');
-      self.panelItems = defaults[0].items;
-      renderItems();
-    });
-
-    buttonOptions.on('click', function() {
-      var selected = view.get('selected');
-      if ( selected.length ) {
-        openOptions(selected[0].index);
-      }
-    });
-
-    renderItems();
-  };
-
-  /**
-   * User
-   */
-  ApplicationSettingsWindow.prototype.initUserTab = function(wm, scheme, init) {
-    var user = OSjs.Core.getHandler().getUserData();
-    var config = OSjs.Core.getConfig();
-    var locales = config.Languages;
-
-    if ( init ) {
-      var langs = [];
-      Object.keys(locales).forEach(function(l) {
-        if ( OSjs.Locales[l] ) {
-          langs.push({label: locales[l], value: l});
-        }
-      });
-      scheme.find(this, 'UserLocale').add(langs);
-    }
-
-    scheme.find(this, 'UserID').set('value', user.id);
-    scheme.find(this, 'UserName').set('value', user.name);
-    scheme.find(this, 'UserUsername').set('value', user.username);
-    scheme.find(this, 'UserGroups').set('value', user.groups);
-    scheme.find(this, 'UserLocale').set('value', API.getLocale());
-  };
-
-  /**
-   * File View
-   */
-  ApplicationSettingsWindow.prototype.initFileViewTab = function(wm, scheme, init) {
-    var vfsOptions = Utils.cloneObject(OSjs.Core.getSettingsManager().get('VFS') || {});
-    var scandirOptions = vfsOptions.scandir || {};
-
-    scheme.find(this, 'ShowFileExtensions').set('value', scandirOptions.showFileExtensions === true);
-    scheme.find(this, 'ShowHiddenFiles').set('value', scandirOptions.showHiddenFiles === true);
-  };
-
-  /**
-   * Search
-   */
-  ApplicationSettingsWindow.prototype.initSearchTab = function(wm, scheme, init) {
-    var self = this;
-    var sm = OSjs.Core.getSettingsManager();
-    var searchOptions = Utils.cloneObject(sm.get('SearchEngine') || {});
-
-    scheme.find(this, 'SearchEnableApplications').set('value', searchOptions.applications === true);
-    scheme.find(this, 'SearchEnableFiles').set('value', searchOptions.files === true);
-
-    var view = scheme.find(this, 'SearchPaths').clear();
-    view.set('columns', [
-      {label: 'Path'}
-    ]);
-
-    var list = (searchOptions.paths || []).map(function(l) {
-      return {
-        value: l,
-        id: l,
-        columns: [
-          {label: l}
-        ]
-      };
-    });
-
-    view.add(list);
-
-    if ( !init ) {
-      return;
-    }
-
-    function openAddDialog() {
-      self._toggleDisabled(true);
-
-      API.createDialog('File', {
-        select: 'dir',
-        mfilter: [
-          function(m) {
-            return m.module.searchable === true;
-          }
-        ]
-      }, function(ev, button, result) {
-        self._toggleDisabled(false);
-        if ( button === 'ok' && result ) {
-          view.add([{
-            value: result.path,
-            id: result.path,
-            columns: [
-              {label: result.path}
-            ]
-          }]);
-        }
-      }, self);
-    }
-
-    function removeSelected() {
-      var current = view.get('value') || [];
-      current.forEach(function(c) {
-        view.remove(c.index);
-      });
-    }
-
-    scheme.find(this, 'SearchAdd').on('click', openAddDialog);
-    scheme.find(this, 'SearchRemove').on('click', removeSelected);
-  };
-
-  /**
-   * Apply
-   */
-  ApplicationSettingsWindow.prototype.applySettings = function(wm, scheme) {
-    var _ = OSjs.Applications.ApplicationSettings._;
-
-    // Theme
-    this.settings.theme = scheme.find(this, 'StyleThemeName').get('value');
-    this.settings.sounds = scheme.find(this, 'SoundThemeName').get('value');
-    this.settings.icons = scheme.find(this, 'IconThemeName').get('value');
-    this.settings.animations = scheme.find(this, 'EnableAnimations').get('value');
-    this.settings.enableSounds = scheme.find(this, 'EnableSounds').get('value');
-    this.settings.useTouchMenu = scheme.find(this, 'EnableTouchMenu').get('value');
-    this.settings.wallpaper = scheme.find(this, 'BackgroundImage').get('value');
-    this.settings.backgroundColor = scheme.find(this, 'BackgroundColor').get('value');
-    this.settings.background = scheme.find(this, 'BackgroundStyle').get('value');
-    this.settings.fontFamily = scheme.find(this, 'FontName').get('value');
-
-    // Desktop
-    this.settings.enableHotkeys = scheme.find(this, 'EnableHotkeys').get('value');
-    //this.settings.enableSwitcher = scheme.find(this, 'EnableWindowSwitcher').get('value');
-    this.settings.desktopMargin = scheme.find(this, 'DesktopMargin').get('value');
-    this.settings.windowCornerSnap = scheme.find(this, 'CornerSnapping').get('value');
-    this.settings.windowSnap = scheme.find(this, 'WindowSnapping').get('value');
-    this.settings.enableIconView = scheme.find(this, 'EnableIconView').get('value');
-    this.settings.invertIconViewColor = scheme.find(this, 'EnableIconViewInvert').get('value');
-
-    // Panel
-    this.settings.panels[0].options.position = scheme.find(this, 'PanelPosition').get('value');
-    this.settings.panels[0].options.autohide = scheme.find(this, 'PanelAutoHide').get('value');
-    this.settings.panels[0].options.ontop = scheme.find(this, 'PanelOntop').get('value');
-    this.settings.panels[0].options.background = scheme.find(this, 'PanelBackgroundColor').get('value') || '#101010';
-    this.settings.panels[0].options.foreground = scheme.find(this, 'PanelForegroundColor').get('value') || '#ffffff';
-    this.settings.panels[0].options.opacity = scheme.find(this, 'PanelOpacity').get('value');
-    this.settings.panels[0].items = this.panelItems;
-
-    // User
-    this.settings.language = scheme.find(this, 'UserLocale').get('value');
-
-    // Other
-    var sm = OSjs.Core.getSettingsManager();
-    var vfsSettings = {
-      scandir: {
-        showHiddenFiles: scheme.find(this, 'ShowHiddenFiles').get('value'),
-        showFileExtensions: scheme.find(this, 'ShowFileExtensions').get('value')
-      }
-    };
-
-    var tmpPaths = scheme.find(this, 'SearchPaths').get('entry', null, null, true).sort();
-    var paths = [];
-
-    function isChildOf(tp) {
-      var result = false;
-      paths.forEach(function(p) {
-        if ( !result ) {
-          result = tp.substr(0, p.length) === p;
-        }
-      });
-      return result;
-    }
-
-    tmpPaths.forEach(function(tp) {
-      var c = isChildOf(tp);
-      if ( c ) {
-        wm.notification({
-          title: API._('LBL_SEARCH'),
-          message: _('Search path \'{0}\' is already handled by another entry', tp)
         });
       }
+    }
 
-      if ( !paths.length || !c ) {
-        paths.push(tp);
+    this._app.setModule(found);
+  };
+
+  ApplicationSettingsWindow.prototype.onButtonOK = function() {
+    var self = this;
+    var settings = {};
+    var wm = OSjs.Core.getWindowManager();
+    var saves = [];
+
+    this._app.modules.forEach(function(m) {
+      if ( m._inited ) {
+        var res = m.save(self, self._scheme, settings, wm);
+        if ( typeof res === 'function' ) {
+          saves.push(res);
+        }
       }
-
     });
 
-    var searchSettings = {
-      applications: scheme.find(this, 'SearchEnableApplications').get('value'),
-      files: scheme.find(this, 'SearchEnableFiles').get('value'),
-      paths: paths
-    };
+    this._toggleLoading(true);
+    this._app.saveSettings(settings, saves, function() {
+      self._toggleLoading(false);
+      self.onModuleSelect(null);
+    });
+  };
 
-    wm.applySettings(this.settings, false, function() {
-      sm.instance('VFS').set(null, vfsSettings, false, false);
-      sm.instance('SearchEngine').set(null, searchSettings, true, false);
-    }, false);
+  ApplicationSettingsWindow.prototype.onButtonCancel = function() {
+    this.onModuleSelect(null);
   };
 
   /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
 
-  var ApplicationSettings = function(args, metadata) {
+  function ApplicationSettings(args, metadata) {
     Application.apply(this, ['ApplicationSettings', args, metadata]);
-  };
+
+    var self = this;
+    var registered = OSjs.Applications.ApplicationSettings.Modules;
+
+    this.watches = {};
+    this.currentModule = null;
+
+    this.modules = Object.keys(registered).map(function(name) {
+      var opts = Utils.argumentDefaults(registered[name], {
+        _inited: false,
+        name: name,
+        group: DEFAULT_GROUP,
+        icon: 'status/error.png',
+        init: function() {},
+        update: function() {},
+        render: function() {},
+        save: function() {}
+      });
+
+      if ( Object.keys(_groups).indexOf(opts.group) === -1 ) {
+        opts.group = DEFAULT_GROUP;
+      }
+
+      Object.keys(opts).forEach(function(k) {
+        if ( typeof opts[k] === 'function' ) {
+          opts[k] = opts[k].bind(opts);
+        }
+      });
+
+      return opts;
+    });
+
+    this.modules.forEach(function(m) {
+      m.init(self);
+
+      if ( m.watch ) {
+        m.watch.forEach(function(w) {
+          self.watches[m.name] = OSjs.Core.getSettingsManager().watch(w, function() {
+            var win = self._getMainWindow();
+            if ( m && win ) {
+              if ( self.currentModule && self.currentModule.name === m.name ) {
+                win.onModuleSelect(m.name);
+              }
+            }
+          });
+        });
+      }
+    });
+  }
 
   ApplicationSettings.prototype = Object.create(Application.prototype);
   ApplicationSettings.constructor = Application;
 
   ApplicationSettings.prototype.destroy = function() {
-    return Application.prototype.destroy.apply(this, arguments);
+    // This is where you remove objects, dom elements etc attached to your
+    // instance. You can remove this if not used.
+    if ( Application.prototype.destroy.apply(this, arguments) ) {
+
+      var self = this;
+      Object.keys(this.watches).forEach(function(k) {
+        OSjs.Core.getSettingsManager().unwatch(self.watches[k]);
+      });
+      this.watches = {};
+
+      return true;
+    }
+    return false;
   };
 
   ApplicationSettings.prototype.init = function(settings, metadata, scheme) {
     Application.prototype.init.apply(this, arguments);
 
-    var category = this._getArgument('category') || settings.category;
-    var win = this._addWindow(new ApplicationSettingsWindow(this, metadata, scheme, category));
-
-    this._on('attention', function(args) {
-      if ( win && args.category ) {
-        win.setContainer(args.category, true);
-        win._focus();
-      }
+    var self = this;
+    var win = this._addWindow(new ApplicationSettingsWindow(this, metadata, scheme));
+    win._on('init', function() {
+      win.onWindowInited(self.modules);
     });
   };
 
-  ApplicationSettings.prototype.panelItemsDialog = function(callback) {
-    if ( this.__scheme ) {
-      this._addWindow(new PanelItemDialog(this, this.__metadata, this.__scheme, callback));
+  ApplicationSettings.prototype.saveSettings = function(settings, saves, cb) {
+    var wm = OSjs.Core.getWindowManager();
+    wm.applySettings(settings, false, function() {
+      Utils.asyncs(saves, function(iter, idx, next) {
+        iter(next);
+      }, cb);
+    }, false);
+  };
+
+  ApplicationSettings.prototype.mount = function(win) {
+    var found = this._getWindowByName('ApplicationFileManagerMountWindow');
+    if ( found ) {
+      found._focus();
+      return;
     }
+
+    this._addWindow(new MountWindow(this, this.__metadata, this.__scheme));
+  };
+
+  ApplicationSettings.prototype.setModule = function(m) {
+    this.currentModule = m;
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -778,5 +348,6 @@
   OSjs.Applications = OSjs.Applications || {};
   OSjs.Applications.ApplicationSettings = OSjs.Applications.ApplicationSettings || {};
   OSjs.Applications.ApplicationSettings.Class = Object.seal(ApplicationSettings);
+  OSjs.Applications.ApplicationSettings.Modules = OSjs.Applications.ApplicationSettings.Modules || {};
 
 })(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

@@ -1,0 +1,36 @@
+<div data-module="Search">
+  <gui-expander data-label="Search Options">
+    <gui-fragment data-fragment-id="ModuleSearchOptionsFragment"></gui-fragment>
+  </gui-expander>
+  <gui-expander data-label="Search Locations">
+    <gui-fragment data-fragment-id="ModuleSearchLocationsFragment"></gui-fragment>
+  </gui-expander>
+</div>
+
+<application-fragment data-id="ModuleSearchOptionsFragment">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Enable Application Search</gui-label>
+      <gui-switch data-id="SearchEnableApplications"></gui-switch>
+    </gui-vbox-container>
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Enable File Search</gui-label>
+      <gui-switch data-id="SearchEnableFiles"></gui-switch>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
+
+<application-fragment data-id="ModuleSearchLocationsFragment">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-grow="1">
+      <gui-list-view data-id="SearchPaths" data-multiple="false"></gui-list-view>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-button-bar>
+        <gui-button data-id="SearchAdd" data-icon="stock://16x16/actions/add.png"></gui-button>
+        <gui-button data-id="SearchRemove" data-icon="stock://16x16/actions/remove.png"></gui-button>
+      </gui-button-bar>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>

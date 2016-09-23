@@ -1,0 +1,308 @@
+/*!
+ * OS.js - JavaScript Cloud/Web Panel Platform
+ *
+ * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * @author  Anders Evenrud <andersevenrud@gmail.com>
+ * @licence Simplified BSD License
+ */
+(function(Application, Window, Utils, API, Panel, GUI) {
+  'use strict';
+
+  var panelItems = [];
+  var items = [];
+  var max = 0;
+
+  /////////////////////////////////////////////////////////////////////////////
+  // WINDOWS
+  /////////////////////////////////////////////////////////////////////////////
+
+  function PanelItemDialog(app, metadata, scheme, callback) {
+    Window.apply(this, ['ApplicationSettingsPanelItemsWindow', {
+      icon: metadata.icon,
+      title: metadata.name + ' - Panel Items',
+      width: 400,
+      height: 300
+    }, app, scheme]);
+
+    this.callback = callback;
+    this.closed = false;
+  }
+
+  PanelItemDialog.prototype = Object.create(Window.prototype);
+  PanelItemDialog.constructor = Window;
+
+  PanelItemDialog.prototype.init = function(wm, app, scheme) {
+    var self = this;
+    var root = Window.prototype.init.apply(this, arguments);
+
+    // Load and set up scheme (GUI) here
+    scheme.render(this, 'PanelSettingWindow', root, null, null, {
+      _: OSjs.Applications.ApplicationSettings._
+    });
+
+    var pacman = OSjs.Core.getPackageManager();
+    var avail = pacman.getPackage('CoreWM').panelItems;
+    scheme.find(this, 'List').clear().add(Object.keys(avail).map(function(i, idx) {
+      return {
+        value: i,
+        columns: [{
+          icon: API.getIcon(avail[i].Icon),
+          label: Utils.format('{0} ({1})', avail[i].Name, avail[i].Description)
+        }]
+      };
+    }));
+
+    scheme.find(this, 'ButtonOK').on('click', function() {
+      self.closed = true;
+      var selected = scheme.find(self, 'List').get('selected');
+      self.callback('ok', selected.length ? selected[0] : null);
+      self._close();
+    });
+
+    scheme.find(this, 'ButtonCancel').on('click', function() {
+      self._close();
+    });
+
+    return root;
+  };
+
+  PanelItemDialog.prototype._close = function() {
+    if ( !this.closed ) {
+      this.callback('cancel');
+    }
+    return Window.prototype._close.apply(this, arguments);
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // HELPERS
+  /////////////////////////////////////////////////////////////////////////////
+
+  function openOptions(wm, idx) {
+    // FIXME
+    try {
+      wm.panels[0]._items[idx].openSettings();
+    } catch ( e ) {}
+  }
+
+  function checkSelection(win, idx) {
+    var hasOptions = true;
+
+    try {
+      var it = items[panel.items[idx].name];
+      hasOptions = it.HasOptions === true;
+    } catch ( e ) {}
+
+    win._find('PanelButtonOptions').set('disabled', idx < 0 || !hasOptions);
+    win._find('PanelButtonRemove').set('disabled', idx < 0);
+    win._find('PanelButtonUp').set('disabled', idx <= 0);
+    win._find('PanelButtonDown').set('disabled', idx < 0 || idx >= max);
+  }
+
+  function movePanelItem(win, index, pos) {
+    var value = panelItems[index];
+    var newIndex = index + pos;
+    panelItems.splice(index, 1);
+    panelItems.splice(newIndex, 0, value);
+    renderItems(win, newIndex);
+  }
+
+  function renderItems(win, setSelected) {
+    var list = [];
+
+    panelItems.forEach(function(i, idx) {
+      var name = i.name;
+
+      if ( items[name] ) {
+        list.push({
+          value: idx,
+          columns: [{
+            icon: API.getIcon(items[name].Icon),
+            label: Utils.format('{0} ({1})', items[name].Name, items[name].Description)
+          }]
+        });
+      }
+    });
+    max = panelItems.length - 1;
+
+    var view = win._find('PanelItems');
+    view.clear();
+    view.add(list);
+
+    if ( typeof setSelected !== 'undefined' ) {
+      view.set('selected', setSelected);
+      checkSelection(win, setSelected);
+    } else {
+      checkSelection(win, -1);
+    }
+  }
+
+  function createDialog(win, scheme, cb) {
+    if ( scheme ) {
+      var app = win._app;
+      win._addChild(new PanelItemDialog(app, app.__metadata, scheme, cb), true, true);
+    }
+  }
+
+  function createColorDialog(win, color, cb) {
+    win._toggleDisabled(true);
+
+    API.createDialog('Color', {
+      color: color
+    }, function(ev, button, result) {
+      win._toggleDisabled(false);
+      if ( button === 'ok' && result ) {
+        cb(result.hex);
+      }
+    }, win);
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+  // MODULE
+  /////////////////////////////////////////////////////////////////////////////
+
+  var module = {
+    group: 'personal',
+    name: 'Panel',
+    icon: 'apps/gnome-panel.png',
+
+    init: function() {
+    },
+
+    update: function(win, scheme, settings, wm) {
+      var panel = settings.panels[0];
+      var opacity = 85;
+      if ( typeof panel.options.opacity === 'number' ) {
+        opacity = panel.options.opacity;
+      }
+
+      win._find('PanelPosition').set('value', panel.options.position);
+      win._find('PanelAutoHide').set('value', panel.options.autohide);
+      win._find('PanelOntop').set('value', panel.options.ontop);
+      win._find('PanelBackgroundColor').set('value', panel.options.background || '#101010');
+      win._find('PanelForegroundColor').set('value', panel.options.foreground || '#ffffff');
+      win._find('PanelOpacity').set('value', opacity);
+
+      items = OSjs.Core.getPackageManager().getPackage('CoreWM').panelItems;
+
+      panelItems = panel.items || [];
+
+      renderItems(win);
+    },
+
+    render: function(win, scheme, root, settings, wm) {
+      win._find('PanelPosition').add([
+        {value: 'top',    label: API._('LBL_TOP')},
+        {value: 'bottom', label: API._('LBL_BOTTOM')}
+      ]);
+
+      win._find('PanelBackgroundColor').on('open', function(ev) {
+        createColorDialog(ev.detail, function(result) {
+          win._find('PanelBackgroundColor').set('value', result);
+        });
+      });
+
+      win._find('PanelForegroundColor').on('open', function(ev) {
+        createColorDialog(ev.detail, function(result) {
+          win._find('PanelForegroundColor').set('value', result);
+        });
+      });
+
+      win._find('PanelItems').on('select', function(ev) {
+        if ( ev && ev.detail && ev.detail.entries && ev.detail.entries.length ) {
+          checkSelection(win, ev.detail.entries[0].index);
+        }
+      });
+
+      win._find('PanelButtonAdd').on('click', function() {
+        win._toggleDisabled(true);
+        createDialog(win, scheme, function(ev, result) {
+          win._toggleDisabled(false);
+
+          if ( result ) {
+            panelItems.push({name: result.data});
+            renderItems(win);
+          }
+        });
+      });
+
+      win._find('PanelButtonRemove').on('click', function() {
+        var selected = win._find('PanelItems').get('selected');
+        if ( selected.length ) {
+          panelItems.splice(selected[0].index, 1);
+          renderItems(win);
+        }
+      });
+
+      win._find('PanelButtonUp').on('click', function() {
+        var selected = win._find('PanelItems').get('selected');
+        if ( selected.length ) {
+          movePanelItem(win, selected[0].index, -1);
+        }
+      });
+      win._find('PanelButtonDown').on('click', function() {
+        var selected = win._find('PanelItems').get('selected');
+        if ( selected.length ) {
+          movePanelItem(win, selected[0].index, 1);
+        }
+      });
+
+      win._find('PanelButtonReset').on('click', function() {
+        var defaults = wm.getDefaultSetting('panels');
+        panelItems = defaults[0].items;
+        renderItems(win);
+      });
+
+      win._find('PanelButtonOptions').on('click', function() {
+        var selected = win._find('PanelItems').get('selected');
+        if ( selected.length ) {
+          openOptions(wm, selected[0].index);
+        }
+      });
+    },
+
+    save: function(win, scheme, settings, wm) {
+      settings.panels = settings.panels || [{}];
+      settings.panels[0].options = settings.panels[0].options || {};
+
+      settings.panels[0].options.position = win._find('PanelPosition').get('value');
+      settings.panels[0].options.autohide = win._find('PanelAutoHide').get('value');
+      settings.panels[0].options.ontop = win._find('PanelOntop').get('value');
+      settings.panels[0].options.background = win._find('PanelBackgroundColor').get('value') || '#101010';
+      settings.panels[0].options.foreground = win._find('PanelForegroundColor').get('value') || '#ffffff';
+      settings.panels[0].options.opacity = win._find('PanelOpacity').get('value');
+      settings.panels[0].items = panelItems;
+    }
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
+
+  OSjs.Applications = OSjs.Applications || {};
+  OSjs.Applications.ApplicationSettings = OSjs.Applications.ApplicationSettings || {};
+  OSjs.Applications.ApplicationSettings.Modules = OSjs.Applications.ApplicationSettings.Modules || {};
+  OSjs.Applications.ApplicationSettings.Modules.Panel = module;
+
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.Panel, OSjs.GUI);

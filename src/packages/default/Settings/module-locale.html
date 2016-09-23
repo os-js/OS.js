@@ -1,0 +1,14 @@
+<div data-module="Locale">
+  <gui-expander data-label="LBL_LOCALES">
+    <gui-fragment data-fragment-id="ModuleLocalesFragment"></gui-fragment>
+  </gui-expander>
+</div>
+
+<application-fragment data-id="ModuleLocalesFragment">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Language (requires restart)</gui-label>
+      <gui-select data-id="UserLocale"></gui-select>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>

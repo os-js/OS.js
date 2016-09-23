@@ -1,0 +1,23 @@
+<div data-module="Store">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-grow="1" data-fill="true">
+      <gui-list-view data-id="AppStorePackages" data-multiple="false">
+        <gui-list-view-head>
+          <gui-list-view-row>
+            <gui-list-view-column>Name</gui-list-view-column>
+            <gui-list-view-column data-size="100px">Repository</gui-list-view-column>
+            <gui-list-view-column data-size="50px" data-resizable="true">Version</gui-list-view-column>
+            <gui-list-view-column data-size="100px" data-resizable="true">Author</gui-list-view-column>
+          </gui-list-view-row>
+        </gui-list-view-head>
+      </gui-list-view>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-button-bar>
+        <gui-button data-id="ButtonStoreRefresh">Refresh</gui-button>
+        <gui-button data-id="ButtonStoreInstall">Install selected</gui-button>
+      </gui-button-bar>
+    </gui-vbox-container>
+  </gui-vbox>
+</div>

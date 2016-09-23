@@ -1,5 +1,5 @@
 /*!
- * OS.js - JavaScript Cloud/Web Desktop Platform
+ * OS.js - JavaScript Cloud/Web User Platform
  *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
@@ -27,25 +27,44 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function() {
+(function(Application, Window, Utils, API, User, GUI) {
   'use strict';
 
-  /*
-   * See http://os.js.org/doc/tutorials/application-with-server-api.html
-   */
+  /////////////////////////////////////////////////////////////////////////////
+  // MODULE
+  /////////////////////////////////////////////////////////////////////////////
 
-  //
-  // Run `app._api('test', {}, fn)` in client to reach this
-  //
-  module.exports.test = function(args, callback, request, response) {
-    callback(false, 'test');
+  var module = {
+    group: 'user',
+    name: 'User',
+    icon: 'status/avatar-default.png',
+
+    init: function() {
+    },
+
+    update: function(win, scheme, settings, wm) {
+      var user = OSjs.Core.getHandler().getUserData();
+
+      win._find('UserID').set('value', user.id);
+      win._find('UserName').set('value', user.name);
+      win._find('UserUsername').set('value', user.username);
+      win._find('UserGroups').set('value', user.groups);
+    },
+
+    render: function(win, scheme, root, settings, wm) {
+    },
+
+    save: function(win, scheme, settings, wm) {
+    }
   };
 
-  //
-  // This is called whenever the HTTP server starts up
-  //
-  module.exports._onServerStart = function(server, instance, metadata) {
-  };
+  /////////////////////////////////////////////////////////////////////////////
+  // EXPORTS
+  /////////////////////////////////////////////////////////////////////////////
 
-})();
+  OSjs.Applications = OSjs.Applications || {};
+  OSjs.Applications.ApplicationSettings = OSjs.Applications.ApplicationSettings || {};
+  OSjs.Applications.ApplicationSettings.Modules = OSjs.Applications.ApplicationSettings.Modules || {};
+  OSjs.Applications.ApplicationSettings.Modules.User = module;
 
+})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.User, OSjs.GUI);

@@ -1,6 +1,10 @@
 {
-  "className": "ApplicationSettings",
-  "name": "Settings",
+  "className":  "ApplicationSettings",
+  "name":       "Settings",
+  "mime":       null,
+  "icon":       "categories/applications-system.png",
+  "category": "system",
+  "singular": true,
   "names": {
     "bg_BG": "Настройки",
     "de_DE": "Einstellungen",
@@ -31,25 +35,24 @@
     "tr_TR": "Program Ayarlarını düzenle",
     "vi_VN": "Cài đặt"
   },
-  "icon": "categories/applications-system.png",
-  "category": "system",
-  "singular": true,
-  "preload": [
-    {
-      "src": "main.js",
-      "type": "javascript"
-    },
-    {
-      "src": "locale.js",
-      "type": "javascript"
-    },
-    {
-      "src": "main.css",
-      "type": "stylesheet"
-    },
-    {
-      "src": "scheme.html",
-      "type": "scheme"
-    }
+  "preload":    [
+    {"src": "locale.js", "type": "javascript"},
+    {"src": "main.js", "type": "javascript"},
+    {"src": "module-theme.js", "type": "javascript"},
+    {"src": "module-desktop.js", "type": "javascript"},
+    {"src": "module-search.js", "type": "javascript"},
+    {"src": "module-sound.js", "type": "javascript"},
+    {"src": "module-locale.js", "type": "javascript"},
+    {"src": "module-input.js", "type": "javascript"},
+    {"src": "module-vfs.js", "type": "javascript"},
+    {"src": "module-pm.js", "type": "javascript"},
+    {"src": "module-store.js", "type": "javascript"},
+    {"src": "module-panel.js", "type": "javascript"},
+    {"src": "module-user.js", "type": "javascript"},
+    {"src": "main.css", "type": "stylesheet"},
+    {"src": "scheme.html", "type": "scheme"}
   ]
 }
+
+
+

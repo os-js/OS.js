@@ -1,0 +1,62 @@
+<div data-module="Panel">
+  <gui-expander data-label="LBL_OPTIONS">
+    <gui-fragment data-fragment-id="ModulePanelAppearance"></gui-fragment>
+  </gui-expander>
+  <gui-expander data-label="Items">
+    <gui-fragment data-fragment-id="ModulePanelItems"></gui-fragment>
+  </gui-expander>
+
+</div>
+
+<application-fragment data-id="ModulePanelAppearance">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Position</gui-label>
+      <gui-select data-id="PanelPosition"></gui-select>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Autohide</gui-label>
+      <gui-switch data-id="PanelAutoHide"></gui-switch>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Ontop</gui-label>
+      <gui-switch data-id="PanelOntop"></gui-switch>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>LBL_BACKGROUND_COLOR</gui-label>
+      <gui-input-modal data-id="PanelBackgroundColor"></gui-input-modal>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>LBL_TEXT_COLOR</gui-label>
+      <gui-input-modal data-id="PanelForegroundColor"></gui-input-modal>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-label>Opacity</gui-label>
+      <gui-slider data-id="PanelOpacity" data-min="0" data-max="100"></gui-slider>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
+
+<application-fragment data-id="ModulePanelItems">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-grow="1">
+      <gui-list-view data-id="PanelItems" data-multiple="false"></gui-list-view>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-button-bar>
+        <gui-button data-id="PanelButtonAdd" data-icon="stock://16x16/actions/add.png"></gui-button>
+        <gui-button data-id="PanelButtonRemove" data-icon="stock://16x16/actions/remove.png"></gui-button>
+        <gui-button data-id="PanelButtonUp" data-icon="stock://16x16/actions/up.png"></gui-button>
+        <gui-button data-id="PanelButtonDown" data-icon="stock://16x16/actions/down.png"></gui-button>
+        <gui-button data-id="PanelButtonOptions" data-icon="stock://16x16/actions/system-run.png"></gui-button>
+        <gui-button data-id="PanelButtonReset" data-icon="stock://16x16/actions/revert.png"></gui-button>
+      </gui-button-bar>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
