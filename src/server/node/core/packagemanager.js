@@ -70,20 +70,24 @@
     var summed = {};
     que(paths, function(iter, next) {
       var path = [iter, 'packages.json'].join('/'); // path.join does not work
-      _vfs.read(server, {path: path, options: {raw: true}}, function(err, res) {
-        if ( !err && res ) {
-          try {
-            var meta = JSON.parse(res);
-            Object.keys(meta).forEach(function(k) {
-              summed[k] = meta[k];
-              summed[k].scope = 'user';
-            });
-          } catch ( e ) {
-            // TODO: Log!
+      try {
+        _vfs.read(server, {path: path, options: {raw: true}}, function(err, res) {
+          if ( !err && res ) {
+            try {
+              var meta = JSON.parse(res);
+              Object.keys(meta).forEach(function(k) {
+                summed[k] = meta[k];
+                summed[k].scope = 'user';
+              });
+            } catch ( e ) {
+              // TODO: Log!
+            }
           }
-        }
+          next();
+        });
+      } catch ( e ) {
         next();
-      });
+      }
     }, function() {
       cb(false, summed);
     });
