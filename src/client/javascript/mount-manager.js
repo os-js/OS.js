@@ -262,6 +262,7 @@
             MountManager.add(iter, next);
           } catch ( e ) {
             console.warn('MountManager::restore()', e, e.stack);
+            next();
           }
         }, function() {
           callback();
@@ -322,8 +323,6 @@
 
               API.message('vfs:unmount', opts.name, {source: null});
               (cb || function() {})(false, true);
-
-              delete _modules[opts.name];
             },
             mounted: function() {
               return isMounted;
@@ -370,7 +369,11 @@
         if ( !_modules[moduleName] ) {
           throw new Error(API._('ERR_VFSMODULE_NOT_MOUNTED_FMT', moduleName));
         }
-        _modules[moduleName].unmount(cb);
+
+        _modules[moduleName].unmount(function() {
+          delete _modules[moduleName];
+          cb.apply(MountManager, arguments);
+        });
       },
 
       /**
