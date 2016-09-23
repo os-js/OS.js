@@ -245,7 +245,9 @@
     side.on('activate', function(ev) {
       if ( ev && ev.detail && ev.detail.entries ) {
         var entry = ev.detail.entries[0];
-        self.changePath(entry.data.root);
+        if ( entry ) {
+          self.changePath(entry.data.root);
+        }
       }
     });
 
