@@ -1512,14 +1512,16 @@
       if ( _fs.existsSync(sfile) ) {
         var scheme = String(readFile(sfile));
         var found = scheme.match(/<gui\-fragment data\-fragment\-external=\"(.*)\"\s+?\/>/g);
-        found.forEach(function(f) {
-          var src = f.split(/<gui\-fragment data\-fragment\-external=\"(.*)\"\s+?\/>/)[1];
-          src = _path.join(dst, src);
-          if ( src && _fs.existsSync(src) ) {
-            scheme = scheme.replace(f, String(readFile(src)));
-            remove.push(src);
-          }
-        });
+        if ( found ) {
+          found.forEach(function(f) {
+            var src = f.split(/<gui\-fragment data\-fragment\-external=\"(.*)\"\s+?\/>/)[1];
+            src = _path.join(dst, src);
+            if ( src && _fs.existsSync(src) ) {
+              scheme = scheme.replace(f, String(readFile(src)));
+              remove.push(src);
+            }
+          });
+        }
 
         writeFile(sfile, scheme);
       }
