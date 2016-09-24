@@ -429,6 +429,7 @@
     this._stylesheet     = null;
     this._sessionLoaded  = false;
     this._fullyLoaded    = false;
+    this._scheme         = null;
 
     // Important for usage as "Application"
     this.__name    = (name || 'WindowManager');
@@ -466,13 +467,19 @@
     // Destroy all windows
     this._windows.forEach(function(win, i) {
       if ( win ) {
-        win.destroy();
+        win.destroy(true);
         self._windows[i] = null;
       }
     });
+
+    if ( this._scheme ) {
+      this._scheme.destroy();
+    }
+
     this._windows = [];
     this._currentWin = null;
     this._lastWin = null;
+    this._scheme = null;
 
     _WM = null;
 
@@ -485,8 +492,10 @@
    * @function init
    * @memberof OSjs.Core.WindowManager#
    */
-  WindowManager.prototype.init = function() {
+  WindowManager.prototype.init = function(metadata, settings, scheme) {
     console.debug('WindowManager::init()');
+
+    this._scheme = scheme;
 
     var self = this;
     document.addEventListener('mouseout', function(ev) {

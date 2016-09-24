@@ -910,7 +910,7 @@
    *
    * @return  Boolean
    */
-  Window.prototype.destroy = function() {
+  Window.prototype.destroy = function(shutdown) {
     var self = this;
 
     if ( this._destroyed ) {
@@ -973,23 +973,35 @@
       }
     }
 
-    this._onChange('close');
+    function _animateClose() {
+      if ( self._$element ) {
+        var anim = wm ? wm.getSetting('animations') : false;
+        if ( anim ) {
+          self._$element.setAttribute('data-hint', 'closing');
+          self._animationCallback = function() {
+            _removeDOM();
+          };
 
-    _destroyDOM();
-    _destroyWin();
-
-    if ( this._$element ) {
-      var anim = wm ? wm.getSetting('animations') : false;
-      if ( anim ) {
-        this._$element.setAttribute('data-hint', 'closing');
-        this._animationCallback = function() {
+          // This prevents windows from sticking when shutting down.
+          // In some cases this would happen when you remove the stylesheet
+          // with animation properties attached.
+          setTimeout(function() {
+            if ( self._animationCallback ) {
+              self._animationCallback();
+            }
+          }, 1000);
+        } else {
+          self._$element.style.display = 'none';
           _removeDOM();
-        };
-      } else {
-        this._$element.style.display = 'none';
-        _removeDOM();
+        }
       }
     }
+
+    this._onChange('close');
+
+    _animateClose();
+    _destroyDOM();
+    _destroyWin();
 
     // App messages
     if ( this._app ) {
