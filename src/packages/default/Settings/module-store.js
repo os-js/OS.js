@@ -129,8 +129,6 @@
           });
         }
       });
-
-      renderStore(win);
     },
 
     save: function(win, scheme, settings, wm) {
