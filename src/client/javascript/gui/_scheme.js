@@ -78,12 +78,16 @@
   /**
    * Method for adding children (moving)
    */
-  function addChildren(frag, root) {
+  function addChildren(frag, root, before) {
     if ( frag ) {
       var children = frag.children;
       var i = 0;
       while ( children.length && i < 10000 ) {
-        root.appendChild(children[0]);
+        if ( before ) {
+          root.parentNode.insertBefore(children[0], root);
+        } else {
+          root.appendChild(children[0]);
+        }
         i++;
       }
     }
@@ -154,7 +158,6 @@
     doc.innerHTML = html;
 
     var nodes = doc.querySelectorAll('gui-fragment[data-fragment-external]');
-
     Utils.asyncs(nodes.map(function(el) {
       return {
         element: el,
@@ -167,13 +170,12 @@
         return next();
       }
 
-      var url = Utils.pathJoin(root, uri);
-
       Utils.ajax({
-        url: url,
+        url: Utils.pathJoin(root, uri),
         onsuccess: function(h) {
-          var tmp = document.createRange().createContextualFragment(cleanScheme(h));
-          iter.element.parentNode.replaceChild(tmp, iter.element);
+          var tmp = document.createElement('div');
+          tmp.innerHTML = cleanScheme(h);
+          addChildren(tmp, iter.element, iter.element);
           tmp = next();
         },
         onerror: function() {
