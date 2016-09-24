@@ -526,14 +526,9 @@
   OneDriveStorage.upload = function(file, dest, callback) {
     console.info('OneDrive::upload()', file, dest);
 
-    var ndest = dest;
-    if ( !ndest.match(/\/$/) ) {
-      ndest += '/';
-    }
-
     var item = new OSjs.VFS.File({
       filename: file.name,
-      path: ndest + file.name,
+      path: Utils.pathJoin((new OSjs.VFS.File(dest)).path, file.name),
       mime: file.type,
       size: file.size
     });

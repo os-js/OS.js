@@ -245,17 +245,11 @@
   };
 
   DropboxVFS.prototype.upload = function(file, dest, callback) {
-    var ndest = Utils.getRelativeURL(dest);
-
-    if ( !ndest.match(/\/$/) ) {
-      ndest += '/';
-    }
-
-    console.info('DropboxVFS::upload()', file, dest, ndest);
+    console.info('DropboxVFS::upload()', file, dest);
 
     var item = new OSjs.VFS.File({
       filename: file.name,
-      path: ndest + file.name,
+      path: Utils.pathJoin((new OSjs.VFS.File(dest)).path, file.name),
       mime: file.type,
       size: file.size
     });

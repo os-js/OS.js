@@ -576,7 +576,7 @@
     },
 
     upload: function(file, dest, callback) {
-      var check = new OSjs.VFS.File(Utils.pathJoin(dest, file.name), file.type);
+      var check = new OSjs.VFS.File(Utils.pathJoin((new OSjs.VFS.File(dest)).path, file.name), file.type);
       check.size = file.size;
       check.type = 'file';
 
