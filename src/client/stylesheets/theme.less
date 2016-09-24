@@ -159,6 +159,36 @@
   padding-right : calc(16px + @gui_base_padding);
 }
 
+
+.gui-generic-container {
+  padding : @gui_base_padding;
+  color: @base_foreground_color;
+}
+
+.gui-generic-zebra-container {
+  background-color : @gui_input_background_color;
+}
+  .gui-generic-zebra-container > * {
+    padding : @gui_base_padding;
+  }
+  .gui-generic-zebra-container > *:nth-child(even) {
+    background : fade(@base_background_color, 50%);
+  }
+
+.gui-generic-hoverable:hover {
+  background-color: @gui_selected_background_color;
+}
+
+.gui-generic-padded {
+  padding : @gui_base_padding;
+}
+.gui-generic-double-padded {
+  padding : calc(@gui_base_padding * 2);
+}
+.gui-generic-margin {
+  margin : @gui_base_padding;
+}
+
 /**
  * ===========================================================================
  *                                 OVERRIDES
