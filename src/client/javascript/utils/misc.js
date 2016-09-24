@@ -472,12 +472,18 @@
     var running = 0;
     var max = opts.max || 3;
     var qleft = Object.keys(queue);
+    var finished = [];
 
     function spawn(i, cb) {
       function _done() {
         running--;
         cb();
       }
+
+      if ( finished.indexOf(i) !== -1 ) {
+        return;
+      }
+      finished.push(i);
 
       running++;
       try {
@@ -490,8 +496,12 @@
 
     (function check() {
       if ( !qleft.length ) {
+        if ( running ) {
+          return;
+        }
         return ondone();
       }
+
       var d = Math.min(qleft.length, max - running);
       for ( var i = 0; i < d; i++ ) {
         spawn(qleft.shift(), check);
