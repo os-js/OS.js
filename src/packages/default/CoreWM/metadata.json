@@ -22,6 +22,10 @@
   "splash": false,
   "preload": [
     {
+      "src": "scheme.html",
+      "type": "scheme"
+    },
+    {
       "src": "menu.js",
       "type": "javascript"
     },

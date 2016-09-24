@@ -371,7 +371,7 @@
     var wm = OSjs.Core.getWindowManager();
 
     if ( DialogRef ) {
-      this._settingsDialog = new DialogRef(this, wm.scheme, function(button) {
+      this._settingsDialog = new DialogRef(this, wm._scheme, function(button) {
         if ( button === 'ok' ) {
           self.applySettings();
         }
