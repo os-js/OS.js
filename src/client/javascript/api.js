@@ -663,7 +663,7 @@
             cb(false, data);
           }, 0);
         }
-      }, function(progress, count) {
+      }, function(index, count, src, succeeded, failed, progress) {
         if ( splash ) {
           splash.update(progress, count);
         }

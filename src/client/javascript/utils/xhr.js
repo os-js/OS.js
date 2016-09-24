@@ -245,7 +245,7 @@
    *
    * @param   {Array}     list                The list of resources
    * @param   {Function}  ondone              Callback when done => fn(totalCount, failedArray, successArray)
-   * @param   {Function}  onprogress          Callback on progress => fn(currentNumber, totalNumber)
+   * @param   {Function}  onprogress          Callback on progress => fn(current, total, src, succeeded, failed, progress)
    * @param   {Object}    [args]              Set of options
    * @param   {Boolean}   [args.force=false]  Force reloading of file if it was already added
    */
@@ -386,6 +386,7 @@
       var succeeded  = [];
       var failed = [];
       var len = list.length;
+      var total = 0;
 
       list = (list || []).map(function(item) {
         if ( typeof item === 'string' ) {
@@ -403,8 +404,9 @@
       var data = [];
       OSjs.Utils.asyncp(list, {max: args.max || 1}, function(item, index, next) {
         function _onentryloaded(state, src, setData) {
-          onprogress(index, len, src);
+          total++;
           (state ? succeeded : failed).push(src);
+          onprogress(index, len, src, succeeded, failed, total);
 
           if ( setData ) {
             data.push({
