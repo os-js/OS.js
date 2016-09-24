@@ -271,7 +271,14 @@
     'LBL_BACKGROUND_IMAGE' : 'Hintergrundbild',
     'LBL_BACKGROUND_COLOR' : 'Hintergrundfarbe',
     'LBL_UNORDERED_LIST'   : 'Unsortierte Liste',
-    'LBL_SHOW_SIDEBAR' : 'Seitenleiste anzeigen'
+    'LBL_SHOW_SIDEBAR' : 'Seitenleiste anzeigen',
+    'LBL_BACKGROUND' : 'Hintergrund',
+    'LBL_DESKTOP' : 'Arbeitsoberflächen',
+    'LBL_PANEL' : 'Panel',
+    'LBL_POSITION' : 'Position',
+    'LBL_ONTOP' : 'Vordergrund',
+    'LBL_ITEMS' : 'Items',
+    'LBL_GENERAL': 'General'
   };
 
 })();

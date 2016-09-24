@@ -410,8 +410,27 @@
     'LBL_USERNAME': '사용자 이름',
     'LBL_PASSWORD': '비밀번호',
     'LBL_HOST': '호스트',
-    'LBL_NAMESPACE': '네임스페이스'
-
+    'LBL_NAMESPACE': '네임스페이스',
+    'LBL_BACKGROUND' : '바탕화면',
+    'LBL_DESKTOP' : '데스크탑',
+    'LBL_PANEL' : '패널',
+    'LBL_POSITION' : '위치',
+    'LBL_ONTOP' : '상단바 자리 차지',
+    'LBL_ITEMS' : '항목',
+    'LBL_GENERAL': '일반',
+    'LBL_SOUNDS': '소리',
+    'LBL_ICONS': '아이콘',
+    'LBL_DEBUG' : '디버그',
+    'LBL_AUTOHIDE' : '자동 숨기기',
+    'LBL_OPACITY' : '투명도',
+    'LBL_PACKAGES' : '패키지',
+    'LBL_GROUPS' : '그룹',
+    'LBL_VERSION' : '버전',
+    'LBL_AUTHOR' : '작성자',
+    'LBL_Hide' : '숨기기',
+    'LBL_APPLICATION' : '어플리케이션',
+    'LBL_SCOPE' : '범위',
+    'LBL_SEARCH' : '검색'
   };
 
 })();

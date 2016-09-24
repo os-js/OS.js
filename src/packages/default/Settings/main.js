@@ -239,7 +239,6 @@
     this._toggleLoading(true);
     this._app.saveSettings(settings, saves, function() {
       self._toggleLoading(false);
-      self.onModuleSelect(null);
     });
   };
 

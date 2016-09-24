@@ -429,8 +429,27 @@
     'LBL_PASSWORD': 'كلمة المرور',
     'LBL_HOST': 'المستضيف',
     'LBL_NAMESPACE': 'إسم الساحة',
-    'LBL_SEARCH': 'بحث'
-
+    'LBL_SEARCH': 'بحث',
+    'LBL_Theme' : 'القالب',
+    'LBL_SOUNDS' : 'أصوات',
+    'LBL_ICONS' : 'أيقونات',
+    'LBL_BACKGROUND' : 'خلفيات',
+    'LBL_DESKTOP' : 'المكتب',
+    'LBL_PANEL' : 'اللوحة',
+    'LBL_POSITION' : 'الوصعية',
+    'LBL_ONTOP' : 'في المقدمة',
+    'LBL_ITEMS' : 'العناصر',
+    'LBL_GENERAL' : 'عام',
+    'LBL_DEBUG' : 'تصحيح',
+    'LBL_AUTOHIDE' : 'إخفاء تلقائي',
+    'LBL_OPACITY' : 'الشفافية',
+    'LBL_PACKAGES' : 'الحزم',
+    'LBL_GROUPS' : 'المجموعات',
+    'LBL_VERSION' : 'الطبعة',
+    'LBL_AUTHOR' : 'الكاتب',
+    'LBL_HIDE' : 'إخفاء',
+    'LBL_APPLICATION' : 'تطبيق',
+    'LBL_SCOPE' : 'الزمرة'
   };
 
 })();

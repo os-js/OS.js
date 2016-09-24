@@ -430,8 +430,24 @@
     'LBL_PASSWORD': 'Password',
     'LBL_HOST': 'Host',
     'LBL_NAMESPACE': 'Namespace',
-    'LBL_SEARCH': 'Ricerca'
-
+    'LBL_SEARCH': 'Ricerca',
+    'LBL_SOUNDS' : 'Suoni',
+    'LBL_ICONS' : 'Icone',
+    'LBL_BACKGROUND' : 'Sfondo',
+    'LBL_DESKTOP' : 'Scrivania',
+    'LBL_PANEL' : 'Panello',
+    'LBL_POSITION' : 'Posizione',
+    'LBL_ONTOP' : 'In primo piano',
+    'LBL_ITEMS' : 'Elementi',
+    'LBL_GENERAL' : 'Generale',
+    'LBL_DEBUG' : 'Risoluzione errori',
+    'LBL_AUTOHIDE' : 'Nascondi automaticamente',
+    'LBL_OPACITY' : 'Opacità',
+    'LBL_PACKAGES' : 'Pacchetti',
+    'LBL_GROUPS' : 'Gruppi',
+    'LBL_VERSION' : 'Versione',
+    'LBL_AUTHOR' : 'Autore',
+    'LBL_HIDE' : 'Nascondi'
   };
 
 })();

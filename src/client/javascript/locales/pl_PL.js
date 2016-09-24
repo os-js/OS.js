@@ -374,7 +374,27 @@
     'LBL_INSTALL' : 'Instaluj',
     'LBL_UPDATE' : 'Aktualizuj',
     'LBL_REMOVE' : 'Usuń',
-    'LBL_SHOW_SIDEBAR' : 'Pokaż pasek'
+    'LBL_SHOW_SIDEBAR' : 'Pokaż pasek',
+    'LBL_BACKGROUND' : 'Tło',
+    'LBL_DESKTOP' : 'Pulpit',
+    'LBL_PANEL' : 'Panel',
+    'LBL_POSITION' : 'Pozycja',
+    'LBL_ONTOP' : 'Na wierzchu',
+    'LBL_ITEMS' : 'Elementy',
+    'LBL_SOUNDS' : 'Dźwięki',
+    'LBL_ICONS' : 'Ikony',
+    'LBL_AUTOHIDE' : 'Automatyczne ukrywanie',
+    'LBL_OPACITY' : 'Przeźroczystość',
+    'LBL_USERNAME' : 'Nazwa konta',
+    'LBL_GROUPS' : 'Grupy',
+    'LBL_VERSION' : 'Wersja',
+    'LBL_AUTHOR' : 'Autor',
+    'LBL_HIDE' : 'Ukryj',
+    'LBL_APPLICATION' : 'Aplikacja',
+    'LBL_SCOPE' : 'Zasięg',
+    'LBL_PACKAGES' : 'Pakiety',
+    'LBL_GENERAL' : 'Ogólne',
+    'LBL_DEBUG' : 'Debugowanie'
   };
 
 })();

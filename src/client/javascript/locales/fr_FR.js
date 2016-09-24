@@ -412,7 +412,27 @@
     'LBL_USERNAME': 'Nom d\'utilisateur',
     'LBL_PASSWORD': 'Mot de passe',
     'LBL_HOST': 'Hôte',
-    'LBL_NAMESPACE': 'Espace de nom'
+    'LBL_NAMESPACE': 'Espace de nom',
+    'LBL_SOUNDS' : 'Sons',
+    'LBL_ICONS' : 'Icônes',
+    'LBL_BACKGROUND' : 'Fond d\'écran',
+    'LBL_DESKTOP' : 'Bureau',
+    'LBL_PANEL' : 'Pannel',
+    'LBL_POSITION' : 'Position',
+    'LBL_ONTOP' : 'Premier plan',
+    'LBL_ITEMS' : 'Objets',
+    'LBL_GENERAL' : 'Général',
+    'LBL_DEBUG' : 'Déboguer',
+    'LBL_AUTOHIDE' : 'Masquage automatique',
+    'LBL_OPACITY' : 'Opacité',
+    'LBL_PACKAGES' : 'Paquets',
+    'LBL_GROUPS' : 'Groupes',
+    'LBL_VERSION' : 'Version',
+    'LBL_AUTHOR' : 'Auteur',
+    'LBL_HIDE' : 'Cacher',
+    'LBL_APPLICATION' : 'Application',
+    'LBL_SCOPE' : 'Gamme'
+
   };
 
 })();

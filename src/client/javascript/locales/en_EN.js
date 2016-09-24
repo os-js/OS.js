@@ -430,7 +430,24 @@
     'LBL_PASSWORD': 'Password',
     'LBL_HOST': 'Host',
     'LBL_NAMESPACE': 'Namespace',
-    'LBL_SEARCH': 'Search'
+    'LBL_SEARCH': 'Search',
+    'LBL_BACK': 'Back',
+    'LBL_ICONS': 'Icons',
+    'LBL_ICON': 'Icon',
+    'LBL_UNINSTALL': 'Uninstall',
+    'LBL_REGENERATE': 'Regenerate',
+    'LBL_DESKTOP': 'Desktop',
+    'LBL_WINDOWMANAGER': 'Window Manager',
+    'LBL_HOTKEYS': 'Hotkeys',
+    'LBL_MOUNTS': 'Mounts',
+    'LBL_ID': 'ID',
+    'LBL_APPLICATION': 'Application',
+    'LBL_SCOPE': 'Scope',
+    'LBL_HIDE': 'Hide',
+    'LBL_REPOSITORY': 'Repository',
+    'LBL_VERSION': 'Version',
+    'LBL_AUTHOR': 'Author',
+    'LBL_GROUPS': 'Groups'
 
   };
 

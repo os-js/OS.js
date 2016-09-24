@@ -373,7 +373,14 @@
     'LBL_INSTALL' : 'Yükle',
     'LBL_UPDATE' : 'Güncelle',
     'LBL_REMOVE' : 'Kaldır',
-    'LBL_SHOW_SIDEBAR' : 'Kenar çubuğunu göster'
+    'LBL_SHOW_SIDEBAR' : 'Kenar çubuğunu göster',
+    'LBL_BACKGROUND' : 'arkaplan',
+    'LBL_DESKTOP' : 'masaüstü',
+    'LBL_PANEL' : 'Panel',
+    'LBL_POSITION' : 'pozisyon',
+    'LBL_ONTOP' : 'en üst',
+    'LBL_ITEMS' : 'nesneler',
+    'LBL_GENERAL' : 'genel'
   };
 
 })();

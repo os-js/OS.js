@@ -374,7 +374,14 @@
     'LBL_INSTALL' : 'Èíñòàëèðàé',
     'LBL_UPDATE' : 'Àêòóàëèçèðàé',
     'LBL_REMOVE' : 'Ïðåìàõíè',
-    'LBL_SHOW_SIDEBAR' : 'покажи страничен бар'
+    'LBL_SHOW_SIDEBAR' : 'покажи страничен бар',
+    'LBL_BACKGROUND' : 'Фон',
+    'LBL_DESKTOP' : 'Работен плот',
+    'LBL_PANEL' : 'Панел',
+    'LBL_POSITION' : 'Позиция',
+    'LBL_ONTOP' : 'Най-отгоре',
+    'LBL_ITEMS' : 'Обекти',
+    'LBL_GENERAL': 'Основен'
   };
 
 })();

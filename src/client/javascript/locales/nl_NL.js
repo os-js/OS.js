@@ -411,7 +411,14 @@
     'LBL_USERNAME': 'Gebruikersnaam',
     'LBL_PASSWORD': 'Wachtwoord',
     'LBL_HOST': 'Host',
-    'LBL_NAMESPACE': 'Namespace'
+    'LBL_NAMESPACE': 'Namespace',
+    'LBL_BACKGROUND' : 'Achtergrond',
+    'LBL_DESKTOP' : 'Bureaublad',
+    'LBL_PANEL' : 'Paneel',
+    'LBL_POSITION' : 'Positie',
+    'LBL_ONTOP' : 'Voorgrond',
+    'LBL_ITEMS' : 'Items',
+    'LBL_GENERAL': 'Algemeen'
 
   };
 

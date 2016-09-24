@@ -74,14 +74,14 @@
       };
     }));
 
-    scheme.find(this, 'ButtonOK').on('click', function() {
+    scheme.find(this, 'ButtonPanelOK').on('click', function() {
       self.closed = true;
       var selected = scheme.find(self, 'List').get('selected');
       self.callback('ok', selected.length ? selected[0] : null);
       self._close();
     });
 
-    scheme.find(this, 'ButtonCancel').on('click', function() {
+    scheme.find(this, 'ButtonPanelCancel').on('click', function() {
       self._close();
     });
 

@@ -358,7 +358,15 @@
     'LBL_SHOW_COLUMNS' : 'Mostrar columnas',
     'LBL_MOVE' : 'Mover',
     'LBL_OPTIONS' : 'Opciones',
-    'LBL_OK' : 'OK'
+    'LBL_OK' : 'OK',
+    'LBL_Background' : 'Fondo',
+    'LBL_DESKTOP' : 'Escritorio',
+    'LBL_PANEL' : 'Panel',
+    'LBL_POSITION' : 'Posición',
+    'LBL_ONTOP' : 'Primer plano',
+    'LBL_ITEMS' : 'Elementos',
+    'LBL_GENERAL': 'General',
+    'LBL_BACKGROUND' : 'Pozadie'
   };
 
 })();

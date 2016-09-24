@@ -270,7 +270,17 @@
     'LBL_BACKGROUND_IMAGE' : 'Фоновое изображение',
     'LBL_BACKGROUND_COLOR' : 'Фоновый цвет',
     'LBL_UNORDERED_LIST'   : 'Неупорядоченный список',
-    'LBL_SHOW_SIDEBAR' : 'Отобразить боковую панель'
+    'LBL_SHOW_SIDEBAR' : 'Отобразить боковую панель',
+    'LBL_BACKGROUND' : 'Фон',
+    'LBL_DESKTOP' : 'Настройки',
+    'LBL_PANEL' : 'Панель',
+    'LBL_POSITION' : 'Расположение',
+    'LBL_ONTOP' : 'Вверху',
+    'LBL_ITEMS' : 'Элементы',
+    'LBL_AUTOHIDE' : 'Автоматически скрывать',
+    'LBL_OPACITY' : 'Прозрачность',
+    'LBL_GENERAL' : 'Основные',
+    'LBL_DEBUG' : 'Отладка'
   };
 
 })();

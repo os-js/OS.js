@@ -416,7 +416,23 @@
     'LBL_PASSWORD': 'Mật khẩu',
     'LBL_HOST': 'Host',
     'LBL_NAMESPACE': 'Namespace',
-    'LBL_SEARCH': 'Tìm kiếm'
+    'LBL_SEARCH': 'Tìm kiếm',
+    'LBL_BACKGROUND' : 'Ảnh nền',
+    'LBL_DESKTOP' : 'Màn hình chính',
+    'LBL_PANEL' : 'Khung',
+    'LBL_POSITION' : 'Vị trí',
+    'LBL_ONTOP' : 'Ở trên',
+    'LBL_ITEMS' : 'Các mục',
+    'LBL_AUTOHIDE' : 'Tự động ẩn',
+    'LBL_OPACITY' : 'Độ trong suốt',
+    'LBL_PACKAGES' : 'Phần mềm',
+    'LBL_GROUPS' : 'Nhóm',
+    'LBL_VERSION' : 'Phiên bản',
+    'LBL_AUTHOR' : 'Tác giả',
+    'LBL_HIDE' : 'Ẩn',
+    'LBL_APPLICATION' : 'Phần mềm',
+    'LBL_SCOPE' : 'Phạm vi',
+    'LBL_GENERAL': 'Tổng quát'
   };
 
 })();
