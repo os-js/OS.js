@@ -1,8 +1,9 @@
 {
-  "className":  "ApplicationSettings",
-  "name":       "Settings",
-  "mime":       null,
-  "icon":       "categories/applications-system.png",
+  "className": "ApplicationSettings",
+  "preloadParallel": true,
+  "name": "Settings",
+  "mime": null,
+  "icon": "categories/applications-system.png",
   "category": "system",
   "singular": true,
   "names": {
@@ -35,7 +36,7 @@
     "tr_TR": "Program Ayarlarını düzenle",
     "vi_VN": "Cài đặt"
   },
-  "preload":    [
+  "preload": [
     {"src": "locale.js", "type": "javascript"},
     {"src": "main.js", "type": "javascript"},
     {"src": "module-theme.js", "type": "javascript"},
