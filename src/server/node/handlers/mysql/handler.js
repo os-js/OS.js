@@ -176,6 +176,56 @@
     });
   };
 
+  APIUser.add = function(server, args, user, callback) {
+    var q = 'INSERT INTO `users` (`username`, `name`, `groups`, `password`) VALUES(?, ?, ?, ?);';
+    var a = [user.username, user.name, user.groups.join(','), '']
+    query(q, a, function(err, rows, fields) {
+      callback(err, !err);
+    });
+  };
+
+  APIUser.remove = function(server, args, user, callback) {
+    var q = 'DELETE FROM `users` WHERE `id` = ?;';
+    var a = [user.id]
+    query(q, a, function(err, rows, fields) {
+      callback(err, !err);
+    });
+  };
+
+  APIUser.edit = function(server, args, user, callback) {
+    var q = 'UPDATE `users` SET `username` = ?, `name` = ?, `groups` = ? WHERE `id` = ?;';
+    var a = [user.username, user.name, user.groups.join(','), user.id]
+    query(q, a, function(err, rows, fields) {
+      callback(err, !err);
+    });
+  };
+
+  APIUser.passwd = function(server, args, user, callback) {
+    bcrypt.genSalt(10, function(err, salt) {
+      bcrypt.hash(user.password, salt, function(err, hash) {
+        var q = 'UPDATE `users` SET `password` = ? WHERE `id` = ?;';
+        var a = [hash, user.id]
+        query(q, a, function(err, rows, fields) {
+          callback(err, !err);
+        });
+      });
+    });
+  };
+
+  APIUser.list = function(server, args, user, callback) {
+    var q = 'SELECT `id`, `username`, `name`, `groups` FROM `users`;';
+    query(q, [], function(err, rows, fields) {
+      callback(err, (rows || []).map(function(iter) {
+        try {
+          iter.groups = JSON.parse(iter.groups) || [];
+        } catch ( e ) {
+          iter.groups = [];
+        }
+        return iter;
+      }));
+    });
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // API
   /////////////////////////////////////////////////////////////////////////////
@@ -200,6 +250,22 @@
 
     settings: function(server, args, callback) {
       APIUser.updateSettings(server, args.settings, callback);
+    },
+
+    users: function(server, args, callback) {
+      switch ( args.command ) {
+        case 'list':
+        case 'add':
+        case 'remove':
+        case 'edit':
+        case 'passwd':
+          APIUser[args.command](server, args, args.user, callback);
+          break;
+
+        default:
+          callback('No such command', {});
+          break;
+      }
     }
   };
 

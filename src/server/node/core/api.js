@@ -85,7 +85,23 @@
   };
 
   /**
-   * Enumerate user packages
+   * Manage Users via the Handler
+   *
+   * @param   {Object}    server          Server object
+   * @param   {Object}    args            API Call Arguments
+   * @param   {String}    args.command    Command name
+   * @param   {Object}    args.args       Command arguments
+   * @param   {Function}  callback        Callback function => fn(error, result)
+   *
+   * @function users
+   * @memberof API
+   */
+  module.exports.users = function(server, args, callback) {
+    callback('No handler assigned', {});
+  };
+
+  /**
+   * Manage Packages
    *
    * @param   {Object}    server          Server object
    * @param   {Object}    args            API Call Arguments

@@ -14,6 +14,7 @@
     },
     "api": {
       "groups": {
+        "users": "admin",
         "curl": "curl",
         "application": "application",
         "fs": "fs"
