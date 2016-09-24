@@ -89,6 +89,12 @@
       }
     },
 
+    body_touchstart: function(ev) {
+      if ( ev.target.localName !== 'select' ) {
+        ev.preventDefault();
+      }
+    },
+
     message: function(ev) {
       if ( ev && ev.data && typeof ev.data.wid !== 'undefined' && typeof ev.data.pid !== 'undefined' ) {
         console.debug('window::message()', ev.data);
@@ -363,6 +369,7 @@
   function initEvents() {
     console.debug('initEvents()');
 
+    document.body.addEventListener('touchstart', events.body_touchstart);
     document.body.addEventListener('contextmenu', events.body_contextmenu, false);
     document.body.addEventListener('click', events.body_click, false);
     document.addEventListener('keydown', events.keydown, true);
@@ -717,6 +724,7 @@
 
     signingOut = true;
 
+    document.body.removeEventListener('touchstart', events.body_touchstart);
     document.body.removeEventListener('contextmenu', events.body_contextmenu, false);
     document.body.removeEventListener('click', events.body_click, false);
     document.removeEventListener('keydown', events.keydown, true);
