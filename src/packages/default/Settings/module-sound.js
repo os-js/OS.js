@@ -37,6 +37,7 @@
   var module = {
     group: 'personal',
     name: 'Sounds',
+    label: 'LBL_SOUNDS',
     icon: 'status/stock_volume-max.png',
 
     init: function() {

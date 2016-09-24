@@ -37,6 +37,7 @@
   var module = {
     group: 'user',
     name: 'User',
+    label: 'LBL_USER',
     icon: 'status/avatar-default.png',
 
     init: function() {

@@ -448,7 +448,16 @@
     'LBL_VERSION': 'Version',
     'LBL_AUTHOR': 'Author',
     'LBL_GROUPS': 'Groups',
-    'LBL_AUTOHIDE': 'Autohide'
+    'LBL_AUTOHIDE': 'Autohide',
+    'LBL_PERSONAL': 'Personal',
+    'LBL_SYSTEM': 'System',
+    'LBL_STARTING': 'Starting',
+    'LBL_SOUNDS': 'Sounds',
+    'LBL_STORE': 'Store',
+    'LBL_LOCALE': 'Locale',
+    'LBL_PACKAGE': 'Package',
+    'LBL_PACKAGES': 'Packages',
+    'LBL_INPUT': 'Input'
 
   };
 

@@ -145,6 +145,7 @@
   var module = {
     group: 'system',
     name: 'Packages',
+    label: 'LBL_PACKAGES',
     icon: 'apps/system-software-install.png',
 
     init: function() {

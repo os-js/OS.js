@@ -37,6 +37,7 @@
   var module = {
     group: 'personal',
     name: 'Theme',
+    label: 'LBL_THEME',
     icon: 'apps/background.png',
     watch: ['CoreWM'],
 

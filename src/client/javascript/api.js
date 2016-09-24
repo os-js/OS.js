@@ -572,7 +572,7 @@
     })();
 
     function _createSplash() {
-      API.createLoading(name, {className: 'StartupNotification', tooltip: 'Starting ' + name});
+      API.createLoading(name, {className: 'StartupNotification', tooltip: API._('LBL_STARTING') + ' ' + name});
       if ( !OSjs.Applications[name] ) {
         if ( metadata.splash !== false ) {
           splash = OSjs.API.createSplash(metadata.name, metadata.icon);
@@ -1350,7 +1350,7 @@
    * @return  {Object}
    */
   API.createSplash = function _apiCreateSplash(name, icon, label, parentEl) {
-    label = label || 'Starting';
+    label = label || API._('LBL_STARTING');
     parentEl = parentEl || document.body;
 
     var splash = document.createElement('application-splash');

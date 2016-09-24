@@ -31,7 +31,6 @@
   'use strict';
 
   function createMountWindow(win, scheme, selected, ondone) {
-    console.warn(selected);
 
     var nwin = new Window('SettingsMountWindow', {
       icon: win._app.__metadata.icon,
@@ -185,6 +184,7 @@
   var module = {
     group: 'system',
     name: 'VFS',
+    label: 'VFS',
     icon: 'devices/harddrive.png',
     watch: ['VFS'],
 

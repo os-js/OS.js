@@ -50,6 +50,7 @@
   var module = {
     group: 'personal',
     name: 'Desktop',
+    label: 'LBL_DESKTOP',
     icon: 'devices/display.png',
     watch: ['CoreWM'],
 

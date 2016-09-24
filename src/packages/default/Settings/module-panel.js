@@ -186,6 +186,7 @@
   var module = {
     group: 'personal',
     name: 'Panel',
+    label: 'LBL_PANELS',
     icon: 'apps/gnome-panel.png',
 
     init: function() {

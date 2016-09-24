@@ -34,16 +34,16 @@
 
   var _groups = {
     personal: {
-      label: 'Personal'
+      label: 'LBL_PERSONAL'
     },
     system: {
-      label: 'System'
+      label: 'LBL_SYSTEM'
     },
     user: {
-      label: 'User'
+      label: 'LBL_USER'
     },
     misc: {
-      label: 'Misc'
+      label: 'LBL_MISC'
     }
   };
 
@@ -114,7 +114,7 @@
         i.setAttribute('title', m.name);
 
         var s = document.createElement('span');
-        s.appendChild(document.createTextNode(_(m.name)));
+        s.appendChild(document.createTextNode(_(m.label || m.name)));
 
         var c = document.createElement('li');
         c.className = 'gui-generic-hoverable';

@@ -37,6 +37,7 @@
   var module = {
     group: 'personal',
     name: 'Input',
+    label: 'LBL_INPUT',
     icon: 'apps/key_bindings.png',
 
     init: function() {

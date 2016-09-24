@@ -37,6 +37,7 @@
   var module = {
     group: 'system',
     name: 'Search',
+    label: 'LBL_SEARCH',
     icon: 'actions/search.png',
 
     init: function() {

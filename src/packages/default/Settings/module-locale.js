@@ -37,6 +37,7 @@
   var module = {
     group: 'user',
     name: 'Locale',
+    label: 'LBL_LOCALE',
     icon: 'apps/locale.png',
 
     init: function() {

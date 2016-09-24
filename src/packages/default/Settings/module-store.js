@@ -100,6 +100,7 @@
   var module = {
     group: 'system',
     name: 'Store',
+    label: 'LBL_STORE',
     icon: 'apps/system-software-update.png',
 
     init: function() {
