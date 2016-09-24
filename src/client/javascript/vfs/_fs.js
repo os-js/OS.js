@@ -927,7 +927,6 @@
       }
 
       var file = _createFile(ufile.name, ufile.mime, ufile.size);
-      broadcastMessage('vfs:upload', file, args.app);
       callback(false, file);
     }
 
@@ -946,7 +945,13 @@
           file: f
         }, _dialogClose, args.win || args.app);
       } else {
-        VFS.Transports.Internal.upload(f, hasAlias(new VFS.File(args.destination)), function(err, result, ev) {
+        var realDest = new VFS.File(args.destination);
+        var tmpPath = hasAlias(realDest);
+        if ( tmpPath ) {
+          realDest = tmpPath;
+        }
+
+        VFS.Transports.Internal.upload(f, realDest, function(err, result, ev) {
           if ( err ) {
             if ( err === 'canceled' ) {
               callback(API._('ERR_VFS_UPLOAD_CANCELLED'), null, ev);
@@ -957,6 +962,7 @@
             }
           } else {
             var file = _createFile(f.name, f.type, f.size);
+            broadcastMessage('vfs:upload', file, args.app);
             callback(false, file, ev);
           }
         }, options);

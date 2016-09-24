@@ -80,6 +80,10 @@
   function internalUpload(file, dest, callback, options) {
     options = options || {};
 
+    if ( dest instanceof VFS.File ) {
+      dest = dest.path;
+    }
+
     if ( typeof file.size !== 'undefined' ) {
       var maxSize = API.getConfig('VFS.MaxUploadSize');
       if ( maxSize > 0 ) {
