@@ -689,62 +689,40 @@
     }
 
     // Create DOM
-
-    this._$element = document.createElement('application-window');
-    this._$element.className = (function(n, t) {
-      var classNames = ['Window', Utils.$safeName(n)];
-      if ( t && (n !== t) ) {
-        classNames.push(Utils.$safeName(t));
+    this._$element = Utils.$create('application-window', {
+      className: (function(n, t) {
+        var classNames = ['Window', Utils.$safeName(n)];
+        if ( t && (n !== t) ) {
+          classNames.push(Utils.$safeName(t));
+        }
+        return classNames;
+      })(this._name, this._tag).join(' '),
+      style: {
+        width: this._dimension.w + 'px',
+        height: this._dimension.h + 'px',
+        top: this._position.y + 'px',
+        left: this._position.x + 'px',
+        zIndex: getNextZindex(this._state.ontop)
+      },
+      data: {
+        window_id: this._wid,
+        allow_resize: this._properties.allow_resize,
+        allow_minimize: this._properties.allow_minimize,
+        allow_maximize: this._properties.allow_maximize,
+        allow_close: this._properties.allow_close
+      },
+      aria: {
+        role: 'application',
+        live: 'polite',
+        hidden: 'false'
       }
-      return classNames;
-    })(this._name, this._tag).join(' ');
-
-    this._$element.style.width = this._dimension.w + 'px';
-    this._$element.style.height = this._dimension.h + 'px';
-    this._$element.style.top = this._position.y + 'px';
-    this._$element.style.left = this._position.x + 'px';
-    this._$element.style.zIndex = getNextZindex(this._state.ontop);
-    this._$element.setAttribute('data-window-id', this._wid);
-    this._$element.setAttribute('data-allow-resize', this._properties.allow_resize ? 'true' : 'false');
-    this._$element.setAttribute('role', 'application');
-    this._$element.setAttribute('aria-live', 'polite');
-    this._$element.setAttribute('aria-hidden', 'false');
-    this._$element.setAttribute('data-allow-minimize', String(this._properties.allow_minimize));
-    this._$element.setAttribute('data-allow-maximize', String(this._properties.allow_maximize));
-    this._$element.setAttribute('data-allow-close', String(this._properties.allow_close));
-
-    var buttonMinimize = document.createElement('application-window-button-minimize');
-    buttonMinimize.className = 'application-window-button-entry';
-    buttonMinimize.setAttribute('role', 'button');
-    buttonMinimize.setAttribute('aria-label', 'Minimize Window');
-    buttonMinimize.setAttribute('data-action', 'minimize');
-
-    var buttonMaximize = document.createElement('application-window-button-maximize');
-    buttonMaximize.className = 'application-window-button-entry';
-    buttonMaximize.setAttribute('role', 'button');
-    buttonMaximize.setAttribute('aria-label', 'Maximize Window');
-    buttonMaximize.setAttribute('data-action', 'maximize');
-
-    var buttonClose = document.createElement('application-window-button-close');
-    buttonClose.className = 'application-window-button-entry';
-    buttonClose.setAttribute('role', 'button');
-    buttonClose.setAttribute('aria-label', 'Close Window');
-    buttonClose.setAttribute('data-action', 'close');
+    });
 
     this._$root = document.createElement('application-window-content');
-
     this._$resize = document.createElement('application-window-resize');
-
     this._$loading = document.createElement('application-window-loading');
-    Utils.$bind(this._$loading, 'mousedown', _noEvent);
-
-    var windowLoadingImage = document.createElement('application-window-loading-indicator');
-
     this._$disabled = document.createElement('application-window-disabled');
-    Utils.$bind(this._$disabled, 'mousedown', _noEvent);
-
     this._$top = document.createElement('application-window-top');
-
     this._$winicon = document.createElement('application-window-icon');
     this._$winicon.setAttribute('role', 'button');
     this._$winicon.setAttribute('aria-haspopup', 'true');
@@ -752,23 +730,11 @@
 
     var windowTitle = document.createElement('application-window-title');
     windowTitle.setAttribute('role', 'heading');
-    windowTitle.appendChild(document.createTextNode(this._title));
-
-    this._$top.appendChild(this._$winicon);
-    this._$top.appendChild(windowTitle);
-    this._$top.appendChild(buttonMinimize);
-    this._$top.appendChild(buttonMaximize);
-    this._$top.appendChild(buttonClose);
-
-    this._$loading.appendChild(windowLoadingImage);
-
-    this._$element.appendChild(this._$top);
-    this._$element.appendChild(this._$root);
-    this._$element.appendChild(this._$resize);
-    this._$element.appendChild(this._$disabled);
-    this._$element.appendChild(this._$loading);
 
     // Bind events
+    Utils.$bind(this._$loading, 'mousedown', _noEvent);
+    Utils.$bind(this._$disabled, 'mousedown', _noEvent);
+
     var preventTimeout;
     function _onanimationend(ev) {
       if ( typeof self._animationCallback === 'function') {
@@ -850,10 +816,52 @@
       }
     })(this._properties, this._$element, Utils.getCompability());
 
-    // Final stuff
+    // Append to DOM
+    windowTitle.appendChild(document.createTextNode(this._title));
 
+    this._$top.appendChild(this._$winicon);
+    this._$top.appendChild(windowTitle);
+    this._$top.appendChild(Utils.$create('application-window-button-minimize', {
+      className: 'application-window-button-entry',
+      data: {
+        action: 'minimize'
+      },
+      aria: {
+        role: 'button',
+        label: 'Minimize Window'
+      }
+    }));
+
+    this._$top.appendChild(Utils.$create('application-window-button-maximize', {
+      className: 'application-window-button-entry',
+      data: {
+        action: 'maximize'
+      },
+      aria: {
+        role: 'button',
+        label: 'Maximize Window'
+      }
+    }));
+
+    this._$top.appendChild(Utils.$create('application-window-button-close', {
+      className: 'application-window-button-entry',
+      data: {
+        action: 'close'
+      },
+      aria: {
+        role: 'button',
+        label: 'Close Window'
+      }
+    }));
+
+    this._$loading.appendChild(document.createElement('application-window-loading-indicator'));
+    this._$element.appendChild(this._$top);
+    this._$element.appendChild(this._$root);
+    this._$element.appendChild(this._$resize);
+    this._$element.appendChild(this._$disabled);
     document.body.appendChild(this._$element);
 
+    // Final stuff
     this._onChange('create');
     this._toggleLoading(false);
     this._toggleDisabled(false);
