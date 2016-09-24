@@ -425,16 +425,13 @@
    */
   OSjs.Utils.asyncs = function(queue, onentry, ondone) {
     onentry = onentry || function(e, i, n) {
-      n();
+      return n();
     };
-
-    ondone = ondone || function() {
-    };
+    ondone = ondone || function() {};
 
     var finished = [];
 
-    function next(i) {
-
+    (function next(i) {
       // Ensure that the given index is not run again!
       // This might occur if something is out of time
       if ( finished.indexOf(i) !== -1 ) {
@@ -443,8 +440,7 @@
       finished.push(i);
 
       if ( i >= queue.length ) {
-        ondone();
-        return;
+        return ondone();
       }
 
       try {
@@ -452,12 +448,55 @@
           next(i + 1);
         });
       } catch ( e ) {
-        console.warn('Utils::async()', 'Exception while stepping', e.stack, e);
+        console.warn('Utils::asyncs()', 'Exception while stepping', e.stack, e);
         next(i + 1);
+      }
+    })(0);
+  };
+
+  /**
+   * Run an async queue in parallel
+   *
+   * @function asyncp
+   * @memberof OSjs.Utils
+   *
+   * @param   {Array}       queue         The queue
+   * @param   {Object}      [opts]        Options
+   * @param   {Number}      [opts.max=3]  Maximum number of running entries
+   * @param   {Function}    onentry       Callback on step => fn(entry, index, fnNext)
+   * @param   {Function}    ondone        Callback on done => fn()
+   */
+  OSjs.Utils.asyncp = function(queue, opts, onentry, ondone) {
+    opts = opts || {};
+
+    var running = 0;
+    var max = opts.max || 3;
+    var qleft = Object.keys(queue);
+
+    function spawn(i, cb) {
+      function _done() {
+        running--;
+        cb();
+      }
+
+      running++;
+      try {
+        onentry(queue[i], i, _done);
+      } catch ( e ) {
+        console.warn('Utils::asyncp()', 'Exception while stepping', e.stack, e);
+        _done();
       }
     }
 
-    next(0);
+    (function check() {
+      if ( !qleft.length ) {
+        return ondone();
+      }
+      var d = Math.min(qleft.length, max - running);
+      for ( var i = 0; i < d; i++ ) {
+        spawn(qleft.shift(), check);
+      }
+    })();
   };
 
 })();
