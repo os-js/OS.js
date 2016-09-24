@@ -308,6 +308,66 @@
   };
 
   /**
+   * Creates a new DOM element
+   *
+   * @example
+   * Utils.$create('div', {
+   *  className: 'foo',
+   *  style: {
+   *    width: '200px'
+   *  },
+   *  data: {
+   *    custom_attribute: 'bar'
+   *  },
+   *  aria: {
+   *    role: 'button'
+   *  },
+   *  some_custom_attribute: 'baz'
+   * })
+   *
+   * @function $create
+   * @memberof OSjs.Utils
+   *
+   * @param   {String}    tagName     Tag Name
+   * @param   {Object}    properties  Tag Properties
+   *
+   * @return  {Node}
+   */
+  OSjs.Utils.$create = function(tagName, properties) {
+    var element = document.createElement(tagName);
+
+    function _foreach(dict, l) {
+      dict = dict || {};
+      Object.keys(dict).forEach(function(name) {
+        l(name.replace(/_/g, '-'), String(dict[name]));
+      });
+    }
+
+    _foreach(properties.style, function(key, val) {
+      element.style[key] = val;
+    });
+
+    _foreach(properties.aria, function(key, val) {
+      if ( (['role']).indexOf(key) !== -1 ) {
+        key = 'aria-' + key;
+      }
+      element.style[key] = val;
+    });
+
+    _foreach(properties.data, function(key, val) {
+      element.style['data-' + key] = val;
+    });
+
+    _foreach(properties, function(key, val) {
+      if ( (['style', 'aria', 'data']).indexOf(key) === -1 ) {
+        element[key] = val;
+      }
+    });
+
+    return element;
+  };
+
+  /**
    * Create a link stylesheet tag
    *
    * @function $createCSS
