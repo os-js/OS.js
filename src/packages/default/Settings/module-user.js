@@ -38,7 +38,8 @@
     group: 'user',
     name: 'User',
     label: 'LBL_USER',
-    icon: 'status/avatar-default.png',
+    icon: 'apps/user-info.png',
+    button: false,
 
     init: function() {
     },

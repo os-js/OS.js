@@ -16,6 +16,7 @@
       <gui-fragment data-fragment-external="module-theme.html" />
       <gui-fragment data-fragment-external="module-user.html" />
       <gui-fragment data-fragment-external="module-vfs.html" />
+      <gui-fragment data-fragment-external="module-users.html" />
     </gui-vbox-container>
 
     <gui-vbox-container data-shrink="1" data-align="end" data-id="ContainerButtons">
@@ -122,6 +123,47 @@
     <gui-vbox-container data-shrink="1" data-align="end">
       <gui-button-bar>
         <gui-button data-id="ButtonOK">LBL_CONNECT</gui-button>
+        <gui-button data-id="ButtonClose">LBL_CLOSE</gui-button>
+      </gui-button-bar>
+    </gui-vbox-container>
+  </gui-vbox>
+
+</application-window>
+
+<application-window data-id="SettingsUserWindow">
+  <gui-vbox>
+    <gui-vbox-container data-grow="1" data-shrink="1" data-fill="true">
+
+      <gui-scroll-view>
+        <gui-vbox>
+          <gui-vbox-container data-shrink="1">
+            <gui-label>LBL_USERNAME</gui-label>
+          </gui-vbox-container>
+          <gui-vbox-container data-expand="true">
+            <gui-text data-id="UserUsername" data-placeholder="johndoe"></gui-text>
+          </gui-vbox-container>
+
+          <gui-vbox-container data-shrink="1">
+            <gui-label>LBL_NAME</gui-label>
+          </gui-vbox-container>
+          <gui-vbox-container data-expand="true">
+            <gui-text data-id="UserName" data-placeholder="John Doe"></gui-text>
+          </gui-vbox-container>
+
+          <gui-vbox-container data-shrink="1">
+            <gui-label>LBL_GROUPS</gui-label>
+          </gui-vbox-container>
+          <gui-vbox-container data-expand="true">
+            <gui-text data-id="UserGroups" data-placeholder="[]"></gui-text>
+          </gui-vbox-container>
+
+        </gui-vbox>
+      </gui-scroll-view>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-align="end">
+      <gui-button-bar>
+        <gui-button data-id="ButtonOK">LBL_SAVE</gui-button>
         <gui-button data-id="ButtonClose">LBL_CLOSE</gui-button>
       </gui-button-bar>
     </gui-vbox-container>

@@ -98,10 +98,11 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var module = {
-    group: 'system',
+    group: 'user',
     name: 'Store',
     label: 'LBL_STORE',
     icon: 'apps/system-software-update.png',
+    button: false,
 
     init: function() {
     },

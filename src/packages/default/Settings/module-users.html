@@ -1,0 +1,29 @@
+<div data-module="Users">
+  <gui-expander data-label="LBL_USERS">
+    <gui-fragment data-fragment-id="ModuleUsersFragment"></gui-fragment>
+  </gui-expander>
+</div>
+
+<application-fragment data-id="ModuleUsersFragment">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-grow="1">
+      <gui-list-view data-id="UsersList" data-multiple="false">
+        <gui-list-view-head>
+          <gui-list-view-row>
+            <gui-list-view-column data-size="100px">LBL_USERNAME</gui-list-view-column>
+            <gui-list-view-column>LBL_NAME</gui-list-view-column>
+          </gui-list-view-row>
+        </gui-list-view-head>
+      </gui-list-view>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-button-bar>
+        <gui-button data-id="UsersAdd" data-icon="stock://16x16/actions/add.png"></gui-button>
+        <gui-button data-id="UsersRemove" data-icon="stock://16x16/actions/remove.png"></gui-button>
+        <gui-button data-id="UsersEdit" data-icon="stock://16x16/actions/system-run.png"></gui-button>
+        <gui-button data-id="UsersPasswd" data-icon="stock://16x16/status/dialog-password.png"></gui-button>
+      </gui-button-bar>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>

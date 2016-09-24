@@ -42,6 +42,7 @@
   display : none;
 }
 
+.ApplicationSettingsWindow application-window-content [data-id="UsersList"],
 .ApplicationSettingsWindow application-window-content [data-id="InstalledPackages"],
 .ApplicationSettingsWindow application-window-content [data-id="PackagePaths"],
 .ApplicationSettingsWindow application-window-content [data-id="PanelItems"],

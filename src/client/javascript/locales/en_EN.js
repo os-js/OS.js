@@ -457,7 +457,10 @@
     'LBL_LOCALE': 'Locale',
     'LBL_PACKAGE': 'Package',
     'LBL_PACKAGES': 'Packages',
-    'LBL_INPUT': 'Input'
+    'LBL_INPUT': 'Input',
+    'LBL_MISC': 'Misc',
+    'LBL_OTHER': 'Other',
+    'LBL_USERS': 'Users'
 
   };
 

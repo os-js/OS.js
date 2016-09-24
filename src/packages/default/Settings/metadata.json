@@ -50,6 +50,7 @@
     {"src": "module-store.js", "type": "javascript"},
     {"src": "module-panel.js", "type": "javascript"},
     {"src": "module-user.js", "type": "javascript"},
+    {"src": "module-users.js", "type": "javascript"},
     {"src": "main.css", "type": "stylesheet"},
     {"src": "scheme.html", "type": "scheme"}
   ]

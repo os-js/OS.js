@@ -121,7 +121,7 @@
       });
     });
 
-    return nwin._addChild(nwin, true, true);
+    return win._addChild(nwin, true, true);
   }
 
   function renderMounts(win, scheme) {

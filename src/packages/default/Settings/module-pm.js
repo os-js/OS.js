@@ -143,10 +143,11 @@
   /////////////////////////////////////////////////////////////////////////////
 
   var module = {
-    group: 'system',
+    group: 'misc',
     name: 'Packages',
     label: 'LBL_PACKAGES',
     icon: 'apps/system-software-install.png',
+    button: false,
 
     init: function() {
     },

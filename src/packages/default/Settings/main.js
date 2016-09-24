@@ -43,7 +43,7 @@
       label: 'LBL_USER'
     },
     misc: {
-      label: 'LBL_MISC'
+      label: 'LBL_OTHER'
     }
   };
 
@@ -64,8 +64,8 @@
     Window.apply(this, ['ApplicationSettingsWindow', {
       icon: metadata.icon,
       title: metadata.name,
-      width: 400,
-      height: 400,
+      width: 500,
+      height: 450,
       allow_resize: true
     }, app, scheme]);
   }
@@ -208,6 +208,12 @@
 
         _d(false);
         this._setTitle(found.name, true);
+
+        if ( found.button === false ) {
+          this._find('ButtonOK').hide();
+        } else {
+          this._find('ButtonOK').show();
+        }
       }
     } else {
       if ( !name ) { // Resets values to original (or current)
