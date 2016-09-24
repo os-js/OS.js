@@ -57,6 +57,20 @@ class DemoAPIHandler
     return Array(false, true);
   }
 
+  public static function users(Array $arguments) {
+    if ( in_array($arguments['command'], ['add', 'remove', 'edit', 'passwd']) ) {
+      return Array(false, true);
+    } else if ( $arguments['command'] == 'list' ) {
+      return Array(false, Array(
+        "id" => 0,
+        "username" => "demo",
+        "name" => "Demo User",
+        "groups" => Array("admin")
+      ));
+    }
+    return Array(false, true);
+  }
+
   /**
    * Demo handler allows EVERYTHING
    */
@@ -68,6 +82,7 @@ class DemoAPIHandler
 
 API::AddHandler('login', Array('DemoAPIHandler', 'login'));
 API::AddHandler('logout', Array('DemoAPIHandler', 'logout'));
+API::AddHandler('users', Array('DemoAPIHandler', 'users'));
 API::SetHandler('DemoAPIHandler');
 
 ?>

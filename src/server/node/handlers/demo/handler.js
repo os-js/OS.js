@@ -58,6 +58,7 @@
         callback(false, true);
       } else if ( args.command === 'list' ) {
         callback(false, [{
+          id: 0,
           username: server.handler.getUserName(server),
           name: server.handler.getUserName(server),
           groups: server.handler.getUserGroups(server)
