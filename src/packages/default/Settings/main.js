@@ -87,7 +87,7 @@
 
     // Adds all groups and their respective entries
     var container = document.createElement('div');
-    container.className = 'ListView';
+    container.className = 'ListView gui-generic-zebra-container';
 
     var containers = {};
     var tmpcontent = document.createDocumentFragment();
@@ -97,6 +97,7 @@
       var h = document.createElement('span');
       var d = document.createElement('div');
 
+      d.className = 'gui-generic-double-padded';
       h.appendChild(document.createTextNode(_(_groups[k].label)));
 
       containers[k] = c;
@@ -116,11 +117,14 @@
         s.appendChild(document.createTextNode(_(m.name)));
 
         var c = document.createElement('li');
+        c.className = 'gui-generic-hoverable';
         c.setAttribute('data-module', String(m.name));
         c.appendChild(i);
         c.appendChild(s);
 
         containers[m.group].appendChild(c);
+
+        root.querySelector('[data-module="' + m.name +  '"]').className  = 'gui-generic-padded';
 
         var settings = Utils.cloneObject(wm.getSettings());
         m.render(self, scheme, tmpcontent, settings, wm);

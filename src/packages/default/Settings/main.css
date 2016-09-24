@@ -54,25 +54,19 @@
   overflow : auto;
   height : 100%;
   width : 100%;
-  padding : 10px;
 }
 
 .ApplicationSettingsWindow application-window-content [data-id="ContainerSelection"] {
-  background : #fff;
 }
 
 .ApplicationSettingsWindow application-window-content .ListView {
   overflow : hidden;
   height : 100%;
+  width : 100%;
 }
   .ApplicationSettingsWindow application-window-content .ListView > div {
-    background : #f7f7f7;
     min-height : 32px;
-    padding : 10px;
     pointer-events: none;
-  }
-  .ApplicationSettingsWindow application-window-content .ListView > div:nth-child(2n+1) {
-    background : #fff;
   }
     .ApplicationSettingsWindow application-window-content .ListView > div > ul {
       list-style : none;
@@ -89,9 +83,6 @@
         width : 70px;
         height : 70px;
         pointer-events: all;
-      }
-      .ApplicationSettingsWindow application-window-content .ListView > div > ul > li:hover {
-        background : #eee;
       }
         .ApplicationSettingsWindow application-window-content .ListView > div > ul > li * {
           pointer-events : none;
