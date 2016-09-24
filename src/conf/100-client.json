@@ -13,7 +13,8 @@
       "IconURI": "themes/icons",
       "FontURI": "themes/fonts",
       "PackageURI": "packages",
-      "AppendVersion":""
+      "AppendVersion":"",
+      "PreloadParallel": 3
     },
 
     "BugReporting": true,

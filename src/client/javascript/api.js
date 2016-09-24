@@ -769,6 +769,13 @@
       delete args.__preload__;
     }
 
+    pargs.max = (function(p) {
+      if ( p === true ) {
+        p = API.getConfig('Connection.PreloadParallel');
+      }
+      return p;
+    })(metadata.preloadParallel);
+
     // Main blob
     try {
       _preLaunch(function() {
