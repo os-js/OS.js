@@ -430,16 +430,18 @@
     ondone = ondone || function() {};
 
     var finished = [];
+    var isdone = false;
 
     (function next(i) {
       // Ensure that the given index is not run again!
       // This might occur if something is out of time
-      if ( finished.indexOf(i) !== -1 ) {
+      if ( isdone || finished.indexOf(i) !== -1 ) {
         return;
       }
       finished.push(i);
 
       if ( i >= queue.length ) {
+        isdone = true;
         return ondone();
       }
 
@@ -473,6 +475,7 @@
     var max = opts.max || 3;
     var qleft = Object.keys(queue);
     var finished = [];
+    var isdone = false;
 
     function spawn(i, cb) {
       function _done() {
@@ -496,9 +499,10 @@
 
     (function check() {
       if ( !qleft.length ) {
-        if ( running ) {
+        if ( running || isdone ) {
           return;
         }
+        isdone = true;
         return ondone();
       }
 

@@ -254,7 +254,7 @@
     var _CACHE = {};
 
     function checkCache(item, args) {
-      if ( _LOADED[item.src] === true ) {
+      if ( item && _LOADED[item.src] === true ) {
         if ( item.force !== true && args.force !== true ) {
           return true;
         }
@@ -418,17 +418,19 @@
           next();
         }
 
-        console.debug('->', item);
+        if ( item ) {
+          console.debug('->', item);
 
-        if ( checkCache(item, args) ) {
-          return _onentryloaded(true, item.src);
-        } else {
-          if ( preloadTypes[item.type] ) {
-            return preloadTypes[item.type](item, _onentryloaded, args);
+          if ( checkCache(item, args) ) {
+            return _onentryloaded(true, item.src);
+          } else {
+            if ( preloadTypes[item.type] ) {
+              return preloadTypes[item.type](item, _onentryloaded, args);
+            }
           }
-        }
 
-        failed.push(item.src);
+          failed.push(item.src);
+        }
         return next();
       }, function() {
         console.groupEnd();
