@@ -351,11 +351,11 @@
       if ( (['role']).indexOf(key) !== -1 ) {
         key = 'aria-' + key;
       }
-      element.style[key] = val;
+      element.setAttribute(key, val);
     });
 
     _foreach(properties.data, function(key, val) {
-      element.style['data-' + key] = val;
+      element.setAttribute('data-' + key, val);
     });
 
     _foreach(properties, function(key, val) {
