@@ -401,7 +401,7 @@
       console.group('Utils::preload()', len);
 
       var data = [];
-      OSjs.Utils.asyncs(list, function(item, index, next) {
+      OSjs.Utils.asyncp(list, {max: args.max || 1}, function(item, index, next) {
         function _onentryloaded(state, src, setData) {
           onprogress(index, len, src);
           (state ? succeeded : failed).push(src);
