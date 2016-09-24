@@ -140,8 +140,10 @@
     });
 
     Utils.$bind(container, 'click', function(ev) {
-      if ( ev.target && ev.target.tagName === 'LI' && ev.target.hasAttribute('data-module') ) {
-        var m = ev.target.getAttribute('data-module');
+      var t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
+      if ( t && t.tagName === 'LI' && t.hasAttribute('data-module') ) {
+        ev.preventDefault();
+        var m = t.getAttribute('data-module');
         self.onModuleSelect(m);
       }
     }, true);
