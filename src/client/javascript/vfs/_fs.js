@@ -774,9 +774,12 @@
    * @memberof OSjs.VFS
    * @alias OSjs.VFS.unlink
    */
-  VFS['delete'] = function(item, callback) {
-    VFS.unlink.apply(this, arguments);
-  };
+  (function() {
+    /*eslint dot-notation: "off"*/
+    VFS['delete'] = function(item, callback) {
+      VFS.unlink.apply(this, arguments);
+    };
+  })();
 
   /**
    * Create Directory

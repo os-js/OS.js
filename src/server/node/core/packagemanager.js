@@ -168,6 +168,7 @@
         }
 
         _fs.mkdir(destPath.root, function() {
+          /*eslint new-cap: "off"*/
           try {
             _fs.createReadStream(zipPath.root).pipe(_unzip.Extract({
               path: destPath.root

@@ -632,6 +632,7 @@
 
       // A two digit representation of a year (Examples: 99 or 03)
       y: function(s) {
+        /*eslint new-cap: "off"*/
         return String(map.Y(s)).slice(2);
       },
 
@@ -641,6 +642,7 @@
 
       // Lowercase Ante meridiem and Post meridiem (am or pm)
       a: function(s) {
+        /*eslint new-cap: "off"*/
         return map.G(s) < 12 ? 'am' : 'pm';
       },
 
@@ -651,6 +653,7 @@
 
       // 12-hour format of an hour without leading zeros (1 through 12)
       g: function(s) {
+        /*eslint new-cap: "off"*/
         return map.G(s) % 12 || 12;
       },
 
@@ -666,6 +669,7 @@
 
       // 24-hour format of an hour with leading zeros (00 through 23)
       H: function(s) {
+        /*eslint new-cap: "off"*/
         return pad(map.G(s));
       },
 

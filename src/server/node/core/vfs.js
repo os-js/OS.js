@@ -35,7 +35,7 @@
    */
 
   function readExif(path, mime, cb) {
-    /*eslint no-new: "warn"*/
+    /*eslint no-new: "off"*/
 
     if ( mime.match(/^image/) ) {
       try {

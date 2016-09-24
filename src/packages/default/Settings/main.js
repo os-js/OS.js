@@ -353,16 +353,6 @@
     }, false);
   };
 
-  ApplicationSettings.prototype.mount = function(win) {
-    var found = this._getWindowByName('ApplicationFileManagerMountWindow');
-    if ( found ) {
-      found._focus();
-      return;
-    }
-
-    this._addWindow(new MountWindow(this, this.__metadata, this.__scheme));
-  };
-
   ApplicationSettings.prototype.setModule = function(m) {
     this.currentModule = m;
   };

@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(Utils, API) {
+  /*eslint no-use-before-define: "off"*/
   'use strict';
 
   /**

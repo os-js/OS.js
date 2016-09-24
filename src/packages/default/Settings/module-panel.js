@@ -33,6 +33,7 @@
   var panelItems = [];
   var items = [];
   var max = 0;
+  var panel;
 
   /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
@@ -120,14 +121,6 @@
     win._find('PanelButtonDown').set('disabled', idx < 0 || idx >= max);
   }
 
-  function movePanelItem(win, index, pos) {
-    var value = panelItems[index];
-    var newIndex = index + pos;
-    panelItems.splice(index, 1);
-    panelItems.splice(newIndex, 0, value);
-    renderItems(win, newIndex);
-  }
-
   function renderItems(win, setSelected) {
     var list = [];
 
@@ -156,6 +149,14 @@
     } else {
       checkSelection(win, -1);
     }
+  }
+
+  function movePanelItem(win, index, pos) {
+    var value = panelItems[index];
+    var newIndex = index + pos;
+    panelItems.splice(index, 1);
+    panelItems.splice(newIndex, 0, value);
+    renderItems(win, newIndex);
   }
 
   function createDialog(win, scheme, cb) {
@@ -191,7 +192,8 @@
     },
 
     update: function(win, scheme, settings, wm) {
-      var panel = settings.panels[0];
+      panel = settings.panels[0];
+
       var opacity = 85;
       if ( typeof panel.options.opacity === 'number' ) {
         opacity = panel.options.opacity;

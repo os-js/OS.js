@@ -119,6 +119,7 @@
    * @memberof API
    */
   module.exports.application = function(server, args, callback) {
+    /*eslint dot-notation: "off"*/
     var apath = args.path || null;
     var ameth = args.method || null;
     var aargs = args['arguments'] || [];

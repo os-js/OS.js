@@ -35,6 +35,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   function ApplicationWriterWindow(app, metadata, scheme, file) {
+    /*eslint dot-notation: "off"*/
     var config = OSjs.Core.getConfig();
 
     DefaultApplicationWindow.apply(this, ['ApplicationWriterWindow', {

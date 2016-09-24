@@ -998,7 +998,8 @@
   };
 
   CoreWM.prototype.setStyles = function(settings) {
-    /*jshint sub:true*/
+    /*eslint dot-notation: "off"*/
+
     var styles = {};
     var raw = '';
 

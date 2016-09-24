@@ -447,7 +447,8 @@
     'LBL_REPOSITORY': 'Repository',
     'LBL_VERSION': 'Version',
     'LBL_AUTHOR': 'Author',
-    'LBL_GROUPS': 'Groups'
+    'LBL_GROUPS': 'Groups',
+    'LBL_AUTOHIDE': 'Autohide'
 
   };
 
