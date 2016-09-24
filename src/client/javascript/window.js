@@ -114,26 +114,13 @@
   }
 
   /**
-   * Get CSS animation duration
-   */
-  function getAnimDuration() {
-    var wm = OSjs.Core.getWindowManager();
-    if ( wm ) {
-      return wm.getAnimDuration();
-    }
-    return 301;
-  }
-
-  /**
    * Wrapper to wait for animations to finish
    */
-  function waitForAnimation(cb) {
+  function waitForAnimation(win, cb) {
     var wm = OSjs.Core.getWindowManager();
     var anim = wm ? wm.getSetting('animations') : false;
     if ( anim ) {
-      setTimeout(function() {
-        cb();
-      }, getAnimDuration());
+      win._animationCallback = cb;
     } else {
       cb();
     }
@@ -570,6 +557,8 @@
         onbottom  : false
       };
 
+      this._animationCallback = null;
+
       //
       // Internals
       //
@@ -780,6 +769,19 @@
     this._$element.appendChild(this._$loading);
 
     // Bind events
+    var preventTimeout;
+    function _onanimationend(ev) {
+      if ( typeof self._animationCallback === 'function') {
+        clearTimeout(preventTimeout);
+        preventTimeout = setTimeout(function() {
+          self._animationCallback(ev);
+          self._animationCallback = false;
+        }, 10);
+      }
+    }
+
+    Utils.$bind(this._$element, 'transitionend', _onanimationend);
+    Utils.$bind(this._$element, 'animationend', _onanimationend);
 
     Utils.$bind(this._$element, 'mousedown', function(ev) {
       self._focus();
@@ -980,9 +982,9 @@
       var anim = wm ? wm.getSetting('animations') : false;
       if ( anim ) {
         this._$element.setAttribute('data-hint', 'closing');
-        setTimeout(function() {
+        this._animationCallback = function() {
           _removeDOM();
-        }, getAnimDuration());
+        };
       } else {
         this._$element.style.display = 'none';
         _removeDOM();
@@ -1305,7 +1307,7 @@
     this._state.minimized = true;
     this._$element.setAttribute('data-minimized', 'true');
 
-    waitForAnimation(function() {
+    waitForAnimation(this, function() {
       self._$element.style.display = 'none';
       self._emit('minimize');
     });
@@ -1365,7 +1367,7 @@
 
     this._focus();
 
-    waitForAnimation(function() {
+    waitForAnimation(this, function() {
       self._emit('maximize');
     });
 
@@ -1418,7 +1420,7 @@
     restoreMaximized();
     restoreMinimized();
 
-    waitForAnimation(function() {
+    waitForAnimation(this, function() {
       self._emit('restore');
     });
 
@@ -1602,9 +1604,9 @@
       var wm = OSjs.Core.getWindowManager();
       var anim = wm ? wm.getSetting('animations') : false;
       if ( anim ) {
-        setTimeout(function() {
+        this._animationCallback = function() {
           self._emit('resized');
-        }, getAnimDuration());
+        };
       } else {
         self._emit('resized');
       }

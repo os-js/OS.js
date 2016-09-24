@@ -145,6 +145,12 @@ application-window[data-minimized="true"] {
     -moz-animation: hide .3s;
      -ms-animation: hide .3s;
          animation: hide .3s;
+
+  -webkit-animation-fill-mode: forwards;
+     -moz-animation-fill-mode: forwards;
+      -ms-animation-fill-mode: forwards;
+       -o-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
 }
 
 .WindowDropRect {
@@ -204,10 +210,16 @@ corewm-notification-entry {
          animation: fadeIn .3s;
 }
 gui-menu[data-hint="closing"],
-corewm-notification-entry[data-hint="closing"] {
+corewm-notification[data-hint="closing"] {
  -webkit-animation: fadeOut .3s;
     -moz-animation: fadeOut .3s;
      -ms-animation: fadeOut .3s;
          animation: fadeOut .3s;
+
+  -webkit-animation-fill-mode: forwards;
+     -moz-animation-fill-mode: forwards;
+      -ms-animation-fill-mode: forwards;
+       -o-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
 }
 

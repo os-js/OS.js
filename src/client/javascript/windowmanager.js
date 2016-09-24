@@ -1079,24 +1079,6 @@
   };
 
   /**
-   * Get CSS animation duration
-   *
-   * @function getAnimDuration
-   * @memberof OSjs.Core.WindowManager#
-   *
-   * @return {Number} Duration length in ms
-   */
-  WindowManager.prototype.getAnimDuration = function() {
-    var theme = this.getStyleTheme(true);
-    if ( theme && theme.style && theme.style.animation ) {
-      if ( typeof theme.style.animation.duration === 'number' ) {
-        return theme.style.animation.dudation;
-      }
-    }
-    return 301;
-  };
-
-  /**
    * If the pointer is inside the browser window
    *
    * @function getMouseLocked

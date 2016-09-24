@@ -414,7 +414,7 @@
               iter._move(iter._position.x, space.top);
             }
           });
-        }, this.getAnimDuration() + 100);
+        }, 800);
       }
 
       if ( this.iconView ) {
@@ -446,7 +446,7 @@
       if ( self.iconView ) {
         self.iconView.resize(self);
       }
-    }, this.getAnimDuration() + 500);
+    }, 1000);
   };
 
   //
@@ -689,6 +689,8 @@
       var timeout    = null;
       var wm         = OSjs.Core.getWindowManager();
 
+      var animationCallback = null;
+
       function _remove() {
         if ( timeout ) {
           clearTimeout(timeout);
@@ -697,6 +699,7 @@
 
         container.onclick = null;
         function _removeDOM() {
+          Utils.$unbind(container);
           if ( container.parentNode ) {
             container.parentNode.removeChild(container);
           }
@@ -709,9 +712,9 @@
         var anim = wm ? wm.getSetting('animations') : false;
         if ( anim ) {
           container.setAttribute('data-hint', 'closing');
-          setTimeout(function() {
+          animationCallback = function() {
             _removeDOM();
-          }, wm.getAnimDuration());
+          };
         } else {
           container.style.display = 'none';
           _removeDOM();
@@ -762,6 +765,20 @@
 
         opts.onClick(ev);
       };
+
+      var preventTimeout;
+      function _onanimationend(ev) {
+        if ( typeof self._animationCallback === 'function') {
+          clearTimeout(preventTimeout);
+          preventTimeout = setTimeout(function() {
+            animationCallback(ev);
+            animationCallback = false;
+          }, 10);
+        }
+      }
+
+      Utils.$bind(container, 'transitionend', _onanimationend);
+      Utils.$bind(container, 'animationend', _onanimationend);
 
       var space = this.getWindowSpace(true);
       this._$notifications.style.marginTop = String(space.top) + 'px';
