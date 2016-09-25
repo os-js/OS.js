@@ -493,8 +493,26 @@
    * Initializes the PackageManager
    */
   function initPackageManager(cfg, callback) {
-    OSjs.Core.getPackageManager().load(function(result, error) {
-      callback(error, result);
+    OSjs.Core.getPackageManager().load(function(result, error, pm) {
+      if ( error ) {
+        callback(error, result);
+        return;
+      }
+
+      var list = OSjs.API.getConfig('PreloadOnBoot', []);
+      OSjs.Utils.asyncs(list, function(iter, index, next) {
+        var pkg = pm.getPackage(iter);
+        if ( pkg && pkg.preload ) {
+          OSjs.Utils.preload(pkg.preload, next);
+        } else {
+          next();
+        }
+      }, function() {
+        setTimeout(function() {
+          callback(false, true);
+        }, 0);
+      });
+
     });
   }
 

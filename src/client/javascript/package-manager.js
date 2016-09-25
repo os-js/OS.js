@@ -81,7 +81,7 @@
         function loadMetadata(cb) {
           self._loadMetadata(function(err) {
             if ( err ) {
-              callback(err);
+              callback(err, false, PackageManager);
               return;
             }
 
@@ -91,13 +91,13 @@
               return;
             }
 
-            callback(false, 'No packages found!');
+            callback(false, 'No packages found!', PackageManager);
           });
         }
 
         loadMetadata(function() {
           self._loadExtensions(function() {
-            callback(true);
+            callback(true, false, PackageManager);
           });
         });
       },

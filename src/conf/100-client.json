@@ -21,6 +21,8 @@
     "ShowQuitWarning": false,
     "ReloadOnShutdown": false,
 
+    "PreloadOnBoot": [],
+
     "Watermark": {
       "enabled": true,
       "lines": [
