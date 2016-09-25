@@ -30,6 +30,40 @@
 (function(Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
+  var sounds = {};
+
+  function renderList(win, scheme) {
+    win._find('SoundsList').clear().add(Object.keys(sounds).map(function(name) {
+      return {
+        value: {
+          name: name,
+          value: sounds[name]
+        },
+        columns: [
+          {label: name},
+          {label: sounds[name]}
+        ]
+      };
+    }));
+  }
+
+  function editList(win, scheme, key) {
+    // TODO Locales
+    win._toggleDisabled(true);
+    API.createDialog('Input', {
+      message: 'Enter filename for: ' + key.name,
+      value: key.value
+    }, function(ev, button, value) {
+      win._toggleDisabled(false);
+      value = value || '';
+      if ( value.length ) {
+        sounds[key.name] = value;
+      }
+
+      renderList(win, scheme);
+    })
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // MODULE
   /////////////////////////////////////////////////////////////////////////////
@@ -46,6 +80,10 @@
     update: function(win, scheme, settings, wm) {
       win._find('SoundThemeName').set('value', settings.soundTheme);
       win._find('EnableSounds').set('value', settings.enableSounds);
+
+      sounds = Utils.cloneObject(settings.sounds);
+
+      renderList(win, scheme);
     },
 
     render: function(win, scheme, root, settings, wm) {
@@ -56,11 +94,22 @@
       })(wm.getSoundThemes());
 
       win._find('SoundThemeName').add(soundThemes);
+
+      win._find('SoundsEdit').on('click', function() {
+        var selected = win._find('SoundsList').get('selected');
+        if ( selected ) {
+          editList(win, scheme, selected[0].data);
+        }
+      });
     },
 
     save: function(win, scheme, settings, wm) {
       settings.soundTheme = win._find('SoundThemeName').get('value');
       settings.enableSounds = win._find('EnableSounds').get('value');
+
+      if ( sounds && Object.keys(sounds).length ) {
+        settings.sounds = sounds;
+      }
     }
   };
 
