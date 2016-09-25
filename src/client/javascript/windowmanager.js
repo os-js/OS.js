@@ -904,6 +904,19 @@
   };
 
   /**
+   * Gets sound filename from key
+   *
+   * @param  {String}     k       Sound name key
+   * @function getSoundName
+   * @memberof OSjs.Core.WindowManager#
+   *
+   * @return  {String}
+   */
+  WindowManager.prototype.getSoundFilename = function(k) {
+    return null;
+  };
+
+  /**
    * Gets current Icon theme
    *
    * @function getIconTheme

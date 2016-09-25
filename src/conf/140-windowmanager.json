@@ -37,6 +37,11 @@
           "SAVE": "CTRL+S",
           "OPEN": "CTRL+O"
         },
+        "sounds": {
+          "LOGOUT": "service-logout",
+          "LOGIN": "service-login",
+          "ERROR": "dialog-warning"
+        },
         "panels": [
           {
             "options": {

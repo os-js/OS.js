@@ -75,7 +75,7 @@
       height: error ? 400 : 200
     }, args, callback]);
 
-    this._sound = 'dialog-warning';
+    this._sound = 'ERROR';
     this._soundVolume = 1.0;
 
     this.traceMessage = error;

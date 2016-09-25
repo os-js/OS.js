@@ -513,7 +513,7 @@
    */
   function initSession(config, callback) {
     console.debug('initSession()');
-    OSjs.API.playSound('service-login');
+    OSjs.API.playSound('LOGIN');
 
     var list = [];
 

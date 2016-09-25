@@ -1488,14 +1488,11 @@
    */
   API.playSound = function _apiPlaySound(name, volume) {
     var compability = Utils.getCompability();
-    if ( !compability.audio ) {
-      console.debug('API::playSound()', 'Browser has no support for sounds!');
-      return false;
-    }
-
     var wm = OSjs.Core.getWindowManager();
-    if ( wm && !wm.getSetting('enableSounds') ) {
-      console.debug('API::playSound()', 'Window Manager has disabled sounds!');
+    var filename = wm ? wm.getSoundFilename(name) : null;
+
+    if ( !wm || !compability.audio || !wm.getSetting('enableSounds') || !filename ) {
+      console.debug('API::playSound()', 'Cannot play sound!');
       return false;
     }
 
@@ -1503,8 +1500,9 @@
       volume = 1.0;
     }
 
-    var f = OSjs.API.getSound(name);
-    console.debug('API::playSound()', name, f);
+    var f = OSjs.API.getSound(filename);
+    console.debug('API::playSound()', name, filename, f, volume);
+
     var a = new Audio(f);
     a.volume = volume;
     a.play();
@@ -1636,7 +1634,7 @@
     var wm = OSjs.Core.getWindowManager();
 
     function signOut(save) {
-      OSjs.API.playSound('service-logout');
+      OSjs.API.playSound('LOGOUT');
 
       handler.logout(save, function() {
         OSjs.API.shutdown();

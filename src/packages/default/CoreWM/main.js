@@ -1191,11 +1191,10 @@
     if ( returnMetadata ) {
       var found = null;
       if ( name ) {
-        this.getStyleThemes().some(function(t) {
+        this.getStyleThemes().forEach(function(t) {
           if ( t && t.name === name ) {
             found = t;
           }
-          return found ? false : true;
         });
       }
       return found;
@@ -1209,6 +1208,11 @@
 
   CoreWM.prototype.getIconTheme = function() {
     return this.getSetting('iconTheme') || 'default';
+  };
+
+  CoreWM.prototype.getSoundFilename = function(k) {
+    var sounds = this.getSetting('sounds') || {};
+    return sounds[k] || null;
   };
 
   /////////////////////////////////////////////////////////////////////////////
