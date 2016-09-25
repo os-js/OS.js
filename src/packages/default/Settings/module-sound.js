@@ -48,10 +48,10 @@
   }
 
   function editList(win, scheme, key) {
-    // TODO Locales
+    var _ = OSjs.Applications.ApplicationSettings._;
     win._toggleDisabled(true);
     API.createDialog('Input', {
-      message: 'Enter filename for: ' + key.name,
+      message: _('Enter filename for:') + ' ' + key.name,
       value: key.value
     }, function(ev, button, value) {
       win._toggleDisabled(false);

@@ -30,8 +30,6 @@
 (function(Application, Window, Utils, API, User, GUI) {
   'use strict';
 
-  // TODO: Locales
-
   function renderUsers(win, scheme) {
     API.call('users', {command: 'list'}, function(err, users) {
       if ( users instanceof Array ) {
@@ -49,12 +47,14 @@
   }
 
   function showDialog(win, scheme, data, passwd) {
+    var _ = OSjs.Applications.ApplicationSettings._;
+
     data = data || {};
     win._toggleDisabled(true);
 
     if ( passwd ) {
       API.createDialog('Input', {
-        message: 'Set user password',
+        message: _('Set user password'),
         type: 'password'
       }, function(ev, button, value) {
         if ( !value ) {
@@ -65,7 +65,7 @@
         API.call('users', {command: 'passwd', user: {password: value}}, function(err, users) {
           win._toggleDisabled(false);
           if ( err ) {
-            API.error('Settings', 'Error while managing users', err);
+            API.error('Settings', _('Error while managing users'), err);
           }
           renderUsers(win, scheme);
         });
@@ -115,7 +115,7 @@
 
         API.call('users', {command: 'edit', user: data}, function(err, users) {
           if ( err ) {
-            API.error('Settings', 'Error while managing users', err);
+            API.error('Settings', _('Error while managing users'), err);
           }
           renderUsers(win, scheme);
 
@@ -128,9 +128,11 @@
   }
 
   function removeUser(win, scheme, data) {
+    var _ = OSjs.Applications.ApplicationSettings._;
+
     API.call('users', {command: 'remove', user: {id: data.id}}, function(err, users) {
       if ( err ) {
-        API.error('Settings', 'Error while managing users', err);
+        API.error('Settings', _('Error while managing users'), err);
       }
       renderUsers(win, scheme);
     });

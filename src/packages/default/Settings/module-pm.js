@@ -35,10 +35,10 @@
   function updateEnabledStates() {
     var pacman = OSjs.Core.getPackageManager();
     var sm = OSjs.Core.getSettingsManager();
-    var pool = sm.instance('Packages', {hidden: []});
+    var pool = sm.instance('PackageManager', {Hidden: []});
 
     list = pacman.getPackages(false);
-    hidden = pool.get('hidden');
+    hidden = pool.get('Hidden');
   }
 
   function renderInstalled(win, scheme) {
@@ -160,7 +160,7 @@
     render: function(win, scheme, root, settings, wm) {
       var pacman = OSjs.Core.getPackageManager();
       var sm = OSjs.Core.getSettingsManager();
-      var pool = sm.instance('Packages', {hidden: []}); // TODO: Move to PackageManager pool
+      var pool = sm.instance('PackageManager', {Hidden: []});
 
       win._find('ButtonUninstall').on('click', function() {
         var selected = win._find('InstalledPackages').get('selected');
@@ -197,7 +197,7 @@
 
       win._find('ButtonSaveHidden').on('click', function() {
         win._toggleLoading(true);
-        pool.set('hidden', hidden, function() {
+        pool.set('Hidden', hidden, function() {
           win._toggleLoading(false);
         });
       });

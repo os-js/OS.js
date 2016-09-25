@@ -383,7 +383,7 @@
        * @return {Metadata[]}
        */
       getPackages: function(filtered) {
-        var hidden = OSjs.Core.getSettingsManager().instance('Packages', {hidden: []}).get('hidden');
+        var hidden = OSjs.Core.getSettingsManager().instance('PackageManager').get('Hidden', []);
         var p = Utils.cloneObject(packages);
 
         function allowed(i, iter) {
