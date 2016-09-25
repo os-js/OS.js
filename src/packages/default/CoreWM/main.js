@@ -978,8 +978,8 @@
 
   CoreWM.prototype.setTheme = function(settings) {
     if ( this.$themeLink ) {
-      if ( settings.theme ) {
-        this.setThemeLink(API.getThemeCSS(settings.theme));
+      if ( settings.styleTheme ) {
+        this.setThemeLink(API.getThemeCSS(settings.styleTheme));
       } else {
         console.warn('NO THEME WAS SELECTED!');
       }
@@ -1187,11 +1187,11 @@
   };
 
   CoreWM.prototype.getStyleTheme = function(returnMetadata) {
-    var name = this.getSetting('theme') || null;
+    var name = this.getSetting('styleTheme') || null;
     if ( returnMetadata ) {
       var found = null;
       if ( name ) {
-        this.getStyleThemes().forEach(function(t) {
+        this.getStyleThemes().some(function(t) {
           if ( t && t.name === name ) {
             found = t;
           }
@@ -1204,11 +1204,11 @@
   };
 
   CoreWM.prototype.getSoundTheme = function() {
-    return this.getSetting('sounds') || 'default';
+    return this.getSetting('soundTheme') || 'default';
   };
 
   CoreWM.prototype.getIconTheme = function() {
-    return this.getSetting('icons') || 'default';
+    return this.getSetting('iconTheme') || 'default';
   };
 
   /////////////////////////////////////////////////////////////////////////////

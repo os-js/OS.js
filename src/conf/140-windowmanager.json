@@ -2,7 +2,9 @@
   "client" : {
     "SettingsManager": {
       "CoreWM": {
-        "theme": "default",
+        "styleTheme": "default",
+        "iconTheme": "default",
+        "soundTheme": "default",
         "animations": true,
         "fullscreen": true,
         "desktopMargin": 5,
@@ -11,8 +13,6 @@
         "icon": "osjs-white.png",
         "backgroundColor": "#572a79",
         "fontFamily": "Karla",
-        "icons": "default",
-        "sounds": "default",
         "background": "image-fill",
         "windowCornerSnap": 0,
         "windowSnap": 0,

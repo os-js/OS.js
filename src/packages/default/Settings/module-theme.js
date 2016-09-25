@@ -49,8 +49,8 @@
       win._find('BackgroundColor').set('value', settings.backgroundColor);
       win._find('FontName').set('value', settings.fontFamily);
 
-      win._find('StyleThemeName').set('value', settings.theme);
-      win._find('IconThemeName').set('value', settings.icons);
+      win._find('StyleThemeName').set('value', settings.styleTheme);
+      win._find('IconThemeName').set('value', settings.iconTheme);
 
       win._find('EnableTouchMenu').set('value', settings.useTouchMenu);
 
@@ -119,8 +119,8 @@
     },
 
     save: function(win, scheme, settings, wm) {
-      settings.theme = win._find('StyleThemeName').get('value');
-      settings.icons = win._find('IconThemeName').get('value');
+      settings.styleTheme = win._find('StyleThemeName').get('value');
+      settings.iconTheme = win._find('IconThemeName').get('value');
       settings.useTouchMenu = win._find('EnableTouchMenu').get('value');
       settings.wallpaper = win._find('BackgroundImage').get('value');
       settings.backgroundColor = win._find('BackgroundColor').get('value');

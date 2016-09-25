@@ -44,7 +44,7 @@
     },
 
     update: function(win, scheme, settings, wm) {
-      win._find('SoundThemeName').set('value', settings.sounds);
+      win._find('SoundThemeName').set('value', settings.soundTheme);
       win._find('EnableSounds').set('value', settings.enableSounds);
     },
 
@@ -59,7 +59,7 @@
     },
 
     save: function(win, scheme, settings, wm) {
-      settings.sounds = win._find('SoundThemeName').get('value');
+      settings.soundTheme = win._find('SoundThemeName').get('value');
       settings.enableSounds = win._find('EnableSounds').get('value');
     }
   };
