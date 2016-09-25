@@ -242,13 +242,13 @@
    * Window key
    */
   DefaultApplicationWindow.prototype._onKeyEvent = function(ev, type, shortcut) {
-    if ( shortcut === 'save' ) {
+    if ( shortcut === 'SAVE' ) {
       this._app.saveDialog(this.currentFile, this, !this.currentFile);
       return false;
-    } else if ( shortcut === 'saveas' ) {
+    } else if ( shortcut === 'SAVEAS' ) {
       this._app.saveDialog(this.currentFile, this, true);
       return false;
-    } else if ( shortcut === 'open' ) {
+    } else if ( shortcut === 'OPEN' ) {
       this._app.openDialog(this.currentFile, this);
       return false;
     }

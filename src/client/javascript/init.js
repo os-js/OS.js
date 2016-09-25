@@ -129,15 +129,6 @@
       var wm  = OSjs.Core.getWindowManager();
       var win = wm ? wm.getCurrentWindow() : null;
 
-      function sendKey(special) {
-        if ( wm ) {
-          wm.onKeyDown(ev, win, special);
-          if ( win ) {
-            return win._onKeyEvent(ev, 'keydown', special);
-          }
-        }
-      }
-
       function checkPrevent() {
         var d = ev.srcElement || ev.target;
         var doPrevent = d.tagName === 'BODY' ? true : false;
@@ -157,26 +148,20 @@
         return false;
       }
 
-      function checkShortcut() {
-        if ( ((ev.keyCode === 115 || ev.keyCode === 83) && ev.ctrlKey) || ev.keyCode === 19 ) {
-          if ( ev.shiftKey ) {
-            return 'saveas';
-          } else {
-            return 'save';
+      var reacted = (function() {
+        var combination = null;
+        if ( wm ) {
+          combination = wm.onKeyDown(ev, win);
+          if ( win && !combination ) {
+            win._onKeyEvent(ev, 'keydown');
           }
-        } else if ( (ev.keyCode === 79 || ev.keyCode === 83) && ev.ctrlKey ) {
-          return 'open';
         }
-        return false;
-      }
+        return combination;
+      })();
 
-      var shortcut = checkShortcut();
-      if ( checkPrevent() || shortcut ) {
+      if ( checkPrevent() || reacted ) {
         ev.preventDefault();
       }
-
-      // WindowManager and Window must always recieve events
-      sendKey(shortcut);
 
       return true;
     },

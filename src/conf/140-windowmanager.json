@@ -32,7 +32,10 @@
           "WINDOW_RESTORE": "ALT+R",
           "WINDOW_MAXIMIZE": "ALT+M",
           "SEARCH": "F3",
-          "SWITCHER": "ALT+TILDE"
+          "SWITCHER": "ALT+TILDE",
+          "SAVEAS": "CTRL+SHIFT+S",
+          "SAVE": "CTRL+S",
+          "OPEN": "CTRL+O"
         },
         "panels": [
           {

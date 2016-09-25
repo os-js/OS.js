@@ -70,6 +70,11 @@
 
     this.generatedHotkeyMap = {};
 
+    function _winGenericHotkey(ev, win, wm, hotkey) {
+      if ( win ) {
+        win._onKeyEvent(ev, 'keydown', hotkey);
+      }
+    }
     this.hotkeyMap = {
       SEARCH: function(ev, win, wm) {
         if ( wm ) {
@@ -122,7 +127,10 @@
         if ( win ) {
           win._moveTo('bottom');
         }
-      }
+      },
+      SAVE: _winGenericHotkey,
+      SAVEAS: _winGenericHotkey,
+      OPEN: _winGenericHotkey
     };
 
     this._$notifications    = document.createElement('corewm-notifications');
@@ -611,19 +619,21 @@
   };
 
   CoreWM.prototype.onKeyDown = function(ev, win) {
-    if ( !ev ) {
-      return;
-    }
+    var combination = false;
+    var self = this;
 
-    var map = this.generatedHotkeyMap;
-    for ( var i in map ) {
-      if ( map.hasOwnProperty(i) ) {
+    if ( ev ) {
+      var map = this.generatedHotkeyMap;
+      Object.keys(map).some(function(i) {
         if ( Utils.keyCombination(ev, i) ) {
-          map[i](ev, win, this);
-          break;
+          map[i](ev, win, self);
+          combination = i;
+          return true;
         }
-      }
+        return false;
+      });
     }
+    return combination;
   };
 
   CoreWM.prototype.showSettings = function(category) {
@@ -894,7 +904,9 @@
     var keys = this._settings.get('hotkeys');
     Object.keys(keys).forEach(function(k) {
       self.generatedHotkeyMap[keys[k]] = function() {
-        return self.hotkeyMap[k].apply(this, arguments);
+        var args = Array.prototype.slice.call(arguments);
+        args.push(k);
+        return self.hotkeyMap[k].apply(this, args);
       };
     });
 
