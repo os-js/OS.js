@@ -44,7 +44,20 @@
     },
 
     update: function(win, scheme, settings, wm) {
+      var wm = OSjs.Core.getWindowManager();
+      var keys = wm.getSetting('hotkeys');
+
       win._find('EnableHotkeys').set('value', settings.enableHotkeys);
+
+      win._find('HotkeysList').clear().add(Object.keys(keys).map(function(name) {
+        return {
+          value: name,
+          columns: [
+            {label: name},
+            {label: keys[name]}
+          ]
+        };
+      }));
     },
 
     render: function(win, scheme, root, settings, wm) {

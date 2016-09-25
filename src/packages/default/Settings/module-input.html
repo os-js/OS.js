@@ -2,6 +2,9 @@
   <gui-expander data-label="LBL_HOTKEYS">
     <gui-fragment data-fragment-id="ModuleInputFragment"></gui-fragment>
   </gui-expander>
+  <gui-expander data-label="LBL_HOTKEYS">
+    <gui-fragment data-fragment-id="ModuleInputShortcutsFragment"></gui-fragment>
+  </gui-expander>
 </div>
 
 <application-fragment data-id="ModuleInputFragment">
@@ -12,5 +15,26 @@
       <gui-switch data-id="EnableHotkeys"></gui-switch>
     </gui-vbox-container>
 
+  </gui-vbox>
+</application-fragment>
+
+<application-fragment data-id="ModuleInputShortcutsFragment">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-grow="1">
+      <gui-list-view data-id="HotkeysList" data-multiple="false">
+        <gui-list-view-head>
+          <gui-list-view-row>
+            <gui-list-view-column>LBL_NAME</gui-list-view-column>
+            <gui-list-view-column data-size="100px" data-resizable="true">LBL_HOTKEY</gui-list-view-column>
+          </gui-list-view-row>
+        </gui-list-view-head>
+      </gui-list-view>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-button-bar>
+        <gui-button data-id="HotkeysEdit" data-icon="stock://16x16/actions/system-run.png" data-disabled="true"></gui-button>
+      </gui-button-bar>
+    </gui-vbox-container>
   </gui-vbox>
 </application-fragment>

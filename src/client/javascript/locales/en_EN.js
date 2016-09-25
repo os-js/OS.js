@@ -438,6 +438,7 @@
     'LBL_REGENERATE': 'Regenerate',
     'LBL_DESKTOP': 'Desktop',
     'LBL_WINDOWMANAGER': 'Window Manager',
+    'LBL_HOTKEY': 'Hotkey',
     'LBL_HOTKEYS': 'Hotkeys',
     'LBL_MOUNTS': 'Mounts',
     'LBL_ID': 'ID',
@@ -460,7 +461,8 @@
     'LBL_INPUT': 'Input',
     'LBL_MISC': 'Misc',
     'LBL_OTHER': 'Other',
-    'LBL_USERS': 'Users'
+    'LBL_USERS': 'Users',
+    'LBL_FONTS': 'Fonts'
 
   };
 
