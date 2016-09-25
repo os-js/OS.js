@@ -901,6 +901,8 @@
       }
     }
 
+    this.generatedHotkeyMap = {};
+
     var keys = this._settings.get('hotkeys');
     Object.keys(keys).forEach(function(k) {
       self.generatedHotkeyMap[keys[k]] = function() {

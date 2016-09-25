@@ -30,6 +30,40 @@
 (function(Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
+  var hotkeys = {};
+
+  function renderList(win, scheme) {
+    win._find('HotkeysList').clear().add(Object.keys(hotkeys).map(function(name) {
+      return {
+        value: {
+          name: name,
+          value: hotkeys[name]
+        },
+        columns: [
+          {label: name},
+          {label: hotkeys[name]}
+        ]
+      };
+    }));
+  }
+
+  function editList(win, scheme, key) {
+    // TODO Locales
+    win._toggleDisabled(true);
+    API.createDialog('Input', {
+      message: 'Enter shortcut for: ' + key.name,
+      value: key.value
+    }, function(ev, button, value) {
+      win._toggleDisabled(false);
+      value = value || '';
+      if ( value.indexOf('+') !== -1 ) {
+        hotkeys[key.name] = value;
+      }
+
+      renderList(win, scheme);
+    })
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // MODULE
   /////////////////////////////////////////////////////////////////////////////
@@ -44,27 +78,27 @@
     },
 
     update: function(win, scheme, settings, wm) {
-      var wm = OSjs.Core.getWindowManager();
-      var keys = wm.getSetting('hotkeys');
-
       win._find('EnableHotkeys').set('value', settings.enableHotkeys);
 
-      win._find('HotkeysList').clear().add(Object.keys(keys).map(function(name) {
-        return {
-          value: name,
-          columns: [
-            {label: name},
-            {label: keys[name]}
-          ]
-        };
-      }));
+      hotkeys = Utils.cloneObject(settings.hotkeys);
+
+      renderList(win, scheme);
     },
 
     render: function(win, scheme, root, settings, wm) {
+      win._find('HotkeysEdit').on('click', function() {
+        var selected = win._find('HotkeysList').get('selected');
+        if ( selected ) {
+          editList(win, scheme, selected[0].data);
+        }
+      });
     },
 
     save: function(win, scheme, settings, wm) {
       settings.enableHotkeys = win._find('EnableHotkeys').get('value');
+      if ( hotkeys && Object.keys(hotkeys).length ) {
+        settings.hotkeys = hotkeys;
+      }
     }
   };
 
