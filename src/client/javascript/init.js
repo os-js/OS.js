@@ -128,16 +128,21 @@
     keydown: function(ev) {
       var wm  = OSjs.Core.getWindowManager();
       var win = wm ? wm.getCurrentWindow() : null;
+      var accept = [122, 123];
 
       function checkPrevent() {
         var d = ev.srcElement || ev.target;
         var doPrevent = d.tagName === 'BODY' ? true : false;
 
-        // We don't want backspace and tab triggering default browser events
-        if ( (ev.keyCode === OSjs.Utils.Keys.BACKSPACE) && !OSjs.Utils.$isInput(ev) ) {
+        // What browser default keys we prevent in certain situations
+        if ( (ev.keyCode === OSjs.Utils.Keys.BACKSPACE) && !OSjs.Utils.$isInput(ev) ) { // Backspace
           doPrevent = true;
-        } else if ( (ev.keyCode === OSjs.Utils.Keys.TAB) && OSjs.Utils.$isFormElement(ev) ) {
+        } else if ( (ev.keyCode === OSjs.Utils.Keys.TAB) && OSjs.Utils.$isFormElement(ev) ) { // Tab
           doPrevent = true;
+        } else {
+          if ( accept.indexOf(ev.keyCode) !== -1 ) {
+            doPrevent = false;
+          }
         }
 
         // Only prevent default event if current window is not set up to capture them by force
