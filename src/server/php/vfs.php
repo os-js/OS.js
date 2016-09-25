@@ -68,11 +68,7 @@ class FS
 
   protected static function _scandirIter($dirname, $root, $protocol, $f) {
     $opath = implode("/", Array($root, $f));
-    if ( $f == ".." ) {
-      $tpath = truepath(implode("/", Array($dirname, $f)), false);
-    } else {
-      $tpath = implode("/", Array($dirname, $f));
-    }
+    $tpath = implode("/", Array($dirname, $f));
     $vpath = sprintf("%s%s", $protocol, $tpath); //$on_root ? preg_replace("/^\//", "", $tpath) : $tpath);
 
     $iter = Array(
@@ -110,11 +106,10 @@ class FS
     list($dirname, $root, $protocol) = getRealPath($scandir);
 
     $result = Array();
-    $on_root = !$dirname || $dirname == "/";
     if ( file_exists($root) && is_dir($root) ) {
       if ( ($files = scandir($root)) !== false ) {
         foreach ( $files as $f ) {
-          if ( $f == "." || ($f == ".." && $on_root) ) continue;
+          if ( $f == "." || $f == ".." ) continue;
           $result[] = self::_scandirIter($dirname, $root, $protocol, $f);
         }
       }

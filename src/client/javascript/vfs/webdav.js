@@ -167,14 +167,6 @@
         var reqpath = resolvePath(item);
         var root = mm.getRootFromPath(item.path);
 
-        if ( item.path !== root ) {
-          list.push({
-            path: root,
-            filename: '..',
-            type: 'dir'
-          });
-        }
-
         doc.children.forEach(function(c) {
           var type = 'file';
 

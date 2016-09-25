@@ -580,23 +580,15 @@
       return;
     }
 
-    var self = this;
     var view = this._scheme.find(this, 'FileView');
     var vfsOptions = OSjs.Core.getSettingsManager().instance('VFS');
 
     var opts = {scandir: {}};
     opts.scandir[opt] = toggle;
 
-    vfsOptions.set(null, opts, null, false);
+    vfsOptions.set(null, opts, null, set); // set triggers refresh because of watch
     view.set(key, toggle);
 
-    if ( set ) {
-      vfsOptions.save(function() {
-        setTimeout(function() {
-          self.changePath(null);
-        }, 10);
-      });
-    }
     return toggle;
   };
 

@@ -124,7 +124,6 @@
    * @return  {Boolean}
    */
   VFS.Helpers.filterScandir = function filterScandir(list, options) {
-
     var defaultOptions = Utils.cloneObject(Core.getSettingsManager().get('VFS') || {});
 
     options = Utils.argumentDefaults(options, defaultOptions.scandir || {});
@@ -134,60 +133,47 @@
       showHiddenFiles: true
     }, true);
 
-    var result = [];
-
     function filterFile(iter) {
-      if ( iter.filename !== '..' ) {
-        if ( (options.typeFilter && iter.type !== options.typeFilter) || (!options.showHiddenFiles && iter.filename.match(/^\.\w/)) ) {
-          return false;
-        }
+      if ( (options.typeFilter && iter.type !== options.typeFilter) || (!options.showHiddenFiles && iter.filename.match(/^\.\w/)) ) {
+        return false;
       }
       return true;
     }
 
     function validMime(iter) {
       if ( options.mimeFilter && options.mimeFilter.length && iter.mime ) {
-        var valid = false;
-        options.mimeFilter.every(function(miter) {
+        return options.mimeFilter.some(function(miter) {
           if ( iter.mime.match(miter) ) {
-            valid = true;
-            return false;
+            return true;
           }
-          return true;
+          return false;
         });
-        return valid;
       }
       return true;
     }
 
-    list.forEach(function(iter) {
+    var result = list.filter(function(iter) {
+      if ( (iter.filename === '..' && options.backlink === false) || !filterFile(iter) ) {
+        return false;
+      }
+
+      if ( iter.type === 'file' && !validMime(iter) ) {
+        return false;
+      }
+
+      return true;
+    }).map(function(iter) {
       if ( iter.mime === 'application/vnd.google-apps.folder' ) {
         iter.type = 'dir';
       }
-
-      if ( (iter.filename === '..' && options.backlink === false) || !filterFile(iter) ) {
-        return;
-      }
-
-      if ( iter.type === 'file' ) {
-        if ( !validMime(iter) ) {
-          return;
-        }
-      }
-
-      result.push(iter);
+      return iter;
     });
 
-    var tree = {dirs: [], files: []};
-    for ( var i = 0; i < result.length; i++ ) {
-      if ( result[i].type === 'dir' ) {
-        tree.dirs.push(result[i]);
-      } else {
-        tree.files.push(result[i]);
-      }
-    }
-
-    return tree.dirs.concat(tree.files);
+    return result.filter(function(iter) {
+      return iter.type === 'dir';
+    }).concat(result.filter(function(iter) {
+      return iter.type !== 'dir';
+    }));
   };
 
   /**

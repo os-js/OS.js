@@ -317,16 +317,6 @@
       return createMetadata(i, path, item.path);
     });
 
-    if ( ui && Utils.dirname(path) !== path ) {
-      list.unshift({
-        size: 0,
-        mime: null,
-        type: 'dir',
-        filename: '..',
-        path: Utils.dirname(item.path)
-      });
-    }
-
     return list;
   }
 

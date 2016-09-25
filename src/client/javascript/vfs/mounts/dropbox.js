@@ -117,28 +117,17 @@
 
     var mm = OSjs.Core.getMountManager();
     var path = Utils.getRelativeURL(item.path);
-    var isOnRoot = path === '/';
 
     function _finish(entries) {
-      var result = [];
-      if ( !isOnRoot ) {
-        result.push(new OSjs.VFS.File({
-          filename: '..',
-          path: Utils.dirname(item.path),
-          mime: null,
-          size: 0,
-          type: 'dir'
-        }));
-      }
-      entries.forEach(function(iter) {
+      var result = entries.map(function(iter) {
         console.info(iter);
-        result.push(new OSjs.VFS.File({
+        return new OSjs.VFS.File({
           filename: iter.name,
           path: mm.getModuleProperty('Dropbox', 'root').replace(/\/$/, '') + iter.path,
           size: iter.size,
           mime: iter.isFolder ? null : iter.mimeType,
           type: iter.isFolder ? 'dir' : 'file'
-        }));
+        });
       });
       console.info('DropboxVFS::scandir()', item, '=>', result);
 
