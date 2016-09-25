@@ -13,6 +13,7 @@
       }
     },
     "PackageManager": {
+      "UseStaticManifest": false
     }
   }
 }

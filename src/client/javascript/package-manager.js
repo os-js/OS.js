@@ -166,7 +166,7 @@
           return iter;
         }
 
-        if ( window.location.protocol === 'file:' ) {
+        if ( window.location.protocol === 'file:' || API.getConfig('PackageManager.UseStaticManifest') === true ) {
           var uri = Utils.checkdir(API.getConfig('Connection.MetadataURI'));
           Utils.preload([uri], function(total, failed) {
             if ( failed.length ) {
