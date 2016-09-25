@@ -67,6 +67,19 @@
   // GLOBAL EVENTS
   /////////////////////////////////////////////////////////////////////////////
 
+  function checkForbiddenKeyCombo(ev) {
+    return false;
+    /* FIXME: This is not supported in browsers :( (in app mode it should be)
+    var forbiddenCtrl = ['n', 't', 'w'];
+    if ( ev.ctrlKey ) {
+      return forbiddenCtrl.some(function(i) {
+        return String.fromCharCode(ev.keyCode).toLowerCase() === i;
+      });
+    }
+    return false;
+    */
+  }
+
   var events = {
     body_contextmenu: function(ev) {
       ev.stopPropagation();
@@ -142,6 +155,8 @@
         } else {
           if ( accept.indexOf(ev.keyCode) !== -1 ) {
             doPrevent = false;
+          } else if ( checkForbiddenKeyCombo(ev) ) {
+            doPrevent = true;
           }
         }
 
@@ -170,8 +185,13 @@
 
       return true;
     },
+
     keypress: function(ev) {
       var wm = OSjs.Core.getWindowManager();
+
+      if ( checkForbiddenKeyCombo(ev) ) {
+        ev.preventDefault();
+      }
 
       if ( wm ) {
         var win = wm.getCurrentWindow();
