@@ -203,7 +203,7 @@
     'ERR_VFS_EXPECT_SRC_FILE'  : 'Expects a source file-object',
     'ERR_VFS_EXPECT_DST_FILE'  : 'Expects a destination file-object',
     'ERR_VFS_FILE_EXISTS'      : 'Destination already exists',
-    'ERR_VFS_TARGET_NOT_EXISTS': 'Traget does not exist',
+    'ERR_VFS_TARGET_NOT_EXISTS': 'Target does not exist',
     'ERR_VFS_TRANSFER_FMT'     : 'An error occured while transfering between storage: {0}',
     'ERR_VFS_UPLOAD_NO_DEST'   : 'Cannot upload a file without a destination',
     'ERR_VFS_UPLOAD_NO_FILES'  : 'Cannot upload without any files defined',
