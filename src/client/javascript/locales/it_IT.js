@@ -85,6 +85,7 @@
     'ERR_LOGIN_INVALID' : 'Accesso non corretto',
 
     // SESSION
+    'ERR_NO_SESSION': 'Nessuna sessione create dal server. Vuoi riprovare l\'autenticazione?',
     'MSG_SESSION_WARNING' : 'Sei sicuro di voler chiudere OS.js? Ogni settaggio ed ogni dato non salvato andrà perduto!',
 
     // Service
@@ -133,7 +134,8 @@
     'DIALOG_FILE_MNU_TREEVIEW' : 'Visualizzazione ad albero',
     'DIALOG_FILE_MNU_ICONVIEW' : 'Visualizzazione ad icone',
     'DIALOG_FILE_ERROR'        : 'FileDialog Errore',
-    'DIALOG_FILE_ERROR_SCANDIR': 'Indicizzazione cartella \'{0}\' fallito, perchè si è verificato un errore!',
+    'DIALOG_FILE_ERROR_SCANDIR': 'Indicizzazione della cartella \'{0}\' fallito, perchè si è verificato un errore!',
+    'DIALOG_FILE_ERROR_FIND': 'Ricerca cartella \'{0}\' fallita perchè si è verificato un errore!',
     'DIALOG_FILE_MISSING_FILENAME' : 'Devi selezionare un file o fornire un nuovo nome!',
     'DIALOG_FILE_MISSING_SELECTION': 'Devi selezionare un file!',
 
@@ -201,6 +203,7 @@
     'ERR_VFS_EXPECT_SRC_FILE' : 'Sorgente file-object prevista',
     'ERR_VFS_EXPECT_DST_FILE' : 'Destinazion file-object prevista',
     'ERR_VFS_FILE_EXISTS'     : 'Destinazione già esistente',
+    'ERR_VFS_TARGET_NOT_EXISTS': 'La destinazione non esiste',
     'ERR_VFS_TRANSFER_FMT'    : 'Un errore si è verificato durante il trasferimento tra le memorie: {0}',
     'ERR_VFS_UPLOAD_NO_DEST'  : 'Impossibile caricare un file senza una destinazione',
     'ERR_VFS_UPLOAD_NO_FILES' : 'Impossibile caricare senza definire un file',
@@ -225,6 +228,8 @@
     'ERR_VFSMODULE_EXCEPTION'          : 'Modulo VFS Eccezione',
     'ERR_VFSMODULE_EXCEPTION_FMT'      : 'Modulo VFS Eccezione: {0}',
     'ERR_VFSMODULE_NOT_FOUND_FMT'      : 'Nessun modulo VFS associato con {0}. Desinazione o formato sbagliato?',
+    'ERR_VFSMODULE_READONLY'           : 'Questo modulo VFS è di sola lettura',
+    'ERR_VFSMODULE_READONLY_FMT'       : 'Questo modulo VFS è di sola lettura: {0}',
 
     'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Download file',
 
@@ -251,6 +256,8 @@
     'ERR_VFSMODULE_FILEINFO_FMT'   : 'Recupero informazioni file fallito: {0}',
     'ERR_VFSMODULE_MKDIR'          : 'Creazione cartella fallito',
     'ERR_VFSMODULE_MKDIR_FMT'      : 'Creazione cartella fallito: {0}',
+    'ERR_VFSMODULE_MKFILE'         : 'Creazione file fallita',
+    'ERR_VFSMODULE_MKFILE_FMT'     : 'Creazione file fallita: {0}',
     'ERR_VFSMODULE_URL'            : 'Recupero URL file fallito',
     'ERR_VFSMODULE_URL_FMT'        : 'Recupero URL file fallito: {0}',
     'ERR_VFSMODULE_TRASH'          : 'Spostamento file nel cestino fallito',
@@ -259,6 +266,12 @@
     'ERR_VFSMODULE_UNTRASH_FMT'    : 'Spostamento del file fuori dal cestino fallito: {0}',
     'ERR_VFSMODULE_EMPTYTRASH'     : 'Svuotamento cestino fallito',
     'ERR_VFSMODULE_EMPTYTRASH_FMT' : 'Svuotamento cestino fallito: {0}',
+    'ERR_VFSMODULE_FIND'           : 'Ricerca fallita',
+    'ERR_VFSMODULE_FIND_FMT'       : 'Ricerca fallita: {0}',
+    'ERR_VFSMODULE_FREESPACE'      : 'Allocamento spazio libero fallito',
+    'ERR_VFSMODULE_FREESPACE_FMT'  : 'Allocamento spazio libero fallito: {0}',
+    'ERR_VFSMODULE_EXISTS'         : 'Verifica esistenza fallito',
+    'ERR_VFSMODULE_EXISTS_FMT'     : 'Verifica esistenza fallito: {0}',
 
     // VFS -> Dropbox
     'DROPBOX_NOTIFICATION_TITLE' : 'Sei connesso a Dropbox API',
@@ -272,6 +285,12 @@
     'ZIP_VENDOR_FAIL'   : 'Libreria zip.js non trovata. L\'hai caricata correttamente?',
     'ZIP_NO_RESOURCE'   : 'Nessuna risorsa zip fornita',
     'ZIP_NO_PATH'       : 'Nessun percorso fornito',
+
+    //
+    // SearchEngine
+    //
+    'SEARCH_LOADING': 'Ricerca in corso...',
+    'SEARCH_NO_RESULTS': 'Nessun risultato trovato',
 
     //
     // PackageManager
@@ -410,7 +429,8 @@
     'LBL_USERNAME': 'Nome utente',
     'LBL_PASSWORD': 'Password',
     'LBL_HOST': 'Host',
-    'LBL_NAMESPACE': 'Namespace'
+    'LBL_NAMESPACE': 'Namespace',
+    'LBL_SEARCH': 'Ricerca'
 
   };
 
