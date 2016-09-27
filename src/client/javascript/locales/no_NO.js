@@ -38,10 +38,10 @@
     'ERR_APP_MIME_NOT_FOUND_FMT': 'Fant ingen Applikasjoner som støtter \'{0}\' filer',
     'ERR_APP_LAUNCH_FAILED'     : 'Klarte ikke starte Applikasjon',
     'ERR_APP_LAUNCH_FAILED_FMT' : 'En feil oppstod ved oppstart av: {0}',
-    'ERR_APP_CONSTRUCT_feilet_FMT'  : 'Applikasjonen \'{0}\' construct feilet: {1}',
-    'ERR_APP_INIT_feilet_FMT'       : 'Applikasjonen \'{0}\' init() feilet: {1}',
+    'ERR_APP_CONSTRUCT_FAILED_FMT'  : 'Applikasjonen \'{0}\' construct feilet: {1}',
+    'ERR_APP_INIT_FAILED_FMT'       : 'Applikasjonen \'{0}\' init() feilet: {1}',
     'ERR_APP_RESOURCES_MISSING_FMT' : 'Applikasjonen ressursjer mangler for \'{0}\', eller de feilet under lasting!',
-    'ERR_APP_PRELOAD_feilet_FMT'    : 'Applikasjonen \'{0}\' preloading feilet: \n{1}',
+    'ERR_APP_PRELOAD_FAILED_FMT'    : 'Applikasjonen \'{0}\' preloading feilet: \n{1}',
     'ERR_APP_LAUNCH_ALREADY_RUNNING_FMT'    : 'Applikasjonen \'{0}\' kjører allerede og bare en instans er tillatt!',
     'ERR_APP_LAUNCH_MANIFEST_FAILED_FMT'    : 'Klarte ikke starte \'{0}\'. Manifest ble ikke funnet!',
     'ERR_APP_LAUNCH_COMPABILITY_FAILED_FMT' : 'Klarte ikke starte \'{0}\'. Nettleseren din støtter ikke: {1}',
@@ -60,6 +60,11 @@
     'ERR_APP_MISSING_ARGUMENT_FMT': 'Mangler argument: {0}',
     'ERR_APP_UNKNOWN_ERROR'       : 'Ukjent feil',
 
+    'ERR_OPERATION_TIMEOUT'       : 'Tidsavbrudd i operasjon',
+    'ERR_OPERATION_TIMEOUT_FMT'   : 'Tidsavbrudd i operasjon ({0})',
+
+    'ERR_ARGUMENT_FMT'    : '\'{0}\' expects \'{1}\' to be a \'{2}\', \'{3}\' given',
+
     // Window
     'ERR_WIN_DUPLICATE_FMT' : 'Du har allerede et Window med navnet \'{0}\'',
     'WINDOW_MINIMIZE' : 'Minimiser',
@@ -72,6 +77,22 @@
     // Handler
     'TITLE_SIGN_OUT' : 'Logg ut',
     'TITLE_SIGNED_IN_AS_FMT' : 'Logget inn som: {0}',
+    'ERR_LOGIN_FMT' : 'Login feil: {0}',
+    'ERR_LOGIN_INVALID' : 'Ugyldig innlogging',
+
+    // SESSION
+    'ERR_NO_SESSION': 'Ingen sessjon er aktiv. Vil du laste på nytt?',
+    'MSG_SESSION_WARNING' : 'Er du sikker på at du vil avslutte OS.js? Du vil tape alle ulagrede data!',
+
+    // Service
+    'BUGREPORT_MSG' : 'Vennligst rapporter dette problemet hvis du tror det er en feil.\nLegg ved en beskrivelse om hvordan problemet oppstod og hvordan man kan reprodusere feilen.',
+
+    // API
+    'SERVICENOTIFICATION_TOOLTIP' : 'Innloget i eksterne tjenester: {0}',
+
+    // Utils
+    'ERR_UTILS_XHR_FATAL' : 'Fatal Feil',
+    'ERR_UTILS_XHR_FMT' : 'AJAX/XHR Feil: {0}',
 
     // Dialogs
     'DIALOG_LOGOUT_TITLE' : 'Logg ut (Avslutt)', // Actually located in session.js
@@ -108,6 +129,7 @@
     'DIALOG_FILE_MNU_ICONVIEW' : 'Ikon-visning',
     'DIALOG_FILE_ERROR'        : 'FileDialog Error',
     'DIALOG_FILE_ERROR_SCANDIR': 'Klarte ikke liste innhold for mappen \'{0}\' fordi en feil oppstod',
+    'DIALOG_FILE_ERROR_FIND': 'Klarte ikke søke i mappen \'{0}\' fordi en feil oppstod',
     'DIALOG_FILE_MISSING_FILENAME' : 'Du må velge en fil eller skrive inn filnavn!',
     'DIALOG_FILE_MISSING_SELECTION': 'Du må velge en fil!',
 
@@ -130,6 +152,8 @@
     'DIALOG_UPLOAD_FAILED_MSG'      : 'Opplastingen feilet',
     'DIALOG_UPLOAD_FAILED_UNKNOWN'  : 'Ukjent årsak...',
     'DIALOG_UPLOAD_FAILED_CANCELLED': 'Avbrutt av bruker...',
+    'DIALOG_UPLOAD_TOO_BIG': 'Fil er for stor',
+    'DIALOG_UPLOAD_TOO_BIG_FMT': 'Fil er for stor, større en {0}',
 
     'DIALOG_FONT_TITLE' : 'Tekst Dialog',
 
@@ -152,6 +176,7 @@
     'WLAPI_LOAD_FAILURE'      : 'Klarte ikke laste Windows Live API',
     'WLAPI_LOGIN_FAILED'      : 'Klarte ikke logge inn Windows Live API',
     'WLAPI_LOGIN_FAILED_FMT'  : 'Klarte ikke logge inn Windows Live API: {0}',
+    'WLAPI_INIT_FAILED_FMT'   : 'Windows Live API returnerte {0} status',
 
     // IndexedDB
     'IDB_MISSING_DBNAME' : 'Kan ikke opprette IndexedDB uten databasenavn',
@@ -166,6 +191,7 @@
     'ERR_VFS_EXPECT_SRC_FILE' : 'Forventer èt kilde Fil-objekt',
     'ERR_VFS_EXPECT_DST_FILE' : 'Forventer èt destinasjon Fil-objekt',
     'ERR_VFS_FILE_EXISTS'     : 'Destinasjonen finnes allerede',
+    'ERR_VFS_TARGET_NOT_EXISTS': 'Destinasjon finnes ikke',
     'ERR_VFS_TRANSFER_FMT'    : 'En feil oppstod under overføring av filen: {0}',
     'ERR_VFS_UPLOAD_NO_DEST'  : 'Kan ikke laste opp uten destinasjon',
     'ERR_VFS_UPLOAD_NO_FILES' : 'Kan ikke laste opp uten noen filer definert',
@@ -173,7 +199,27 @@
     'ERR_VFS_UPLOAD_CANCELLED': 'Fil-opplastingen ble avbrutt',
     'ERR_VFS_DOWNLOAD_NO_FILE': 'Kan ikke laste ned uten en sti',
     'ERR_VFS_DOWNLOAD_FAILED' : 'En feil oppstod under nedlasting: {0}',
-    'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Last ned fil',
+    'ERR_VFS_REMOTEREAD_EMPTY' : 'Respons var tom',
+
+    'ERR_VFSMODULE_INVALID'            : 'Ugyldig VFS Modul',
+    'ERR_VFSMODULE_INVALID_FMT'        : 'Ugyldig VFS Modul: {0}',
+    'ERR_VFSMODULE_INVALID_METHOD'     : 'Ugyldig VFS Metode',
+    'ERR_VFSMODULE_INVALID_METHOD_FMT' : 'Ugyldig VFS Metode: {0}',
+    'ERR_VFSMODULE_INVALID_TYPE'       : 'Ugyldig VFS Modul type',
+    'ERR_VFSMODULE_INVALID_TYPE_FMT'   : 'Ugyldig VFS Modul type: {0}',
+    'ERR_VFSMODULE_INVALID_CONFIG'     : 'Ugyldig VFS Modul konfigurasjon',
+    'ERR_VFSMODULE_INVALID_CONFIG_FMT' : 'Ugyldig VFS Modul konfigurasjon: {0}',
+    'ERR_VFSMODULE_ALREADY_MOUNTED'    : 'VFS Modul allerede montert',
+    'ERR_VFSMODULE_ALREADY_MOUNTED_FMT': 'VFS Modul \'{0}\' allerede montert',
+    'ERR_VFSMODULE_NOT_MOUNTED'        : 'VFS Modul ikke montert',
+    'ERR_VFSMODULE_NOT_MOUNTED_FMT'    : 'VFS Modul \'{0}\' ikke montert',
+    'ERR_VFSMODULE_EXCEPTION'          : 'VFS Modul Exception',
+    'ERR_VFSMODULE_EXCEPTION_FMT'      : 'VFS Modul Exception: {0}',
+    'ERR_VFSMODULE_NOT_FOUND_FMT'      : 'Ingen VFS Modul lik {0}. Fil sti eller format ?',
+    'ERR_VFSMODULE_READONLY'           : 'VFS Modul er bare lesbar',
+    'ERR_VFSMODULE_READONLY_FMT'       : 'VFS Modul er bare lesbar: {0}',
+
+    'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Laster ned fil',
 
     'ERR_VFSMODULE_XHR_ERROR'    : 'XHR Feil',
     'ERR_VFSMODULE_ROOT_ID'      : 'Klarte ikke hente id for rotmappe',
@@ -198,12 +244,22 @@
     'ERR_VFSMODULE_FILEINFO_FMT' : 'Klarte ikke hente fil-informasjon: {0}',
     'ERR_VFSMODULE_MKDIR'        : 'Klarte ikke lage mappe',
     'ERR_VFSMODULE_MKDIR_FMT'    : 'Klarte ikke lage mapp: {0}',
+    'ERR_VFSMODULE_MKFILE'       : 'Klarte ikke lage fil',
+    'ERR_VFSMODULE_MKFILE_FMT'   : 'Klarte ikke lage fil: {0}',
     'ERR_VFSMODULE_URL'          : 'Klarte ikke hente URL for fil',
     'ERR_VFSMODULE_URL_FMT'      : 'Klarte ikke hente URL for fil: {0}',
     'ERR_VFSMODULE_TRASH'        : 'Klarte ikke flytte fil til søppelkassen',
     'ERR_VFSMODULE_TRASH_FMT'    : 'Klarte ikke flytte fil til søppelkassen: {0}',
     'ERR_VFSMODULE_UNTRASH'      : 'Klarte ikke flytte fil ut av søppelkassen',
     'ERR_VFSMODULE_UNTRASH_FMT'  : 'Klarte ikke flytte fil ut av søppelkassen: {0}',
+    'ERR_VFSMODULE_EMPTYTRASH'     : 'Klarte ikke tømme søppel',
+    'ERR_VFSMODULE_EMPTYTRASH_FMT' : 'Klarte ikke tømme søppel: {0}',
+    'ERR_VFSMODULE_FIND'           : 'Klarte ikke søke',
+    'ERR_VFSMODULE_FIND_FMT'       : 'Klarte ikke søke: {0}',
+    'ERR_VFSMODULE_FREESPACE'      : 'Klarte ikke hente ledig plass',
+    'ERR_VFSMODULE_FREESPACE_FMT'  : 'Klarte ikke hente ledig plass: {0}',
+    'ERR_VFSMODULE_EXISTS'         : 'Klarte ikke sjekke destinasjon',
+    'ERR_VFSMODULE_EXISTS_FMT'     : 'Klarte ikke check sjekke destinasjon: {0}',
 
     // VFS -> Dropbox
     'DROPBOX_NOTIFICATION_TITLE' : 'Du er logget inn i Dropbox API',
@@ -211,6 +267,19 @@
 
     // VFS -> OneDrive
     'ONEDRIVE_ERR_RESOLVE'      : 'Klarte ikke løse sti: fant ikke filen',
+
+    // ZIP
+    'ZIP_PRELOAD_FAIL'  : 'Klarte ikke laste zip.js',
+    'ZIP_VENDOR_FAIL'   : 'zip.js bliblioteket ble ikke funnet!',
+    'ZIP_NO_RESOURCE'   : 'Ingen zip ressursj angitt',
+    'ZIP_NO_PATH'       : 'Ingen sti angitt',
+
+    // SearchEngine
+    'SEARCH_LOADING': 'Søker...',
+    'SEARCH_NO_RESULTS': 'Ingen resultater',
+
+    // PackageManager
+    'ERR_PACKAGE_EXISTS': 'Kan ikke fortsette. Pakkedestinasjonen finnes allerede!',
 
     // DefaultApplication
     'ERR_FILE_APP_OPEN'         : 'Kan ikke åpne filen',
@@ -317,6 +386,62 @@
     'LBL_BACKGROUND_COLOR' : 'Bakgrunnsfarge',
     'LBL_UNORDERED_LIST'   : 'Uordnet Liste',
     'LBL_SHOW_SIDEBAR' : 'Vis Sidebar',
-    'LBL_SEARCH': 'Søk'
+    'LBL_SEARCH': 'Søk',
+    'LBL_STATUS': 'Status',
+    'LBL_READONLY': 'Kun lesbar',
+    'LBL_CREATED': 'Opprettet',
+    'LBL_MODIFIED': 'Modifisert',
+    'LBL_SHOW_COLUMNS': 'Vis Kolonner',
+    'LBL_MOVE': 'Flytt',
+    'LBL_OPTIONS': 'Opsjoner',
+    'LBL_OK': 'OK',
+    'LBL_DIRECTORY': 'Mappe',
+    'LBL_CREATE': 'Opprett',
+    'LBL_BUGREPORT': 'Bug-rapport',
+    'LBL_INSTALL': 'Installer',
+    'LBL_UPDATE': 'Oppdater',
+    'LBL_REMOVE': 'Fjern',
+    'LBL_SHOW_NAVIGATION': 'Vis navigasjon',
+    'LBL_SHOW_HIDDENFILES': 'Vis skjulte filer',
+    'LBL_SHOW_FILEEXTENSIONS': 'Vis fil-utvidelser',
+    'LBL_MOUNT': 'Montere',
+    'LBL_DESCRIPTION': 'Beskrivelse',
+    'LBL_USERNAME': 'Brukernavn',
+    'LBL_PASSWORD': 'Passord',
+    'LBL_HOST': 'Vert',
+    'LBL_NAMESPACE': 'Navneplass',
+    'LBL_BACK': 'Tilbake',
+    'LBL_ICONS': 'Ikoner',
+    'LBL_ICON': 'Ikon',
+    'LBL_UNINSTALL': 'Avinstaller',
+    'LBL_REGENERATE': 'Regenerer',
+    'LBL_DESKTOP': 'Skrivebort',
+    'LBL_WINDOWMANAGER': 'Vindu-håndterer',
+    'LBL_HOTKEY': 'Snarknapp',
+    'LBL_HOTKEYS': 'Snarknapper',
+    'LBL_MOUNTS': 'Monteringer',
+    'LBL_ID': 'ID',
+    'LBL_APPLICATION': 'Applikasjon',
+    'LBL_SCOPE': 'Skop',
+    'LBL_HIDE': 'Skjul',
+    'LBL_REPOSITORY': 'Repository',
+    'LBL_VERSION': 'Versjon',
+    'LBL_AUTHOR': 'Forfatter',
+    'LBL_GROUPS': 'Grupper',
+    'LBL_AUTOHIDE': 'Auto-skjul',
+    'LBL_PERSONAL': 'Personlig',
+    'LBL_SYSTEM': 'System',
+    'LBL_STARTING': 'Starter',
+    'LBL_SOUNDS': 'Lyder',
+    'LBL_STORE': 'Butikk',
+    'LBL_LOCALE': 'Språkvalg',
+    'LBL_PACKAGE': 'Pakke',
+    'LBL_PACKAGES': 'Pakker',
+    'LBL_INPUT': 'Inndata',
+    'LBL_MISC': 'Annet',
+    'LBL_OTHER': 'Annet',
+    'LBL_USERS': 'Brukere',
+    'LBL_FONTS': 'Skrift'
+
   };
 })();
