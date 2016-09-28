@@ -777,6 +777,7 @@
     this._$element.appendChild(this._$root);
     this._$element.appendChild(this._$resize);
     this._$element.appendChild(this._$disabled);
+    this._$element.appendChild(this._$loading);
 
     // Bind events
 
