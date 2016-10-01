@@ -27,11 +27,13 @@
     "test": "grunt test"
   },
   "dependencies": {
+    "colors": "^1.1.2",
     "diskspace": ">=1.0.3",
     "findit": ">=2.0.0",
     "formidable": ">=1.0.17",
     "grunt": ">=1.0.1",
     "less": ">=2.7.1",
+    "minimist": "^1.2.0",
     "node-fs-extra": ">=0.8.1",
     "request": ">=2.74.0",
     "simple-session": ">=0.0.1",
@@ -40,7 +42,6 @@
   "devDependencies": {
     "clean-css": ">=3.4.19",
     "uglify-js": ">=2.7.3",
-    "colors": ">=1.1.2",
     "time-grunt": ">=1.4.0",
     "grunt-mocha-test": ">=0.12.7",
     "grunt-contrib-watch": ">=1.0.0",

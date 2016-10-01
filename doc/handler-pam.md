@@ -19,16 +19,16 @@ $ edit /etc/osjs/groups.json
 $ edit /etc/osjs/blacklist.json
 
 # Change `handler` to `pam`
-$ grunt config --set=handler --value=pam
+$ grunt config:set --name=handler --value=pam
 
 # Optionally configure the paths used
 $ edit src/conf/190-handler.json
 
 # Update configuration and template files
-$ grunt config
+$ grunt build:config
 
 # Rebuild (only required if you use `dist`)
-# grunt core
+# grunt build:core --target=dist
 
 ```
 

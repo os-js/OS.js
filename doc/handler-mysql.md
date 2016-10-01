@@ -9,20 +9,20 @@ With the *mysql* handler you can enable a login prompt for OS.js.
 $ npm install mysql bcryptjs
 
 # Change `handler` to `mysql`.
-$ grunt config --set=handler --value=mysql
-$ grunt config --set=server.handlers.mysql.host --value=localhost
-$ grunt config --set=server.handlers.mysql.user --value=osjsuser
-$ grunt config --set=server.handlers.mysql.password --value=osjspassword
-$ grunt config --set=server.handlers.mysql.database --value=osjs
+$ grunt config:set --name=handler --value=mysql
+$ grunt config:set --name=server.handlers.mysql.host --value=localhost
+$ grunt config:set --name=server.handlers.mysql.user --value=osjsuser
+$ grunt config:set --name=server.handlers.mysql.password --value=osjspassword
+$ grunt config:set --name=server.handlers.mysql.database --value=osjs
 
 # Make OS.js reload after you log out
-$ grunt config --set=client.ReloadOnShutdown --value=true
+$ grunt config:set name=client.ReloadOnShutdown --value=true
 
 # Update configurations
-$ grunt config
+$ grunt build:config
 
 # Rebuild (only required if you use `dist`)
-# grunt dist
+# grunt build:core --target=dist
 
 ```
 

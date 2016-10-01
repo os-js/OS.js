@@ -1,0 +1,47 @@
+#!/usr/bin/env node
+(function(_build, _utils, _minimist) {
+  'use strict';
+
+  function done(err) {
+    process.exit(err ? 1 : 0);
+  }
+
+  if ( process.argv.length < 3 ) {
+    console.error('Not enough arguments.')
+    return done(true);
+  }
+
+  var args = _minimist(process.argv.slice(2));
+  var actions = args._.map(function(iter) {
+    var action = iter.trim().split(':');
+    var task = action[0];
+    var arg = action[1];
+
+    if ( !_build[task] ) {
+      console.error('Invalid task', task);
+      done(true);
+    }
+
+    return [task, arg]
+  });
+
+  process.on('uncaughtException', function(error) {
+    console.error('An uncaught exception occured', error);
+    console.error(error.stack);
+    done(true);
+  });
+
+  _utils.iterate(actions, function(action, idx, next) {
+    _build[action[0]]({
+      option: function(k) {
+        return args[k];
+      }
+    }, action[1], function(err) {
+      if ( err ) {
+        return done(err);
+      }
+      next();
+    });
+  }, done);
+
+})(require(__dirname + '/src/build/index.js'), require(__dirname + '/src/build/utils.js'), require('minimist'), require('colors'));

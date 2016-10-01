@@ -15,16 +15,16 @@ $ edit /etc/osjs/groups.json
 $ edit /etc/osjs/blacklist.json
 
 # Change `handler` to `shadow`
-$ grunt config --set=handler --value=shadow
+$ grunt config:set --name=handler --value=shadow
 
 # Optionally configure the paths used
 $ edit src/conf/190-handler.json
 
 # Update configuration and template files
-$ grunt config
+$ grunt build:config
 
 # Rebuild (only required if you use `dist`)
-# grunt core
+# grunt build:core --target=dist
 
 ```
 
@@ -37,9 +37,9 @@ This is an example file for `groups.json`
 
 ```
 {
-  "anders": ["admin"],
-  "guest": ["api", "application", "upload", "fs"],
-  "marcello": ["api", "application", "curl", "upload", "fs"]
+"anders": ["admin"],
+"guest": ["api", "application", "upload", "fs"],
+"marcello": ["api", "application", "curl", "upload", "fs"]
 }
 ```
 
@@ -50,7 +50,7 @@ This is an example file for `blacklist.json`
 ```
 
 {
-  "anders": ["ApplicationDraw"]
+"anders": ["ApplicationDraw"]
 }
 
 ```

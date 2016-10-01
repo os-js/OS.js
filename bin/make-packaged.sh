@@ -61,7 +61,7 @@ echo "[image] Building..."
 # Build and copy required files
 #
 
-grunt all dist-files &>/dev/null
+grunt all &>/dev/null
 
 mkdir -p $OUTDIR/bin
 mkdir -p $OUTDIR/server

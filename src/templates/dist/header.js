@@ -1,7 +1,3 @@
-
-/*jshint browser: true, curly: true, bitwise: false, eqeqeq: true, newcap: true, noarg: true, noempty: true, nonew: true, sub: true, undef: true, unused: false, nonbsp: true, trailing: true, boss: true, eqnull: true, strict: true, immed: true, expr: true, latedef: nofunc, quotmark: single, indent: 2, node: true, maxerr: 9999 */
-var OSjs;
-
 /**
  * @preserve OS.js - JavaScript Cloud/Web Desktop Platform
  *

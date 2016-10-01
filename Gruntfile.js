@@ -27,9 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-
-(function(_fs, _path, _build, _grunt, _less) {
-
+(function(_fs, _path, _build, _grunt) {
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
@@ -47,6 +45,10 @@
       require('time-grunt')(grunt);
     } catch (e) { }
 
+    if ( grunt.option('nw') ) {
+      grunt.loadNpmTasks('grunt-nw-builder');
+    }
+
     // Make sure we only load required modules (ignore warnings)
     var checks = ['test', 'eslint', 'csslint', 'validate_xml', 'mochaTest'];
     checks.forEach(function(k) {
@@ -60,10 +62,6 @@
       }
       return true;
     });
-
-    if ( grunt.cli.tasks.indexOf('nw') >= 0 ) {
-      grunt.loadNpmTasks('grunt-nw-builder');
-    }
 
     if ( grunt.cli.tasks.indexOf('watch') >= 0 ) {
       grunt.loadNpmTasks('grunt-contrib-watch');
@@ -128,27 +126,20 @@
             'src/client/javascript/*.js',
             'src/client/javascript/*/*.js'
           ],
-          tasks: ['core']
+          tasks: ['build:core']
         },
         themes: {
           files: [
             'src/client/stylesheets/*.less',
-            'src/client/themes/styles/*/*.less'
+            'src/client/themes/styles/*/*.less',
+            'src/client/themes/fonts/*/*.css'
           ],
-          tasks: ['themes:styles']
-        },
-        fonts: {
-          files: ['src/client/themes/fonts/*/*.css'],
-          tasks: ['themes:fonts']
+          tasks: ['build:themes']
         },
         configs: {
           files: ['src/conf/*.json'],
-          tasks: ['config', 'dist-dev-index']
+          tasks: ['build:config', 'build:core']
         },
-        //packages: { // SHOULD BE RUN MANUALLY. CAN BE WAY TO TIME CONSUMING
-        //  files: ['src/packages/*/*.js'],
-        //  tasks: ['packages']
-        //},
         metadata: {
           files: [
             'src/client/themes/styles/*/metadata.json',
@@ -156,7 +147,7 @@
             'src/client/themes/icons/*/metadata.json',
             'src/packages/*/*/metadata.json'
           ],
-          tasks: ['config', 'manifest']
+          tasks: ['build:config', 'build:manifest']
         }
       },
       validate_xml: {
@@ -179,142 +170,120 @@
       }
     });
 
+    //
+    // BUILD TASKS
+    //
+
     grunt.registerTask('clean', 'Clean up all build files', function(arg) {
     });
 
-    grunt.registerTask('config', 'Modify and build config files', function(fn, key, value, arg) {
-      var getPath = grunt.option('get');
-      var setPath = grunt.option('set');
-      var value = grunt.option('value');
-      var preload = grunt.option('preload');
-      var mount = grunt.option('mount');
-
-      var result;
-      if ( getPath ) {
-        grunt.log.writeln('Path: ' + getPath);
-
-        result = _build.getConfigPath(grunt, getPath);
-        grunt.log.writeln('Type: ' + typeof result);
-        console.log(result);
-      } else if ( setPath ) {
-        if ( typeof value !== 'undefined' ) {
-          grunt.log.writeln('Path: ' + setPath);
-
-          result = _build.setConfigPath(grunt, setPath, value);
-          console.log(result);
-        }
-      } else if ( preload ) {
-        result = _build.addPreload(grunt, preload, grunt.option('path'), grunt.option('type'));
-        console.log(result);
-      } else if ( mount ) {
-        result = _build.addMountpoint(grunt, mount, grunt.option('description'), grunt.option('path'));
-      } else if ( grunt.option('repository') ) {
-        var add = grunt.option('add');
-        var remove = grunt.option('remove');
-        if ( add ) {
-          result = _build.addRepository(grunt, add);
-          console.log(result);
-        } else if ( remove ) {
-          result = _build.removeRepository(grunt, remove);
-          console.log(result);
-        }
-      } else {
-        grunt.log.writeln('Writing configuration files...');
-        _build.createConfigurationFiles(grunt, fn);
-      }
+    grunt.registerTask('build', 'Builds OS.js', function(arg) {
+      _build.build(grunt, arg, this.async());
     });
 
-    grunt.registerTask('core', 'Build dist core files', function(arg) {
-      grunt.log.writeln('Building dist...');
-      _build.buildCore(grunt, arg);
+    grunt.registerTask('generate', 'Generates configuration files etc.', function(arg) {
+      _build.generate(grunt, arg, this.async());
     });
 
-    grunt.registerTask('standalone', 'Build dist standalone files', function(arg) {
-      grunt.log.writeln('Building standalone dist...');
-      var done = this.async();
-      _build.buildStandalone(grunt, done, arg);
-    });
-
-    grunt.registerTask('packages', 'Build dist package files (or a single package, ex: grunt packages:default/About. Also enable/disable)', function(arg, arg2) {
-      grunt.log.writeln('Building packages...');
-      var enable = grunt.option('enable');
-      var disable = grunt.option('disable');
-
-      if ( enable ) {
-        _build.togglePackage(grunt, enable, true);
-      } else if ( disable ) {
-        _build.togglePackage(grunt, disable, false);
-      } else if ( grunt.option('list' ) ) {
-        _build.listPackages(grunt);
-      } else {
-        var done = this.async();
-        _build.buildPackages(grunt, done, arg);
-      }
-    });
-
-    grunt.registerTask('themes', 'Build theme files (arguments: resources, fonts. Or a single theme, ex: grunt themes:MyThemename)', function(arg) {
-      grunt.log.writeln('Building themes...');
-      var done = this.async();
-      _build.buildThemes(grunt, arg, done);
-    });
-
-    grunt.registerTask('manifest', 'Generate package manifest file', function(arg) {
-      grunt.log.writeln('Building package manifest...');
-      _build.buildManifest(grunt, arg);
-    });
-
-    grunt.registerTask('compress', 'Compress dist files (arguments: all, core, packages, ex: grunt compress:core)', function(arg) {
-      grunt.log.writeln('Compressing dist...');
-      _build.buildCompressed(grunt, arg);
-    });
-
-    grunt.registerTask('dist-files', 'Generate dist files from template', function(arg) {
+    grunt.registerTask('config', 'Modify and build config files', function(arg) {
       if ( arg ) {
-        if ( arg === 'dist' || arg === 'dist-dev' ) {
-          _build.createDistFiles(grunt, arg);
-        }
+        _build.config(grunt, arg, this.async());
       } else {
-        _build.createDistFiles(grunt, 'dist');
-        _build.createDistFiles(grunt, 'dist-dev');
+        _build.build(grunt, 'config', this.async());
       }
     });
 
-    grunt.registerTask('apache-vhost', 'Generate Apache vhost configuration file (arguments: [:dist/dist-dev][:output-to-file])', function(dist, outfile) {
-      _build.createApacheVhost(grunt, dist, outfile);
+    //
+    // DEPRECATED TASKS
+    //
+
+    grunt.registerTask('core', '(DEPRECATED) Build dist core files', function(arg) {
+      grunt.log.writeln('This task is deprecated. Please start using "grunt build:core" instead.'['yellow'].bold);
+      _build.build(grunt, 'core', this.async());
     });
 
-    grunt.registerTask('apache-htaccess', 'Generate Apache htaccess file (arguments: [:dist/dist-dev])', function(dist, outfile) {
-      _build.createApacheHtaccess(grunt, dist, outfile);
+    grunt.registerTask('packages', '(DEPRECATED) Builds package(s)', function(arg) {
+      if ( arg ) {
+        grunt.log.writeln('This task is deprecated. Please start using "grunt build:package --name=REPO/NAME" instead.'['yellow'].bold);
+        _build.build(grunt, 'package', this.async(), {
+          name: arg
+        });
+      } else {
+        grunt.log.writeln('This task is deprecated. Please start using "grunt build:packages" instead.'['yellow'].bold);
+        _build.build(grunt, 'packages', this.async());
+      }
     });
 
-    grunt.registerTask('lighttpd-config', 'Generate Lighttpd configuration file (arguments: [:dist/dist-dev][:output-to-file])', function(dist, outfile) {
-      _build.createLighttpdConfig(grunt, dist, outfile);
+    grunt.registerTask('themes', '(DEPRECATED) Build theme files', function(arg) {
+      grunt.log.writeln('This task is deprecated. Please start using "grunt build:themes" instead.'['yellow'].bold);
+      _build.build(grunt, 'themes', this.async());
     });
 
-    grunt.registerTask('nginx-config', 'Generate Nginx configuration file (arguments: [:dist/dist-dev][:output-to-file])', function(dist, outfile) {
-      _build.createNginxConfig(grunt, dist, outfile);
+    grunt.registerTask('manifest', '(DEPRECATED) Generate package manifest file', function(arg) {
+      grunt.log.writeln('This task is deprecated. Please start using "grunt build:manifest" instead.'['yellow'].bold);
+      _build.build(grunt, 'manifest', this.async());
     });
 
-    grunt.registerTask('create-package', 'Create a new package/application: [repo/]PackageName[:type] (types: application, iframe, service, extension)', function(arg1, arg2) {
-      grunt.log.writeln('Creating package...');
-      _build.createPackage(grunt, arg1, arg2);
+    grunt.registerTask('dist-files', '(DEPRECATED) Generate dist files from template', function(arg) {
+      grunt.log.writeln('This task is deprecated. Please start using "grunt build:core" instead.'['yellow'].bold);
+      _build.build(grunt, 'core', this.async());
     });
 
-    grunt.registerTask('create-handler', 'Create a new handler with given name', function(arg1, arg2) {
-      grunt.log.writeln('Creating handler...');
-      _build.createHandler(grunt, arg1);
+    grunt.registerTask('apache-vhost', '(DEPRECATED) Generate Apache vhost configuration', function(dist, outfile) {
+      grunt.log.writeln('This task is deprecated. Please start using "grunt generate:apache-vhost --out=/path/file" instead.'['yellow'].bold);
+      _build.build(grunt, 'generate', 'apache-vhost', this.async());
+    });
+
+    grunt.registerTask('apache-htaccess', '(DEPRECATED) Generate Apache htaccess file', function(dist, outfile) {
+      grunt.log.writeln('This task is deprecated. Please start using "grunt generate:apache-htaccess" instead.'['yellow'].bold);
+      _build.build(grunt, 'generate', 'apache-htaccess', this.async());
+    });
+
+    grunt.registerTask('lighttpd-config', '(DEPRECATED) Generate Lighttpd configuration', function(dist, outfile) {
+      grunt.log.writeln('This task is deprecated. Please start using "grunt generate:lighttpd-config --out=/path/file" instead.'['yellow'].bold);
+      _build.build(grunt, 'generate', 'lighttpd-config', this.async());
+    });
+
+    grunt.registerTask('nginx-config', '(DEPRECATED) Generate Nginx configuration', function(dist, outfile) {
+      grunt.log.writeln('This task is deprecated. Please start using "grunt generate:nginx-config --out=/path/file" instead.'['yellow'].bold);
+      _build.build(grunt, 'generate', 'nginx-config', this.async());
+    });
+
+    grunt.registerTask('dist', '(DEPRECATED) Build dist', function() {
+      grunt.log.writeln('This task is deprecated. use "grunt --target=dist" instead.'['yellow'].bold);
+    });
+
+    grunt.registerTask('dist-dev', '(DEPRECATED) Build dist-dev', function() {
+      grunt.log.writeln('This task is deprecated. use "grunt --target=dist-dev" instead.'['yellow'].bold);
+    });
+
+    grunt.registerTask('nw', '(DEPRECATED) Make NW build', function() {
+      grunt.log.writeln('This task is deprecated. use "grunt --target=dist --nw" instead.'['yellow'].bold);
+    });
+
+    grunt.registerTask('compress', '(DEPRECATED) Compress dist files', function(arg) {
+      grunt.log.writeln('This task is deprecated. use "grunt build:core,packages --compress" instead.'['yellow'].bold);
+    });
+
+    grunt.registerTask('standalone', '(DEPRECATED) Build dist standalone files', function(arg) {
+      grunt.log.writeln('This task is deprecated. use "grunt --target=dist --standalone" instead.'['yellow'].bold);
+    });
+
+    grunt.registerTask('create-package', '(DEPRECATED) Create a new package/application', function(arg1) {
+      grunt.log.writeln('This task is deprecated. use "grunt generate:package --name=REPO/NAME" instead.'['yellow'].bold);
+    });
+
+    grunt.registerTask('create-handler', '(DEPRECATED) Create a new handler with given name', function(arg1) {
+      grunt.log.writeln('This task is deprecated. use "grunt generate:handler --name=MyName" instead.'['yellow'].bold);
     });
 
     //
     // Register aliases
     //
 
-    grunt.registerTask('all', ['clean', 'config', 'dist-files', 'core', 'themes', 'packages', 'manifest']);
+    grunt.registerTask('all', ['clean', 'build:config', 'build:core', 'build:themes', 'build:manifest', 'build:packages', 'generate:apache-htaccess']);
     grunt.registerTask('default', ['all']);
-    grunt.registerTask('nw', ['config', 'core:nw', 'themes', 'packages', 'manifest', 'standalone:nw', 'nwjs']);
-    grunt.registerTask('dist', ['config', 'dist-files:dist', 'core', 'themes', 'packages', 'manifest']);
-    grunt.registerTask('dist-dev', ['config', 'dist-files:dist-dev', 'themes:fonts', 'themes:styles', 'manifest']);
     grunt.registerTask('test', ['eslint', 'csslint', 'validate_xml', 'mochaTest'/*, 'mocha'*/]);
   };
 
-})(require('node-fs-extra'), require('path'), require('./src/build.js'), require('grunt'), require('less'));
+})(require('node-fs-extra'), require('path'), require('./src/build/index.js'), require('grunt'));

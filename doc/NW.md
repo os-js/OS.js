@@ -9,7 +9,7 @@ Run:
 npm install grunt-nw-builder
 
 # Make NW build
-grunt nw
+grunt build --nw
 ```
 
 Your build will be located in `.nw`
