@@ -418,7 +418,7 @@
     var self = this;
     var wm = OSjs.Core.getWindowManager();
 
-    this.dialog = new IconViewShortcutDialog(item, wm.scheme, function(button, values) {
+    this.dialog = new IconViewShortcutDialog(item, wm._scheme, function(button, values) {
       if ( button === 'ok' ) {
         self.updateShortcut(item, values);
       }
