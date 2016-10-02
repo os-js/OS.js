@@ -7,5 +7,6 @@
   "adjoining-classes": false,
   "qualified-headings": false,
   "font-faces": false,
-  "outline-none": false
+  "outline-none": false,
+  "order-alphabetical": false
 }

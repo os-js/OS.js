@@ -44,7 +44,7 @@
     "grunt-mocha-test": ">=0.12.7",
     "grunt-contrib-watch": ">=1.0.0",
     "grunt-eslint": ">=19.0.0",
-    "grunt-contrib-csslint": "1.0.0",
+    "grunt-contrib-csslint": "2.0.0",
     "grunt-contrib-validate-xml": ">=0.0.1"
   }
 }
