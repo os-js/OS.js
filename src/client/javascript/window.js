@@ -901,7 +901,10 @@
       }
     }
 
-    this._emit('inited', [this._scheme]);
+    var self = this;
+    setTimeout(function() {
+      self._emit('inited', [self._scheme]);
+    }, 10);
 
     if ( this._app ) {
       this._app._onMessage('initedWindow', this, {});
