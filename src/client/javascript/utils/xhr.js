@@ -340,20 +340,41 @@
       //
       scheme: function createHTML(item, cb, args) {
         var scheme;
+
+        function _cache(err, html) {
+          if ( !err && html ) {
+            _CACHE[item.src] = html;
+          }
+        }
+
         if ( _CACHE[item.src] && item.force !== true && args.force !== true  ) {
           scheme = new OSjs.GUI.Scheme();
           scheme.loadString(_CACHE[item.src]);
           cb(true, item.src, scheme);
         } else {
-          scheme = new OSjs.GUI.Scheme(item.src);
-          scheme.load(function(err, res) {
-            cb(err ? false : true, item.src, scheme);
-          }, function(err, html) {
-            if ( !err && html ) {
-              _CACHE[item.src] = html;
-            }
-          });
+          if ( OSjs.API.isStandalone() ) {
+            scheme = new OSjs.GUI.Scheme();
+
+            preloadTypes.javascript({
+              src: OSjs.Utils.pathJoin(OSjs.Utils.dirname(item.src), '_scheme.js'),
+              type: 'javascript'
+            }, function() {
+              var look = item.src.replace(OSjs.API.getBrowserPath(), '/').replace(/^\/?packages/, '');
+              var html = OSjs.STANDALONE.SCHEMES[look];
+              scheme.loadString(html);
+              _cache(false, html);
+              cb(true, item.src, scheme);
+            });
+          } else {
+            scheme = new OSjs.GUI.Scheme(item.src);
+            scheme.load(function(err, res) {
+              cb(err ? false : true, item.src, scheme);
+            }, function(err, html) {
+              _cache(err, html);
+            });
+          }
         }
+
       }
     };
 

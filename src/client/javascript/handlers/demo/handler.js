@@ -86,7 +86,7 @@
         });
       }
 
-      if ( window.location.href.match(/^file\:\/\//) ) { // NW
+      if ( API.getConfig('Connection.Type') === 'standalone' || window.location.protocol === 'file:' ) {
         finished({
           userData: {
             id: 0,

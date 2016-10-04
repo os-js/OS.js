@@ -140,7 +140,7 @@
        * @param  {Function} callback      callback
        */
       _loadMetadata: function(callback) {
-        var rootURI = (window.location.pathname || '/').replace(/\/$/, '/packages/'); // FIXME
+        var rootURI = API.getBrowserPath().replace(/\/$/, '/packages/'); // FIXME
 
         function checkEntry(key, iter, scope) {
           iter = Utils.cloneObject(iter);
@@ -166,7 +166,7 @@
           return iter;
         }
 
-        if ( window.location.protocol === 'file:' || API.getConfig('PackageManager.UseStaticManifest') === true ) {
+        if ( API.isStandalone() || API.getConfig('PackageManager.UseStaticManifest') === true ) {
           var uri = Utils.checkdir(API.getConfig('Connection.MetadataURI'));
           Utils.preload([uri], function(total, failed) {
             if ( failed.length ) {

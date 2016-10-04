@@ -85,7 +85,7 @@
 
     if ( wm ) {
       this.notif = wm.createNotificationIcon('ServiceNotificationIcon', {
-        image: OSjs.API.getIcon('status/gtk-dialog-authentication.png'),
+        image: API.getIcon('status/gtk-dialog-authentication.png'),
         onContextMenu: show,
         onClick: show,
         onInited: function(el, img) {
@@ -116,7 +116,7 @@
       if ( this.notif.$container ) {
         this.notif.$container.style.display = this.size ? 'inline-block' : 'none';
       }
-      this.notif.setTitle(OSjs.API._('SERVICENOTIFICATION_TOOLTIP', this.size.toString()));
+      this.notif.setTitle(API._('SERVICENOTIFICATION_TOOLTIP', this.size.toString()));
     }
   };
 
@@ -136,7 +136,7 @@
       });
     });
 
-    OSjs.API.createMenu(menu, ev);
+    API.createMenu(menu, ev);
   };
 
   /**
@@ -385,7 +385,7 @@
 
     function _launch(name) {
       if ( name ) {
-        OSjs.API.launch(name, args, launchArgs.onFinished, launchArgs.onError, launchArgs.onConstructed);
+        API.launch(name, args, launchArgs.onFinished, launchArgs.onError, launchArgs.onConstructed);
       }
     }
 
@@ -403,7 +403,7 @@
           _launch(app[0]);
         } else {
           if ( wm ) {
-            OSjs.API.createDialog('ApplicationChooser', {
+            API.createDialog('ApplicationChooser', {
               file: file,
               list: app
             }, function(ev, btn, result) {
@@ -416,15 +416,15 @@
               setDefaultApplication(file.mime, result.useDefault ? result.name : null);
             });
           } else {
-            OSjs.API.error(OSjs.API._('ERR_FILE_OPEN'),
-                           OSjs.API._('ERR_FILE_OPEN_FMT', file.path),
-                           OSjs.API._('ERR_NO_WM_RUNNING') );
+            API.error(API._('ERR_FILE_OPEN'),
+                           API._('ERR_FILE_OPEN_FMT', file.path),
+                           API._('ERR_NO_WM_RUNNING') );
           }
         }
       } else {
-        OSjs.API.error(OSjs.API._('ERR_FILE_OPEN'),
-                       OSjs.API._('ERR_FILE_OPEN_FMT', file.path),
-                       OSjs.API._('ERR_APP_MIME_NOT_FOUND_FMT', file.mime) );
+        API.error(API._('ERR_FILE_OPEN'),
+                       API._('ERR_FILE_OPEN_FMT', file.path),
+                       API._('ERR_APP_MIME_NOT_FOUND_FMT', file.mime) );
       }
     }
 
@@ -481,11 +481,11 @@
       //setTimeout with 500 ms is used to allow applications that might need
       //  some time to destroy resources before it can be relaunched.
       setTimeout(function() {
-        OSjs.API.launch(n, args);
+        API.launch(n, args);
       }, 500);
     }
 
-    OSjs.API.getProcess(n).forEach(relaunch);
+    API.getProcess(n).forEach(relaunch);
   };
 
   /**
@@ -514,7 +514,7 @@
     var packman = OSjs.Core.getPackageManager();
     var compability = Utils.getCompability();
     var metadata = packman.getPackage(name);
-    var running = OSjs.API.getProcess(name, true);
+    var running = API.getProcess(name, true);
 
     var preloads = (function() {
       var list = (metadata.preload || []).slice(0);
@@ -575,7 +575,7 @@
       API.createLoading(name, {className: 'StartupNotification', tooltip: API._('LBL_STARTING') + ' ' + name});
       if ( !OSjs.Applications[name] ) {
         if ( metadata.splash !== false ) {
-          splash = OSjs.API.createSplash(metadata.name, metadata.icon);
+          splash = API.createSplash(metadata.name, metadata.icon);
         }
       }
     }
@@ -591,8 +591,8 @@
     function _onError(err, exception) {
       _destroySplash();
 
-      OSjs.API.error(OSjs.API._('ERR_APP_LAUNCH_FAILED'),
-                  OSjs.API._('ERR_APP_LAUNCH_FAILED_FMT', name),
+      API.error(API._('ERR_APP_LAUNCH_FAILED'),
+                  API._('ERR_APP_LAUNCH_FAILED_FMT', name),
                   err, exception, true);
 
       console.groupEnd();
@@ -618,7 +618,7 @@
         });
 
         if ( list.length ) {
-          return OSjs.API._('ERR_APP_LAUNCH_COMPABILITY_FAILED_FMT', name, list.join(', '));
+          return API._('ERR_APP_LAUNCH_COMPABILITY_FAILED_FMT', name, list.join(', '));
         }
         return true;
       })();
@@ -635,7 +635,7 @@
           _onFinished(true);
           return; // muy importante!
         } else {
-          throw new Error(OSjs.API._('ERR_APP_LAUNCH_ALREADY_RUNNING_FMT', name));
+          throw new Error(API._('ERR_APP_LAUNCH_ALREADY_RUNNING_FMT', name));
         }
       }
 
@@ -657,7 +657,7 @@
     function _preload(cb) {
       Utils.preload(preloads, function(total, failed, succeeded, data) {
         if ( failed.length ) {
-          cb(OSjs.API._('ERR_APP_PRELOAD_FAILED_FMT', name, failed.join(',')));
+          cb(API._('ERR_APP_PRELOAD_FAILED_FMT', name, failed.join(',')));
         } else {
           setTimeout(function() {
             cb(false, data);
@@ -684,7 +684,7 @@
       }
 
       if ( typeof OSjs.Applications[name] === 'undefined' ) {
-        throw new Error(OSjs.API._('ERR_APP_RESOURCES_MISSING_FMT', name));
+        throw new Error(API._('ERR_APP_RESOURCES_MISSING_FMT', name));
       }
 
       if ( typeof OSjs.Applications[name] === 'function' ) {
@@ -706,7 +706,7 @@
         } catch ( e ) {
           console.warn('Error on constructing application', e, e.stack);
           __onprocessinitfailed();
-          cb(OSjs.API._('ERR_APP_CONSTRUCT_FAILED_FMT', name, e), e);
+          cb(API._('ERR_APP_CONSTRUCT_FAILED_FMT', name, e), e);
           return false;
         }
 
@@ -724,7 +724,7 @@
         } catch ( ex ) {
           console.warn('Error on init() application', ex, ex.stack);
           __onprocessinitfailed();
-          cb(OSjs.API._('ERR_APP_INIT_FAILED_FMT', name, ex.toString()), ex);
+          cb(API._('ERR_APP_INIT_FAILED_FMT', name, ex.toString()), ex);
           return false;
         }
 
@@ -752,7 +752,7 @@
     }
 
     if ( !metadata ) {
-      err = OSjs.API._('ERR_APP_LAUNCH_MANIFEST_FAILED_FMT', name);
+      err = API._('ERR_APP_LAUNCH_MANIFEST_FAILED_FMT', name);
       _onError(err);
       throw new Error(err);
     }
@@ -850,7 +850,7 @@
         return;
       }
 
-      OSjs.API.launch(aname, aargs, function(app, metadata) {
+      API.launch(aname, aargs, function(app, metadata) {
         onSuccess(app, metadata, aname, aargs);
         next();
       }, function(err, name, args) {
@@ -899,7 +899,7 @@
 
       if ( vfspath ) {
         if ( userpkg ) {
-          path = path.substr(OSjs.API.getConfig('Connection.FSURI').length);
+          path = path.substr(API.getConfig('Connection.FSURI').length);
         } else {
           path = 'osjs:///' + path;
         }
@@ -916,9 +916,9 @@
 
       if ( pkg ) {
         if ( pkg.scope === 'user' ) {
-          path = OSjs.API.getConfig('Connection.FSURI') + '/get/' + Utils.pathJoin(pkg.path, name);
+          path = API.getConfig('Connection.FSURI') + '/get/' + Utils.pathJoin(pkg.path, name);
         } else {
-          path = OSjs.API.getConfig('Connection.PackageURI') + '/' + pkg.path + '/' + name;
+          path = API.getConfig('Connection.PackageURI') + '/' + pkg.path + '/' + name;
         }
       }
 
@@ -939,12 +939,12 @@
    * @return  {String}            The absolute URL of css file
    */
   API.getThemeCSS = function _apiGetThemeCSS(name) {
-    var root = OSjs.API.getConfig('Connection.RootURI', '/');
+    var root = API.getConfig('Connection.RootURI', '/');
     if ( name === null ) {
       return root + 'blank.css';
     }
 
-    root = OSjs.API.getConfig('Connection.ThemeURI');
+    root = API.getConfig('Connection.ThemeURI');
     return Utils.checkdir(root + '/' + name + '.css');
   };
 
@@ -1015,7 +1015,7 @@
       });
     }
 
-    return OSjs.API.getIcon(icon, size);
+    return API.getIcon(icon, size);
   };
 
   /**
@@ -1033,9 +1033,9 @@
     name = name || null;
     type = type || null;
 
-    var root = OSjs.API.getConfig('Connection.ThemeURI');
+    var root = API.getConfig('Connection.ThemeURI');
     if ( !root.match(/^\//) ) {
-      root = window.location.pathname + root;
+      root = API.getBrowserPath() + root;
     }
 
     function getName(str, theme) {
@@ -1073,7 +1073,7 @@
     if ( name ) {
       var wm = OSjs.Core.getWindowManager();
       var theme = wm ? wm.getSoundTheme() : 'default';
-      var root = OSjs.API.getConfig('Connection.SoundURI');
+      var root = API.getConfig('Connection.SoundURI');
       var compability = Utils.getCompability();
       if ( !name.match(/^\//) ) {
         var ext = 'oga';
@@ -1103,7 +1103,7 @@
     size = size || '16x16';
     app  = app  || null;
 
-    var root = OSjs.API.getConfig('Connection.IconURI');
+    var root = API.getConfig('Connection.IconURI');
     var wm = OSjs.Core.getWindowManager();
     var theme = wm ? wm.getIconTheme() : 'default';
 
@@ -1111,10 +1111,10 @@
       if ( name.match(/^\.\//) ) {
         name = name.replace(/^\.\//, '');
         if ( (app instanceof OSjs.Core.Application) || (typeof app === 'string') ) {
-          return OSjs.API.getApplicationResource(app, name);
+          return API.getApplicationResource(app, name);
         } else {
           if ( app !== null && typeof app === 'object' ) {
-            return OSjs.API.getApplicationResource(app.path, name);
+            return API.getApplicationResource(app.path, name);
           }
         }
       } else {
@@ -1186,7 +1186,7 @@
     if ( fallback && fallback.match(/^\//) ) {
       fallback = null;
     }
-    return OSjs.API.getConfig('VFS.Home') || fallback || 'osjs:///';
+    return API.getConfig('VFS.Home') || fallback || 'osjs:///';
   };
 
   /////////////////////////////////////////////////////////////////////////////
@@ -1360,7 +1360,7 @@
     if ( icon ) {
       img = document.createElement('img');
       img.alt = name;
-      img.src = OSjs.API.getIcon(icon);
+      img.src = API.getIcon(icon);
     }
 
     var titleText = document.createElement('b');
@@ -1424,7 +1424,7 @@
    */
   API.error = function _apiError(title, message, error, exception, bugreport) {
     bugreport = (function() {
-      if ( OSjs.API.getConfig('BugReporting') ) {
+      if ( API.getConfig('BugReporting') ) {
         return typeof bugreport === 'undefined' ? false : (bugreport ? true : false);
       }
       return false;
@@ -1434,7 +1434,7 @@
       var wm = OSjs.Core.getWindowManager();
       if ( wm && wm._fullyLoaded ) {
         try {
-          OSjs.API.createDialog('Error', {
+          API.createDialog('Error', {
             title: title,
             message: message,
             error: error,
@@ -1452,7 +1452,7 @@
       return false;
     }
 
-    OSjs.API.blurMenu();
+    API.blurMenu();
 
     if ( exception && (exception.message.match(/^Script Error/i) && String(exception.lineNumber).match(/^0/)) ) {
       console.error('VENDOR ERROR', {
@@ -1464,7 +1464,7 @@
       return;
     }
 
-    if ( OSjs.API.getConfig('MOCHAMODE') ) {
+    if ( API.getConfig('MOCHAMODE') ) {
       console.error(title, message, error, exception);
     } else {
       if ( _dialog() ) {
@@ -1500,7 +1500,7 @@
       volume = 1.0;
     }
 
-    var f = OSjs.API.getSound(filename);
+    var f = API.getSound(filename);
     console.debug('API::playSound()', name, filename, f, volume);
 
     var a = new Audio(f);
@@ -1624,6 +1624,26 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
+   * Checks if running OS.js instance is in standalone mode
+   *
+   * @function isStandalone
+   * @memberof OSjs.API
+   */
+  API.isStandalone = function _apiIsStandlone() {
+    return API.getConfig('Connection.Type') === 'standalone' && window.location.protocol === 'file:';
+  };
+
+  /**
+   * Gets the browser window path
+   *
+   * @function getBrowserPath
+   * @memberof OSjs.API
+   */
+  API.getBrowserPath = function _apiGetBrowserPath() {
+    return (window.location.pathname || '/').replace(/index\.(.*)$/, '');
+  }
+
+  /**
    * Signs the user out and shuts down OS.js
    *
    * @function signOut
@@ -1634,18 +1654,18 @@
     var wm = OSjs.Core.getWindowManager();
 
     function signOut(save) {
-      OSjs.API.playSound('LOGOUT');
+      API.playSound('LOGOUT');
 
       handler.logout(save, function() {
-        OSjs.API.shutdown();
+        API.shutdown();
       });
     }
 
     if ( wm ) {
-      var user = handler.getUserData() || {name: OSjs.API._('LBL_UNKNOWN')};
-      OSjs.API.createDialog('Confirm', {
-        title: OSjs.API._('DIALOG_LOGOUT_TITLE'),
-        message: OSjs.API._('DIALOG_LOGOUT_MSG_FMT', user.name)
+      var user = handler.getUserData() || {name: API._('LBL_UNKNOWN')};
+      API.createDialog('Confirm', {
+        title: API._('DIALOG_LOGOUT_TITLE'),
+        message: API._('DIALOG_LOGOUT_MSG_FMT', user.name)
       }, function(ev, btn) {
         if ( btn === 'yes' ) {
           signOut(true);

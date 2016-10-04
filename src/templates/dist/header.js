@@ -1,3 +1,4 @@
+window.OSjs = window.OSjs || {};
 /**
  * @preserve OS.js - JavaScript Cloud/Web Desktop Platform
  *

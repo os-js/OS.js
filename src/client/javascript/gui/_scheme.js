@@ -302,16 +302,6 @@
   UIScheme.prototype.load = function(cb, cbxhr) {
     cbxhr = cbxhr || function() {};
 
-    if ( window.location.protocol.match(/^file/) ) {
-      var url = this.url;
-      if ( !url.match(/^\//) ) {
-        url = '/' + url;
-      }
-      this._load(OSjs.API.getDefaultSchemes(url.replace(/^\/packages/, '')));
-      cb(false, this.scheme);
-      return;
-    }
-
     console.debug('UIScheme::load()', this.url);
 
     var self = this;
@@ -727,6 +717,14 @@
        */
       init: function(cb) {
         if ( dialogScheme ) {
+          cb();
+          return;
+        }
+
+        if ( OSjs.API.isStandalone() ) {
+          var html = OSjs.STANDALONE.SCHEMES['/dialogs.html'];
+          dialogScheme = new OSjs.GUI.Scheme();
+          dialogScheme.loadString(html);
           cb();
           return;
         }
