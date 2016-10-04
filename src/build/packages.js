@@ -46,6 +46,18 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
+  function _createStandaloneScheme(iter, dest) {
+    var src = _path.join(dest, 'scheme.html');
+    if ( _fs.existsSync(src) ) {
+      iter.preload.forEach(function(p) {
+        if ( p.type === 'scheme' ) {
+          _utils.createStandaloneScheme(src, '/' + iter.path +  '/' + p.src, _path.join(dest, '_scheme.js'));
+          _fs.removeSync(src);
+        }
+      })
+    }
+  }
+
   /**
    * Wrapper for running package build scripts
    */
@@ -79,7 +91,7 @@
   /**
    * Wrapper for combining package resources
    */
-  function _combineResources(iter, dest, cb) {
+  function _combineResources(standalone, iter, dest, cb) {
     var remove = [];
     var combined = {
       javascript: [],
@@ -133,7 +145,12 @@
       _fs.removeSync(f + '.map');
     });
 
+    if ( standalone ) {
+      _createStandaloneScheme(iter, dest);
+    }
+
     iter.preload = _manifest.combinePreloads(iter);
+
     _fs.writeFileSync(_path.join(dest, 'metadata.json'), JSON.stringify(iter, null, 4));
 
     cb(false, true);
@@ -143,9 +160,8 @@
    * Wrapper for compressing package resources
    */
   function _compressResources(iter, dest, cb) {
-    var tpls = _path.join(ROOT, 'src', 'templates');
-    var jsh = _fs.readFileSync(_path.join(tpls, 'dist', 'header.js')).toString();
-    var cssh = _fs.readFileSync(_path.join(tpls, 'dist', 'header.css')).toString();
+    var jsh = _utils.readTemplate('dist/header.js');
+    var cssh = _utils.readTemplate('dist/header.css');
 
     var types = {
       stylesheet: function(src) {
@@ -270,7 +286,7 @@
           _runBuildScripts(opts.verbose, 'dist', 'before', metadata, src, dest, function() {
             _copyResources(opts, metadata, src, dest, function() {
               _buildLess(metadata, src, dest, function() {
-                _combineResources(metadata, dest, function() {
+                _combineResources(opts.standalone, metadata, dest, function() {
                   if ( opts.compress ) {
                     _compressResources(metadata, dest, function() {
                       _runBuildScripts(opts.verbose, 'dist', 'after', metadata, src, dest, done);
@@ -341,6 +357,7 @@
    */
   function buildPackages(opts, done) {
     _manifest.getPackages({
+      standalone: opts.standalone,
       repositories: opts.repositories,
       target: opts.target,
       verbose: opts.verbose
@@ -348,6 +365,7 @@
       var list = err ? [] : Object.keys(packages);
       _utils.iterate(list, function(iter, idx, next) {
         buildPackage({
+          standalone: opts.standalone,
           verbose: opts.verbose,
           compress: opts.compress,
           target: opts.target,

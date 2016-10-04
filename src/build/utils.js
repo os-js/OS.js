@@ -45,6 +45,11 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
+  module.exports.readTemplate = function readTemplate(name) {
+    var tpls = _path.join(ROOT, 'src', 'templates');
+    return _fs.readFileSync(_path.join(tpls, name)).toString();
+  };
+
   /**
    * Wrapper for setting color
    */
@@ -198,6 +203,20 @@
       console.warn(e, e.stack);
       cb(e);
     }
+  };
+
+  module.exports.createStandaloneScheme = function createStandaloneScheme(src, name, dest) {
+    var data = module.exports.addslashes(_fs.readFileSync(src).toString().replace(/\n/g, ''));
+
+    var tpl = module.exports.readTemplate('dist/schemes.js');
+    tpl = tpl.replace('%DATA%', data);
+    tpl = tpl.replace('%NAME%', name);
+
+    _fs.writeFileSync(dest, tpl);
+  };
+
+  module.exports.addslashes = function addslashes(str) {
+    return (str + '').replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0');
   };
 
 })(require('node-fs-extra'), require('path'), require('less'));

@@ -306,7 +306,14 @@
       settings.VFS.GoogleDrive.Enabled = false;
       settings.VFS.OneDrive.Enabled = false;
       settings.VFS.Dropbox.Enabled = false;
-      settings.VFS.Mountpoints = {};
+      settings.VFS.LocalStorage.Enabled = false;
+
+      var valid = ['applications', 'home', 'osjs'];
+      Object.keys(settings.VFS.Mountpoints).forEach(function(k) {
+        if ( valid.indexOf(k) === -1 ) {
+          delete settings.VFS.Mountpoints[k];
+        }
+      });
     }
 
     var themes = _themes.readMetadata(cfg);

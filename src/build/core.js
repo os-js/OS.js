@@ -27,7 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(_fs, _path, _utils) {
+(function(_fs, _path, _utils, _manifest) {
   'use strict';
 
   var ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
@@ -138,9 +138,45 @@
 
   var TARGETS = {
     'dist': function(opts, done) {
-      var tpls = _path.join(ROOT, 'src', 'templates');
-      var jsh = _fs.readFileSync(_path.join(tpls, 'dist', 'header.js')).toString();
-      var cssh = _fs.readFileSync(_path.join(tpls, 'dist', 'header.css')).toString();
+      var jsh = _utils.readTemplate('dist/header.js');
+      var cssh = _utils.readTemplate('dist/header.css');
+
+      function _nw(cb) {
+        if ( opts.nw ) {
+          var dest = _path.join(ROOT, 'dist');
+
+          _fs.mkdirSync(_path.join(dest, 'vfs'));
+          _fs.mkdirSync(_path.join(dest, 'vfs', 'home'));
+          _fs.mkdirSync(_path.join(dest, 'vfs', 'home', 'demo'));
+
+          _fs.copySync(
+            _path.join(ROOT, 'README.md'),
+            _path.join(dest, 'vfs', 'home', 'demo', 'README.md')
+          );
+          _fs.copySync(
+            _path.join(ROOT, 'src', 'templates', 'nw', 'package.json'),
+            _path.join(dest, 'package.json')
+          );
+          _fs.copySync(
+            _path.join(ROOT, 'src', 'server', 'packages.json'),
+            _path.join(dest, 'packages.json')
+          );
+
+          // Install dependencies
+          _fs.copySync(
+            _path.join(ROOT, 'src', 'server', 'node', 'node_modules'),
+            _path.join(dest, 'node_modules')
+          );
+
+          var cmd = 'cd "' + dest + '" && npm install';
+          require('child_process').exec(cmd, function(err, stdout, stderr) {
+            console.log(stderr, stdout);
+            cb();
+          });
+        } else {
+          cb();
+        }
+      }
 
       var end = opts.compress ? '.min' : '';
       _fs.writeFileSync(_path.join(ROOT, 'dist', 'osjs' + end +  '.js'), jsh + _readJS(opts, opts.javascript));
@@ -164,44 +200,16 @@
         }
 
         if ( opts.standalone ) {
-          addScript('schemes.js');
+          addScript('_dialogs.js');
         }
       });
 
-      if ( opts.nw ) {
-        var dest = _path.join(ROOT, 'dist');
-
-        _fs.mkdirSync(_path.join(dest, 'vfs'));
-        _fs.mkdirSync(_path.join(dest, 'vfs', 'home'));
-        _fs.mkdirSync(_path.join(dest, 'vfs', 'home', 'demo'));
-
-        _fs.copySync(
-          _path.join(ROOT, 'README.md'),
-          _path.join(dest, 'vfs', 'home', 'demo', 'README.md')
-        );
-        _fs.copySync(
-          _path.join(ROOT, 'src', 'templates', 'nw', 'package.json'),
-          _path.join(dest, 'package.json')
-        );
-        _fs.copySync(
-          _path.join(ROOT, 'src', 'server', 'packages.json'),
-          _path.join(dest, 'packages.json')
-        );
-
-        // Install dependencies
-        _fs.copySync(
-          _path.join(ROOT, 'src', 'server', 'node', 'node_modules'),
-          _path.join(dest, 'node_modules')
-        );
-
-        var cmd = 'cd "' + dest + '" && npm install';
-        require('child_process').exec(cmd, function(err, stdout, stderr) {
-          console.log(stderr, stdout);
-          done();
-        });
-      } else {
-        done();
+      if ( opts.standalone ) {
+        var src = _path.join(ROOT, 'src', 'client', 'dialogs.html');
+        _utils.createStandaloneScheme(src, '/dialogs.html', _path.join(ROOT, 'dist', '_dialogs.js'));
       }
+
+      _nw(done);
     },
 
     'dist-dev': function(opts, done) {
@@ -272,4 +280,4 @@
 
   module.exports.buildFiles = buildFiles;
 
-})(require('node-fs-extra'), require('path'), require('./utils.js'));
+})(require('node-fs-extra'), require('path'), require('./utils.js'), require('./manifest.js'));

@@ -148,6 +148,7 @@
       _utils.iterate(list, function(target, idx, next) {
         console.log('Generating files for', target);
         _core.buildFiles({
+          repositories: cfg.repositories,
           verbose: cli.option('verbose'),
           nw: cli.option('nw'),
           standalone: cli.option('standalone'),
@@ -205,6 +206,7 @@
       _utils.iterate(list, function(key, idx, next) {
         console.log('Generating manifest for', key);
         _manifest.writeManifest({
+          standalone: cli.option('standalone'),
           verbose: cli.option('verbose'),
           force: {
             enabled: forceEnabled,
@@ -222,6 +224,7 @@
         _packages.buildPackages({
           verbose: cli.option('verbose'),
           compress: cli.option('compress'),
+          standalone: cli.option('standalone'),
           repositories: cfg.repositories,
           target: target
         }, next);
@@ -241,6 +244,7 @@
         _packages.buildPackage({
           name: name,
           target: target,
+          standalone: cli.option('standalone'),
           verbose: cli.option('verbose'),
           compress: cli.option('compress')
         }, next)
