@@ -43,7 +43,7 @@
     var src = _path.join(ROOT, 'src', 'templates', 'dist', 'packages.js');
     _fs.readFile(src, function(err, res) {
       cb(err, err ? false : res.toString());
-    }, 'utf8');
+    });
   }
 
   /**

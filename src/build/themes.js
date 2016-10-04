@@ -94,7 +94,7 @@
       _removeSilent(_path.join(dst, 'metadata.json'));
 
       var file = _path.join(dst, 'style.css');
-      var css = _fs.readFileSync(file, 'utf8').toString();
+      var css = _fs.readFileSync(file).toString();
       return css.replace(/\%FONTURI\%/g, rep);
     });
 
