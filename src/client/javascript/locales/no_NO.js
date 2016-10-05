@@ -415,7 +415,7 @@
     'LBL_ICON': 'Ikon',
     'LBL_UNINSTALL': 'Avinstaller',
     'LBL_REGENERATE': 'Regenerer',
-    'LBL_DESKTOP': 'Skrivebort',
+    'LBL_DESKTOP': 'Skrivebord',
     'LBL_WINDOWMANAGER': 'Vindu-håndterer',
     'LBL_HOTKEY': 'Snarknapp',
     'LBL_HOTKEYS': 'Snarknapper',
