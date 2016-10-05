@@ -266,8 +266,8 @@
     var path = Utils.pathJoin(desktopPath, '.shortcuts.json');
 
     VFS.write(path, JSON.stringify(this.shortcutCache, null, 4), function(e, r) {
-      if ( refresh ) {
-        //self._refresh(); // Caught by VFS message in main.js
+      if ( refresh ) { // Normally caught by VFS message in main.js
+        //self._refresh();
       }
     });
   };
@@ -321,7 +321,7 @@
   DesktopIconView.prototype.removeShortcut = function(data, wm) {
     var found = this.getShortcutByPath(data.path);
 
-    if ( !found.item ) {
+    if ( found.item ) {
       this.shortcutCache.splice(found.index, 1);
       this._save(true);
     }
