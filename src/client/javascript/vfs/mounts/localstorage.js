@@ -69,7 +69,7 @@
       throw new TypeError('Expected p as String');
     }
 
-    p = Utils.getRelativeURL(p).replace(/\/+/g, '/');
+    p = Utils.getPathProtocol(p).replace(/\/+/g, '/');
 
     var path = par ? (Utils.dirname(p) || '/') : p;
     if ( path !== '/' ) {

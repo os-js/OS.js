@@ -64,7 +64,7 @@
    */
   function makePath(file) {
     var mm = OSjs.Core.getMountManager();
-    var rel = mm.getRelativeURL(file.path);
+    var rel = mm.getPathProtocol(file.path);
     var module = mm.getModuleFromPath(file.path, false, true);
     var base = (module.options || {}).url;
     return base + rel.replace(/^\/+/, '/');
@@ -128,7 +128,7 @@
               return iter;
             });
 
-            var rel = Utils.getRelativeURL(item.path);
+            var rel = Utils.getPathProtocol(item.path);
             if ( rel !== '/' ) {
               list.unshift({
                 filename: '..',

@@ -35,6 +35,23 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
+   * Gets the protocol from a location
+   *
+   * @function getPathProtocol
+   * @memberof OSjs.Utils
+   *
+   * @param   {String}    orig        Path name
+   *
+   * @return  {String}
+   */
+  OSjs.Utils.getPathProtocol = function getPathProtocol(orig) {
+    //return orig.replace(/^([A-z0-9\-_]+)\:\/\//, '');
+    var tmp = document.createElement('a');
+    tmp.href = orig;
+    return tmp.protocol.replace(/:$/, '');
+  };
+
+  /**
    * Check the directory and rewrite it if running on file://
    *
    * @function checkdir

@@ -147,20 +147,6 @@
     };
   };
 
-  /**
-   * Returns the URL without protocol
-   *
-   * @function getRelativeURL
-   * @memberof OSjs.Utils
-   *
-   * @param   {String}    orig        Path name
-   *
-   * @return  {String}
-   */
-  OSjs.Utils.getRelativeURL = function getRelativeURL(orig) {
-    return orig.replace(/^([A-z0-9\-_]+)\:\/\//, '');
-  };
-
   /////////////////////////////////////////////////////////////////////////////
   // OBJECT HELPERS
   /////////////////////////////////////////////////////////////////////////////

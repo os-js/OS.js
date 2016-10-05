@@ -182,7 +182,7 @@
           return;
         }
 
-        var dir = Utils.getRelativeURL(Utils.dirname(found.path));
+        var dir = Utils.getPathProtocol(Utils.dirname(found.path));
         var foundFile = getMetadataFromItem(dir, found);
         callback(false, foundFile);
       } else {
@@ -203,7 +203,7 @@
       }
     }
 
-    var path = Utils.getRelativeURL(item.path).replace(/\/+/, '/');
+    var path = Utils.getPathProtocol(item.path).replace(/\/+/, '/');
     if ( useParent ) {
       path = Utils.dirname(path);
     }
@@ -286,7 +286,7 @@
 
     console.info('OneDrive::scandir()', item);
 
-    var relativePath = Utils.getRelativeURL(item.path);
+    var relativePath = Utils.getPathProtocol(item.path);
 
     function _finished(error, result) {
       console.groupEnd();

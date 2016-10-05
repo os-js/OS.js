@@ -282,7 +282,7 @@
    * Creates the '..' entry for scandir if not detected
    */
   function createBackLink(item, result, alias, oitem) {
-    var path = Utils.getRelativeURL(item.path);
+    var path = Utils.getPathProtocol(item.path);
     var isOnRoot = path.replace(/\/+/, '/') === '/';
 
     if ( alias ) {
