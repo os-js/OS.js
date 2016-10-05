@@ -1751,6 +1751,7 @@
   /////////////////////////////////////////////////////////////////////////////
 
   API.shutdown = API.shutdown || function() {}; // init.js
+  API.isShuttingDown = API.isShuttingDown || function() {}; // init.js
 
   /**
    * @function createMenu

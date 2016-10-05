@@ -984,33 +984,37 @@
       }
     }
 
-    function _animateClose() {
-      if ( self._$element ) {
-        var anim = wm ? wm.getSetting('animations') : false;
-        if ( anim ) {
-          self._$element.setAttribute('data-hint', 'closing');
-          self._animationCallback = function() {
-            _removeDOM();
-          };
+    function _animateClose(fn) {
+      if ( API.isShuttingDown() ) {
+        fn();
+      } else {
+        if ( self._$element ) {
+          var anim = wm ? wm.getSetting('animations') : false;
+          if ( anim ) {
+            self._$element.setAttribute('data-hint', 'closing');
+            self._animationCallback = fn;
 
-          // This prevents windows from sticking when shutting down.
-          // In some cases this would happen when you remove the stylesheet
-          // with animation properties attached.
-          setTimeout(function() {
-            if ( self._animationCallback ) {
-              self._animationCallback();
-            }
-          }, 1000);
-        } else {
-          self._$element.style.display = 'none';
-          _removeDOM();
+            // This prevents windows from sticking when shutting down.
+            // In some cases this would happen when you remove the stylesheet
+            // with animation properties attached.
+            setTimeout(function() {
+              if ( self._animationCallback ) {
+                self._animationCallback();
+              }
+            }, 1000);
+          } else {
+            self._$element.style.display = 'none';
+            fn();
+          }
         }
       }
     }
 
     this._onChange('close');
 
-    _animateClose();
+    _animateClose(function() {
+      _removeDOM();
+    });
     _destroyDOM();
     _destroyWin();
 

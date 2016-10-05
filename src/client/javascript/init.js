@@ -844,6 +844,18 @@
     return {};
   };
 
+  /**
+   * Check if OS.js is shutting down
+   *
+   * @function isShuttingDown
+   * @memberof OSjs.Core
+   *
+   * @return boolean
+   */
+  OSjs.API.isShuttingDown = OSjs.API.isShuttingDown || function() {
+    return signingOut;
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // MAIN
   /////////////////////////////////////////////////////////////////////////////
