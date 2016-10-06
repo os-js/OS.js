@@ -101,7 +101,7 @@
 
       win._find('FontName').on('click', function() {
         _createDialog('Font', {
-          fontName: win.settings.fontFamily,
+          fontName: settings.fontFamily,
           fontSize: -1
         }, function(result) {
           win._find('FontName').set('value', result.fontName);
