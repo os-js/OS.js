@@ -5,6 +5,7 @@
   "config": {},
   "build": {
     "copy": [
+      "scheme.html",
       "metadata.json",
       "broadway.js",
       "extension.js",
