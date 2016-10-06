@@ -169,7 +169,9 @@
       "Create a new file in **{0}**" : "Tạo một tập tin mới trong **{0}**",
       "Create a new directory in **{0}**" : "Tạo một thư mục mới trong **{0}**",
       "Rename **{0}**" : "Đổi tên **{0}**",
-      "Delete **{0}** ?" : "Xóa **{0}**?"
+      "Delete **{0}** ?" : "Xóa **{0}**?",
+      'Selected {0} files, {1} dirs, {2}' : 'Đã chọn {0} tập tin, {1} thư mục, {2}',
+      'Showing {0} files ({1} hidden), {2} dirs, {3}' : 'Đang hiển thị {0} tập tin({1} bị ẩn), {2} thư mục, {3}'
     }
   };
 
