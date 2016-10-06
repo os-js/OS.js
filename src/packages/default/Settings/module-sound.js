@@ -97,7 +97,7 @@
 
       win._find('SoundsEdit').on('click', function() {
         var selected = win._find('SoundsList').get('selected');
-        if ( selected ) {
+        if ( selected && selected[0] ) {
           editList(win, scheme, selected[0].data);
         }
       });

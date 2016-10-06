@@ -89,7 +89,7 @@
     render: function(win, scheme, root, settings, wm) {
       win._find('HotkeysEdit').on('click', function() {
         var selected = win._find('HotkeysList').get('selected');
-        if ( selected ) {
+        if ( selected && selected[0] ) {
           editList(win, scheme, selected[0].data);
         }
       });

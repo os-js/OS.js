@@ -164,7 +164,7 @@
 
       win._find('ButtonUninstall').on('click', function() {
         var selected = win._find('InstalledPackages').get('selected');
-        if ( selected ) {
+        if ( selected && selected[0] ) {
           var pkg = pacman.getPackage(selected[0].data);
           if ( pkg && pkg.scope === 'user' ) {
             win._toggleLoading(true);
