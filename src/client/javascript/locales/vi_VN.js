@@ -84,6 +84,10 @@
     'ERR_LOGIN_FMT' : 'Đăng nhập thất bại: {0}',
     'ERR_LOGIN_INVALID' : 'Đăng nhập không hợp lệ',
 
+    // SESSION
+    'ERR_NO_SESSION': 'Chưa có phiên chạy nào được tạo bởi máy chủ. Bạn có muốn đăng nhập lại không?',
+    'MSG_SESSION_WARNING' : 'Bạn có muốn thoát khỏi phiên OS.js này? Mọi cài đặt và dữ liệu sẽ bị mất!',
+
     // Service
     'BUGREPORT_MSG' : 'Xin hãy báo lỗi này nếu bạn nghĩ rằng đây là một lỗi.\nHãy viết một mô tả ngắn gọn về lỗi đã xảy ra như thế nào, và nếu có thể, làm cách nào để tái hiện lại nó!',
 
@@ -199,15 +203,21 @@
     'ERR_VFS_EXPECT_SRC_FILE' : 'Cần một nguồn file-object',
     'ERR_VFS_EXPECT_DST_FILE' : 'Cần một điểm đến file-object',
     'ERR_VFS_FILE_EXISTS'     : 'Điểm đến đã tồn tại',
+    'ERR_VFS_TARGET_NOT_EXISTS': 'Mục tiêu không tồn tại',
     'ERR_VFS_TRANSFER_FMT'    : 'Có lỗi xảy ra trong khi chuyển giao lưu trữ tới ổ cứng: {0}',
     'ERR_VFS_UPLOAD_NO_DEST'  : 'Không thể tải lên một tập tin mà không có một điểm đến',
     'ERR_VFS_UPLOAD_NO_FILES' : 'Không thể tải lên bất kỳ tập tin mà không có định nghĩa',
-    'ERR_VFS_UPLOAD_FAIL_FMT' : 'Tập tin tải lên không thành công: {0}',
-    'ERR_VFS_UPLOAD_CANCELLED': 'Tập tin tải lên đã bị hủy bỏ',
+    'ERR_VFS_UPLOAD_FAIL_FMT' : 'Tải lên không thành công: {0}',
+    'ERR_VFS_UPLOAD_CANCELLED': 'Quá trình tải lên đã bị hủy bỏ',
     'ERR_VFS_DOWNLOAD_NO_FILE': 'Không thể tải về một đường dẫn mà không có một đường dẫn',
     'ERR_VFS_DOWNLOAD_FAILED' : 'Một lỗi đã xảy ra trong khi tải về: {0}',
-    'ERR_VFS_REMOTEREAD_EMPTY': 'Trả lời là rỗng',
+    'ERR_VFS_REMOTEREAD_EMPTY': 'Không có phản hồi',
 
+    'ERR_VFSMODULE_INVALID'            : 'Invalid VFS Module',
+    'ERR_VFSMODULE_INVALID_FMT'        : 'Invalid VFS Module: {0}',
+    'ERR_VFSMODULE_NOT_FOUND_FMT'      : 'Không có mô đun VFS nào khớp với {0}. Sai đường dẫn hoặc định dạng ?',
+    'ERR_VFSMODULE_READONLY'           : 'Mô đun VFS này là chỉ đọc',
+    'ERR_VFSMODULE_READONLY_FMT'       : 'Mô đun VFS này là chỉ đọc: {0}',
     'ERR_VFSMODULE_EXCEPTION'          : 'Lỗi mô-đun VFS',
     'ERR_VFSMODULE_EXCEPTION_FMT'      : 'Lỗi mô-đun VFS: {0}',
     'ERR_VFSMODULE_INVALID_METHOD'     : 'Sai phương thức VFS',
@@ -246,6 +256,10 @@
     'ERR_VFSMODULE_FILEINFO_FMT'   : 'Không thể lấy thông tin file: {0}',
     'ERR_VFSMODULE_MKDIR'          : 'Không thể tạo thư mục',
     'ERR_VFSMODULE_MKDIR_FMT'      : 'Không thể tạo thư mục: {0}',
+    'ERR_VFSMODULE_MKFILE'         : 'Không thể tạo tập tin',
+    'ERR_VFSMODULE_MKFILE_FMT'     : 'Không thể tạo tập tin: {0}',
+    'ERR_VFSMODULE_EXIST'          : 'Không thể kiểm tra sự tồn tại của tập tin',
+    'ERR_VFSMODULE_EXIST_FMT'      : 'Không thể kiểm tra sự tồn tại của tập tin: {0}',
     'ERR_VFSMODULE_URL'            : 'Không thể lấy URL cho file',
     'ERR_VFSMODULE_URL_FMT'        : 'Không thể lấy URL cho file: {0}',
     'ERR_VFSMODULE_TRASH'          : 'Không thể di chuyển tập tin vào thùng rác',
