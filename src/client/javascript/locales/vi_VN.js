@@ -446,7 +446,20 @@
     'LBL_HIDE' : 'Ẩn',
     'LBL_APPLICATION' : 'Phần mềm',
     'LBL_SCOPE' : 'Phạm vi',
-    'LBL_GENERAL': 'Tổng quát'
+    'LBL_GENERAL': 'Tổng quát',
+    'LBL_PERSONAL': 'Cá nhân',
+    'LBL_SYSTEM': 'Hệ thống',
+    'LBL_STARTING': 'Đang khởi động',
+    'LBL_SOUNDS': 'Âm thanh',
+    'LBL_STORE': 'Chợ ứng dụng',
+    'LBL_LOCALE': 'Ngôn ngữ',
+    'LBL_PACKAGE': 'Phần mềm',
+    'LBL_PACKAGES': 'Các phần mềm',
+    'LBL_INPUT': 'Đầu vào',
+    'LBL_MISC': 'Linh tinh',
+    'LBL_OTHER': 'Khác',
+    'LBL_USERS': 'Người dùng',
+    'LBL_FONTS': 'Phông'
   };
 
 })();
