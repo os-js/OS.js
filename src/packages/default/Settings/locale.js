@@ -310,7 +310,7 @@
       'Enable Sounds' : 'Bật âm thanh',
       'Enable Window Switcher' : 'Bật chuyển đổi cửa sổ',
       'Enable Hotkeys' : 'Bật phím nóng',
-      'Enable Icon View' : 'Bật kiểu xem biểu tượng',
+      'Enable Icon View' : 'Hiện biểu tượng',
       'Remove shortcut' : 'Xóa lối tắt',
       'File View': 'Quản lí tệp',
       'Show Hidden Files': 'Hiện tập tin ẩn',
@@ -321,7 +321,14 @@
       'App Store' : 'Chợ ứng dụng',
       'Regenerate metadata' : 'Làm mới metadata',
       'Install from zip' : 'Cài từ file zip',
-      'Install selected' : 'Cài mục đã chọn'
+      'Install selected' : 'Cài mục đã chọn',
+      'Enable TouchMenu' : 'Bật Menu cảm ứng',
+      'Invert Text Color' : 'Đảo màu chữ',
+      'Search Options' : 'Cài đặt tìm kiếm',
+      'Enable Application Search' : 'Cho phép tìm kiếm phần mềm',
+      'Enable File Search' : 'Cho phép tìm kiếm tập tin',
+      'Language (requires restart)' : 'Ngôn ngữ (cần khởi động lại)',
+      'Search path \'{0}\' is already handled by another entry': 'Đường dẫn tìm kiếm \'{0}\' đã bị xử lý bởi mục khác'
     }
   };
 

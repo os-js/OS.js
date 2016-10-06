@@ -299,6 +299,7 @@
       'An error occured while creating PanelItem: {0}' : 'Có lỗi xảy ra trong khi tạo PanelItem: {0}',
       'Show Icons' : 'Hiện các biểu tượng',
       'Hide Icons' : 'Ẩn các biểu tượng',
+      'Create in {0}' : 'Tạo trong {0}',
 
       'Development' : 'Phát triển',
       'Education' : 'Giáo dục',
