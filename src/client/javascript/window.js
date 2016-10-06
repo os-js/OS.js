@@ -720,6 +720,14 @@
 
     this._$root = document.createElement('application-window-content');
     this._$resize = document.createElement('application-window-resize');
+
+    ['nw', 'n',  'ne', 'e', 'se', 's', 'sw', 'w'].forEach(function(i) {
+      var h = document.createElement('application-window-resize-handle');
+      h.setAttribute('data-direction', i);
+      self._$resize.appendChild(h);
+      h = null;
+    });
+
     this._$loading = document.createElement('application-window-loading');
     this._$disabled = document.createElement('application-window-disabled');
     this._$top = document.createElement('application-window-top');

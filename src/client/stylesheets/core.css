@@ -381,6 +381,71 @@ application-window[data-allow-resize="false"] > application-window-resize {
   display : none;
   cursor : default !important;
 }
+  application-window-resize-handle {
+    position : absolute;
+    -webkit-touch-callout: none;
+      -webkit-user-select: none;
+         -moz-user-select: none;
+          -ms-user-select: none;
+              user-select: none;
+  }
+  application-window-resize-handle[data-direction="n"] {
+    cursor : n-resize;
+    top : 0;
+    height : 30px;
+    left : 20px;
+    right : 20px;
+  }
+  application-window-resize-handle[data-direction="s"] {
+    cursor : s-resize;
+    bottom : 0;
+    height : 30px;
+    left : 20px;
+    right : 20px;
+  }
+  application-window-resize-handle[data-direction="w"] {
+    cursor : w-resize;
+    left : 0;
+    width : 30px;
+    top : 20px;
+    bottom : 20px;
+  }
+  application-window-resize-handle[data-direction="e"] {
+    cursor : e-resize;
+    right : 0;
+    width : 30px;
+    top : 20px;
+    bottom : 20px;
+  }
+
+  application-window-resize-handle[data-direction="sw"] {
+    cursor : sw-resize;
+    bottom : 0;
+    left : 0;
+    height : 30px;
+    width : 30px;
+  }
+  application-window-resize-handle[data-direction="se"] {
+    cursor : se-resize;
+    bottom : 0;
+    right : 0;
+    height : 30px;
+    width : 30px;
+  }
+  application-window-resize-handle[data-direction="nw"] {
+    cursor : nw-resize;
+    top : 0;
+    left : 0;
+    height : 30px;
+    width : 30px;
+  }
+  application-window-resize-handle[data-direction="ne"] {
+    cursor : ne-resize;
+    top : 0;
+    right : 0;
+    height : 30px;
+    width : 30px;
+  }
 
 application-window-loading {
   position : absolute;
