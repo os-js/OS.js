@@ -300,7 +300,7 @@
     this.modules.forEach(function(m) {
       m.init(self);
 
-      if ( m.watch ) {
+      if ( m.watch && m.watch instanceof Array ) {
         m.watch.forEach(function(w) {
           self.watches[m.name] = OSjs.Core.getSettingsManager().watch(w, function() {
             var win = self._getMainWindow();
