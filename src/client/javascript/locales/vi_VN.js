@@ -258,8 +258,6 @@
     'ERR_VFSMODULE_MKDIR_FMT'      : 'Không thể tạo thư mục: {0}',
     'ERR_VFSMODULE_MKFILE'         : 'Không thể tạo tập tin',
     'ERR_VFSMODULE_MKFILE_FMT'     : 'Không thể tạo tập tin: {0}',
-    'ERR_VFSMODULE_EXIST'          : 'Không thể kiểm tra sự tồn tại của tập tin',
-    'ERR_VFSMODULE_EXIST_FMT'      : 'Không thể kiểm tra sự tồn tại của tập tin: {0}',
     'ERR_VFSMODULE_URL'            : 'Không thể lấy URL cho file',
     'ERR_VFSMODULE_URL_FMT'        : 'Không thể lấy URL cho file: {0}',
     'ERR_VFSMODULE_TRASH'          : 'Không thể di chuyển tập tin vào thùng rác',
