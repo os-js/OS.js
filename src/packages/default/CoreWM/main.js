@@ -65,7 +65,7 @@
     this.$themeLink       = null;
     this.$themeScript     = null;
     this.$animationLink   = null;
-    this.importedSettings = importSettings;
+    this.importedSettings = Utils.mergeObject(API.getConfig('SettingsManager.CoreWM'), importSettings);
     this.isResponsive     = window.innerWidth <= 800;
 
     this.generatedHotkeyMap = {};
