@@ -437,7 +437,6 @@
     'LBL_ITEMS' : 'Các mục',
     'LBL_AUTOHIDE' : 'Tự động ẩn',
     'LBL_OPACITY' : 'Độ trong suốt',
-    'LBL_PACKAGES' : 'Phần mềm',
     'LBL_GROUPS' : 'Nhóm',
     'LBL_VERSION' : 'Phiên bản',
     'LBL_AUTHOR' : 'Tác giả',
