@@ -405,7 +405,7 @@
   };
 
   /**
-   * Adds a hook to internal event
+   * Removes a hook to an internal even
    *
    * @function _off
    * @memberof OSjs.Core.Process#
