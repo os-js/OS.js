@@ -109,7 +109,7 @@
    * @param   {Object}    args.args       Command arguments
    * @param   {Function}  callback        Callback function => fn(error, result)
    *
-   * @function login
+   * @function packages
    * @memberof API
    */
   module.exports.packages = function(server, args, callback) {
