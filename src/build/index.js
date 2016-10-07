@@ -115,7 +115,7 @@
       _config.listPackages(cfg, done);
     },
     set: function(cli, cfg, done) {
-      _config.set(cfg, cli.option('value'), cli.option('value'), function(val) {
+      _config.set(cfg, cli.option('name'), cli.option('value'), function(val) {
         console.log(val);
         done();
       });
