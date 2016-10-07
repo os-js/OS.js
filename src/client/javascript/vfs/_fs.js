@@ -704,7 +704,7 @@
           if ( error ) {
             error = API._('ERR_VFSMODULE_MOVE_FMT', error);
           }
-          _finished(error, error ? null : response);
+          _finished(error, error ? null : response, dest);
         }, options);
       } else {
         var msrc = mm.getModuleFromPath(src.path);
@@ -722,7 +722,7 @@
             if ( error ) {
               error = API._('ERR_VFS_TRANSFER_FMT', error);
             }
-            _finished(error, result);
+            _finished(error, result, dest);
           }, options);
         });
       }
