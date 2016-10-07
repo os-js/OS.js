@@ -94,6 +94,7 @@
    *
    * @constructor File
    * @memberof OSjs.VFS
+   * @see OSjs.VFS.file
    */
   function FileMetadata(arg, mime) {
     if ( !arg ) {
@@ -219,6 +220,7 @@
    * @function copy
    * @memberof OSjs.VFS.File#
    * @alias OSjs.VFS.copy
+   * @see OSjs.VFS.copy
    */
   FileMetadata.prototype.copy = function(dest, callback, options, appRef) {
     return VFS.copy(this, dest, callback, options, appRef);
@@ -230,6 +232,7 @@
    * @function download
    * @memberof OSjs.VFS.File#
    * @alias OSjs.VFS.download
+   * @see OSjs.VFS.download
    */
   FileMetadata.prototype.download = function(callback) {
     return VFS.download(this, callback);
@@ -241,6 +244,7 @@
    * @function delete
    * @memberof OSjs.VFS.File#
    * @alias OSjs.VFS.File#unlink
+   * @see OSjs.VFS.File#unlink
    */
   FileMetadata.prototype.delete = function() {
     return this.unlink.apply(this, arguments);
@@ -252,6 +256,7 @@
    * @function unlink
    * @memberof OSjs.VFS.File#
    * @alias OSjs.VFS.unlink
+   * @see OSjs.VFS.unlink
    */
   FileMetadata.prototype.unlink = function(callback, options, appRef) {
     return VFS.unlink(this, callback, options, appRef);
@@ -263,6 +268,7 @@
    * @function exists
    * @memberof OSjs.VFS.File#
    * @alias OSjs.VFS.exists
+   * @see OSjs.VFS.exists
    */
   FileMetadata.prototype.exists = function(callback) {
     return VFS.exists(this, callback);
@@ -274,6 +280,7 @@
    * @function mkdir
    * @memberof OSjs.VFS.File#
    * @alias OSjs.VFS.mkdir
+   * @see OSjs.VFS.mkdir
    */
   FileMetadata.prototype.mkdir = function(callback, options, appRef) {
     return VFS.mkdir(this, callback, options, appRef);
@@ -285,6 +292,7 @@
    * @function move
    * @memberof OSjs.VFS.File#
    * @alias OSjs.VFS.move
+   * @see OSjs.VFS.move
    */
   FileMetadata.prototype.move = function(dest, callback, options, appRef) {
     var self = this;
@@ -302,6 +310,7 @@
    * @function read
    * @memberof OSjs.VFS.File#
    * @alias OSjs.VFS.read
+   * @see OSjs.VFS.read
    */
   FileMetadata.prototype.read = function(callback, options) {
     return VFS.read(this, callback, options);
@@ -313,6 +322,7 @@
    * @function rename
    * @memberof OSjs.VFS.File#
    * @alias OSjs.VFS.File#move
+   * @see OSjs.VFS.File#move
    */
   FileMetadata.prototype.rename = function() {
     return this.move.apply(this, arguments);
@@ -324,6 +334,7 @@
    * @function scandir
    * @memberof OSjs.VFS.File#
    * @alias OSjs.VFS.scandir
+   * @see OSjs.VFS.scandir
    */
   FileMetadata.prototype.scandir = function(callback, options) {
     return VFS.scandir(this, callback, options);
@@ -335,6 +346,7 @@
    * @function trash
    * @memberof OSjs.VFS.File#
    * @alias OSjs.VFS.trash
+   * @see OSjs.VFS.trash
    */
   FileMetadata.prototype.trash = function(callback) {
     return VFS.trash(this, callback);
@@ -346,6 +358,7 @@
    * @function untrash
    * @memberof OSjs.VFS.File#
    * @alias OSjs.VFS.untrash
+   * @see OSjs.VFS.untrash
    */
   FileMetadata.prototype.untrash = function(callback) {
     return VFS.untrash(this, callback);
@@ -357,6 +370,7 @@
    * @function url
    * @memberof OSjs.VFS.File#
    * @alias OSjs.VFS.url
+   * @see OSjs.VFS.url
    */
   FileMetadata.prototype.url = function(callback) {
     return VFS.url(this, callback);
@@ -368,6 +382,7 @@
    * @function write
    * @memberof OSjs.VFS.File#
    * @alias OSjs.VFS.write
+   * @see OSjs.VFS.write
    */
   FileMetadata.prototype.write = function(data, callback, options, appRef) {
     return VFS.write(this, data, callback, options, appRef);
