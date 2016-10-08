@@ -1148,27 +1148,29 @@
    * @return  {Mixed}             Parameter value or entire tree on no path
    */
   API.getConfig = function _apiGetConfig(path, defaultValue) {
-    var config = Utils.cloneObject(OSjs.Core.getConfig());
+    var config = OSjs.Core.getConfig();
     if ( typeof path === 'string' ) {
-      var result = window.undefined;
-      var queue = path.split(/\./);
-      var ns = config;
+      var result = config[path];
+      if ( path.indexOf('.') !== -1 ) {
+        var queue = path.split(/\./);
+        var ns = config;
 
-      queue.forEach(function(k, i) {
-        if ( i >= queue.length - 1 ) {
-          if ( ns ) {
-            result = ns[k];
+        queue.forEach(function(k, i) {
+          if ( i >= queue.length - 1 ) {
+            if ( ns ) {
+              result = ns[k];
+            }
+          } else {
+            ns = ns[k];
           }
-        } else {
-          ns = ns[k];
-        }
-      });
+        });
+      }
 
       if ( typeof result === 'undefined' && typeof defaultValue !== 'undefined' ) {
         return defaultValue;
       }
 
-      return result;
+      return typeof result === 'object' ? Utils.cloneObject(result) : result;
     }
     return config;
   };
