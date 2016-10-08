@@ -750,6 +750,7 @@
         preventTimeout = setTimeout(function() {
           self._animationCallback(ev);
           self._animationCallback = false;
+          preventTimeout = clearTimeout(preventTimeout);
         }, 10);
       }
     }
@@ -910,8 +911,9 @@
     }
 
     var self = this;
-    setTimeout(function() {
+    var inittimeout = setTimeout(function() {
       self._emit('inited', [self._scheme]);
+      inittimeout = clearTimeout(inittimeout);
     }, 10);
 
     if ( this._app ) {
@@ -1005,10 +1007,11 @@
             // This prevents windows from sticking when shutting down.
             // In some cases this would happen when you remove the stylesheet
             // with animation properties attached.
-            setTimeout(function() {
+            var animatetimeout = setTimeout(function() {
               if ( self._animationCallback ) {
                 self._animationCallback();
               }
+              animatetimeout = clearTimeout(animatetimeout);
             }, 1000);
           } else {
             self._$element.style.display = 'none';
@@ -1967,6 +1970,7 @@
     var self = this;
     this._queryTimer = setTimeout(function() {
       checkMediaQueries(self);
+      self._queryTimer = clearTimeout(self._queryTimer);
     }, 20);
   };
 

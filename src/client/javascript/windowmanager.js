@@ -457,12 +457,8 @@
 
     this.destroyStylesheet();
 
-    document.removeEventListener('mouseout', function(ev) {
-      self._onMouseLeave(ev);
-    }, false);
-    document.removeEventListener('mouseenter', function(ev) {
-      self._onMouseEnter(ev);
-    }, false);
+    Utils.$unbind(document, 'mouseout:windowmanager');
+    Utils.$unbind(document, 'mouseenter:windowmanager');
 
     // Destroy all windows
     this._windows.forEach(function(win, i) {
@@ -498,12 +494,13 @@
     this._scheme = scheme;
 
     var self = this;
-    document.addEventListener('mouseout', function(ev) {
+
+    Utils.$bind(document, 'mouseout:windowmanager', function(ev) {
       self._onMouseLeave(ev);
-    }, false);
-    document.addEventListener('mouseenter', function(ev) {
-      self._onMouseEnter(ev);
-    }, false);
+    });
+    Utils.$bind(document, 'mouseenter:windowmanager', function(ev) {
+      self._onMouseLeave(ev);
+    });
   };
 
   /**

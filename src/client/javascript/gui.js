@@ -676,7 +676,7 @@
     el.setAttribute('draggable', 'true');
     el.setAttribute('aria-grabbed', 'false');
 
-    el.addEventListener('dragstart', function(ev) {
+    Utils.$bind(el, 'dragstart', function(ev) {
       this.setAttribute('aria-grabbed', 'true');
 
       this.style.opacity = '0.4';
@@ -686,7 +686,7 @@
       return args.onStart(ev, this, args);
     }, false);
 
-    el.addEventListener('dragend', function(ev) {
+    Utils.$bind(el, 'dragend', function(ev) {
       this.setAttribute('aria-grabbed', 'false');
       this.style.opacity = '1.0';
       return args.onEnd(ev, this, args);
@@ -793,17 +793,17 @@
 
     el.setAttribute('aria-dropeffect', args.effect);
 
-    el.addEventListener('drop', function(ev) {
+    Utils.$bind(el, 'drop', function(ev) {
       //Utils.$removeClass(el, 'onDragEnter');
       return _onDrop(ev, this);
     }, false);
 
-    el.addEventListener('dragenter', function(ev) {
+    Utils.$bind(el, 'dragenter', function(ev) {
       //Utils.$addClass(el, 'onDragEnter');
       return args.onEnter.call(this, ev, this, args);
     }, false);
 
-    el.addEventListener('dragover', function(ev) {
+    Utils.$bind(el, 'dragover', function(ev) {
       ev.preventDefault();
       if ( !getParent(ev.target, el) ) {
         return false;
@@ -814,7 +814,7 @@
       return args.onOver.call(this, ev, this, args);
     }, false);
 
-    el.addEventListener('dragleave', function(ev) {
+    Utils.$bind(el, 'dragleave', function(ev) {
       //Utils.$removeClass(el, 'onDragEnter');
       return args.onLeave.call(this, ev, this, args);
     }, false);

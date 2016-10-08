@@ -272,6 +272,10 @@
     clear: function(el, body) {
       body = body || el;
 
+      el.querySelectorAll(getEntryTagName(el)).forEach(function(row) {
+        Utils.$unbind(row);
+      });
+
       Utils.$empty(body);
       body.scrollTop = 0;
       el._selected = [];
