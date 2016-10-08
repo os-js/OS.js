@@ -327,7 +327,6 @@
       'Search Options' : 'Cài đặt tìm kiếm',
       'Enable Application Search' : 'Cho phép tìm kiếm phần mềm',
       'Enable File Search' : 'Cho phép tìm kiếm tập tin',
-      'Language (requires restart)' : 'Ngôn ngữ (cần khởi động lại)',
       'Search path \'{0}\' is already handled by another entry': 'Đường dẫn tìm kiếm \'{0}\' đã bị xử lý bởi mục khác'
     }
   };
