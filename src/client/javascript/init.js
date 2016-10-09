@@ -109,7 +109,7 @@
     },
 
     message: function(ev) {
-      if ( ev && ev.data && typeof ev.data.wid !== 'undefined' && typeof ev.data.pid !== 'undefined' ) {
+      if ( ev && ev.data && typeof ev.data.message !== 'undefined' && typeof ev.data.pid === 'number' ) {
         console.debug('window::message()', ev.data);
         var proc = OSjs.API.getProcess(ev.data.pid);
         if ( proc ) {
@@ -117,9 +117,11 @@
             proc.onPostMessage(ev.data.message, ev);
           }
 
-          var win  = proc._getWindow(ev.data.wid, 'wid');
-          if ( win ) {
-            win.onPostMessage(ev.data.message, ev);
+          if ( typeof proc._getWindow === 'function' ) {
+            var win = proc._getWindow(ev.data.wid, 'wid');
+            if ( win ) {
+              win.onPostMessage(ev.data.message, ev);
+            }
           }
         }
       }

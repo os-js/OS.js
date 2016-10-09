@@ -256,6 +256,25 @@
    */
   IFrameApplication.prototype.onPostMessage = function(message, ev) {
     console.debug('IFrameApplication::onPostMessage()', message);
+
+    var self = this;
+
+    function _response(err, res) {
+      self.postMessage({
+        id: message.id,
+        method: message.method,
+        error: err,
+        result: Utils.cloneObject(res)
+      });
+    }
+
+    if ( typeof message.id === 'number' && message.method ) {
+      if ( this[message.method] ) {
+        this[message.method](message.args || {}, _response);
+      } else {
+        _response('No such method');
+      }
+    }
   };
 
   /**
