@@ -1,3 +1,60 @@
+# 2.0.0-alpha80
+
+New Settings application, package management and user management subsystem, developer features and build system. Improvements and bugfixes.
+
+Relevant:
+
+- http://community.os.js.org/t/update-version-bump-alpha80/101
+- http://community.os.js.org/t/notice-upcoming-grunt-and-build-system-changes/99
+- http://community.os.js.org/t/feature-create-applications-without-prototype-chain/96
+- http://community.os.js.org/t/feature-import-files-in-your-schemes/95
+- http://community.os.js.org/t/feature-scheme-loading-via-metadata-json/94
+
+Digest:
+
+- Calculator: Bugfixes
+- FileManager: Updates to context menu and bugfixes
+- Settings: Completely rewritten
+- CoreWM: Improvements to loading process
+- Broadway: Fix contextmenu position
+- API: Support for creating applications without prototype chain
+- API: Launch now uses preloader scheme support
+- API: Scheme now injected into Application::init()
+- API: `message()` now supports filtering
+- API: New package subsystem
+- VFS: WebDAV updates
+- VFS: Added operation shortcuts to File object
+- MountManager: Can now save and restore custom mountpoints
+- Utils: Preloader improvements
+- Utils: Preloader now supports parallel loading
+- Utils: Preloader now supports Scheme files
+- Utils: Added `$create()` method
+- GUI: Now possible to include external files in Schemes
+- GUI: Scheme files are now cached
+- GUI: Menu bugfixes
+- GUI: ListView now scrolls into correct position on refresh
+- GUI: ListView now respects attributes in head elements from html
+- GUI: Now possible to deselect items by clicking outside entries
+- GUI: iOS support improvements
+- GUI: Better handling of transitions and animations
+- UI: Better hotkey handling
+- Themes: Added some generic CSS classes
+- Themes: Correction of resource paths
+- server-node: Added new package manager
+- server-node: Added new package manager via handler
+- server-php: Added new user management
+- server-php: Added new package manager via handler
+- server-php: Improvements
+- misc: Optimizations and minor code improvements
+- misc: Support for loading package preloads on boot
+- misc: Removed PackageManager application. Everything can be found in Settings
+- misc: Updated unit tests
+- misc: Updated locales
+- misc: Updated docs
+- misc: Linting
+- build: Rewritten build system
+- build: Standalone build updates
+
 # 2.0.0-alpha79
 
 Core API WebSocket support, Desktop now uses VFS mount, New touch menu, Bugfixes, Improvements and optimizations.
