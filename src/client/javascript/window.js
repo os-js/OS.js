@@ -1642,7 +1642,7 @@
       var wm = OSjs.Core.getWindowManager();
       var anim = wm ? wm.getSetting('animations') : false;
       if ( anim ) {
-        this._animationCallback = function() {
+        self._animationCallback = function() {
           self._emit('resized');
         };
       } else {
