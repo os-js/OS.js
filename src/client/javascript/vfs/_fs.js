@@ -780,7 +780,7 @@
       var pkgdir = OSjs.Core.getSettingsManager().instance('PackageManager').get('PackagePaths', []);
 
       var found = pkgdir.some(function(i) {
-        var chkdir = new VFS.File();
+        var chkdir = new VFS.File(i);
         var idir = Utils.dirname(item.path);
         return idir === chkdir.path;
       });
