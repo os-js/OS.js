@@ -172,6 +172,7 @@
   };
 
   ApplicationSettingsWindow.prototype.onModuleSelect = function(name) {
+    var _ = OSjs.Applications.ApplicationSettings._;
     var wm = OSjs.Core.getWindowManager();
     var root = this._$element;
     var self = this;
@@ -207,7 +208,7 @@
         found.update(this, this._scheme, settings, wm, true);
 
         _d(false);
-        this._setTitle(found.name, true);
+        this._setTitle(_(found.name), true);
 
         if ( found.button === false ) {
           this._find('ButtonOK').hide();
