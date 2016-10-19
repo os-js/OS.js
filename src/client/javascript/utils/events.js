@@ -49,55 +49,58 @@
    * @memberof OSjs.Utils
    * @var
    */
-  OSjs.Utils.Keys = {
-    F1: 112,
-    F2: 113,
-    F3: 114,
-    F4: 115,
-    F6: 118,
-    F7: 119,
-    F8: 120,
-    F9: 121,
-    F10: 122,
-    F11: 123,
-    F12: 124,
+  OSjs.Utils.Keys = (function() {
+    var list = {
+      F1: 112,
+      F2: 113,
+      F3: 114,
+      F4: 115,
+      F6: 118,
+      F7: 119,
+      F8: 120,
+      F9: 121,
+      F10: 122,
+      F11: 123,
+      F12: 124,
 
-    TILDE:      220,
+      TILDE:      220,
+      GRAVE:      192,
 
-    CMD:        17,
-    LSUPER:     91,
-    RSUPER:     92,
+      CMD:        17,
+      LSUPER:     91,
+      RSUPER:     92,
 
-    DELETE:     46,
-    INSERT:     45,
-    HOME:       36,
-    END:        35,
-    PGDOWN:     34,
-    PGUP:       33,
-    PAUSE:      19,
-    BREAK:      19,
-    CAPS_LOCK:  20,
-    SCROLL_LOCK:186,
+      DELETE:     46,
+      INSERT:     45,
+      HOME:       36,
+      END:        35,
+      PGDOWN:     34,
+      PGUP:       33,
+      PAUSE:      19,
+      BREAK:      19,
+      CAPS_LOCK:  20,
+      SCROLL_LOCK:186,
 
-    BACKSPACE:  8,
-    SPACE:      32,
-    TAB:        9,
-    ENTER:      13,
-    ESC:        27,
-    LEFT:       37,
-    RIGHT:      39,
-    UP:         38,
-    DOWN:       40
-  };
+      BACKSPACE:  8,
+      SPACE:      32,
+      TAB:        9,
+      ENTER:      13,
+      ESC:        27,
+      LEFT:       37,
+      RIGHT:      39,
+      UP:         38,
+      DOWN:       40
+    };
 
-  (function() {
     // Add all ASCII chacters to the map
     for ( var n = 48; n <= 57; n++ ) {
-      OSjs.Utils.Keys[String.fromCharCode(n).toUpperCase()] = n;
+      list[String.fromCharCode(n).toUpperCase()] = n;
     }
     for ( var c = 65; c <= 90; c++ ) {
-      OSjs.Utils.Keys[String.fromCharCode(c).toUpperCase()] = c;
+      list[String.fromCharCode(c).toUpperCase()] = c;
     }
+
+    return Object.freeze(list);
   })();
 
   /////////////////////////////////////////////////////////////////////////////
