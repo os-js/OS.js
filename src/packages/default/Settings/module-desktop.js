@@ -61,7 +61,7 @@
       win._find('EnableAnimations').set('value', settings.animations);
       win._find('EnableTouchMenu').set('value', settings.useTouchMenu);
 
-      //win._find('EnableWindowSwitcher').set('value', settings.enableSwitcher);
+      win._find('EnableWindowSwitcher').set('value', settings.enableSwitcher);
 
       win._find('DesktopMargin').set('value', settings.desktopMargin);
       win._find('CornerSnapping').set('value', settings.windowCornerSnap);
@@ -90,7 +90,7 @@
     save: function(win, scheme, settings, wm) {
       settings.animations = win._find('EnableAnimations').get('value');
       settings.useTouchMenu = win._find('EnableTouchMenu').get('value');
-      //settings.enableSwitcher = win._find('EnableWindowSwitcher').get('value');
+      settings.enableSwitcher = win._find('EnableWindowSwitcher').get('value');
       settings.desktopMargin = win._find('DesktopMargin').get('value');
       settings.windowCornerSnap = win._find('CornerSnapping').get('value');
       settings.windowSnap = win._find('WindowSnapping').get('value');
