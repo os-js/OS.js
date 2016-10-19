@@ -93,11 +93,8 @@
     };
 
     // Add all ASCII chacters to the map
-    for ( var n = 48; n <= 57; n++ ) {
+    for ( var n = 33; n <= 126; n++ ) {
       list[String.fromCharCode(n).toUpperCase()] = n;
-    }
-    for ( var c = 65; c <= 90; c++ ) {
-      list[String.fromCharCode(c).toUpperCase()] = c;
     }
 
     return Object.freeze(list);
