@@ -1426,7 +1426,7 @@
    */
   API.error = function _apiError(title, message, error, exception, bugreport) {
     bugreport = (function() {
-      if ( API.getConfig('BugReporting') ) {
+      if ( API.getConfig('BugReporting.enabled') ) {
         return typeof bugreport === 'undefined' ? false : (bugreport ? true : false);
       }
       return false;
