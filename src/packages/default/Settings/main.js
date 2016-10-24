@@ -340,7 +340,6 @@
   ApplicationSettings.prototype.init = function(settings, metadata, scheme) {
     Application.prototype.init.apply(this, arguments);
 
-    var self = this;
     var category = this._getArgument('category') || settings.category;
     var win = this._addWindow(new ApplicationSettingsWindow(this, metadata, scheme, category));
 
