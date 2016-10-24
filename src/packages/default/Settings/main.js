@@ -60,7 +60,7 @@
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
 
-  function ApplicationSettingsWindow(app, metadata, scheme) {
+  function ApplicationSettingsWindow(app, metadata, scheme, initialCategory) {
     Window.apply(this, ['ApplicationSettingsWindow', {
       icon: metadata.icon,
       title: metadata.name,
@@ -68,6 +68,8 @@
       height: 450,
       allow_resize: true
     }, app, scheme]);
+
+    this.initialCategory = initialCategory;
   }
 
   ApplicationSettingsWindow.prototype = Object.create(Window.prototype);
@@ -153,6 +155,10 @@
     containers = {};
     tmpcontent = null;
 
+    if ( this.initialCategory ) {
+      this.onExternalAttention(this.initialCategory);
+    }
+
     return root;
   };
 
@@ -165,10 +171,6 @@
       return true;
     }
     return false;
-  };
-
-  ApplicationSettingsWindow.prototype.onWindowInited = function(modules, cat) {
-    this.onExternalAttention(cat);
   };
 
   ApplicationSettingsWindow.prototype.onModuleSelect = function(name) {
@@ -339,12 +341,8 @@
     Application.prototype.init.apply(this, arguments);
 
     var self = this;
-    var win = this._addWindow(new ApplicationSettingsWindow(this, metadata, scheme));
     var category = this._getArgument('category') || settings.category;
-
-    win._on('inited', function() {
-      win.onWindowInited(self.modules, category);
-    });
+    var win = this._addWindow(new ApplicationSettingsWindow(this, metadata, scheme, category));
 
     this._on('attention', function(args) {
       if ( win && args.category ) {
