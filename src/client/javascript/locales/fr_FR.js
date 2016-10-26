@@ -431,7 +431,12 @@
     'LBL_AUTHOR' : 'Auteur',
     'LBL_HIDE' : 'Cacher',
     'LBL_APPLICATION' : 'Application',
-    'LBL_SCOPE' : 'Gamme'
+    'LBL_SCOPE' : 'Gamme',
+    'LBL_SEARCH' : 'Recherche',
+    'LBL_INPUT' : 'Clavier',
+    'LBL_USERS' : 'Gestion des utilisateurs',
+    'LBL_STORE' : 'Magasin \n d\'application distante',
+    'LBL_WINDOWMANAGER' : 'Gestionnaire de fenêtre'
 
   };
 
