@@ -253,8 +253,19 @@
     var outdir = _path.join(ROOT, opts.target);
 
     Object.keys(opts.build.statics).forEach(function(f) {
-      var src = _path.join(ROOT, f);
       var dst = _path.join(ROOT, opts.build.statics[f]);
+      var path = f;
+
+      if ( f.substr(0, 1) === '?' ) {
+        path = path.substr(1);
+        if ( _fs.existsSync(dst) ) {
+          return;
+        } else {
+          _fs.mkdirSync(_path.dirname(dst));
+        }
+      }
+
+      var src = _path.join(ROOT, path);
       if ( opts.verbose ) {
         _utils.log('-', opts.build.statics[f]);
       }
