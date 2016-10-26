@@ -130,6 +130,7 @@ corewm-window-switcher > div > img {
   border : 0 none !important;
   box-shadow : none !important;
   pointer-events : none;
+  box-sizing : border-box;
 }
 
 #CoreWMDesktopIconView gui-icon-view-entry {
