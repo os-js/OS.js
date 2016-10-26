@@ -51,9 +51,9 @@ button, div, span, p, a, img, label, .gui-element, application-window {
             user-select: none;
 }
 
-application-window-content * {
+/*application-window-content * {
   box-sizing : border-box;
-}
+}*/
 
 /*.gui-element {
 }*/
