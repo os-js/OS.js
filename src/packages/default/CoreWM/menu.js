@@ -31,7 +31,7 @@
   'use strict';
 
   function _createIcon(aiter, aname, arg) {
-    return API.getIcon(aiter.icon, arg, aiter);
+    return API.getIcon(aiter.icon, arg, aiter.className);
   }
 
   /**

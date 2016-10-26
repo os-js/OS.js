@@ -908,7 +908,7 @@
       return path;
     }
 
-    function getResourcePath() {
+    return (function() {
       var pacman = OSjs.Core.getPackageManager();
       var appname = getName();
       var pkg = pacman.getPackage(appname);
@@ -923,9 +923,7 @@
       }
 
       return getResultPath(path, pkg.scope === 'user');
-    }
-
-    return getResourcePath();
+    })();
   };
 
   /**
@@ -1114,7 +1112,9 @@
           return API.getApplicationResource(app, name);
         } else {
           if ( app !== null && typeof app === 'object' ) {
-            return API.getApplicationResource(app.path, name);
+            return API.getApplicationResource(app.className, name);
+          } else if ( typeof app === 'string' ) {
+            return API.getApplicationResource(app, name);
           }
         }
       } else {
