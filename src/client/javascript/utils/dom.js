@@ -434,22 +434,26 @@
    * @function $isFormElement
    * @memberof OSjs.Utils
    *
-   * @param   {Event}       ev      DOM Event
-   * @param   {Array}       types   Array of types
+   * @param   {Event|Element}   input     DOM Event or Element
+   * @param   {Array}           [types]   Optional Array of types
    *
    * @return  {Boolean}             If is a form element
    */
-  OSjs.Utils.$isFormElement = function(ev, types) {
+  OSjs.Utils.$isFormElement = function(input, types) {
     types = types || ['TEXTAREA', 'INPUT', 'SELECT'];
 
-    var d = ev.srcElement || ev.target;
-    if ( d ) {
-      if ( types.indexOf(d.tagName.toUpperCase()) >= 0 ) {
-        if ( !(d.readOnly || d.disabled) ) {
+    if ( input instanceof window.Event ) {
+      input = input.srcElement || input.target;
+    }
+
+    if ( input instanceof window.Element ) {
+      if ( types.indexOf(input.tagName.toUpperCase()) >= 0 ) {
+        if ( !(input.readOnly || input.disabled) ) {
           return true;
         }
       }
     }
+
     return false;
   };
 
