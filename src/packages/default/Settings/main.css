@@ -83,6 +83,7 @@
       pointer-events: none;
     }
       .ApplicationSettingsWindow application-window-content .ListView > div > ul > li {
+        box-sizing : border-box;
         display : inline-block;
         margin : 0;
         padding : 10px;
