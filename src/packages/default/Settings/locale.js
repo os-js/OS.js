@@ -112,6 +112,8 @@
       'Image (Fill)' : 'Image (Remplir)',
       'Image (Streched)' : 'Image (Étiré)',
       'Desktop Margin ({0}px)' : 'Marge du bureau ({0}px)',
+      'Desktop Corner Snapping ({0}px)' : 'Délimitation des coins du bureau ({0}px)',
+      'Window Snapping ({0}px)' : 'Accrochage des fenêtres ({0}px)',
       'Enable Animations' : 'Activer les animations',
       'Language (requires restart)' : 'Langue (redémarrage requis)',
       'Enable Sounds' : 'Activer la musique',
