@@ -71,20 +71,6 @@
   };
 
   /**
-   * Initialize
-   *
-   * @TODO DEPRECATED This is kept for backward compability
-   */
-  DefaultApplication.prototype.init = function(settings, metadata, onLoaded) {
-    Application.prototype.init.call(this, settings, metadata);
-
-    var file = this._getArgument('file');
-    this._loadScheme('./scheme.html', function(scheme) {
-      onLoaded(scheme, file);
-    });
-  };
-
-  /**
    * On Message
    */
   DefaultApplication.prototype._onMessage = function(obj, msg, args) {
