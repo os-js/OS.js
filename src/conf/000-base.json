@@ -34,12 +34,7 @@
   "server" : {
   },
 
-  "locales": [
-  ],
+  "build": {
+  }
 
-  "javascript": [
-  ],
-
-  "stylesheets": [
-  ]
 }

@@ -107,7 +107,7 @@
    * Create a 'index.html' file
    */
   function _createIndex(opts, dist, fn) {
-    var tpldir = _path.join(ROOT, 'src', 'templates', 'dist', opts.dist.template);
+    var tpldir = _path.join(ROOT, 'src', 'templates', 'dist', opts.build.dist.template);
     var outdir = _path.join(ROOT, dist || 'dist-dev');
     var scripts = [];
     var styles = [];
@@ -179,9 +179,9 @@
       }
 
       var end = opts.compress ? '.min' : '';
-      _fs.writeFileSync(_path.join(ROOT, 'dist', 'osjs' + end +  '.js'), jsh + _readJS(opts, opts.javascript));
-      _fs.writeFileSync(_path.join(ROOT, 'dist', 'locales' + end +  '.js'), jsh + _readJS(opts, opts.locales));
-      _fs.writeFileSync(_path.join(ROOT, 'dist', 'osjs' + end +  '.css'), cssh + _readCSS(opts, opts.stylesheets));
+      _fs.writeFileSync(_path.join(ROOT, 'dist', 'osjs' + end +  '.js'), jsh + _readJS(opts, opts.build.javascript));
+      _fs.writeFileSync(_path.join(ROOT, 'dist', 'locales' + end +  '.js'), jsh + _readJS(opts, opts.build.locales));
+      _fs.writeFileSync(_path.join(ROOT, 'dist', 'osjs' + end +  '.css'), cssh + _readCSS(opts, opts.build.stylesheets));
 
       var appendString = '';
       if ( opts.client.Connection.AppendVersion ) {
@@ -214,17 +214,17 @@
 
     'dist-dev': function(opts, done) {
       _createIndex(opts, 'dist-dev', function(addStyle, addScript) {
-        opts.javascript.forEach(function(i) {
+        opts.build.javascript.forEach(function(i) {
           if ( !i.match(/handlers\/(\w+)\/handler\.js$/) ) { // handler scripts are automatically preloaded by config!
             addScript(i.replace(/src\/client\/(.*)/, 'client/$1'));
           }
         });
 
-        opts.locales.forEach(function(i) {
+        opts.build.locales.forEach(function(i) {
           addScript(i.replace(/src\/client\/(.*)/, 'client/$1'));
         });
 
-        opts.stylesheets.forEach(function(i) {
+        opts.build.stylesheets.forEach(function(i) {
           if ( _filter(i, {target: 'dist-dev'}) ) {
             addStyle(i.replace(/^(dev|prod):/, '').replace(/src\/client\/(.*)/, 'client/$1'));
           }
@@ -249,14 +249,14 @@
       return done('Invalid target', false);
     }
 
-    var tpldir = _path.join(ROOT, 'src', 'templates', 'dist', opts.dist.template);
+    var tpldir = _path.join(ROOT, 'src', 'templates', 'dist', opts.build.dist.template);
     var outdir = _path.join(ROOT, opts.target);
 
-    Object.keys(opts.statics).forEach(function(f) {
+    Object.keys(opts.build.statics).forEach(function(f) {
       var src = _path.join(ROOT, f);
-      var dst = _path.join(ROOT, opts.statics[f]);
+      var dst = _path.join(ROOT, opts.build.statics[f]);
       if ( opts.verbose ) {
-        _utils.log('-', opts.statics[f]);
+        _utils.log('-', opts.build.statics[f]);
       }
       _fs.copySync(src, dst);
     });

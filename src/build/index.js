@@ -148,19 +148,15 @@
       _utils.iterate(list, function(target, idx, next) {
         console.log('Generating files for', target);
         _core.buildFiles({
-          repositories: cfg.repositories,
+          target: target,
           verbose: cli.option('verbose'),
           nw: cli.option('nw'),
           standalone: cli.option('standalone'),
-          handler: cfg.handler,
-          dist: cfg.dist,
-          client: cfg.client,
-          statics: cfg.statics,
-          target: target,
           compress: cli.option('compress'),
-          javascript: cfg.javascript,
-          stylesheets: cfg.stylesheets,
-          locales: cfg.locales
+          repositories: cfg.repositories,
+          handler: cfg.handler,
+          client: cfg.client,
+          build: cfg.build
         }, next);
       }, done);
     },
