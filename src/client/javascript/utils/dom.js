@@ -454,17 +454,6 @@
   };
 
   /**
-   * @function $isInput
-   * @memberof OSjs.Utils
-   * @alias OSjs.Utils.isFormElement
-   * @deprecated Please use aliased method instead
-   */
-  OSjs.Utils.$isInput = function(ev) {
-    console.warn('Utils::$isInput is deprecated', 'Use Utils::$isFormElement instead');
-    return this.$isFormElement(ev);
-  };
-
-  /**
    * Set or Get element CSS
    *
    * @param {Node}                  el      DOM Node

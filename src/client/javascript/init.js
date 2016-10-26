@@ -83,7 +83,7 @@
   var events = {
     body_contextmenu: function(ev) {
       ev.stopPropagation();
-      if ( !OSjs.Utils.$isInput(ev) ) {
+      if ( !OSjs.Utils.$isFormElement(ev) ) {
         ev.preventDefault();
         return false;
       }
@@ -150,7 +150,7 @@
         var doPrevent = d.tagName === 'BODY' ? true : false;
 
         // What browser default keys we prevent in certain situations
-        if ( (ev.keyCode === OSjs.Utils.Keys.BACKSPACE) && !OSjs.Utils.$isInput(ev) ) { // Backspace
+        if ( (ev.keyCode === OSjs.Utils.Keys.BACKSPACE) && !OSjs.Utils.$isFormElement(ev) ) { // Backspace
           doPrevent = true;
         } else if ( (ev.keyCode === OSjs.Utils.Keys.TAB) && OSjs.Utils.$isFormElement(ev) ) { // Tab
           doPrevent = true;

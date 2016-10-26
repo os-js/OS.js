@@ -764,7 +764,7 @@
     });
 
     Utils.$bind(this._$element, 'contextmenu', function(ev) {
-      var r = Utils.$isInput(ev);
+      var r = Utils.$isFormElement(ev);
 
       if ( !r ) {
         ev.preventDefault();
