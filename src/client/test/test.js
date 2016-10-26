@@ -117,13 +117,6 @@
         });
       });
 
-      describe('fixJSON()', function() {
-        it('should return JSON object', function() {
-          var res = OSjs.Utils.fixJSON('{"foo":"bar"}');
-          expect(res.foo).to.be.equal('bar');
-        });
-      });
-
       describe('convertToRGB()', function() {
         it('should return RGB object', function() {
           var res = OSjs.Utils.convertToRGB('#000000');

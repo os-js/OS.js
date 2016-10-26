@@ -230,29 +230,6 @@
   };
 
   /**
-   * Fixes JSON for HTTP requests (in case they were returned as string)
-   *
-   * @function fixJSON
-   * @memberof OSjs.Utils
-   *
-   * @param   {Mixed}     response      The data
-   *
-   * @return  {Object}                  JSON
-   */
-  OSjs.Utils.fixJSON = function(response) {
-    if ( typeof response === 'string' ) {
-      if ( response.match(/^\{|\[/) ) {
-        try {
-          response = JSON.parse(response);
-        } catch ( e  ) {
-          console.warn('FAILED TO FORCE JSON MIME TYPE', e);
-        }
-      }
-    }
-    return response;
-  };
-
-  /**
    * Extends the given object
    *
    * <pre>

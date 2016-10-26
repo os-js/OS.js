@@ -339,14 +339,18 @@
             url: url,
             method: 'GET'
           }, function(error, result) {
-            if ( !error ) {
-              var jsn = Utils.fixJSON(result.body);
-              if ( jsn instanceof Array ) {
-                entries = entries.concat(jsn.map(function(iter) {
-                  iter._repository = url;
-                  return iter;
-                }));
+            if ( !error && result.body ) {
+              var list = [];
+              if ( typeof result.body === 'string' ) {
+                try {
+                  list = JSON.parse(result.body);
+                } catch ( e ) {}
               }
+
+              entries = entries.concat(list.map(function(iter) {
+                iter._repository = url;
+                return iter;
+              }));
             }
             next();
           });
