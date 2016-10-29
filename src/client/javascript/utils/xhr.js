@@ -176,7 +176,10 @@
             OSjs.VFS.Helpers.abToText(request.response, 'text/plain', function(err, txt) {
               var error = txt || err || OSjs.API._('ERR_UTILS_XHR_FATAL');
               args.onerror(error, evt, request, args.url);
+
+              cleanup();
             });
+            return;
           }
 
           cleanup();
