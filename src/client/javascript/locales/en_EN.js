@@ -68,6 +68,7 @@
     'ERR_OPERATION_TIMEOUT_FMT'   : 'Operation Timeout ({0})',
 
     'ERR_ARGUMENT_FMT'    : '\'{0}\' expects \'{1}\' to be a \'{2}\', \'{3}\' given',
+    'ERR_INVALID_LOCATION': 'Invalid location',
 
     // Window
     'ERR_WIN_DUPLICATE_FMT' : 'You already have a Window named \'{0}\'',
@@ -315,6 +316,9 @@
     'MSG_APPLICATION_WARNING'   : 'Application Warning',
     'MSG_MIME_OVERRIDE'         : 'The filetype "{0}" is not supported, using "{1}" instead.',
 
+    'ERR_OPEN_LOCATION' : 'Failed to open location',
+    'ERR_OPEN_LOCATION_FMT' : 'Failed to open location: {0}',
+
     //
     // General
     //
@@ -462,7 +466,8 @@
     'LBL_MISC': 'Misc',
     'LBL_OTHER': 'Other',
     'LBL_USERS': 'Users',
-    'LBL_FONTS': 'Fonts'
+    'LBL_FONTS': 'Fonts',
+    'LBL_OPEN_LOCATION': 'Open Location'
 
   };
 

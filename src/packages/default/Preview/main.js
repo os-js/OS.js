@@ -71,6 +71,32 @@
     this._find('ZoomFit').son('click', this, this.onZoomFit);
     this._find('ZoomOriginal').son('click', this, this.onZoomOriginal);
 
+    this._scheme.find(this, 'SubmenuFile').on('select', function(ev) {
+      if ( ev.detail.id === 'MenuOpenLocation' ) {
+        API.createDialog('Input', {
+          value: 'http://'
+        }, function(ev, btn, value) {
+          if ( btn === 'ok' ) {
+            if ( !value.match(/^http/) ) {
+              self._setWarning(API._('ERR_OPEN_LOCATION_FMT', API._('ERR_INVALID_LOCATION')));
+              return;
+            }
+
+            API.curl({
+              method: 'HEAD',
+              url: value
+            }, function(err, res) {
+              if ( err ) {
+                self._setWarning(API._('ERR_OPEN_LOCATION_FMT', err));
+              } else {
+                self.showFile(new VFS.File(value, res.headers['content-type']), value);
+              }
+            });
+          }
+        })
+      }
+    });
+
     var c = this._find('Content').$element;
     Utils.$bind(c, 'mousewheel', function(ev, pos) {
       if ( pos.z === 1 ) {
