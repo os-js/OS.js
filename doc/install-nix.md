@@ -7,7 +7,7 @@ Make sure you have **all dependencies installed** before beginning.
 ## Automated
 
 ```
-$ curl -sS https://os.js.org/installer | sh
+$ curl -sS https://os.js.org/installer | sudo sh
 ```
 
 ## Manual
