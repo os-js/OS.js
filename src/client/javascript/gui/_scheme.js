@@ -658,7 +658,7 @@
   UIScheme.getElementInstance = function(el, q) {
     if ( el ) {
       var tagName = el.tagName.toLowerCase();
-      if ( tagName.match(/^gui\-(list|tree|icon|file)\-view$/) || tagName.match(/^gui\-select/) ) {
+      if ( tagName.match(/^gui\-(list|tree|icon|file)\-view$/) || tagName.match(/^gui\-(select|tabs)/) ) {
         return new GUI.ElementDataView(el, q);
       }
     }

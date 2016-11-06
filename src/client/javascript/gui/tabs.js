@@ -41,6 +41,63 @@
     }
   }
 
+  function selectTab(el, tabs, ev, idx, tab) {
+    tabs.querySelectorAll('li').forEach(function(tel, eidx) {
+      toggleActive(tel, eidx, idx);
+    });
+
+    el.querySelectorAll('gui-tab-container').forEach(function(tel, eidx) {
+      toggleActive(tel, eidx, idx);
+    });
+
+    Utils.$addClass(tab, 'gui-active');
+
+    el.dispatchEvent(new CustomEvent('_change', {detail: {index: idx}}));
+  }
+
+  function findTab(el, tabs, idx) {
+    var found = null;
+    if ( typeof idx === 'number' ) {
+      found = idx;
+    } else {
+      tabs.querySelectorAll('li').forEach(function(iter, i) {
+        if ( found === null && iter.firstChild.textContent === idx ) {
+          found = i;
+        }
+      });
+    }
+    return found;
+  }
+
+  function removeTab(el, tabs, idx) {
+    var found = findTab(el, tabs, idx);
+    if ( found !== null ) {
+      tabs.children[found].remove();
+      el.querySelectorAll('gui-tab-container')[found].remove();
+    }
+  }
+
+  function createTab(el, tabs, label, prog) {
+    var tab = document.createElement('li');
+    var idx = tabs.children.length;
+
+    Utils.$bind(tab, 'click', function(ev) {
+      selectTab(el, tabs, ev, idx, tab);
+    }, false);
+
+    tab.setAttribute('role', 'tab');
+    tab.setAttribute('aria-label', label);
+    tab.appendChild(document.createTextNode(label));
+    tabs.appendChild(tab);
+
+    if ( prog ) {
+      var tel = document.createElement('gui-tab-container');
+      tel.setAttribute('data-label', label);
+      tel.setAttribute('role', 'tabpanel');
+      el.appendChild(tel);
+    }
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
@@ -69,52 +126,48 @@
       }
       Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
     },
+    set: function(el, param, value) {
+      if ( ['current', 'selected', 'active'].indexOf(param) !== -1 ) {
+        var tabs = el.querySelector('ul');
+        var found = findTab(el, tabs, value);
+        if ( found !== null ) {
+          selectTab(el, tabs, null, found, tabs[found]);
+        }
+      }
+    },
     get: function(el, param, value) {
-      if ( param === 'current' || param === 'selected' ) {
+      if ( ['current', 'selected', 'active'].indexOf(param) !== -1 ) {
         var cur = el.querySelector('ul > li[class="gui-active"]');
         return Utils.$index(cur);
       }
       return GUI.Helpers.getProperty(el, param);
     },
+    call: function(el, method, arg) {
+      var tabs = el.querySelector('ul');
+
+      if ( method === 'add' ) {
+        arg.forEach(function(label) {
+          createTab(el, tabs, label, true);
+        });
+      } else if ( method === 'remove' ) {
+        arg.forEach(function(id) {
+          if ( typeof id !== 'undefined' ) {
+            removeTab(el, tabs, id);
+          }
+        });
+      }
+    },
     build: function(el) {
       var tabs = document.createElement('ul');
 
-      var lastTab;
-      function selectTab(ev, idx, tab) {
-        if ( lastTab ) {
-          Utils.$removeClass(lastTab, 'gui-active');
-        }
-
-        tabs.querySelectorAll('li').forEach(function(tel, eidx) {
-          toggleActive(tel, eidx, idx);
-        });
-        el.querySelectorAll('gui-tab-container').forEach(function(tel, eidx) {
-          toggleActive(tel, eidx, idx);
-        });
-
-        lastTab = tab;
-        Utils.$addClass(tab, 'gui-active');
-
-        el.dispatchEvent(new CustomEvent('_change', {detail: {index: idx}}));
-      }
-
       el.querySelectorAll('gui-tab-container').forEach(function(tel, idx) {
-        var tab = document.createElement('li');
-        var label = GUI.Helpers.getLabel(tel);
-
-        Utils.$bind(tab, 'click', function(ev) {
-          selectTab(ev, idx, tab);
-        }, false);
-
-        tab.setAttribute('role', 'tab');
-        tab.setAttribute('aria-label', label);
+        createTab(el, tabs, GUI.Helpers.getLabel(tel));
         tel.setAttribute('role', 'tabpanel');
-        tab.appendChild(document.createTextNode(label));
-        tabs.appendChild(tab);
       });
 
       tabs.setAttribute('role', 'tablist');
       el.setAttribute('role', 'navigation');
+
       if ( el.children.length ) {
         el.insertBefore(tabs, el.children[0]);
       } else {
@@ -122,7 +175,7 @@
       }
 
       var currentTab = parseInt(el.getAttribute('data-selected-index'), 10) || 0;
-      selectTab(null, currentTab);
+      selectTab(el, tabs, null, currentTab);
     }
   };
 
