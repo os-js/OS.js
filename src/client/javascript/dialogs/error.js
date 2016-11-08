@@ -113,7 +113,7 @@
 
           title = API.getConfig('BugReporting.options.title');
           body = [
-            '**' + API.getConfig('BugReporting.options.message') +  ':**',
+            '**' + API.getConfig('BugReporting.options.message').replace('%VERSION%', API.getConfig('Version')) +  ':**',
             '\n',
             '> ' + self.args.message,
             '\n',
