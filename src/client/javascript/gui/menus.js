@@ -255,9 +255,13 @@
       if ( evName === 'select' ) {
         evName = '_select';
       }
-      el.querySelectorAll('gui-menu-entry > label').forEach(function(target) {
-        Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
-      });
+
+      Utils.$bind(el, evName, function(ev) {
+        var t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
+        if ( t.tagName === 'LABEL' ) {
+          callback.apply(new GUI.Element(t.parentNode), arguments);
+        }
+      }, true);
     },
     show: function(ev) {
       ev.stopPropagation();
