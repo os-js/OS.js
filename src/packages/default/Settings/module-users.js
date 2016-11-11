@@ -49,7 +49,6 @@
   function showDialog(win, scheme, data, passwd) {
     var _ = OSjs.Applications.ApplicationSettings._;
 
-    data = data || {};
     win._toggleDisabled(true);
 
     if ( passwd ) {
@@ -72,6 +71,9 @@
       });
       return;
     }
+
+    var action = data === null ? 'add' : 'edit';
+    data = data || {};
 
     var nwin = new Window('SettingsUserWindow', {
       icon: win._app.__metadata.icon,
@@ -113,7 +115,7 @@
           return self._close();
         }
 
-        API.call('users', {command: 'edit', user: data}, function(err, users) {
+        API.call('users', {command: action, user: data}, function(err, users) {
           if ( err ) {
             API.error('Settings', _('Error while managing users'), err);
           }
@@ -168,9 +170,7 @@
         }
       }
       win._find('UsersAdd').on('click', function() {
-        _action(function(data) {
-          showDialog(win, scheme, data)
-        }, true);
+        showDialog(win, scheme, null)
       });
       win._find('UsersRemove').on('click', function() {
         _action(function(data) {
