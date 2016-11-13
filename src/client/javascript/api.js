@@ -465,6 +465,7 @@
       }
 
       try {
+        n = p.__pname;
         p.destroy(); // kill
       } catch ( e ) {
         console.warn('OSjs.API.relaunch()', e.stack, e);
@@ -485,7 +486,11 @@
       }, 500);
     }
 
-    API.getProcess(n).forEach(relaunch);
+    var res = API.getProcess(n);
+    if ( !(res instanceof Array) ) {
+      res = [res];
+    }
+    res.forEach(relaunch);
   };
 
   /**

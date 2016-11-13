@@ -30,7 +30,7 @@
 
         var dev =_cache.Connection.Dist === 'dist-dev';
         _cache.MOCHAMODE = dev && window.location.hash === '#mocha';
-        _cache.DEVMODE = dev && window.location.hash === '#developer';
+        _cache.DEVMODE = dev;
       }
 
       return Object.freeze(_cache);

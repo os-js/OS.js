@@ -701,11 +701,8 @@
         }
       });
 
-      if ( config.DEVMODE || config.MOCHAMODE ) {
-        _inited();
-      }
-
       if ( config.MOCHAMODE ) {
+        _inited();
         window.mocha.run();
       } else {
         initWindowManager(config, function() {

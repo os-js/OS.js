@@ -176,6 +176,52 @@
         }
       }
 
+      function displayDevMenu(ev) {
+        var don = Utils.$hasClass(document.body, 'debug');
+        var apps = API.getProcesses().filter(function(iter) {
+          return iter !== null && iter instanceof OSjs.Core.Application;
+        }).map(function(iter) {
+          return {
+            title: iter.__label + ' (pid:' + iter.__pid + ')',
+            onClick: function() {
+              API.relaunch(iter.__pid);
+            }
+          };
+        });
+
+        var mnu = [{
+          title: don ? 'Turn off debug overlay' : 'Turn on debug overlay',
+          onClick: function() {
+            if ( don ) {
+              Utils.$removeClass(document.body, 'debug');
+            } else {
+              Utils.$addClass(document.body, 'debug');
+            }
+          }
+        }, {
+          title: 'Reload manifest',
+          onClick: function() {
+            OSjs.Core.getPackageManager().load(function() {
+              // noop
+            });
+          }
+        }, {
+          title: 'Reload running application',
+          menu: apps
+        }];
+
+        OSjs.API.createMenu(mnu, ev);
+      }
+
+      if ( API.getConfig('DEVMODE') ) {
+        self.createNotificationIcon('_DeveloperNotification', {
+          image: API.getIcon('categories/gnome-devel.png', '16x16'),
+          title: 'Developer Tools',
+          onContextMenu: displayDevMenu,
+          onClick: displayDevMenu
+        });
+      }
+
       if ( self.getSetting('fullscreen') ) {
         self.createNotificationIcon('_FullscreenNotification', {
           image: OSjs.API.getIcon('actions/gtk-fullscreen.png', '16x16'),
