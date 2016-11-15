@@ -78,7 +78,10 @@
     <gui-vbox-container data-shrink="1">
       <gui-hbox>
         <gui-hbox-container data-shrink="1" data-expand="true">
-          <gui-button data-id="HomeButton" data-icon="stock://16x16/places/folder_home.png"></gui-button>
+          <gui-button data-id="HomeButton" data-icon="stock://16x16/places/folder_home.png" data-tooltip="LBL_HOME"></gui-button>
+        </gui-hbox-container>
+        <gui-hbox-container data-shrink="1" data-expand="true">
+          <gui-button data-id="ButtonMkdir" data-icon="stock://16x16/actions/folder_new.png" data-tooltip="LBL_MKDIR"></gui-button>
         </gui-hbox-container>
         <gui-hbox-container data-grow="1" data-expand="true">
           <gui-select data-id="ModuleSelect"></gui-select>
@@ -104,7 +107,6 @@
 
     <gui-vbox-container data-shrink="1" data-align="end">
       <gui-button-bar>
-        <gui-button data-id="ButtonMkdir">LBL_MKDIR</gui-button>
         <gui-button data-id="ButtonOK">LBL_OK</gui-button>
         <gui-button data-id="ButtonCancel">LBL_CANCEL</gui-button>
       </gui-button-bar>

@@ -650,10 +650,11 @@
 
       function setImage() {
         if ( icon && icon !== 'null' ) {
+          var tip = API._(el.getAttribute('data-tooltip') || '');
           var img = document.createElement('img');
           img.src = icon;
-          img.alt = el.getAttribute('data-tooltip') || '';
-          img.title = el.getAttribute('data-tooltip') || '';
+          img.alt = tip;
+          img.title = tip;
 
           if ( input.firstChild ) {
             input.insertBefore(img, input.firstChild);

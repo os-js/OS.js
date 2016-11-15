@@ -467,7 +467,8 @@
     'LBL_OTHER': 'Other',
     'LBL_USERS': 'Users',
     'LBL_FONTS': 'Fonts',
-    'LBL_OPEN_LOCATION': 'Open Location'
+    'LBL_OPEN_LOCATION': 'Open Location',
+    'LBL_HOME': 'Home'
 
   };
 
