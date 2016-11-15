@@ -363,6 +363,10 @@
 
         var submenu = mel.querySelector('gui-menu');
 
+        if ( mel.getAttribute('data-disabled') === 'true' ) {
+          return;
+        }
+
         mel.querySelectorAll('gui-menu-entry').forEach(function(c) {
           Utils.$removeClass(c, 'gui-hover');
         });
