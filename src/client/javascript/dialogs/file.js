@@ -141,6 +141,21 @@
     view.set('multiple', this.args.multiple);
     filename.set('value', this.args.filename || '');
 
+    this.scheme.find(this, 'ButtonMkdir').on('click', function() {
+      API.createDialog('Input', {message: API._('DIALOG_FILE_MKDIR_MSG', self.path), value: 'New folder'}, function(ev, btn, value) {
+        if ( btn === 'ok' && value ) {
+          var path = Utils.pathJoin(self.path, value);
+          VFS.mkdir(VFS.file(path, 'dir'), function(err) {
+            if ( err ) {
+              API.error(API._('DIALOG_FILE_ERROR'), API._('ERR_VFSMODULE_MKDIR'), err);
+            } else {
+              self.changePath(path);
+            }
+          });
+        }
+      }, self);
+    });
+
     home.on('click', function() {
       var dpath = API.getDefaultPath();
       self.changePath(dpath);
@@ -211,6 +226,11 @@
         checkEmptyInput();
       });
     } else {
+
+      if ( this.args.select !== 'dir'  ) {
+        this.scheme.find(this, 'ButtonMkdir').hide();
+      }
+
       this.scheme.find(this, 'FileInput').hide();
     }
 
