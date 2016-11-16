@@ -203,7 +203,7 @@
       }
     }
 
-    var path = Utils.getPathProtocol(item.path).replace(/\/+/, '/');
+    var path = Utils.getPathFromVirtual(item.path).replace(/\/+/, '/');
     if ( useParent ) {
       path = Utils.dirname(path);
     }
@@ -286,7 +286,7 @@
 
     console.info('OneDrive::scandir()', item);
 
-    var relativePath = Utils.getPathProtocol(item.path);
+    var relativePath = Utils.getPathFromVirtual(item.path);
 
     function _finished(error, result) {
       console.groupEnd();

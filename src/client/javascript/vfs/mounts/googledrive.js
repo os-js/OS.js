@@ -276,7 +276,7 @@
         }
       });
 
-      var resolves = Utils.getPathProtocol(root).replace(/^\/+/, '').split('/');
+      var resolves = Utils.getPathFromVirtual(root).replace(/^\/+/, '').split('/');
       resolves = resolves.filter(function(el) {
         return el !== '';
       });
@@ -737,7 +737,7 @@
     }
 
     var mm = OSjs.Core.getMountManager();
-    if ( Utils.dirname(dir.path) !== Utils.getPathProtocol(mm.getModuleProperty('GoogleDrive', 'root')) ) {
+    if ( Utils.dirname(dir.path) !== Utils.getPathFromVirtual(mm.getModuleProperty('GoogleDrive', 'root')) ) {
       getParentPathId(dir, function(error, id) {
         console.debug('GoogleDrive::mkdir()->getParentPathId()', id, 'of', dir);
         if ( error || !id ) {

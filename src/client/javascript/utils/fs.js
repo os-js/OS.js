@@ -35,6 +35,22 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
+   * Gets the path from a location
+   *
+   * @function getPathFromVirtual
+   * @memberof OSjs.Utils
+   *
+   * @param   {String}    str         Path name
+   *
+   * @return  {String}
+   */
+  OSjs.Utils.getPathFromVirtual = function(str) {
+    str = str || '';
+    var res = str.split(/([A-z0-9\-_]+)\:\/\/(.*)/)[2] || '';
+    return res.replace(/^\/?/, '/');
+  };
+
+  /**
    * Gets the protocol from a location
    *
    * @function getPathProtocol
