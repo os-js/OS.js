@@ -190,11 +190,6 @@
   };
 
   /**
-   * This callback is called when a user is done saving a file
-   *
-   * @callback {OSjs.
-
-  /**
    * Open Save dialog
    *
    * @function saveDialog
