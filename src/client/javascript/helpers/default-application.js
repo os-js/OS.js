@@ -203,7 +203,7 @@
    * @param   {OSjs.VFS.File}       file        File
    * @param   {OSjs.Core.Window}    win         Window reference
    * @param   {Boolean}             saveAs      SaveAs ?
-   * @param   {CallbackDialog}      cb          Called after the user closed the dialog           
+   * @param   {CallbackDialog}      cb          Called after the user closed the dialog
    */
   DefaultApplication.prototype.saveDialog = function(file, win, saveAs, cb) {
     var self = this;
