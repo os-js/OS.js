@@ -198,8 +198,9 @@
    * @param   {OSjs.VFS.File}       file        File
    * @param   {OSjs.Core.Window}    win         Window reference
    * @param   {Boolean}             saveAs      SaveAs ?
+   * @param   {CallbackDialog}      cb          Called after the user closed the dialog
    */
-  DefaultApplication.prototype.saveDialog = function(file, win, saveAs) {
+  DefaultApplication.prototype.saveDialog = function(file, win, saveAs, cb) {
     var self = this;
     var value = win.getFileData();
 
@@ -221,6 +222,9 @@
       win._toggleDisabled(false);
       if ( button === 'ok' ) {
         self.saveFile(result, value, win);
+      }
+      if (typeof cb === 'function') {
+        cb(ev, button, result);
       }
     }, win);
   };
