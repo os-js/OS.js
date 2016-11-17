@@ -1220,10 +1220,10 @@
    * @function createDialog
    * @memberof OSjs.API
    *
-   * @param   {String}        className       Dialog Namespace Class Name
-   * @param   {Object}        args            Arguments you want to send to dialog
-   * @param   {Function}      callback        Callback on dialog action (close/ok etc) => fn(ev, button, result)
-   * @param   {Mixed}         [parentObj]     A window or app (to make it a child window)
+   * @param   {String}         className       Dialog Namespace Class Name
+   * @param   {Object}         args            Arguments you want to send to dialog
+   * @param   {CallbackDialog} callback        Callback on dialog action (close/ok etc) => fn(ev, button, result)
+   * @param   {Mixed}          [parentObj]     A window or app (to make it a child window)
    *
    * @return  {OSjs.Core.Window}
    */
