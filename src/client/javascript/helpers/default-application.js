@@ -190,6 +190,11 @@
   };
 
   /**
+   * This callback is called when a user is done saving a file
+   *
+   * @callback {OSjs.
+
+  /**
    * Open Save dialog
    *
    * @function saveDialog
@@ -198,8 +203,9 @@
    * @param   {OSjs.VFS.File}       file        File
    * @param   {OSjs.Core.Window}    win         Window reference
    * @param   {Boolean}             saveAs      SaveAs ?
+   * @param   {CallbackDialog}      cb          Called after the user closed the dialog           
    */
-  DefaultApplication.prototype.saveDialog = function(file, win, saveAs) {
+  DefaultApplication.prototype.saveDialog = function(file, win, saveAs, cb) {
     var self = this;
     var value = win.getFileData();
 
@@ -222,6 +228,7 @@
       if ( button === 'ok' ) {
         self.saveFile(result, value, win);
       }
+      cb(ev, button, result);
     }, win);
   };
 
