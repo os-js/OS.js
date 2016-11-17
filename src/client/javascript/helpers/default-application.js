@@ -228,7 +228,9 @@
       if ( button === 'ok' ) {
         self.saveFile(result, value, win);
       }
-      cb(ev, button, result);
+      if (typeof cb === 'function') {
+        cb(ev, button, result);
+      }
     }, win);
   };
 
