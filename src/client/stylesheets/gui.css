@@ -1340,6 +1340,7 @@ gui-icon-view {
   overflow : auto;
   min-width : 16px;
   min-height : 16px;
+  box-sizing : border-box;
 }
   gui-icon-view-body {
     position : absolute;
@@ -1404,6 +1405,7 @@ gui-list-view {
   overflow : auto;
   min-width : 16px;
   min-height : 16px;
+  box-sizing : border-box;
 }
   gui-list-view-inner {
     display : table;
@@ -1501,6 +1503,7 @@ gui-tree-view {
   overflow : auto;
   min-width : 16px;
   min-height : 16px;
+  box-sizing : border-box;
 }
   gui-tree-view-body {
     position : absolute;
