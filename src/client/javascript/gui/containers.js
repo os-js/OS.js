@@ -75,11 +75,11 @@
 
           var max = parseInt(cel.getAttribute('data-max-size'), 10);
           if ( !max ) {
-            var totalHeight = resizer.parentNode.offsetHeight;
+            var totalSize = resizer.parentNode[(orient === 'horizontal' ? 'offsetWidth' : 'offsetHeight')]
             var totalContainers = resizer.parentNode.querySelectorAll('gui-paned-view-container').length;
             var totalSpacers = resizer.parentNode.querySelectorAll('gui-paned-view-handle').length;
 
-            maxSize = totalHeight - (totalContainers * 16) - (totalSpacers * 8);
+            maxSize = totalSize - (totalContainers * 16) - (totalSpacers * 8);
           }
         }, function(ev, diff) {
           var newWidth = startWidth + diff.x;
