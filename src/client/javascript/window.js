@@ -760,7 +760,6 @@
 
     Utils.$bind(this._$element, 'mousedown', function(ev) {
       self._focus();
-      return stopPropagation(ev);
     });
 
     Utils.$bind(this._$element, 'contextmenu', function(ev) {
