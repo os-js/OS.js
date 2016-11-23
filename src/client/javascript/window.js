@@ -89,17 +89,6 @@
   })();
 
   /**
-   * Wrapper for stopPropagation()
-   * @return boolean
-   */
-  function stopPropagation(ev) {
-    if ( ev ) {
-      ev.stopPropagation();
-    }
-    return false;
-  }
-
-  /**
    * Get viewport (Wrapper)
    *
    * @return {Object}
