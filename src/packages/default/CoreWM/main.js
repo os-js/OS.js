@@ -214,7 +214,7 @@
         OSjs.API.createMenu(mnu, ev);
       }
 
-      if ( API.getConfig('DEVMODE') ) {
+      if ( API.getConfig('Connection.Dist') !== 'dist' ) {
         self.createNotificationIcon('_DeveloperNotification', {
           image: API.getIcon('categories/gnome-devel.png', '16x16'),
           title: 'Developer Tools',

@@ -128,7 +128,7 @@ function createIndex(verbose, cfg, dist, fn, test) {
   const scripts = [];
   const styles = [];
 
-  fn(cfg, function(i) {
+  fn(dist, cfg, function(i) {
     if ( verbose ) {
       _utils.log('- including:', i);
     }
@@ -233,7 +233,7 @@ function buildNW() {
 /*
  * File adder wrapper
  */
-function addFiles(cfg, addStyle, addScript, test) {
+function addFiles(dist, cfg, addStyle, addScript, test) {
   const build = getBuildFiles(cfg.build);
   const jss = (test ? ['vendor/mocha.js', 'vendor/chai.js', 'client/test/test.js'] : []).concat(build.javascript);
   const csss = (test ? ['vendor/mocha.css'] : []).concat(build.stylesheets);
@@ -247,7 +247,7 @@ function addFiles(cfg, addStyle, addScript, test) {
   });
 
   csss.forEach(function(i) {
-    if ( _filter(i, {target: 'dist-dev'}) ) {
+    if ( _filter(i, dist) ) {
       addStyle(i.replace(/^(dev|prod):/, '').replace(/src\/client\/(.*)/, 'client/$1'));
     }
   });
@@ -322,7 +322,7 @@ const TARGETS = {
           appendString = '?ver=' + cfg.client.Connection.AppendVersion;
         }
 
-        createIndex(verbose, cfg, 'dist', function(c, addStyle, addScript) {
+        createIndex(verbose, cfg, 'dist', function(dist, c, addStyle, addScript) {
           if ( compress ) {
             addStyle('osjs.min.css' + appendString);
             addScript('osjs.min.js' + appendString);
