@@ -1,3 +1,83 @@
+# 2.0.0-alpha81
+
+This release brings Widgets, rewritten servers(s), connection/authenticator/storage replaces 'handler', bugfixes and improvements.
+
+Overall this will make development and customization much easier and allows to drop-in modules to extend functionality.
+
+Another change is that *Grunt* is no longer used as the main CLI utility. The `osjs` script now handles this with exception of developer helpers.
+
+The official documentation (manual) has also been completely reworked. It now explains all the concepts and gives detailed instructions and examples.
+
+**NOTE: The Application API has changed! You can read about the changes in links below. Backward compability has been kept, but it is not guaranteed to work 100%.**
+
+Relevant:
+
+- http://community.os.js.org/t/update-version-bump-alpha81/104
+- https://gitter.im/os-js/topics/topic/5818ce090b10738c73fe24e0/new-server-codebase-and-handler-abstraction
+- http://community.os.js.org/t/notice-upcoming-server-api-changes/104/2
+- http://community.os.js.org/t/feature-widgets/90
+- https://github.com/os-js/OS.js/issues/527
+- https://os.js.org/manual/
+
+Digest:
+
+- Settings: Make sure window title is translated (#511)
+- Settings: Add back window switcher toggle saving
+- Settings: Better handling of startup category argument
+- Settings: Better VFS mounting
+- Preview: Support opening external locations
+- CoreWM: Widget Support
+- CoreWM: Iconview bugfixes
+- CoreWM: Added a developer tool notification icon with menu
+- VFS: Add missing VFS.File parameter in delete check (Fixes #509)
+- VFS: Added client-side `watch()` and `unwatch()` methods
+- VFS: `scandir()` can now concat entries from a given metadata file
+- VFS: Bugfixes and cleanups
+- VFS: Fixed backlink showing on roots
+- VFS: Server-side watching
+- API: Fixed resolving custom icons for packages
+- API: `getFileIcon()` now supports 'application' VFS Files
+- GUI: Added `add()` `remove()` and `set()` methods to Tabs
+- GUI: Some bugfixes to menu events
+- GUI: Moved some element/scheme stuff around, better creation of elements
+- Dialogs: Added 'create directory' to File (on save and directory select)
+- Window: Corrected wrong scope in resize finished callback (Fixes #506)
+- Window: Added `_create()` shortcut to create new GUI elements
+- Utils: Added more keycodes and freezed namespace
+- Utils: Added full ASCII key map
+- Utils: Removed some deprecated methods
+- Utils: Fixed early (too) early cleanup of XHR request
+- Utils: Added deep-clone object method alternative
+- Utils: Updated `pathJoin()`
+- iframe-application: Added callback-style messaging sypport
+- default-application: Removed some deprecated stuff
+- default-application: Added callback support on save
+- client: Now uses a `Connection` class instead of `Handler` methods
+- client: Now uses a `Authenticator` class instead of `Handler` methods
+- client: Now uses a `Storage` class instead of `Handler` methods
+- client: Now supports subscriptions when using WS
+- server: Now supports drop-in modules for API, VFS Transports, etc.
+- server: Now uses a `Storage` module instead of `Handler` class
+- server: Now uses a `Authenticator` module instead of `Handler` class
+- server-node: Entirely rewritten
+- server-php: Entirely rewritten
+- locales: Updated it_IT
+- locales: Updated fr_FR
+- build: Added better bugreport configuration support
+- build: Static build files can now be skipped if already exists
+- build: Added support for build file overlays
+- build: Now possible to pick login screen via config
+- build: Added help to the 'osjs' command
+- build: Updated build system
+- misc: Updated various lose documentation files in the codebase
+- misc: Grunt is no longer a main dependency
+- misc: Removed some unnesecarry dotfiles
+- misc: Updated documentation
+- misc: Updated NIX installer
+- misc: Updated eslint rules
+- misc: Cleaned up some CSS
+- misc: Updated unit tests
+
 # 2.0.0-alpha80
 
 New Settings application, package management and user management subsystem, developer features and build system. Improvements and bugfixes.
