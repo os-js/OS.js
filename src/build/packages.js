@@ -137,7 +137,7 @@ function copyResources(verbose, iter, src, dest) {
 function buildLess(verbose, iter, src, dest) {
   const files = iter.build.less || {};
 
-  return Promise.each(Object.keys(files).map(function(f) {
+  return Promise.all(Object.keys(files).map(function(f) {
     return new Promise(function(resolve, reject) {
       const from = _path.join(src, f);
       const to = _path.join(dest, files[f]);
