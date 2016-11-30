@@ -269,8 +269,7 @@
    * @param   {Object}    args      cURL Arguments (see docs)
    * @param   {Function}  callback  Callback function => fn(error, response)
    *
-   * @link https://os.js.org/doc/tutorials/using-curl.html
-   * @link https://os.js.org/doc/server/srcservernodenode_modulesosjsapijs.html#api-curl
+   * @link https://os.js.org/manual/api/usage/curl/
    */
   API.curl = function _apiCurl(args, callback) {
     args = args || {};
@@ -293,7 +292,7 @@
    *
    * @function call
    * @memberof OSjs.API
-   * @see OSjs.Core.Handler#callAPI
+   * @see OSjs.Core.Connection#request
    * @see OSjs.Utils.ajax
    * @throws {Error} On invalid arguments
    *
@@ -322,8 +321,8 @@
 
     _CALL_INDEX++;
 
-    var handler = OSjs.Core.getHandler();
-    return handler.callAPI(m, a, function(response) {
+    var conn = OSjs.Core.getConnection();
+    return conn.request(m, a, function(response) {
       API.destroyLoading(lname);
       response = response || {};
       cb(response.error || false, response.result);
@@ -900,8 +899,6 @@
     }
 
     function getResultPath(path, userpkg) {
-      path = Utils.checkdir(path);
-
       if ( vfspath ) {
         if ( userpkg ) {
           path = path.substr(API.getConfig('Connection.FSURI').length);
@@ -948,7 +945,7 @@
     }
 
     root = API.getConfig('Connection.ThemeURI');
-    return Utils.checkdir(root + '/' + name + '.css');
+    return root + '/' + name + '.css';
   };
 
   /**
@@ -998,6 +995,14 @@
       icon = 'places/folder.png';
     } else if ( file.type === 'trash' ) {
       icon = 'places/user-trash.png';
+    } else if ( file.type === 'application' ) {
+      var pm = OSjs.Core.getPackageManager();
+      var appname = Utils.filename(file.path);
+      var meta = pm.getPackage(appname);
+
+      if ( meta ) {
+        return API.getIcon(meta.icon, size, appname);
+      }
     } else {
       var mime = file.mime || 'application/octet-stream';
 
@@ -1037,9 +1042,6 @@
     type = type || null;
 
     var root = API.getConfig('Connection.ThemeURI');
-    if ( !root.match(/^\//) ) {
-      root = API.getBrowserPath() + root;
-    }
 
     function getName(str, theme) {
       if ( !str.match(/^\//) ) {
@@ -1058,7 +1060,7 @@
       name = getName(name, theme);
     }
 
-    return Utils.checkdir(name);
+    return name;
   };
 
   /**
@@ -1086,7 +1088,7 @@
         name = root + '/' + theme + '/' + name + '.' + ext;
       }
     }
-    return Utils.checkdir(name);
+    return name;
   };
 
   /**
@@ -1137,7 +1139,7 @@
       }
     }
 
-    return Utils.checkdir(name);
+    return name;
   };
 
   /**
@@ -1322,7 +1324,7 @@
    * @param   {Mixed}     group         Either a string or array of groups
    */
   API.checkPermission = function _apiCheckPermission(group) {
-    var user = OSjs.Core.getHandler().getUserData();
+    var user = OSjs.Core.getAuthenticator().getUser();
     var userGroups = user.groups || [];
 
     if ( !(group instanceof Array) ) {
@@ -1643,11 +1645,17 @@
   /**
    * Gets the browser window path
    *
+   * @param {String}    [app]     Append this path
+   *
    * @function getBrowserPath
    * @memberof OSjs.API
    */
-  API.getBrowserPath = function _apiGetBrowserPath() {
-    return (window.location.pathname || '/').replace(/index\.(.*)$/, '');
+  API.getBrowserPath = function _apiGetBrowserPath(app) {
+    var str = API.getConfig('Connection.RootURI');
+    if ( typeof app === 'string' ) {
+      str = str.replace(/\/?$/, app.replace(/^\/?/, '/'));
+    }
+    return str;
   }
 
   /**
@@ -1657,19 +1665,28 @@
    * @memberof OSjs.API
    */
   API.signOut = function _apiSignOut() {
-    var handler = OSjs.Core.getHandler();
+    var auth = OSjs.Core.getAuthenticator();
+    var storage = OSjs.Core.getStorage();
     var wm = OSjs.Core.getWindowManager();
 
     function signOut(save) {
       API.playSound('LOGOUT');
 
-      handler.logout(save, function() {
-        API.shutdown();
-      });
+      if ( save ) {
+        storage.saveSession(function() {
+          auth.logout(function() {
+            API.shutdown();
+          });
+        });
+      } else {
+        auth.logout(function() {
+          API.shutdown();
+        });
+      }
     }
 
     if ( wm ) {
-      var user = handler.getUserData() || {name: API._('LBL_UNKNOWN')};
+      var user = auth.getUser() || {name: API._('LBL_UNKNOWN')};
       API.createDialog('Confirm', {
         title: API._('DIALOG_LOGOUT_TITLE'),
         message: API._('DIALOG_LOGOUT_MSG_FMT', user.name)

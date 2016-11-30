@@ -1,3 +1,24 @@
+
+/**
+ * ===========================================================================
+ *                                 FONTS
+ * ===========================================================================
+ */
+@font-face {
+    font-family: 'Digital-7Mono';
+    src: url('widgets/fonts/DSEG7Classic-Regular.woff') format('woff'),
+         url('widgets/fonts/DSEG7Classic-Regular.ttf') format('truetype');
+
+    font-weight: 400;
+    font-style: normal;
+}
+
+/**
+ * ===========================================================================
+ *                                CLASSES
+ * ===========================================================================
+ */
+
 application-window-top .WindowFrost {
   position : absolute;
   top : 0;
@@ -199,6 +220,72 @@ corewm-window-switcher > div > img {
       margin-top : 5px;
       color : #fff;
     }
+
+/**
+ * ===========================================================================
+ *                                WIDGETS
+ * ===========================================================================
+ */
+
+corewm-widget {
+  display : block;
+  position : absolute;
+  overflow : hidden;
+  z-index : 2;
+  margin : 0;
+  box-sizing : border-box;
+  min-width : 32px;
+  min-height : 32px;
+}
+  corewm-widget:before {
+    content : '';
+    display : none;
+    position : absolute;
+    top : 0;
+    left : 0;
+    right : 0;
+    bottom : 0;
+    background : rgba(0, 0, 0, .3);
+    z-index : -1;
+  }
+  corewm-widget > canvas {
+    pointer-events : none;
+    box-sizing : border-box;
+    width : 100%;
+    height : 100%;
+    display : block;
+    margin : 0;
+    padding : 0;
+  }
+
+  corewm-widget-resize {
+    display : none;
+    width : 10px;
+    height : 10px;
+    margin : 0;
+    padding : 0;
+    position : absolute;
+    bottom : 0;
+    right : 0;
+    cursor : move;
+    z-index : 5;
+  }
+    corewm-widget-resize:before {
+      content : '';
+      display : block;
+      width : 20px;
+      height : 20px;
+      background-color : rgba(255, 255, 255, .3);
+      transform : rotate(45deg);
+    }
+
+corewm-widget[data-locked="false"].corewm-widget-active:before {
+  display : block;
+}
+corewm-widget[data-locked="false"].corewm-widget-active corewm-widget-resize,
+corewm-widget[data-locked="false"].corewm-widget-envelope corewm-widget-resize {
+  display : block;
+}
 
 /**
  * ===========================================================================

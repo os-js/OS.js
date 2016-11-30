@@ -45,13 +45,13 @@
    * @memberof OSjs
    */
 
-  var handler    = null;
   var loaded     = false;
   var inited     = false;
   var signingOut = false;
+  var isMocha    = false;
 
   // Make sure these namespaces exist
-  (['Utils', 'API', 'GUI', 'Core', 'Dialogs', 'Helpers', 'Applications', 'Locales', 'VFS', 'Extensions']).forEach(function(ns) {
+  (['Utils', 'API', 'GUI', 'Core', 'Dialogs', 'Helpers', 'Applications', 'Locales', 'VFS', 'Extensions', 'Auth', 'Storage', 'Connections']).forEach(function(ns) {
     OSjs[ns] = OSjs[ns] || {};
   });
 
@@ -345,12 +345,10 @@
   }
 
   /**
-   * Initializes handler
+   * Initializes handlers
    */
   function initHandler(config, callback) {
     console.debug('initHandler()');
-
-    handler = new OSjs.Core.Handler();
 
     function _done(error) {
       if ( error ) {
@@ -358,21 +356,31 @@
         return;
       }
 
-      if ( !inited ) {
-        if ( !handler.loggedIn ) {
-          if ( confirm(OSjs.API._('ERR_NO_SESSION')) ) {
-            handler.init(_done);
-          }
-          return;
-        }
-      }
-
       inited = true;
 
       callback();
     }
 
-    handler.init(_done);
+    var conf = OSjs.API.getConfig('Connection');
+    var ctype = conf.Type === 'standalone' ? 'http' : conf.Type;
+
+    var connection = new OSjs.Connections[ctype]();
+    var authenticator = new OSjs.Auth[conf.Authenticator]();
+    var storage = new OSjs.Storage[conf.Storage]();
+
+    OSjs.API.setLocale(OSjs.API.getConfig('Locale'));
+
+    connection.init(function(err) {
+      console.groupEnd();
+
+      if ( err ) {
+        callback(err);
+      } else {
+        storage.init(function() {
+          authenticator.init(_done);
+        });
+      }
+    });
   }
 
   /**
@@ -427,11 +435,6 @@
         if ( i instanceof Array ) {
           flatten(i);
         } else {
-          if ( typeof i === 'string' ) {
-            i = OSjs.Utils.checkdir(i);
-          } else {
-            i.src = OSjs.Utils.checkdir(i.src);
-          }
           list.push(i);
         }
       });
@@ -454,6 +457,11 @@
    * Loads all extensions
    */
   function initExtensions(config, callback) {
+    if ( isMocha ) {
+      callback();
+      return;
+    }
+
     var exts = Object.keys(OSjs.Extensions);
     var manifest =  OSjs.Core.getMetadata();
 
@@ -588,7 +596,8 @@
       }
     });
 
-    handler.getLastSession(function(err, adds) {
+    var stor = OSjs.Core.getStorage();
+    stor.getLastSession(function(err, adds) {
       if ( !err ) {
         adds.forEach(function(iter) {
           if ( typeof checkMap[iter.name] === 'undefined' ) {
@@ -613,50 +622,12 @@
   }
 
   /**
-   * Client-side unit-testing
-   */
-  function initTestEnvironment(config, callback) {
-    OSjs.Utils.preload([
-      '/vendor/mocha/mocha.js',
-      '/vendor/mocha/mocha.css',
-      '/vendor/chai/chai.js'
-    ], function() {
-      // Add basic layout
-      var h1 = document.createElement('h1');
-      h1.style.margin = '20px';
-      h1.appendChild(document.createTextNode('OS.js Mocha Client Test Suite'));
-      document.body.appendChild(h1);
-
-      var el = document.createElement('div');
-      el.id = 'mocha';
-      document.body.appendChild(el);
-
-      // Reset certain styles
-      document.body.style.background = '#fff';
-      document.body.style.overflow = 'auto';
-
-      // Init mocha interfaces
-      window.mocha.ui('bdd');
-      window.mocha.reporter('html');
-
-      // Create mock Window Manager
-      (new OSjs.Core.WindowManager('MochaWM', null, {}, {}, {})).init();
-
-      // Load default themes
-      OSjs.Utils.$createCSS(OSjs.API.getThemeCSS('default'));
-
-      // Load and run tests
-      OSjs.Utils.preload(['/client/test/test.js'], callback);
-    });
-
-    return true;
-  }
-
-  /**
    * Wrapper for initializing OS.js
    */
   function init() {
     console.group('init()');
+
+    isMocha = document.body.getAttribute('data-mocha') === 'true' || window.location.hash === '#mocha';
 
     var config = OSjs.Core.getConfig();
     var splash = document.getElementById('LoadingScreen');
@@ -666,9 +637,9 @@
       initPreload,
       initHandler,
       initVFS,
+      initSettingsManager,
       initPackageManager,
       initExtensions,
-      initSettingsManager,
       initSearch,
       function(cfg, cb) {
         OSjs.Core.getMountManager().restore(cb);
@@ -701,9 +672,8 @@
         }
       });
 
-      if ( config.MOCHAMODE ) {
+      if ( isMocha ) {
         _inited();
-        window.mocha.run();
       } else {
         initWindowManager(config, function() {
           initEvents();
@@ -718,10 +688,6 @@
     }
 
     initLayout();
-
-    if ( config.MOCHAMODE ) {
-      queue.push(initTestEnvironment);
-    }
 
     OSjs.Utils.asyncs(queue, function(entry, index, next) {
       if ( index < 1 ) {
@@ -776,11 +742,9 @@
       ring.destroy();
     }
 
-    var handler = OSjs.Core.getHandler();
-    if ( handler ) {
-      handler.destroy();
-      handler = null;
-    }
+    OSjs.Core.getAuthenticator().destroy();
+    OSjs.Core.getStorage().destroy();
+    OSjs.Core.getConnection().destroy();
 
     OSjs.API.triggerHook('onShutdown');
 

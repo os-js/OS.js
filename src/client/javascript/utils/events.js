@@ -302,6 +302,7 @@
      * Creates touch gestures for emulating mouse input
      */
     function createGestureHandler(el, n, t, callback, useCapture) {
+      /*eslint no-use-before-define: "off"*/
       var started;
       var contextTimeout;
       var dblTimeout;

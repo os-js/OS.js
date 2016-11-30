@@ -42,6 +42,8 @@
           "LOGIN": "service-login",
           "ERROR": "dialog-warning"
         },
+        "widgets": [
+        ],
         "panels": [
           {
             "options": {

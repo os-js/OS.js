@@ -27,6 +27,7 @@ src/installer/installer.exe
 # Builds
 dist/*
 dist-dev/*
+!dist-dev/vendor
 doc/jsdoc
 
 # Vendor

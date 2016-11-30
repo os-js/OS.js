@@ -58,7 +58,7 @@
   ClockSettingsDialog.prototype.applySettings = function() {
     this._settings.set('utc', this.scheme.find(this, 'InputUseUTC').get('value'));
     this._settings.set('interval', parseInt(this.scheme.find(this, 'InputInterval').get('value'), 10));
-    this._settings.set('format', this.scheme.find(this, 'InputTimeFormatString').get('value'), true);
+    this._settings.set('format', this.scheme.find(this, 'InputTimeFormatString').get('value'));
     this._settings.set('tooltip', this.scheme.find(this, 'InputTooltipFormatString').get('value'), true);
   };
 

@@ -27,26 +27,33 @@
     "test": "grunt test"
   },
   "dependencies": {
+    "chokidar": "^1.6.1",
     "colors": "^1.1.2",
+    "cookie": "^0.3.1",
     "diskspace": ">=1.0.3",
     "findit": ">=2.0.0",
     "formidable": ">=1.0.17",
-    "grunt": ">=1.0.1",
+    "fstream": "^1.0.10",
+    "glob-promise": "^2.0.0",
+    "http-proxy": "^1.15.2",
     "less": ">=2.7.1",
     "minimist": "^1.2.0",
     "node-fs-extra": ">=0.8.1",
     "request": ">=2.74.0",
     "simple-session": ">=0.0.1",
-    "unzip": "^0.1.11"
+    "unzip": "^0.1.11",
+    "ws": "^1.1.1"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
     "clean-css": ">=3.4.19",
-    "uglify-js": ">=2.7.3",
-    "time-grunt": ">=1.4.0",
-    "grunt-mocha-test": ">=0.12.7",
+    "grunt": ">=1.0.1",
+    "grunt-contrib-csslint": "2.0.0",
+    "grunt-contrib-validate-xml": ">=0.0.1",
     "grunt-contrib-watch": ">=1.0.0",
     "grunt-eslint": ">=19.0.0",
-    "grunt-contrib-csslint": "2.0.0",
-    "grunt-contrib-validate-xml": ">=0.0.1"
+    "grunt-mocha": "^1.0.2",
+    "grunt-mocha-test": ">=0.12.7",
+    "uglify-js": ">=2.7.3"
   }
 }

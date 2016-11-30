@@ -42,6 +42,10 @@
       "type": "javascript"
     },
     {
+      "src": "widget.js",
+      "type": "javascript"
+    },
+    {
       "src": "panelitems/buttons.js",
       "type": "javascript"
     },
@@ -70,6 +74,14 @@
       "type": "javascript"
     },
     {
+      "src": "widgets/analogclock.js",
+      "type": "javascript"
+    },
+    {
+      "src": "widgets/digitalclock.js",
+      "type": "javascript"
+    },
+    {
       "src": "main.js",
       "type": "javascript"
     },
@@ -82,6 +94,18 @@
       "type": "stylesheet"
     }
   ],
+  "widgets": {
+    "AnalogClock": {
+      "Name": "AnalogClock",
+      "Description": "A simple analog clock",
+      "Icon": "status/appointment-soon.png"
+    },
+    "DigitalClock": {
+      "Name": "DigitalClock",
+      "Description": "A simple digital clock",
+      "Icon": "status/appointment-soon.png"
+    }
+  },
   "panelItems": {
     "AppMenu": {
       "Name": "AppMenu",

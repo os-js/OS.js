@@ -90,6 +90,11 @@
   ApplicationEXAMPLE.prototype.init = function(settings, metadata, scheme) {
     Application.prototype.init.apply(this, arguments);
     this._addWindow(new ApplicationEXAMPLEWindow(this, metadata, scheme));
+
+    // Example on how to call `api.js` methods
+    this._api('test', {}, function(err, res) {
+      console.log('Result from your server API method', err, res);
+    });
   };
 
   /////////////////////////////////////////////////////////////////////////////

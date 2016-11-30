@@ -1017,6 +1017,7 @@ gui-richtext {
   display : inline-block;
   position : relative;
   min-height : 100px !important;
+  box-sizing : border-box;
 }
   gui-richtext > iframe {
     display : block;

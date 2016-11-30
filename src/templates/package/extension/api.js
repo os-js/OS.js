@@ -31,14 +31,13 @@
 (function() {
   'use strict';
 
-  //
-  // Here you can extend the API and VFS namespaces
-  //
-  // `instance` holds the running OS.js server environment variables and such.
-  // For more information on this, look up `src/server/node/node_modules/osjs/osjs.js`
-  //
-
-  exports.register = function(API, VFS, instance) {
+  /**
+   * Registers your Extension API methods
+   */
+  module.exports.api = {
+    test: function(env, http, resolve, reject, args) {
+      resolve('This is a response from your extension');
+    }
   };
 
 })();

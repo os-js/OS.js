@@ -8,6 +8,9 @@
   <gui-expander data-label="Icon View">
     <gui-fragment data-fragment-id="ModuleDesktopIconViewFragment"></gui-fragment>
   </gui-expander>
+  <gui-expander data-label="LBL_WIDGETS">
+    <gui-fragment data-fragment-id="ModuleDesktopWidgetFragment"></gui-fragment>
+  </gui-expander>
 </div>
 
 <application-fragment data-id="ModuleDesktopWMFragment">
@@ -58,6 +61,22 @@
     <gui-vbox-container data-shrink="1" data-expand="true">
       <gui-label>Enable TouchMenu</gui-label>
       <gui-switch data-id="EnableTouchMenu"></gui-switch>
+    </gui-vbox-container>
+  </gui-vbox>
+</application-fragment>
+
+<application-fragment data-id="ModuleDesktopWidgetFragment">
+  <gui-vbox class="block-label">
+    <gui-vbox-container data-shrink="1" data-grow="1">
+      <gui-list-view data-id="WidgetItems" data-multiple="false"></gui-list-view>
+    </gui-vbox-container>
+
+    <gui-vbox-container data-shrink="1" data-expand="true">
+      <gui-button-bar>
+        <gui-button data-id="WidgetButtonAdd" data-icon="stock://16x16/actions/add.png"></gui-button>
+        <gui-button data-id="WidgetButtonRemove" data-icon="stock://16x16/actions/remove.png"></gui-button>
+        <gui-button data-id="WidgetButtonOptions" data-icon="stock://16x16/actions/system-run.png"></gui-button>
+      </gui-button-bar>
     </gui-vbox-container>
   </gui-vbox>
 </application-fragment>

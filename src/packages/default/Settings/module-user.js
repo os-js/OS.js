@@ -45,7 +45,7 @@
     },
 
     update: function(win, scheme, settings, wm) {
-      var user = OSjs.Core.getHandler().getUserData();
+      var user = OSjs.Core.getAuthenticator().getUser();
 
       win._find('UserID').set('value', user.id);
       win._find('UserName').set('value', user.name);

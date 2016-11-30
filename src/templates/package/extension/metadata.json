@@ -9,7 +9,7 @@
   },
   "conf": [
   ],
-  "sources":    [
+  "preload": [
     {"src": "extension.js", "type": "javascript"}
   ]
 }

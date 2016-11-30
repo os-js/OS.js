@@ -448,6 +448,8 @@
     'LBL_OPACITY' : 'Gjennomsiktighet',
     'LBL_ONTOP' : 'Topp',
     'LBL_ITEMS' : 'Objekter',
-    'LBL_GENERAL' : 'Generelt'
+    'LBL_GENERAL' : 'Generelt',
+    'LBL_LOCK': 'Lås',
+    'LBL_UNLOCK': 'Lås opp'
   };
 })();

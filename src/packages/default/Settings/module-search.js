@@ -142,10 +142,8 @@
         paths: paths
       };
 
-      return function(cb) {
-        var sm = OSjs.Core.getSettingsManager();
-        sm.instance('SearchEngine').set(null, searchSettings, cb, false);
-      };
+      var sm = OSjs.Core.getSettingsManager();
+      sm.instance('SearchEngine').set(null, searchSettings, false, false);
     }
   };
 

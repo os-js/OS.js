@@ -1,6 +1,7 @@
 {
-  "handler": "demo",
   "connection": "http",
+  "authenticator": "demo",
+  "storage": "demo",
 
   "client" : {
     "Version" : "2.0-alpha80",

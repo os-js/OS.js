@@ -1,65 +1,84 @@
-(function(_path, _fs) {
+(function() {
+  'use strict';
   /*eslint strict: ["warn"]*/
+  const assert = require('assert');
 
-  var rootDir = _fs.realpathSync(__dirname + '/../../../../');
-  var serverRoot = _path.join(rootDir, 'src', 'server', 'node');
+  const _req = require('request');
+  const _path = require('path');
+  const _fs = require('fs');
+  const _osjs = require('../../node/core/instance.js');
+  const _vfs = require('../../node/core/vfs.js');
 
-  var assert = require('assert');
-  var osjs = require(_path.join(serverRoot, 'core', 'index.js'));
-  var osjsServer = require(_path.join(serverRoot, 'http.js'));
+  var ENV;
+  var CONF;
 
-  var instance = osjs.init({
-    dirname: serverRoot,
-    root: rootDir,
-    dist: 'dist-dev',
-    logging: false,
-    nw: false,
-    testing: true
-  });
-
-  var response = {};
-  var request = {
-    session: {
+  var session = (function() {
+    var _cache = {};
+    return {
       get: function(key) {
-        if ( key === 'username' ) {
-          return 'demo';
-        }
-        return null;
+        return _cache[key];
       },
-      set: function() {
+      set: function(key, value) {
+        _cache[key] = value;
       }
-    }
-  };
+    };
+  })();
 
-  var serverObject = {
-    request: request,
-    response: response,
-    config: instance.config,
-    handler: instance.handler
-  };
+  function _callAPI(m, a, cb) {
+    _osjs.getAPI()[m]({
+      session: session,
+      data: a
+    }, a).then(function(result) {
+      cb(null, result);
+    }).catch(function(error) {
+      cb(error);
+    });
+  }
 
-  process.chdir(rootDir);
+  function _callVFS(m, a, cb) {
+    _vfs._request({
+      session: session,
+      request: {}
+    }, m, a).then(function(result) {
+      cb(null, result);
+    }).catch(function(error) {
+      cb(error);
+    });
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // PREPARATION
   /////////////////////////////////////////////////////////////////////////////
 
-  describe('Prepare', function() {
-    var fs = require('fs');
-
-    describe('#handler', function() {
-      it('handler should be set to demo', function() {
-        assert.equal('demo', instance.config.handler);
+  describe('Initialize OS.js server instance', function() {
+    it('should initialize core', function(done) {
+      _osjs.init({
+        LOGLEVEL: 0,
+        PORT: 8008,
+        DIST: 'dist-dev',
+        AUTH: 'test',
+        STORAGE: 'test'
+      }).then(function(i) {
+        ENV = i;
+        CONF = _osjs.getConfig();
+        done();
+      }).catch(function(error) {
+        assert.equal(null, error);
       });
     });
 
-    describe('#vfs', function() {
-      var testPath = instance.vfs.getRealPath(serverObject, 'home:///');
+    it('should have correct environment', function() {
+      //assert.equal('test', CONF.http.authenticator);
+      //assert.equal('test', CONF.http.storage);
+      assert.equal('http', CONF.http.connection);
+    });
 
+    it('should have correct permissions', function() {
+      const testPath = _path.join(ENV.ROOTDIR, 'vfs/home/demo');
       it('read access to demo area', function() {
-        if ( fs.accessSync ) {
+        if ( _fs.accessSync ) {
           assert.doesNotThrow(function() {
-            fs.accessSync(testPath.root, fs.R_OK);
+            _fs.accessSync(testPath, _fs.R_OK);
           }, Error);
         } else {
           assert.equal(true, true);
@@ -67,16 +86,121 @@
       });
 
       it('write access to demo area', function() {
-        if ( fs.accessSync ) {
+        if ( _fs.accessSync ) {
           assert.doesNotThrow(function() {
-            fs.accessSync(testPath.root, fs.W_OK);
+            _fs.accessSync(testPath, _fs.W_OK);
           }, Error);
         } else {
           assert.equal(true, true);
         }
       });
     });
+  });
 
+  /////////////////////////////////////////////////////////////////////////////
+  // APIS
+  /////////////////////////////////////////////////////////////////////////////
+
+  describe('API', function() {
+
+    describe('Authentication API', function() {
+      describe('#login', function() {
+        it('should trigger error on invalid attempt', function(done) {
+          _callAPI('login', {
+            username: 'invalid',
+            password: 'test'
+          }, function(error, result) {
+            assert.equal('Invalid credentials', error);
+            done();
+          })
+        });
+
+        it('should successfully log in', function(done) {
+          _callAPI('login', {
+            username: 'normal',
+            password: 'test'
+          }, function(error, result) {
+            assert.equal(null, error);
+            done();
+          })
+        });
+      });
+
+      describe('#logout', function() {
+        it('should successfully log out', function(done) {
+          _callAPI('logout', {
+          }, function(error, result) {
+            assert.equal(null, error);
+            done();
+          })
+        });
+      });
+
+      describe('#login', function() {
+        it('should successfully log in, again', function(done) {
+          _callAPI('login', {
+            username: 'demo',
+            password: 'test'
+          }, function(error, result) {
+            assert.equal(null, error);
+            done();
+          })
+        });
+      });
+    });
+
+    describe('Storage API', function() {
+      describe('#settings', function() {
+        it('should successfully save settings', function(done) {
+          _callAPI('settings', {
+            pool: null,
+            settings: {}
+          }, function(error, result) {
+            assert.equal(null, error);
+            done();
+          })
+        });
+      });
+    });
+
+    describe('Application API', function() {
+      describe('#call', function() {
+        it('should return dummy data', function(done) {
+          _callAPI('application', {
+            path: 'default/Settings',
+            method: 'test',
+            args: {}
+          }, function(error, result) {
+            assert.equal(null, error);
+            assert.equal('test', result);
+            done();
+          })
+        });
+
+        it('should trigger error on invalid method', function(done) {
+          _callAPI('application', {
+            path: 'default/Settings',
+            method: 'xxx',
+            args: {}
+          }, function(error, result) {
+            assert.notEqual(null, error);
+            done();
+          })
+        });
+
+        it('should trigger error on invalid package', function(done) {
+          _callAPI('application', {
+            path: 'doesnotexist/PackageName',
+            method: 'xxx',
+            args: {}
+          }, function(error, result) {
+            assert.notEqual(null, error);
+            done();
+          });
+        });
+
+      });
+    });
   });
 
   /////////////////////////////////////////////////////////////////////////////
@@ -90,8 +214,8 @@
       it('should not find folder', function(done) {
         var file = {path: 'home:///.mocha'};
 
-        instance.vfs.exists(serverObject, file, function(error, result) {
-          assert.equal(false, error);
+        _callVFS('exists', file, function(error, result) {
+          assert.equal(null, error);
           assert.equal(false, result);
           done();
         });
@@ -100,8 +224,8 @@
 
     describe('#exists', function() {
       it('should not find file', function(done) {
-        instance.vfs.exists(serverObject, {path: 'home:///.mocha/test.txt'}, function(error, result) {
-          assert.equal(false, error);
+        _callVFS('exists', {path: 'home:///.mocha/test.txt'}, function(error, result) {
+          assert.equal(null, error);
           assert.equal(false, result);
           done();
         });
@@ -110,8 +234,8 @@
 
     describe('#mkdir', function() {
       it('should create folder without error', function(done) {
-        instance.vfs.mkdir(serverObject, {path: 'home:///.mocha'}, function(error, result) {
-          assert.equal(false, error);
+        _callVFS('mkdir', {path: 'home:///.mocha'}, function(error, result) {
+          assert.equal(null, error);
           assert.equal(true, result);
           done();
         });
@@ -125,8 +249,8 @@
           path: 'home:///.mocha/test.txt',
           data: 'data:text/plain;base64,' + data
         };
-        instance.vfs.write(serverObject, file, function(error, result) {
-          assert.equal(false, error);
+        _callVFS('write', file, function(error, result) {
+          assert.equal(null, error);
           assert.equal(true, result);
           done();
         });
@@ -135,8 +259,8 @@
 
     describe('#read', function() {
       it('should read file without error', function(done) {
-        instance.vfs.read(serverObject, {path: 'home:///.mocha/test.txt'}, function(error, result) {
-          assert.equal(false, error);
+        _callVFS('read', {path: 'home:///.mocha/test.txt', options: {raw: false, stream: false}}, function(error, result) {
+          assert.equal(null, error);
 
           var result = result.replace(/^data\:(.*);base64\,/, '') || '';
           result = new Buffer(result, 'base64').toString('utf8');
@@ -151,8 +275,8 @@
       it('should find file (path and mime) without error', function(done) {
         var tst = 'home:///.mocha/test.txt';
         var found = {};
-        instance.vfs.scandir(serverObject, {path: 'home:///.mocha'}, function(error, result) {
-          assert.equal(false, error);
+        _callVFS('scandir', {path: 'home:///.mocha'}, function(error, result) {
+          assert.equal(null, error);
 
           try {
             result.forEach(function(f) {
@@ -177,8 +301,8 @@
           src: 'home:///.mocha/test.txt',
           dest: 'home:///.mocha/test2.txt'
         };
-        instance.vfs.move(serverObject, file, function(error, result) {
-          assert.equal(false, error);
+        _callVFS('move', file, function(error, result) {
+          assert.equal(null, error);
           assert.equal(true, result);
           done();
         });
@@ -191,22 +315,20 @@
           src: 'home:///.mocha/test2.txt',
           dest: 'home:///.mocha/test3.txt'
         };
-        instance.vfs.copy(serverObject, file, function(error, result) {
-          assert.equal(false, error);
+        _callVFS('copy', file, function(error, result) {
+          assert.equal(null, error);
           assert.equal(true, result);
           done();
         });
       });
-    });
 
-    describe('#copy', function() {
       it('should copy folder without error', function(done) {
         var file = {
           src: 'home:///.mocha',
           dest: 'home:///.mocha-copy'
         };
-        instance.vfs.copy(serverObject, file, function(error, result) {
-          assert.equal(false, error);
+        _callVFS('copy', file, function(error, result) {
+          assert.equal(null, error);
           assert.equal(true, result);
           done();
         });
@@ -215,8 +337,8 @@
 
     describe('#fileinfo', function() {
       it('should get file information without error', function(done) {
-        instance.vfs.fileinfo(serverObject, {path: 'home:///.mocha/test2.txt'}, function(error, result) {
-          assert.equal(false, error);
+        _callVFS('fileinfo', {path: 'home:///.mocha/test2.txt'}, function(error, result) {
+          assert.equal(null, error);
           assert.equal('home:///.mocha/test2.txt', result.path);
           assert.equal('test2.txt', result.filename);
           assert.equal('text/plain', result.mime);
@@ -227,24 +349,24 @@
 
     describe('#delete', function() {
       it('should delete file without error', function(done) {
-        instance.vfs.delete(serverObject, {path: 'home:///.mocha/test2.txt'}, function(error, result) {
-          assert.equal(false, error);
+        _callVFS('delete', {path: 'home:///.mocha/test2.txt'}, function(error, result) {
+          assert.equal(null, error);
           assert.equal(true, result);
           done();
         });
       });
 
       it('should delete folder without error', function(done) {
-        instance.vfs.delete(serverObject, {path: 'home:///.mocha'}, function(error, result) {
-          assert.equal(false, error);
+        _callVFS('delete', {path: 'home:///.mocha'}, function(error, result) {
+          assert.equal(null, error);
           assert.equal(true, result);
           done();
         });
       });
 
       it('should delete copied folder without error', function(done) {
-        instance.vfs.delete(serverObject, {path: 'home:///.mocha-copy'}, function(error, result) {
-          assert.equal(false, error);
+        _callVFS('delete', {path: 'home:///.mocha-copy'}, function(error, result) {
+          assert.equal(null, error);
           assert.equal(true, result);
           done();
         });
@@ -253,50 +375,306 @@
   });
 
   /////////////////////////////////////////////////////////////////////////////
-  // APIS
+  // HTTP SERVER
   /////////////////////////////////////////////////////////////////////////////
 
-  describe('API', function() {
+  describe('Node HTTP Server', function() {
+    var url;
+    var cookie;
 
-    describe('Application API', function() {
-      describe('#call', function() {
-        it('should return dummy data', function(done) {
-          instance.api.application(serverObject, {
-            path: 'default/Settings',
-            method: 'test',
-            'arguments': {}
-          }, function(error, result) {
-            assert.equal(false, error);
-            assert.equal('test', result);
+    function mrequest(method, data, uurl, cb) {
+      var opts = {
+        url: uurl,
+        method: method
+      };
+
+      if ( data !== null ) {
+        opts.json = data;
+      }
+
+      if ( cookie ) {
+        var j = _req.jar();
+        var ck = _req.cookie(cookie);
+        j.setCookie(ck, url);
+        opts.jar = j;
+      }
+
+      _req(opts, cb);
+    }
+
+    function get(uurl, cb) {
+      mrequest('GET', null, uurl, cb);
+    }
+
+    function post(uurl, data, cb) {
+      mrequest('POST', data, uurl, function(error, response, body) {
+        cb((error || false), response, (error ? false : body));
+      });
+    }
+
+    before(function() {
+      url = 'http://localhost:' + String(ENV.PORT);
+      _osjs.run();
+    });
+
+    describe('#index', function() {
+      it('should return 200', function(done) {
+        _req({
+          method: 'GET',
+          url: url + '/'
+        }, function(error, res) {
+          assert.equal(200, res.statusCode);
+          done();
+        });
+      });
+    });
+
+    describe('#auth', function() {
+      describe('#login', function() {
+        it('should return 200 with error', function(done) {
+          var data = {
+            username: 'xxx',
+            password: 'demo'
+          };
+
+          post(url + '/API/login', data, function(err, res, body) {
+            assert.equal(200, res.statusCode);
+            assert.notEqual(null, body.error);
+
             done();
           });
         });
 
-        it('should trigger error on invalid method', function(done) {
-          instance.api.application(serverObject, {
-            path: 'default/Settings',
-            method: 'xxx',
-            'arguments': {}
-          }, function(error, result) {
-            assert.notEqual(null, error);
+        it('should return 200 with success', function(done) {
+          var data = {
+            username: 'demo',
+            password: 'demo'
+          };
+
+          post(url + '/API/login', data, function(err, res, body) {
+            assert.equal(false, err);
+            assert.equal(200, res.statusCode);
+            assert.equal(null, body.error);
+
+            cookie = res.headers['set-cookie'][0];
+
+            var data = body.result.userData;
+            assert.equal('demo', data.username);
+
             done();
           });
         });
+      });
 
-        it('should trigger error on invalid package', function(done) {
-          instance.api.application(serverObject, {
-            path: 'doesnotexist/PackageName',
-            method: 'xxx',
-            'arguments': {}
-          }, function(error, result) {
-            assert.notEqual(null, error);
+      describe('#logout', function() {
+        it('should return 200 with success', function(done) {
+          post(url + '/API/logout', {}, function(err, res, body) {
+            assert.equal(false, err);
+            assert.equal(200, res.statusCode);
+            assert.equal(null, body.error);
+            cookie = done();
+          });
+        });
+      });
+
+      describe('#login', function() {
+        it('should return 200 with success', function(done) {
+          var data = {
+            username: 'restricted',
+            password: 'demo'
+          };
+
+          post(url + '/API/login', data, function(err, res, body) {
+            assert.equal(false, err);
+            assert.equal(200, res.statusCode);
+            assert.equal(null, body.error);
+
+            cookie = res.headers['set-cookie'][0];
+
+            var data = body.result.userData;
+            assert.equal('restricted', data.username);
+
             done();
           });
         });
       });
     });
 
-    /*
+    describe('#api', function() {
+      describe('#application', function() {
+        it('should return test data', function(done) {
+          var data = {
+            path: 'default/Settings',
+            method: 'test'
+          };
+
+          post(url + '/API/application', data, function(err, res, body) {
+            assert.equal(false, err);
+            assert.equal(200, res.statusCode);
+            assert.equal(null, body.error);
+            assert.equal('test', body.result);
+            done();
+          });
+        });
+      });
+
+      describe('#curl', function() {
+        it('should fail due to missing group permission', function(done) {
+          var data = {
+          };
+
+          post(url + '/API/curl', data, function(err, res, body) {
+            assert.equal(false, err);
+            assert.equal(200, res.statusCode);
+            assert.equal('access denied!', String(body.error).toLowerCase());
+            done();
+          });
+        });
+      });
+    });
+
+    describe('#static', function() {
+      describe('#packages', function() {
+        it('should return 403 on blacklist', function(done) {
+          get(url + '/packages/default/CoreWM/main.js', function(err, res, body) {
+            assert.equal(403, res.statusCode);
+            done();
+          });
+        });
+
+        it('should return 200 on success', function(done) {
+          get(url + '/packages/default/Calculator/main.js', function(err, res, body) {
+            assert.equal(200, res.statusCode);
+            done();
+          });
+        });
+
+        it('should return 404 on failure', function(done) {
+          get(url + '/packages/default/XXX/main.js', function(err, res, body) {
+            assert.equal(404, res.statusCode);
+            done();
+          });
+        });
+      });
+    });
+
+    describe('#vfs', function() {
+      it('should give write error due to read-only', function(done) {
+        post(url + '/FS/write', {path: 'osjs:///foo', data: 'mocha'}, function(err, res, body) {
+          assert.equal(200, res.statusCode);
+          assert.equal('access denied!', String(body.error).toLowerCase());
+          done();
+        });
+      });
+      it('should give copy error due to read-only', function(done) {
+        post(url + '/FS/copy', {src: 'home:///foo', dest: 'osjs:///foo'}, function(err, res, body) {
+          assert.equal(200, res.statusCode);
+          assert.equal('access denied!', String(body.error).toLowerCase());
+          done();
+        });
+      });
+      it('should not be able to read file', function(done) {
+        post(url + '/FS/read', {path: 'osjs:///index.html'}, function(err, res, body) {
+          assert.equal(200, res.statusCode);
+          assert.equal('access denied!', String(body.error).toLowerCase());
+          done();
+        });
+      });
+    });
+
+    describe('#auth', function() {
+      describe('#logout', function() {
+        it('should return 200 with success', function(done) {
+          post(url + '/API/logout', {}, function(err, res, body) {
+            assert.equal(false, err);
+            assert.equal(200, res.statusCode);
+            assert.equal(null, body.error);
+            cookie = done();
+          });
+        });
+      });
+
+      describe('#login', function() {
+        it('should return 200 with success', function(done) {
+          var data = {
+            username: 'demo',
+            password: 'demo'
+          };
+
+          post(url + '/API/login', data, function(err, res, body) {
+            assert.equal(false, err);
+            assert.equal(200, res.statusCode);
+            assert.equal(null, body.error);
+
+            cookie = res.headers['set-cookie'][0];
+
+            var data = body.result.userData;
+            assert.equal('demo', data.username);
+
+            done();
+          });
+        });
+      });
+    });
+
+    describe('#vfs', function() {
+      it('should give write error due to read-only', function(done) {
+        post(url + '/FS/write', {path: 'osjs:///foo', data: 'mocha'}, function(err, res, body) {
+          assert.equal(200, res.statusCode);
+          assert.equal('access denied!', String(body.error).toLowerCase());
+          done();
+        });
+      });
+      it('should give write success', function(done) {
+        post(url + '/FS/write', {path: 'home:///foo', data: 'mocha'}, function(err, res, body) {
+          assert.equal(200, res.statusCode);
+          assert.equal(true, body.result);
+          done();
+        });
+      });
+      it('should give copy error due to read-only', function(done) {
+        post(url + '/FS/copy', {src: 'home:///foo', dest: 'osjs:///foo'}, function(err, res, body) {
+          assert.equal(200, res.statusCode);
+          assert.equal('access denied!', String(body.error).toLowerCase());
+          done();
+        });
+      });
+      it('should successfully read file', function(done) {
+        post(url + '/FS/read', {path: 'osjs:///index.html'}, function(err, res, body) {
+          assert.equal(200, res.statusCode);
+          assert.notEqual(null, body);
+          done();
+        });
+      });
+      it('should successfully remove file', function(done) {
+        post(url + '/FS/delete', {path: 'home:///foo'}, function(err, res, body) {
+          assert.equal(200, res.statusCode);
+          assert.equal(true, body.result);
+          done();
+        });
+      });
+      /*
+      it('should successfully read remote file', function(done) {
+        get(url + '/FS/get/https://os.js.org/images/logo-header.png', function(err, res, body) {
+          assert.equal(200, res.statusCode);
+          assert.equal('image/png', res.headers['content-type']);
+          done();
+        });
+      });
+      */
+    });
+
+    after(function() {
+      _osjs.destroy();
+    });
+  });
+
+  /////////////////////////////////////////////////////////////////////////////
+  // MISC
+  /////////////////////////////////////////////////////////////////////////////
+
+  /*
+  describe('API', function() {
     describe('Package Management API', function() {
       describe('#list', function() {
         it('should return data', function(done) {
@@ -422,123 +800,6 @@
       });
 
     });
-    */
-
   });
-
-  return;
-
-  /////////////////////////////////////////////////////////////////////////////
-  // SERVER
-  /////////////////////////////////////////////////////////////////////////////
-
-  describe('Node HTTP Server', function() {
-    var req = require('request');
-    var port = 8009;
-    var url  = 'http://localhost:' + port.toString();
-
-    function post(uurl, data, cb, cookie) {
-
-      var opts = {
-        url: uurl,
-        method: 'POST',
-        json: data
-      };
-
-      if ( cookie ) {
-        var j = req.jar();
-        var ck = req.cookie(cookie);
-        j.setCookie(ck, url);
-        opts.jar = j;
-      }
-
-      req(opts, function(error, response, body) {
-        cb((error || false), response, (error ? false : body));
-      });
-    }
-
-    before(function() {
-      osjsServer.listen({
-        port: port,
-        dirname: serverRoot,
-        root: rootDir,
-        testing: true,
-        dist: 'dist-dev',
-        logging: false,
-        nw: false
-      });
-    });
-
-    describe('#index', function() {
-      it('should return 200', function(done) {
-        req({
-          method: 'GET',
-          url: url
-        }, function(error, res) {
-          assert.equal(200, res.statusCode);
-          done();
-        });
-      });
-    });
-
-    var cookie;
-    describe('#login', function() {
-      it('should return 200 with proper json result', function(done) {
-        var data = {
-          username: 'demo',
-          password: 'demo'
-        };
-
-        var exp = {
-          userData: {
-            id: 0,
-            username: 'demo',
-            name: 'Demo User',
-            groups: [ 'admin' ]
-          },
-          userSettings: {}
-        };
-
-        post(url + '/API/login', data, function(err, res, body) {
-          assert.equal(false, err);
-          assert.equal(200, res.statusCode);
-          assert.equal(false, body.error);
-          var expc = {
-            userData: body.result.userData,
-            userSettings: body.result.userSettings
-          };
-          assert.equal(JSON.stringify(exp), JSON.stringify(expc));
-
-          cookie = res.headers['set-cookie'][0];
-          done();
-        });
-      });
-    });
-
-    describe('#api', function() {
-      it('w/session - should return 200 with proper response', function(done) {
-        var data = {
-          path: 'default/Settings',
-          method: 'test'
-        };
-
-        var sessid = null;
-
-        post(url + '/API/application', data, function(err, res, body) {
-          assert.equal(false, err);
-          assert.equal(200, res.statusCode);
-          assert.equal(false, body.error);
-          assert.equal('test', body.result);
-          done();
-        }, cookie);
-      });
-    });
-
-    after(function() {
-      osjsServer.close();
-    });
-  });
-})(
-  require('path'),
-  require('fs')
-);
+  */
+})();

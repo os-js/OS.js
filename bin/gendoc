@@ -1,6 +1,0 @@
-#!/bin/bash
-if [ -z "$1" ]; then
-  echo "You need to give client/server as argument"
-  exit 1
-fi
-jsdoc --debug -c .jsdoc-${1} -d doc/jsdoc-${1} -t src/templates/jsdoc

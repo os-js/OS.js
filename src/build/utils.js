@@ -27,196 +27,153 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(_fs, _path, _less) {
-  'use strict';
 
-  var ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
-  var ISWIN = /^win/.test(process.platform);
+/*eslint strict:["error", "global"]*/
+'use strict';
 
-  function _filter(path, iter, fn) {
-    if ( !iter.match(/^\./) ) {
-      var s = _fs.lstatSync(_path.join(path, iter));
-      return fn(s);
-    }
-    return false;
+const _path = require('path');
+const _less = require('less');
+const _fs = require('node-fs-extra');
+
+const ISWIN = /^win/.test(process.platform);
+const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
+
+///////////////////////////////////////////////////////////////////////////////
+// EXPORTS
+///////////////////////////////////////////////////////////////////////////////
+
+/*
+ * Fixes Windows paths
+ */
+module.exports.fixWinPath = function fixWinPath(str) {
+  if ( typeof str === 'string' && ISWIN ) {
+    return str.replace(/(["\s'$`\\])/g,'\\$1').replace(/\\+/g, '/');
   }
+  return str;
+};
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+/*
+ * Logging proxy
+ */
+module.exports.log = function log() {
+  const str = Array.prototype.slice.call(arguments).join(' ');
+  console.log(module.exports.replaceAll(str, ROOT + '/', ''));
+};
 
-  module.exports.readTemplate = function readTemplate(name) {
-    var tpls = _path.join(ROOT, 'src', 'templates');
-    return _fs.readFileSync(_path.join(tpls, name)).toString();
-  };
+/*
+ * Reads a template
+ */
+module.exports.readTemplate = function readTemplate(name) {
+  const tpls = _path.join(ROOT, 'src', 'templates');
+  return _fs.readFileSync(_path.join(tpls, name)).toString();
+};
 
-  /**
-   * Wrapper for setting color
-   */
-  module.exports.color = function(str, color) {
-    color.split(',').forEach(function(key) {
-      str = str[key.trim()] || str;
-    });
-    return str;
-  };
+/*
+ * Replace all occurences of something
+ */
+module.exports.replaceAll = function replaceAll(temp, stringToFind, stringToReplace) {
+  var index = temp.indexOf(stringToFind);
+  while (index !== -1) {
+    temp = temp.replace(stringToFind,stringToReplace);
+    index = temp.indexOf(stringToFind);
+  }
+  return temp;
+};
 
-  /**
-   * Internal for logging
-   */
-  module.exports.log = function() {
-    var str = Array.prototype.slice.call(arguments).join(' ');
-    console.log(module.exports.replaceAll(str, ROOT + '/', ''));
-  };
+/*
+ * Supresses errors while removing files
+ */
+module.exports.removeSilent = function removeSilent(file) {
+  try {
+    _fs.removeSync(file);
+  } catch (e) {}
+};
 
-  /**
-   * Make a dictionary from array
-   */
-  module.exports.makedict = function(list, fn) {
-    var result = {};
-    list.forEach(function(iter, idx) {
-      var data = fn(iter, idx);
-      result[data[0]] = data[1];
-    });
-    return result;
-  };
+/*
+ * Supresses errors while making directories
+ */
+module.exports.mkdirSilent = function mkdirSilent(file) {
+  try {
+    _fs.mkdirSync(file);
+  } catch (e) {}
+};
 
-  /**
-   * Replace all occurences of something
-   */
-  module.exports.replaceAll = function replaceAll(temp, stringToFind, stringToReplace) {
-    var index = temp.indexOf(stringToFind);
-    while (index !== -1) {
-      temp = temp.replace(stringToFind,stringToReplace);
-      index = temp.indexOf(stringToFind);
-    }
-    return temp;
-  };
+/*
+ * Make a dictionary from list
+ */
+module.exports.makedict = function makedict(list, fn) {
+  var result = {};
+  list.forEach(function(iter, idx) {
+    var data = fn(iter, idx);
+    result[data[0]] = data[1];
+  });
+  return result;
+};
 
-  /**
-   * Fix window paths
-   */
-  module.exports.fixWinPath = function fixWinPath(str) {
-    if ( typeof str === 'string' && ISWIN ) {
-      return str.replace(/(["\s'$`\\])/g,'\\$1').replace(/\\+/g, '/');
-    }
-    return str;
-  };
-
-  /**
-   * Enumerate all directories in given location
-   */
-  module.exports.enumDirectories = function enumDirectories(path, done) {
-    _fs.readdir(path, function(err, result) {
-      done(err ? [] : result.filter(function(iter) {
-        return _filter(path, iter, function(s) {
-          return ( s.isDirectory() || s.isSymbolicLink() );
-        });
-      }));
-    });
-  };
-
-  /**
-   * Enumerate all files in given location
-   */
-  module.exports.enumFiles = function enumFiles(path, done) {
-    _fs.readdir(path, function(err, result) {
-      done(err ? [] : result.filter(function(iter) {
-        return _filter(path, iter, function(s) {
-          return !s.isDirectory();
-        });
-      }));
-    });
-  };
-
-  /**
-   * Loop over a list asynchronously
-   */
-  module.exports.iterate = function iterate(list, entry, done) {
-    (function _next(i) {
-      if ( i >= list.length ) {
-        return done();
-      }
-      entry(list[i], i, function() {
-        _next(i + 1);
-      });
-    })(0);
-  };
-
-  /**
-   * Read file as JSON
-   */
-  module.exports.readJSON = function readJSON(path, done) {
-    _fs.readFile(path, function(err, result) {
-      var data = result.toString();
-
-      try {
-        done(err, err ? false : JSON.parse(data));
-      } catch ( e ) {
-        done(e);
-      }
-    });
-  };
-
-  /**
-   * Merge two objects
-   */
-  module.exports.mergeObject = function mergeObject(into, from) {
-    function mergeJSON(obj1, obj2) {
-      for ( var p in obj2 ) {
-        if ( obj2.hasOwnProperty(p) ) {
-          try {
-            if ( obj2[p].constructor === Object ) {
-              obj1[p] = mergeJSON(obj1[p], obj2[p]);
-            } else {
-              obj1[p] = obj2[p];
-            }
-          } catch (e) {
+/*
+ * Merges given objects together
+ */
+module.exports.mergeObject = function mergeObject(into, from) {
+  function mergeJSON(obj1, obj2) {
+    for ( var p in obj2 ) {
+      if ( obj2.hasOwnProperty(p) ) {
+        try {
+          if ( obj2[p].constructor === Object ) {
+            obj1[p] = mergeJSON(obj1[p], obj2[p]);
+          } else {
             obj1[p] = obj2[p];
           }
+        } catch (e) {
+          obj1[p] = obj2[p];
         }
       }
-      return obj1;
     }
-    return mergeJSON(into, from);
-  };
+    return obj1;
+  }
+  return mergeJSON(into, from);
+};
 
-  /**
-   * Comile LESS file
-   */
-  module.exports.compileLess = function compileLess(src, dest, opts, cb, onRead) {
-    console.log('$ less', src.replace(ROOT + '/', ''), dest.replace(ROOT + '/', ''))
-    try {
-      var css = _fs.readFileSync(src).toString();
-      if ( typeof onRead === 'function' ) {
-        css = onRead(css);
-      }
-
-      _less.render(css, opts).then(function(result) {
-        _fs.writeFileSync(dest, result.css);
-        _fs.writeFileSync(dest + '.map', result.map);
-        cb(false, true);
-      }, function(error) {
-        console.warn(error);
-        cb(error);
-      });
-    } catch ( e ) {
-      console.warn(e, e.stack);
-      cb(e);
+/*
+ * Compiles given less file
+ */
+module.exports.compileLess = function compileLess(src, dest, opts, cb, onRead) {
+  console.log('$ less', src.replace(ROOT + '/', ''), dest.replace(ROOT + '/', ''))
+  try {
+    var css = _fs.readFileSync(src).toString();
+    if ( typeof onRead === 'function' ) {
+      css = onRead(css);
     }
-  };
 
-  module.exports.createStandaloneScheme = function createStandaloneScheme(src, name, dest) {
-    var data = module.exports.addslashes(_fs.readFileSync(src).toString().replace(/\n/g, ''));
+    _less.render(css, opts).then(function(result) {
+      _fs.writeFileSync(dest, result.css);
+      _fs.writeFileSync(dest + '.map', result.map);
+      cb(false, true);
+    }, function(error) {
+      console.warn(error);
+      cb(error);
+    });
+  } catch ( e ) {
+    console.warn(e, e.stack);
+    cb(e);
+  }
+};
 
-    var tpl = module.exports.readTemplate('dist/schemes.js');
-    tpl = tpl.replace('%DATA%', data);
-    tpl = tpl.replace('%NAME%', name);
+/*
+ * Creates standalone scheme files
+ */
+module.exports.createStandaloneScheme = function createStandaloneScheme(src, name, dest) {
+  var data = module.exports.addslashes(_fs.readFileSync(src).toString().replace(/\n/g, ''));
 
-    _fs.writeFileSync(dest, tpl);
-  };
+  var tpl = module.exports.readTemplate('dist/schemes.js');
+  tpl = tpl.replace('%DATA%', data);
+  tpl = tpl.replace('%NAME%', name);
 
-  module.exports.addslashes = function addslashes(str) {
-    return (str + '').replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0');
-  };
+  _fs.writeFileSync(dest, tpl);
+};
 
-})(require('node-fs-extra'), require('path'), require('less'));
+/*
+ * Escapes given string
+ */
+module.exports.addslashes = function addslashes(str) {
+  return (str + '').replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0');
+};

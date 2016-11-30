@@ -7,6 +7,8 @@
   "ignore": [
     "src/client/stylesheets/**",
     "src/client/themes/**",
+    "src/server/node/modules/*/example.js",
+    "src/server/node/modules/*/test.js",
     "src/server/test/**",
     "src/client/test/**",
     "src/templates/**",
@@ -14,7 +16,6 @@
     "src/packages/**",
     "src/locales/**",
     "src/server/php",
-    "src/build/**",
     "src/conf/**",
     "src/x11/**",
     "vendor/*",

@@ -17,12 +17,12 @@ You can also submit patches and questions directly to me via [email](mailto:ande
 
 ## Information
 
-Please read http://os.js.org/doc/manuals/man-development.html before you start making and submitting contributions to the repository.
+You can find information about development here: https://os.js.org/manual/development/
 
 ## Resources
 
 * [Homepage](https://os.js.org/)
-* [Documentation](https://os.js.org/doc/)
+* [Manual](https://os.js.org/manual/)
 * [FAQ and discussion](https://github.com/os-js/OS.js/issues/49)
 * [Chat room](https://gitter.im/os-js/OS.js)
 * [Subreddit](https://www.reddit.com/r/osjs)

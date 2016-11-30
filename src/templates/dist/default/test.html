@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="google" content="notranslate" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mocha - OS.js</title>
+
+    <link type="text/css" rel="stylesheet" href="/vendor/mocha.css" />
+    <link type="text/css" rel="stylesheet" href="themes/fonts.css" />
+%STYLES%
+
+    <script type="text/javascript" charset="utf-8" src="settings.js"></script>
+%SCRIPTS%
+
+  </head>
+  <body data-mocha="true">
+
+    <div id="LoadingScreen">
+      <img alt="" src="splash.png" />
+    </div>
+
+%LOGIN%
+
+    <script type="text/javascript" charset="utf-8" src="/vendor/mocha.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/vendor/chai.js"></script>
+    <script>
+mocha.ui('bdd');
+mocha.reporter('html');
+
+OSjs.API.addHook('onInited', function() {
+  var h1 = document.createElement('h1');
+  h1.style.margin = '20px';
+  h1.appendChild(document.createTextNode('OS.js Mocha Client Test Suite'));
+  document.body.appendChild(h1);
+
+  var el = document.createElement('div');
+  el.id = 'mocha';
+  document.body.appendChild(el);
+
+  // Reset certain styles
+  document.body.style.background = '#fff';
+  document.body.style.overflow = 'auto';
+
+  // Create mock Window Manager
+  (new OSjs.Core.WindowManager('MochaWM', null, {}, {}, {})).init();
+
+  // Load default themes
+  OSjs.Utils.$createCSS(OSjs.API.getThemeCSS('default'));
+});
+
+OSjs.API.addHook('onWMInited', function() {
+  mocha.run();
+});
+    </script>
+    <script type="text/javascript" charset="utf-8" src="/client/test/test.js"></script>
+
+  </body>
+</html>

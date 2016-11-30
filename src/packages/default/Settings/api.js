@@ -30,21 +30,13 @@
 (function() {
   'use strict';
 
-  /*
-   * See http://os.js.org/doc/tutorials/application-with-server-api.html
-   */
-
-  //
-  // Run `app._api('test', {}, fn)` in client to reach this
-  //
-  module.exports.test = function(args, callback, request, response) {
-    callback(false, 'test');
+  module.exports.api = {
+    test: function(env, http, resolve, reject, args) {
+      resolve('test');
+    }
   };
 
-  //
-  // This is called whenever the HTTP server starts up
-  //
-  module.exports._onServerStart = function(server, instance, metadata) {
+  module.exports.register = function(env, metadata, servers) {
   };
 
 })();

@@ -30,21 +30,19 @@
 (function() {
   'use strict';
 
-  /*
-   * See http://os.js.org/doc/tutorials/application-with-server-api.html
+  /**
+   * Registers your package when OS.js server starts.
    */
-
-  //
-  // Run `app._api('test', {}, fn)` in client to reach this
-  //
-  module.exports.test = function(args, callback, request, response) {
-    callback(false, 'test');
+  module.exports.register = function(env, metadata, servers) {
   };
 
-  //
-  // This is called whenever the HTTP server starts up
-  //
-  module.exports._onServerStart = function(server, instance, metadata) {
+  /**
+   * Registers your Application API methods
+   */
+  module.exports.api = {
+    test: function(env, http, resolve, reject, args) {
+      resolve('This is a response from your application');
+    }
   };
 
 })();

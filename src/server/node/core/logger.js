@@ -27,163 +27,197 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function() {
-  'use strict';
+/*eslint strict:["error", "global"]*/
+'use strict';
 
-  /**
-   * You can reach these methods via `instance.logger`
-   * @namespace Logger
-   */
+/*
+ * You can reach these methods via `instance.logger`
+ * @namespace core.logger
+ */
 
-  /**
-   * Gets timestamp
-   */
-  function timestamp() {
-    var now = new Date();
-    return now.toISOString();
-  }
+/*
+ * Gets timestamp
+ */
+function timestamp() {
+  var now = new Date();
+  return now.toISOString();
+}
 
-  /**
-   * Create the logger instance
-   *
-   * Level -1 is everything, -2 is everything except verbose
-   */
-  module.exports.create = function createLogger(config, lvl) {
-    var ns = {};
-    var level = 0;
+/*
+ * Create the logger instance
+ *
+ * Level -1 is everything, -2 is everything except verbose
+ */
+module.exports.create = function createLogger(lvl) {
+  var ns = {};
+  var level = 0;
 
-    /**
-     * Check if this message can be logged according to level
-     */
-    function _check(lvl) {
-      if ( level > 0 ) {
-        var tests = [
-          (level & ns.INFO) === ns.INFO && (lvl & ns.INFO) === ns.INFO,
-          (level & ns.WARNING) === ns.WARNING && (lvl & ns.WARNING) === ns.WARNING,
-          (level & ns.ERROR) === ns.ERROR && (lvl & ns.ERROR) === ns.ERROR,
-          (level & ns.VERBOSE) === ns.VERBOSE && (lvl & ns.VERBOSE) === ns.VERBOSE
-        ];
-
-        return tests.some(function(i) {
-          return !!i;
-        });
-      }
-
-      return level !== 0;
-    }
-
-    /**
-     * Logs given message
-     */
-    function _log(stamp, lvl/*, message[, message, ...]*/) {
-      if ( typeof stamp !== 'boolean' ) {
-        throw new TypeError('log() expects first argument to be a boolean');
-      }
-
-      if ( typeof lvl !== 'number' ) {
-        throw new TypeError('log() expects second argument to be a number');
-      }
-
-      if ( !_check(lvl) ) {
-        return;
-      }
-
-      var line = [];
-      if ( stamp ) {
-        line.push(timestamp());
-      }
-
-      for ( var i = 2; i < arguments.length; i++ ) {
-        var a = arguments[i];
-        if ( a instanceof Array ) {
-          line.push(a.concat(' '));
-        } else {
-          line.push(String(a));
-        }
-      }
-
-      console.log(line.join(' '));
-    }
-
-    // The namespace
-    ns = {
-      INFO: 1,
-      WARNING: 2,
-      ERROR: 4,
-      VERBOSE: 8,
-
-      /**
-       * Logs a message
-       *
-       * @param {Number}          lvl     Log level
-       * @param {String|Array}    msg     Log message (as a series of string or an array)
-       *
-       * @memberof Logger
-       * @function log
-       */
-      log: function() {
-        return _log.apply(null, [true].concat(Array.prototype.slice.call(arguments)));
-      },
-
-      /**
-       * Logs a message (without timestamp)
-       *
-       * @param {Number}          lvl     Log level
-       * @param {String|Array}    msg     Log message (as a series of string or an array)
-       *
-       * @memberof Logger
-       * @function lognt
-       */
-      lognt: function() {
-        return _log.apply(null, [false].concat(Array.prototype.slice.call(arguments)));
-      },
-
-      /**
-       * Gets the log level
-       *
-       * @memberof Logger
-       * @function getLevel
-       */
-      getLevel: function() {
-        return level;
-      },
-
-      /**
-       * Sets the log level
-       *
-       * @param {Number}      lvl     Log level
-       *
-       * @memberof Logger
-       * @function setLevel
-       */
-      setLevel: function(lvl) {
-        var found = Object.keys(exports).some(function(k) {
-          return exports[k] === lvl;
-        });
-
-        if ( found ) {
-          level = lvl;
-        }
-      }
-    };
-
-    // Make sure we take logging options from cmd/configs
-    var clvl = config.logging;
-    if ( clvl === true || typeof clvl === 'number' ) {
-      if ( typeof clvl === 'number' ) {
-        level = clvl;
-      }
-
-      if ( lvl === -1 ) {
-        level = ns.INFO | ns.WARNING | ns.ERROR | ns.VERBOSE;
-      } else if ( lvl === -2 ) {
-        level = ns.INFO | ns.WARNING | ns.ERROR;
-      }
-    }
-
-    ns.lognt(ns.INFO, '---', 'Created Logger with loglevel', level);
-
-    return ns;
+  const levelMap = {
+    INFO: 1,
+    WARN: 2,
+    WARNING: 2,
+    ERROR: 3,
+    VERBOSE: 8
   };
 
-})();
+  /*
+   * Check if this message can be logged according to level
+   */
+  function _check(lvl) {
+    if ( level > 0 ) {
+      var tests = [
+        (level & ns.INFO) === ns.INFO && (lvl & ns.INFO) === ns.INFO,
+        (level & ns.WARNING) === ns.WARNING && (lvl & ns.WARNING) === ns.WARNING,
+        (level & ns.ERROR) === ns.ERROR && (lvl & ns.ERROR) === ns.ERROR,
+        (level & ns.VERBOSE) === ns.VERBOSE && (lvl & ns.VERBOSE) === ns.VERBOSE
+      ];
+
+      return tests.some(function(i) {
+        return !!i;
+      });
+    }
+
+    return level !== 0;
+  }
+
+  /*
+   * Logs given message
+   */
+  function _log(stamp, lvl/*, message[, message, ...]*/) {
+    if ( typeof stamp !== 'boolean' ) {
+      throw new TypeError('log() expects first argument to be a boolean');
+    }
+
+    if ( typeof lvl === 'string' ) {
+      lvl = levelMap[lvl];
+    }
+
+    if ( typeof lvl !== 'number' ) {
+      throw new TypeError('log() expects second argument to be a number');
+    }
+
+    if ( !_check(lvl) ) {
+      return;
+    }
+
+    var line = [];
+    if ( stamp ) {
+      line.push(timestamp());
+    }
+
+    for ( var i = 2; i < arguments.length; i++ ) {
+      var a = arguments[i];
+      if ( a instanceof Array ) {
+        line.push(a.concat(' '));
+      } else {
+        line.push(String(a));
+      }
+    }
+
+    console.log(line.join(' '));
+  }
+
+  // The namespace
+  ns = {
+    INFO: 1,
+    WARNING: 2,
+    ERROR: 4,
+    VERBOSE: 8,
+
+    /**
+     * Logs a message
+     *
+     * @param {Number}          lvl     Log level
+     * @param {String|Array}    msg     Log message (as a series of string or an array)
+     *
+     * @memberof core.logger
+     * @function log
+     */
+    log: function() {
+      return _log.apply(null, [true].concat(Array.prototype.slice.call(arguments)));
+    },
+
+    /**
+     * Logs a message (without timestamp)
+     *
+     * @param {Number}          lvl     Log level
+     * @param {String|Array}    msg     Log message (as a series of string or an array)
+     *
+     * @memberof core.logger
+     * @function lognt
+     */
+    lognt: function() {
+      return _log.apply(null, [false].concat(Array.prototype.slice.call(arguments)));
+    },
+
+    /**
+     * Colors the given string
+     *
+     * @memberof core.logger
+     * @function colored
+     */
+    colored: (function() {
+      var colors;
+
+      try {
+        colors = require('colors');
+      } catch ( e ) {}
+
+      return function() {
+        var args = Array.prototype.slice.call(arguments);
+        var str = args.shift();
+
+        if ( colors ) {
+          var ref = colors || [];
+          args.forEach(function(a) {
+            ref = ref[a] || 'white';
+          });
+          return ref(str);
+        } else {
+          return str;
+        }
+      };
+    })(),
+
+    /**
+     * Gets the log level
+     *
+     * @memberof core.logger
+     * @function getLevel
+     */
+    getLevel: function() {
+      return level;
+    },
+
+    /**
+     * Sets the log level
+     *
+     * @param {Number}      lvl     Log level
+     *
+     * @memberof core.logger
+     * @function setLevel
+     */
+    setLevel: function(lvl) {
+      var found = Object.keys(exports).some(function(k) {
+        return exports[k] === lvl;
+      });
+
+      if ( found ) {
+        level = lvl;
+      }
+    }
+  };
+
+  // Make sure we take logging options from cmd/configs
+  if ( lvl === -1 ) {
+    level = ns.INFO | ns.WARNING | ns.ERROR | ns.VERBOSE;
+  } else if ( lvl === -2 ) {
+    level = ns.INFO | ns.WARNING | ns.ERROR;
+  } else {
+    level = lvl;
+  }
+
+  ns.lognt(ns.INFO, 'Loading:', ns.colored('Logger', 'bold'), 'with level', level);
+
+  return ns;
+};

@@ -44,6 +44,7 @@
   }
 
   function format(fmt, date) {
+    /*eslint no-use-before-define: "off"*/
     var utc;
 
     if ( typeof fmt === 'undefined' || !fmt ) {
@@ -61,6 +62,7 @@
   }
 
   function _now(now) {
+    /*eslint no-use-before-define: "off"*/
     return now ? (now instanceof ExtendedDate ? now.date : now) : new Date();
   }
 

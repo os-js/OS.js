@@ -13,7 +13,8 @@
     "unescape": true,
     "EventTarget": true,
     "Uint8Array": true,
-    "ArrayBuffer": true
+    "ArrayBuffer": true,
+    "Promise": true
   },
   "rules": {
     "brace-style": 2,
@@ -33,7 +34,7 @@
     ],
     "no-new": 2,
     "dot-notation": 1,
-    "no-undef": 1,
+    "no-undef": 2,
     "no-unused-vars": [2, {
       "args": "none"
     }],
@@ -44,7 +45,7 @@
     ],
     "no-eq-null": 2,
     "strict": [
-      2,
+      1,
       "function"
     ],
     "no-unused-expressions": 2,
@@ -65,11 +66,8 @@
       "never"
     ],
     "array-bracket-spacing": [
-      0,
-      "never",
-      {
-        "singleValue": true
-      }
+      2,
+      "never"
     ],
     "space-unary-ops": [
       2,
@@ -104,10 +102,17 @@
       "last"
     ],
     "space-infix-ops": 2,
+    "object-curly-spacing": [
+      2,
+      "never"
+    ],
     "eol-last": 2,
     "keyword-spacing": [
       2,
-      {}
+      {
+        "before": true,
+        "after": true
+      }
     ],
     "consistent-this": [
       2,

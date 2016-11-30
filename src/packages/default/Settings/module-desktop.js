@@ -30,6 +30,55 @@
 (function(Application, Window, Utils, API, VFS, GUI) {
   'use strict';
 
+  var widgets = [];
+  var items = [];
+
+  /////////////////////////////////////////////////////////////////////////////
+  // HELPERS
+  /////////////////////////////////////////////////////////////////////////////
+
+  function renderItems(win, setSelected) {
+    var list = [];
+
+    widgets.forEach(function(i, idx) {
+      var name = i.name;
+
+      if ( items[name] ) {
+        list.push({
+          value: idx,
+          columns: [{
+            icon: API.getIcon(items[name].Icon),
+            label: Utils.format('{0} ({1})', items[name].Name, items[name].Description)
+          }]
+        });
+      }
+    });
+
+    var view = win._find('WidgetItems');
+    view.clear();
+    view.add(list);
+  }
+
+  function createDialog(win, scheme, cb) {
+    if ( scheme ) {
+      var app = win._app;
+      var nwin = new OSjs.Applications.ApplicationSettings.SettingsItemDialog(app, app.__metadata, scheme, cb);
+      nwin._on('inited', function(scheme) {
+        scheme.find(this, 'List').clear().add(Object.keys(items).map(function(i, idx) {
+          return {
+            value: i,
+            columns: [{
+              icon: API.getIcon(items[i].Icon),
+              label: Utils.format('{0} ({1})', items[i].Name, items[i].Description)
+            }]
+          };
+        }));
+        nwin._setTitle('Widgets', true);
+      });
+      win._addChild(nwin, true, true);
+    }
+  }
+
   function updateLabel(win, lbl, value) {
     var _ = OSjs.Applications.ApplicationSettings._;
 
@@ -70,6 +119,11 @@
       updateLabel(win, 'DesktopMargin', settings.desktopMargin);
       updateLabel(win, 'CornerSnapping', settings.windowCornerSnap);
       updateLabel(win, 'WindowSnapping', settings.windowSnap);
+
+      items = OSjs.Core.getPackageManager().getPackage('CoreWM').widgets;
+      widgets = settings.widgets || [];
+
+      renderItems(win);
     },
 
     render: function(win, scheme, root, settings, wm) {
@@ -85,6 +139,29 @@
 
       win._find('EnableIconView').set('value', settings.enableIconView);
       win._find('EnableIconViewInvert').set('value', settings.invertIconViewColor);
+
+      win._find('WidgetButtonAdd').on('click', function() {
+        win._toggleDisabled(true);
+        createDialog(win, scheme, function(ev, result) {
+          win._toggleDisabled(false);
+
+          if ( result ) {
+            widgets.push({name: result.data});
+            renderItems(win);
+          }
+        });
+      });
+
+      win._find('WidgetButtonRemove').on('click', function() {
+        var selected = win._find('WidgetItems').get('selected');
+        if ( selected.length ) {
+          widgets.splice(selected[0].index, 1);
+          renderItems(win);
+        }
+      });
+
+      win._find('WidgetButtonOptions').on('click', function() {
+      });
     },
 
     save: function(win, scheme, settings, wm) {
@@ -96,6 +173,8 @@
       settings.windowSnap = win._find('WindowSnapping').get('value');
       settings.enableIconView = win._find('EnableIconView').get('value');
       settings.invertIconViewColor = win._find('EnableIconViewInvert').get('value');
+
+      settings.widgets = widgets;
     }
   };
 

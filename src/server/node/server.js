@@ -27,64 +27,42 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(_path, _server) {
-  'use strict';
+/*eslint strict:["error", "global"]*/
+'use strict';
 
-  /**
-   * @namespace Server
-   */
+const _instance = require('./core/instance.js');
+const _minimist = require('minimist');
 
-  var DIST = (process && process.argv.length > 2) ? process.argv[2] : 'dist';
-  var ROOT = _path.join(__dirname, '/../../../');
-  var PORT = null;
-  var NOLOG = false;
+///////////////////////////////////////////////////////////////////////////////
+// MAIN
+///////////////////////////////////////////////////////////////////////////////
 
-  (function() {
-    var i, arg;
-    for ( i = 0; i < process.argv.length; i++ ) {
-      arg = process.argv[i];
+const argv = _minimist(process.argv.slice(2));
+const opts = {
+  DIST: argv._[0],
+  ROOT: argv.r || argv.root,
+  PORT: argv.p || argv.port,
+  LOGLEVEL: argv.l || argv.loglevel,
+  AUTH: argv.authenticator,
+  STORAGE: argv.storage
+};
 
-      if ( ['-nl', '--no-log'].indexOf(arg) >= 0 ) {
-        NOLOG = true;
-      } else if ( ['-p', '--port'].indexOf(arg) >= 0 ) {
-        i++;
-        PORT = process.argv[i];
-      } else if ( ['-r', '--root'].indexOf(arg) >= 0 ) {
-        i++;
-        ROOT = process.argv[i];
-      }
-    }
-  })();
-
-  if ( DIST === 'x11' ) {
-    DIST = 'dist';
-    ROOT = _path.dirname(__dirname);
-  } else {
-    if ( (process.argv[1] || '').match(/(mocha|grunt)$/) ) {
-      DIST = 'dist-dev';
-    }
+_instance.init(opts).then(function(env) {
+  const config = _instance.getConfig();
+  if ( config.tz ) {
+    process.env.TZ = config.tz;
   }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // MAIN
-  /////////////////////////////////////////////////////////////////////////////
-
-  process.chdir(ROOT);
-
   process.on('exit', function() {
-    _server.close();
+    _instance.destroy();
   });
+
+  _instance.run();
 
   process.on('uncaughtException', function(error) {
     console.log('UNCAUGHT EXCEPTION', error, error.stack);
   });
-
-  _server.listen({
-    port: PORT,
-    dirname: __dirname,
-    root: ROOT,
-    dist: DIST,
-    logging: !NOLOG,
-    nw: false
-  });
-})(require('path'), require('./http.js'));
+}).catch(function(error) {
+  console.log(error);
+  process.exit(1);
+});

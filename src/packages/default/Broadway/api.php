@@ -1,11 +1,15 @@
-<?php
+<?php namespace OSjs\Packages;
 
-class BroadwayAPIHandler {
-  public static function broadway(Array $arguments) {
-    return Array(false, false);
+use OSjs\Core\Request;
+
+class Broadway {
+
+  public static function broadway(Request $request, Array $args = Array()) {
+    return true;
   }
+
 }
 
-API::AddHandler('broadway', Array('BroadwayAPIHandler', 'broadway'));
+return 'OSjs\\Packages\\Broadway';
 
 ?>

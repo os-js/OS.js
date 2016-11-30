@@ -27,329 +27,314 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function() {
-  'use strict';
+/*eslint strict:["error", "global"]*/
+'use strict';
 
-  var _path = require('path');
+const _path = require('path');
+const _fs = require('node-fs-extra');
 
-  var _utils = require('./utils.js');
-  var _config = require('./config.js');
-  var _core = require('./core.js');
-  var _manifest = require('./manifest.js');
-  var _packages = require('./packages.js');
-  var _themes = require('./themes.js');
-  var _generate = require('./generate.js');
+const _config = require('./config.js');
+const _manifest = require('./manifest.js');
+const _themes = require('./themes.js');
+const _packages = require('./packages.js');
+const _core = require('./core.js');
+const _generate = require('./generate.js');
 
-  var ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
+const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
 
-  /////////////////////////////////////////////////////////////////////////////
-  // HELPERS
-  /////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+// POLYFILLS
+///////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Wrapper for getting build target(s)
-   */
-  function _getTargets(cli, defaults, strict) {
-    var target = cli.option('target');
-    var result = defaults;
+require('colors');
 
-    if ( target ) {
-      result = target.split(',').map(function(iter) {
-        var val = iter.trim();
-        return strict ? (defaults.indexOf(val) === -1 ? null : val) : val;
-      }).filter(function(iter) {
-        return !!iter;
-      });
-    }
-    return strict ? (!result.length ? defaults : result) : result;
+/*
+ * Helper for printing colors
+ */
+String.color = function(str, color) {
+  str = String(str);
+
+  color.split(',').forEach(function(key) {
+    str = str[key.trim()] || str;
+  });
+  return str;
+};
+
+/*
+ * Helper for running promises in sequence
+ */
+Promise.each = function(list, onentry) {
+  onentry = onentry || function() {};
+
+  return new Promise(function(resolve, reject) {
+    (function next(i) {
+      if ( i >= list.length ) {
+        return resolve();
+      }
+
+      const iter = list[i]();
+      iter.then(function(arg) {
+        onentry(arg);
+        next(i + 1);
+      }).catch(reject);
+    })(0);
+  });
+};
+
+///////////////////////////////////////////////////////////////////////////////
+// HELPERS
+///////////////////////////////////////////////////////////////////////////////
+
+/*
+ * Parses targets from cli input
+ */
+function _getTargets(cli, defaults, strict) {
+  const target = cli.option('target');
+
+  var result = defaults;
+  if ( target ) {
+    result = target.split(',').map(function(iter) {
+      const val = iter.trim();
+      return strict ? (defaults.indexOf(val) === -1 ? null : val) : val;
+    }).filter(function(iter) {
+      return !!iter;
+    });
   }
 
-  /**
-   * Wrapper for getting name option
-   */
-  function _configAction(cli, cfg, done, cb) {
-    var name = cli.option('name');
-    if ( !name ) {
-      return done('No name provided');
-    }
-    cb(name);
+  return strict ? (!result.length ? defaults : result) : result;
+}
+
+/*
+ * Iterates all given tasks
+ */
+function _eachTask(cli, args, taskName, namespace) {
+  if ( !args ) {
+    return Promise.reject('Not enough arguments');
   }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // API
-  /////////////////////////////////////////////////////////////////////////////
+  return new Promise(function(resolve, reject) {
+    _config.getConfiguration().then(function(cfg) {
+      Promise.each(args.replace(/\s/, '').split(',').map(function(iter) {
+        return function() {
+          iter = (iter || '').replace('-', '_');
+          if ( typeof namespace === 'function' ) {
+            return namespace(cli, cfg, iter);
+          } else {
+            if ( namespace[iter] ) {
+              console.log(String.color('Running task:', 'bold'), String.color([taskName, iter].join(':'), 'green'));
+              return namespace[iter](cli, cfg);
+            }
+          }
 
-  var CONFIG_ACTIONS = {
+          return Promise.reject('Invalid task: ' + iter);
+        };
+      })).then(resolve).catch(reject);
+    }).catch(reject);
+  });
+}
 
-    add_mount: function(cli, cfg, done) {
-      _configAction(cli, cfg, done, function(name) {
-        _config.addMount(cfg, name, cli.option('description'), cli.option('path'), done);
-      });
-    },
-    add_preload: function(cli, cfg, done) {
-      _configAction(cli, cfg, done, function(name) {
-        _config.addPreload(cfg, name, cli.option('path'), cli.option('type'), done);
-      });
-    },
-    add_repository: function(cli, cfg, done) {
-      _configAction(cli, cfg, done, function(name) {
-        _config.addRepository(cfg, name, done);
-      });
-    },
-    remove_repository: function(cli, cfg, done) {
-      _configAction(cli, cfg, done, function(name) {
-        _config.removeRepository(cfg, name, done);
-      });
-    },
-    enable_package: function(cli, cfg, done) {
-      _configAction(cli, cfg, done, function(name) {
-        _config.enablePackage(cfg, name, done);
-      });
-    },
-    disable_package: function(cli, cfg, done) {
-      _configAction(cli, cfg, done, function(name) {
-        _config.enablePackage(cfg, name, done);
-      });
-    },
-    list_packages: function(cli, cfg, done) {
-      _config.listPackages(cfg, done);
-    },
-    set: function(cli, cfg, done) {
-      _config.set(cfg, cli.option('name'), cli.option('value'), function(val) {
-        console.log(val);
-        done();
-      });
-    },
-    get: function(cli, cfg, done) {
-      _config.get(cfg, cli.option('name'), function(val) {
-        console.log(val);
-        done();
-      });
-    }
+///////////////////////////////////////////////////////////////////////////////
+// TASKS
+///////////////////////////////////////////////////////////////////////////////
 
-  };
+const TASKS = {
+  build: {
+    config: function(cli, cfg) {
+      const list = _getTargets(cli, ['client', 'server'], true);
 
-  var BUILD_ACTIONS = {
-
-    config: function(cli, cfg, done) {
-      var list = _getTargets(cli, ['client', 'server'], true);
-      _utils.iterate(list, function(target, idx, next) {
-        _config.writeConfiguration({
-          verbose: cli.option('verbose'),
-          nw: cli.option('nw'),
-          standalone: cli.option('standalone'),
-          target: target
-        }, next)
-      }, done)
+      return Promise.all(list.map(function(target) {
+        return _config.writeConfiguration(target, cli, cfg);
+      }));
     },
 
-    core: function(cli, cfg, done) {
-      var list = _getTargets(cli, ['dist', 'dist-dev']);
-      _utils.iterate(list, function(target, idx, next) {
-        console.log('Generating files for', target);
-        _core.buildFiles({
-          target: target,
-          verbose: cli.option('verbose'),
-          nw: cli.option('nw'),
-          standalone: cli.option('standalone'),
-          compress: cli.option('compress'),
-          repositories: cfg.repositories,
-          handler: cfg.handler,
-          client: cfg.client,
-          build: cfg.build
-        }, next);
-      }, done);
+    core: function(cli, cfg) {
+      const list = _getTargets(cli, ['dist', 'dist-dev']);
+
+      return Promise.all(list.map(function(target) {
+        return _core.buildFiles(target, cli, cfg);
+      }));
     },
 
-    themes: function(cli, cfg, done) {
-      _themes.buildAll(cfg, done)
-    },
-
-    theme: function(cli, cfg, done) {
-      var targets = [
-        [cli.option('style'), function(val, cb) {
-          _themes.buildStyle(cfg, val, cb);
-        }],
-        [cli.option('icons'), function(val, cb) {
-          _themes.buildIcon(cfg, val, cb);
-        }],
-        [cli.option('static'), function(val, cb) {
-          _themes.buildStatic(cfg, cb);
-        }],
-        [cli.option('fonts'), function(val, cb) {
-          _themes.buildFonts(cfg, cb);
-        }]
+    theme: function(cli, cfg) {
+      const targets = [
+        [cli.option('style'), _themes.buildStyle],
+        [cli.option('icons'), _themes.buildIcon],
+        [cli.option('static'), _themes.buildStatic],
+        [cli.option('fonts'), _themes.buildFonts]
       ];
 
-      _utils.iterate(targets, function(iter, idx, next) {
-        if ( typeof iter[0] === 'string' ) {
-          iter[1](iter[0], next);
-        } else {
-          next();
-        }
-      }, function() {
-        done();
+      const list = targets.filter(function(iter) {
+        return iter && iter[0];
+      }).map(function(iter) {
+        return iter[1](cli, cfg, iter[0]);
       });
+
+      return Promise.all(list);
     },
 
-    manifest: function(cli, cfg, done) {
-      var list = _getTargets(cli, ['dist', 'dist-dev']);
+    themes: function(cli, cfg) {
+      return _themes.buildAll(cli, cfg);
+    },
+
+    manifest: function(cli, cfg) {
+      const list = _getTargets(cli, ['dist', 'dist-dev']);
       list.push('server');
 
-      var forceEnabled = _config.getConfigPath(cfg, 'packages.ForceEnable') || [];
-      var forceDisabled = _config.getConfigPath(cfg, 'packages.ForceDisable') || [];
-
-      _utils.iterate(list, function(key, idx, next) {
-        console.log('Generating manifest for', key);
-        _manifest.writeManifest({
-          standalone: cli.option('standalone'),
-          verbose: cli.option('verbose'),
-          force: {
-            enabled: forceEnabled,
-            disabled: forceDisabled
-          },
-          repositories: cfg.repositories,
-          target: key
-        }, next)
-      }, done)
+      return Promise.all(list.map(function(target) {
+        return _manifest.writeManifest(target, cli, cfg);
+      }));
     },
 
-    packages: function(cli, cfg, done) {
-      var list = _getTargets(cli, ['dist', 'dist-dev']);
-      _utils.iterate(list, function(target, idx, next) {
-        _packages.buildPackages({
-          verbose: cli.option('verbose'),
-          compress: cli.option('compress'),
-          standalone: cli.option('standalone'),
-          repositories: cfg.repositories,
-          target: target
-        }, next);
-      }, done);
-    },
+    package: function(cli, cfg) {
+      const list = _getTargets(cli, ['dist', 'dist-dev']);
 
-    package: function(cli, cfg, done, backwardCompability) {
-      backwardCompability = backwardCompability || {};
-
-      var name = backwardCompability.name || cli.option('name');
+      const name = cli.option('name');
       if ( !name || name.indexOf('/') === -1 ) {
         throw new Error('Invalid package name');
       }
 
-      var list = _getTargets(cli, ['dist', 'dist-dev']);
-      _utils.iterate(list, function(target, idx, next) {
-        _packages.buildPackage({
-          name: name,
-          target: target,
-          standalone: cli.option('standalone'),
-          verbose: cli.option('verbose'),
-          compress: cli.option('compress')
-        }, next)
-      }, done);
+      return Promise.all(list.map(function(target) {
+        return _packages.buildPackage(target, cli, cfg, name);
+      }));
+    },
+
+    packages: function(cli, cfg) {
+      const list = _getTargets(cli, ['dist', 'dist-dev']);
+      return Promise.all(list.map(function(target) {
+        return _packages.buildPackages(target, cli, cfg);
+      }));
     }
+  },
 
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * cli config:X
-   */
-  module.exports.config = function(cli, arg, done, misc) {
-    arg = arg.replace('-', '_');
-
-    if ( !CONFIG_ACTIONS[arg] ) {
-      console.error('Invalid argument');
-      return done();
+  config: {
+    set: function(cli, cfg) {
+      return _config.set(cfg, cli.option('name'), cli.option('value'));
+    },
+    get: function(cli, cfg) {
+      return _config.get(cfg, cli.option('name'));
+    },
+    add_mount: function(cli, cfg) {
+      return _config.addMount(cfg, cli.option('name'), cli.option('description'), cli.option('path'));
+    },
+    add_preload: function(cli, cfg) {
+      return _config.addPreload(cfg, cli.option('name'), cli.option('path'), cli.option('type'));
+    },
+    add_repository: function(cli, cfg) {
+      return _config.addPreload(cfg, cli.option('name'));
+    },
+    remove_repository: function(cli, cfg) {
+      return _config.removePreload(cfg, cli.option('name'));
+    },
+    enable_package: function(cli, cfg) {
+      return _config.enablePackage(cfg, cli.option('name'));
+    },
+    disable_package: function(cli, cfg) {
+      return _config.disablePackage(cfg, cli.option('name'));
+    },
+    list_packages: function(cli, cfg) {
+      return _config.listPackages(cfg);
     }
+  },
 
-    _config.getConfiguration({}, function(err, cfg) {
-      CONFIG_ACTIONS[arg](cli, cfg, function(err) {
-        if ( err ) {
-          console.warn(err);
-        }
-        done();
+  generate: function(cli, cfg, task) {
+    if ( _generate[task] ) {
+      return new Promise(function(resolve, reject) {
+        _generate[task](cli, cfg).then(function(arg) {
+
+          const out = cli.option('out');
+          if ( out ) {
+            _fs.writeFileSync(out, String(arg));
+            return resolve();
+          } else {
+            console.log(arg);
+          }
+
+          resolve();
+        }).catch(reject);
       });
-    });
-  };
-
-  /**
-   * cli build:X
-   */
-  module.exports.build = function build(cli, arg, done, misc) {
-    if ( !arg ) {
-      arg = 'config,core,themes,manifest,packages';
+    } else {
+      return Promise.reject('Invalid generator: ' + task);
     }
+  }
+};
 
-    _utils.iterate(arg.split(','), function(a, idx, next) {
-      a = a.trim();
+///////////////////////////////////////////////////////////////////////////////
+// EXPORTS
+///////////////////////////////////////////////////////////////////////////////
 
-      if ( BUILD_ACTIONS[a] ) {
-        _config.getConfiguration({}, function(err, cfg) {
-          BUILD_ACTIONS[a](cli, cfg, function(err) {
-            if ( err ) {
-              console.warn(err);
-            }
+/*
+ * Task: `build`
+ */
+module.exports.build = function(cli, args) {
+  if ( !args ) {
+    args = 'config,core,themes,manifest,packages';
+  }
 
-            next();
-          }, misc);
-        });
-      } else {
-        console.error('Invalid argument ' + a);
-        next();
-      }
-    }, function() {
-      done();
-    });
-  };
+  return _eachTask(cli, args, 'build', TASKS.build);
+};
 
-  /**
-   * cli generate:X
-   */
-  module.exports.generate = function build(cli, arg, done, misc) {
-    _config.getConfiguration({}, function(err, cfg) {
-      console.log('Generating', arg);
+/*
+ * Task: `config`
+ */
+module.exports.config = function(cli, arg) {
+  return new Promise(function(resolve, reject) {
+    arg = (arg || '').replace('-', '_');
 
-      _generate.generate(cfg, arg, {
-        target: cli.option('target') || 'dist-dev',
-        verbose: cli.option('verbose'),
-        out: cli.option('out'),
-        name: cli.option('name'),
-        type: cli.option('type')
-      }, function(e) {
-        if ( e ) {
-          console.error(e);
-        }
-        done();
+    if ( TASKS.config[arg] ) {
+      _config.getConfiguration().then(function(cfg) {
+        TASKS.config[arg](cli, cfg).then(function(arg) {
+          if ( typeof arg !== 'undefined' ) {
+            console.log(arg);
+          }
+          resolve();
+        }).catch(reject);
       });
-    });
+    } else {
+      reject('Invalid action: ' + arg);
+    }
+  });
+};
+
+/*
+ * Task: `generate`
+ */
+module.exports.generate = function(cli, args) {
+  return _eachTask(cli, args, 'generate', TASKS.generate);
+};
+
+/*
+ * Task: `run`
+ */
+module.exports.run = function(cli, args) {
+  const instance = require(_path.join(ROOT, 'src/server/node/core/instance.js'));
+
+  const opts = {
+    PORT: cli.option('port'),
+    LOGLEVEL: cli.option('loglevel'),
+    DIST: cli.option('target') || 'dist-dev'
   };
 
-  /**
-   * cli run
-   */
-  module.exports.run = function run(cli, arg, done) {
-    var serverRoot = _path.join(ROOT, 'src', 'server', 'node');
-    var _server = require(_path.join(serverRoot, 'http.js'));
-    process.chdir(ROOT);
+  instance.init(opts).then(function(env) {
+    const config = instance.getConfig();
+    if ( config.tz ) {
+      process.env.TZ = config.tz;
+    }
 
     process.on('exit', function() {
-      _server.close();
+      instance.destroy();
     });
+
+    instance.run();
 
     process.on('uncaughtException', function(error) {
       console.log('UNCAUGHT EXCEPTION', error, error.stack);
     });
+  }).catch(function(error) {
+    console.log(error);
+    process.exit(1);
+  });
 
-    _server.listen({
-      port: cli.option('port'),
-      dirname: serverRoot,
-      root: ROOT,
-      dist: cli.option('target') || 'dist-dev',
-      logging: !cli.option('silent'),
-      nw: false
-    });
-  };
-
-})();
+  return new Promise(function() {
+    // This is one promise we can't keep! :(
+  });
+};

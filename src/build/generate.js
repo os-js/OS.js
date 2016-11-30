@@ -27,219 +27,192 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(_fs, _path, _utils) {
-  'use strict';
 
-  var ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
+/*eslint strict:["error", "global"]*/
+'use strict';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // HELPERS
-  /////////////////////////////////////////////////////////////////////////////
+const _path = require('path');
+const _fs = require('node-fs-extra');
 
-  /**
-   * Reads given config template and replaces any required strings
-   */
-  function _createWebserverConfig(cfg, target, src, mimecb) {
-    var mimes = mimecb(cfg.mime);
-    var tpl = _fs.readFileSync(src).toString();
-    tpl = tpl.replace(/%DISTDIR%/, _path.join(ROOT, target));
-    tpl = tpl.replace(/%MIMES%/, mimes);
-    return tpl;
-  }
+const _utils = require('./utils.js');
 
-  /**
-   * Reads given template file and replaces example strings
-   */
-  function _replaceInExample(name, file, dest) {
-    var dest = dest ? dest : file;
-    var c = _fs.readFileSync(file).toString();
-    c = _utils.replaceAll(c, 'EXAMPLE', name);
-    _fs.writeFileSync(dest, c);
-  }
+const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
 
-  /////////////////////////////////////////////////////////////////////////////
-  // API
-  /////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+// HELPERS
+///////////////////////////////////////////////////////////////////////////////
 
-  var TYPES = {
-    'apache-vhost': function(cfg, opts) {
-      var src = _path.join(ROOT, 'src', 'templates', 'apache', 'vhost.conf');
-      return _createWebserverConfig(cfg, opts.target, src, function(mime) {
-        return '';
-      });
-    },
+/*
+ * Reads given config template and replaces any required strings
+ */
+function _createWebserverConfig(cfg, target, src, mimecb) {
+  const mimes = mimecb(cfg.mime);
 
-    'apache-htaccess': function(cfg, opts) {
-      var mimes = [];
-      var proxies = [];
+  var tpl = _fs.readFileSync(src).toString();
+  tpl = tpl.replace(/%DISTDIR%/, _path.join(ROOT, target));
+  tpl = tpl.replace(/%MIMES%/, mimes);
+  return tpl;
+}
 
-      Object.keys(cfg.mime.mapping).forEach(function(i) {
-        if ( i.match(/^\./) ) {
-          mimes.push('  AddType ' + cfg.mime.mapping[i] + ' ' + i);
-        }
-      });
+/*
+ * Reads given template file and replaces example strings
+ */
+function _replaceInExample(name, file, dest) {
+  dest = dest ? dest : file;
 
-      Object.keys(cfg.server.proxies).forEach(function(k) {
-        if ( k.substr(0, 1) !== '/' && typeof cfg.server.proxies[k] === 'string' ) {
-          proxies.push('     RewriteRule ' + k + ' ' + cfg.server.proxies[k] + ' [P]');
-        }
-      });
+  var c = _fs.readFileSync(file).toString();
+  c = _utils.replaceAll(c, 'EXAMPLE', name);
+  _fs.writeFileSync(dest, c);
+}
 
-      function generate_htaccess(t, d) {
-        var src = _path.join(ROOT, 'src', 'templates', t);
-        var dst = _path.join(ROOT, d, '.htaccess');
-        var tpl = _fs.readFileSync(src).toString();
-        tpl = tpl.replace(/%MIMES%/, mimes.join('\n'));
-        tpl = tpl.replace(/%PROXIES%/, proxies.join('\n'));
-        _fs.writeFileSync(dst, tpl);
+///////////////////////////////////////////////////////////////////////////////
+// TASKS
+///////////////////////////////////////////////////////////////////////////////
+
+const TASKS = {
+  'apache_vhost': function(cli, cfg) {
+    const src = _path.join(ROOT, 'src', 'templates', 'apache', 'vhost.conf');
+    const target = cli.option('target', 'dist');
+
+    return Promise.resolve(_createWebserverConfig(cfg, target, src, function(mime) {
+      return '';
+    }));
+  },
+
+  'apache_htaccess': function(cli, cfg) {
+    const target = cli.option('target', 'dist');
+
+    const mimes = [];
+    const proxies = [];
+
+    Object.keys(cfg.mime.mapping).forEach(function(i) {
+      if ( i.match(/^\./) ) {
+        mimes.push('  AddType ' + cfg.mime.mapping[i] + ' ' + i);
       }
+    });
 
-      if ( opts.target === 'dist' ) {
-        generate_htaccess('apache/prod-htaccess.conf', opts.target);
-      } else {
-        generate_htaccess('apache/prod-htaccess.conf', 'dist');
-        generate_htaccess('apache/dev-htaccess.conf', 'dist-dev');
+    Object.keys(cfg.server.proxies).forEach(function(k) {
+      if ( k.substr(0, 1) !== '/' && typeof cfg.server.proxies[k] === 'string' ) {
+        proxies.push('     RewriteRule ' + k + ' ' + cfg.server.proxies[k] + ' [P]');
       }
-    },
+    });
 
-    'lighttpd-config': function(cfg, opts) {
-      var src = _path.join(ROOT, 'src', 'templates', 'lighttpd.conf');
-      return _createWebserverConfig(cfg, opts.target, src, function(mime) {
-        return Object.keys(mime.mapping).map(function(i) {
-          return i.match(/^\./) ? '  "' + i + '" => "' + mime.mapping[i] + '"' : null;
-        }).filter(function(i) {
-          return !!i;
-        }).join(',\n');
-      });
-    },
+    function generate_htaccess(t, d) {
+      const src = _path.join(ROOT, 'src', 'templates', t);
+      const dst = _path.join(ROOT, d, '.htaccess');
 
-    'nginx-config': function(cfg, opts) {
-      var src = _path.join(ROOT, 'src', 'templates', 'nginx.conf');
-      return _createWebserverConfig(cfg, opts.target, src, function(mime) {
-        return Object.keys(mime.mapping).map(function(i) {
-          return i.match(/^\./) ? ('        ' + mime.mapping[i] + ' ' + i.replace(/^\./, '') + ';') : null;
-        }).filter(function(i) {
-          return !!i;
-        }).join('\n');
-      });
-    },
-
-    'package': function(cfg, opts) {
-      var tmp  = opts.name.split('/');
-      var repo = tmp.length > 1 ? tmp[0] : 'default';
-      var name = tmp.length > 1 ? tmp[1] : opts.name;
-      var type = opts.type || 'application';
-
-      var typemap = {
-        iframe: {
-          src: 'iframe-application',
-          cpy: ['main.js', 'metadata.json']
-        },
-        dummy: {
-          src: 'dummy',
-          cpy: ['main.js', 'metadata.json']
-        },
-        application: {
-          src: 'application',
-          cpy: ['api.js', 'main.js', 'main.css', 'metadata.json', 'scheme.html']
-        },
-        simple: {
-          src: 'simple-application',
-          cpy: ['api.js', 'main.js', 'main.css', 'metadata.json', 'scheme.html']
-        },
-        service: {
-          src: 'service',
-          cpy: ['api.js', 'main.js', 'metadata.json']
-        },
-        extension: {
-          src: 'extension',
-          cpy: ['api.js', 'extension.js', 'metadata.json']
-        }
-      };
-
-      if ( !name ) {
-        throw new Error('You have to specify a name');
-      }
-
-      var src = _path.join(ROOT, 'src', 'templates', 'package', typemap[type].src);
-      var dst = _path.join(ROOT, 'src', 'packages', repo, name);
-
-      if ( !_fs.existsSync(src) ) {
-        throw new Error('Template not found');
-      }
-
-      if ( _fs.existsSync(dst) ) {
-        throw new Error('Package already exists');
-      }
-
-      _fs.copySync(src, dst);
-
-      typemap[type].cpy.forEach(function(c) {
-        _replaceInExample(name, _path.join(dst, c), false);
-      });
-
-      if ( (cfg.repositories || []).indexOf(repo) < 0 ) {
-        console.warn('The repository \'' + repo + '\' is not active.'['yellow']);
-      }
-    },
-
-    'handler': function(cfg, opts) {
-      var name = opts.name;
-      var uname = name.replace(/[^A-z]/g, '').toLowerCase();
-
-      var tpls = _path.join(ROOT, 'src', 'templates', 'handler');
-      var jsd = _path.join(ROOT, 'src', 'client', 'javascript', 'handlers', uname);
-      var phpd = _path.join(ROOT, 'src', 'server', 'php', 'handlers', uname);
-      var noded = _path.join(ROOT, 'src', 'server', 'node', 'handlers', uname);
-
-      if ( _fs.existsSync(jsd) || _fs.existsSync(phpd) || _fs.existsSync(noded) ) {
-        throw new Error('Handler already exists');
-      }
-
-      _fs.mkdirSync(jsd);
-      _replaceInExample(name, _path.join(tpls, 'client.js'), _path.join(jsd, 'handler.js'));
-
-      _fs.mkdirSync(phpd);
-      _replaceInExample(name, _path.join(tpls, 'php.php'), _path.join(phpd, 'handler.php'));
-
-      _fs.mkdirSync(noded);
-      _replaceInExample(name, _path.join(tpls, 'node.js'), _path.join(noded, 'handler.js'));
-    }
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // API
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * grunt generate:X
-   *
-   * Generates something using given template name
-   */
-  function generate(cfg, arg, opts, done) {
-    if ( !TYPES[arg] ) {
-      return done('No such template available.');
+      var tpl = _fs.readFileSync(src).toString();
+      tpl = tpl.replace(/%MIMES%/, mimes.join('\n'));
+      tpl = tpl.replace(/%PROXIES%/, proxies.join('\n'));
+      _fs.writeFileSync(dst, tpl);
     }
 
-    try {
-      var result = TYPES[arg](cfg, opts);
-      if ( result !== null ) {
-        if ( opts.out ) {
-          _fs.writeFileSync(opts.out, result);
-        } else {
-          console.log(result);
-        }
-      }
-      done();
-    } catch ( e ) {
-      done(e);
+    if ( target === 'dist' ) {
+      generate_htaccess('apache/prod-htaccess.conf', target);
+    } else {
+      generate_htaccess('apache/prod-htaccess.conf', 'dist');
+      generate_htaccess('apache/dev-htaccess.conf', 'dist-dev');
     }
+
+    return Promise.resolve();
+  },
+
+  'lighttpd_config': function(cli, cfg) {
+    const target = cli.option('target', 'dist');
+
+    const src = _path.join(ROOT, 'src', 'templates', 'lighttpd.conf');
+
+    return Promise.resolve(_createWebserverConfig(cfg, target, src, function(mime) {
+      return Object.keys(mime.mapping).map(function(i) {
+        return i.match(/^\./) ? '  "' + i + '" => "' + mime.mapping[i] + '"' : null;
+      }).filter(function(i) {
+        return !!i;
+      }).join(',\n');
+    }));
+  },
+
+  'nginx_config': function(cli, cfg) {
+    const target = cli.option('target', 'dist');
+
+    const src = _path.join(ROOT, 'src', 'templates', 'nginx.conf');
+
+    return Promise.resolve(_createWebserverConfig(cfg, target, src, function(mime) {
+      return Object.keys(mime.mapping).map(function(i) {
+        return i.match(/^\./) ? ('        ' + mime.mapping[i] + ' ' + i.replace(/^\./, '') + ';') : null;
+      }).filter(function(i) {
+        return !!i;
+      }).join('\n');
+    }));
+  },
+
+  'package': function(cli, cfg) {
+    const type = cli.option('type', 'application');
+
+    var name = cli.option('name', '');
+
+    const tmp  = name.split('/');
+    const repo = tmp.length > 1 ? tmp[0] : 'default';
+    name = tmp.length > 1 ? tmp[1] : name;
+
+    const typemap = {
+      iframe: {
+        src: 'iframe-application',
+        cpy: ['main.js', 'metadata.json']
+      },
+      dummy: {
+        src: 'dummy',
+        cpy: ['main.js', 'metadata.json']
+      },
+      application: {
+        src: 'application',
+        cpy: ['api.js', 'main.js', 'main.css', 'metadata.json', 'scheme.html']
+      },
+      simple: {
+        src: 'simple-application',
+        cpy: ['api.js', 'main.js', 'main.css', 'metadata.json', 'scheme.html']
+      },
+      service: {
+        src: 'service',
+        cpy: ['api.js', 'main.js', 'metadata.json']
+      },
+      extension: {
+        src: 'extension',
+        cpy: ['api.js', 'extension.js', 'metadata.json']
+      }
+    };
+
+    if ( !name ) {
+      throw new Error('You have to specify a name');
+    }
+
+    const src = _path.join(ROOT, 'src', 'templates', 'package', typemap[type].src);
+    const dst = _path.join(ROOT, 'src', 'packages', repo, name);
+
+    if ( !_fs.existsSync(src) ) {
+      throw new Error('Template not found');
+    }
+
+    if ( _fs.existsSync(dst) ) {
+      throw new Error('Package already exists');
+    }
+
+    _fs.copySync(src, dst);
+
+    typemap[type].cpy.forEach(function(c) {
+      _replaceInExample(name, _path.join(dst, c), false);
+    });
+
+    if ( (cfg.repositories || []).indexOf(repo) < 0 ) {
+      console.warn(String.color('The repository \'' + repo + '\' is not active.', 'yellow'));
+    }
+
+    return Promise.resolve();
   }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+};
 
-  module.exports.generate = generate;
+///////////////////////////////////////////////////////////////////////////////
+// EXPORTS
+///////////////////////////////////////////////////////////////////////////////
 
-})(require('node-fs-extra'), require('path'), require('./utils.js'));
+module.exports = TASKS;

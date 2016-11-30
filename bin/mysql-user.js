@@ -56,7 +56,7 @@
 
   function init() {
     var config = JSON.parse(fs.readFileSync(path.join(ROOT, 'src', 'server', 'settings.json')));
-    var cfg = config.handlers.mysql;
+    var cfg = config.modules.auth.mysql;
     var ccfg = {};
 
     Object.keys(cfg).forEach(function(c) {

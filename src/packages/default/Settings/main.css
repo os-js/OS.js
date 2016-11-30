@@ -46,6 +46,9 @@
   height : 150px;
 }
 
+.ApplicationSettingsWindow application-window-content [data-id="WidgetItems"] {
+  height : 100px;
+}
 .ApplicationSettingsWindow application-window-content [data-id="HotkeysList"] {
   height : 200px;
 }

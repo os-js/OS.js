@@ -1,6 +1,6 @@
 <?php
 
-define("DISTDIR", __DIR__);
+define("DIR_DIST", __DIR__);
 require __DIR__.'/../src/server/php/server.php';
 
 ?>

@@ -2,8 +2,8 @@
   "client" : {
     "Connection": {
       "Type": "%CONNECTION%",
-      "Handler": "%HANDLER%",
-
+      "Authenticator": "%AUTHENTICATOR%",
+      "Storage": "%STORAGE%",
       "RootURI": "",
       "APIURI": "API",
       "FSURI": "FS",

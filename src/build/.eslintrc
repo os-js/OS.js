@@ -1,0 +1,17 @@
+{
+  "extends": [
+    "../../.eslintrc"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 6
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "mocha": true
+  },
+  "strict": [
+    1,
+    "global"
+  ]
+}

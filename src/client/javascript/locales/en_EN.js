@@ -468,8 +468,11 @@
     'LBL_USERS': 'Users',
     'LBL_FONTS': 'Fonts',
     'LBL_OPEN_LOCATION': 'Open Location',
-    'LBL_HOME': 'Home'
-
+    'LBL_HOME': 'Home',
+    'LBL_WIDGET': 'Widget',
+    'LBL_WIDGETS': 'Widgets',
+    'LBL_LOCK': 'Lock',
+    'LBL_UNLOCK': 'Unlock'
   };
 
 })();

@@ -464,19 +464,6 @@
     var startX, startY, currentX, currentY;
     var dragging = false;
 
-    function _onMouseDown(ev, pos, touchDevice) {
-      ev.preventDefault();
-
-      startX = pos.x;
-      startY = pos.y;
-
-      onDown(ev, {x: startX, y: startY});
-      dragging = true;
-
-      Utils.$bind(window, 'mouseup:guidrag', _onMouseUp, false);
-      Utils.$bind(window, 'mousemove:guidrag', _onMouseMove, false);
-    }
-
     function _onMouseMove(ev, pos, touchDevice) {
       ev.preventDefault();
 
@@ -497,6 +484,19 @@
 
       Utils.$unbind(window, 'mouseup:guidrag');
       Utils.$unbind(window, 'mousemove:guidrag');
+    }
+
+    function _onMouseDown(ev, pos, touchDevice) {
+      ev.preventDefault();
+
+      startX = pos.x;
+      startY = pos.y;
+
+      onDown(ev, {x: startX, y: startY});
+      dragging = true;
+
+      Utils.$bind(window, 'mouseup:guidrag', _onMouseUp, false);
+      Utils.$bind(window, 'mousemove:guidrag', _onMouseMove, false);
     }
 
     Utils.$bind(el, 'mousedown', _onMouseDown, false);

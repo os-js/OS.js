@@ -1,0 +1,72 @@
+
+    <div id="Login">
+      <form method="post" id="LoginForm">
+        <div>
+          <label for="LoginUsername">Username</label>
+          <input type="text" name="LoginUsername" id="LoginUsername" value="" placeholder="Username" />
+        </div>
+        <div>
+          <label for="LoginPassword">Password</label>
+          <input type="password" name="LoginPassword" id="LoginPassword" value="" placeholder="Password" />
+        </div>
+        <div class="Submit">
+          <input type="submit" name="LoginSubmit" id="LoginSubmit" value="Login" />
+        </div>
+      </form>
+    </div>
+
+    <style type="text/css">
+
+#Login {
+  background : #fff;
+  width : 400px;
+  height : 230px;
+  padding : 20px;
+  position : absolute;
+  left : 50%;
+  top : 50%;
+  z-index : 9999;
+  margin-left : -200px;
+  margin-top : -155px;
+  border : 4px solid rgba(0, 0, 0, .1);
+  -webkit-box-shadow: 0 0 5px 4px rgba(0,0,0,0.15);
+  -moz-box-shadow: 0 0 5px 4px rgba(0,0,0,0.15);
+  box-shadow: 0 0 5px 4px rgba(0,0,0,0.15);
+  box-sizing : border-box;
+
+  display : none;
+}
+  #LoginForm > div {
+    margin-bottom : 20px;
+  }
+  #Login label {
+    display : block;
+    font-weight : bold;
+    height : 30px;
+    line-height : 30px;
+  }
+  #Login input[type=text],
+  #Login input[type=password] {
+    display : block;
+    width : 100%;
+    height : 24px;
+    padding : 4px;
+    line-height : 12px;
+    box-sizing : border-box;
+  }
+  #Login input[type=submit] {
+    height : 40px;
+    padding : 10px;
+    padding-left : 20px;
+    padding-right : 20px;
+    box-sizing : border-box;
+    background : rgba(0, 0, 0, .1);
+    border : 0 none;
+    cursor : pointer;
+  }
+  #Login .Submit {
+    text-align : right;
+  }
+
+    </style>
+

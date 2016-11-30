@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 (function(Utils, VFS, API) {
+  'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
   // MODULE API
@@ -39,6 +40,12 @@
   var EXAMPLE = {
     init: function(metadata, done) {
       done();
+    },
+
+    test: function(done) {
+      API.call('test', {}, function(err, res) {
+        console.log('Result from your server API method', err, res);
+      });
     }
   };
 

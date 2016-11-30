@@ -46,16 +46,14 @@ else
   fi
 fi
 
-echo "Installing 'grunt' (requires sudo)"
-sudo npm install -g grunt-cli
-
 echo "Downloading OS.js"
 git clone --recursive $REPO $DEST
 
 echo "Building"
 cd $DEST
 npm install --production
-grunt
+node osjs build
 
 echo "INSTALLATION COMPLETE :-)"
-echo "Look at INSTALL.md for documentation on how to start the a server"
+echo "Run 'node osjs run' to start the server"
+echo "https://os.js.org/manual/"

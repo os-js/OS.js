@@ -216,11 +216,30 @@
    * @function cloneObject
    * @memberof OSjs.Utils
    *
-   * @param   {Object}      o     The object to clone
+   * @param   {Object}      o                     The object to clone
+   * @param   {Boolean}     [alternative=false]   Do a programatic deep clone approach
    *
    * @return  {Object}            An identical object
    */
-  OSjs.Utils.cloneObject = function(o) {
+  OSjs.Utils.cloneObject = function(o, alternative) {
+    function _clone(i) {
+      if ( typeof i !== 'object' || i === null ) {
+        return i;
+      } else if ( i instanceof Array ) {
+        return i.map(_clone);
+      }
+
+      var iter = {};
+      Object.keys(i).forEach(function(k) {
+        iter[k] = _clone(i[k]);
+      });
+      return iter;
+    }
+
+    if ( alternative ) {
+      return _clone(o);
+    }
+
     return JSON.parse(JSON.stringify(o, function(key, value) {
       if ( value && typeof value === 'object' && value.tagName ) {
         return undefined;

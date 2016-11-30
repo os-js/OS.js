@@ -57,6 +57,55 @@
   };
 
   /////////////////////////////////////////////////////////////////////////////
+  // DIALOGS
+  /////////////////////////////////////////////////////////////////////////////
+
+  function SettingsItemDialog(app, metadata, scheme, callback) {
+    Window.apply(this, ['ApplicationSettingsGenericsWindow', {
+      icon: metadata.icon,
+      title: metadata.name,
+      width: 400,
+      height: 300
+    }, app, scheme]);
+
+    this.callback = callback;
+    this.closed = false;
+  }
+
+  SettingsItemDialog.prototype = Object.create(Window.prototype);
+  SettingsItemDialog.constructor = Window;
+
+  SettingsItemDialog.prototype.init = function(wm, app, scheme) {
+    var self = this;
+    var root = Window.prototype.init.apply(this, arguments);
+
+    // Load and set up scheme (GUI) here
+    scheme.render(this, 'SettingsItemWindow', root, null, null, {
+      _: OSjs.Applications.ApplicationSettings._
+    });
+
+    scheme.find(this, 'ButtonItemOK').on('click', function() {
+      self.closed = true;
+      var selected = scheme.find(self, 'List').get('selected');
+      self.callback('ok', selected.length ? selected[0] : null);
+      self._close();
+    });
+
+    scheme.find(this, 'ButtonItemCancel').on('click', function() {
+      self._close();
+    });
+
+    return root;
+  };
+
+  SettingsItemDialog.prototype._close = function() {
+    if ( !this.closed ) {
+      this.callback('cancel');
+    }
+    return Window.prototype._close.apply(this, arguments);
+  };
+
+  /////////////////////////////////////////////////////////////////////////////
   // WINDOWS
   /////////////////////////////////////////////////////////////////////////////
 
@@ -236,19 +285,18 @@
     var self = this;
     var settings = {};
     var wm = OSjs.Core.getWindowManager();
-    var saves = [];
 
     this._app.modules.forEach(function(m) {
       if ( m._inited ) {
         var res = m.save(self, self._scheme, settings, wm);
         if ( typeof res === 'function' ) {
-          saves.push(res);
+          res();
         }
       }
     });
 
     this._toggleLoading(true);
-    this._app.saveSettings(settings, saves, function() {
+    this._app.saveSettings(settings, function() {
       self._toggleLoading(false);
     });
   };
@@ -350,13 +398,10 @@
     });
   };
 
-  ApplicationSettings.prototype.saveSettings = function(settings, saves, cb) {
+  ApplicationSettings.prototype.saveSettings = function(settings, cb) {
     var wm = OSjs.Core.getWindowManager();
-    wm.applySettings(settings, false, function() {
-      Utils.asyncs(saves, function(iter, idx, next) {
-        iter(next);
-      }, cb);
-    }, false);
+    wm.applySettings(settings);
+    OSjs.Core.getSettingsManager().save(null, cb);
   };
 
   ApplicationSettings.prototype.setModule = function(m) {
@@ -371,5 +416,6 @@
   OSjs.Applications.ApplicationSettings = OSjs.Applications.ApplicationSettings || {};
   OSjs.Applications.ApplicationSettings.Class = Object.seal(ApplicationSettings);
   OSjs.Applications.ApplicationSettings.Modules = OSjs.Applications.ApplicationSettings.Modules || {};
+  OSjs.Applications.ApplicationSettings.SettingsItemDialog = SettingsItemDialog;
 
 })(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

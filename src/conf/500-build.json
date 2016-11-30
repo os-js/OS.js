@@ -1,7 +1,8 @@
 {
   "build": {
     "dist": {
-      "template": "default"
+      "template": "default",
+      "login": "default"
     },
     "statics": {
       "src/client/dialogs.html": "dist/dialogs.html",
@@ -37,16 +38,29 @@
       "src/client/javascript/utils/xhr.js",
       "src/client/javascript/utils/fs.js",
       "src/client/javascript/api.js",
-      "src/client/javascript/process.js",
-      "src/client/javascript/application.js",
-      "src/client/javascript/service.js",
-      "src/client/javascript/window.js",
-      "src/client/javascript/dialog.js",
-      "src/client/javascript/windowmanager.js",
-      "src/client/javascript/package-manager.js",
-      "src/client/javascript/settings-manager.js",
-      "src/client/javascript/mount-manager.js",
-      "src/client/javascript/search-engine.js",
+      "src/client/javascript/core/handler.js",
+      "src/client/javascript/core/connection.js",
+      "src/client/javascript/core/authenticator.js",
+      "src/client/javascript/core/storage.js",
+      "src/client/javascript/core/process.js",
+      "src/client/javascript/core/application.js",
+      "src/client/javascript/core/service.js",
+      "src/client/javascript/core/window.js",
+      "src/client/javascript/core/dialog.js",
+      "src/client/javascript/core/windowmanager.js",
+      "src/client/javascript/core/package-manager.js",
+      "src/client/javascript/core/settings-manager.js",
+      "src/client/javascript/core/mount-manager.js",
+      "src/client/javascript/core/search-engine.js",
+      "src/client/javascript/core/connections/http.js",
+      "src/client/javascript/core/connections/ws.js",
+      "src/client/javascript/core/connections/nw.js",
+      "src/client/javascript/core/auth/demo.js",
+      "src/client/javascript/core/auth/mysql.js",
+      "src/client/javascript/core/auth/pam.js",
+      "src/client/javascript/core/storage/demo.js",
+      "src/client/javascript/core/storage/mysql.js",
+      "src/client/javascript/core/storage/system.js",
       "src/client/javascript/gui.js",
       "src/client/javascript/gui/_scheme.js",
       "src/client/javascript/gui/_elements.js",
@@ -73,17 +87,15 @@
       "src/client/javascript/dialogs/fileupload.js",
       "src/client/javascript/dialogs/font.js",
       "src/client/javascript/dialogs/input.js",
-      "src/client/javascript/handler.js",
-      "src/client/javascript/handlers/%HANDLER%/handler.js",
       "src/client/javascript/vfs.js",
-      "src/client/javascript/vfs/_fs.js",
-      "src/client/javascript/vfs/_file.js",
-      "src/client/javascript/vfs/internal.js",
-      "src/client/javascript/vfs/http.js",
-      "src/client/javascript/vfs/osjs.js",
-      "src/client/javascript/vfs/web.js",
-      "src/client/javascript/vfs/webdav.js",
-      "src/client/javascript/vfs/applications.js",
+      "src/client/javascript/vfs/fs.js",
+      "src/client/javascript/vfs/file.js",
+      "src/client/javascript/vfs/transports/internal.js",
+      "src/client/javascript/vfs/transports/http.js",
+      "src/client/javascript/vfs/transports/osjs.js",
+      "src/client/javascript/vfs/transports/web.js",
+      "src/client/javascript/vfs/transports/webdav.js",
+      "src/client/javascript/vfs/transports/applications.js",
       "src/client/javascript/vfs/mounts/googledrive.js",
       "src/client/javascript/vfs/mounts/dropbox.js",
       "src/client/javascript/vfs/mounts/onedrive.js",
@@ -102,6 +114,13 @@
       "src/client/stylesheets/core.css",
       "src/client/stylesheets/gui.css",
       "dev:src/client/stylesheets/debug.css"
-    ]
+    ],
+    "overlays": {
+      "example": {
+        "locales": [],
+        "javascript": [],
+        "stylesheets": []
+      }
+    }
   }
 }

@@ -119,6 +119,7 @@
     //this.$element.setAttribute('no-selection', 'true');
     this.$element.id = 'CoreWMDesktopIconView';
     this.shortcutCache = [];
+    this.refreshTimeout = null;
 
     GUI.Elements['gui-icon-view'].build(this.$element);
 
@@ -165,6 +166,7 @@
 
   DesktopIconView.prototype.destroy = function() {
     Utils.$remove(this.$element);
+    this.refreshTimeout = clearTimeout(this.refreshTimeout);
     this.$element = null;
     this.$iconview = null;
 
@@ -199,66 +201,48 @@
 
   DesktopIconView.prototype._refresh = function(wm) {
     var self = this;
-    var pm = OSjs.Core.getPackageManager();
 
     var desktopPath = OSjs.Core.getWindowManager().getSetting('desktopPath');
     var shortcutPath = Utils.pathJoin(desktopPath, '.shortcuts.json');
 
-    VFS.read(shortcutPath, function(e, r) {
-      var entries = [];
+    this.shortcutCache = [];
 
-      if ( r && r instanceof Array ) {
-        self.shortcutCache = r;
-
-        entries = r.map(function(i) {
-          var iter = new VFS.File(i);
-          var type = 'shortcut';
-          var icon;
-
-          if ( iter.type === 'application' ) {
-            var appname = Utils.filename(iter.path);
-            var meta = pm.getPackage(appname);
-            if ( meta ) {
-              icon = API.getIcon(meta.icon, '32x32', appname);
-            }
-            type = 'application';
-          }
-
-          return {
-            _type: type,
-            icon: icon || API.getFileIcon(iter, '32x32'),
-            label: iter.filename,
-            value: iter,
-            args: iter.args || {}
-          };
-        });
-      }
-
+    this.refreshTimeout = clearTimeout(this.refreshTimeout);
+    this.refreshTimeout = setTimeout(function() {
       VFS.scandir(desktopPath, function(error, result) {
         if ( self.$iconview && !error ) {
+          self.$iconview.clear().add(result.map(function(iter) {
+            if ( iter.type === 'application' || iter.shortcut === true ) {
+              var niter = new VFS.File(iter);
+              niter.shortcut = true;
 
-          entries = entries.concat(result.map(function(iter) {
+              var idx = self.shortcutCache.push(niter) - 1;
+
+              var file = new VFS.File(iter);
+              file.__index = idx;
+
+              return {
+                _type: iter.type,
+                icon: API.getFileIcon(iter, '32x32'),
+                label: iter.filename,
+                value: file,
+                args: iter.args || {}
+              };
+            }
+
             return {
               _type: 'vfs',
               icon: API.getFileIcon(iter, '32x32'),
               label: iter.filename,
               value: iter
             };
+
           }).filter(function(iter) {
-            if ( iter.value.path === shortcutPath ) {
-              return false;
-            }
-            return true;
+            return iter.value.path !== shortcutPath;
           }));
-
-          entries.sort(function(a, b) {
-            return (a.filename > b.filename) ? 1 : ((b.filename > a.filename) ? -1 : 0);
-          });
-
-          self.$iconview.clear().add(entries);
         }
       });
-    }, {type: 'json'});
+    }, 50);
   };
 
   DesktopIconView.prototype._save = function(refresh) {
@@ -273,9 +257,8 @@
   };
 
   DesktopIconView.prototype.updateShortcut = function(data, values) {
-    var found = this.getShortcutByPath(data.path);
-    if ( found.item ) {
-      var o = this.shortcutCache[found.index];
+    var o = this.shortcutCache[data.__index];
+    if ( o.path === data.path ) {
       Object.keys(values).forEach(function(k) {
         o[k] = values[k];
       });
@@ -290,7 +273,7 @@
 
     this.shortcutCache.forEach(function(i, idx) {
       if ( !found ) {
-        if ( i.path === path ) {
+        if ( i.type !== 'application' && i.path === path ) {
           found = i;
           index = idx;
         }
@@ -301,28 +284,25 @@
   };
 
   DesktopIconView.prototype.addShortcut = function(data, wm, save) {
-    var found = this.getShortcutByPath(data.path);
-    if ( !found.item ) {
-      (['icon']).forEach(function(k) {
-        if ( data[k] ) {
-          delete data[k];
-        }
-      });
-
-      if ( data.type === 'application' ) {
-        data.args = data.args || {};
+    (['icon']).forEach(function(k) {
+      if ( data[k] ) {
+        delete data[k];
       }
+    });
 
-      this.shortcutCache.push(data);
-      this._save(true);
+    if ( data.type === 'application' ) {
+      data.args = data.args || {};
     }
+
+    data.shortcut = true;
+    this.shortcutCache.push(data);
+    this._save(true);
   };
 
-  DesktopIconView.prototype.removeShortcut = function(data, wm) {
-    var found = this.getShortcutByPath(data.path);
-
-    if ( found.item ) {
-      this.shortcutCache.splice(found.index, 1);
+  DesktopIconView.prototype.removeShortcut = function(data) {
+    var o = this.shortcutCache[data.__index];
+    if ( o && o.path === data.path ) {
+      this.shortcutCache.splice(data.__index, 1);
       this._save(true);
     }
   };

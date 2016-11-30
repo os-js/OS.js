@@ -27,268 +27,364 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(_fs, _path, _utils, _manifest) {
-  'use strict';
 
-  var ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
+/*eslint strict:["error", "global"]*/
+'use strict';
 
-  var _ugly;
-  var Cleancss;
+const _path = require('path');
+const _fs = require('node-fs-extra');
+const _glob = require('glob-promise');
 
-  try {
-    _ugly = require('uglify-js');
-  } catch ( e ) {}
-  try {
-    Cleancss = require('clean-css');
-  } catch ( e ) {}
+const _utils = require('./utils.js');
 
-  /////////////////////////////////////////////////////////////////////////////
-  // HELPERS
-  /////////////////////////////////////////////////////////////////////////////
+const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
 
-  /**
-   * Filter a file reference by string
-   */
-  function _filter(i, opts) {
-    if ( i.match(/^dev:/) && opts.target !== 'dist-dev' ) {
-      return false;
+var _ugly;
+var Cleancss;
+
+try {
+  _ugly = require('uglify-js');
+} catch ( e ) {}
+try {
+  Cleancss = require('clean-css');
+} catch ( e ) {}
+
+///////////////////////////////////////////////////////////////////////////////
+// HELPERS
+///////////////////////////////////////////////////////////////////////////////
+
+/*
+ * Filter a file reference by string
+ */
+function _filter(i, target) {
+  if ( i.match(/^dev:/) && target !== 'dist-dev' ) {
+    return false;
+  }
+  if ( i.match(/^prod:/) && target !== 'dist' ) {
+    return false;
+  }
+  return true;
+}
+
+/*
+ * Wrapper for reading JS
+ */
+function readScript(target, verbose, compress, list) {
+  return list.filter(function(i) {
+    return _filter(i, target);
+  }).map(function(i) {
+    const path = _path.join(ROOT, i.replace(/^(dev|prod):/, ''));
+    if ( verbose ) {
+      _utils.log('- using:', path, '(compress: ' + String(compress) + ')');
     }
-    if ( i.match(/^prod:/) && opts.target !== 'dist' ) {
-      return false;
+
+    var data = compress ? _ugly.minify(path, {comments: false}).code : _fs.readFileSync(path).toString();
+    if ( target !== 'nw' ) {
+      data = data.replace(/\/\*\![\s\S]*?\*\//, '')
+        .replace(/console\.(log|debug|info|group|groupStart|groupEnd|count)\((.*)\);/g, '')
+        .replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:^\s*\/\/(?:.*)$)/gm, '')
+        .replace(/^\s*[\r\n]/gm, '');
     }
-    return true;
+
+    return data;
+  }).join('\n');
+}
+
+/*
+ * Wrapper for reading CSS
+ */
+function readStyle(target, verbose, compress, list) {
+  return list.filter(function(i) {
+    return _filter(i, target);
+  }).map(function(i) {
+    const path = _path.join(ROOT, i.replace(/^(dev|prod):/, ''))
+    if ( verbose ) {
+      _utils.log('- using:', path, '(compress: ' + String(compress) + ')');
+    }
+
+    var data = _fs.readFileSync(path).toString();
+    if ( compress ) {
+      data = new Cleancss().minify(data).styles;
+    }
+
+    if ( target !== 'nw' ) {
+      data = data.replace(/\/\*\![\s\S]*?\*\//, '')
+        .replace('@charset "UTF-8";', '')
+        .replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:^\s*\/\/(?:.*)$)/gm, '')
+        .replace(/^\s*[\r\n]/gm, '');
+    }
+    return data;
+  }).join('\n');
+}
+
+/*
+ * Create a 'index.html' file
+ */
+function createIndex(verbose, cfg, dist, fn, test) {
+  const tpldir = _path.join(ROOT, 'src', 'templates', 'dist', cfg.build.dist.template);
+  const outdir = _path.join(ROOT, dist || 'dist-dev');
+  const fileName = test ? 'test.html' : 'index.html';
+
+  const scripts = [];
+  const styles = [];
+
+  fn(cfg, function(i) {
+    if ( verbose ) {
+      _utils.log('- including:', i);
+    }
+    styles.push('    <link type="text/css" rel="stylesheet" href="' + i + '" />');
+  }, function(i) {
+    if ( verbose ) {
+      _utils.log('- including:', i);
+    }
+    scripts.push('    <script type="text/javascript" charset="utf-8" src="' + i + '"></script>');
+  }, test);
+
+  const loginName = cfg.build.dist.login || 'default';
+  const loginFile = _path.join(ROOT, 'src', 'templates', 'dist', 'login', loginName + '.html');
+
+  var loginHTML = '';
+  if ( _fs.existsSync(loginFile) ) {
+    loginHTML = _fs.readFileSync(loginFile).toString();
   }
 
-  /**
-   * Wrapper for reading JS
-   */
-  function _readJS(opts, list) {
-    return list.filter(function(i) {
-      return _filter(i, opts);
-    }).map(function(i) {
-      var path = _path.join(ROOT, i.replace(/^(dev|prod):/, ''));
-      var data = opts.compress ? _ugly.minify(path, {comments: false}).code : _fs.readFileSync(path).toString();
+  var tpl = _fs.readFileSync(_path.join(tpldir, fileName)).toString();
+  tpl = _utils.replaceAll(tpl, '%STYLES%', styles.join('\n'));
+  tpl = _utils.replaceAll(tpl, '%SCRIPTS%', scripts.join('\n'));
+  tpl = _utils.replaceAll(tpl, '%LOGIN%', loginHTML);
 
-      if ( opts.target !== 'nw' ) {
-        data = data.replace(/\/\*\![\s\S]*?\*\//, '')
-          .replace(/console\.(log|debug|info|group|groupStart|groupEnd|count)\((.*)\);/g, '')
-          .replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:^\s*\/\/(?:.*)$)/gm, '')
-          .replace(/^\s*[\r\n]/gm, '');
+  _fs.writeFileSync(_path.join(outdir, fileName), tpl);
+}
+
+/*
+ * Get build files
+ */
+function getBuildFiles(opts) {
+  var javascripts = opts.javascript;
+  var stylesheets = opts.stylesheets;
+  var locales = opts.locales;
+
+  if ( opts.overlays ) {
+    Object.keys(opts.overlays).forEach(function(k) {
+      const a = opts.overlays[k];
+      if ( a ) {
+        if ( a.javascript instanceof Array ) {
+          javascripts = javascripts.concat(a.javascript);
+        }
+        if ( a.stylesheets instanceof Array ) {
+          stylesheets = stylesheets.concat(a.stylesheets);
+        }
+        if ( a.locales instanceof Array ) {
+          locales = locales.concat(a.locales);
+        }
       }
-
-      return data;
-    }).join('\n');
-  }
-
-  /**
-   * Wrapper for reading CSS
-   */
-  function _readCSS(opts, list) {
-    return list.filter(function(i) {
-      return _filter(i, opts);
-    }).map(function(i) {
-      var path = _path.join(ROOT, i.replace(/^(dev|prod):/, ''))
-      var data = _fs.readFileSync(path).toString();
-      if ( opts.compress ) {
-        data = new Cleancss().minify(data).styles;
-      }
-
-      if ( opts.target !== 'nw' ) {
-        data = data.replace(/\/\*\![\s\S]*?\*\//, '')
-          .replace('@charset "UTF-8";', '')
-          .replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:^\s*\/\/(?:.*)$)/gm, '')
-          .replace(/^\s*[\r\n]/gm, '');
-      }
-      return data;
-    }).join('\n');
-  }
-
-  /**
-   * Create a 'index.html' file
-   */
-  function _createIndex(opts, dist, fn) {
-    var tpldir = _path.join(ROOT, 'src', 'templates', 'dist', opts.build.dist.template);
-    var outdir = _path.join(ROOT, dist || 'dist-dev');
-    var scripts = [];
-    var styles = [];
-
-    fn(function(i) {
-      if ( opts.verbose ) {
-        _utils.log('-', i);
-      }
-      styles.push('    <link type="text/css" rel="stylesheet" href="' + i + '" />');
-    }, function(i) {
-      if ( opts.verbose ) {
-        _utils.log('-', i);
-      }
-      scripts.push('    <script type="text/javascript" charset="utf-8" src="' + i + '"></script>');
     });
-
-    var tpl = _fs.readFileSync(_path.join(tpldir, 'index.html')).toString();
-    tpl = _utils.replaceAll(tpl, '%STYLES%', styles.join('\n'));
-    tpl = _utils.replaceAll(tpl, '%SCRIPTS%', scripts.join('\n'));
-    tpl = _utils.replaceAll(tpl, '%HANDLER%', opts.handler);
-
-    _fs.writeFileSync(_path.join(outdir, 'index.html'), tpl);
   }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // HELPERS
-  /////////////////////////////////////////////////////////////////////////////
-
-  var TARGETS = {
-    'dist': function(opts, done) {
-      var jsh = _utils.readTemplate('dist/header.js');
-      var cssh = _utils.readTemplate('dist/header.css');
-
-      function _nw(cb) {
-        if ( opts.nw ) {
-          var dest = _path.join(ROOT, 'dist');
-
-          _fs.mkdirSync(_path.join(dest, 'vfs'));
-          _fs.mkdirSync(_path.join(dest, 'vfs', 'home'));
-          _fs.mkdirSync(_path.join(dest, 'vfs', 'home', 'demo'));
-
-          _fs.copySync(
-            _path.join(ROOT, 'README.md'),
-            _path.join(dest, 'vfs', 'home', 'demo', 'README.md')
-          );
-          _fs.copySync(
-            _path.join(ROOT, 'src', 'templates', 'nw', 'package.json'),
-            _path.join(dest, 'package.json')
-          );
-          _fs.copySync(
-            _path.join(ROOT, 'src', 'server', 'packages.json'),
-            _path.join(dest, 'packages.json')
-          );
-
-          // Install dependencies
-          _fs.copySync(
-            _path.join(ROOT, 'src', 'server', 'node', 'node_modules'),
-            _path.join(dest, 'node_modules')
-          );
-
-          var cmd = 'cd "' + dest + '" && npm install';
-          require('child_process').exec(cmd, function(err, stdout, stderr) {
-            console.log(stderr, stdout);
-            cb();
-          });
-        } else {
-          cb();
-        }
-      }
-
-      var end = opts.compress ? '.min' : '';
-      _fs.writeFileSync(_path.join(ROOT, 'dist', 'osjs' + end +  '.js'), jsh + _readJS(opts, opts.build.javascript));
-      _fs.writeFileSync(_path.join(ROOT, 'dist', 'locales' + end +  '.js'), jsh + _readJS(opts, opts.build.locales));
-      _fs.writeFileSync(_path.join(ROOT, 'dist', 'osjs' + end +  '.css'), cssh + _readCSS(opts, opts.build.stylesheets));
-
-      var appendString = '';
-      if ( opts.client.Connection.AppendVersion ) {
-        appendString = '?ver=' + opts.client.Connection.AppendVersion;
-      }
-
-      _createIndex(opts, 'dist', function(addStyle, addScript) {
-        if ( opts.compress ) {
-          addStyle('osjs.min.css' + appendString);
-          addScript('osjs.min.js' + appendString);
-          addScript('locales.min.js' + appendString);
-        } else {
-          addStyle('osjs.css' + appendString);
-          addScript('osjs.js' + appendString);
-          addScript('locales.js' + appendString);
-        }
-
-        if ( opts.standalone ) {
-          addScript('_dialogs.js');
-        }
-      });
-
-      if ( opts.standalone ) {
-        var src = _path.join(ROOT, 'src', 'client', 'dialogs.html');
-        _utils.createStandaloneScheme(src, '/dialogs.html', _path.join(ROOT, 'dist', '_dialogs.js'));
-      }
-
-      _nw(done);
-    },
-
-    'dist-dev': function(opts, done) {
-      _createIndex(opts, 'dist-dev', function(addStyle, addScript) {
-        opts.build.javascript.forEach(function(i) {
-          if ( !i.match(/handlers\/(\w+)\/handler\.js$/) ) { // handler scripts are automatically preloaded by config!
-            addScript(i.replace(/src\/client\/(.*)/, 'client/$1'));
-          }
-        });
-
-        opts.build.locales.forEach(function(i) {
-          addScript(i.replace(/src\/client\/(.*)/, 'client/$1'));
-        });
-
-        opts.build.stylesheets.forEach(function(i) {
-          if ( _filter(i, {target: 'dist-dev'}) ) {
-            addStyle(i.replace(/^(dev|prod):/, '').replace(/src\/client\/(.*)/, 'client/$1'));
-          }
-        });
-      });
-
-      done();
-    }
+  return {
+    javascript: javascripts,
+    stylesheets: stylesheets,
+    locales: locales
   };
+}
 
-  /////////////////////////////////////////////////////////////////////////////
-  // API
-  /////////////////////////////////////////////////////////////////////////////
+/*
+ * Build NW files
+ */
+function buildNW() {
+  return new Promise(function(resolve) {
+    const dest = _path.join(ROOT, 'dist');
 
-  /**
-   * grunt build:core
-   *
-   * Builds all core files and generates dist directories
-   */
-  function buildFiles(opts, done) {
-    if ( !TARGETS[opts.target] ) {
-      return done('Invalid target', false);
+    _fs.mkdirSync(_path.join(dest, 'vfs'));
+    _fs.mkdirSync(_path.join(dest, 'vfs', 'home'));
+    _fs.mkdirSync(_path.join(dest, 'vfs', 'home', 'demo'));
+
+    _fs.copySync(
+      _path.join(ROOT, 'README.md'),
+      _path.join(dest, 'vfs', 'home', 'demo', 'README.md')
+    );
+    _fs.copySync(
+      _path.join(ROOT, 'src', 'templates', 'nw', 'package.json'),
+      _path.join(dest, 'package.json')
+    );
+    _fs.copySync(
+      _path.join(ROOT, 'src', 'server', 'packages.json'),
+      _path.join(dest, 'packages.json')
+    );
+
+    // Install dependencies
+    _fs.copySync(
+      _path.join(ROOT, 'src', 'server', 'node'),
+      _path.join(dest, 'node_modules', 'osjs')
+    );
+    _fs.copySync(
+      _path.join(ROOT, 'src', 'templates', 'nw', 'index.js'),
+      _path.join(dest, 'node_modules', 'osjs', 'index.js')
+    );
+
+    const cmd = 'cd "' + dest + '" && npm install';
+    require('child_process').exec(cmd, function(err, stdout, stderr) {
+      console.log(stderr, stdout);
+      resolve();
+    });
+  });
+}
+
+/*
+ * File adder wrapper
+ */
+function addFiles(cfg, addStyle, addScript, test) {
+  const build = getBuildFiles(cfg.build);
+  const jss = (test ? ['vendor/mocha.js', 'vendor/chai.js', 'client/test/test.js'] : []).concat(build.javascript);
+  const csss = (test ? ['vendor/mocha.css'] : []).concat(build.stylesheets);
+
+  jss.forEach(function(i) {
+    addScript(i.replace(/src\/client\/(.*)/, 'client/$1'));
+  });
+
+  build.locales.forEach(function(i) {
+    addScript(i.replace(/src\/client\/(.*)/, 'client/$1'));
+  });
+
+  csss.forEach(function(i) {
+    if ( _filter(i, {target: 'dist-dev'}) ) {
+      addStyle(i.replace(/^(dev|prod):/, '').replace(/src\/client\/(.*)/, 'client/$1'));
+    }
+  });
+}
+
+/*
+ * Copies a templates resources
+ */
+function copyResources(verbose, cfg, dist) {
+  const tpldir = _path.join(ROOT, 'src', 'templates', 'dist', cfg.build.dist.template);
+  const dest = _path.join(ROOT, dist);
+
+  return new Promise(function(resolve) {
+    _glob(_path.join(tpldir, '*.*'), {
+    }).then(function(list) {
+      list.forEach(function(path) {
+        if ( ['index.html', 'test.html'].indexOf(_path.basename(path)) === -1 ) {
+          if ( verbose ) {
+            _utils.log('- copying:', path);
+          }
+
+          _fs.copySync(path, _path.join(dest, path.replace(_utils.fixWinPath(tpldir), '')));
+        }
+      });
+
+      resolve();
+    });
+  });
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// TASKS
+///////////////////////////////////////////////////////////////////////////////
+
+const TARGETS = {
+  'dist': function(cli, cfg) {
+    const jsh = _utils.readTemplate('dist/header.js');
+    const cssh = _utils.readTemplate('dist/header.css');
+
+    const verbose = cli.option('verbose', false);
+    const compress = cli.option('compress', false);
+    const standalone = cli.option('standalone', false);
+    const target = 'dist';
+
+    function _cleanup() {
+      /*
+      return new Promise(function(resolve) {
+        _glob(_path.join(ROOT, 'dist/*.*')).then(function(list) {
+          list.forEach(function(file) {
+            if ( ['settings.js', 'packages.js'].indexOf(_path.basename(file)) !== -1 ) {
+              _utils.removeSilent(file);
+            }
+          });
+          resolve();
+        })
+      });
+      */
+      return Promise.resolve();
     }
 
-    var tpldir = _path.join(ROOT, 'src', 'templates', 'dist', opts.build.dist.template);
-    var outdir = _path.join(ROOT, opts.target);
+    function _build() {
+      return new Promise(function(resolve, reject) {
+        const build = getBuildFiles(cfg.build);
+        const end = compress ? '.min' : '';
 
-    Object.keys(opts.build.statics).forEach(function(f) {
-      var dst = _path.join(ROOT, opts.build.statics[f]);
-      var path = f;
+        _fs.writeFileSync(_path.join(ROOT, 'dist', 'osjs' + end +  '.js'), jsh + readScript(target, verbose, compress, build.javascript));
+        _fs.writeFileSync(_path.join(ROOT, 'dist', 'locales' + end +  '.js'), jsh + readScript(target, verbose, compress, build.locales));
+        _fs.writeFileSync(_path.join(ROOT, 'dist', 'osjs' + end +  '.css'), cssh + readStyle(target, verbose, compress, build.stylesheets));
 
-      if ( f.substr(0, 1) === '?' ) {
-        path = path.substr(1);
-        if ( _fs.existsSync(dst) ) {
-          return;
+        var appendString = '';
+        if ( cfg.client.Connection.AppendVersion ) {
+          appendString = '?ver=' + cfg.client.Connection.AppendVersion;
+        }
+
+        createIndex(verbose, cfg, 'dist', function(c, addStyle, addScript) {
+          if ( compress ) {
+            addStyle('osjs.min.css' + appendString);
+            addScript('osjs.min.js' + appendString);
+            addScript('locales.min.js' + appendString);
+          } else {
+            addStyle('osjs.css' + appendString);
+            addScript('osjs.js' + appendString);
+            addScript('locales.js' + appendString);
+          }
+
+          if ( standalone ) {
+            addScript('_dialogs.js');
+          }
+        });
+
+        if ( standalone ) {
+          const src = _path.join(ROOT, 'src', 'client', 'dialogs.html');
+          _utils.createStandaloneScheme(src, '/dialogs.html', _path.join(ROOT, 'dist', '_dialogs.js'));
+        }
+
+        if ( cli.option('nw') ) {
+          buildNW().then(resolve).catch(reject);
         } else {
-          _fs.mkdirSync(_path.dirname(dst));
+          resolve();
         }
-      }
+      });
+    }
 
-      var src = _path.join(ROOT, path);
-      if ( opts.verbose ) {
-        _utils.log('-', opts.build.statics[f]);
-      }
-      _fs.copySync(src, dst);
+    return new Promise(function(resolve, reject) {
+      _cleanup().then(_build).then(function() {
+        copyResources(verbose, cfg, 'dist').then(resolve);
+      }).catch(reject);
     });
+  },
 
-    var ignore = ['index.html'];
-    _fs.readdirSync(tpldir).forEach(function(iter) {
-      if ( ignore.indexOf(iter) < 0 ) {
-        if ( opts.verbose ) {
-          _utils.log('-', _path.join(tpldir, iter));
-        }
-        _fs.copySync(_path.join(tpldir, iter), _path.join(outdir, iter));
-      }
+  'dist-dev': function(cli, cfg) {
+    const verbose = cli.option('verbose', false);
+
+    return new Promise(function(resolve) {
+      createIndex(verbose, cfg, 'dist-dev', addFiles);
+      createIndex(verbose, cfg, 'dist-dev', addFiles, true);
+
+      copyResources(verbose, cfg, 'dist-dev').then(resolve);
     });
-
-    TARGETS[opts.target](opts, done)
   }
+};
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+/*
+ * Builds core files
+ */
+function buildFiles(target, cli, cfg) {
+  return new Promise(function(resolve, reject) {
+    if ( TARGETS[target] ) {
+      TARGETS[target](cli, cfg).then(resolve).catch(reject);
+    } else {
+      reject('Invalid target: ' + target);
+    }
+  });
+}
 
-  module.exports.buildFiles = buildFiles;
+///////////////////////////////////////////////////////////////////////////////
+// EXPORTS
+///////////////////////////////////////////////////////////////////////////////
 
-})(require('node-fs-extra'), require('path'), require('./utils.js'), require('./manifest.js'));
+module.exports.buildFiles = buildFiles;

@@ -27,310 +27,324 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(_fs, _path, _less, _utils) {
-  'use strict';
 
-  var ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
+/*eslint strict:["error", "global"]*/
+'use strict';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // HELPERS
-  /////////////////////////////////////////////////////////////////////////////
+const _path = require('path');
+const _glob = require('glob-promise');
+const _fs = require('node-fs-extra');
 
-  /**
-   * Reads given template
-   */
-  function _readTemplate(cb) {
-    var src = _path.join(ROOT, 'src', 'templates', 'dist', 'packages.js');
-    _fs.readFile(src, function(err, res) {
-      cb(err, err ? false : res.toString());
-    });
-  }
+const _config = require('./config.js');
 
-  /**
-   * Wrapper for creating config file from template
-   */
-  function _createClientManifest(manifest, target, fn, done) {
-    var dest = _path.join(ROOT, target, 'packages.js');
-    var oroot = _path.join(ROOT, 'src', 'packages')
-    var newman = JSON.parse(JSON.stringify(manifest));
+const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
 
-    fn(oroot, newman, function(result) {
-      _readTemplate(function(err, tpl) {
-        _fs.writeFile(dest, tpl.replace('%PACKAGES%', JSON.stringify(newman, null, 4)), function() {
-          done(newman);
-        });
-      });
-    });
-  }
+///////////////////////////////////////////////////////////////////////////////
+// HELPERS
+///////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Iterate all preloads that are valid
-   */
-  function _iteratePreloads(man, cb) {
-    Object.keys(man).forEach(function(p) {
-      var pre = man[p].preload;
-      pre.forEach(function(iter) {
-        if ( !iter.src.match(/^(ftp|https?\:)?\/\//) ) {
-          cb(iter, man[p]);
-        }
-      });
-    });
-  }
+/*
+ * Parses the preload array(s)
+ */
+function parsePreloads(iter) {
+  if ( typeof iter === 'string' ) {
+    var niter = {
+      src: iter,
+      type: null
+    };
 
-  /**
-   * Checks if a package is enabled
-   */
-  function _checkEnabledState(force, metadata, name) {
-    if ( force ) {
-      if ( String(metadata.enabled) === 'false' ) {
-        return force.enabled.indexOf(name) !== -1;
-      } else {
-        return force.disabled.indexOf(name) === -1;
-      }
+    if ( iter.match(/\.js/) ) {
+      niter.type = 'javascript';
+    } else if ( iter.match(/\.css/) ) {
+      niter.type = 'stylesheet';
+    } else if ( iter.match(/\.html/) ) {
+      niter.type = 'html';
     }
+
+    return niter;
+  }
+
+  return iter;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// API
+///////////////////////////////////////////////////////////////////////////////
+
+/*
+ * Checks if package is enabled
+ */
+function checkEnabledState(enabled, disabled, meta) {
+  const name = meta.path;
+  const shortName = meta.path.split('/')[1];
+
+  if ( String(meta.enabled) === 'false' ) {
+    if ( enabled.indexOf(shortName) !== -1 ) {
+      return true;
+    }
+    return enabled.indexOf(name) !== -1;
+  }
+
+  if ( disabled.indexOf(shortName) === -1 ) {
     return true;
   }
+  return disabled.indexOf(name) === -1;
+}
 
-  /////////////////////////////////////////////////////////////////////////////
-  // BUILD TARGETS
-  /////////////////////////////////////////////////////////////////////////////
+/*
+ * Get Package Metadata
+ */
+function getPackageMetadata(repo, file) {
 
-  var TARGETS = {
+  return new Promise(function(resolve, reject) {
+    const name = [repo, _path.basename(_path.dirname(file))].join('/');
+    const meta = JSON.parse(_fs.readFileSync(file));
 
-    'dist': function(manifest, opts, done) {
-      _createClientManifest(manifest, 'dist', function(oroot, man, cb) {
-        Object.keys(man).forEach(function(p) {
-          man[p].preload = combinePreloads(man[p])
-        });
+    meta.type = meta.type || 'application';
+    meta.path = name;
+    meta.build = meta.build || {};
+    meta.repo = repo;
+    meta.preload = (meta.preload ? meta.preload : []).map(parsePreloads);
 
-        cb();
-      }, done);
-    },
-
-    'dist-dev': function(manifest, opts, done) {
-      _createClientManifest(manifest, 'dist-dev', function(oroot, man, cb) {
-        _iteratePreloads(man, function(iter, meta) {
-          var asrc = _path.join(oroot, meta.path, iter.src);
-          if ( _fs.existsSync(asrc) ) {
-            var stat = _fs.statSync(asrc);
-            iter.mtime = (new Date(stat.mtime)).getTime();
-          }
-        });
-
-        cb(man);
-      }, done);
-    },
-
-    'server': function(manifest, opts, done) {
-      var dest = _path.join(ROOT, 'src', 'server', 'packages.json');
-      _fs.writeFile(dest, JSON.stringify(manifest, null, 4), done);
+    if ( typeof meta.sources !== 'undefined' ) {
+      meta.preload = meta.preload.concat(meta.sources.map(parsePreloads));
     }
 
+    resolve(Object.freeze(meta));
+  });
+}
+
+/*
+ * Get packages from repository
+ */
+function getRepositoryPackages(repo, all) {
+  const path = _path.join(ROOT, 'src/packages', repo);
+  const result = {};
+
+  return new Promise(function(resolve, reject) {
+    _config.getConfiguration().then(function(cfg) {
+      const forceEnabled = _config.getConfigPath(cfg, 'packages.ForceEnable', []);
+      const forceDisabled = _config.getConfigPath(cfg, 'packages.ForceDisable', []);
+
+      _glob(_path.join(path, '*', 'metadata.json')).then(function(files) {
+
+        Promise.each(files.map(function(file) {
+          return function() {
+            return getPackageMetadata(repo, file);
+          };
+        }), function(meta) {
+          meta = Object.assign({}, meta);
+          if ( all || checkEnabledState(forceEnabled, forceDisabled, meta) ) {
+            result[meta.path] = meta;
+          }
+        }).then(function() {
+          resolve(result);
+        }).catch(reject);
+
+      }).catch(reject);
+    }).catch(reject);
+  });
+}
+
+/*
+ * Get all packages (with filter)
+ */
+function getPackages(repos, filter) {
+  repos = repos || [];
+  filter = filter || function() {
+    return true;
   };
 
-  /////////////////////////////////////////////////////////////////////////////
-  // API
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Parses a preload entry and makes corrections
-   */
-  function parsePreloads(iter) {
-    if ( typeof iter === 'string' ) {
-      var niter = {
-        src: iter,
-        type: null
+  var list = {};
+  return new Promise(function(resolve, reject) {
+    Promise.each(repos.map(function(repo) {
+      return function() {
+        return getRepositoryPackages(repo);
       };
+    }), function(packages) {
+      list = Object.assign(list, packages);
+    }).then(function() {
+      const result = {};
+      Object.keys(list).forEach(function(k) {
+        if ( filter(list[k]) ) {
+          result[k] = list[k];
+        }
+      });
 
-      if ( iter.match(/\.js/) ) {
-        niter.type = 'javascript';
-      } else if ( iter.match(/\.css/) ) {
-        niter.type = 'stylesheet';
-      } else if ( iter.match(/\.html/) ) {
-        niter.type = 'html';
-      }
+      resolve(result);
+    }).catch(reject);
+  });
+}
 
-      return niter;
+/*
+ * Generates a client-side manifest file
+ */
+function generateClientManifest(target, manifest) {
+  return new Promise(function(resolve, reject) {
+    const dest = _path.join(ROOT, target, 'packages.js');
+
+    var tpl = _fs.readFileSync(_path.join(ROOT, 'src/templates/dist/packages.js'));
+    tpl = tpl.toString().replace('%PACKAGES%', JSON.stringify(manifest, null, 4));
+
+    _fs.writeFile(dest, tpl, function(err) {
+      /*eslint no-unused-expressions: "off"*/
+      err ? reject(err) : resolve();
+    });
+  });
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// API
+///////////////////////////////////////////////////////////////////////////////
+
+/*
+ * Gets a package manifest by name
+ */
+function getPackage(name) {
+  const file = _path.join(ROOT, 'src/packages', name, 'metadata.json');
+  const repo = file.split('/')[0];
+  return getPackageMetadata(repo, file);
+}
+
+/*
+ * Combines preload files
+ */
+function combinePreloads(manifest) {
+  var pcss = false;
+  var pjs  = false;
+  var preload = [];
+
+  manifest.preload.forEach(function(p) {
+    if ( p.combine === false || p.src.match(/^(ftp|https?\:)?\/\//) ) {
+      preload.push(p);
+      return;
     }
 
-    return iter;
-  }
-
-  /**
-   * Check preloads in given manifest and combine as needed
-   */
-  function combinePreloads(manifest) {
-    var pcss = false;
-    var pjs  = false;
-    var preload = [];
-
-    manifest.preload.forEach(function(p) {
-      if ( p.combine === false || p.src.match(/^(ftp|https?\:)?\/\//) ) {
-        preload.push(p);
-        return;
+    if ( p.type === 'javascript' ) {
+      if ( !pjs ) {
+        preload.push({type: 'javascript', src: 'combined.js'});
       }
-
-      if ( p.type === 'javascript' ) {
-        if ( !pjs ) {
-          preload.push({type: 'javascript', src: 'combined.js'});
-        }
-        pjs = true;
-      } else if ( p.type === 'stylesheet' ) {
-        if ( !pcss ) {
-          preload.push({type: 'stylesheet', src: 'combined.css'});
-        }
-        pcss = true;
-      } else {
-        preload.push(p);
+      pjs = true;
+    } else if ( p.type === 'stylesheet' ) {
+      if ( !pcss ) {
+        preload.push({type: 'stylesheet', src: 'combined.css'});
       }
+      pcss = true;
+    } else {
+      preload.push(p);
+    }
+  });
+
+  return preload;
+}
+
+/*
+ * Parses a client manifest
+ */
+function mutateClientManifest(packages) {
+  packages = JSON.parse(JSON.stringify(packages));
+
+  Object.keys(packages).forEach(function(p) {
+    packages[p].preload = combinePreloads(packages[p]);
+
+    if ( packages[p].build ) {
+      delete packages[p].build;
+    }
+
+    if ( typeof packages[p].enabled !== 'undefined' ) {
+      delete packages[p].enabled;
+    }
+
+    if ( packages[p].type === 'service' ) {
+      packages[p].singular = true;
+    }
+
+  });
+
+  return packages;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// TASKS
+///////////////////////////////////////////////////////////////////////////////
+
+const TARGETS = {
+  'dist': function(cli, cfg) {
+    return new Promise(function(resolve, reject) {
+      getPackages(cfg.repositories).then(function(packages) {
+        packages = mutateClientManifest(packages);
+
+        generateClientManifest('dist', packages).then(resolve).catch(reject);
+      });
     });
+  },
 
-    return preload;
-  }
+  'dist-dev': function(cli, cfg) {
+    return new Promise(function(resolve, reject) {
+      getPackages(cfg.repositories).then(function(packages) {
+        packages = JSON.parse(JSON.stringify(packages));
 
-  /**
-   * Gets a package given by name
-   */
-  function getPackage(opts, done) {
-    var path = _path.join(ROOT, 'src', 'packages', opts.repository, opts.name);
-    var metapath = _path.join(path, 'metadata.json');
+        Object.keys(packages).forEach(function(p) {
+          var pkg = packages[p];
 
-    _fs.exists(metapath, function(exists) {
-      if ( !exists ) {
-        return done('Could not find metadata for package: ' + metapath);
-      }
+          if ( pkg.preload ) {
+            pkg.preload = pkg.preload.map(function(iter) {
+              if ( !iter.src.match(/^(ftp|https?):/) ) {
+                try {
+                  const asrc = _path.join(ROOT, 'src/packages', pkg.path, iter.src);
+                  const stat = _fs.statSync(asrc);
 
-      _utils.readJSON(metapath, function(err, meta) {
-        if ( err ) {
-          console.log('Error while parsing', metapath, err);
-          done(err, false);
-        } else {
-          var name = [opts.repository, opts.name].join('/');
-
-          meta.type = meta.type || 'application';
-          meta.path = name;
-          meta.build = meta.build || {};
-          meta.repo = opts.repository;
-          meta.preload = meta.preload ? meta.preload.map(parsePreloads) : [];
-
-          if ( meta.sources && meta.sources.length ) {
-            meta.sources = meta.sources.map(function(s, i) {
-              if ( !s.src.match(/^(ftp|https?\:)?\/\//) ) {
-                s.src = _path.join('packages', name, s.src);
+                  iter.mtime = (new Date(stat.mtime)).getTime();
+                } catch ( e ) {}
               }
-              return s;
+              return iter;
             });
           }
-
-          if ( meta.type === 'service' ) {
-            meta.singular = true;
-          }
-
-          done(false, meta);
-        }
-      }, true);
-    });
-  }
-
-  /**
-   * Gets package manifests from given repository
-   */
-  function getRepositoryPackages(opts, done) {
-    var path = _path.join(ROOT, 'src', 'packages', opts.repository);
-    var packages = {};
-
-    _utils.enumDirectories(path, function(list) {
-      _utils.iterate(list, function(iter, idx, next) {
-
-        getPackage({
-          repository: opts.repository,
-          name: iter
-        }, function(err, metadata) {
-          if ( !err && metadata ) {
-            packages[metadata.path] = metadata;
-          }
-          next();
         });
-      }, function() {
-        done(false, packages);
+
+        generateClientManifest('dist-dev', packages).then(resolve).catch(reject);
+      });
+    });
+  },
+
+  'server': function(cli, cfg) {
+    return new Promise(function(resolve, reject) {
+      const dest = _path.join(ROOT, 'src', 'server', 'packages.json');
+
+      getPackages(cfg.repositories).then(function(packages) {
+        const meta = {
+          'dist': mutateClientManifest(packages),
+          'dist-dev': packages
+        };
+
+        _fs.writeFile(dest, JSON.stringify(meta, null, 4), function(err) {
+          err ? reject(err) : resolve();
+        });
       });
     });
   }
+};
 
-  /**
-   * Gets packages from given repository
-   */
-  function getPackages(opts, done) {
-    var packages = {};
+/*
+ * Writes the given manifest file(s)
+ */
+function writeManifest(target, cli, cfg) {
+  return new Promise(function(resolve, reject) {
+    if ( TARGETS[target] ) {
+      console.log('Generating manifest for', target);
+      TARGETS[target](cli, cfg).then(resolve).catch(reject);
+    } else {
+      reject('Invalid target ' + target);
+    }
+  });
+}
 
-    _utils.iterate(opts.repositories, function(iter, idx, next) {
-      getRepositoryPackages({repository: iter}, function(err, res) {
-        if ( !err ) {
-          Object.keys(res).forEach(function(key) {
-            if ( !packages[key] ) {
-              var pn = key.split('/')[1] || key;
-              if ( _checkEnabledState(opts.force, res[key], pn) ) {
-                packages[key] = res[key];
-              }
-            }
-          });
-        }
-        next();
-      });
-    }, function() {
-      done(false, packages);
-    });
-  }
+///////////////////////////////////////////////////////////////////////////////
+// EXPORTS
+///////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Gets package manifests from given repositories
-   */
-  function getManifest(opts, done) {
-    getPackages({
-      force: opts.force,
-      repositories: opts.repositories
-    }, function(err, packages) {
-      var result = {
-        'dist-dev': packages,
-        'dist': (function() {
-          var result = JSON.parse(JSON.stringify(packages));
-          Object.keys(result).forEach(function(p) {
-            result[p].preload = combinePreloads(result[p]);
-          });
-          return result;
-        })()
-      };
-
-      done(err, opts.target ? result[opts.target] : result);
-    });
-  }
-
-  /**
-   * grunt build:manifest
-   *
-   * Builds package manifest(s)
-   */
-  function writeManifest(opts, done) {
-    getManifest({
-      force: opts.force,
-      repositories: opts.repositories,
-      target: opts.target === 'server' ? null : opts.target
-    }, function(err, manifest) {
-      TARGETS[opts.target](manifest, opts, function() {
-        done();
-      });
-    });
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  module.exports.getRepositoryPackages = getRepositoryPackages;
-  module.exports.getPackage = getPackage;
-  module.exports.getPackages = getPackages;
-  module.exports.getManifest = getManifest;
-  module.exports.writeManifest = writeManifest;
-  module.exports.combinePreloads = combinePreloads;
-
-})(require('node-fs-extra'), require('path'), require('less'), require('./utils.js'));
+module.exports.getPackages = getPackages;
+module.exports.getPackage = getPackage;
+module.exports.writeManifest = writeManifest;
+module.exports.combinePreloads = combinePreloads;
+module.exports.checkEnabledState = checkEnabledState;

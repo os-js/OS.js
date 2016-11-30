@@ -27,255 +27,270 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(_path, _fs, _unzip, _vfs) {
-  'use strict';
+/*eslint strict:["error", "global"]*/
+'use strict';
 
-  /**
-   * @namespace PackageManager
-   */
+const _path = require('path');
+const _fs = require('node-fs-extra');
+const _unzip = require('unzip');
+const _vfs = require('./vfs.js');
+const _utils = require('./utils.js');
+const _instance = require('./instance.js');
 
-  function que(queue, onentry, ondone) {
-    (function next(idx) {
-      if ( idx >= queue.length ) {
-        return ondone(false);
-      }
-      onentry(queue[idx], function() {
-        next(idx + 1);
+/**
+ * @namespace core.packagemanager
+ */
+
+/////////////////////////////////////////////////////////////////////////////
+// HELPERS
+/////////////////////////////////////////////////////////////////////////////
+
+function getSystemMetadata(http, resolve, reject, args) {
+  const env = _instance.getEnvironment();
+  const path = _path.join(env.SERVERDIR, 'packages.json');
+  _fs.readFile(path, function(e, data) {
+    if ( e ) {
+      reject(e);
+    } else {
+      var meta = JSON.parse(data)[env.DIST];
+      Object.keys(meta).forEach(function(k) {
+        meta[k].scope = 'system';
       });
-    })(0);
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
-  // HELPERS
-  /////////////////////////////////////////////////////////////////////////////
-
-  function getSystemMetadata(server, cb) {
-    var path = _path.join(server.config._cfgdir, 'packages.json');
-    _fs.readFile(path, function(e, data) {
-      if ( e ) {
-        cb(e);
-      } else {
-        var meta = JSON.parse(data)[server.config._env];
-        Object.keys(meta).forEach(function(k) {
-          meta[k].scope = 'system';
-        });
-        cb(false, meta);
-      }
-    });
-  }
-
-  function getUserMetadata(server, paths, cb) {
-    paths = paths || [];
-
-    var summed = {};
-    que(paths, function(iter, next) {
-      var path = [iter, 'packages.json'].join('/'); // path.join does not work
-      try {
-        _vfs.read(server, {path: path, options: {raw: true}}, function(err, res) {
-          if ( !err && res ) {
-            try {
-              var meta = JSON.parse(res);
-              Object.keys(meta).forEach(function(k) {
-                summed[k] = meta[k];
-                summed[k].scope = 'user';
-              });
-            } catch ( e ) {
-              // TODO: Log!
-            }
-          }
-          next();
-        });
-      } catch ( e ) {
-        next();
-      }
-    }, function() {
-      cb(false, summed);
-    });
-  }
-
-  function generateUserMetadata(server, paths, cb) {
-    paths = paths || [];
-
-    que(paths, function(root, next) {
-      _vfs.scandir(server, {path: root}, function(err, list) {
-        var summed = {};
-
-        que(list || [], function(liter, nnext) {
-          var dirname = liter.filename;
-
-          if ( liter.type === 'dir' && dirname.substr(0, 1) !== '.' ) {
-            var path = [root, dirname, 'metadata.json'].join('/'); // path.join does not work
-            _vfs.read(server, {path: path, options: {raw: true}}, function(err, res) {
-              if ( !err && res ) {
-                var meta = JSON.parse(res);
-                meta.path = root + '/' + dirname;
-                summed[meta.className] = meta;
-              }
-              nnext();
-            });
-          } else {
-            nnext();
-          }
-        }, function() {
-          var path = [root, 'packages.json'].join('/'); // path.join does not work
-          var data = JSON.stringify(summed);
-          var realPath = _vfs.getRealPath(server, path);
-
-          _fs.writeFile(realPath.root, data, function(err) {
-            next();
-          });
-        });
-      });
-    }, function() {
-      cb(false, true);
-    });
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
-  // PACKAGE MANAGER
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Installs given package
-   *
-   * @param   {Object}    server          Server object
-   * @param   {Object}    args            API Call Arguments
-   * @param   {String}    args.zip        Package zip path
-   * @param   {String}    args.dest       Package destination path
-   * @param   {Array}     args.paths      Package paths (for user scope)
-   * @param   {Function}  callback        Callback function => fn(error, result)
-   *
-   * @function install
-   * @memberof PackageManager
-   */
-  module.exports.install = function(server, args, cb) {
-    /*eslint new-cap: "warn"*/
-
-    function _onerror(root, e) {
-      _fs.remove(root, function() {
-        cb(e);
-      });
+      resolve(meta);
     }
+  });
+}
 
-    if ( args.zip && args.dest && args.paths ) {
-      var destPath = _vfs.getRealPath(server, args.dest);
-      var zipPath = _vfs.getRealPath(server, args.zip);
+function getUserMetadata(http, resolve, reject, args) {
+  const paths = args.paths || [];
+  var summed = {};
 
-      _fs.exists(destPath.root, function(exists) {
-        if ( exists ) {
-          cb('Package is already installed');
-          return;
+  _utils.iterate(paths, function(iter, index, next) {
+    const path = [iter, 'packages.json'].join('/'); // path.join does not work
+    try {
+      const args = {
+        path: path,
+        options: {
+          stream: false,
+          raw: true
         }
+      };
 
-        _fs.mkdir(destPath.root, function() {
-          /*eslint new-cap: "off"*/
-          try {
-            _fs.createReadStream(zipPath.root).pipe(_unzip.Extract({
-              path: destPath.root
-            })).on('finish', function() {
-              cb(false, true);
-            }).on('error', function(e) {
-              _onerror(destPath.root, 'Error occured while unzipping: ' + e);
+      _vfs._request(http, 'read', args).then(function(res) {
+        var meta = JSON.parse(res);
+        Object.keys(meta).forEach(function(k) {
+          summed[k] = meta[k];
+          summed[k].scope = 'user';
+        });
+        next();
+      }).catch(next);
+    } catch ( e ) {
+      next();
+    }
+  }, function() {
+    resolve(summed);
+  });
+}
+
+function generateUserMetadata(http, resolve, reject, args) {
+  const paths = args.paths || [];
+  var summed = {};
+
+  _utils.iterate(paths, function(root, rindex, next) {
+    _vfs._request(http, 'scandir', {path: root}).then(function(list) {
+      _utils.iterate(list || [], function(liter, lindex, nnext) {
+        const dirname = liter.filename;
+        if ( liter.type === 'dir' && dirname.substr(0, 1) !== '.' ) {
+          const path = [root, dirname, 'metadata.json'].join('/'); // path.join does not work
+          const args = {
+            path: path,
+            options: {
+              stream: false,
+              raw: true
+            }
+          };
+
+          _vfs._request(http, 'read', args).then(function(res) {
+            if ( res ) {
+              var meta = JSON.parse(res);
+              meta.path = root + '/' + dirname;
+              summed[meta.className] = meta;
+            }
+
+            nnext();
+          }).catch(nnext);
+        } else {
+          nnext();
+        }
+      }, function() {
+        const args = {
+          data: JSON.stringify(summed),
+          path: [root, 'packages.json'].join('/'),
+          options: {
+            raw: true,
+            rawtype: 'utf8'
+          }
+        };
+
+        _vfs._request(http, 'write', args).then(next).catch(next);
+      });
+    }).catch(next);
+  }, function() {
+    resolve(true);
+  });
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// PACKAGE MANAGER
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Installs given package
+ *
+ * @param   {ServerRequest}    http          OS.js Server Request
+ * @param   {Function}         resolve       Resolves the Promise
+ * @param   {Function}         reject        Rejects the Promise
+ * @param   {Object}           args          API Call Arguments
+ *
+ * @param   {String}    args.zip        Package zip path
+ * @param   {String}    args.dest       Package destination path
+ * @param   {Array}     args.paths      Package paths (for user scope)
+ *
+ * @function install
+ * @memberof core.packagemanager
+ */
+module.exports.install = function(http, resolve, reject, args) {
+  /*eslint new-cap: "warn"*/
+  /*eslint new-cap: "off"*/
+
+  function _onerror(e) {
+    _vfs._request(http, 'delete', {path: args.dest}).then(function() {
+      reject(e);
+    }).catch(function() {
+      reject(e);
+    });
+  }
+
+  if ( args.zip && args.dest && args.paths ) {
+    _vfs._request(http, 'exists', {
+      path: args.dest
+    }).then(function() {
+      _vfs._request(http, 'mkdir', {
+        path: args.dest
+      }).then(function() {
+        _vfs.createReadStream(http, args.zip).then(function(zipStream) {
+          zipStream.pipe(_unzip.Parse()).on('entry', function(entry) {
+            _vfs.createWriteStream(http, [args.dest, entry.path].join('/')).then(function(s) {
+              entry.pipe(s);
             });
-          } catch ( e ) {
-            _onerror(destPath.root, 'Exception occured while unzipping: ' + e);
+          }).on('finish', function() {
+            resolve(true);
+          }).on('error', _onerror);
+        }).catch(_onerror);
+
+      }).catch(_onerror);
+    }).catch(reject);
+  } else {
+    reject('Invalid install action');
+  }
+};
+
+/**
+ * Uninstalls given package
+ *
+ * @param   {ServerRequest}    http          OS.js Server Request
+ * @param   {Function}         resolve       Resolves the Promise
+ * @param   {Function}         reject        Rejects the Promise
+ * @param   {Object}           args          API Call Arguments
+ *
+ * @param   {String}    args.path    Package path
+ *
+ * @function uninstall
+ * @memberof core.packagemanager
+ */
+module.exports.uninstall = function(http, resolve, reject, args) {
+  if ( args.path ) {
+    _vfs._request(http, 'delete', {
+      path: args.path
+    }).then(resolve).catch(reject);
+  } else {
+    reject('Invalid uninstall action');
+  }
+};
+
+/**
+ * Updates given package
+ *
+ * @param   {ServerRequest}    http          OS.js Server Request
+ * @param   {Function}         resolve       Resolves the Promise
+ * @param   {Function}         reject        Rejects the Promise
+ * @param   {Object}           args          API Call Arguments
+ *
+ *
+ * @function update
+ * @memberof core.packagemanager
+ */
+module.exports.update = function(http, resolve, reject, args) {
+  reject('Unavailable');
+};
+
+/**
+ * Perform cache action
+ *
+ * @param   {ServerRequest}    http          OS.js Server Request
+ * @param   {Function}         resolve       Resolves the Promise
+ * @param   {Function}         reject        Rejects the Promise
+ * @param   {Object}           args          API Call Arguments
+ *
+ * @param   {String}    [args.scope]    Package scope (user, system or null)
+ * @param   {Array}     [args.paths]    Package paths (for user scope)
+ *
+ * @function cache
+ * @memberof core.packagemanager
+ */
+module.exports.cache = function(http, resolve, reject, args) {
+  var action = args.action;
+  if ( action === 'generate' && args.scope === 'user' ) {
+    generateUserMetadata(http, resolve, reject, args);
+  } else {
+    reject('Unavailable');
+  }
+};
+
+/**
+ * List packages
+ *
+ * @param   {ServerRequest}    http          OS.js Server Request
+ * @param   {Function}         resolve       Resolves the Promise
+ * @param   {Function}         reject        Rejects the Promise
+ * @param   {Object}           args          API Call Arguments
+ *
+ * @param   {String}    [args.scope]    Package scope (user, system or null)
+ * @param   {Array}     [args.paths]    Package paths (for user scope)
+ *
+ * @function list
+ * @memberof core.packagemanager
+ */
+module.exports.list = function(http, resolve, reject, args) {
+  if ( !args.scope ) {
+    getSystemMetadata(http, function(summed) {
+      summed = summed || {};
+
+      getUserMetadata(http, function(r) {
+        Object.keys(r || {}).forEach(function(k) {
+          if ( !summed[k] ) {
+            summed[k] = r[k];
           }
         });
-      });
+        resolve(summed);
+      }, reject, args);
+    }, reject, args);
+  } else if ( args.scope === 'system' ) {
+    getSystemMetadata(http, resolve, reject, args);
+  } else if ( args.scope === 'user' ) {
+    getUserMetadata(http, resolve, reject, args);
+  } else {
+    reject('Invalid scope');
+  }
+};
 
-      return;
-    }
-    cb('Invalid install action');
-  };
-
-  /**
-   * Uninstalls given package
-   *
-   * @param   {Object}    server          Server object
-   * @param   {Object}    args            API Call Arguments
-   * @param   {Function}  callback        Callback function => fn(error, result)
-   *
-   * @function uninstall
-   * @memberof PackageManager
-   */
-  module.exports.uninstall = function(server, args, cb) {
-    if ( args.path ) {
-      var destPath = _vfs.getRealPath(server, args.path);
-      _fs.remove(destPath.root, function(e) {
-        cb(e ? e : false, !e);
-      });
-    } else {
-      cb('Invalid uninstall action');
-    }
-  };
-
-  /**
-   * Updates given package
-   *
-   * @param   {Object}    server          Server object
-   * @param   {Object}    args            API Call Arguments
-   * @param   {Function}  callback        Callback function => fn(error, result)
-   *
-   * @function update
-   * @memberof PackageManager
-   */
-  module.exports.update = function(server, args, cb) {
-    cb('Unavailable');
-  };
-
-  /**
-   * Perform cache action
-   *
-   * @param   {Object}    server          Server object
-   * @param   {Object}    args            API Call Arguments
-   * @param   {String}    [args.scope]    Package scope (user, system or null)
-   * @param   {Array}     [args.paths]    Package paths (for user scope)
-   * @param   {Function}  callback        Callback function => fn(error, result)
-   *
-   * @function cache
-   * @memberof PackageManager
-   */
-  module.exports.cache = function(server, args, cb) {
-    var action = args.action;
-    if ( action === 'generate' && args.scope === 'user' ) {
-      generateUserMetadata(server, args.paths, cb);
-    } else {
-      cb('Unavailable');
-    }
-  };
-
-  /**
-   * List packages
-   *
-   * @param   {Object}    server          Server object
-   * @param   {Object}    args            API Call Arguments
-   * @param   {String}    [args.scope]    Package scope (user, system or null)
-   * @param   {Array}     [args.paths]    Package paths (for user scope)
-   * @param   {Function}  callback        Callback function => fn(error, result)
-   *
-   * @function list
-   * @memberof PackageManager
-   */
-  module.exports.list = function(server, args, cb) {
-    if ( !args.scope ) {
-      getSystemMetadata(server, function(e, r) {
-        var summed = r || {};
-        getUserMetadata(server, args.paths, function(e, r) {
-          Object.keys(r || {}).forEach(function(k) {
-            if ( !summed[k] ) {
-              summed[k] = r[k];
-            }
-          });
-          cb(false, summed);
-        });
-      });
-    } else if ( args.scope === 'system' ) {
-      getSystemMetadata(server, cb);
-    } else if ( args.scope === 'user' ) {
-      getUserMetadata(server, args.paths, cb);
-    } else {
-      cb('Invalid scope');
-    }
-  };
-
-})(require('path'), require('node-fs-extra'), require('unzip'), require('./vfs.js'));

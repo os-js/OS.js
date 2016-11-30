@@ -51,6 +51,11 @@
 
       win._on('inited', function(scheme) {
         // Window inited and rendered
+
+        // Example on how to call `api.js` methods
+        app._api('test', {}, function(err, res) {
+          console.log('Result from your server API method', err, res);
+        });
       });
 
       app._addWindow(win);

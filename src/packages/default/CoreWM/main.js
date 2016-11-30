@@ -60,6 +60,7 @@
     WindowManager.apply(this, ['CoreWM', this, args, metadata, defaultSettings(importSettings)]);
 
     this.panels           = [];
+    this.widgets          = [];
     this.switcher         = null;
     this.iconView         = null;
     this.$themeLink       = null;
@@ -145,8 +146,8 @@
   CoreWM.prototype.init = function() {
     var link = (OSjs.Core.getConfig().Connection.RootURI || '/') + 'blank.css';
 
-    this.setThemeLink(Utils.checkdir(link));
-    this.setAnimationLink(Utils.checkdir(link));
+    this.setThemeLink(link);
+    this.setAnimationLink(link);
 
     WindowManager.prototype.init.apply(this, arguments);
   };
@@ -155,7 +156,7 @@
     var self = this;
 
     function initNotifications() {
-      var user = OSjs.Core.getHandler().getUserData();
+      var user = OSjs.Core.getAuthenticator().getUser();
 
       function displayMenu(ev) {
         OSjs.API.createMenu([{
@@ -241,36 +242,25 @@
 
     this.applySettings(this._settings.get());
 
-    this._on('vfs', function(msg, obj) {
-      if ( !obj || msg.match(/^vfs:(un)?mount/) ) {
-        return;
-      }
-
-      var wasTouched = false;
-      var desktopPath = self.getSetting('desktopPath');
-
-      function _check(f) {
-        return f.path.substr(0, desktopPath.length) === desktopPath;
-      }
-
-      if ( obj.destination ) {
-        wasTouched = _check(obj.destination);
-        if ( !wasTouched ) {
-          wasTouched = _check(obj.source);
+    try {
+      VFS.watch(VFS.file(this.getSetting('desktopPath'), 'dir'), function(msg, obj) {
+        if ( !obj || msg.match(/^vfs:(un)?mount/) ) {
+          return;
         }
-      } else {
-        wasTouched = _check(obj);
-      }
 
-      if ( wasTouched && self.iconView ) {
-        self.iconView._refresh();
-      }
-    });
+        if ( self.iconView ) {
+          self.iconView._refresh();
+        }
+      });
+    } catch ( e ) {
+      console.warn('Failed to apply CoreWM VFS watch', e, e.stack);
+    }
 
-    self.initSwitcher();
-    self.initDesktop();
-    self.initPanels();
-    self.initIconView();
+    this.initSwitcher();
+    this.initDesktop();
+    this.initPanels();
+    this.initWidgets();
+    this.initIconView();
 
     initNotifications();
 
@@ -295,6 +285,8 @@
 
     // Reset
     this.destroyPanels();
+    this.destroyWidgets();
+
     var settings = this.importedSettings;
     try {
       settings.background = 'color';
@@ -318,6 +310,13 @@
       p.destroy();
     });
     this.panels = [];
+  };
+
+  CoreWM.prototype.destroyWidgets = function() {
+    this.widgets.forEach(function(w) {
+      w.destroy();
+    });
+    this.widgets = [];
   };
 
   // Copy from Application
@@ -465,6 +464,32 @@
     }, 1000);
   };
 
+  CoreWM.prototype.initWidgets = function(applySettings) {
+    var self = this;
+
+    this.destroyWidgets();
+
+    var widgets = this.getSetting('widgets');
+
+    (widgets || []).forEach(function(item) {
+      if ( !item.settings ) {
+        item.settings = {};
+      }
+
+      var settings = new OSjs.Helpers.SettingsFragment(item.settings, 'CoreWM');
+
+      try {
+        var w = new OSjs.Applications.CoreWM.Widgets[item.name](settings);
+        w.init(document.body);
+        self.widgets.push(w);
+
+        w._inited();
+      } catch ( e ) {
+        console.warn('CoreWM::initWidgets()', e, e.stack);
+      }
+    });
+  };
+
   CoreWM.prototype.initIconView = function() {
     var self = this;
 
@@ -594,18 +619,24 @@
     };
 
     var _openMenu = function(data) {
-      var pos = {x: ev.clientX, y: ev.clientY};
       OSjs.API.createMenu([{
+        title: OSjs.Applications.CoreWM._('LBL_COPY'),
+        onClick: function() {
+          var dst = Utils.pathJoin(OSjs.Core.getWindowManager().getSetting('desktopPath'), data.filename);
+          VFS.copy(data, dst, function() {});
+        }
+      /*}, {
         title: OSjs.Applications.CoreWM._('Create shortcut'),
         onClick: function() {
           _createShortcut.call(self, data);
         }
+        */
       }, {
         title: OSjs.Applications.CoreWM._('Set as wallpaper'),
         onClick: function() {
           _applyWallpaper.call(self, data);
         }
-      }], pos);
+      }], ev);
     };
 
     if ( item ) {
@@ -703,6 +734,9 @@
     if ( ev === 'focus' ) {
       if ( this.iconView ) {
         this.iconView.blur();
+        this.widgets.forEach(function(w) {
+          w.blur();
+        });
       }
     }
   };
@@ -938,6 +972,8 @@
 
     if ( save ) {
       this.initPanels(true);
+      this.initWidgets(true);
+
       if ( settings ) {
         if ( settings.language ) {
           OSjs.Core.getSettingsManager().set('Core', 'Locale', settings.language, triggerWatch);
@@ -1269,6 +1305,7 @@
   OSjs.Applications.CoreWM                   = OSjs.Applications.CoreWM || {};
   OSjs.Applications.CoreWM.Class             = Object.seal(CoreWM);
   OSjs.Applications.CoreWM.PanelItems        = OSjs.Applications.CoreWM.PanelItems || {};
+  OSjs.Applications.CoreWM.Widgets           = OSjs.Applications.CoreWM.Widgets || {};
   OSjs.Applications.CoreWM.CurrentTheme      = OSjs.Applications.CoreWM.CurrentTheme || null;
 
 })(OSjs.Core.WindowManager, OSjs.GUI, OSjs.Utils, OSjs.API, OSjs.VFS);

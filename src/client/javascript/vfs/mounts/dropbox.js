@@ -79,7 +79,7 @@
 
   function DropboxVFS() {
     var clientKey = _getConfig('ClientKey');
-    this.client = new window.Dropbox.Client({ key: clientKey });
+    this.client = new window.Dropbox.Client({key: clientKey});
 
     if ( this.client ) {
       var href = window.location.href;

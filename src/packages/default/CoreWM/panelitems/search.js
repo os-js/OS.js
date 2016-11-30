@@ -94,7 +94,6 @@
       self.hide();
     };
     keyEvents[Utils.Keys.ENTER] = function(ev) {
-      console.error(this);
       if ( this.value.length ) {
         self.search(this.value);
         this.value = '';

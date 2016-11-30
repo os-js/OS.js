@@ -321,6 +321,7 @@
 
   PanelItem.prototype.init = function() {
     var self = this;
+    var _ = OSjs.Applications.CoreWM._;
 
     this._$root = document.createElement('corewm-panel-item');
     this._$root.className = this._className;
@@ -330,7 +331,7 @@
     this._$container.className = 'corewm-panel-buttons';
 
     if ( this._settings ) {
-      var title = 'Open ' + this._itemName + ' settings'; // FIXME: Locale
+      var title = _('Open {0} Settings', _(this._itemName));
       Utils.$bind(this._$root, 'contextmenu', function(ev) {
         ev.stopPropagation();
         ev.preventDefault();

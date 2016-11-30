@@ -53,6 +53,47 @@
     return inst.$element.firstChild || inst.$element;
   }
 
+  /**
+   * Internal for parsing GUI elements
+   */
+  function parseDynamic(node, win, args) {
+    args = args || {};
+
+    var translator = args._ || API._;
+
+    node.querySelectorAll('*[data-label]').forEach(function(el) {
+      var label = translator(el.getAttribute('data-label'));
+      el.setAttribute('data-label', label);
+    });
+
+    node.querySelectorAll('gui-label, gui-button, gui-list-view-column, gui-select-option, gui-select-list-option').forEach(function(el) {
+      if ( !el.children.length && !el.getAttribute('data-no-translate') ) {
+        var lbl = GUI.Helpers.getValueLabel(el);
+        el.appendChild(document.createTextNode(translator(lbl)));
+      }
+    });
+
+    node.querySelectorAll('gui-button').forEach(function(el) {
+      var label = GUI.Helpers.getValueLabel(el);
+      if ( label ) {
+        el.appendChild(document.createTextNode(API._(label)));
+      }
+    });
+
+    node.querySelectorAll('*[data-icon]').forEach(function(el) {
+      var image = GUI.Helpers.getIcon(el, win);
+      el.setAttribute('data-icon', image);
+    });
+
+    node.querySelectorAll('*[data-src]').forEach(function(el) {
+      var old = el.getAttribute('data-src') || '';
+      if ( win._app && old.match(/^app:\/\//) ) {
+        var source = API.getApplicationResource(win._app, old.replace('app://', ''));
+        el.setAttribute('data-src', source);
+      }
+    });
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // API
   /////////////////////////////////////////////////////////////////////////////
@@ -60,60 +101,12 @@
   /**
    * Base UIElement Class
    *
-   * <pre><code>
-   * Available Elements:
-   *
-   * - gui-color-box
-   * - gui-color-swatch
-   * - gui-iframe
-   * - gui-progress-bar
-   * - gui-statusbar
-   * - gui-menu-entry
-   * - gui-menu
-   * - gui-menu-bar
-   * - gui-tabs
-   * - gui-label
-   * - gui-textarea
-   * - gui-text
-   * - gui-password
-   * - gui-file-upload
-   * - gui-radio
-   * - gui-checkbox
-   * - gui-switch
-   * - gui-button
-   * - gui-select
-   * - gui-select-list
-   * - gui-slider
-   * - gui-input-modal
-   * - gui-audio
-   * - gui-video
-   * - gui-image
-   * - gui-canvas
-   * - gui-file-view
-   * - gui-tree-view
-   * - gui-list-view
-   * - gui-icon-view
-   * - gui-richtext
-   * - gui-paned-view
-   * - gui-paned-view-container
-   * - gui-button-bar
-   * - gui-toolbar
-   * - gui-grid
-   * - gui-grid-row
-   * - gui-grid-entry
-   * - gui-vbox
-   * - gui-vbox-container
-   * - gui-hbox
-   * - gui-hbox-container
-   * - gui-expander
-   * </code></pre>
-   *
    * @summary The Class used for all UI Elements.
    *
    * @param {Node}      el      DOM Node
    * @param {String}    [q]     Query that element came from
    *
-   * @link https://os.js.org/doc/tutorials/gui.html
+   * @link https://os.js.org/manual/gui/elements/
    *
    * @constructor Element
    * @memberof OSjs.GUI
@@ -409,22 +402,21 @@
    * @memberof OSjs.GUI.Element#
    *
    * @param   {String}              html        HTML code
-   * @param   {OSjs.GUI.Scheme}     [scheme]    Reference to the Scheme
    * @param   {OSjs.Core.Window}    [win]       Reference to the Window
    * @param   {Object}              [args]      List of arguments to send to the parser
    *
    * @return {OSjs.GUI.Element} The current instance (this)
    */
-  UIElement.prototype.appendHTML = function(html, scheme, win, args) {
+  UIElement.prototype.appendHTML = function(html, win, args) {
     var el = document.createElement('div');
     el.innerHTML = html;
 
-    return this._append(el, scheme, win, args);
+    return this._append(el, win, args);
   };
 
-  UIElement.prototype._append = function(el, scheme, win, args) {
+  UIElement.prototype._append = function(el, win, args) {
     if ( el instanceof Element ) {
-      GUI.Scheme.parseNode(scheme, win, el, null, args);
+      UIElement.parseNode(win, el, null, args);
     }
 
     // Move elements over
@@ -451,7 +443,7 @@
   UIElement.prototype.querySelector = function(q, rui) {
     var el = this.$element.querySelector(q);
     if ( rui ) {
-      return GUI.Scheme.getElementInstance(el, q);
+      return GUI.Element.createInstance(el, q);
     }
     return el;
   };
@@ -471,7 +463,7 @@
     var el = this.$element.querySelectorAll(q);
     if ( rui ) {
       el = el.map(function(i) {
-        return GUI.Scheme.getElementInstance(i, q);
+        return GUI.Element.createInstance(i, q);
       });
     }
     return el;
@@ -503,6 +495,100 @@
       return GUI.Elements[this.tagName].call.apply(this, cargs);
     }
     return null;//this;
+  };
+
+  /**
+   * Creates a new GUI.Element
+   *
+   * @param   {String}                tagName         OS.js GUI Element name
+   * @param   {Object}                params          Parameters
+   * @param   {Object}                [applyArgs]     New element parameters
+   * @param   {OSjs.Core.Window}      [win]           OS.js Window
+   *
+   * @return  {OSjs.GUI.Element}
+   * @function create
+   * @memberof OSjs.GUI.Element
+   */
+  UIElement.create = function createGUIElement(tagName, params, applyArgs, win) {
+    tagName = tagName || '';
+    applyArgs = applyArgs || {};
+    params = params || {};
+
+    var el;
+    if ( GUI.Elements[tagName] && GUI.Elements[tagName].create ) {
+      el = GUI.Elements[tagName].create(params);
+    } else {
+      el = GUI.Helpers.createElement(tagName, params);
+    }
+
+    GUI.Elements[tagName].build(el, applyArgs, win);
+
+    return UIElement.createInstance(el);
+  };
+
+  /**
+   * Creates a new GUI.Element instance from Node
+   * @function createInstance
+   * @memberof OSjs.GUI.Element
+   */
+  UIElement.createInstance = function(el, q) {
+    if ( el ) {
+      var tagName = el.tagName.toLowerCase();
+      if ( tagName.match(/^gui\-(list|tree|icon|file)\-view$/) || tagName.match(/^gui\-(select|tabs)/) ) {
+        return new GUI.ElementDataView(el, q);
+      }
+    }
+    return new GUI.Element(el, q);
+  };
+
+  /**
+   * Parses the given HTML node and makes OS.js compatible markup
+   *
+   * @function parseNode
+   * @memberof OSjs.GUI.Element
+   *
+   * @param   {OSjs.Core.Window}    win         Reference to the Window
+   * @param   {Node}                node        The HTML node to parse
+   * @param   {Object}              args        List of arguments to send to the parser
+   * @param   {Function}            onparse     Method to signal when parsing has started
+   * @param   {Mixed}               [id]        The id of the source (for debugging)
+   *
+   * @return  {String}
+   */
+  UIElement.parseNode = function(win, node, type, args, onparse, id) {
+    onparse = onparse || function() {};
+    args = args || {};
+    type = type || 'snipplet';
+
+    // Apply a default className to non-containers
+    node.querySelectorAll('*').forEach(function(el) {
+      var lcase = el.tagName.toLowerCase();
+      if ( lcase.match(/^gui\-/) && !lcase.match(/(\-container|\-(h|v)box|\-columns?|\-rows?|(status|tool)bar|(button|menu)\-bar|bar\-entry)$/) ) {
+        Utils.$addClass(el, 'gui-element');
+      }
+    });
+
+    // Go ahead and parse dynamic elements (like labels)
+    parseDynamic(node, win, args);
+
+    // Lastly render elements
+    onparse(node);
+
+    Object.keys(GUI.Elements).forEach(function(key) {
+      node.querySelectorAll(key).forEach(function(pel) {
+        if ( pel._wasParsed ) {
+          return;
+        }
+
+        try {
+          GUI.Elements[key].build(pel);
+        } catch ( e ) {
+          console.warn('parseNode()', id, type, win, 'exception');
+          console.warn(e, e.stack);
+        }
+        pel._wasParsed = true;
+      });
+    });
   };
 
   /**
