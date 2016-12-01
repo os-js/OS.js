@@ -44,7 +44,12 @@ function _readFile(username, path, resolve) {
     if ( err ) {
       _done(null);
     } else {
-      _done(JSON.parse(data));
+      try {
+        _done(JSON.parse(data));
+      } catch ( e ) {
+        console.warn('Failed to read', path);
+        _done({});
+      }
     }
   });
 }
