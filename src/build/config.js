@@ -407,16 +407,35 @@ function disablePackage(config, name) {
 /*
  * Add a mountpoint to config files
  */
-function addMount(config, name, description, path) {
+function addMount(config, name, description, path, transport, ro) {
+  if ( typeof transport !== 'string' ) {
+    transport = null;
+  }
+
+  if ( !path || !name ) {
+    return Promise.reject('You have to define a path and name for a mountpoint');
+  }
+
+  var iter = path;
+  if ( transport || ro ) {
+    iter = {destination: path};
+    if ( transport ) {
+      iter.transport = transport;
+    }
+    if ( ro ) {
+      iter.ro = ro === true;
+    }
+  }
+
   var current = getConfigPath(config, 'client.VFS.Mountpoints') || {};
   current[name] = {description: description || name};
   setConfigPath('client.VFS.Mountpoints', {client: {VFS: {Mountpoints: current}}}, true);
 
   current = getConfigPath(config, 'server.vfs.mounts') || {};
-  current[name] = path;
+  current[name] = iter;
   setConfigPath('server.vfs.mounts', {server: {vfs: {mounts: current}}}, true);
 
-  return Promise.resolve();
+  return Promise.resolve(getConfigPath(config, 'server.vfs.mounts'));
 }
 
 /*
@@ -430,7 +449,7 @@ function addPreload(config, name, path, type) {
 
   setConfigPath('client.Preloads', {client: {Preloads: current}}, true);
 
-  return Promise.resolve();
+  return Promise.resolve(getConfigPath(config, 'client.Preloads'));
 }
 
 /*
@@ -441,7 +460,7 @@ function addRepository(config, name) {
   current.push(name);
   setConfigPath('repositories', {repositories: current}, true);
 
-  return Promise.resolve();
+  return Promise.resolve(getConfigPath(config, 'repositories'));
 }
 
 /*
@@ -459,7 +478,7 @@ function removeRepository(config, name) {
 
   setConfigPath('repositories', {repositories: current}, true);
 
-  return Promise.resolve();
+  return Promise.resolve(getConfigPath(config, 'repositories'));
 }
 
 /*
