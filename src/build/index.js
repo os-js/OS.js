@@ -220,10 +220,10 @@ const TASKS = {
       return _config.addPreload(cfg, cli.option('name'), cli.option('path'), cli.option('type'));
     },
     add_repository: function(cli, cfg) {
-      return _config.addPreload(cfg, cli.option('name'));
+      return _config.addRepository(cfg, cli.option('name'));
     },
     remove_repository: function(cli, cfg) {
-      return _config.removePreload(cfg, cli.option('name'));
+      return _config.removeRepository(cfg, cli.option('name'));
     },
     enable_package: function(cli, cfg) {
       return _config.enablePackage(cfg, cli.option('name'));
