@@ -1,0 +1,14 @@
+{
+  "license": "BSD",
+  "authors": [
+    {
+      "name": "Anders Evenrud",
+      "email": "andersevenrud@gmail.com",
+      "role": "Developer",
+      "homepage": "https://andersevenrud.github.io"
+    }
+  ],
+  "require": {
+    "ircmaxell/password-compat": "^1.0"
+  }
+}

@@ -34,3 +34,4 @@ doc/jsdoc
 vendor/dropbox*
 vendor/zip.js
 vendor/html2canvas
+src/server/php/vendor

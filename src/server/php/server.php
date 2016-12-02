@@ -50,5 +50,7 @@ spl_autoload_register(function($name) {
   }
 });
 
+@include __DIR__ . '/vendor/autoload.php';
+
 use OSjs\Core\Instance;
 Instance::run();
