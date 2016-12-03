@@ -167,6 +167,10 @@ function handleRequest(http) {
 
   // We use JSON as default responses, no matter what
   function _rejectResponse(err) {
+    if ( typeof err === 'undefined' ) {
+      err = '<undefined error>';
+    }
+
     logger.log('ERROR', logger.colored(err, 'red'), err.stack || '<no stack trace>');
 
     if ( !http.isfs && !http.isapi ) {

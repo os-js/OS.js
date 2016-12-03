@@ -196,7 +196,11 @@ module.exports.checkSession = function(http) {
  * @memberof core.auth
  */
 module.exports.hasGroup = function(userGroups, groupList, all) {
-  if ( !(groupList instanceof Array) || !groupList.length ) {
+  if ( !(groupList instanceof Array) ) {
+    groupList = [];
+  }
+
+  if ( !groupList.length ) {
     return true;
   }
 

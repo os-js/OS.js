@@ -30,73 +30,14 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
-const _mysql = require('mysql');
-const _utils = require('./../../core/utils.js');
+const _sql = require('./_sql.js');
 
-var pool;
-
-module.exports.setSettings = function(http, username, settings) {
-  return new Promise(function(resolve, reject) {
-    _utils.mysqlQuery(pool, 'UPDATE `users` SET `settings` = ? WHERE `username` = ? LIMIT 1;', [JSON.stringify(settings), username], function(err, row) {
-      if ( err ) {
-        reject(err);
-      } else {
-        resolve(true);
-      }
-    });
-  });
-};
-
-module.exports.getSettings = function(http, username) {
-  return new Promise(function(resolve, reject) {
-    _utils.mysqlQuery(pool, 'SELECT `settings` FROM `users` WHERE `username` = ? LIMIT 1;', [username], function(err, row) {
-      row = row || {};
-      if ( err ) {
-        reject(err);
-      } else {
-        var json = {};
-        try {
-          json = JSON.parse(row.settings);
-        } catch (e) {}
-        resolve(json);
-      }
-    }, true);
-  });
-};
-
-module.exports.getGroups = function(http, username) {
-  return new Promise(function(resolve, reject) {
-    _utils.mysqlQuery(pool, 'SELECT `groups` FROM `users` WHERE `username` = ? LIMIT 1;', [username], function(err, row) {
-      row = row || {};
-      if ( err ) {
-        reject(err);
-      } else {
-        var json = {};
-        try {
-          json = JSON.parse(row.groups);
-        } catch (e) {}
-        resolve(json);
-      }
-    }, true);
-  });
-};
-
-module.exports.getBlacklist = function(http, username) {
-  return new Promise(function(resolve) {
-    resolve([]);
-  });
-};
-
-module.exports.setBlacklist = function(http, username, list) {
-  return new Promise(function(resolve) {
-    resolve(true);
-  });
-};
+module.exports = _sql;
 
 module.exports.register = function(config) {
-  var ccfg = _utils.mysqlConfiguration(config);
-  pool = _mysql.createPool(ccfg);
+  return _sql._register('mysql', config);
 };
 
 module.exports.destroy = function() {
+  return _sql._destroy();
 };

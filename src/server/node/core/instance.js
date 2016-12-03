@@ -197,9 +197,17 @@ function loadAuth(opts) {
 
     const a = require(path);
     const c = CONFIG.modules.auth[name] || {};
-    a.register(c);
+    const r = a.register(c);
+
     MODULES.AUTH = a;
-    resolve(opts);
+
+    if ( r instanceof Promise ) {
+      r.then(function() {
+        resolve(opts);
+      }).catch(reject);
+    } else {
+      resolve(opts);
+    }
   }
 
   return new Promise(_load);
@@ -217,9 +225,14 @@ function loadStorage(opts) {
 
     const a = require(path);
     const c = CONFIG.modules.storage[name] || {};
-    a.register(c);
+    const r = a.register(c);
     MODULES.STORAGE = a;
-    resolve();
+
+    if ( r instanceof Promise ) {
+      r.then(resolve).catch(reject);
+    } else {
+      resolve();
+    }
   }
 
   return new Promise(_load);
