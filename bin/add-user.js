@@ -94,7 +94,7 @@ function createPassword() {
   });
 }
 
-if ( ['mysql', 'sqlite'].indexOf(auther) === -1 ) {
+if ( auther !== 'database' ) {
   return Promise.reject('You have to add users via your system for this authenticator.');
 }
 
@@ -109,7 +109,7 @@ if ( ARGS.length < 4 ) {
 console.log('Using authenticator', auther);
 
 (new Promise(function(resolve, reject) {
-  _db.instance('cli', auther, cfg).then(function(db) {
+  _db.instance('cli', cfg.driver, cfg[cfg.driver]).then(function(db) {
     switch ( ARGS[2] ) {
       case 'add' :
         createPassword().then(function(password) {

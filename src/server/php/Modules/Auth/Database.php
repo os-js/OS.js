@@ -35,14 +35,21 @@ use OSjs\Core\Authenticator;
 use PDO;
 use Exception;
 
-class Mysql extends Authenticator
+class Database extends Authenticator
 {
   protected static $pdo;
 
   final protected function _query($q, Array $a = []) {
     if ( !self::$pdo ) {
       $config = $this->getConfig();
-      self::$pdo = new PDO(sprintf('mysql:host=%s;dbname=%s', $config->host, $config->database), $config->user, $config->password);
+      $driver = $config->driver;
+      $config = $config->$driver;
+
+      if ( $driver == 'sqlite' ) {
+        self::$pdo = new PDO(sprintf('sqlite:/%s', $config->database));
+      } else {
+        self::$pdo = new PDO(sprintf('%s:host=%s;dbname=%s', $driver, $config->host, $config->database), $config->user, $config->password);
+      }
     }
 
     $stmt = self::$pdo->prepare($q);

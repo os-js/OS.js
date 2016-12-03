@@ -13,7 +13,7 @@
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS' AND
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
@@ -27,17 +27,16 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-/*eslint strict:["error", "global"]*/
-'use strict';
+(function(API, Utils, Authenticator) {
+  'use strict';
 
-const _sql = require('./_sql.js');
+  function DatabaseAuthenticator() {
+    Authenticator.apply(this, arguments);
+  }
 
-module.exports = _sql;
+  DatabaseAuthenticator.prototype = Object.create(Authenticator.prototype);
+  DatabaseAuthenticator.constructor = Authenticator;
 
-module.exports.register = function(config) {
-  return _sql._register('mysql', config);
-};
+  OSjs.Auth.database = DatabaseAuthenticator;
 
-module.exports.destroy = function() {
-  return _sql._destroy();
-};
+})(OSjs.API, OSjs.Utils, OSjs.Core.Authenticator);

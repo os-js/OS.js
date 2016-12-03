@@ -13,6 +13,8 @@ twistd.*
 .standalone
 .debian
 .nw
+TODO
+GIT_*
 
 # Storage
 vfs/*/*
@@ -29,9 +31,14 @@ dist/*
 dist-dev/*
 !dist-dev/vendor
 doc/jsdoc
+src/server/*.sqlite
 
 # Vendor
 vendor/dropbox*
 vendor/zip.js
 vendor/html2canvas
 src/server/php/vendor
+src/packages/extras
+src/packages/development
+src/packages/games
+src/packages/system

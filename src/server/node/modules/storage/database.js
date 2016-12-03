@@ -94,10 +94,11 @@ module.exports.setBlacklist = function(http, username, list) {
   });
 };
 
-module.exports._register = function(type, conf) {
-  return _db.instance('authstorage', type, conf);
+module.exports.register = function(config) {
+  const type = config.driver;
+  return _db.instance('authstorage', type, config[type]);
 };
 
-module.exports._destroy = function() {
+module.exports.destroy = function() {
   return _db.destroy('authstorage');
 };

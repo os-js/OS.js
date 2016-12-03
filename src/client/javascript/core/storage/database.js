@@ -30,18 +30,18 @@
 (function(API, Utils, Storage) {
   'use strict';
 
-  function MysqlStorage() {
+  function DatabaseStorage() {
     Storage.apply(this, arguments);
   }
 
-  MysqlStorage.prototype = Object.create(Storage.prototype);
-  MysqlStorage.constructor = Storage;
+  DatabaseStorage.prototype = Object.create(Storage.prototype);
+  DatabaseStorage.constructor = Storage;
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
   OSjs.Storage = OSjs.Storage || {};
-  OSjs.Storage.mysql = MysqlStorage;
+  OSjs.Storage.database = DatabaseStorage;
 
 })(OSjs.API, OSjs.Utils, OSjs.Core.Storage);
