@@ -66,7 +66,7 @@ function DatabaseInstance(name, type, opts) {
     this.conn = _mysql.createPool(mysqlConfiguration(opts));
   } else if ( type === 'sqlite' ) {
     const _sqlite = require('sqlite3');
-    this.conn = new _sqlite.Database(opts);
+    this.conn = new _sqlite.Database(opts.database);
   }
 }
 

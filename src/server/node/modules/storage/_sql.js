@@ -40,7 +40,7 @@ module.exports.setSettings = function(http, username, settings) {
     }
 
     _db.instance('authstorage').then(function(db) {
-      db.query('UPDATE `users` SET `settings` = ? WHERE `username` = ? LIMIT 1;', [JSON.stringify(settings), username])
+      db.query('UPDATE `users` SET `settings` = ? WHERE `username` = ?;', [JSON.stringify(settings), username])
         .then(done).catch(reject);
     }).catch(reject);
   });

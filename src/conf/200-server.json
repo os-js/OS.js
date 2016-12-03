@@ -55,6 +55,9 @@
           "user": "osjs",
           "password": "osjs",
           "database": "osjs"
+        },
+        "sqlite": {
+          "database": "%ROOT%/src/server/authstorage.sqlite"
         }
       },
       "storage": {
@@ -68,6 +71,9 @@
           "groups": "/etc/osjs/groups.json",
           "blacklist": "/etc/osjs/blacklist.json",
           "settings": "/home/%USERNAME%/.osjs/settings.json"
+        },
+        "sqlite": {
+          "database": "%ROOT%/src/server/authstorage.sqlite"
         }
       }
     }
