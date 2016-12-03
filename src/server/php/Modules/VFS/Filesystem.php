@@ -204,18 +204,19 @@ abstract class Filesystem
 
   final public static function find(Request $request, Array $arguments = []) {
     $path = self::_getRealPath($arguments['path']);
+    $opts = $arguments['args'];
     $result = [];
 
-    if ( empty($arguments['query']) ) {
+    if ( empty($opts['query']) ) {
       throw new Exception('No query was given');
     }
 
-    if ( empty($arguments['recursive']) || !$arguments['recursive'] ) {
+    if ( empty($opts['recursive']) || !$opts['recursive'] ) {
       if ( ($files = scandir($root)) !== false ) {
         foreach ( $files as $f ) {
           if ( $f == "." || $f == ".." ) continue;
 
-          if ( stristr($f, $arguments['query']) !== false ) {
+          if ( stristr($f, $opts['query']) !== false ) {
             $result[] = self::_getFileMetadata($f, $dirname, $root);
           }
         }
@@ -225,11 +226,11 @@ abstract class Filesystem
     }
 
     $p = preg_replace('/\/$/', '', $path);
-    $limit = isset($arguments['limit']) ? (int) $arguments['limit'] : 0;
+    $limit = isset($opts['limit']) ? (int) $opts['limit'] : 0;
     $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($p), RecursiveIteratorIterator::SELF_FIRST);
 
     foreach( $objects as $name => $object ) {
-      if ( stristr($name, $arguments['query']) !== false ) {
+      if ( stristr($name, $opts['query']) !== false ) {
         $result[] = self::_getFileMetadata(substr($name, strlen($path)), $dirname, $root);
       }
 
