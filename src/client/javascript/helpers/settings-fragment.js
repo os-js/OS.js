@@ -55,7 +55,9 @@
   function SettingsFragment(obj, poolName) {
     this._pool = poolName;
     if ( obj.constructor !== {}.constructor ) {
-      throw new Error('SettingsFragment will not work unless you give it a object to manage.');
+      if ( !(obj instanceof Array) ) {
+        throw new Error('SettingsFragment will not work unless you give it a object to manage.');
+      }
     }
 
     this._settings = obj;
