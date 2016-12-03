@@ -168,10 +168,13 @@ module.exports.manage = function(http, command, args) {
 
 module.exports.register = function(config) {
   const type = config.driver;
+  const settings = config[type];
   const logger = _instance.getLogger();
-  logger.lognt('INFO', 'Module:', logger.colored('Auth', 'bold'), 'using', logger.colored(type, 'green'));
 
-  return _db.instance('authstorage', type, config[type]);
+  const str = type === 'sqlite' ? require('path').basename(settings.database) : settings.user + '@' + settings.host + ':/' + settings.database;
+  logger.lognt('INFO', 'Module:', logger.colored('Authenticator', 'bold'), 'using', logger.colored(type, 'green'), '->', logger.colored(str, 'green'));
+
+  return _db.instance('authstorage', type, settings);
 };
 
 module.exports.destroy = function() {
