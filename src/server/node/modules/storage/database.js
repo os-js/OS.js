@@ -32,6 +32,7 @@
 'use strict';
 
 const _db = require('./../../core/database.js');
+const _instance = require('./../../core/instance.js');
 
 module.exports.setSettings = function(http, username, settings) {
   return new Promise(function(resolve, reject) {
@@ -96,6 +97,8 @@ module.exports.setBlacklist = function(http, username, list) {
 
 module.exports.register = function(config) {
   const type = config.driver;
+  const logger = _instance.getLogger();
+  logger.lognt('INFO', 'Module:', logger.colored('Auth', 'bold'), 'using', logger.colored(type, 'green'));
   return _db.instance('authstorage', type, config[type]);
 };
 

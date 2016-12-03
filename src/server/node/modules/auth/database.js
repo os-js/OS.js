@@ -33,6 +33,7 @@
 
 const _bcrypt = require('bcrypt');
 const _db = require('./../../core/database.js');
+const _instance = require('./../../core/instance.js');
 
 const manager = {
 
@@ -167,6 +168,9 @@ module.exports.manage = function(http, command, args) {
 
 module.exports.register = function(config) {
   const type = config.driver;
+  const logger = _instance.getLogger();
+  logger.lognt('INFO', 'Module:', logger.colored('Auth', 'bold'), 'using', logger.colored(type, 'green'));
+
   return _db.instance('authstorage', type, config[type]);
 };
 
