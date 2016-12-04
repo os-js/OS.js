@@ -37,7 +37,7 @@
  * object documentation
  */
 module.exports.request = function(http, next) {
-  next(true); // Allow next middleware to run
+  next(); // Allow next middleware to run
   // next(true); // Or you can abort entirely
 };
 
