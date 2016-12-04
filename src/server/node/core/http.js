@@ -255,8 +255,8 @@ function handleRequest(http) {
       http.respond.error('Access denied', 403);
     }
 
-    if ( _fs.existsSync(path) ) {
-      const pmatch = http.path.match(/^\/?packages\/(.*\/.*)\/(.*)/);
+    const pmatch = http.path.match(/^\/?packages\/(.*\/.*)\/(.*)/);
+    if ( pmatch || _fs.existsSync(path) ) {
       if ( pmatch && pmatch.length === 3 ) {
         _checkPermission('package', {path: pmatch[1]}).then(function() {
           _auth.checkSession(http)
