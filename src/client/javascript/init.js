@@ -317,13 +317,6 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /**
-   * When an error occurs
-   */
-  function onError(msg) {
-    OSjs.API.error(OSjs.API._('ERR_CORE_INIT_FAILED'), OSjs.API._('ERR_CORE_INIT_FAILED_DESC'), msg, null, true);
-  }
-
-  /**
    * Initialized some layout stuff
    */
   function initLayout() {
@@ -350,17 +343,6 @@
   function initHandler(config, callback) {
     console.debug('initHandler()');
 
-    function _done(error) {
-      if ( error ) {
-        onError(error);
-        return;
-      }
-
-      inited = true;
-
-      callback();
-    }
-
     var conf = OSjs.API.getConfig('Connection');
     var ctype = conf.Type === 'standalone' ? 'http' : conf.Type;
 
@@ -377,7 +359,12 @@
         callback(err);
       } else {
         storage.init(function() {
-          authenticator.init(_done);
+          authenticator.init(function(err) {
+            if ( !err ) {
+              inited = true;
+            }
+            callback(err);
+          });
         });
       }
     });
@@ -430,7 +417,7 @@
     console.debug('initPreload()');
     var list = [];
 
-    function flatten(a) {
+    (function flatten(a) {
       a.forEach(function(i) {
         if ( i instanceof Array ) {
           flatten(i);
@@ -438,9 +425,7 @@
           list.push(i);
         }
       });
-    }
-
-    flatten(config.Preloads);
+    })(config.Preloads);
 
     OSjs.Utils.preload(list, function(total, failed) {
       if ( failed.length ) {
@@ -550,14 +535,13 @@
   function initWindowManager(config, callback) {
     console.debug('initWindowManager()');
     if ( !config.WM || !config.WM.exec ) {
-      onError(OSjs.API._('ERR_CORE_INIT_NO_WM'));
-      return;
+      return callback(OSjs.API._('ERR_CORE_INIT_NO_WM'));
     }
 
     OSjs.API.launch(config.WM.exec, (config.WM.args || {}), function(app) {
       app.setup(callback);
     }, function(error, name, args, exception) {
-      onError(OSjs.API._('ERR_CORE_INIT_WM_FAILED_FMT', error), exception);
+      callback(OSjs.API._('ERR_CORE_INIT_WM_FAILED_FMT', error), exception);
     });
   }
 
@@ -661,6 +645,11 @@
       console.groupEnd();
     }
 
+    function _error(err) {
+      OSjs.API.error(OSjs.API._('ERR_CORE_INIT_FAILED'),
+                     OSjs.API._('ERR_CORE_INIT_FAILED_DESC'), err, null, true);
+    }
+
     function _done() {
       OSjs.API.triggerHook('onInited');
 
@@ -675,7 +664,11 @@
       if ( isMocha ) {
         _inited();
       } else {
-        initWindowManager(config, function() {
+        initWindowManager(config, function(err) {
+          if ( err ) {
+            return _error(err);
+          }
+
           initEvents();
 
           _inited();
@@ -696,7 +689,13 @@
 
       loading.update(index + 1, queue.length + 1);
 
-      entry(config, next);
+      entry(config, function(err) {
+        if ( err ) {
+          return _error(err);
+        }
+
+        next();
+      });
     }, _done);
   }
 
