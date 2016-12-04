@@ -50,6 +50,7 @@
  * @property  {ProxyServer}           _proxy      Node Proxy server
  * @property  {http.ClientRequest}    request     HTTP Request object
  * @property  {http.ServerResponse}   response    HTTP Response object
+ * @property  {String}                method      HTTP Method name
  * @property  {String}                path        HTTP Request path name (url)
  * @property  {String}                endpoint    Endpoint parsed from path name (url)
  * @property  {Object}                data        POST data (JSON)
@@ -79,6 +80,7 @@
 const _vfs = require('./vfs.js');
 const _instance = require('./instance.js');
 const _auth = require('./auth.js');
+const _utils = require('./utils.js');
 
 const _url = require('url');
 const _fs = require('node-fs-extra');
@@ -243,8 +245,9 @@ function handleRequest(http) {
   }
 
   function _staticResponse() {
+    const path = _path.join(env.ROOTDIR, env.DIST, _path.normalize(http.path));
+
     function _serve() {
-      const path = _path.join(env.ROOTDIR, env.DIST, http.path);
       http.respond.file(path);
     }
 
@@ -252,37 +255,64 @@ function handleRequest(http) {
       http.respond.error('Access denied', 403);
     }
 
-    const pmatch = http.path.match(/^\/?packages\/(.*\/.*)\/(.*)/);
-    if ( pmatch && pmatch.length === 3 ) {
-      _checkPermission('package', {path: pmatch[1]}).then(function() {
-        _auth.checkSession(http)
-          .then(_serve).catch(_deny);
-      }).catch(_deny);
-    } else {
-      _serve();
+    if ( _fs.existsSync(path) ) {
+      const pmatch = http.path.match(/^\/?packages\/(.*\/.*)\/(.*)/);
+      if ( pmatch && pmatch.length === 3 ) {
+        _checkPermission('package', {path: pmatch[1]}).then(function() {
+          _auth.checkSession(http)
+            .then(_serve).catch(_deny);
+        }).catch(_deny);
+      } else {
+        _serve();
+      }
+
+      return true;
     }
+
+    return false;
+  }
+
+  function _middlewareRequest(method, done) {
+    const middleware = _instance.getMiddleware();
+    _utils.iterate(middleware, function(iter, idx, next) {
+      iter.request(http, function(error) {
+        if ( error ) {
+          done(error);
+        } else {
+          next();
+        }
+      });
+    }, function() {
+      done(false);
+    });
   }
 
   // Take on the HTTP request
   _auth.initSession(http).then(function() {
-    if ( http.request.method === 'GET' ) {
-      if ( http.isfs ) {
-        _vfsCall();
+    const method = http.request.method;
+
+    if ( http.isfs ) {
+      _vfsCall();
+    } else if ( http.isapi ) {
+      if ( method === 'POST' && typeof api[http.endpoint] === 'function' ) {
+        _apiCall();
       } else {
-        _staticResponse();
+        http.respond.json({
+          error: 'No such API method'
+        }, 500);
       }
     } else {
-      if ( http.isfs ) {
-        _vfsCall();
-      } else {
-        if ( typeof api[http.endpoint] === 'function' ) {
-          _apiCall();
-        } else {
-          http.respond.json({
-            error: 'No such API method'
-          }, 500);
+      if ( method === 'GET' ) {
+        if ( _staticResponse() ) {
+          return;
         }
       }
+
+      _middlewareRequest(method, function(error) {
+        if ( error ) {
+          http.respond.error('Method not allowed', 405);
+        }
+      });
     }
   });
 }
@@ -357,6 +387,7 @@ function createHttpResponder(env, response) {
       const stream = _fs.createReadStream(path, {
         bufferSize: 64 * 1024
       });
+
       _stream(path, stream, code);
     }
   });
@@ -389,6 +420,7 @@ function createWebsocketResponder(ws, index) {
 
     file: function() {
       _json({error: 'Not available'});
+      return false;
     },
 
     json: function(data) {
@@ -408,6 +440,7 @@ function createHttpObject(request, response, path, data, responder, session_id, 
   return Object.freeze({
     request: request,
     response: request,
+    method: request.method,
     path: path,
     data: data || {},
     files: files || {},

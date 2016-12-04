@@ -80,6 +80,7 @@ var LOGGER;
 const MODULES = {
   API: {},
   VFS: [],
+  MIDDLEWARE: [],
   AUTH: null,
   STORAGE: null,
   LOGGER: null
@@ -162,6 +163,24 @@ function loadConfiguration(opts) {
   }
 
   return new Promise(_load);
+}
+
+/*
+ * Loads and registers all Middleware
+ */
+function loadMiddleware(opts) {
+  const dirname = _path.join(ENV.MODULEDIR, 'middleware');
+
+  return new Promise(function(resolve, reject) {
+    iterateDirectory(dirname, function(filename) {
+      const path = _path.join(dirname, filename);
+      LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('Middleware', 'bold'), path.replace(ENV.ROOTDIR, ''));
+
+      MODULES.MIDDLEWARE.push(require(path));
+    }, function() {
+      resolve(opts);
+    }, reject);
+  });
 }
 
 /*
@@ -435,6 +454,7 @@ module.exports.destroy = function destroy() {
 module.exports.init = function init(opts) {
   return new Promise(function(resolve, reject) {
     loadConfiguration(opts)
+      .then(loadMiddleware)
       .then(loadAPI)
       .then(loadAuth)
       .then(loadStorage)
@@ -543,6 +563,16 @@ module.exports.getVFS = function() {
  */
 module.exports.getAPI = function() {
   return MODULES.API;
+};
+
+/**
+ * Gets all the registered Middleware modules
+ *
+ * @function getMiddleware
+ * @memberof core.instance
+ */
+module.exports.getMiddleware = function() {
+  return MODULES.MIDDLEWARE;
 };
 
 /**
