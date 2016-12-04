@@ -46,6 +46,7 @@ class Instance
   protected static $PACKAGES = [];
   protected static $API = [];
   protected static $VFS = [];
+  protected static $MIDDLEWARE = [];
 
   /////////////////////////////////////////////////////////////////////////////
   // LOADERS
@@ -64,6 +65,21 @@ class Instance
 
     if ( !date_default_timezone_get() ) {
       date_default_timezone_set('UTC');
+    }
+  }
+
+  /**
+   * Loads all Middleware modules
+   */
+  final protected static function _loadMiddleware() {
+    $path = DIR_SELF . '/Modules/Middleware/';
+    foreach ( scandir($path) as $file ) {
+      if ( substr($file, 0, 1) !== '.' ) {
+        require($path . $file);
+
+        $className = 'OSjs\\Modules\\Middleware\\' . pathinfo($file, PATHINFO_FILENAME);
+        self::$MIDDLEWARE[] = $className;
+      }
     }
   }
 
@@ -180,6 +196,7 @@ class Instance
 
     try {
       self::_loadConfiguration();
+      self::_loadMiddleware();
       self::_loadAPI();
       self::_loadVFS();
     } catch ( Exception $e ) {
@@ -254,13 +271,21 @@ class Instance
           'result' => null
         ], 500);
       }
+      return;
     } else {
       if ( preg_match('/^\/?packages\/(.*\/.*)\/(.*)/', $request->url, $matches) ) {
         if ( !Authenticator::getInstance()->checkPermission($request, 'package', ['path' => $matches[1]]) ) {
           $request->respond()->error('Permission denied!', 403);
         }
       }
-      $request->respond()->file(DIR_DIST . $request->url);
+      $request->respond()->file(DIR_DIST . $request->url, null, false);
+    }
+
+    foreach ( self::$MIDDLEWARE as $className ) {
+      $result = $className::request($request);
+      if ( !$result ) {
+        break;
+      }
     }
 
     $request->respond()->error('File not found', 404);

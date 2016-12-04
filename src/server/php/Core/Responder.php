@@ -68,11 +68,14 @@ class Responder
   /**
    * Respond with buffered file output
    */
-  public function file($path, $mime = Null) {
+  public function file($path, $mime = Null, $error = true) {
     session_write_close();
 
     if ( !file_exists($path) || is_dir($path) ) {
-      return $this->error('File not found', 404);
+      if ( $error ) {
+        $this->error('File not found', 404);
+      }
+      return;
     }
 
     if ( $handle = fopen($path, "rb") ) {
@@ -91,9 +94,8 @@ class Responder
       }
 
       fclose($handle);
+      exit;
     }
-
-    exit;
   }
 
   /**
