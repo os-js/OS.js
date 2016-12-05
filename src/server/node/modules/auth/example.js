@@ -115,10 +115,12 @@ module.exports.checkSession = function(http) {
  * @param   {Object}           config        Configuration for given auth module
  */
 module.exports.register = function(config) {
+  return Promise.resolve();
 };
 
 /**
  * When module is destroyed upon shutdown
  */
 module.exports.destroy = function() {
+  return Promise.resolve();
 };

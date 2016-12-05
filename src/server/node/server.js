@@ -53,6 +53,15 @@ _instance.init(opts).then(function(env) {
     process.env.TZ = config.tz;
   }
 
+  ['SIGTERM', 'SIGINT'].forEach(function(sig) {
+    process.on(sig, function() {
+      console.log('\n');
+      _instance.destroy(function(err) {
+        process.exit(err ? 1 : 0);
+      });
+    });
+  });
+
   process.on('exit', function() {
     _instance.destroy();
   });

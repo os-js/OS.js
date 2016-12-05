@@ -574,7 +574,7 @@ function createServer(env, resolve, reject) {
 /*
  * Destroys server
  */
-function destroyServer() {
+function destroyServer(cb) {
   if ( httpServer ) {
     httpServer.close();
   }
@@ -585,6 +585,10 @@ function destroyServer() {
 
   if ( websocketServer ) {
     websocketServer.close();
+  }
+
+  if ( typeof cb === 'function' ) {
+    cb();
   }
 }
 

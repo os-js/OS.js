@@ -59,6 +59,7 @@
 const _child = require('child_process');
 const _fs = require('node-fs-extra');
 const _path = require('path');
+const _glob = require('glob-promise');
 
 const _osjs = {
   http: require('./http.js'),
@@ -100,21 +101,6 @@ const ENV = {
 ///////////////////////////////////////////////////////////////////////////////
 // LOADERS
 ///////////////////////////////////////////////////////////////////////////////
-
-function iterateDirectory(dirname, cb, done, reject) {
-  _fs.readdir(dirname, function(err, list) {
-    if ( err ) {
-      return reject(err);
-    }
-
-    _osjs.utils.iterate(list, function(filename, index, next) {
-      if ( filename.substr(0, 1) !== '.' ) {
-        cb(filename);
-      }
-      next();
-    }, done);
-  });
-}
 
 /*
  * Loads generated configuration file
@@ -172,14 +158,15 @@ function loadMiddleware(opts) {
   const dirname = _path.join(ENV.MODULEDIR, 'middleware');
 
   return new Promise(function(resolve, reject) {
-    iterateDirectory(dirname, function(filename) {
-      const path = _path.join(dirname, filename);
-      LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('Middleware', 'bold'), path.replace(ENV.ROOTDIR, ''));
+    _glob(_path.join(dirname, '*.js')).then(function(list) {
+      Promise.all(list.map(function(path) {
+        LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('Middleware', 'bold'), path.replace(ENV.ROOTDIR, ''));
 
-      MODULES.MIDDLEWARE.push(require(path));
-    }, function() {
-      resolve(opts);
-    }, reject);
+        MODULES.MIDDLEWARE.push(require(path));
+
+        return Promise.resolve();
+      })).then(resolve).catch(reject);
+    }).catch(reject);
   });
 }
 
@@ -190,17 +177,18 @@ function loadAPI(opts) {
   const dirname = _path.join(ENV.MODULEDIR, 'api');
 
   return new Promise(function(resolve, reject) {
-    iterateDirectory(dirname, function(filename) {
-      const path = _path.join(dirname, filename);
-      LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('API', 'bold'), path.replace(ENV.ROOTDIR, ''));
+    _glob(_path.join(dirname, '*.js')).then(function(list) {
+      Promise.all(list.map(function(path) {
+        LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('API', 'bold'), path.replace(ENV.ROOTDIR, ''));
 
-      const methods = require(path);
-      Object.keys(methods).forEach(function(k) {
-        MODULES.API[k] = methods[k];
-      });
-    }, function() {
-      resolve(opts);
-    }, reject);
+        const methods = require(path);
+        Object.keys(methods).forEach(function(k) {
+          MODULES.API[k] = methods[k];
+        });
+
+        return Promise.resolve();
+      })).then(resolve).catch(reject);
+    }).catch(reject);
   });
 }
 
@@ -409,13 +397,55 @@ function registerServices(servers) {
   const dirname = _path.join(ENV.MODULEDIR, 'services');
 
   return new Promise(function(resolve, reject) {
-    iterateDirectory(dirname, function(filename) {
-      const path = _path.join(dirname, filename);
-      LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('Service', 'bold'), path.replace(ENV.ROOTDIR, ''));
-      require(path).register(ENV, CONFIG, servers);
-    }, function() {
-      resolve(servers);
-    }, reject);
+    _glob(_path.join(dirname, '*.js')).then(function(list) {
+      Promise.all(list.map(function(path) {
+        LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('Service', 'bold'), path.replace(ENV.ROOTDIR, ''));
+        require(path).register(ENV, CONFIG, servers);
+
+        return Promise.resolve();
+      })).then(resolve).catch(reject);
+    }).catch(reject);
+  });
+}
+
+/*
+ * Sends the destruction signals to all Packages
+ */
+function destroyPackages() {
+  return new Promise(function(resolve, reject) {
+    const queue = Object.keys(PACKAGES).map(function(path) {
+      const check = _path.join(ENV.PKGDIR, path, 'api.js');
+      if ( _fs.existsSync(check) ) {
+        const mod = require(check);
+
+        LOGGER.lognt('VERBOSE', 'Destroying:', LOGGER.colored('Package', 'bold'), check.replace(ENV.ROOTDIR, ''));
+        if ( typeof mod.destroy === 'function' ) {
+          const res = mod.destroy();
+          return res instanceof Promise ? res : Promise.resolve();
+        }
+      }
+
+      return Promise.resolve();
+    });
+
+    Promise.all(queue).then(resolve).catch(reject);
+  });
+}
+
+/*
+ * Sends the destruction signal to all Services
+ */
+function destroyServices() {
+  const dirname = _path.join(ENV.MODULEDIR, 'services');
+
+  return new Promise(function(resolve, reject) {
+    _glob(_path.join(dirname, '*.js')).then(function(list) {
+      Promise.all(list.map(function(path) {
+        LOGGER.lognt('VERBOSE', 'Destroying:', LOGGER.colored('Service', 'bold'), path.replace(ENV.ROOTDIR, ''));
+        const res = require(path).destroy();
+        return res instanceof Promise ? res : Promise.resolve();
+      })).then(resolve).catch(reject);
+    }).catch(reject);
   });
 }
 
@@ -426,22 +456,46 @@ function registerServices(servers) {
 /**
  * Destroys the current instance
  *
- * @param   {ServerRequest} http          OS.js Server Request
+ * @param {Function}    [cb]      Callback
  *
  * @function destroy
  * @memberof core.instance
  */
-module.exports.destroy = function destroy() {
-  if ( MODULES.AUTH ) {
-    MODULES.AUTH.destroy();
-  }
+module.exports.destroy = (function() {
+  var destroyed = false;
 
-  CHILDREN.forEach(function(c) {
-    c.kill();
-  });
+  return function destroy(cb) {
+    if ( destroyed ) {
+      return cb();
+    }
 
-  _osjs.http.destroy();
-};
+    LOGGER.log('INFO', LOGGER.colored('Trying to shut down sanely...', 'bold'));
+
+    function done() {
+      CHILDREN.forEach(function(c) {
+        c.kill();
+      });
+
+      if ( MODULES.AUTH ) {
+        MODULES.AUTH.destroy();
+      }
+
+      if ( MODULES.STORAGE ) {
+        MODULES.STORAGE.destroy();
+      }
+
+      _osjs.http.destroy(function(err) {
+        destroyed = true;
+
+        cb(err);
+      });
+    }
+
+    destroyServices()
+      .then(destroyPackages())
+      .then(done).catch(done);
+  };
+})();
 
 /**
  * Initializes OS.js Server

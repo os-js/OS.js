@@ -104,7 +104,9 @@ module.exports.setBlacklist = function(http, username, list) {
 };
 
 module.exports.register = function(config) {
+  return Promise.resolve();
 };
 
 module.exports.destroy = function() {
+  return Promise.resolve();
 };

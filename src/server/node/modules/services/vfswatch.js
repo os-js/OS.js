@@ -35,6 +35,13 @@ const _http = require('./../../core/http.js');
 const _instance = require('./../../core/instance.js');
 
 /*
+ * Unloads the VFS watching
+ */
+module.exports.destroy = function() {
+  return Promise.resolve();
+};
+
+/*
  * Registers VFS watching
  */
 module.exports.register = function(env, config, servers) {
