@@ -164,8 +164,10 @@ function loadMiddleware(opts) {
 
         MODULES.MIDDLEWARE.push(require(path));
 
-        return Promise.resolve();
-      })).then(resolve).catch(reject);
+        return Promise.resolve(opts);
+      })).then(function() {
+        resolve(opts);
+      }).catch(reject);
     }).catch(reject);
   });
 }
@@ -186,8 +188,10 @@ function loadAPI(opts) {
           MODULES.API[k] = methods[k];
         });
 
-        return Promise.resolve();
-      })).then(resolve).catch(reject);
+        return Promise.resolve(opts);
+      })).then(function() {
+        resolve(opts);
+      }).catch(reject);
     }).catch(reject);
   });
 }
@@ -465,6 +469,8 @@ module.exports.destroy = (function() {
   var destroyed = false;
 
   return function destroy(cb) {
+    cb = cb || function() {};
+
     if ( destroyed ) {
       return cb();
     }
