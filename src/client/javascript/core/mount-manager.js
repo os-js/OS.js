@@ -81,7 +81,7 @@
     var _inited = false;
     var _modules = {};
 
-    /**
+    /*
      * Checks if given transport mount is read-only
      */
     function isReadOnly(name, params, args) {
@@ -100,7 +100,7 @@
       return false;
     }
 
-    /**
+    /*
      * Creates a new mount object
      */
     function createMountPoint(name, args, dynamic) {
@@ -432,7 +432,7 @@
        * @param   {Object}    opts                  Options
        * @param   {Boolean}   [opts.visible=true]   All visible modules only
        *
-       * @return  {Object{}}                   List of all Modules found
+       * @return  {Object[]}                   List of all Modules found
        */
       getModules: function(opts) {
         opts = Utils.argumentDefaults(opts, {

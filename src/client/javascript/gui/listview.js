@@ -34,7 +34,7 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
+  /*
    * This is the function that applies a "fake" header to the table
    * floating on top, containing the resizers.
    *
@@ -96,7 +96,7 @@
     }
   }
 
-  /**
+  /*
    * Applies DOM changes for a row to be rendered properly
    */
   function initRow(el, row) {
@@ -125,7 +125,7 @@
     GUI.Elements._dataview.bindEntryEvents(el, row, 'gui-list-view-row');
   }
 
-  /**
+  /*
    * Creates a new `gui-list-view-column`
    */
   function createEntry(v, head) {
@@ -155,7 +155,7 @@
     return nel;
   }
 
-  /**
+  /*
    * Creates a new `gui-list-view-row` from iter
    */
   function createRow(e) {

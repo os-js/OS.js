@@ -156,6 +156,8 @@
    * @example
    * OSjs.Helpers.ZipArchiver.createInstance({}, (err, instance) => {});
    *
+   * @param {Object}    opts      Options
+   *
    * @constructor Class
    * @memberof OSjs.Helpers.ZipArchiver
    * @see OSjs.Helpers.ZipArchiver.createInsatance

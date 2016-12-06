@@ -336,8 +336,7 @@ module.exports.resolvePathArguments = function(path, options) {
 /**
  * Resolves a path with special arguments
  *
- * @param   {String}    path              The query path
- * @param   {Object}    options           Object that maps the arguments and values
+ * @param   {Function}    callback    Callback function
  *
  * @return {String}
  * @function resolvePathArguments

@@ -33,7 +33,7 @@
 
   var _connectionInstance;
 
-  /**
+  /*
    * Attaches options to a XHR call
    */
   function appendRequestOptions(data, options) {
@@ -87,6 +87,8 @@
 
   /**
    * Initializes the instance
+   *
+   * @param {Function}  callback    Callback function
    *
    * @function init
    * @memberof OSjs.Core.Connection#
@@ -279,6 +281,12 @@
   /**
    * Wrapper for server API XHR calls
    *
+   * @param   {String}    method    API Method name
+   * @param   {Object}    args      API Method arguments
+   * @param   {Object}    options   Call options
+   * @param   {Function}  cbSuccess Callback on success
+   * @param   {Function}  cbError   Callback on error
+   *
    * @function requestAPI
    * @memberof OSjs.Core.Connection#
    * @see OSjs.Core.Connection.request
@@ -291,6 +299,12 @@
 
   /**
    * Wrapper for server VFS XHR calls
+   *
+   * @param   {String}    method    API Method name
+   * @param   {Object}    args      API Method arguments
+   * @param   {Object}    options   Call options
+   * @param   {Function}  cbSuccess Callback on success
+   * @param   {Function}  cbError   Callback on error
    *
    * @function requestVFS
    * @memberof OSjs.Core.Connection#
@@ -310,6 +324,11 @@
 
   /**
    * Makes a HTTP POST call
+   *
+   * @param   {Object}    form      Call data
+   * @param   {Object}    options   Call options
+   * @param   {Function}  onsuccess Callback on success
+   * @param   {Function}  onerror   Callback on error
    *
    * @function _requestPOST
    * @memberof OSjs.Core.Connection#
@@ -341,6 +360,11 @@
 
   /**
    * Makes a HTTP GET call
+   *
+   * @param   {Object}    args      Call data
+   * @param   {Object}    options   Call options
+   * @param   {Function}  onsuccess Callback on success
+   * @param   {Function}  onerror   Callback on error
    *
    * @function _requestGET
    * @memberof OSjs.Core.Connection#
@@ -375,6 +399,12 @@
 
   /**
    * Makes a HTTP XHR call
+   *
+   * @param   {String}    url       Call URL
+   * @param   {Object}    args      Call data
+   * @param   {Object}    options   Call options
+   * @param   {Function}  onsuccess Callback on success
+   * @param   {Function}  onerror   Callback on error
    *
    * @function _requestXHR
    * @memberof OSjs.Core.Connection#
@@ -431,6 +461,8 @@
    *
    * @param   {String}    k       Event name
    * @param   {Number}    [idx]   The hook index returned from subscribe()
+   *
+   * @return {Boolean}
    */
   Connection.prototype.unsubscribe = function(k, idx) {
     return this._evHandler.off(k, idx);

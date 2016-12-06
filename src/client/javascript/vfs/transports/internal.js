@@ -44,7 +44,7 @@
    *
    * @param   {(String|OSjs.VFS.File)}    item        VFS File
    *
-   * @retun   {String}                  URL based on input
+   * @return  {String}                  URL based on input
    *
    * @function path
    * @memberof OSjs.VFS.Transports.Internal
@@ -58,6 +58,10 @@
 
   /**
    * Perform default VFS call via backend
+   *
+   * @param {String}    name      Request method name
+   * @param {Object}    args      Request arguments
+   * @param {Function}  callback  Callback function
    *
    * @function request
    * @memberof OSjs.VFS.Transports.Internal
@@ -73,6 +77,11 @@
 
   /**
    * Wrapper for internal file uploads
+   *
+   * @param   {Object}      file        Upload object
+   * @param   {Object}      dest        Destination file info (VFS Object if possible)
+   * @param   {Function}    callback    Callback function
+   * @param   {Object}      options     Options
    *
    * @function upload
    * @memberof OSjs.VFS.Transports.Internal
@@ -117,12 +126,11 @@
    * This function basically does a cURL call and downloads
    * the data.
    *
-   * @param   String          url       URL
-   * @param   String          mime      MIME Type
-   * @param   Function        callback  Callback function => fn(error, result)
-   * @param   Object          options   Options
-   *
-   * @option  options     String      type    What to return, default: binary. Can also be: text, datasource
+   * @param   {String}          url             URL
+   * @param   {String}          mime            MIME Type
+   * @param   {Function}        callback        Callback function => fn(error, result)
+   * @param   {Object}          options         Options
+   * @param   {String}          [options.type]  What to return, default: binary. Can also be: text, datasource
    *
    * @function fetch
    * @memberof OSjs.VFS.Transports.Internal

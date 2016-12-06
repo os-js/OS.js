@@ -162,8 +162,8 @@
    * @function defaults
    * @memberof OSjs.Core.SettingsManager#
    *
-   * @param  {String}     pool      Name of settings pool
-   * @param  {Object}     [default] Default settings tree
+   * @param  {String}     pool       Name of settings pool
+   * @param  {Object}     [defaults] Default settings tree
    */
   SettingsManager.defaults = function(pool, defaults) {
     this.defaults[pool] = defaults;
@@ -175,8 +175,8 @@
    * @function instance
    * @memberof OSjs.Core.SettingsManager#
    *
-   * @param  {String}     pool      Name of settings pool
-   * @param  {Object}     [default] Default settings tree
+   * @param  {String}     pool       Name of settings pool
+   * @param  {Object}     [defaults] Default settings tree
    *
    * @return {Object}
    */
@@ -267,6 +267,7 @@
   SettingsManager.clear = function(pool, save) {
     save = (typeof save === 'undefined') || (save === true);
     this.set(pool, null, {}, save);
+    return this;
   };
 
   /////////////////////////////////////////////////////////////////////////////

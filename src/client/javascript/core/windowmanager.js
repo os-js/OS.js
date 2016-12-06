@@ -36,7 +36,7 @@
   // WINDOW MOVEMENT BEHAVIOUR
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
+  /*
    * Holds information about current behaviour
    */
   function BehaviourState(win, action, mousePosition) {
@@ -139,14 +139,14 @@
     this.direction = direction;
   };
 
-  /**
+  /*
    * Window Behavour Abstraction
    */
   function createWindowBehaviour(win, wm) {
     var current = null;
     var newRect = {};
 
-    /**
+    /*
      * Resizing action
      */
     function onWindowResize(ev, mousePosition, dx, dy) {
@@ -200,7 +200,7 @@
       return newRect;
     }
 
-    /**
+    /*
      * Movement action
      */
     function onWindowMove(ev, mousePosition, dx, dy) {
@@ -272,7 +272,7 @@
       return {left: newLeft, top: newTop, width: newWidth, height: newHeight};
     }
 
-    /**
+    /*
      * When mouse button is released
      */
     function onMouseUp(ev, action, win, mousePosition) {
@@ -297,7 +297,7 @@
       current = null;
     }
 
-    /**
+    /*
      * When mouse is moved
      */
     function onMouseMove(ev, action, win, mousePosition) {
@@ -329,7 +329,7 @@
       current.moved = true;
     }
 
-    /**
+    /*
      * When mouse button is pressed
      */
     function onMouseDown(ev, action, win, mousePosition) {
@@ -371,7 +371,7 @@
       Utils.$bind(document, 'mouseup:movewindowstop', _onMouseUp, false);
     }
 
-    /**
+    /*
      * Register a window
      */
     if ( win._properties.allow_move ) {
@@ -484,6 +484,10 @@
 
   /**
    * Initialize the WindowManager
+   *
+   * @param   {Object}            metadata      Package metadata
+   * @param   {Object}            settings      Package settings
+   * @param   {OSjs.GUI.Scheme}   [scheme]      GUI Scheme instance
    *
    * @function init
    * @memberof OSjs.Core.WindowManager#

@@ -105,7 +105,7 @@
     }
   }
 
-  /**
+  /*
    * Scans entire file tree for given path
    */
   function getFileFromPath(dir, type, callback) {
@@ -145,7 +145,7 @@
     });
   }
 
-  /**
+  /*
    * Gets the parent path
    */
   function getParentPathId(item, callback) {
@@ -162,7 +162,7 @@
     });
   }
 
-  /**
+  /*
    * Generate FileView compatible array of scandir()
    */
   function createDirectoryList(dir, list, item, options) {
@@ -206,7 +206,7 @@
     return result ? OSjs.VFS.Helpers.filterScandir(result, options) : [];
   }
 
-  /**
+  /*
    * Get all files in a directory
    */
   function getAllDirectoryFiles(item, callback) {
@@ -389,7 +389,7 @@
 
   }
 
-  /**
+  /*
    * Sets the folder for a file
    */
   function setFolder(item, pid, callback) {
@@ -887,7 +887,7 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
+  /*
    * This is the Google Drive VFS Abstraction for OS.js
    */
   OSjs.Core.getMountManager()._add({

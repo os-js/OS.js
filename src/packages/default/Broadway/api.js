@@ -1,3 +1,4 @@
+/*eslint valid-jsdoc: "off"*/
 (function() {
 
   module.exports.api = {

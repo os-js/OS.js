@@ -27,6 +27,8 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
+
+/*eslint valid-jsdoc: "off"*/
 (function(Utils, API, VFS) {
   'use strict';
 
@@ -40,6 +42,8 @@
    * use a File, Blob or ArrayBuffer, but this is an alternative.
    *
    * Useful for canvas data etc.
+   *
+   * @param {String}    dataURL     Data URI
    *
    * @constructor
    * @memberof OSjs.VFS

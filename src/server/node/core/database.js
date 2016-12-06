@@ -196,6 +196,8 @@ module.exports.instance = function(name, type, opts) {
 /**
  * Destroys all database connections
  *
+ * @param {String}    name    Instance name
+ *
  * @function destroy
  * @memberof core.database
  */

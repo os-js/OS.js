@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 
+/*eslint valid-jsdoc: "off"*/
 (function(Application, Window, Utils, VFS, API, GUI) {
   'use strict';
 
@@ -58,7 +59,7 @@
   DefaultApplicationWindow.prototype = Object.create(Window.prototype);
   DefaultApplicationWindow.constructor = Window;
 
-  /**
+  /*
    * Destroy
    */
   DefaultApplicationWindow.prototype.destroy = function() {
@@ -67,7 +68,7 @@
     this.currentFile = null;
   };
 
-  /**
+  /*
    * Initialize
    */
   DefaultApplicationWindow.prototype.init = function(wm, app, scheme) {
@@ -75,7 +76,7 @@
     return root;
   };
 
-  /**
+  /*
    * Applies default Window GUI stuff
    */
   DefaultApplicationWindow.prototype._inited = function() {
@@ -119,7 +120,7 @@
     return result;
   };
 
-  /**
+  /*
    * On Drag-And-Drop Event
    */
   DefaultApplicationWindow.prototype._onDndEvent = function(ev, type, item, args) {
@@ -135,7 +136,7 @@
     }
   };
 
-  /**
+  /*
    * On Close
    */
   DefaultApplicationWindow.prototype._close = function() {

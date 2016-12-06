@@ -316,7 +316,7 @@
   // INITIALIZERS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
+  /*
    * Initialized some layout stuff
    */
   function initLayout() {
@@ -337,7 +337,7 @@
     document.getElementById('LoadingScreen').style.display = 'none';
   }
 
-  /**
+  /*
    * Initializes handlers
    */
   function initHandler(config, callback) {
@@ -370,7 +370,7 @@
     });
   }
 
-  /**
+  /*
    * Initializes events
    */
   function initEvents() {
@@ -410,7 +410,7 @@
     };
   }
 
-  /**
+  /*
    * Preloads configured files
    */
   function initPreload(config, callback) {
@@ -438,7 +438,7 @@
     });
   }
 
-  /**
+  /*
    * Loads all extensions
    */
   function initExtensions(config, callback) {
@@ -467,7 +467,7 @@
     });
   }
 
-  /**
+  /*
    * Initializes the SettingsManager pools
    * from configuration file(s)
    */
@@ -484,7 +484,7 @@
     callback();
   }
 
-  /**
+  /*
    * Initializes the PackageManager
    */
   function initPackageManager(cfg, callback) {
@@ -511,7 +511,7 @@
     });
   }
 
-  /**
+  /*
    * Initalizes the VFS
    */
   function initVFS(config, callback) {
@@ -520,7 +520,7 @@
     OSjs.Core.getMountManager().init(callback);
   }
 
-  /**
+  /*
    * Initializes the Search Engine
    */
   function initSearch(config, callback) {
@@ -529,7 +529,7 @@
     OSjs.Core.getSearchEngine().init(callback);
   }
 
-  /**
+  /*
    * Initializes the Window Manager
    */
   function initWindowManager(config, callback) {
@@ -545,7 +545,7 @@
     });
   }
 
-  /**
+  /*
    * Initializes the Session
    */
   function initSession(config, callback) {
@@ -605,7 +605,7 @@
     });
   }
 
-  /**
+  /*
    * Wrapper for initializing OS.js
    */
   function init() {

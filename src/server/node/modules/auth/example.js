@@ -74,6 +74,8 @@ module.exports.manage = function(http, command, args) {
  * Runs when a HTTP request is made
  *
  * @param   {ServerRequest}    http          OS.js Server Request
+ * @param   {Function}         resolve       Resolve promise callback
+ * @param   {Function}         reject        Reject promise callback
  */
 module.exports.initSession = function(http, resolve, reject) {
   return new Promise(function(resolve) {

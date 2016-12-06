@@ -333,7 +333,7 @@
     }
 
     var self = this;
-    this.__windows.forEach(function(win, i) {
+    return this.__windows.some(function(win, i) {
       if ( win ) {
         if ( win._wid === w._wid ) {
           console.debug('Application::_removeWindow()', w._wid);
@@ -341,9 +341,10 @@
 
           self.__windows.splice(i, 1);
 
-          return false;
+          return true;
         }
       }
+
       return true;
     });
   };

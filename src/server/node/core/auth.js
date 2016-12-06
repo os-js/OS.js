@@ -187,7 +187,6 @@ module.exports.checkSession = function(http) {
 /**
  * Checks if user has given group(s)
  *
- * @param   {ServerRequest}    http          OS.js Server Request
  * @param   {Array}            userGroups    User groups
  * @param   {String|Array}     groupList     Group(s)
  * @param   {Boolean}          [all=true]    Check if all and not some

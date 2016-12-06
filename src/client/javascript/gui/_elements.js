@@ -35,7 +35,7 @@
    * @memberof OSjs.GUI
    */
 
-  /**
+  /*
    * Wrapper for getting which element to focus/blur
    */
   function getFocusElement(inst) {
@@ -53,7 +53,7 @@
     return inst.$element.firstChild || inst.$element;
   }
 
-  /**
+  /*
    * Internal for parsing GUI elements
    */
   function parseDynamic(node, win, args) {
@@ -471,6 +471,10 @@
 
   /**
    * Set or get CSS attributes
+   *
+   * @param {String}          k     CSS key
+   * @param {(String|Number)} v     CSS value
+   *
    * @function css
    * @memberof OSjs.GUI.Element#
    * @see OSjs.Utils.$css
@@ -528,6 +532,10 @@
 
   /**
    * Creates a new GUI.Element instance from Node
+   *
+   * @param {Element}     el      DOM Element
+   * @param {String}      [q]     DOM Element query
+   *
    * @function createInstance
    * @memberof OSjs.GUI.Element
    */
@@ -547,13 +555,12 @@
    * @function parseNode
    * @memberof OSjs.GUI.Element
    *
-   * @param   {OSjs.Core.Window}    win         Reference to the Window
-   * @param   {Node}                node        The HTML node to parse
-   * @param   {Object}              args        List of arguments to send to the parser
-   * @param   {Function}            onparse     Method to signal when parsing has started
-   * @param   {Mixed}               [id]        The id of the source (for debugging)
-   *
-   * @return  {String}
+   * @param   {OSjs.Core.Window}    win               Reference to the Window
+   * @param   {Node}                node              The HTML node to parse
+   * @param   {String}              [type=snipplet]   Node type
+   * @param   {Object}              [args]            List of arguments to send to the parser
+   * @param   {Function}            [onparse]         Method to signal when parsing has started
+   * @param   {Mixed}               [id]              The id of the source (for debugging)
    */
   UIElement.parseNode = function(win, node, type, args, onparse, id) {
     onparse = onparse || function() {};
@@ -618,6 +625,8 @@
   /**
    * Adds one or more elements
    *
+   * @param {Object}  [props]   Send these arguments
+   *
    * @function add
    * @memberof OSjs.GUI.ElementDataView#
    */
@@ -628,6 +637,8 @@
   /**
    * Do a diffed render
    *
+   * @param {Object}  [props]   Send these arguments
+   *
    * @function patch
    * @memberof OSjs.GUI.ElementDataView#
    */
@@ -637,6 +648,9 @@
 
   /**
    * Remove element
+   *
+   * @param {String}    id      DOM Element id
+   * @param {String}    key     DOM Element key
    *
    * @function remove
    * @memberof OSjs.GUI.ElementDataView#

@@ -1,4 +1,3 @@
-
 /*!
  * OS.js - JavaScript Cloud/Web Desktop Platform
  *
@@ -28,6 +27,8 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
+
+/*eslint valid-jsdoc: "off"*/
 (function() {
   'use strict';
 

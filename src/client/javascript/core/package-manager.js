@@ -221,6 +221,10 @@
       /**
        * Add a list of packages
        *
+       * @param   {Object}    result    Package dict (manifest data)
+       * @param   {String}    scope     Package scope (system/user)
+       *
+       *
        * @function _addPackages
        * @memberof OSjs.Core.PackageManager#
        */
@@ -324,8 +328,6 @@
        *
        * @param {Object}    opts      Options
        * @param {Function}  callback  Callback => fn(error, result)
-       *
-       * @return {Metadata}
        */
       getStorePackages: function(opts, callback) {
         var sm = OSjs.Core.getSettingsManager();

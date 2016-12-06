@@ -110,6 +110,8 @@
    * @example
    * Utils.mousePosition(ev); // -> {x:1, y:1}
    *
+   * @param {Event}   ev    DOM Event
+   *
    * @return {(Event|Object)}   ev      DOM Event or an Object
    * @return Object
    */
@@ -266,7 +268,7 @@
     var TOUCH_CLICK_MAX = 1000;
     var TOUCH_DBLCLICK = 400;
 
-    /**
+    /*
      * This is the wrapper for using addEventListener
      */
     function addEventHandler(el, n, t, callback, handler, useCapture, realType) {
@@ -281,7 +283,7 @@
       });
     }
 
-    /**
+    /*
      * Creates mousewheel handler
      */
     function createWheelHandler(el, n, t, callback, useCapture) {
@@ -298,7 +300,7 @@
       addEventHandler(el, n, 'DOMMouseScroll', callback, _wheel, useCapture, 'DOMMouseScroll');
     }
 
-    /**
+    /*
      * Creates touch gestures for emulating mouse input
      */
     function createGestureHandler(el, n, t, callback, useCapture) {
@@ -407,7 +409,7 @@
       addEventHandler(el, n, 'touchstart', callback, _touchstart, false, 'touchstart');
     }
 
-    /**
+    /*
      * Emits a normal mouse event from touches
      *
      * This basically emulates mouse behaviour on touch events
@@ -443,7 +445,7 @@
       ev.currentTarget.dispatchEvent(new MouseEvent(type, evtArgs));
     }
 
-    /**
+    /*
      * Map of touch events
      */
     var customEvents = {
@@ -540,11 +542,11 @@
    * @see OSjs.Utils.$bind
    *
    * @param   {Node}          el            DOM Element to attach event to
-   * @param   {String}        [ev]          DOM Event Name
+   * @param   {String}        [evName]      DOM Event Name
    * @param   {Function}      [callback]    Callback on event
    * @param   {Boolean}       [useCapture]  Use capture mode
    */
-  OSjs.Utils.$unbind = function(el, evName, callback, param) {
+  OSjs.Utils.$unbind = function(el, evName, callback, useCapture) {
 
     function unbindAll() {
       if ( el._boundEvents ) {

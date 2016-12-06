@@ -72,7 +72,7 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
+  /*
    * Get next z-index for Window
    * @return integer
    */
@@ -88,7 +88,7 @@
     };
   })();
 
-  /**
+  /*
    * Get viewport (Wrapper)
    *
    * @return {Object}
@@ -102,7 +102,7 @@
     return Utils.getRect();
   }
 
-  /**
+  /*
    * Wrapper to wait for animations to finish
    */
   function waitForAnimation(win, cb) {
@@ -115,7 +115,7 @@
     }
   }
 
-  /**
+  /*
    * Creates media queries from configuration file
    */
   var createMediaQueries = (function() {
@@ -148,7 +148,7 @@
     };
   })();
 
-  /**
+  /*
    * Checks window dimensions and makes media queries dynamic
    */
   function checkMediaQueries(win) {
@@ -914,6 +914,8 @@
   /**
    * Destroy the Window
    *
+   * @param {Boolean}   shutdown    If the action came from a shutdown procedure
+   *
    * @function destroy
    * @memberof OSjs.Core.Window#
    *
@@ -1159,6 +1161,10 @@
   /**
    * Add a child-window
    *
+   * @param {OSjs.Core.Window}      w               Window
+   * @param {Boolean}               [wmAdd=false]   Add to window manager
+   * @param {Boolean}               [wmFocus=false] Focus window when added
+   *
    * @function _addChild
    * @memberof OSjs.Core.Window#
    * @see OSjs.Helpers.EventHandler#off
@@ -1191,13 +1197,17 @@
   Window.prototype._removeChild = function(w) {
     var self = this;
 
+    var found = false;
     this._children.forEach(function(child, i) {
       if ( child && child._wid === w._wid ) {
         console.debug('Window::_removeChild()');
         child.destroy();
         self._children[i] = null;
+        found = true;
       }
     });
+
+    return found;
   };
 
   /**
@@ -1333,6 +1343,8 @@
    * @function _minimize
    * @memberof OSjs.Core.Window#
    *
+   * @param     {Boolean}   [force=false]   Force action
+   *
    * @return    {Boolean}     On success
    */
   Window.prototype._minimize = function(force) {
@@ -1376,6 +1388,8 @@
    *
    * @function _maximize
    * @memberof OSjs.Core.Window#
+   *
+   * @param     {Boolean}   [force=false]   Force action
    *
    * @return    {Boolean}     On success
    */
@@ -1820,6 +1834,8 @@
   /**
    * Updates window markup with attributes etc
    *
+   * @param {Boolean}   [ui=false]    If action came from UI
+   *
    * @function _updateMarkup
    * @memberof OSjs.Core.Window#
    */
@@ -1920,6 +1936,9 @@
    *
    * @param   {Event}     ev        DOM Event
    * @param   {String}    type      DnD type
+   * @param   {Object}    item      DnD item
+   * @param   {Object}    args      DnD arguments
+   * @param   {Element}   el        DnD element
    *
    * @return  {Boolean} On success
    */

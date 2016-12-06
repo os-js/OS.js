@@ -60,7 +60,7 @@
   // SERVICERING
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
+  /*
    * Service Notification Icon Class
    *
    * This is a private class and can only be retrieved through
@@ -97,7 +97,7 @@
     }
   };
 
-  /**
+  /*
    * Destroys the notification icon
    */
   ServiceNotificationIcon.prototype.destroy = function() {
@@ -120,10 +120,8 @@
     }
   };
 
-  /**
+  /*
    * Show the menu
-   *
-   * @param   DOMEvent      ev      Event
    */
   ServiceNotificationIcon.prototype.displayMenu = function(ev) {
     var menu = [];
@@ -139,7 +137,7 @@
     API.createMenu(menu, ev);
   };
 
-  /**
+  /*
    * Adds an entry
    */
   ServiceNotificationIcon.prototype.add = function(name, menu) {
@@ -151,7 +149,7 @@
     }
   };
 
-  /**
+  /*
    * Removes an entry
    */
   ServiceNotificationIcon.prototype.remove = function(name) {
@@ -196,6 +194,8 @@
    * @function __
    * @memberof OSjs.API
    * @see OSjs.API._
+   *
+   * @return {String}
    */
   API.__ = function _apiTranslateList() {
     var l = arguments[0];
@@ -232,7 +232,7 @@
    * @function setLocale
    * @memberof OSjs.API
    *
-   * @param  {String}   s     Locale name
+   * @param  {String}   l     Locale name
    */
   API.setLocale = function _apiSetLocale(l) {
     var RTL = API.getConfig('LocaleOptions.RTL', []);
@@ -503,8 +503,6 @@
    * @param   {Function}    [ondone]        Callback on success
    * @param   {Function}    [onerror]       Callback on error
    * @param   {Function}    [onconstruct]   Callback on application init
-   *
-   * @return  {Boolean}
    */
   API.launch = function _apiLaunch(name, args, ondone, onerror, onconstruct) {
     args = args || {};
@@ -1205,9 +1203,13 @@
   /**
    * Create a new Desktop Notification
    *
+   * @param {Object}  opts    Notification options
+   *
    * @function createNotification
    * @memberof OSjs.API
    * @see OSjs.Core.WindowManager#notification
+   *
+   * @return {Object}   The created notification instance
    */
   API.createNotification = function _apiCreateNotification(opts) {
     var wm = OSjs.Core.getWindowManager();
@@ -1322,6 +1324,8 @@
    * @memberof OSjs.API
    *
    * @param   {Mixed}     group         Either a string or array of groups
+   *
+   * @return {Boolean}
    */
   API.checkPermission = function _apiCheckPermission(group) {
     var user = OSjs.Core.getAuthenticator().getUser();
@@ -1635,6 +1639,7 @@
    *
    * @function isStandalone
    * @memberof OSjs.API
+   * @return {Boolean}
    */
   API.isStandalone = function _apiIsStandlone() {
     return API.getConfig('Connection.Type') === 'standalone' && window.location.protocol === 'file:';
@@ -1647,6 +1652,7 @@
    *
    * @function getBrowserPath
    * @memberof OSjs.API
+   * @return {String}
    */
   API.getBrowserPath = function _apiGetBrowserPath(app) {
     var str = API.getConfig('Connection.RootURI');

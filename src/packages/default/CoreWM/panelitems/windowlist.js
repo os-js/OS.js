@@ -27,6 +27,8 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
+
+/*eslint valid-jsdoc: "off"*/
 (function(CoreWM, Panel, PanelItem, Utils, API, GUI, VFS) {
   'use strict';
 

@@ -194,6 +194,7 @@
    * @memberof OSjs.Helpers.IframeApplicationWindow#
    *
    * @param   {String}      src       Source
+   * @param   {Element}     iframe    Iframe element
    */
   IFrameApplicationWindow.prototype.setLocation = function(src, iframe) {
     iframe = iframe || this._frame;
@@ -252,7 +253,12 @@
   };
 
   /**
+   * When Application receives a message from IFrame
+   *
    * @alias OSjs.Helpers.IframeApplicationWindow#onPostMessage
+   *
+   * @param   {Mixed}       message     The message
+   * @param   {Event}       ev          DOM Event
    */
   IFrameApplication.prototype.onPostMessage = function(message, ev) {
     console.debug('IFrameApplication::onPostMessage()', message);

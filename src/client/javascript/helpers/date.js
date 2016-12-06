@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 
+/*eslint valid-jsdoc: "off"*/
 (function(Utils, VFS, API) {
   'use strict';
 

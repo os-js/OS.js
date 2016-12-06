@@ -44,7 +44,7 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
+  /*
    * Perform VFS request
    */
   function request(test, method, args, callback, options, appRef) {
@@ -95,7 +95,7 @@
     });
   }
 
-  /**
+  /*
    * Just a helper function to reduce codesize by wrapping the general
    * request flow into one handy-dandy function.
    */
@@ -122,7 +122,7 @@
     }
   }
 
-  /**
+  /*
    * Check if given item has an aliased mount associated with it
    * and return the real path
    */
@@ -137,7 +137,7 @@
     return false;
   }
 
-  /**
+  /*
    * Will transform the argument to a VFS.File instance
    * or throw an error depending on input
    */
@@ -164,7 +164,7 @@
     return item;
   }
 
-  /**
+  /*
    * Check if targets have the same transport/module
    */
   function hasSameTransport(src, dest) {
@@ -180,7 +180,7 @@
     return (msrc.transport === mdst.transport) || (msrc.name === mdst.name);
   }
 
-  /**
+  /*
    * A wrapper for checking if a file exists
    */
   function existsWrapper(item, callback, options) {
@@ -207,7 +207,7 @@
     }
   }
 
-  /**
+  /*
    * Check if destination is readOnly
    */
   function isReadOnly(item) {
@@ -215,7 +215,7 @@
     return m.readOnly === true;
   }
 
-  /**
+  /*
    * Creates the '..' entry for scandir if not detected
    */
   function createBackLink(item, result, alias, oitem) {
@@ -245,7 +245,7 @@
     return false;
   }
 
-  /**
+  /*
    * Checks if an action mathes given path
    */
   function checkWatches(msg, obj) {
@@ -275,7 +275,7 @@
     });
   }
 
-  /**
+  /*
    * See if given item matches up with any VFS modules with aliases
    * and return given entry.
    */
@@ -295,7 +295,7 @@
     return found;
   }
 
-  /**
+  /*
    * Wrapper for broadcasting VFS messages
    */
   function broadcastMessage(msg, item, appRef) {
@@ -363,7 +363,6 @@
    * @param  {String}          options.query     The search query string
    * @param  {Number}          [options.limit]   Limit results to this amount
    *
-   * @return  void
    * @api     OSjs.VFS.find()
    */
   VFS.find = function(item, args, callback, options) {
@@ -776,6 +775,13 @@
    * @function rename
    * @memberof OSjs.VFS
    * @alias OSjs.VFS.move
+   *
+   * @param   {OSjs.VFS.File}             src                   Source File Metadata (you can also provide a string)
+   * @param   {OSjs.VFS.File}             dest                  Destination File Metadata (you can also provide a string)
+   * @param   {CallbackVFS}               callback              Callback function
+   * @param   {Object}                    [options]             Set of options
+   * @param   {Boolean}                   [options.overwrite]   If set to true it will not check if the destination exists
+   * @param   {OSjs.Core.Application}     [appRef]              Seference to an Application
    */
   VFS.rename = function(src, dest, callback) {
     VFS.move.apply(this, arguments);

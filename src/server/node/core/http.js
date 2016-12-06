@@ -619,6 +619,8 @@ function getWebsocketFromUser(username) {
 /**
  * Initializes the HTTP server
  *
+ * @param {ServerEnvironment} env   Server Environment
+ *
  * @function init
  * @memberof core.http
  */

@@ -343,7 +343,7 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
+  /*
    * This is the Dropbox VFS Abstraction for OS.js
    */
   OSjs.Core.getMountManager()._add({

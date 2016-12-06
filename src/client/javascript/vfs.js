@@ -176,7 +176,7 @@
     }));
   };
 
-  /**
+  /*
    * Wrapper for converting data
    */
   function _abToSomething(m, arrayBuffer, mime, callback) {

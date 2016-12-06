@@ -534,6 +534,8 @@ module.exports.init = function init(opts) {
 /**
  * Runs the OS.js Server
  *
+ * @param   {Number}    [port]      Port number to start on
+ *
  * @function run
  * @memberof core.instance
  */
@@ -637,6 +639,8 @@ module.exports.getMiddleware = function() {
 
 /**
  * Gets metadata for package(s)
+ *
+ * @param {String}    packageName     Package Name ("DISTO/PACKAGE")
  *
  * @function getMetadata
  * @memberof core.instance

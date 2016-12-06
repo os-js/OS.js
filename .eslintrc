@@ -19,11 +19,15 @@
   "rules": {
     "valid-jsdoc": [
       1,
-      "prefer": {
-        "return": "return"
-      },
-      "requireReturn": false,
-      "requireReturnType": false
+      {
+        "prefer": {
+          "return": "return",
+          "arg": "param"
+        },
+        "requireReturn": false,
+        "requireReturnType": false,
+        "requireReturnDescription": false
+      }
     ],
     "brace-style": 2,
     "curly": [

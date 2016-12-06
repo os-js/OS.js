@@ -88,7 +88,8 @@
    * @function getValueLabel
    * @memberof OSjs.GUI.Helpers
    *
-   * @param   {Node}      el      The element
+   * @param   {Node}      el              The element
+   * @param   {Boolean}   [attr=false]    Get from attribute istead of node text
    *
    * @return  {String}
    */
@@ -511,7 +512,7 @@
    * @memberof OSjs.GUI.Helpers
    *
    * @param   {Boolean}     prev        Get previous element instead of next
-   * @param   {Node}        el          The current element
+   * @param   {Node}        current     The current element
    * @param   {Node}        root        The root container
    */
   GUI.Helpers.getNextElement = function getNextElement(prev, current, root) {

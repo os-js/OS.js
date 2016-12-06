@@ -61,7 +61,7 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
+  /*
    * Get's the "real" path of a object (which is basically a path without protocol)
    */
   function getRealPath(p, par) {
@@ -79,7 +79,7 @@
     return path;
   }
 
-  /**
+  /*
    * This methods creates a VFS.File from cache and fills in the gaps
    */
   function createMetadata(i, path, p) {
@@ -96,7 +96,7 @@
   // LOCALSTORAGE ABSTRACTION
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
+  /*
    * Initialize and restore data from localStorage
    */
   function initStorage() {
@@ -119,7 +119,7 @@
     }
   }
 
-  /**
+  /*
    * Store tree and data to localStorage
    */
   function commitStorage() {
@@ -137,7 +137,7 @@
   // CACHE
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
+  /*
    * Adds an entry to the cache
    */
   function addToCache(iter, data, dab) {
@@ -191,7 +191,7 @@
     return true;
   }
 
-  /**
+  /*
    * Removes an entry from cache (recursively)
    */
   function removeFromCache(iter) {
@@ -269,7 +269,7 @@
     return true;
   }
 
-  /**
+  /*
    * Looks up a file from the cache and returns index
    */
   function findInCache(iter) {
@@ -286,7 +286,7 @@
     return found;
   }
 
-  /**
+  /*
    * Fetches a VFS.File object from cache from path
    */
   function getFromCache(pp) {
@@ -304,7 +304,7 @@
     return result;
   }
 
-  /**
+  /*
    * Scans a directory and returns file list
    */
   function scanStorage(item, ui) {
@@ -640,7 +640,7 @@
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
+  /*
    * Browser LocalStorage VFS Module
    *
    * This is *experimental* at best. It involves making a real-ish filesystemwhich

@@ -182,8 +182,10 @@
    * @function mergeObject
    * @memberof OSjs.Utils
    *
-   * @param   {Object}      obj1      Object to merge to
-   * @param   {Object}      obj2      Object to merge with
+   * @param   {Object}      obj1                    Object to merge to
+   * @param   {Object}      obj2                    Object to merge with
+   * @param   {Object}      [opts]                  Options
+   * @param   {Bollean}     [opts.overwrite=true]   Overwrite existing
    *
    * @return  {Object}                The merged object
    */

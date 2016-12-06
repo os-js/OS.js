@@ -43,8 +43,9 @@
    *
    * @summary Class used for basis as a Service.
    *
-   * @param   {String}    name    Process name
-   * @param   {Object}    args    Process arguments
+   * @param   {String}    name        Process name
+   * @param   {Object}    args        Process arguments
+   * @param   {Object}    metadata    Package metadata
    *
    * @abstract
    * @constructor

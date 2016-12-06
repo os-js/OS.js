@@ -55,7 +55,7 @@
   /**
    * Make a Web HTTP URL for VFS
    *
-   * @param   {(String|OSjs.VFS.File)}    item        VFS File
+   * @param   {(String|OSjs.VFS.File)}    file        VFS File
    *
    * @retun   {String}                  URL based on input
    *

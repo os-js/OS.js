@@ -50,7 +50,7 @@
     }
   };
 
-  /**
+  /*
    * A hidden mountpoint for making HTTP requests via VFS
    */
   OSjs.Core.getMountManager()._add({

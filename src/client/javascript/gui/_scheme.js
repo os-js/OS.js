@@ -34,7 +34,7 @@
   // INTERNAL HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
+  /*
    * Method for adding children (moving)
    */
   function addChildren(frag, root, before) {
@@ -52,7 +52,7 @@
     }
   }
 
-  /**
+  /*
    * Makes sure "include" fragments are rendered correctly
    */
   function resolveFragments(scheme, node) {
@@ -84,7 +84,7 @@
     }
   }
 
-  /**
+  /*
    * Removes self-closing tags from HTML string
    */
   function removeSelfClosingTags(str) {
@@ -97,14 +97,14 @@
     return newhtml + split[split.length - 1];
   }
 
-  /**
+  /*
    * Cleans a HTML string
    */
   function cleanScheme(html) {
     return Utils.cleanHTML(removeSelfClosingTags(html));
   }
 
-  /**
+  /*
    * Makes sure "external include" fragments are rendered correctly.
    *
    * Currently this only supports one level deep.
@@ -158,6 +158,8 @@
    *
    * @summary Class for loading, parsing and manipulating Scheme files.
    *
+   * @param {String}    url     Scheme URL
+   *
    * @constructor Scheme
    * @memberof OSjs.GUI
    */
@@ -209,7 +211,7 @@
     this.triggers[f].push(fn);
   };
 
-  /**
+  /*
    * Trigger event
    */
   UIScheme.prototype._trigger = function(f, args) {
@@ -223,7 +225,7 @@
     }
   };
 
-  /**
+  /*
    * Content loading wrapper
    */
   UIScheme.prototype._load = function(html) {
@@ -378,8 +380,6 @@
    * @param   {String}              [type]    Fragment Type
    * @param   {Function}            [onparse] Callback on parsed
    * @param   {Object}              [args]    Parameters
-   *
-   * @return  {Node}
    */
   UIScheme.prototype.render = function(win, id, root, type, onparse, args) {
     root = root || win._getRoot();
@@ -473,7 +473,7 @@
    * @memberof OSjs.GUI.Scheme#
    *
    * @param   {OSjs.Core.Window}      win       OS.js Window
-   * @param   {String}                id        Element ID (data-id)
+   * @param   {String}                query     DOM Element query
    * @param   {Node}                  [root]    Root Node
    * @param   {Boolean}               [all]     Perform `querySelectorAll`
    *
@@ -510,7 +510,7 @@
     return this._findDOM(win, id, root).el;
   };
 
-  /**
+  /*
    * Find Root Element
    */
   UIScheme.prototype._findRoot = function(win, root) {
@@ -520,7 +520,7 @@
     return root || win._getRoot();
   };
 
-  /**
+  /*
    * Find DOM element
    */
   UIScheme.prototype._findDOM = function(win, id, root) {

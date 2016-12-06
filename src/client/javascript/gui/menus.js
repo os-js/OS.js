@@ -112,7 +112,7 @@
     }
   }
 
-  /**
+  /*
    * This function makes menus pop out to the left instead of right
    *
    * Does not work for gui-menu-bar atm

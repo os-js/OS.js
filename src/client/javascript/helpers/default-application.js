@@ -28,6 +28,7 @@
  * @licence Simplified BSD License
  */
 
+/*eslint valid-jsdoc: "off"*/
 (function(Application, Window, Utils, VFS, API, GUI) {
   'use strict';
 
@@ -63,14 +64,14 @@
   DefaultApplication.prototype = Object.create(Application.prototype);
   DefaultApplication.constructor = Application;
 
-  /**
+  /*
    * Destroy
    */
   DefaultApplication.prototype.destroy = function() {
     Application.prototype.destroy.apply(this, arguments);
   };
 
-  /**
+  /*
    * On Message
    */
   DefaultApplication.prototype._onMessage = function(obj, msg, args) {

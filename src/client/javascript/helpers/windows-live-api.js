@@ -61,6 +61,8 @@
    * @memberof OSjs.Helpers.WindowsLiveAPI
    * @see OSjs.Helpers.WindowsLiveAPI.createInsatance
    *
+   * @param {String}  clientId    Client ID (key)
+   *
    * @link http://msdn.microsoft.com/en-us/library/hh826547.aspx
    * @link http://msdn.microsoft.com/en-us/library/hh826538.aspx
    * @link http://msdn.microsoft.com/en-us/library/hh550837.aspx
@@ -82,13 +84,13 @@
     }];
   }
 
-  /**
+  /*
    * Destroy the class
    */
   WindowsLiveAPI.prototype.destroy = function() {
   };
 
-  /**
+  /*
    * Initializes (preloads) the API
    */
   WindowsLiveAPI.prototype.init = function(callback) {
@@ -106,7 +108,7 @@
     }
   };
 
-  /**
+  /*
    * Loads the API
    */
   WindowsLiveAPI.prototype.load = function(scope, callback) {
@@ -229,7 +231,7 @@
     OSjs.Core.getMountManager().remove('OneDrive');
   };
 
-  /**
+  /*
    * Authenticates the user
    */
   WindowsLiveAPI.prototype.login = function(scope, callback) {
@@ -254,7 +256,7 @@
     });
   };
 
-  /**
+  /*
    * If the API session was changed
    */
   WindowsLiveAPI.prototype.onSessionChange = function() {
@@ -268,7 +270,7 @@
     }
   };
 
-  /**
+  /*
    * When user logged in
    */
   WindowsLiveAPI.prototype.onLogin = function() {
@@ -287,7 +289,7 @@
     }
   };
 
-  /**
+  /*
    * When user logs out
    */
   WindowsLiveAPI.prototype.onLogout = function() {
@@ -296,7 +298,7 @@
     this._removeRing();
   };
 
-  /**
+  /*
    * When API sends a log message
    */
   WindowsLiveAPI.prototype.onLog = function() {

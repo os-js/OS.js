@@ -61,6 +61,8 @@
    * @memberof OSjs.Helpers.GoogleAPI
    * @see OSjs.Helpers.GoogleAPI.createInsatance
    *
+   * @param {String}  clientId    Client ID (key)
+   *
    * @link https://developers.google.com/api-client-library/javascript/start/start-js
    * @link https://developers.google.com/api-client-library/javascript/
    * @link https://console.developers.google.com/project
@@ -80,13 +82,13 @@
     ];
   }
 
-  /**
+  /*
    * Destroy the class
    */
   GoogleAPI.prototype.destroy = function() {
   };
 
-  /**
+  /*
    * Initializes (preloads) the API
    */
   GoogleAPI.prototype.init = function(callback) {
@@ -105,7 +107,7 @@
     }
   };
 
-  /**
+  /*
    * Loads the API
    */
   GoogleAPI.prototype.load = function(load, scope, client, callback) {
@@ -243,7 +245,7 @@
    * @function revoke
    * @memberof OSjs.Helpers.GoogleAPI.Class#
    *
-   * @param   {Function}    cb      Callback => fn(error, result)
+   * @param   {Function}    callback      Callback => fn(error, result)
    */
   GoogleAPI.prototype.revoke = function(callback) {
     console.info('GoogleAPI::revoke()');
@@ -265,7 +267,7 @@
     });
   };
 
-  /**
+  /*
    * Authenticates the user
    */
   GoogleAPI.prototype.authenticate = function(scope, callback) {

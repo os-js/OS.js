@@ -65,6 +65,11 @@
    *
    * @summary Class used for basis as a Dialog.
    *
+   * @param {String}          className     Dialog Class Name
+   * @param {Object}          opts          Dialog Class Options
+   * @param {Object}          args          Dialog Class Arguments
+   * @param {CallbackDialog}  callback      Callback function
+   *
    * @abstract
    * @constructor
    * @memberof OSjs.Core
@@ -170,6 +175,9 @@
   /**
    * When dialog closes
    *
+   * @param   {Event}     ev        DOM Event
+   * @param   {String}    button    Button used
+   *
    * @function onClose
    * @memberof OSjs.Core.DialogWindow#
    */
@@ -204,6 +212,8 @@
 
   /**
    * Parses given message to be inserted into Dialog
+   *
+   * @param {String}  msg   Message
    *
    * @function parseMessage
    * @memberof OSjs.Core.DialogWindow

@@ -35,7 +35,7 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
+  /*
    * Searches an object field for matches
    */
   function search(list, query) {
@@ -62,7 +62,7 @@
     return result;
   }
 
-  /**
+  /*
    * A search Object
    */
   function SearchObject(obj) {
