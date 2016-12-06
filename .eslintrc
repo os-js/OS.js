@@ -17,6 +17,14 @@
     "Promise": true
   },
   "rules": {
+    "valid-jsdoc": [
+      1,
+      "prefer": {
+        "return": "return"
+      },
+      "requireReturn": false,
+      "requireReturnType": false
+    ],
     "brace-style": 2,
     "curly": [
       2,
