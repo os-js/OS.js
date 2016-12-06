@@ -1,0 +1,61 @@
+
+    <div id="LoadingScreen">
+      <img alt="" src="splash.png" />
+    </div>
+
+    <style type="text/css">
+
+#LoadingScreen {
+  position : absolute;
+  width : 320px;
+  height : 182px;
+  top : 50%;
+  left : 50%;
+  margin-top : -91px;
+  margin-left : -160px;
+  z-index : 999;
+}
+
+/*
+  #LoadingScreen span {
+    color : #fff;
+    font-family : sans-serif, Arial;
+    font-size : 30px;
+    display : block;
+  }
+  */
+
+#LoadingScreen application-splash {
+  position : absolute;
+  height : 30px;
+  width : auto;
+  top : auto;
+  left : 0;
+  right : 0;
+  bottom : -40px;
+  margin : 0;
+  background : #fff;
+  z-index : 99999999;
+}
+  #LoadingScreen application-splash > span {
+    display : none;
+  }
+  #LoadingScreen application-splash > gui-progress-bar {
+    top : 5px;
+    left : 5px;
+    right : 5px;
+    bottom : 5px;
+    height : auto;
+  }
+    #LoadingScreen application-splash > gui-progress-bar:before {
+      border : 1px solid #ccc;
+      background : #ddd;
+    }
+    #LoadingScreen application-splash > gui-progress-bar > span {
+      display : none;
+    }
+    #LoadingScreen application-splash > gui-progress-bar > div {
+      background : rgb(87, 42, 121);
+    }
+
+    </style>

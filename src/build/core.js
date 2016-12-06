@@ -142,16 +142,17 @@ function createIndex(verbose, cfg, dist, fn, test) {
 
   const loginName = cfg.build.dist.login || 'default';
   const loginFile = _path.join(ROOT, 'src', 'templates', 'dist', 'login', loginName + '.html');
+  const loginHTML = _fs.readFileSync(loginFile).toString();
 
-  var loginHTML = '';
-  if ( _fs.existsSync(loginFile) ) {
-    loginHTML = _fs.readFileSync(loginFile).toString();
-  }
+  const splashName = cfg.build.dist.splash || 'default';
+  const splashFile = _path.join(ROOT, 'src', 'templates', 'dist', 'splash', splashName + '.html');
+  const splashHTML = _fs.readFileSync(splashFile).toString();
 
   var tpl = _fs.readFileSync(_path.join(tpldir, fileName)).toString();
   tpl = _utils.replaceAll(tpl, '%STYLES%', styles.join('\n'));
   tpl = _utils.replaceAll(tpl, '%SCRIPTS%', scripts.join('\n'));
   tpl = _utils.replaceAll(tpl, '%LOGIN%', loginHTML);
+  tpl = _utils.replaceAll(tpl, '%SPLASH%', splashHTML);
 
   _fs.writeFileSync(_path.join(outdir, fileName), tpl);
 }

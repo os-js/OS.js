@@ -653,7 +653,7 @@
     function _done() {
       OSjs.API.triggerHook('onInited');
 
-      loading.update(queue.length - 1, queue.length + 1);
+      loading.update(queue.length, queue.length);
 
       freeze.forEach(function(f) {
         if ( typeof OSjs[f] === 'object' ) {
@@ -687,7 +687,7 @@
         OSjs.API.triggerHook('onInitialize');
       }
 
-      loading.update(index + 1, queue.length + 1);
+      loading.update(index, queue.length);
 
       entry(config, function(err) {
         if ( err ) {

@@ -1344,9 +1344,7 @@
   };
 
   /**
-   * Checks the given permission (groups) against logged in user
-   *
-   * Returns an object with the methods `update(precentage)` and `destroy()`
+   * Creates a new splash screen
    *
    * @function createSplash
    * @memberof OSjs.API

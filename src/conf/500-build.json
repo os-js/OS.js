@@ -2,6 +2,7 @@
   "build": {
     "dist": {
       "template": "default",
+      "splash": "default",
       "login": "default"
     },
     "statics": {
