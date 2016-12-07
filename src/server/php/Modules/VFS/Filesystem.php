@@ -4,16 +4,16 @@
  *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -87,7 +87,7 @@ abstract class Filesystem
     $root = null;
     if ( isset($mounts[$protocol]) ) {
       $root = $mounts[$protocol];
-    } else if ( isset($mounts['*']) ){
+    } else if ( isset($mounts['*']) ) {
       $root = $mounts['*'];
     }
 
@@ -110,7 +110,7 @@ abstract class Filesystem
     if ( !isset($arguments["raw"]) ) {
       // NOTE: This is pretty much deprecated ?!?!
       print "data:{$mime};base64,";
-      while( !feof($handle) ) {
+      while ( !feof($handle) ) {
         $plain = fread($handle, 57 * 143);
         $encoded = base64_encode($plain);
         $encoded = chunk_split($encoded, 76, '');
@@ -229,7 +229,7 @@ abstract class Filesystem
     $limit = isset($opts['limit']) ? (int) $opts['limit'] : 0;
     $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($p), RecursiveIteratorIterator::SELF_FIRST);
 
-    foreach( $objects as $name => $object ) {
+    foreach ( $objects as $name => $object ) {
       if ( stristr($name, $opts['query']) !== false ) {
         $result[] = self::_getFileMetadata(substr($name, strlen($path)), $dirname, $root);
       }

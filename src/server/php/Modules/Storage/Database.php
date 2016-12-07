@@ -4,16 +4,16 @@
  *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -48,7 +48,11 @@ class Database extends Storage
       if ( $driver == 'sqlite' ) {
         self::$pdo = new PDO(sprintf('sqlite:/%s', $config->database));
       } else {
-        self::$pdo = new PDO(sprintf('%s:host=%s;dbname=%s', $driver, $config->host, $config->database), $config->user, $config->password);
+        $str = sprintf('%s:host=%s;dbname=%s', $driver,
+          $config->host,
+          $config->database);
+
+        self::$pdo = new PDO($str, $config->user, $config->password);
       }
     }
 
@@ -58,14 +62,16 @@ class Database extends Storage
   }
 
   final public function getGroups(Request $request) {
-    if ( $result = self::_query('SELECT `groups` FROM `users` WHERE `username` = ? LIMIT 1;', [$_SESSION['username']])->fetch() ) {
+    $query = 'SELECT `groups` FROM `users` WHERE `username` = ? LIMIT 1;';
+    if ( $result = self::_query($query, [$_SESSION['username']])->fetch() ) {
       return json_decode($result['groups']) ?: [];
     }
     return [];
   }
 
   final public function getSettings(Request $request) {
-    if ( $result = self::_query('SELECT settings FROM `users` WHERE `username` = ? LIMIT 1;', [$_SESSION['username']])->fetch() ) {
+    $query = 'SELECT settings FROM `users` WHERE `username` = ? LIMIT 1;';
+    if ( $result = self::_query($query, [$_SESSION['username']])->fetch() ) {
       return json_decode($result['settings']) ?: [];
     }
     return [];
@@ -73,7 +79,8 @@ class Database extends Storage
 
   final public function setSettings(Request $request) {
     $settings = json_encode($request->data['settings']);
-    if ( $result = self::_query('UPDATE `users` SET `settings` = ? WHERE `username` = ? LIMIT 1;', [$settings, $_SESSION['username']])->execute() ) {
+    $query = 'UPDATE `users` SET `settings` = ? WHERE `username` = ? LIMIT 1;';
+    if ( $result = self::_query($query, [$settings, $_SESSION['username']])->execute() ) {
       return true;
     }
     return false;

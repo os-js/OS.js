@@ -4,16 +4,16 @@
  *
  * Copyright (c) 2011-2016, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met: 
- * 
+ * modification, are permitted provided that the following conditions are met:
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer. 
+ *    list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution. 
- * 
+ *    and/or other materials provided with the distribution.
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -48,7 +48,11 @@ class Database extends Authenticator
       if ( $driver == 'sqlite' ) {
         self::$pdo = new PDO(sprintf('sqlite:/%s', $config->database));
       } else {
-        self::$pdo = new PDO(sprintf('%s:host=%s;dbname=%s', $driver, $config->host, $config->database), $config->user, $config->password);
+        $str = sprintf('%s:host=%s;dbname=%s', $driver,
+          $config->host,
+          $config->database);
+
+        self::$pdo = new PDO($str, $config->user, $config->password);
       }
     }
 
@@ -59,8 +63,10 @@ class Database extends Authenticator
 
 
   final public function login(Request $request) {
-    if ( $row = self::_query('SELECT * FROM `users` WHERE `username` = ? LIMIT 1;', [$request->data['username']])->fetch() ) {
-      if ( password_verify($request->data['password'], str_replace('$2y$', '$2a$', $row['password'])) ) {
+    $query = 'SELECT * FROM `users` WHERE `username` = ? LIMIT 1;';
+    if ( $row = self::_query($query, [$request->data['username']])->fetch() ) {
+      $hash = str_replace('$2y$', '$2a$', $row['password']);
+      if ( password_verify($request->data['password'], $hash) ) {
         return [
           'id'  => $row['id'],
           'username' => $row['username'],
