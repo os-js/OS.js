@@ -243,7 +243,7 @@ class Instance
       if ( $request->method === 'GET' ) {
         $endpoint = 'read';
         $args = [
-          'path' => preg_replace('/(^get\/)?/', '', $request->endpoint),
+          'path' => rawurldecode(preg_replace('/(^get\/)?/', '', $request->endpoint)),
           'raw' => true
         ];
       } else {

@@ -68,7 +68,7 @@ abstract class Filesystem
 
     return [
       'filename' => htmlspecialchars($filename),
-      'path' => htmlspecialchars($vroot . '/' . $filename),
+      'path' => htmlspecialchars($vroot . preg_replace('/^\/+?/', '/', $filename)),
       'size' => $size ?: 0,
       'type' => $type,
       'mime' => $mime,
