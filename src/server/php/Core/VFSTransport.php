@@ -29,9 +29,22 @@
  * @licence Simplified BSD License
  */
 
+/**
+ * VFS Transport Base Class
+ *
+ * @author Anders Evenrud <andersevenrud@gmail.com>
+ * @access protected
+ */
 abstract class VFSTransport
 {
 
+  /**
+   * Gets a real path from virtual
+   *
+   * @param string $str Virtual path
+   * @access public
+   * @return string
+   */
   public static function getRealPath($str) {
     return $str;
   }

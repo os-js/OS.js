@@ -33,11 +33,19 @@ use OSjs\Core\Instance;
 
 /**
  * Collection of Utility function
+ *
+ * @author Anders Evenrud <andersevenrud@gmail.com>
+ * @access protected
  */
 abstract class Utils
 {
   /**
    * Gets MIME from path
+   *
+   * @param   string    $fname      File path
+   *
+   * @access public
+   * @return string
    */
   final public static function getMIME($fname) {
     if ( function_exists('pathinfo') ) {
@@ -60,6 +68,13 @@ abstract class Utils
     return null;
   }
 
+  /**
+   * Remove a directory recursively
+   *
+   * @param   string      $dir      Path to directory
+   *
+   * @return boolean
+   */
   final public static function rmdir($dir) {
     if (!is_dir($dir) || is_link($dir)) return unlink($dir);
     foreach (scandir($dir) as $file) {

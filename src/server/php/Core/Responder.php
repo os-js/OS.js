@@ -31,11 +31,21 @@
 
 /**
  * HTTP Response Creator
+ *
+ * @author Anders Evenrud <andersevenrud@gmail.com>
+ * @access public
  */
 class Responder
 {
   /**
    * Respond with given content, code and headers
+   *
+   * @param   mixed     $data       Response body
+   * @param   int       $code       Response code
+   * @param   array     $headers    Response headers
+   *
+   * @access public
+   * @return void
    */
   public function raw($data, $code, $headers = []) {
     if ( $code == 500 ) {
@@ -58,6 +68,12 @@ class Responder
 
   /**
    * Respond as JSON
+   *
+   * @param   mixed     $data     JSON Data
+   * @param   int       $code     Optional HTTP response code
+   *
+   * @access public
+   * @return void
    */
   public function json($data, $code = null) {
     return $this->raw(json_encode($data), $code ?: 200, [
@@ -67,6 +83,13 @@ class Responder
 
   /**
    * Respond with buffered file output
+   *
+   * @param   String    $path       Path to file
+   * @param   String    $mime       MIME type
+   * @param   boolean   $error      Trigger error on failure
+   *
+   * @access public
+   * @return void
    */
   public function file($path, $mime = null, $error = true) {
     session_write_close();
@@ -100,6 +123,12 @@ class Responder
 
   /**
    * Responds with a buffered remote file (like Http)
+   *
+   * @param   String    $path       Path to file
+   * @param   boolean   $base64     Respond with base-encoded data
+   *
+   * @access public
+   * @return void
    */
   public function remote($path, $base64 = false) {
     if ( $base64 ) {
@@ -139,6 +168,12 @@ class Responder
 
   /**
    * Respond with error
+   *
+   * @param   String    $message    Error message
+   * @param   int       $code       HTTP Response code
+   *
+   * @access public
+   * @return void
    */
   public function error($message, $code = 500) {
     /*

@@ -31,30 +31,77 @@
 
 use OSjs\Core\Instance;
 
-class Storage
+/**
+ * Storage Class
+ *
+ * This class is the basis for handling user storage
+ *
+ * @author Anders Evenrud <andersevenrud@gmail.com>
+ * @access protected
+ */
+abstract class Storage
 {
   protected static $INSTANCE;
 
+  /**
+   * Create a new instance
+   */
   protected function __construct() {
   }
 
+  /**
+   * Gets user settings
+   *
+   * @access public
+   * @param \OSjs\Core\Request      $request      The HTTP request
+   * @throws \Exception On failure
+   * @return  array Settings tree
+   */
   public function getSettings(Request $request) {
     return [];
   }
 
+  /**
+   * Sets user settings
+   *
+   * @access public
+   * @param \OSjs\Core\Request      $request      The HTTP request
+   * @throws \Exception On failure
+   * @return  boolean
+   */
   public function setSettings(Request $request) {
     return true;
   }
 
+  /**
+   * Gets user package blacklist
+   *
+   * @access public
+   * @param \OSjs\Core\Request      $request      The HTTP request
+   * @throws \Exception On failure
+   * @return  array
+   */
   public function getBlacklist(Request $request) {
     return [];
   }
 
+  /**
+   * Gets module configuration
+   *
+   * @access public
+   * @return  object
+   */
   final public function getConfig() {
     $name = strtolower(str_replace('OSjs\\Modules\\Storage\\', '', get_class($this)));
     return Instance::getConfig()->modules->auth->$name;
   }
 
+  /**
+   * Get (or create) a new instance of the Storage
+   *
+   * @access public
+   * @return \OSjs\Core\Storage But with a top-class instance
+   */
   public static function getInstance() {
     if ( !self::$INSTANCE ) {
       $name = Instance::GetConfig()->http->storage;

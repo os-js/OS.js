@@ -36,17 +36,44 @@ use OSjs\Core\VFS;
 
 use Exception;
 
+/**
+ * Authenticator Class
+ *
+ * This class is the basis for handling Authentication
+ *
+ * @author Anders Evenrud <andersevenrud@gmail.com>
+ * @access public
+ */
 class Authenticator
 {
   protected static $INSTANCE;
 
+  /**
+   * Create a new instance
+   */
   protected function __construct() {
   }
 
+  /**
+   * Performs a login
+   *
+   * @access public
+   * @param \OSjs\Core\Request      $request      The HTTP request
+   * @throws \Exception On failure
+   * @return  mixed   Login result
+   */
   public function login(Request $request) {
     throw new Exception('Invalid login handle');
   }
 
+  /**
+   * Performs a logout
+   *
+   * @access public
+   * @param \OSjs\Core\Request      $request      The HTTP request
+   * @throws \Exception On failure
+   * @return  mixed   Login result
+   */
   public function logout(Request $request) {
     foreach ( array_keys($_SESSION) as $k ) {
       unset($_SESSION[$k]);
@@ -56,6 +83,16 @@ class Authenticator
     return parent::logout($request);
   }
 
+  /**
+   * Checks the permissions of the given type
+   *
+   * @access public
+   * @param \OSjs\Core\Request      $request      The HTTP request
+   * @param string                  $type         The request type (name)
+   * @param array                   $options      Options
+   *
+   * @return void
+   */
   public static function CheckPermissions(Request $request, $type, Array $options = []) {
     $authenticator = self::getInstance();
 
@@ -82,11 +119,24 @@ class Authenticator
     }
   }
 
+  /**
+   * Gets the current configuration from settings
+   *
+   * @access public
+   * @return object The configuration tree
+   */
   final public function getConfig() {
     $name = strtolower(str_replace('OSjs\\Modules\\Auth\\', '', get_class($this)));
     return Instance::getConfig()->modules->auth->$name;
   }
 
+  /**
+   * Checks the current session
+   *
+   * @param \OSjs\Core\Request      $request      The HTTP request
+   * @access public
+   * @return boolean
+   */
   public function checkSession(Request $request) {
     if ( $request->isapi && in_array($request->endpoint, ['login']) ) {
       return true;
@@ -94,6 +144,17 @@ class Authenticator
     return isset($_SESSION['username']);
   }
 
+  /**
+   * Checks a VFS permission
+   *
+   * @param   array   $checks     Array of permission checks
+   * @param   object  $config     The configuration tree
+   * @param   array   $options    A set of options
+   * @param   boolean $dest       If this is a destination and not a source
+   *
+   * @access protected
+   * @return boolean
+   */
   protected function _checkFsPermission(Array &$checks, $config, $options, $dest = false) {
     if ( $dest && empty($options['arguments']['dest']) ) {
       return true;
@@ -126,6 +187,16 @@ class Authenticator
     return true;
   }
 
+  /**
+   * Checks a permission
+   *
+   * @param \OSjs\Core\Request      $request      The HTTP request
+   * @param string                  $type         Permission type (name)
+   * @param array                   $options      Options
+   *
+   * @access public
+   * @return boolean
+   */
   public function checkPermission(Request $request, $type, Array $options = []) {
     if ( $type === 'package' ) {
       $blacklist = Storage::getInstance()->getBlacklist($request);
@@ -162,6 +233,12 @@ class Authenticator
     return true;
   }
 
+  /**
+   * Get (or create) a new instance of the Authenticator
+   *
+   * @access public
+   * @return \OSjs\Core\Authenticator But with a top-class instance
+   */
   public static function getInstance() {
     if ( !self::$INSTANCE ) {
       $name = Instance::GetConfig()->http->authenticator;

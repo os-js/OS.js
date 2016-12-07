@@ -38,6 +38,9 @@ use Exception;
 
 /**
  * OS.js Server Instance
+ *
+ * @author Anders Evenrud <andersevenrud@gmail.com>
+ * @access public
  */
 class Instance
 {
@@ -54,6 +57,8 @@ class Instance
 
   /**
    * Loads configuration files
+   * @access protected
+   * @return void
    */
   final protected static function _loadConfiguration() {
     self::$CONFIG = json_decode(file_get_contents(DIR_SERVER . '/settings.json'));
@@ -70,6 +75,8 @@ class Instance
 
   /**
    * Loads all Middleware modules
+   * @access protected
+   * @return void
    */
   final protected static function _loadMiddleware() {
     $path = DIR_SELF . '/Modules/Middleware/';
@@ -85,6 +92,8 @@ class Instance
 
   /**
    * Loads API methods
+   * @access protected
+   * @return void
    */
   final protected static function _loadAPI() {
     $path = DIR_SELF . '/Modules/API/';
@@ -112,6 +121,8 @@ class Instance
 
   /**
    * Loads VFS Transports
+   * @access protected
+   * @return void
    */
   final protected static function _loadVFS() {
     $path = DIR_SELF . '/Modules/VFS/';
@@ -131,6 +142,8 @@ class Instance
 
   /**
    * Get Loaded configuration
+   * @access public
+   * @return object
    */
   final public static function GetConfig() {
     return self::$CONFIG;
@@ -138,6 +151,8 @@ class Instance
 
   /**
    * Get packages manifest
+   * @access public
+   * @return object
    */
   final public static function GetPackages() {
     return self::$PACKAGES[self::$DIST];
@@ -145,6 +160,8 @@ class Instance
 
   /**
    * Get current dist
+   * @access public
+   * @return string
    */
   final public static function GetDist() {
     return self::$DIST;
@@ -152,6 +169,8 @@ class Instance
 
   /**
    * Gets the VFS modules
+   * @access public
+   * @return array
    */
   final public static function GetVFSModules() {
     return self::$VFS;
@@ -163,6 +182,8 @@ class Instance
 
   /**
    * Shutdown handler
+   * @access public
+   * @return void
    */
   final public static function shutdown() {
   }
@@ -170,6 +191,9 @@ class Instance
   /**
    * Takes all public methods from a class and registeres them in
    * the API
+   * @param string $className The class namespace path
+   * @access public
+   * @return void
    */
   final public static function registerAPIMethods($className) {
     foreach ( get_class_methods($className) as $methodName ) {
@@ -181,6 +205,9 @@ class Instance
 
   /**
    * Startup handler
+   *
+   * @access public
+   * @return void
    */
   final public static function run() {
     $root = basename(getcwd());

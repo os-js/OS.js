@@ -33,6 +33,9 @@ use OSjs\Core\Responder;
 
 /**
  * HTTP Request containers
+ *
+ * @author Anders Evenrud <andersevenrud@gmail.com>
+ * @access public
  */
 class Request
 {
@@ -90,6 +93,9 @@ class Request
 
   /**
    * Magical getter
+   *
+   * @access public
+   * @return mixed
    */
   public function __get($key) {
     if ( isset($this->$key) ) {
@@ -99,7 +105,10 @@ class Request
   }
 
   /**
-    * Make a HTTP Respose object
+   * Make a HTTP Respose object
+   *
+   * @access public
+   * @return \OSjs\Core\Responder
    */
   public function respond() {
     return new Responder($this);

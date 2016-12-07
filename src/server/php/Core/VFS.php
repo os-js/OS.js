@@ -31,11 +31,22 @@
 
 use OSjs\Core\Instance;
 
+/**
+ * VFS Tool Class
+ *
+ * @author Anders Evenrud <andersevenrud@gmail.com>
+ * @access protected
+ */
 abstract class VFS
 {
 
   /**
    * Make a VFS request for internal usage
+   *
+   * @param string    $str      The virtual path
+   *
+   * @access public
+   * @return string  The real path
    */
   final public static function GetRealPath($str) {
     $transport = self::GetTransportFromPath($str);
@@ -44,6 +55,11 @@ abstract class VFS
 
   /**
    * Get Transport VFS module from given path
+   *
+   * @param   mixed   $args   A string or a object from a a request (dest/src map)
+   *
+   * @access public
+   * @return boolean
    */
   final public static function GetTransportFromPath($args) {
     $mounts = (array) (Instance::GetConfig()->vfs->mounts ?: []);
@@ -71,6 +87,14 @@ abstract class VFS
     return null;
   }
 
+  /**
+   * Flattens a path
+   *
+   * @return  string    $path     A path
+   *
+   * @access public
+   * @return string
+   */
   public static function GetAbsoluteFilename($path) {
     $unipath = strlen($path) == 0 || $path{0} != '/';
     $path = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $path);
@@ -91,6 +115,14 @@ abstract class VFS
     return !$unipath ? '/'.$path : $path;
   }
 
+  /**
+   * Gets a protocol from path
+   *
+   * @param   mixed   $args   A string or a object from a a request (dest/src map)
+   *
+   * @access public
+   * @return string
+   */
   public static function GetProtocol($args, $dest = false) {
     $path = is_string($args) ? $args : null;
 
