@@ -22,7 +22,7 @@ RUN cd OS.js/
 ## Install and Compile OS.js ##
 WORKDIR OS.js/
 RUN npm install --production
-RUN grunt
+RUN node osjs build
 
 ## Start Application and Expose Port ##
 ## Note: you can change 'start-dev.sh' (Development Version) to 'start-dist.sh' (Production Version) ##
