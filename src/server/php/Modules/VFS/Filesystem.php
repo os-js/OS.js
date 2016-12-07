@@ -33,13 +33,19 @@ use OSjs\Core\Instance;
 use OSjs\Core\Request;
 use OSjs\Core\Utils;
 use OSjs\Core\VFS;
+use OSjs\Core\VFSTransport;
 
 use Exception;
 
 abstract class Filesystem
+  extends VFSTransport
 {
   const TRANSPORT = 'filesystem';
   const DATE_FORMAT = "Y-m-d\TH:i:s.Z\Z";
+
+  final public static function getRealPath($str) {
+    return self::_getRealPath($str);
+  }
 
   final protected static function _getFileMetadata($filename, $vroot, $path) {
     $type = @is_dir($path) ? 'dir' : 'file';

@@ -35,6 +35,14 @@ abstract class VFS
 {
 
   /**
+   * Make a VFS request for internal usage
+   */
+  final public static function GetRealPath($str) {
+    $transport = self::GetTransportFromPath($str);
+    return $transport::getRealPath($str);
+  }
+
+  /**
    * Get Transport VFS module from given path
    */
   final public static function GetTransportFromPath($args) {

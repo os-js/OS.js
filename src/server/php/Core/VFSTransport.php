@@ -1,4 +1,4 @@
-<?php namespace OSjs\Modules\VFS;
+<?php namespace OSjs\Core;
 /*!
  * OS.js - JavaScript Cloud/Web Desktop Platform
  *
@@ -29,23 +29,11 @@
  * @licence Simplified BSD License
  */
 
-use OSjs\Core\Instance;
-use OSjs\Core\Request;
-use OSjs\Core\Utils;
-use OSjs\Core\VFS;
-use OSjs\Core\VFSTransport;
-
-use Exception;
-
-abstract class Http
-  extends VFSTransport
+abstract class VFSTransport
 {
-  const TRANSPORT = 'http';
 
-  final public static function read(Request $request, Array $arguments = []) {
-    if ( !in_array('http', stream_get_wrappers()) ) {
-      throw new Exception('Not supported');
-    }
-    $request->respond()->remote($arguments['path'], !isset($arguments['raw']));
+  public static function getRealPath($str) {
+    return $str;
   }
+
 }

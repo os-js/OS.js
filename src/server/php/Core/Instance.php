@@ -225,12 +225,15 @@ class Instance
       }
 
       try {
-        $transport = VFS::GetTransportFromPath($args);
+        $valid = !in_array($endpoint, ['getRealPath']) && substr($endpoint, 0, 1) !== '_';
+        $transport = $valid ? VFS::GetTransportFromPath($args) : null;
 
-        Authenticator::CheckPermissions($request, 'fs', ['method' => $endpoint, 'arguments' => $args]);
+        if ( $valid && $transport && is_callable($transport, $endpoint) ) {
+          Authenticator::CheckPermissions($request, 'fs', [
+            'method' => $endpoint,
+            'arguments' => $args
+          ]);
 
-
-        if ( $transport && is_callable($transport, $endpoint) ) {
           $result = call_user_func_array([$transport, $endpoint], [$request, $args]);
           $request->respond()->json([
             'error' => null,

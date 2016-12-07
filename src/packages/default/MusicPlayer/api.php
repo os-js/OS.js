@@ -1,6 +1,9 @@
 <?php namespace OSjs\Packages;
 
 use OSjs\Core\Request;
+use OSjs\Core\VFS;
+
+use Exception;
 
 if ( !defined('MUSICPLAYERCOMMAND') ) define('MUSICPLAYERCOMMAND', '/usr/bin/mediainfo');
 
@@ -8,8 +11,6 @@ class ApplicationMusicPlayer
 {
 
   public static function info(Request $request, Array $args = Array()) {
-    list($dirname, $fname, $protocol) = getRealPath($args['filename']);
-
     if ( !class_exists('SimpleXMLElement') ) {
       throw new Exception('Cannot get media information -- No XML parser found');
     }
@@ -17,7 +18,9 @@ class ApplicationMusicPlayer
       throw new Exception('Cannot get media information -- Exec not allowed');
     }
 
+    $fname = VFS::GetRealPath($args['filename']);
     $cmd = sprintf('%s --Output=XML %s', MUSICPLAYERCOMMAND, escapeshellcmd($fname));
+
     @exec($cmd, $content);
     if ( !$content ) {
       throw new Exception('Cannot get media information -- Query failed');
@@ -43,4 +46,4 @@ class ApplicationMusicPlayer
 
 }
 
-?>
+return 'OSjs\\Packages\\ApplicationMusicPlayer';

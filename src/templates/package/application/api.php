@@ -2,6 +2,8 @@
 
 use OSjs\Core\Request;
 
+use Exception;
+
 class EXAMPLE
 {
 

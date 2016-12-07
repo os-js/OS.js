@@ -80,7 +80,7 @@ class Database extends Storage
   final public function setSettings(Request $request) {
     $settings = json_encode($request->data['settings']);
     $query = 'UPDATE `users` SET `settings` = ? WHERE `username` = ? LIMIT 1;';
-    if ( $result = self::_query($query, [$settings, $_SESSION['username']])->execute() ) {
+    if ( self::_query($query, [$settings, $_SESSION['username']])->execute() ) {
       return true;
     }
     return false;
