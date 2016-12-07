@@ -37,6 +37,6 @@ Vagrant.configure(2) do |config|
     git clone https://github.com/os-js/OS.js.git >/dev/null
     pushd OS.js
     npm install --production >/dev/null
-    grunt >/dev/null
+    node osjs build >/dev/null
   SHELL
 end
