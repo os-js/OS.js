@@ -9,7 +9,7 @@ For more general information look at the [README](README.md) file or in the [off
 You only need these packages installed:
 
 - `git`
-- `node` (debian users also need `nodejs-legacy`)
+- `node` (v4 or above. Debian users might also need `nodejs-legacy`)
 - `npm`
 
 # Installation
