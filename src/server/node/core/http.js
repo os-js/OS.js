@@ -468,6 +468,7 @@ function createServer(env, resolve, reject) {
   const config = _instance.getConfig();
   const httpConfig = config.http || {};
   const logger = _instance.getLogger();
+  const tmpdir = require('os').tmpdir();
 
   function onRequest(request, response) {
     const rurl = request.url === '/' ? '/index.html' : request.url;
@@ -497,7 +498,7 @@ function createServer(env, resolve, reject) {
         });
       } else if ( contentType.indexOf('multipart/form-data') !== -1 ) {
         const form = new _formidable.IncomingForm({
-          uploadDir: config.tmpdir
+          uploadDir: tmpdir
         });
 
         form.parse(request, function(err, fields, files) {
