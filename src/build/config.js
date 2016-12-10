@@ -377,7 +377,11 @@ function writeConfiguration(target, cli, cfg) {
  * Gets a configuration option
  */
 function getConfig(config, key) {
-  return Promise.resolve(getConfigPath(config, key));
+  var dump = getConfigPath(config, key);
+  try {
+    dump = JSON.stringify(dump, null, 4);
+  } catch ( e ) {}
+  return Promise.resolve(dump);
 }
 
 /*
