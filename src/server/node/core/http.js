@@ -468,7 +468,13 @@ function createServer(env, resolve, reject) {
   const config = _instance.getConfig();
   const httpConfig = config.http || {};
   const logger = _instance.getLogger();
-  const tmpdir = require('os').tmpdir();
+  const tmpdir = (function() {
+    try {
+      return require('os').tmpdir();
+    } catch ( e ) {
+      return '/tmp';
+    }
+  })();
 
   function onRequest(request, response) {
     const rurl = request.url === '/' ? '/index.html' : request.url;
