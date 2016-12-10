@@ -247,6 +247,8 @@ const setConfigPath = (function() {
 
     _fs.writeFileSync(path, JSON.stringify(result, null, 2));
 
+    console.warn(String.color('Remember to run \'osjs build:config\' to update your build(s)...', 'green'));
+
     return result;
   };
 })();
@@ -461,7 +463,9 @@ function addPreload(config, name, path, type) {
  */
 function addRepository(config, name) {
   var current = getConfigPath(config, 'repositories') || [];
-  current.push(name);
+  if ( current.indexOf(name) === -1 ) {
+    current.push(name);
+  }
   setConfigPath('repositories', {repositories: current}, true);
 
   return Promise.resolve(getConfigPath(config, 'repositories'));
