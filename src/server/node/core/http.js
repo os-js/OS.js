@@ -571,11 +571,20 @@ function createServer(env, resolve, reject) {
     });
   }
 
-  resolve({
+  const servers = {
     httpServer: httpServer,
     websocketServer: websocketServer,
     proxyServer: proxyServer
+  };
+
+  const middleware = _instance.getMiddleware();
+  middleware.forEach(function(m) {
+    if ( typeof m.register === 'function' ) {
+      m.register(servers);
+    }
   });
+
+  resolve(servers);
 }
 
 /*

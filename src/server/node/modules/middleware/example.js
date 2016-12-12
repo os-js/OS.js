@@ -30,6 +30,10 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
+module.exports.register = function(servers) {
+  /* Here you can hook into httpServer, websocketServer and proxyServer */
+};
+
 /*
  * When a HTTP request is performed
  *
