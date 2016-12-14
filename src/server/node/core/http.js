@@ -540,8 +540,16 @@ function createServer(env, resolve, reject) {
 
   // Websocket servers
   if ( httpConfig.connection === 'ws' ) {
-    websocketServer = new (require('ws')).Server({server: httpServer});
+    const opts = {
+      server: httpServer
+    };
 
+    const port = httpConfig.ws ? httpConfig.ws.port : 'upgrade';
+    if ( port !== 'upgrade' ) {
+      opts.port = port;
+    }
+
+    websocketServer = new (require('ws')).Server(opts);
     websocketServer.on('connection', function(ws) {
       logger.log('VERBOSE', logger.colored('WS', 'bold'), 'New connection...');
 
@@ -571,6 +579,7 @@ function createServer(env, resolve, reject) {
     });
   }
 
+  // Middleware
   const servers = {
     httpServer: httpServer,
     websocketServer: websocketServer,

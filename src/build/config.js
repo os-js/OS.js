@@ -75,6 +75,8 @@ function generateClientConfiguration(target, cli, cfg) {
       });
     }
 
+    settings.Connection.WSPort = cfg.server.http.ws.port;
+
     _themes.readMetadata(cfg).then(function(themes) {
       settings.Fonts.list = themes.fonts.concat(settings.Fonts.list);
       settings.Styles = themes.styles;

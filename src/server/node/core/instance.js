@@ -546,7 +546,12 @@ module.exports.run = function run(port) {
   LOGGER.log('INFO', LOGGER.colored(['Using', httpConfig.mode, 'on port', ENV.PORT, 'in', ENV.DIST].join(' '), 'green'));
 
   if ( httpConfig.connection === 'ws' ) {
-    LOGGER.log('INFO', LOGGER.colored('Using WebSocket', 'green'));
+    const msg = ['Using WebSocket'];
+    if ( httpConfig.ws && httpConfig.ws.port !== 'upgrade' ) {
+      msg.push('on port');
+      msg.push(String(httpConfig.ws.port));
+    }
+    LOGGER.log('INFO', LOGGER.colored(msg.join(' '), 'green'));
   }
 
   const result = _osjs.http.run(ENV.PORT);

@@ -31,6 +31,9 @@
       "storage": "%STORAGE%",
       "connection": "%CONNECTION%",
       "port" : 8000,
+      "ws": {
+        "port": "upgrade"
+      },
       "cert": {
         "path": null,
         "name": "localhost",

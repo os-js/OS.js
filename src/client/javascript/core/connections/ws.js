@@ -53,8 +53,17 @@
 
   WSConnection.prototype.init = function(callback) {
     var self = this;
-    var url = window.location.protocol.replace('http', 'ws') + '//' + window.location.host;
+
     var connected = false;
+    var port = API.getConfig('Connection.WSPort');
+
+    var url = window.location.protocol.replace('http', 'ws') + '//' + window.location.host;
+    if ( port !== 'upgrade' ) {
+      if ( url.match(/:\d+$/) ) {
+        url = url.replace(/:\d+$/, '');
+      }
+      url += ':' + port;
+    }
 
     console.info('Using WebSocket', url);
 
