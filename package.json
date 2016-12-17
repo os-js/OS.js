@@ -42,7 +42,8 @@
     "request": ">=2.74.0",
     "simple-session": ">=0.0.1",
     "unzip": "^0.1.11",
-    "ws": "^1.1.1"
+    "ws": "^1.1.1",
+    "zlibjs": "^0.2.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",

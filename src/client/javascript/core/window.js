@@ -1507,8 +1507,6 @@
       return false;
     }
 
-    console.debug(this._name, '>', 'Window::_focus()');
-
     this._toggleAttentionBlink(false);
 
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
@@ -1526,6 +1524,7 @@
     }
 
     if ( !this._state.focused || force) {
+      console.debug(this._name, '>', 'Window::_focus()');
       this._onChange('focus');
       this._emit('focus');
     }

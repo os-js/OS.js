@@ -76,6 +76,14 @@ function generateClientConfiguration(target, cli, cfg) {
     }
 
     settings.Connection.WSPort = cfg.server.http.ws.port;
+    settings.Broadway = cfg.broadway;
+
+    if ( cfg.broadway.enabled ) {
+      preloads.push({
+        'type': 'javascript',
+        'src': '/vendor/zlib.js'
+      });
+    }
 
     _themes.readMetadata(cfg).then(function(themes) {
       settings.Fonts.list = themes.fonts.concat(settings.Fonts.list);
@@ -134,6 +142,7 @@ function generateServerConfiguration(cli, cfg) {
       });
 
       settings.mimes = cfg.mime.mapping;
+      settings.broadway = cfg.broadway;
       settings.vfs.maxuploadsize = cfg.client.VFS.MaxUploadSize;
 
       resolve(settings);

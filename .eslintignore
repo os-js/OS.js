@@ -1,4 +1,3 @@
-src/packages/default/Broadway/**
 src/packages/default/**/*.css
 src/packages/default/**/*.php
 src/client/stylesheets/**

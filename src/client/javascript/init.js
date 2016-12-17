@@ -51,7 +51,7 @@
   var isMocha    = false;
 
   // Make sure these namespaces exist
-  (['Utils', 'API', 'GUI', 'Core', 'Dialogs', 'Helpers', 'Applications', 'Locales', 'VFS', 'Extensions', 'Auth', 'Storage', 'Connections']).forEach(function(ns) {
+  (['Utils', 'API', 'GUI', 'Core', 'Dialogs', 'Helpers', 'Applications', 'Locales', 'VFS', 'Extensions', 'Auth', 'Storage', 'Connections', 'Broadway']).forEach(function(ns) {
     OSjs[ns] = OSjs[ns] || {};
   });
 
@@ -445,6 +445,20 @@
     if ( isMocha ) {
       callback();
       return;
+    }
+
+    if ( OSjs.API.getConfig('Broadway.enabled') ) {
+      OSjs.API.addHook('onSessionLoaded', function() {
+        OSjs.Broadway.Connection.init();
+      });
+
+      OSjs.API.addHook('onLogout', function() {
+        OSjs.Broadway.Connection.disconnect();
+      });
+
+      OSjs.API.addHook('onBlurMenu', function() {
+        OSjs.Broadway.GTK.inject(null, 'blur');
+      });
     }
 
     var exts = Object.keys(OSjs.Extensions);

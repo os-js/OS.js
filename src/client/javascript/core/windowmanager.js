@@ -537,7 +537,7 @@
       if ( w && w._name === name ) {
         result = w;
       }
-      return w ? false : true;
+      return result ? false : true;
     });
     return result;
   };

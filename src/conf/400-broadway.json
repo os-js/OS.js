@@ -1,0 +1,25 @@
+{
+  "broadway": {
+    "enabled": false,
+    "defaults": {
+      "env": {
+        "BROADWAY_DISPLAY": ":5",
+        "DISPLAY": ":0",
+        "XAUTHORITY": "~/.Xauthority",
+        "GDK_BACKEND": "broadway",
+        "UBUNTU_MENUPROXY": "",
+        "LIBOVERLAY_SCROLLBAR": "0"
+      },
+      "spawner": {
+        "host": "localhost",
+        "port": 9000,
+        "uri": ""
+      },
+      "connection": {
+        "host": "localhost",
+        "port": 8085,
+        "uri": "socket-bin"
+      }
+    }
+  }
+}
