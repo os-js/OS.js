@@ -122,6 +122,9 @@ module.exports.request = function(http, method, args) {
 
     transport.request(http, method, args).then(function(data) {
       if ( method === 'read' && opts.stream !== false ) {
+        if ( typeof data === 'string' ) {
+          return http.respond.stream(data, true);
+        }
         return http.respond.stream(data.path, data);
       }
       resolve(data);

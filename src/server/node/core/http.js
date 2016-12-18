@@ -315,7 +315,8 @@ function handleRequest(http) {
  * Creates a `ServerResponder` object for HTTP connections.
  * This allows you to respond with data in a certain format.
  */
-function createHttpResponder(env, response) {
+function createHttpResponder(env, request, response) {
+
   function _raw(data, code, headers) {
     code = code || 200;
     headers = headers || {};
@@ -332,6 +333,8 @@ function createHttpResponder(env, response) {
   }
 
   function _stream(path, stream, code, mime) {
+    code = code || 200;
+
     return new Promise(function(resolve, reject) {
       _fs.stat(path, function(err, stats) {
         if ( err ) {
@@ -339,16 +342,39 @@ function createHttpResponder(env, response) {
           return reject();
         }
 
-        if ( stream === true ) {
-          stream = _fs.createReadStream(path, {
-            bufferSize: 64 * 1024
-          });
-        }
-
-        response.writeHead(code || 200, {
+        const range = request.headers.range;
+        const headers = {
           'Content-Type': mime || _vfs.getMime(path),
           'Content-Length': stats.size
-        });
+        };
+
+        if ( stream !== true ) {
+          console.log(Object.keys(stream), stream.props)
+        }
+
+        if ( stream === true ) {
+          const opts = {
+            bufferSize: 64 * 1024
+          };
+
+          if ( range ) {
+            code = 206;
+
+            const positions = range.replace(/bytes=/, '').split('-');
+            const start = parseInt(positions[0], 10);
+            const total = stats.size;
+            const end = positions[1] ? parseInt(positions[1], 10) : total - 1;
+
+            opts.start = start;
+            opts.end = end;
+
+            headers['Content-Length'] = (end - start) + 1;
+            headers['Content-Range'] = 'bytes ' + start + '-' + end + '/' + total;
+            headers['Accept-Ranges'] = 'bytes';
+          }
+
+          stream = _fs.createReadStream(path, opts);
+        }
 
         stream.on('error', function(err) {
           console.error('An error occured while streaming', path, err);
@@ -359,6 +385,7 @@ function createHttpResponder(env, response) {
           response.end();
         });
 
+        response.writeHead(code, headers);
         stream.pipe(response);
 
         return resolve();
@@ -490,7 +517,7 @@ function createServer(env, resolve, reject) {
 
     logger.log('VERBOSE', logger.colored(request.method, 'bold'), path);
 
-    const respond = createHttpResponder(env, response);
+    const respond = createHttpResponder(env, request, response);
     if ( request.method === 'POST' ) {
       if ( contentType.indexOf('application/json') !== -1 ) {
         var body = [];

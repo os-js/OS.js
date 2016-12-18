@@ -33,7 +33,6 @@
     "diskspace": ">=1.0.3",
     "findit": ">=2.0.0",
     "formidable": ">=1.0.17",
-    "fstream": "^1.0.10",
     "glob-promise": "^2.0.0",
     "http-proxy": "^1.15.2",
     "less": ">=2.7.1",

@@ -33,7 +33,6 @@
 const _fs = require('node-fs-extra');
 const _nfs = require('fs');
 const _path = require('path');
-const _fstream = require('fstream');
 const _chokidar = require('chokidar');
 
 const _utils = require('./../../core/utils.js');
@@ -50,7 +49,7 @@ function createReadStream(http, path) {
   const resolved = _vfs.parseVirtualPath(path, http);
   return new Promise(function(resolve, reject) {
     /*eslint new-cap: "off"*/
-    resolve(_fstream.Reader(resolved.real, {
+    resolve(_fs.createReadStream(resolved.real, {
       bufferSize: 64 * 1024
     }));
   });
@@ -63,7 +62,7 @@ function createWriteStream(http, path) {
   const resolved = _vfs.parseVirtualPath(path, http);
   return new Promise(function(resolve, reject) {
     /*eslint new-cap: "off"*/
-    resolve(_fstream.Writer(resolved.real));
+    resolve(_fs.createWriteStream(resolved.real));
   });
 }
 
@@ -245,7 +244,7 @@ const VFS = {
 
     if ( options.raw !== false ) {
       if ( options.stream !== false ) {
-        resolve(_fstream.Reader(resolved.real));
+        resolve(resolved.real);
       } else {
         _fs.readFile(resolved.real, function(e, r) {
           if ( e ) {
