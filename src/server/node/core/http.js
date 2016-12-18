@@ -244,19 +244,19 @@ function handleRequest(http) {
     }).catch(_rejectResponse);
   }
 
-  function _staticResponse() {
+  function _staticResponse(method, finished) {
     const path = _path.join(env.ROOTDIR, env.DIST, _path.normalize(http.path));
 
     function _serve() {
-      http.respond.file(path);
+      http.respond.file(path).catch(finished);
     }
 
     function _deny() {
       http.respond.error('Access denied', 403);
     }
 
-    const pmatch = http.path.match(/^\/?packages\/(.*\/.*)\/(.*)/);
-    if ( pmatch || _fs.existsSync(path) ) {
+    if ( method === 'GET' ) {
+      const pmatch = http.path.match(/^\/?packages\/(.*\/.*)\/(.*)/);
       if ( pmatch && pmatch.length === 3 ) {
         _checkPermission('package', {path: pmatch[1]}).then(function() {
           _auth.checkSession(http)
@@ -265,11 +265,9 @@ function handleRequest(http) {
       } else {
         _serve();
       }
-
-      return true;
+    } else {
+      finished();
     }
-
-    return false;
   }
 
   function _middlewareRequest(method, done) {
@@ -302,16 +300,12 @@ function handleRequest(http) {
         }, 500);
       }
     } else {
-      if ( method === 'GET' ) {
-        if ( _staticResponse() ) {
-          return;
-        }
-      }
-
-      _middlewareRequest(method, function(error) {
-        if ( error ) {
-          http.respond.error('Method not allowed', 405);
-        }
+      _staticResponse(method, function() {
+        _middlewareRequest(method, function(error) {
+          if ( error ) {
+            http.respond.error('Method not allowed', 405);
+          }
+        });
       });
     }
   });
@@ -338,31 +332,38 @@ function createHttpResponder(env, response) {
   }
 
   function _stream(path, stream, code, mime) {
-    if ( !_fs.existsSync(path) ) {
-      _error('File not found', 404);
-      return;
-    }
+    return new Promise(function(resolve, reject) {
+      _fs.stat(path, function(err, stats) {
+        if ( err ) {
+          _error('File not found', 404);
+          return reject();
+        }
 
-    if ( stream === true ) {
-      stream = _fs.createReadStream(path, {
-        bufferSize: 64 * 1024
+        if ( stream === true ) {
+          stream = _fs.createReadStream(path, {
+            bufferSize: 64 * 1024
+          });
+        }
+
+        response.writeHead(code || 200, {
+          'Content-Type': mime || _vfs.getMime(path),
+          'Content-Length': stats.size
+        });
+
+        stream.on('error', function(err) {
+          console.error('An error occured while streaming', path, err);
+          response.end();
+        });
+
+        stream.on('end', function() {
+          response.end();
+        });
+
+        stream.pipe(response);
+
+        return resolve();
       });
-    }
-
-    response.writeHead(code || 200, {
-      'Content-Type': mime || _vfs.getMime(path)
     });
-
-    stream.on('error', function(err) {
-      console.error('An error occured while streaming', path, err);
-      response.end();
-    });
-
-    stream.on('end', function() {
-      response.end();
-    });
-
-    stream.pipe(response);
   }
 
   return Object.freeze({
@@ -387,7 +388,7 @@ function createHttpResponder(env, response) {
 
     file: function(path, options, code) {
       options = options || {};
-      _stream(path, true, code);
+      return _stream(path, true, code);
     }
   });
 }
