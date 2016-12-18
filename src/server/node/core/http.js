@@ -348,10 +348,6 @@ function createHttpResponder(env, request, response) {
           'Content-Length': stats.size
         };
 
-        if ( stream !== true ) {
-          console.log(Object.keys(stream), stream.props)
-        }
-
         if ( stream === true ) {
           const opts = {
             bufferSize: 64 * 1024
