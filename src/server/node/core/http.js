@@ -338,27 +338,31 @@ function createHttpResponder(env, response) {
   }
 
   function _stream(path, stream, code, mime) {
-    if ( !mime && path ) {
-      mime = _vfs.getMime(path);
+    if ( !_fs.existsSync(path) ) {
+      _error('File not found', 404);
+      return;
     }
 
-    stream.pipe(response);
+    if ( stream === true ) {
+      stream = _fs.createReadStream(path, {
+        bufferSize: 64 * 1024
+      });
+    }
 
-    stream.on('error', function() {
-      _error('File not found', 404);
+    response.writeHead(code || 200, {
+      'Content-Type': mime || _vfs.getMime(path)
+    });
+
+    stream.on('error', function(err) {
+      console.error('An error occured while streaming', path, err);
+      response.end();
     });
 
     stream.on('end', function() {
-      try {
-        response.writeHead(code || 200, {
-          'Content-Type': mime
-        });
-      } catch ( e ) {
-        // NOTE: For unknown reasons it always sais headers are already sent on first requst ?!
-      }
-
       response.end();
     });
+
+    stream.pipe(response);
   }
 
   return Object.freeze({
@@ -383,12 +387,7 @@ function createHttpResponder(env, response) {
 
     file: function(path, options, code) {
       options = options || {};
-
-      const stream = _fs.createReadStream(path, {
-        bufferSize: 64 * 1024
-      });
-
-      _stream(path, stream, code);
+      _stream(path, true, code);
     }
   });
 }
