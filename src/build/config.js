@@ -346,17 +346,19 @@ function getConfiguration() {
 
 const TARGETS = {
   client: function(cli, cfg) {
-    return Promise.all(['dist', 'dist-dev'].map(function(dist) {
-      return new Promise(function(resolve, reject) {
-        const src = _path.join(ROOT, 'src', 'templates', 'dist', 'settings.js');
-        const tpl = _fs.readFileSync(src).toString();
-        const dest = _path.join(ROOT, dist, 'settings.js');
+    return Promise.each(['dist', 'dist-dev'].map(function(dist) {
+      return function() {
+        return new Promise(function(resolve, reject) {
+          const src = _path.join(ROOT, 'src', 'templates', 'dist', 'settings.js');
+          const tpl = _fs.readFileSync(src).toString();
+          const dest = _path.join(ROOT, dist, 'settings.js');
 
-        generateClientConfiguration(dist, cli, cfg).then(function(settings) {
-          const data = tpl.replace('%CONFIG%', JSON.stringify(settings, null, 4));
-          resolve(_fs.writeFileSync(dest, data));
-        }).catch(reject);
-      });
+          generateClientConfiguration(dist, cli, cfg).then(function(settings) {
+            const data = tpl.replace('%CONFIG%', JSON.stringify(settings, null, 4));
+            resolve(_fs.writeFileSync(dest, data));
+          }).catch(reject);
+        });
+      };
     }));
   },
 
