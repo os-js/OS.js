@@ -274,6 +274,26 @@ function copyResources(verbose, cfg, dist) {
         }
       });
 
+      Object.keys(cfg.build.statics).forEach(function(f) {
+        const dst = _path.join(ROOT, cfg.build.statics[f]);
+
+        var path = f;
+        if ( f.substr(0, 1) === '?' ) {
+          path = path.substr(1);
+          if ( _fs.existsSync(dst) ) {
+            return;
+          } else {
+            _fs.mkdirSync(_path.dirname(dst));
+          }
+        }
+
+        const src = _path.join(ROOT, path);
+        if ( verbose ) {
+          _utils.log('- included:', dst);
+        }
+        _fs.copySync(src, dst);
+      });
+
       resolve();
     });
   });
