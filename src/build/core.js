@@ -262,7 +262,7 @@ function copyResources(verbose, cfg, dist) {
   const dest = _path.join(ROOT, dist);
 
   return new Promise(function(resolve) {
-    _glob(_path.join(tpldir, '*.*'), {
+    _glob(_path.join(tpldir, '/**/*'), {
     }).then(function(list) {
       list.forEach(function(path) {
         if ( ['index.html', 'test.html'].indexOf(_path.basename(path)) === -1 ) {
