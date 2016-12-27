@@ -439,27 +439,23 @@ const VFS = {
 
     var list = [];
 
+    function addIter(file, stat) {
+      const filename = _path.basename(file).toLowerCase();
+      const fpath = resolved.path + file.substr(resolved.real.length).replace(/^\//, '');
+      if ( filename.indexOf(query) !== -1 ) {
+        const qpath = resolved.query + fpath.replace(/^\//, '');
+        list.push(createFileIter(qpath, resolved.real, null, stat));
+      }
+    }
+
     find.on('path', function() {
       if ( qargs.limit && list.length >= qargs.limit ) {
         find.stop();
       }
     });
 
-    find.on('directory', function(dir, stat) {
-      const filename = _path.basename(dir).toLowerCase();
-      const fpath = resolved.path + dir.substr(resolved.real.length).replace(/^\//, '');
-      if ( filename.indexOf(query) !== -1 ) {
-        list.push(createFileIter(fpath, resolved.real, null, stat));
-      }
-    });
-
-    find.on('file', function(file, stat) {
-      const filename = _path.basename(file).toLowerCase();
-      const fpath = resolved.path + file.substr(resolved.real.length).replace(/^\//, '');
-      if ( filename.indexOf(query) !== -1 ) {
-        list.push(createFileIter(fpath, resolved.real, null, stat));
-      }
-    });
+    find.on('directory', addIter);
+    find.on('file', addIter);
 
     find.on('end', function() {
       resolve(list);
