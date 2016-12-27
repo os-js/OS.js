@@ -343,7 +343,7 @@
    *
    * @return {OSjs.Core.SearchEngine}
    */
-  OSjs.Core.getSearchEngine = function() {
+  OSjs.Core.getSearchEngine = function Core_getSearchEngine() {
     return SearchEngine;
   };
 

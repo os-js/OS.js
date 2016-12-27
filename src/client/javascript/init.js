@@ -395,7 +395,7 @@
 
     events.orientationchange();
 
-    window.onerror = function(message, url, linenumber, column, exception) {
+    window.onerror = function __onerror(message, url, linenumber, column, exception) {
       if ( typeof exception === 'string' ) {
         exception = null;
       }
@@ -427,7 +427,7 @@
       });
     })(config.Preloads);
 
-    OSjs.Utils.preload(list, function(total, failed) {
+    OSjs.Utils.preload(list, function preloadIter(total, failed) {
       if ( failed.length ) {
         console.warn('doInitialize()', 'some preloads failed to load:', failed);
       }
@@ -552,9 +552,9 @@
       return callback(OSjs.API._('ERR_CORE_INIT_NO_WM'));
     }
 
-    OSjs.API.launch(config.WM.exec, (config.WM.args || {}), function(app) {
+    OSjs.API.launch(config.WM.exec, (config.WM.args || {}), function onWMLaunchSuccess(app) {
       app.setup(callback);
-    }, function(error, name, args, exception) {
+    }, function onWMLaunchError(error, name, args, exception) {
       callback(OSjs.API._('ERR_CORE_INIT_WM_FAILED_FMT', error), exception);
     });
   }
@@ -639,10 +639,10 @@
       initPackageManager,
       initExtensions,
       initSearch,
-      function(cfg, cb) {
+      function initStoredMounts(cfg, cb) {
         OSjs.Core.getMountManager().restore(cb);
       },
-      function(cfg, cb) {
+      function initDialogs(cfg, cb) {
         return OSjs.GUI.DialogScheme.init(cb);
       }
     ];
@@ -678,7 +678,7 @@
       if ( isMocha ) {
         _inited();
       } else {
-        initWindowManager(config, function(err) {
+        initWindowManager(config, function wmInited(err) {
           if ( err ) {
             return _error(err);
           }
@@ -687,7 +687,7 @@
 
           _inited();
 
-          initSession(config, function() {
+          initSession(config, function onSessionLoaded() {
             OSjs.API.triggerHook('onSessionLoaded');
           });
         });
@@ -696,14 +696,14 @@
 
     initLayout();
 
-    OSjs.Utils.asyncs(queue, function(entry, index, next) {
+    OSjs.Utils.asyncs(queue, function asyncIter(entry, index, next) {
       if ( index < 1 ) {
         OSjs.API.triggerHook('onInitialize');
       }
 
       loading.update(index, queue.length);
 
-      entry(config, function(err) {
+      entry(config, function asyncDone(err) {
         if ( err ) {
           return _error(err);
         }
@@ -723,7 +723,7 @@
    * @function shutdown
    * @memberof OSjs.API
    */
-  OSjs.API.shutdown = function() {
+  OSjs.API.shutdown = function API_shutdown() {
     if ( !inited || !loaded ) {
       return;
     }

@@ -111,7 +111,7 @@
     this.className = className;
     this.buttonClicked = false;
 
-    this.closeCallback = function(ev, button, result) {
+    this.closeCallback = function Dialog_closeCallback(ev, button, result) {
       if ( self._destroyed ) {
         return;
       }

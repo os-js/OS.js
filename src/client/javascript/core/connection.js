@@ -48,7 +48,7 @@
       }
     });
 
-    data.onprogress = function(ev) {
+    data.onprogress = function XHR_onprogress(ev) {
       if ( ev.lengthComputable ) {
         onprogress(ev, ev.loaded / ev.total);
       } else {
@@ -344,13 +344,13 @@
       url: OSjs.VFS.Transports.Internal.path(),
       method: 'POST',
       body: form,
-      onsuccess: function(result) {
+      onsuccess: function Connection_POST_success(result) {
         onsuccess(false, result);
       },
-      onerror: function(result) {
+      onerror: function Connection_POST_error(result) {
         onerror('error', null, result);
       },
-      oncanceled: function(evt) {
+      oncanceled: function Connection_POST_cancel(evt) {
         onerror('canceled', null, evt);
       }
     }, options));
@@ -382,14 +382,14 @@
       url: args.url || OSjs.VFS.Transports.Internal.path(args.path),
       method: args.method || 'GET',
       responseType: 'arraybuffer',
-      onsuccess: function(response, xhr) {
+      onsuccess: function Connection_GET_success(response, xhr) {
         if ( !xhr || xhr.status === 404 || xhr.status === 500 ) {
           onsuccess({error: xhr.statusText || response, result: null});
           return;
         }
         onsuccess({error: false, result: response});
       },
-      onerror: function() {
+      onerror: function Connection_GET_error() {
         onerror.apply(self, arguments);
       }
     }, options));
@@ -423,10 +423,10 @@
       method: 'POST',
       json: true,
       body: args,
-      onsuccess: function(/*response, request, url*/) {
+      onsuccess: function Connection_XHR_onsuccess(/*response, request, url*/) {
         onsuccess.apply(self, arguments);
       },
-      onerror: function(/*error, response, request, url*/) {
+      onerror: function Connection_XHR_onerror(/*error, response, request, url*/) {
         onerror.apply(self, arguments);
       }
     }, options));
@@ -482,7 +482,7 @@
    *
    * @return {OSjs.Core.Connection}
    */
-  OSjs.Core.getConnection = function() {
+  OSjs.Core.getConnection = function Core_getConnection() {
     return _connectionInstance;
   };
 

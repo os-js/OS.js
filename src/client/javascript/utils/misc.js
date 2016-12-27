@@ -43,7 +43,7 @@
    * @param {String} [k] What key to get
    * @return {String|Object}  Depending on 'k' parameter
    */
-  OSjs.Utils.getCookie = function(k) {
+  OSjs.Utils.getCookie = function Utils_getCookie(k) {
     var map = {};
     document.cookie.split(/;\s+?/g).forEach(function(i) {
       var idx = i.indexOf('=');
@@ -68,7 +68,7 @@
    *
    * @return  {String}                    The formatted string
    */
-  OSjs.Utils.format = function(format) {
+  OSjs.Utils.format = function Utils_format(format) {
     var args = Array.prototype.slice.call(arguments, 1);
     var sprintfRegex = /\{(\d+)\}/g;
 
@@ -89,7 +89,7 @@
    *
    * @return  {String}
    */
-  OSjs.Utils.cleanHTML = function(html) {
+  OSjs.Utils.cleanHTML = function Utils_cleanHTML(html) {
     return html.replace(/\n/g, '')
                .replace(/[\t ]+</g, '<')
                .replace(/\>[\t ]+</g, '><')
@@ -107,7 +107,7 @@
    *
    * @return    {Object}                  Object with protocol, host, path
    */
-  OSjs.Utils.parseurl = function(url, modify) {
+  OSjs.Utils.parseurl = function Utils_parseurl(url, modify) {
     modify = modify || {};
 
     if ( !url.match(/^(\w+\:)\/\//) ) {
@@ -162,7 +162,7 @@
    * @param  {Boolean}  undef     Check with 'undefined'
    * @return {Object}
    */
-  OSjs.Utils.argumentDefaults = function(args, defaults, undef) {
+  OSjs.Utils.argumentDefaults = function Utils_argumentDefaults(args, defaults, undef) {
     args = args || {};
     Object.keys(defaults).forEach(function(key) {
       if ( typeof defaults[key] === 'boolean' || typeof defaults[key] === 'number' ) {
@@ -189,7 +189,7 @@
    *
    * @return  {Object}                The merged object
    */
-  OSjs.Utils.mergeObject = function(obj1, obj2, opts) {
+  OSjs.Utils.mergeObject = function Utils_mergeObject(obj1, obj2, opts) {
     opts = opts || {};
 
     for ( var p in obj2 ) {
@@ -223,7 +223,7 @@
    *
    * @return  {Object}            An identical object
    */
-  OSjs.Utils.cloneObject = function(o, alternative) {
+  OSjs.Utils.cloneObject = function Utils_cloneObject(o, alternative) {
     function _clone(i) {
       if ( typeof i !== 'object' || i === null ) {
         return i;
@@ -272,7 +272,7 @@
    * @param {Object}    obj          The destination
    * @param {Object}    methods      The source
    */
-  OSjs.Utils.extend = function(obj, methods) {
+  OSjs.Utils.extend = function Utils_extend(obj, methods) {
     if ( obj && methods ) {
       Object.keys(methods).forEach(function(k) {
         obj[k] = methods[k];
@@ -300,7 +300,7 @@
    * @param {Object}    from      The child class
    * @param {Object}    [extend]  Extend the class with these methods
    */
-  OSjs.Utils.inherit = function(to, from, extend) {
+  OSjs.Utils.inherit = function Utils_inherit(to, from, extend) {
     from.prototype = Object.create(to.prototype);
     from.constructor = to;
 
@@ -325,7 +325,7 @@
    *
    * @return  {Object}              RGB in form of r, g, b
    */
-  OSjs.Utils.convertToRGB = function(hex) {
+  OSjs.Utils.convertToRGB = function Utils_convertToRGB(hex) {
     var rgb = parseInt(hex.replace('#', ''), 16);
     var val = {};
     val.r = (rgb & (255 << 16)) >> 16;
@@ -347,7 +347,7 @@
    *
    * @return  {String}                Hex string (with #)
    */
-  OSjs.Utils.convertToHEX = function(r, g, b) {
+  OSjs.Utils.convertToHEX = function Utils_convertToHEX(r, g, b) {
     if ( typeof r === 'object' ) {
       g = r.g;
       b = r.b;
@@ -385,7 +385,7 @@
    * @return  {String}              Inverted hex (With #)
    *
    */
-  OSjs.Utils.invertHEX = function(hex) {
+  OSjs.Utils.invertHEX = function Utils_invertHEX(hex) {
     var color = parseInt(hex.replace('#', ''), 16);
     color = 0xFFFFFF ^ color;
     color = color.toString(16);
@@ -407,7 +407,7 @@
    * @param   {Function}    onentry   Callback on step => fn(entry, index, fnNext)
    * @param   {Function}    ondone    Callback on done => fn()
    */
-  OSjs.Utils.asyncs = function(queue, onentry, ondone) {
+  OSjs.Utils.asyncs = function Utils_asyncs(queue, onentry, ondone) {
     onentry = onentry || function(e, i, n) {
       return n();
     };
@@ -430,7 +430,7 @@
       }
 
       try {
-        onentry(queue[i], i, function() {
+        onentry(queue[i], i, function onAsyncIter() {
           next(i + 1);
         });
       } catch ( e ) {
@@ -452,7 +452,7 @@
    * @param   {Function}    onentry       Callback on step => fn(entry, index, fnNext)
    * @param   {Function}    ondone        Callback on done => fn()
    */
-  OSjs.Utils.asyncp = function(queue, opts, onentry, ondone) {
+  OSjs.Utils.asyncp = function Utils_asyncp(queue, opts, onentry, ondone) {
     opts = opts || {};
 
     var running = 0;

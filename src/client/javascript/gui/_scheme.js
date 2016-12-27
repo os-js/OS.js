@@ -122,7 +122,7 @@
         element: el,
         uri: el.getAttribute('data-fragment-external')
       };
-    }), function(iter, index, next) {
+    }), function asyncIter(iter, index, next) {
       var uri = iter.uri.replace(/^\//, '');
       if ( uri.length < 3 ) {
         console.warn('resolveExternalFragments()', 'invalid', iter);
@@ -141,7 +141,7 @@
           next();
         }
       });
-    }, function() {
+    }, function asyncDone() {
       cb(doc.innerHTML);
 
       doc = null;
@@ -283,7 +283,7 @@
       onsuccess: function(html) {
         html = cleanScheme(html);
 
-        resolveExternalFragments(root, html, function(result) {
+        resolveExternalFragments(root, html, function onFragmentResolved(result) {
           // This is normally used for the preloader for caching
           cbxhr(false, result);
 

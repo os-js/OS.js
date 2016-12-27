@@ -293,7 +293,7 @@
    *
    * @api       OSjs.Utils.isIE()
    */
-  OSjs.Utils.isIE = function() {
+  OSjs.Utils.isIE = function Utils_isIE() {
     var dm = parseInt(document.documentMode, 10);
     return dm <= 11 || !!navigator.userAgent.match(/(MSIE|Edge)/);
   };
@@ -308,7 +308,7 @@
    *
    * @return  {String}          Locale string
    */
-  OSjs.Utils.getUserLocale = function() {
+  OSjs.Utils.getUserLocale = function Utils_getUserLocale() {
     var loc = ((window.navigator.userLanguage || window.navigator.language) || 'en-EN').replace('-', '_');
 
     // Restricts to a certain type of language.
@@ -337,7 +337,7 @@
    *
    * @return {Object}
    */
-  OSjs.Utils.getRect = function() {
+  OSjs.Utils.getRect = function Utils_getRect() {
     return {
       top    : 0,
       left   : 0,

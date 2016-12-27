@@ -1127,7 +1127,7 @@
    *
    * @return {OSjs.Core.WindowManager}
    */
-  OSjs.Core.getWindowManager  = function() {
+  OSjs.Core.getWindowManager  = function Core_getWindowManager() {
     return _WM;
   };
 

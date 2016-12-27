@@ -530,7 +530,7 @@
    * @memberof OSjs.Core
    * @return {OSjs.Core.MountManager}
    */
-  OSjs.Core.getMountManager = function() {
+  OSjs.Core.getMountManager = function Core_getMountManager() {
     return MountManager;
   };
 

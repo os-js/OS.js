@@ -156,7 +156,7 @@
 
     console.info('Storage::loadSession()');
 
-    this.getLastSession(function(err, list) {
+    this.getLastSession(function onGetLastSession(err, list) {
       if ( err ) {
         callback();
       } else {
@@ -179,7 +179,7 @@
    *
    * @return {OSjs.Core.Storage}
    */
-  OSjs.Core.getStorage = function() {
+  OSjs.Core.getStorage = function Core_getStorage() {
     return _storageInstance;
   };
 

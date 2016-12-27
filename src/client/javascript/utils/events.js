@@ -115,7 +115,7 @@
    * @return {(Event|Object)}   ev      DOM Event or an Object
    * @return Object
    */
-  OSjs.Utils.mousePosition = function(ev) {
+  OSjs.Utils.mousePosition = function Utils_mousePosition(ev) {
     // If this is a custom event containing position
     if ( ev.detail && typeof ev.detail.x !== 'undefined' && typeof ev.detail.y !== 'undefined' ) {
       return {x: ev.detail.x, y: ev.detail.y};
@@ -140,7 +140,7 @@
    *
    * @return  {String}          The mouse button (left/middle/right)
    */
-  OSjs.Utils.mouseButton = function(ev) {
+  OSjs.Utils.mouseButton = function Utils_mouseButton(ev) {
     if ( typeof ev.button !== 'undefined' ) {
       if ( ev.button === 0 ) {
         return 'left';
@@ -458,7 +458,7 @@
       dblclick: createGestureHandler
     };
 
-    return function(el, evName, callback, useCapture, noBind) {
+    return function Utils_$bind(el, evName, callback, useCapture, noBind) {
       useCapture = (useCapture === true);
 
       if ( arguments.length < 3 ) {
@@ -546,7 +546,7 @@
    * @param   {Function}      [callback]    Callback on event
    * @param   {Boolean}       [useCapture]  Use capture mode
    */
-  OSjs.Utils.$unbind = function(el, evName, callback, useCapture) {
+  OSjs.Utils.$unbind = function Utils_$unbind(el, evName, callback, useCapture) {
 
     function unbindAll() {
       if ( el._boundEvents ) {

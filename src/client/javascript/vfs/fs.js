@@ -365,7 +365,7 @@
    *
    * @api     OSjs.VFS.find()
    */
-  VFS.find = function(item, args, callback, options) {
+  VFS.find = function VFS_find(item, args, callback, options) {
     console.debug('VFS::find()', item, args, options);
     if ( arguments.length < 3 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -392,7 +392,7 @@
    * @param   {Boolean}         [options.showHiddenFiles=true]   Show hidden files
    * @param   {Boolean}         [options.backlink=true]          Return '..' when applicable
    */
-  VFS.scandir = function(item, callback, options) {
+  VFS.scandir = function VFS_scandir(item, callback, options) {
     console.debug('VFS::scandir()', item, options);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -443,7 +443,7 @@
    * @param   {Object}                    [options]     Set of options
    * @param   {OSjs.Core.Application}     [appRef]      Reference to an Application
    */
-  VFS.write = function(item, data, callback, options, appRef) {
+  VFS.write = function VFS_write(item, data, callback, options, appRef) {
     console.debug('VFS::write()', item, options);
     if ( arguments.length < 3 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -517,7 +517,7 @@
    * @param   {Object}          [options]           Set of options
    * @param   {String}          [options.type]      What to return, default: binary. Can also be: text, datasource, json
    */
-  VFS.read = function(item, callback, options) {
+  VFS.read = function VFS_read(item, callback, options) {
     console.debug('VFS::read()', item, options);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -601,7 +601,7 @@
    * @param   {Boolean}                   [options.overwrite]   If set to true it will not check if the destination exists
    * @param   {OSjs.Core.Application}     [appRef]              Seference to an Application
    */
-  VFS.copy = function(src, dest, callback, options, appRef) {
+  VFS.copy = function VFS_copy(src, dest, callback, options, appRef) {
     console.debug('VFS::copy()', src, dest, options);
     if ( arguments.length < 3 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -704,7 +704,7 @@
    * @param   {Boolean}                   [options.overwrite]   If set to true it will not check if the destination exists
    * @param   {OSjs.Core.Application}     [appRef]              Seference to an Application
    */
-  VFS.move = function(src, dest, callback, options, appRef) {
+  VFS.move = function VFS_move(src, dest, callback, options, appRef) {
     var self = this;
 
     console.debug('VFS::move()', src, dest, options);
@@ -783,7 +783,7 @@
    * @param   {Boolean}                   [options.overwrite]   If set to true it will not check if the destination exists
    * @param   {OSjs.Core.Application}     [appRef]              Seference to an Application
    */
-  VFS.rename = function(src, dest, callback) {
+  VFS.rename = function VFS_rename(src, dest, callback) {
     VFS.move.apply(this, arguments);
   };
 
@@ -803,7 +803,7 @@
    * @param   {Object}                    [options]             Set of options
    * @param   {OSjs.Core.Application}     [appRef]              Reference to an Application
    */
-  VFS.unlink = function(item, callback, options, appRef) {
+  VFS.unlink = function VFS_unlink(item, callback, options, appRef) {
     console.debug('VFS::unlink()', item, options);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -842,7 +842,7 @@
    */
   (function() {
     /*eslint dot-notation: "off"*/
-    VFS['delete'] = function(item, callback) {
+    VFS['delete'] = function VFS_delete(item, callback) {
       VFS.unlink.apply(this, arguments);
     };
   })();
@@ -862,7 +862,7 @@
    * @param   {Boolean}                   [options.overwrite]   If set to true it will not check if the destination exists
    * @param   {OSjs.Core.Application}     [appRef]              Reference to an Application
    */
-  VFS.mkdir = function(item, callback, options, appRef) {
+  VFS.mkdir = function VFS_mkdir(item, callback, options, appRef) {
     console.debug('VFS::mkdir()', item, options);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -892,7 +892,7 @@
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
    * @param   {CallbackVFS}     callback  Callback function
    */
-  VFS.exists = function(item, callback) {
+  VFS.exists = function VFS_exists(item, callback) {
     console.debug('VFS::exists()', item);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -914,7 +914,7 @@
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
    * @param   {CallbackVFS}     callback  Callback function
    */
-  VFS.fileinfo = function(item, callback) {
+  VFS.fileinfo = function VFS_fileinfo(item, callback) {
     console.debug('VFS::fileinfo()', item);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -936,7 +936,7 @@
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
    * @param   {CallbackVFS}     callback  Callback function
    */
-  VFS.url = function(item, callback) {
+  VFS.url = function VFS_url(item, callback) {
     console.debug('VFS::url()', item);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -967,7 +967,7 @@
    * @param   {Boolean}                   [options.overwrite] If set to true it will not check if the destination exists
    * @param   {OSjs.Core.Application}     [appRef]            Reference to an Application
    */
-  VFS.upload = function(args, callback, options, appRef) {
+  VFS.upload = function VFS_upload(args, callback, options, appRef) {
     console.debug('VFS::upload()', args);
     args = args || {};
 
@@ -1150,7 +1150,7 @@
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
    * @param   {CallbackVFS}     callback  Callback function
    */
-  VFS.trash = function(item, callback) {
+  VFS.trash = function VFS_trash(item, callback) {
     console.debug('VFS::trash()', item);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -1172,7 +1172,7 @@
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
    * @param   {CallbackVFS}     callback  Callback function
    */
-  VFS.untrash = function(item, callback) {
+  VFS.untrash = function VFS_untrash(item, callback) {
     console.debug('VFS::untrash()', item);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -1193,7 +1193,7 @@
    *
    * @param   {CallbackVFS}     callback  Callback function
    */
-  VFS.emptyTrash = function(callback) {
+  VFS.emptyTrash = function VFS_emptyTrash(callback) {
     console.debug('VFS::emptyTrash()');
     if ( arguments.length < 1 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -1216,7 +1216,7 @@
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
    * @param   {CallbackVFS}     callback  Callback function
    */
-  VFS.freeSpace = function(item, callback) {
+  VFS.freeSpace = function VFS_freeSpace(item, callback) {
     console.debug('VFS::freeSpace()', item);
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
@@ -1243,7 +1243,7 @@
    *
    * @return  {Number}                    The index of your watch (you can unwatch with this)
    */
-  VFS.watch = function(item, callback) {
+  VFS.watch = function VFS_watch(item, callback) {
     if ( arguments.length < 2 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
     }
@@ -1266,7 +1266,7 @@
    *
    * @param {Number}      idx     Watch index (from watch() method)
    */
-  VFS.unwatch = function(idx) {
+  VFS.unwatch = function VFS_unwatch(idx) {
     if ( typeof watches[idx] !== 'undefined' ) {
       delete watches[idx];
     }
@@ -1283,7 +1283,7 @@
    * @param   {OSjs.Core.Process}   [appRef]    Optional application reference
    */
   VFS.Helpers = VFS.Helpers || {};
-  VFS.Helpers.triggerWatch = function(method, arg, appRef) {
+  VFS.Helpers.triggerWatch = function VFS_Helpers_triggerWatch(method, arg, appRef) {
     broadcastMessage('vfs:' + method, arg, appRef);
   };
 

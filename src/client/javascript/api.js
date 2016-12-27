@@ -175,7 +175,7 @@
    *
    * @return {String}
    */
-  API._ = function _apiTranslate() {
+  API._ = function API_() {
     var s = arguments[0];
     var a = arguments;
 
@@ -197,7 +197,7 @@
    *
    * @return {String}
    */
-  API.__ = function _apiTranslateList() {
+  API.__ = function API__() {
     var l = arguments[0];
     var s = arguments[1];
     var a = Array.prototype.slice.call(arguments, 1);
@@ -222,7 +222,7 @@
    *
    * @return {String}
    */
-  API.getLocale = function _apiGetLocale() {
+  API.getLocale = function API_getLocale() {
     return CurrentLocale;
   };
 
@@ -234,7 +234,7 @@
    *
    * @param  {String}   l     Locale name
    */
-  API.setLocale = function _apiSetLocale(l) {
+  API.setLocale = function API_setLocale(l) {
     var RTL = API.getConfig('LocaleOptions.RTL', []);
 
     if ( OSjs.Locales[l] ) {
@@ -271,7 +271,7 @@
    *
    * @link https://os.js.org/manual/api/usage/curl/
    */
-  API.curl = function _apiCurl(args, callback) {
+  API.curl = function API_curl(args, callback) {
     args = args || {};
     callback = callback || {};
 
@@ -302,7 +302,7 @@
    * @param   {Object}    [options] Options to send to the XHR request
    */
   var _CALL_INDEX = 1;
-  API.call = function _apiCall(m, a, cb, options) {
+  API.call = function API_call(m, a, cb, options) {
     a = a || {};
 
     var lname = 'APICall_' + _CALL_INDEX;
@@ -322,11 +322,11 @@
     _CALL_INDEX++;
 
     var conn = OSjs.Core.getConnection();
-    return conn.request(m, a, function(response) {
+    return conn.request(m, a, function API_call_success(response) {
       API.destroyLoading(lname);
       response = response || {};
       cb(response.error || false, response.result);
-    }, function(err) {
+    }, function API_call_error(err) {
       cb(err);
     }, options);
   };
@@ -346,7 +346,7 @@
    * @param   {OSjs.VFS.File}   file          The File reference (can also be a tuple with 'path' and 'mime')
    * @param   {Object}          launchArgs    Arguments to send to process launch function
    */
-  API.open = function _apiOpen(file, launchArgs) {
+  API.open = function API_open(file, launchArgs) {
     launchArgs = launchArgs || {};
 
     if ( !file.path ) {
@@ -455,7 +455,7 @@
    *
    * @param   {String}      n               Application Name
    */
-  API.relaunch = function _apiRelaunch(n) {
+  API.relaunch = function API_relaunch(n) {
     function relaunch(p) {
       var data = null;
       var args = {};
@@ -504,7 +504,7 @@
    * @param   {Function}    [onerror]       Callback on error
    * @param   {Function}    [onconstruct]   Callback on application init
    */
-  API.launch = function _apiLaunch(name, args, ondone, onerror, onconstruct) {
+  API.launch = function API_launch(name, args, ondone, onerror, onconstruct) {
     args = args || {};
 
     var err;
@@ -641,14 +641,14 @@
         }
       }
 
-      Utils.asyncs(_hooks.onApplicationPreload, function(qi, i, n) {
+      Utils.asyncs(_hooks.onApplicationPreload, function asyncIter(qi, i, n) {
         qi(name, args, preloads, function(p) {
           if ( p && (p instanceof Array) ) {
             preloads = p;
           }
           n();
         });
-      }, function() {
+      }, function asyncDone() {
         _createSplash();
         cb();
       });
@@ -657,15 +657,13 @@
     }
 
     function _preload(cb) {
-      Utils.preload(preloads, function(total, failed, succeeded, data) {
+      Utils.preload(preloads, function preloadIter(total, failed, succeeded, data) {
         if ( failed.length ) {
           cb(API._('ERR_APP_PRELOAD_FAILED_FMT', name, failed.join(',')));
         } else {
-          setTimeout(function() {
-            cb(false, data);
-          }, 0);
+          cb(false, data);
         }
-      }, function(index, count, src, succeeded, failed, progress) {
+      }, function preloadDone(index, count, src, succeeded, failed, progress) {
         if ( splash ) {
           splash.update(progress, count);
         }
@@ -780,13 +778,13 @@
 
     // Main blob
     try {
-      _preLaunch(function() {
-        _preload(function(err, res) {
+      _preLaunch(function onPreLaunch() {
+        _preload(function onPreload(err, res) {
           if ( err ) {
             _onError(err, res);
           } else {
             try {
-              _createProcess(res, function(err, res) {
+              _createProcess(res, function onCreateProcess(err, res) {
                 if ( err ) {
                   _onError(err, res);
                 } else {
@@ -820,13 +818,13 @@
    * @param   {Function}      onError     Callback on error => fn(error, appName, appArgs)
    * @param   {Function}      onFinished  Callback on finished running => fn()
    */
-  API.launchList = function _apiLaunchList(list, onSuccess, onError, onFinished) {
+  API.launchList = function API_launchList(list, onSuccess, onError, onFinished) {
     list        = list        || []; /* idx => {name: 'string', args: 'object', data: 'mixed, optional'} */
     onSuccess   = onSuccess   || function() {};
     onError     = onError     || function() {};
     onFinished  = onFinished  || function() {};
 
-    Utils.asyncs(list, function(s, current, next) {
+    Utils.asyncs(list, function asyncIter(s, current, next) {
       if ( typeof s === 'string' ) {
         var args = {};
         var spl = s.split('@');
@@ -852,10 +850,10 @@
         return;
       }
 
-      API.launch(aname, aargs, function(app, metadata) {
+      API.launch(aname, aargs, function launchSuccess(app, metadata) {
         onSuccess(app, metadata, aname, aargs);
         next();
-      }, function(err, name, args) {
+      }, function launchError(err, name, args) {
         console.warn('API::launchList() _onError()', err);
         onError(err, name, args);
         next();
@@ -879,7 +877,7 @@
    *
    * @return  {String}            The absolute URL of resource
    */
-  API.getApplicationResource = function _apiGetAppResource(app, name, vfspath) {
+  API.getApplicationResource = function API_getAppResource(app, name, vfspath) {
     if ( name.match(/^\//) ) {
       return name;
     }
@@ -936,7 +934,7 @@
    *
    * @return  {String}            The absolute URL of css file
    */
-  API.getThemeCSS = function _apiGetThemeCSS(name) {
+  API.getThemeCSS = function API_getThemeCSS(name) {
     var root = API.getConfig('Connection.RootURI', '/');
     if ( name === null ) {
       return root + 'blank.css';
@@ -958,7 +956,7 @@
    *
    * @return  {String}            The absolute URL to the icon
    */
-  API.getFileIcon = function _apiGetFileIcon(file, size, icon) {
+  API.getFileIcon = function API_getFileIcon(file, size, icon) {
     icon = icon || 'mimetypes/gnome-fs-regular.png';
 
     if ( typeof file === 'object' && !(file instanceof OSjs.VFS.File) ) {
@@ -1035,7 +1033,7 @@
    *
    * @return  {String}            The absolute URL to the resource
    */
-  API.getThemeResource = function _apiGetThemeResource(name, type) {
+  API.getThemeResource = function API_getThemeResource(name, type) {
     name = name || null;
     type = type || null;
 
@@ -1071,7 +1069,7 @@
    *
    * @return  {String}            The absolute URL to the resource
    */
-  API.getSound = function _apiGetSound(name) {
+  API.getSound = function API_getSound(name) {
     name = name || null;
     if ( name ) {
       var wm = OSjs.Core.getWindowManager();
@@ -1101,7 +1099,7 @@
    *
    * @return  {String}            The absolute URL to the resource
    */
-  API.getIcon = function _apiGetIcon(name, size, app) {
+  API.getIcon = function API_getIcon(name, size, app) {
     name = name || null;
     size = size || '16x16';
     app  = app  || null;
@@ -1152,7 +1150,7 @@
    *
    * @return  {Mixed}             Parameter value or entire tree on no path
    */
-  API.getConfig = function _apiGetConfig(path, defaultValue) {
+  API.getConfig = function API_getConfig(path, defaultValue) {
     var config = OSjs.Core.getConfig();
     if ( typeof path === 'string' ) {
       var result = config[path];
@@ -1189,7 +1187,7 @@
    * @param   {String}    fallback      Fallback path on error (default= "osjs:///")
    * @return  {String}
    */
-  API.getDefaultPath = function _apiGetDefaultPath(fallback) {
+  API.getDefaultPath = function API_getDefaultPath(fallback) {
     if ( fallback && fallback.match(/^\//) ) {
       fallback = null;
     }
@@ -1211,7 +1209,7 @@
    *
    * @return {Object}   The created notification instance
    */
-  API.createNotification = function _apiCreateNotification(opts) {
+  API.createNotification = function API_createNotification(opts) {
     var wm = OSjs.Core.getWindowManager();
     return wm.notification(opts);
   };
@@ -1231,7 +1229,7 @@
    *
    * @return  {OSjs.Core.Window}
    */
-  API.createDialog = function _apiCreateDialog(className, args, callback, parentObj) {
+  API.createDialog = function API_createDialog(className, args, callback, parentObj) {
     callback = callback || function() {};
 
     function cb() {
@@ -1284,7 +1282,7 @@
    *
    * @return  {String}                Or false on error
    */
-  API.createLoading = function _apiCreateLoading(name, opts, panelId) {
+  API.createLoading = function API_createLoading(name, opts, panelId) {
     var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
       if ( wm.createNotificationIcon(name, opts, panelId) ) {
@@ -1305,7 +1303,7 @@
    *
    * @return  {Boolean}
    */
-  API.destroyLoading = function _apiDestroyLoading(name, panelId) {
+  API.destroyLoading = function API_destroyLoading(name, panelId) {
     var wm = OSjs.Core.getWindowManager();
     if ( name ) {
       if ( wm ) {
@@ -1327,7 +1325,7 @@
    *
    * @return {Boolean}
    */
-  API.checkPermission = function _apiCheckPermission(group) {
+  API.checkPermission = function API_checkPermission(group) {
     var user = OSjs.Core.getAuthenticator().getUser();
     var userGroups = user.groups || [];
 
@@ -1360,7 +1358,7 @@
    *
    * @return  {Object}
    */
-  API.createSplash = function _apiCreateSplash(name, icon, label, parentEl) {
+  API.createSplash = function API_createSplash(name, icon, label, parentEl) {
     label = label || API._('LBL_STARTING');
     parentEl = parentEl || document.body;
 
@@ -1433,7 +1431,7 @@
    * @param   {Object}    [exception]         Exception reference
    * @param   {Boolean}   [bugreport=false]   Enable bugreporting for this error
    */
-  API.error = function _apiError(title, message, error, exception, bugreport) {
+  API.error = function API_error(title, message, error, exception, bugreport) {
     bugreport = (function() {
       if ( API.getConfig('BugReporting.enabled') ) {
         return typeof bugreport === 'undefined' ? false : (bugreport ? true : false);
@@ -1497,7 +1495,7 @@
    *
    * @return {Audio}
    */
-  API.playSound = function _apiPlaySound(name, volume) {
+  API.playSound = function API_playSound(name, volume) {
     var compability = Utils.getCompability();
     var wm = OSjs.Core.getWindowManager();
     var filename = wm ? wm.getSoundFilename(name) : null;
@@ -1530,7 +1528,7 @@
    *
    * @param   {Mixed}       data      What data to set
    */
-  API.setClipboard = function _apiSetClipboard(data) {
+  API.setClipboard = function API_setClipboard(data) {
     console.debug('OSjs.API.setClipboard()', data);
     _CLIPBOARD = data;
   };
@@ -1545,7 +1543,7 @@
    *
    * @return  {Mixed}
    */
-  API.getClipboard = function _apiGetClipboard() {
+  API.getClipboard = function API_getClipboard() {
     return _CLIPBOARD;
   };
 
@@ -1641,7 +1639,7 @@
    * @memberof OSjs.API
    * @return {Boolean}
    */
-  API.isStandalone = function _apiIsStandlone() {
+  API.isStandalone = function API_isStandlone() {
     return API.getConfig('Connection.Type') === 'standalone' && window.location.protocol === 'file:';
   };
 
@@ -1654,7 +1652,7 @@
    * @memberof OSjs.API
    * @return {String}
    */
-  API.getBrowserPath = function _apiGetBrowserPath(app) {
+  API.getBrowserPath = function API_getBrowserPath(app) {
     var str = API.getConfig('Connection.RootURI');
     if ( typeof app === 'string' ) {
       str = str.replace(/\/?$/, app.replace(/^\/?/, '/'));
@@ -1668,7 +1666,7 @@
    * @function signOut
    * @memberof OSjs.API
    */
-  API.signOut = function _apiSignOut() {
+  API.signOut = function API_signOut() {
     var auth = OSjs.Core.getAuthenticator();
     var storage = OSjs.Core.getStorage();
     var wm = OSjs.Core.getWindowManager();
@@ -1716,7 +1714,7 @@
    * @param   {Array}     args      List of arguments
    * @param   {Object}    thisarg   'this' ref
    */
-  API.triggerHook = function _apiTriggerHook(name, args, thisarg) {
+  API.triggerHook = function API_triggerHook(name, args, thisarg) {
     thisarg = thisarg || OSjs;
     args = args || [];
 
@@ -1746,7 +1744,7 @@
    *
    * @return  {Number}       The index of hook
    */
-  API.addHook = function _apiAddHook(name, fn) {
+  API.addHook = function API_addHook(name, fn) {
     if ( typeof _hooks[name] !== 'undefined' ) {
       return _hooks[name].push(fn) - 1;
     }
@@ -1764,7 +1762,7 @@
    *
    * @return  {Boolean}
    */
-  API.removeHook = function _apiRemoveHook(name, index) {
+  API.removeHook = function API_removeHook(name, index) {
     if ( typeof _hooks[name] !== 'undefined' ) {
       if ( _hooks[name][index] ) {
         _hooks[name][index] = null;
@@ -1786,7 +1784,7 @@
    * @memberof OSjs.API
    * @see OSjs.GUI.Helpers.createMenu
    */
-  API.createMenu = function() {
+  API.createMenu = function API_createMenu() {
     return OSjs.GUI.Helpers.createMenu.apply(null, arguments);
   };
 
@@ -1795,7 +1793,7 @@
    * @memberof OSjs.API
    * @see OSjs.GUI.Helpers.blurMenu
    */
-  API.blurMenu = function() {
+  API.blurMenu = function API_blurMenu() {
     return OSjs.GUI.Helpers.blurMenu.apply(null, arguments);
   };
 

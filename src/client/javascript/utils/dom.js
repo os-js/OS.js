@@ -44,7 +44,7 @@
    *
    * @return  {Node}        Found element or null
    */
-  OSjs.Utils.$ = function(id) {
+  OSjs.Utils.$ = function Utils_$(id) {
     return document.getElementById(id);
   };
 
@@ -58,7 +58,7 @@
    *
    * @return  {String}            The new name
    */
-  OSjs.Utils.$safeName = function(str) {
+  OSjs.Utils.$safeName = function Utils_$safeName(str) {
     return (str || '').replace(/[^a-zA-Z0-9]/g, '_');
   };
 
@@ -70,7 +70,7 @@
    *
    * @param   {Node}    node      The DOM Element
    */
-  OSjs.Utils.$remove = function(node) {
+  OSjs.Utils.$remove = function Utils_$remove(node) {
     if ( node && node.parentNode ) {
       node.parentNode.removeChild(node);
     }
@@ -85,7 +85,7 @@
    *
    * @param   {Node}    myNode      The DOM Element
    */
-  OSjs.Utils.$empty = function(myNode) {
+  OSjs.Utils.$empty = function Utils_$empty(myNode) {
     if ( myNode ) {
       while (myNode.firstChild) {
         myNode.removeChild(myNode.firstChild);
@@ -104,7 +104,7 @@
    *
    * @return  {String}                      Style attribute
    */
-  OSjs.Utils.$getStyle = function(oElm, strCssRule) {
+  OSjs.Utils.$getStyle = function Utils_$getStyle(oElm, strCssRule) {
     var strValue = '';
     if ( document.defaultView && document.defaultView.getComputedStyle ) {
       strValue = document.defaultView.getComputedStyle(oElm, '').getPropertyValue(strCssRule);
@@ -131,7 +131,7 @@
    *
    * @return  {Object}                    The bounding box
    */
-  OSjs.Utils.$position = function(el, parentEl) {
+  OSjs.Utils.$position = function Utils_$position(el, parentEl) {
     if ( el ) {
       if ( parentEl ) {
         var result = {left:0, top:0, width: el.offsetWidth, height: el.offsetHeight};
@@ -161,7 +161,7 @@
    *
    * @return  {Node}            el        The DOM element
    */
-  OSjs.Utils.$parent = function(el, cb) {
+  OSjs.Utils.$parent = function Utils_$parent(el, cb) {
     var result = null;
 
     if ( el && cb ) {
@@ -189,7 +189,7 @@
    *
    * @return  {Number}              The index
    */
-  OSjs.Utils.$index = function(el, parentEl) {
+  OSjs.Utils.$index = function Utils_$index(el, parentEl) {
     if ( el ) {
       parentEl = parentEl || el.parentNode;
       if ( parentEl ) {
@@ -211,7 +211,7 @@
    * @param     {Number}    start     Start position
    * @param     {Number}    end       End position
    */
-  OSjs.Utils.$selectRange = function(field, start, end) {
+  OSjs.Utils.$selectRange = function Utils_$selectRange(field, start, end) {
     if ( !field ) {
       throw new Error('Cannot select range: missing element');
     }
@@ -246,7 +246,7 @@
    * @param   {Node}      el      The dom Element
    * @param   {String}    name    The class name
    */
-  OSjs.Utils.$addClass = function(el, name) {
+  OSjs.Utils.$addClass = function Utils_$addClass(el, name) {
     if ( el ) {
       name.split(' ').forEach(function(n) {
         el.classList.add(n);
@@ -263,7 +263,7 @@
    * @param   {Node}      el      The dom Element
    * @param   {String}    name    The class name
    */
-  OSjs.Utils.$removeClass = function(el, name) {
+  OSjs.Utils.$removeClass = function Utils_$removeClass(el, name) {
     if ( el ) {
       name.split(' ').forEach(function(n) {
         el.classList.remove(n);
@@ -280,7 +280,7 @@
    * @param   {Node}      el      The dom Element
    * @param   {String}    name    The class name
    */
-  OSjs.Utils.$hasClass = function(el, name) {
+  OSjs.Utils.$hasClass = function Utils_$hasClass(el, name) {
     if ( el && name ) {
       return name.split(' ').every(function(n) {
         return el.classList.contains(n);
@@ -301,7 +301,7 @@
    *
    * @return  {String}              Escaped HTML
    */
-  OSjs.Utils.$escape = function(str) {
+  OSjs.Utils.$escape = function Utils_$escape(str) {
     var div = document.createElement('div');
     div.appendChild(document.createTextNode(str));
     return div.innerHTML;
@@ -333,7 +333,7 @@
    *
    * @return  {Node}
    */
-  OSjs.Utils.$create = function(tagName, properties) {
+  OSjs.Utils.$create = function Utils_$create(tagName, properties) {
     var element = document.createElement(tagName);
 
     function _foreach(dict, l) {
@@ -379,7 +379,7 @@
    *
    * @return  {Node}                The tag
    */
-  OSjs.Utils.$createCSS = function(src, onload, onerror) {
+  OSjs.Utils.$createCSS = function Utils_$createCSS(src, onload, onerror) {
     var link = document.createElement('link');
     link.setAttribute('rel', 'stylesheet');
     link.setAttribute('type', 'text/css');
@@ -406,7 +406,7 @@
    *
    * @return  {Node}                              The tag
    */
-  OSjs.Utils.$createJS = function(src, onreadystatechange, onload, onerror, attrs) {
+  OSjs.Utils.$createJS = function Utils_$createJS(src, onreadystatechange, onload, onerror, attrs) {
     var res = document.createElement('script');
 
     res.onreadystatechange = onreadystatechange || function() {};
@@ -439,7 +439,7 @@
    *
    * @return  {Boolean}             If is a form element
    */
-  OSjs.Utils.$isFormElement = function(input, types) {
+  OSjs.Utils.$isFormElement = function Utils_$isFormElement(input, types) {
     types = types || ['TEXTAREA', 'INPUT', 'SELECT'];
 
     if ( input instanceof window.Event ) {
@@ -481,7 +481,7 @@
    * @function $css
    * @memberof OSjs.Utils
    */
-  OSjs.Utils.$css = function(el, ink, inv) {
+  OSjs.Utils.$css = function Utils_$css(el, ink, inv) {
     function rep(k) {
       return k.replace(/\-(\w)/g, function(strMatch, p1) {
         return p1.toUpperCase();

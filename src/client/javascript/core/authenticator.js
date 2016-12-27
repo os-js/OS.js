@@ -128,7 +128,7 @@
    * @param   {CallbackHandler}      callback        Callback function
    */
   Authenticator.prototype.login = function(data, callback) {
-    API.call('login', data, function(error, result) {
+    API.call('login', data, function onLoginResponse(error, result) {
       if ( result ) {
         callback(false, result);
       } else {
@@ -149,7 +149,7 @@
   Authenticator.prototype.logout = function(callback) {
     var opts = {};
 
-    API.call('logout', opts, function(error, result) {
+    API.call('logout', opts, function onLogoutResponse(error, result) {
       if ( result ) {
         callback(false, true);
       } else {
@@ -170,7 +170,7 @@
   Authenticator.prototype.onLoginRequest = function(data, callback) {
     var self = this;
 
-    this.login(data, function(err, result) {
+    this.login(data, function onLoginRequest(err, result) {
       if ( err ) {
         callback(err);
       } else {
@@ -300,7 +300,7 @@
    *
    * @return {OSjs.Core.Authenticator}
    */
-  OSjs.Core.getAuthenticator = function() {
+  OSjs.Core.getAuthenticator = function Core_getAuthenticator() {
     return _authInstance;
   };
 

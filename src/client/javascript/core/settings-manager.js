@@ -65,7 +65,7 @@
    *
    * @param {Object}    settings      Entire settings tree
    */
-  SettingsManager.init = function(settings) {
+  SettingsManager.init = function SettingsManager_init(settings) {
     this.storage = settings || {};
   };
 
@@ -80,7 +80,7 @@
    *
    * @return  {Mixed}
    */
-  SettingsManager.get = function(pool, key) {
+  SettingsManager.get = function SettingsManager_get(pool, key) {
     try {
       if ( this.storage[pool] && Object.keys(this.storage[pool]).length ) {
         return key ? this.storage[pool][key] : this.storage[pool];
@@ -108,7 +108,7 @@
    *
    * @return  {Boolean}
    */
-  SettingsManager.set = function(pool, key, value, save, triggerWatch) {
+  SettingsManager.set = function SettingsManager_set(pool, key, value, save, triggerWatch) {
     try {
       if ( key ) {
         if ( typeof this.storage[pool] === 'undefined' ) {
@@ -146,7 +146,7 @@
    * @param  {String}     pool      Name of settings pool
    * @param  {Function}   callback  Callback
    */
-  SettingsManager.save = function(pool, callback) {
+  SettingsManager.save = function SettingsManager_save(pool, callback) {
     console.debug('SettingsManager::save()', pool, this.storage);
     if ( typeof callback !== 'function' ) {
       callback = function() {};
@@ -165,7 +165,7 @@
    * @param  {String}     pool       Name of settings pool
    * @param  {Object}     [defaults] Default settings tree
    */
-  SettingsManager.defaults = function(pool, defaults) {
+  SettingsManager.defaults = function SettingsManager_defaults(pool, defaults) {
     this.defaults[pool] = defaults;
   };
 
@@ -180,7 +180,7 @@
    *
    * @return {Object}
    */
-  SettingsManager.instance = function(pool, defaults) {
+  SettingsManager.instance = function SettingsManager_instance(pool, defaults) {
     if ( !this.storage[pool] || (this.storage[pool] instanceof Array) ) {
       this.storage[pool] = {};
     }
@@ -202,7 +202,7 @@
    *
    * @param  {Number}    index     The index from watch()
    */
-  SettingsManager.unwatch = function(index) {
+  SettingsManager.unwatch = function SettingsManager_unwatch(index) {
     if ( typeof this.watches[index] !== 'undefined' ) {
       delete this.watches[index];
     }
@@ -219,7 +219,7 @@
    *
    * @return {Mixed}                false on error, index for unwatch() otherwise
    */
-  SettingsManager.watch = function(pool, callback) {
+  SettingsManager.watch = function SettingsMananger_watch(pool, callback) {
     if ( !this.storage[pool] ) {
       return false;
     }
@@ -242,7 +242,7 @@
    *
    * @return {OSjs.Core.SettingsManager}      this
    */
-  SettingsManager.changed = function(pool) {
+  SettingsManager.changed = function SettingsManager_changed(pool) {
     var self = this;
     this.watches.forEach(function(watch) {
       if ( watch && watch.pool === pool ) {
@@ -264,7 +264,7 @@
    *
    * @return {OSjs.Core.SettingsManager}      this
    */
-  SettingsManager.clear = function(pool, save) {
+  SettingsManager.clear = function SettingsManager_clear(pool, save) {
     save = (typeof save === 'undefined') || (save === true);
     this.set(pool, null, {}, save);
     return this;
@@ -283,7 +283,7 @@
    * @memberof OSjs.Core
    * @return {OSjs.Core.SettingsManager}
    */
-  OSjs.Core.getSettingsManager = function() {
+  OSjs.Core.getSettingsManager = function Core_getSettingsManager() {
     return SettingsManager;
   };
 

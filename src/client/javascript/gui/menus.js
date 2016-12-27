@@ -452,7 +452,7 @@
    * @function createMenu
    * @memberof OSjs.GUI.Helpers
    */
-  OSjs.GUI.Helpers.createMenu = function(items, ev, customInstance) {
+  OSjs.GUI.Helpers.createMenu = function createMenu(items, ev, customInstance) {
     items = items || [];
     blurMenu();
 

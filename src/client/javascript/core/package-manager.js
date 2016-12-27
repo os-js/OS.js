@@ -496,7 +496,7 @@
    *
    * @return {OSjs.Core.PackageManager}
    */
-  OSjs.Core.getPackageManager = function() {
+  OSjs.Core.getPackageManager = function Core_getPackageManager() {
     return PackageManager;
   };
 

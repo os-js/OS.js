@@ -63,7 +63,7 @@
    *
    * @link https://os.js.org/manual/package/iframe/
    */
-  var IFrameApplicationWindow = function(name, opts, app) {
+  function IFrameApplicationWindow(name, opts, app) {
     opts = Utils.argumentDefaults(opts, {
       src: 'about:blank',
       focus: function() {},
@@ -81,7 +81,7 @@
 
     this._iwin = null;
     this._frame = null;
-  };
+  }
 
   IFrameApplicationWindow.prototype = Object.create(Window.prototype);
 
@@ -234,7 +234,7 @@
    * @memberof OSjs.Helpers
    * @see OSjs.Core.Application
    */
-  var IFrameApplication = function(name, args, metadata, opts) {
+  function IFrameApplication(name, args, metadata, opts) {
     Application.call(this, name, args, metadata);
 
     this.options = Utils.argumentDefaults(opts, {
@@ -242,7 +242,7 @@
       title: 'IframeApplicationWindow'
     });
     this.options.src = OSjs.API.getApplicationResource(this, this.options.src);
-  };
+  }
 
   IFrameApplication.prototype = Object.create(Application.prototype);
 
