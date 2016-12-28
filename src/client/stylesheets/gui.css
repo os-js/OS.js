@@ -522,6 +522,7 @@ gui-expander {
 gui-tabs {
   display : block;
   position : relative;
+  box-sizing : border-box;
 }
   gui-tabs > ul {
     display : block;
@@ -529,6 +530,7 @@ gui-tabs {
     margin : 0;
     padding : 0;
     white-space: nowrap;
+    box-sizing : border-box;
   }
     gui-tabs > ul > li {
       position : relative;
@@ -536,6 +538,7 @@ gui-tabs {
       margin : 0;
       padding : 0;
       height : 100%;
+      box-sizing : border-box;
     }
     /*gui-tabs > ul > li.gui-active {
     }*/
@@ -551,6 +554,7 @@ gui-tabs {
     overflow : hidden;
     display : none;
     position : relative;
+    box-sizing : border-box;
   }
     gui-tab-container.gui-active {
       display : block;
