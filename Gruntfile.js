@@ -40,7 +40,31 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-validate-xml');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
-  grunt.registerTask('test', ['eslint', 'csslint', 'validate_xml', 'mochaTest'/*, 'mocha'*/]);
+  grunt.registerTask('testBuild', 'Tests the build', function() {
+    var files = [
+      'dist/index.html',
+      'dist/favicon.ico',
+      'dist/dialogs.html',
+      'dist/locales.js',
+      'dist/osjs.js',
+      'dist/osjs.css',
+      'dist/packages.js',
+      'dist/settings.js',
+      'dist/splash.png'
+    ];
+
+    var result = files.every(function(filename) {
+      if ( !grunt.file.exists(filename) ) {
+        grunt.log.error('Missing file from build: ' + filename);
+        return false;
+      }
+      return true;
+    });
+
+    return result;
+  });
+
+  grunt.registerTask('test', ['eslint', 'csslint', 'validate_xml', 'mochaTest'/*, 'mocha'*/, 'testBuild']);
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
