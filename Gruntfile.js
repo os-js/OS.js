@@ -32,7 +32,6 @@ module.exports = function(grunt) {
 
   grunt.file.defaultEncoding = 'utf-8';
 
-  //grunt.loadNpmTasks('grunt-nw-builder');
   grunt.loadNpmTasks('grunt-eslint');
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-mocha');
@@ -161,14 +160,6 @@ module.exports = function(grunt) {
           'src/packages/default/*/scheme.html'
         ]
       }
-    },
-    nwjs: {
-      options: {
-        version: '0.12.3',
-        platforms: ['win64', 'linux64'],
-        buildDir: '.nw'
-      },
-      src: ['src/templates/nw/package.json', '.standalone/**/*']
     }
   });
 };

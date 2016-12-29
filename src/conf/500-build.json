@@ -55,7 +55,6 @@
       "src/client/javascript/core/search-engine.js",
       "src/client/javascript/core/connections/http.js",
       "src/client/javascript/core/connections/ws.js",
-      "src/client/javascript/core/connections/nw.js",
       "src/client/javascript/core/auth/demo.js",
       "src/client/javascript/core/auth/database.js",
       "src/client/javascript/core/auth/pam.js",

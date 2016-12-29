@@ -29,6 +29,7 @@ src/installer/installer.exe
 # Builds
 dist/*
 dist-dev/*
+dist-electron
 !dist-dev/vendor
 doc/jsdoc
 src/server/*.sqlite

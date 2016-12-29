@@ -267,8 +267,10 @@
 
     if ( this.offline ) {
       cbError('You are currently off-line and cannot perform this operation!');
+      return;
     } else if ( (API.getConfig('Connection.Type') === 'standalone') ) {
       cbError('You are currently running locally and cannot perform this operation!');
+      return;
     }
 
     if ( method.match(/^FS:/) ) {

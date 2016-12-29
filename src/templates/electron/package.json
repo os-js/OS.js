@@ -1,0 +1,17 @@
+{
+  "name": "osjs-electron",
+  "version": "1.0.0",
+  "description": "A basic OS.js Electron implementation",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [
+    "OS.js",
+    "Electron"
+  ],
+  "author": "Anders Evenrud <andersevenrud@gmail.com>",
+  "devDependencies": {
+    "electron": "^1.4.1"
+  }
+}

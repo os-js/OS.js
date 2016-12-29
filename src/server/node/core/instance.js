@@ -106,6 +106,16 @@ const ENV = {
  * Loads generated configuration file
  */
 function loadConfiguration(opts) {
+  Object.keys(opts).forEach(function(k) {
+    if ( typeof ENV[k] !== 'undefined' && typeof opts[k] !== 'undefined' ) {
+      ENV[k] = opts[k];
+    }
+  });
+
+  if ( opts.ROOT ) {
+    ENV.ROOTDIR = opts.ROOT;
+  }
+
   const path = _path.join(ENV.SERVERDIR, 'settings.json');
 
   function _load(resolve, reject) {
@@ -121,23 +131,13 @@ function loadConfiguration(opts) {
         ENV.PORT = config.http.port;
       }
 
-      Object.keys(opts).forEach(function(k) {
-        if ( typeof ENV[k] !== 'undefined' && typeof opts[k] !== 'undefined' ) {
-          ENV[k] = opts[k];
-        }
-      });
-
-      if ( opts.ROOT ) {
-        ENV.ROOTDIR = opts.ROOT;
-      }
-
       if ( typeof opts.LOGLEVEL === 'number' ) {
         ENV.LOGLEVEL = opts.LOGLEVEL;
       } else if ( typeof config.logging === 'number' ) {
         ENV.LOGLEVEL = config.logging;
       }
 
-      ENV.PKGDIR = _path.join(ENV.ROOTDIR, 'src/packages');
+      ENV.PKGDIR = opts.PKGDIR || _path.join(ENV.ROOTDIR, 'src/packages');
       LOGGER = _osjs.logger.create(ENV.LOGLEVEL);
 
       Object.keys(config.proxies).forEach(function(k) {

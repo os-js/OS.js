@@ -79,12 +79,10 @@ function readScript(target, verbose, compress, list) {
     }
 
     var data = compress ? _ugly.minify(path, {comments: false}).code : _fs.readFileSync(path).toString();
-    if ( target !== 'nw' ) {
-      data = data.replace(/\/\*\![\s\S]*?\*\//, '')
-        .replace(/console\.(log|debug|info|group|groupStart|groupEnd|count)\((.*)\);/g, '')
-        .replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:^\s*\/\/(?:.*)$)/gm, '')
-        .replace(/^\s*[\r\n]/gm, '');
-    }
+    data = data.replace(/\/\*\![\s\S]*?\*\//, '')
+      .replace(/console\.(log|debug|info|group|groupStart|groupEnd|count)\((.*)\);/g, '')
+      .replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:^\s*\/\/(?:.*)$)/gm, '')
+      .replace(/^\s*[\r\n]/gm, '');
 
     return data;
   }).join('\n');
@@ -107,12 +105,11 @@ function readStyle(target, verbose, compress, list) {
       data = new Cleancss().minify(data).styles;
     }
 
-    if ( target !== 'nw' ) {
-      data = data.replace(/\/\*\![\s\S]*?\*\//, '')
-        .replace('@charset "UTF-8";', '')
-        .replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:^\s*\/\/(?:.*)$)/gm, '')
-        .replace(/^\s*[\r\n]/gm, '');
-    }
+    data = data.replace(/\/\*\![\s\S]*?\*\//, '')
+      .replace('@charset "UTF-8";', '')
+      .replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:^\s*\/\/(?:.*)$)/gm, '')
+      .replace(/^\s*[\r\n]/gm, '');
+
     return data;
   }).join('\n');
 }
@@ -187,48 +184,6 @@ function getBuildFiles(opts) {
     stylesheets: stylesheets,
     locales: locales
   };
-}
-
-/*
- * Build NW files
- */
-function buildNW() {
-  return new Promise(function(resolve) {
-    const dest = _path.join(ROOT, 'dist');
-
-    _fs.mkdirSync(_path.join(dest, 'vfs'));
-    _fs.mkdirSync(_path.join(dest, 'vfs', 'home'));
-    _fs.mkdirSync(_path.join(dest, 'vfs', 'home', 'demo'));
-
-    _fs.copySync(
-      _path.join(ROOT, 'README.md'),
-      _path.join(dest, 'vfs', 'home', 'demo', 'README.md')
-    );
-    _fs.copySync(
-      _path.join(ROOT, 'src', 'templates', 'nw', 'package.json'),
-      _path.join(dest, 'package.json')
-    );
-    _fs.copySync(
-      _path.join(ROOT, 'src', 'server', 'packages.json'),
-      _path.join(dest, 'packages.json')
-    );
-
-    // Install dependencies
-    _fs.copySync(
-      _path.join(ROOT, 'src', 'server', 'node'),
-      _path.join(dest, 'node_modules', 'osjs')
-    );
-    _fs.copySync(
-      _path.join(ROOT, 'src', 'templates', 'nw', 'index.js'),
-      _path.join(dest, 'node_modules', 'osjs', 'index.js')
-    );
-
-    const cmd = 'cd "' + dest + '" && npm install';
-    require('child_process').exec(cmd, function(err, stdout, stderr) {
-      console.log(stderr, stdout);
-      resolve();
-    });
-  });
 }
 
 /*
@@ -364,11 +319,7 @@ const TARGETS = {
           _utils.createStandaloneScheme(src, '/dialogs.html', _path.join(ROOT, 'dist', '_dialogs.js'));
         }
 
-        if ( cli.option('nw') ) {
-          buildNW().then(resolve).catch(reject);
-        } else {
-          resolve();
-        }
+        resolve();
       });
     }
 

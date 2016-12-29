@@ -13,7 +13,7 @@
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
@@ -27,52 +27,69 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
+'use strict';
 
-(function(API, Utils, Connection) {
-  'use strict';
+const electron = require('electron');
+const app = electron.app
+const BrowserWindow = electron.BrowserWindow;
+const path = require('path');
+const url = require('url');
+const osjs = require('osjs/core/instance');
 
-  function NWConnection() {
-    Connection.apply(this, arguments);
-    this.nw = require('osjs');
+let mainWindow;
+
+function createServer() {
+  if ( app.server ) {
+    return Promise.resolve();
   }
 
-  NWConnection.prototype = Object.create(Connection.prototype);
-  NWConnection.constructor = Connection;
-
-  NWConnection.prototype.init = function(callback) {
-    /* TODO
-    this.nw.init({
-      root: process.cwd()
-    }, callback);
-    */
-
-    callback('Sorry, but this is not working at the moment');
+  const opts = {
+    DIST: 'dist-dev',
+    ROOT: __dirname,
+    PKGDIR: path.join(__dirname, 'dist-dev', 'packages'),
+    SERVERDIR: __dirname,
+    PORT: 8000,
+    //LOGLEVEL: 15,
+    AUTH: 'demo',
+    STORAGE: 'demo'
   };
 
-  NWConnection.prototype.destroy = function() {
-    this.nw = null;
-    return Connection.prototype.destroy.apply(this, arguments);
-  };
+  return new Promise(function(resolve, reject) {
+    osjs.init(opts).then(function() {
+      resolve(osjs.run());
+    }).catch(reject);
+  });
+}
 
-  NWConnection.prototype._request = function(isVfs, method, args, options, onsuccess, onerror) {
-    onerror = onerror || function() {
-      console.warn('NWConnection::request()', 'error', arguments);
-    };
+function createWindow() {
+  createServer().then(function() {
+    mainWindow = new BrowserWindow({
+      width: 800,
+      height: 600
+    });
 
-    var res = Connection.prototype._request.apply(this, arguments);
-    if ( res !== false ) {
-      return res;
-    }
+    mainWindow.loadURL('http://localhost:8000');
 
-    onerror('Sorry, but this is not working at the moment');
-    return false;
-  };
+    //mainWindow.webContents.openDevTools();
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+    mainWindow.on('closed', function() {
+      mainWindow = null
+    })
+  }).catch(function(err) {
+    alert(err);
+  });
+}
 
-  OSjs.Connections = OSjs.Connections || {};
-  OSjs.Connections.nw = NWConnection;
+app.on('ready', createWindow)
 
-})(OSjs.API, OSjs.Utils, OSjs.Core.Connection);
+app.on('window-all-closed', function() {
+  if ( process.platform !== 'darwin' ) {
+    app.quit();
+  }
+})
+
+app.on('activate', function() {
+  if ( mainWindow === null ) {
+    createWindow();
+  }
+})
