@@ -485,7 +485,33 @@ const VFS = {
 
   scandir: function(http, args, resolve, reject) {
     const resolved = _vfs.parseVirtualPath(args.path, http);
-    readDir(resolved.query, resolved.real).then(resolve).catch(reject);
+    const opts = args.options || {};
+
+    readDir(resolved.query, resolved.real).then(function(list) {
+
+      if ( opts.shortcuts !== false ) {
+        const filename = typeof opts.shortcuts === 'string' ? opts.shortcuts.replace(/\/+g/, '') : '.shortcuts.json';
+        const path = args.path.replace(/\/?$/, '/' + filename);
+        const realMeta = _vfs.parseVirtualPath(path, http);
+
+        _fs.readFile(realMeta.real, function(err, contents) {
+          var additions = [];
+          if ( !err ) {
+            try {
+              additions = JSON.parse(contents.toString());
+              if ( !(additions instanceof Array) ) {
+                additions = [];
+              }
+            } catch ( e ) {}
+          }
+
+          resolve(list.concat(additions));
+        });
+      } else {
+        resolve(list);
+      }
+
+    }).catch(reject);
   },
 
   freeSpace: function(http, args, resolve, reject) {
