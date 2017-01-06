@@ -105,6 +105,23 @@ abstract class Filesystem
     return str_replace(array_keys($replacements), array_values($replacements), $path);
   }
 
+  final protected static function _scanShortcuts($scandir, $opt) {
+    $filename = is_string($opt) ? str_replace('/', '', $opt) : '.shortcuts.json';
+    $path = preg_replace('/\/?$/', '/' . $filename, $scandir);
+    $result = [];
+
+    if ( file_exists($path) ) {
+      try {
+        $json = json_decode(file_get_contents($path), true);
+        if ( is_array($json) ) {
+          $result = $json;
+        }
+      } catch ( Exception $e ) {}
+    }
+
+    return $result;
+  }
+
   final public static function exists(Request $request, Array $arguments = []) {
     return file_exists(self::_getRealPath($arguments['path']));
   }
@@ -276,16 +293,25 @@ abstract class Filesystem
   }
 
   final public static function scandir(Request $request, Array $arguments = []) {
+    $opts = isset($arguments['options']) ? $arguments['options'] : [];
     $path = self::_getRealPath($arguments['path']);
+
     if ( !file_exists($path) || !is_dir($path) ) {
       throw new Exception("Directory does not exist");
     }
 
-    return array_values(array_map(function($iter) use($arguments, $path) {
+    $result = array_values(array_map(function($iter) use($arguments, $path) {
       return self::_getFileMetadata($iter, $arguments['path'], $path . '/' . $iter);
     }, array_filter(scandir($path), function($iter) {
       return !in_array($iter, ['.', '..']);
     })));
+
+    $shortcuts = isset($opts['shortcuts']) ? (is_string($opts['shortcuts']) || $opts['shortcuts'] === true) : true;
+    if ( $shortcuts ) {
+      $result = array_merge($result, self::_scanShortcuts($path, $shortcuts));
+    }
+
+    return $result;
   }
 
   final public static function freeSpace(Request $request, Array $arguments = []) {
