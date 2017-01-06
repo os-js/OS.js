@@ -1,3 +1,63 @@
+# 2.0.0-alpha82
+
+This release brings new Broadway implementation, Support for HTTP middleware,
+server and build system improvements and lots of bugfixes.
+
+Relevant:
+
+- http://community.os.js.org/t/update-version-bump-alpha82/110
+- http://community.os.js.org/t/feature-http-middleware/107/1
+
+Digest:
+
+* Broadway: New implementation
+* MusicPlayer: Updated API
+* CoreWM: Make the .desktop folder on demand
+* core: Better handling of errors on init
+* core: Added some debugging symbols
+* GUI: Fixed gui-tabs border problems
+* server-php: Improved error handling
+* server-php: Added password_compat support
+* server-php: Added middleware support
+* server-php: Added VFSTransport base class
+* server-php: VFS Transport classes now has getRealPath() method
+* server-php: Added phpdoc
+* server-php: Bugfixes
+* server-node: Trigger warning when system storage cannot read JSON
+* server-node: Added 'sqlite' storage module
+* server-node: Added 'sqlite' authenticator module
+* server-node: Updated debugging and logging
+* server-node: Added middleware support
+* server-node: Added graceful shutdown support
+* server-node: Updated tmp-dir support
+* server-node: Configurable WS port
+* server-node: Better handling of file streams in http responses
+* server-node: Added chunked response support in HTTP
+* server-node: Bugfixes
+* build: Removed NW support
+* build: Added Electron support
+* build: Add 'ro' and 'transport' to mount cli action
+* build: The 'config:get' task now has better output
+* build: Separated splash screen into separate template
+* build: Updated LESS compilation
+* build: Added some feedback messages on certain tasks
+* build: Now copies dist templates recursively
+* build: Bugfixes
+* misc: Updated favicon
+* misc: Updated copyright notices
+* misc: Updated dependencies
+* misc: Added Node v4 checks
+* misc: Removed .gitmodules
+* misc: Removed vendor/ directory
+* misc: Removed doc/ directory
+* misc: Cleaned up Gruntfile
+* misc: Updated some examples and template files
+* misc: Updated eslint rules
+* misc: Updated jsdoc
+* misc: Updated Docerfile
+* misc: Updated Vagrantfile
+* misc: Updated INSTALL
+
 # 2.0.0-alpha81
 
 This release brings Widgets, rewritten servers(s), connection/authenticator/storage replaces 'handler', bugfixes and improvements.
