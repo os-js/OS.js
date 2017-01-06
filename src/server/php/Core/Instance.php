@@ -186,6 +186,36 @@ class Instance
    * @return void
    */
   final public static function shutdown() {
+    if ( !is_null($error = error_get_last()) ) {
+      self::handle($error['type'], $error['message'], $error['file'], $error['line']);
+    }
+  }
+
+  /**
+   * Error handler
+   * @access public
+   * @return void
+   */
+  final public static function handle($errno, $errstr, $errfile, $errline) {
+    @header_remove();
+
+    while ( ob_get_level() ) {
+      ob_end_flush();
+    }
+
+    header('HTTP/1.0 500 Internal Server Error');
+    header('Content-type: text/html');
+
+    print '<html><head></head><body>';
+    print '<h1>Error</h1><pre>';
+    print print_r([
+      'message' => $errstr,
+      'type' => $errno,
+      'file' => $errfile,
+      'line' => $errline
+    ], true);
+    print '</pre></body></html>';
+    exit;
   }
 
   /**
@@ -216,6 +246,7 @@ class Instance
     }
 
     register_shutdown_function([__CLASS__, 'shutdown']);
+    set_error_handler([__CLASS__, 'handle']);
 
     define('DIR_ROOT', realpath(__DIR__ . '/../../../../'));
     define('DIR_SERVER', realpath(__DIR__ . '/../../'));
