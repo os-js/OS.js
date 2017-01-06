@@ -244,17 +244,20 @@
           }));
         }
       });
-    }, 50);
+    }, 150);
   };
 
   DesktopIconView.prototype._save = function(refresh) {
     var desktopPath = OSjs.Core.getWindowManager().getSetting('desktopPath');
     var path = Utils.pathJoin(desktopPath, '.shortcuts.json');
+    var cache = this.shortcutCache;
 
-    VFS.write(path, JSON.stringify(this.shortcutCache, null, 4), function(e, r) {
-      if ( refresh ) { // Normally caught by VFS message in main.js
-        //self._refresh();
-      }
+    VFS.mkdir(Utils.dirname(path), function(err) {
+      VFS.write(path, JSON.stringify(cache, null, 4), function(e, r) {
+        if ( refresh ) { // Normally caught by VFS message in main.js
+          //self._refresh();
+        }
+      });
     });
   };
 
