@@ -12,7 +12,7 @@ RUN apt-get -y update
 RUN apt-get -y install git npm nodejs-legacy
 
 RUN git clone https://github.com/os-js/OS.js.git
-RUN npm install -g grunt-cli supervisor
+RUN npm install -g supervisor
 RUN cd OS.js/
 
 WORKDIR OS.js/
