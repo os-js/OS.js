@@ -2,7 +2,7 @@
 (function(_build, _minimist) {
   'use strict';
 
-  const ver = process.version.substr(1).split(/\./g);
+  var ver = process.version.substr(1).split(/\./g);
   if ( parseInt(ver[0], 10) < 4 ) {
     console.warn(String.color('You need Node v4 or above to run OS.js', 'yellow'));
   }
