@@ -127,7 +127,6 @@
         name: name,
         description: name,
         icon: 'devices/harddrive.png',
-        match: match,
 
         request: function _request(n, a, callback, options) {
           MountManager._request(mount, n, a, callback, options);
@@ -142,6 +141,8 @@
           return true;
         }
       }, true);
+
+      mount.match = args.match || match;
 
       // TODO: Make sure aliases inherit correct transport
       var internals = ['Internal'];
