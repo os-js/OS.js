@@ -52,7 +52,7 @@
       }
     }
 
-    if ( API.getConfig('Connection.Type') === 'standalone' || window.location.protocol === 'file:' ) {
+    if ( API.isStandalone() ) {
       return callback(false, {
         userData: {
           id: 0,

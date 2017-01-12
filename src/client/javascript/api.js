@@ -1640,7 +1640,7 @@
    * @return {Boolean}
    */
   API.isStandalone = function API_isStandlone() {
-    return API.getConfig('Connection.Type') === 'standalone' && window.location.protocol === 'file:';
+    return API.getConfig('Connection.Type') === 'standalone' || window.location.protocol === 'file:';
   };
 
   /**
