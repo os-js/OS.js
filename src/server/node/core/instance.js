@@ -404,8 +404,10 @@ function registerServices(servers) {
     _glob(_path.join(dirname, '*.js')).then(function(list) {
       Promise.all(list.map(function(path) {
         LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('Service', 'bold'), path.replace(ENV.ROOTDIR, ''));
-        require(path).register(ENV, CONFIG, servers);
-
+        const p = require(path).register(ENV, CONFIG, servers);
+        if ( p instanceof Promise ) {
+          return p;
+        }
         return Promise.resolve();
       })).then(resolve).catch(reject);
     }).catch(reject);
