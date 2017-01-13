@@ -292,10 +292,10 @@ function registerPackages(servers) {
     };
   }
 
-  function _registerApplication(packages, module) {
+  function _registerApplication(name, packages, module) {
     if ( typeof module.api === 'object' ) {
       if ( typeof module.register === 'function' ) {
-        module.register(ENV, packages[path], {
+        module.register(ENV, packages[name], {
           http: servers.httpServer,
           ws: servers.websocketServer,
           proxy: servers.proxyServer
@@ -357,8 +357,8 @@ function registerPackages(servers) {
       const manifest = JSON.parse(file);
       const packages = manifest[ENV.DIST];
 
-      Object.keys(packages).forEach(function(path) {
-        const metadata = packages[path];
+      Object.keys(packages).forEach(function(p) {
+        const metadata = packages[p];
 
         var filename = 'api.js';
         if ( metadata.build && metadata.build.index ) {
@@ -367,20 +367,20 @@ function registerPackages(servers) {
 
         metadata._indexFile = filename;
 
-        const check = _path.join(ENV.PKGDIR, path, filename);
+        const check = _path.join(ENV.PKGDIR, p, filename);
         if ( metadata.enabled !== false && _fs.existsSync(check) ) {
           var deprecated = false;
           if ( metadata.type === 'extension' ) {
             LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('Extension', 'bold'), check.replace(ENV.ROOTDIR, ''));
             deprecated = _registerExtension(require(check));
-            _launchSpawners(path, module, metadata);
+            _launchSpawners(p, module, metadata);
           } else {
             LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('Application', 'bold'), check.replace(ENV.ROOTDIR, ''));
-            deprecated = _registerApplication(packages, require(check));
+            deprecated = _registerApplication(p, packages, require(check));
           }
 
           if ( deprecated ) {
-            LOGGER.lognt('WARN', LOGGER.colored('Warning:', 'yellow'), path, LOGGER.colored('is using the deprecated Application API(s)', 'bold'));
+            LOGGER.lognt('WARN', LOGGER.colored('Warning:', 'yellow'), p, LOGGER.colored('is using the deprecated Application API(s)', 'bold'));
           }
         }
       });
