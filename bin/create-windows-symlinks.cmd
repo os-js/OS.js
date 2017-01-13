@@ -4,10 +4,10 @@ cd "%folder%"
 
 cd dist-dev
 
-del client
-del themes
-del vendor
-del packages
+del /f /q client
+del /f /q themes
+del /f /q vendor
+del /f /q packages
 
 mklink /D client ..\src\client
 mklink /D themes ..\dist\themes
