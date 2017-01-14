@@ -100,21 +100,45 @@ class Responder
       }
       return;
     }
-
     if ( $handle = fopen($path, "rb") ) {
-      $length = filesize($path);
+      $chunkSize = 1204*1024;
+      $size = filesize($path);
 
-      $etag = md5(serialize(fstat($handle)));
+      header("Content-type: {$mime}");
 
-      header("Etag: {$etag}");
-      header("Content-type: {$mime}; charset=utf-8");
-      header("Content-length: {$length}");
+      if ( isset($_SERVER['HTTP_RANGE']) && ($range = $_SERVER['HTTP_RANGE']) ) {
+        $positions = explode('-', preg_replace('/bytes=/', '', $range));
+        $start = (int) $positions[0];
+        $end = isset($positions[1]) && $positions[1] ? (int) $positions[1] : $size - 1;
+        $length = ($end - $start) + 1;
 
-      while ( !feof($handle) ) {
-        print fread($handle, 1204*1024);
-        ob_flush();
-        flush();
+        header('HTTP/1.0 206 Partial Content');
+        header("Content-Length: {$length}");
+        header("Content-Range: bytes {$start}-{$end}/{$size}");
+        header('Accept-Ranges: bytes');
+
+        fseek($handle, $start);
+        while ( true ) {
+          if ( ftell($handle) >= $end ) {
+            break;
+          }
+          print fread($handle, $chunkSize);
+          ob_flush();
+          flush();
+        }
+      } else {
+        $etag = md5(serialize(fstat($handle)));
+
+        header("Etag: {$etag}");
+        header("Content-length: {$size}");
+
+        while ( !feof($handle) ) {
+          print fread($handle, $chunkSize);
+          ob_flush();
+          flush();
+        }
       }
+
 
       fclose($handle);
       exit;
