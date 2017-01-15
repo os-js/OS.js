@@ -31,7 +31,7 @@
   'use strict';
 
   /**
-   * @namespace Filesystem
+   * @namespace OSjs
    * @memberof OSjs.VFS.Transports
    */
 
@@ -140,7 +140,7 @@
     options.type = options.type || 'binary';
     mime = options.mime || 'application/octet-stream';
 
-    console.debug('VFS::Transports::Filesystem::fetch()', url, mime);
+    console.debug('VFS::Transports::OSjs::fetch()', url, mime);
 
     if ( arguments.length < 1 ) {
       throw new Error(API._('ERR_VFS_NUM_ARGS'));
