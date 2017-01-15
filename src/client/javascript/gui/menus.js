@@ -151,6 +151,13 @@
     });
   }
 
+  function getEventName(evName) {
+    if ( ['select', 'click'].indexOf(evName) !== -1 ) {
+      return '_select';
+    }
+    return evName;
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
@@ -191,10 +198,7 @@
 
     return {
       bind: function(el, evName, callback, params) {
-        if ( evName === 'select' ) {
-          evName = '_select';
-        }
-
+        evName = getEventName(evName);
         var target = el.querySelector('gui-menu-entry > label');
         Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
       },
@@ -252,10 +256,7 @@
    */
   GUI.Elements['gui-menu'] = {
     bind: function(el, evName, callback, params) {
-      if ( evName === 'select' ) {
-        evName = '_select';
-      }
-
+      evName = getEventName(evName);
       Utils.$bind(el, evName, function(ev) {
         var t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
         if ( t.tagName === 'LABEL' ) {
@@ -331,9 +332,7 @@
    */
   GUI.Elements['gui-menu-bar'] = {
     bind: function(el, evName, callback, params) {
-      if ( evName === 'select' ) {
-        evName = '_select';
-      }
+      evName = getEventName(evName);
       el.querySelectorAll('gui-menu-bar-entry').forEach(function(target) {
         Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
       });
