@@ -45,6 +45,17 @@
   /////////////////////////////////////////////////////////////////////////////
 
   /*
+   * The default callback function when none was defined
+   */
+  function noop(err, res) {
+    if ( err ) {
+      console.error('VFS operation without callback caused an error', err)
+    } else {
+      console.warn('VFS operation without callback', res);
+    }
+  }
+
+  /*
    * Perform VFS request
    */
   function request(test, method, args, callback, options, appRef) {
@@ -138,10 +149,18 @@
   }
 
   /*
+   * Check if destination is readOnly
+   */
+  function isReadOnly(item) {
+    var m = Core.getMountManager().getModuleFromPath(item.path, false, true) || {};
+    return m.readOnly === true;
+  }
+
+  /*
    * Will transform the argument to a VFS.File instance
    * or throw an error depending on input
    */
-  function checkMetadataArgument(item, err) {
+  function checkMetadataArgument(item, err, checkRo) {
     if ( typeof item === 'string' ) {
       item = new VFS.File(item);
     } else if ( typeof item === 'object' && item.path ) {
@@ -157,8 +176,13 @@
       item.path = alias;
     }
 
-    if ( !Core.getMountManager().getModuleFromPath(item.path, false) ) {
+    var mm = Core.getMountManager();
+    if ( !mm.getModuleFromPath(item.path, false) ) {
       throw new Error(API._('ERR_VFSMODULE_NOT_FOUND_FMT', item.path));
+    }
+
+    if ( checkRo && isReadOnly(item) ) {
+      throw new Error(API._('ERR_VFSMODULE_READONLY_FMT', mm.getModuleFromPath(item.path)));
     }
 
     return item;
@@ -205,14 +229,6 @@
     } catch ( e ) {
       callback(e);
     }
-  }
-
-  /*
-   * Check if destination is readOnly
-   */
-  function isReadOnly(item) {
-    var m = Core.getMountManager().getModuleFromPath(item.path, false, true) || {};
-    return m.readOnly === true;
   }
 
   /*
@@ -354,7 +370,6 @@
    *
    * @function find
    * @memberof OSjs.VFS
-   * @throws {Error} On invalid arguments
    *
    * @param  {OSjs.VFS.File}   item              Root path
    * @param  {Object}          args              Search query
@@ -366,12 +381,22 @@
    * @api     OSjs.VFS.find()
    */
   VFS.find = function VFS_find(item, args, callback, options) {
+    options = options || {};
+    callback = callback || noop;
+
     console.debug('VFS::find()', item, args, options);
     if ( arguments.length < 3 ) {
-      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+      callback(API._('ERR_VFS_NUM_ARGS'));
+      return;
     }
 
-    item = checkMetadataArgument(item);
+    try {
+      item = checkMetadataArgument(item);
+    } catch ( e ) {
+      callback(e);
+      return;
+    }
+
     requestWrapper([item.path, 'find', [item, args]], 'ERR_VFSMODULE_FIND_FMT', callback, null, options);
   };
 
@@ -382,7 +407,6 @@
    *
    * @function scandir
    * @memberof OSjs.VFS
-   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}   item                             File Metadata
    * @param   {CallbackVFS}     callback                         Callback function
@@ -393,14 +417,24 @@
    * @param   {Boolean}         [options.backlink=true]          Return '..' when applicable
    */
   VFS.scandir = function VFS_scandir(item, callback, options) {
+    options = options || {};
+    callback = callback || noop;
+
     console.debug('VFS::scandir()', item, options);
     if ( arguments.length < 2 ) {
-      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+      callback(API._('ERR_VFS_NUM_ARGS'));
+      return;
     }
 
     var oitem = new VFS.File(item);
     var alias = hasAlias(oitem, true);
-    item = checkMetadataArgument(item);
+
+    try {
+      item = checkMetadataArgument(item);
+    } catch ( e ) {
+      callback(e);
+      return;
+    }
 
     requestWrapper([item.path, 'scandir', [item]], 'ERR_VFSMODULE_SCANDIR_FMT', function(error, result) {
       // Makes sure aliased mounts have correct paths and entries
@@ -435,7 +469,6 @@
    *
    * @function write
    * @memberof OSjs.VFS
-   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}             item          File Metadata (you can also provide a string)
    * @param   {File}                      data          File Data (see supported types)
@@ -444,12 +477,21 @@
    * @param   {OSjs.Core.Application}     [appRef]      Reference to an Application
    */
   VFS.write = function VFS_write(item, data, callback, options, appRef) {
+    options = options || {};
+    callback = callback || noop;
+
     console.debug('VFS::write()', item, options);
     if ( arguments.length < 3 ) {
-      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+      callback(API._('ERR_VFS_NUM_ARGS'));
+      return;
     }
 
-    item = checkMetadataArgument(item);
+    try {
+      item = checkMetadataArgument(item, null, true);
+    } catch ( e ) {
+      callback(e);
+      return;
+    }
 
     function _finished(error, result) {
       if ( error ) {
@@ -510,7 +552,6 @@
    *
    * @function read
    * @memberof OSjs.VFS
-   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}   item                File Metadata (you can also provide a string)
    * @param   {CallbackVFS}     callback            Callback function
@@ -518,14 +559,21 @@
    * @param   {String}          [options.type]      What to return, default: binary. Can also be: text, datasource, json
    */
   VFS.read = function VFS_read(item, callback, options) {
+    options = options || {};
+    callback = callback || noop;
+
     console.debug('VFS::read()', item, options);
     if ( arguments.length < 2 ) {
-      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+      callback(API._('ERR_VFS_NUM_ARGS'));
+      return;
     }
 
-    item = checkMetadataArgument(item);
-
-    options = options || {};
+    try {
+      item = checkMetadataArgument(item);
+    } catch ( e ) {
+      callback(e);
+      return;
+    }
 
     function _finished(error, response) {
       if ( error ) {
@@ -592,7 +640,6 @@
    *
    * @function copy
    * @memberof OSjs.VFS
-   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}             src                   Source File Metadata (you can also provide a string)
    * @param   {OSjs.VFS.File}             dest                  Destination File Metadata (you can also provide a string)
@@ -602,18 +649,22 @@
    * @param   {OSjs.Core.Application}     [appRef]              Seference to an Application
    */
   VFS.copy = function VFS_copy(src, dest, callback, options, appRef) {
+    options = options || {};
+    callback = callback || noop;
+
     console.debug('VFS::copy()', src, dest, options);
     if ( arguments.length < 3 ) {
-      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+      callback(API._('ERR_VFS_NUM_ARGS'));
+      return;
     }
 
     var mm = Core.getMountManager();
 
-    src = checkMetadataArgument(src, API._('ERR_VFS_EXPECT_SRC_FILE'));
-    dest = checkMetadataArgument(dest, API._('ERR_VFS_EXPECT_DST_FILE'));
-
-    if ( isReadOnly(dest) ) {
-      callback(API._('ERR_VFSMODULE_READONLY_FMT', mm.getModuleFromPath(dest.path)));
+    try {
+      src = checkMetadataArgument(src, API._('ERR_VFS_EXPECT_SRC_FILE'));
+      dest = checkMetadataArgument(dest, API._('ERR_VFS_EXPECT_DST_FILE'), true);
+    } catch ( e ) {
+      callback(e);
       return;
     }
 
@@ -695,7 +746,6 @@
    *
    * @function move
    * @memberof OSjs.VFS
-   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}             src                   Source File Metadata (you can also provide a string)
    * @param   {OSjs.VFS.File}             dest                  Destination File Metadata (you can also provide a string)
@@ -705,20 +755,22 @@
    * @param   {OSjs.Core.Application}     [appRef]              Seference to an Application
    */
   VFS.move = function VFS_move(src, dest, callback, options, appRef) {
-    var self = this;
+    options = options || {};
+    callback = callback || noop;
 
     console.debug('VFS::move()', src, dest, options);
     if ( arguments.length < 3 ) {
-      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+      callback(API._('ERR_VFS_NUM_ARGS'));
+      return;
     }
 
     var mm = Core.getMountManager();
 
-    src = checkMetadataArgument(src, API._('ERR_VFS_EXPECT_SRC_FILE'));
-    dest = checkMetadataArgument(dest, API._('ERR_VFS_EXPECT_DST_FILE'));
-
-    if ( isReadOnly(dest) ) {
-      callback(API._('ERR_VFSMODULE_READONLY_FMT', mm.getModuleFromPath(dest.path)));
+    try {
+      src = checkMetadataArgument(src, API._('ERR_VFS_EXPECT_SRC_FILE'));
+      dest = checkMetadataArgument(dest, API._('ERR_VFS_EXPECT_DST_FILE'), true);
+    } catch ( e ) {
+      callback(e);
       return;
     }
 
@@ -740,7 +792,7 @@
 
         dest.mime = src.mime;
 
-        self.copy(src, dest, function(error, result) {
+        OSjs.VFS.copy(src, dest, function(error, result) {
           if ( error ) {
             error = API._('ERR_VFS_TRANSFER_FMT', error);
             return _finished(error);
@@ -796,7 +848,6 @@
    *
    * @function unlink
    * @memberof OSjs.VFS
-   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}             item                  File Metadata (you can also provide a string)
    * @param   {CallbackVFS}               callback              Callback function
@@ -804,12 +855,21 @@
    * @param   {OSjs.Core.Application}     [appRef]              Reference to an Application
    */
   VFS.unlink = function VFS_unlink(item, callback, options, appRef) {
+    options = options || {};
+    callback = callback || noop;
+
     console.debug('VFS::unlink()', item, options);
     if ( arguments.length < 2 ) {
-      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+      callback(API._('ERR_VFS_NUM_ARGS'));
+      return;
     }
 
-    item = checkMetadataArgument(item);
+    try {
+      item = checkMetadataArgument(item, null, true);
+    } catch ( e ) {
+      callback(e);
+      return;
+    }
 
     function _checkPath() {
       var pkgdir = OSjs.Core.getSettingsManager().instance('PackageManager').get('PackagePaths', []);
@@ -854,7 +914,6 @@
    *
    * @function mkdir
    * @memberof OSjs.VFS
-   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}             item                  File Metadata (you can also provide a string)
    * @param   {CallbackVFS}               callback              Callback function
@@ -863,12 +922,22 @@
    * @param   {OSjs.Core.Application}     [appRef]              Reference to an Application
    */
   VFS.mkdir = function VFS_mkdir(item, callback, options, appRef) {
+    options = options || {};
+    callback = callback || noop;
+
     console.debug('VFS::mkdir()', item, options);
     if ( arguments.length < 2 ) {
-      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+      callback(API._('ERR_VFS_NUM_ARGS'));
+      return;
     }
 
-    item = checkMetadataArgument(item);
+    try {
+      item = checkMetadataArgument(item, null, true);
+    } catch ( e ) {
+      callback(e);
+      return;
+    }
+
     existsWrapper(item, function(error) {
       if ( error ) {
         return callback(API._('ERR_VFSMODULE_MKDIR_FMT', error));
@@ -887,18 +956,25 @@
    *
    * @function exists
    * @memberof OSjs.VFS
-   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
    * @param   {CallbackVFS}     callback  Callback function
    */
   VFS.exists = function VFS_exists(item, callback) {
+    callback = callback || noop;
+
     console.debug('VFS::exists()', item);
     if ( arguments.length < 2 ) {
-      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+      callback(API._('ERR_VFS_NUM_ARGS'));
+      return;
     }
 
-    item = checkMetadataArgument(item);
+    try {
+      item = checkMetadataArgument(item);
+    } catch ( e ) {
+      callback(e);
+      return;
+    }
     requestWrapper([item.path, 'exists', [item]], 'ERR_VFSMODULE_EXISTS_FMT', callback);
   };
 
@@ -909,18 +985,25 @@
    *
    * @function fileinfo
    * @memberof OSjs.VFS
-   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
    * @param   {CallbackVFS}     callback  Callback function
    */
   VFS.fileinfo = function VFS_fileinfo(item, callback) {
+    callback = callback || noop;
+
     console.debug('VFS::fileinfo()', item);
     if ( arguments.length < 2 ) {
-      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+      callback(API._('ERR_VFS_NUM_ARGS'));
+      return;
     }
 
-    item = checkMetadataArgument(item);
+    try {
+      item = checkMetadataArgument(item);
+    } catch ( e ) {
+      callback(e);
+      return;
+    }
     requestWrapper([item.path, 'fileinfo', [item]], 'ERR_VFSMODULE_FILEINFO_FMT', callback);
   };
 
@@ -931,18 +1014,26 @@
    *
    * @function url
    * @memberof OSjs.VFS
-   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
    * @param   {CallbackVFS}     callback  Callback function
    */
   VFS.url = function VFS_url(item, callback) {
+    callback = callback || noop;
+
     console.debug('VFS::url()', item);
     if ( arguments.length < 2 ) {
-      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+      callback(API._('ERR_VFS_NUM_ARGS'));
+      return;
     }
 
-    item = checkMetadataArgument(item);
+    try {
+      item = checkMetadataArgument(item);
+    } catch ( e ) {
+      callback(e);
+      return;
+    }
+
     requestWrapper([item.path, 'url', [item]], 'ERR_VFSMODULE_URL_FMT', callback, function(error, response) {
       return error ? false : response;
     });
@@ -955,7 +1046,6 @@
    *
    * @function upload
    * @memberof OSjs.VFS
-   * @throws {Error} On invalid arguments
    *
    * @param   {Object}                    args                Function arguments (see below)
    * @param   {String}                    args.destination    Full path to destination
@@ -968,17 +1058,23 @@
    * @param   {OSjs.Core.Application}     [appRef]            Reference to an Application
    */
   VFS.upload = function VFS_upload(args, callback, options, appRef) {
-    console.debug('VFS::upload()', args);
+    callback = callback || noop;
+    options = options || {};
     args = args || {};
 
+    console.debug('VFS::upload()', args);
+
     if ( arguments.length < 2 ) {
-      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+      callback(API._('ERR_VFS_NUM_ARGS'));
+      return;
     }
     if ( !args.files ) {
-      throw new Error(API._('ERR_VFS_UPLOAD_NO_FILES'));
+      callback(API._('ERR_VFS_UPLOAD_NO_FILES'));
+      return;
     }
     if ( !args.destination ) {
-      throw new Error(API._('ERR_VFS_UPLOAD_NO_DEST'));
+      callback(API._('ERR_VFS_UPLOAD_NO_DEST'));
+      return;
     }
 
     function _createFile(filename, mime, size) {
@@ -1009,6 +1105,11 @@
       return;
     }
 
+    if ( isReadOnly(VFS.file(args.destination)) ) {
+      callback(API._('ERR_VFSMODULE_READONLY_FMT', mm.getModuleFromPath(args.destination)));
+      return;
+    }
+
     function doRequest(f, i) {
       if ( args.app ) {
         API.createDialog('FileUpload', {
@@ -1022,7 +1123,7 @@
           realDest = tmpPath;
         }
 
-        VFS.Transports.Internal.upload(f, realDest, function(err, result, ev) {
+        VFS.Transports.OSjs.upload(f, realDest, function(err, result, ev) {
           if ( err ) {
             if ( err === 'canceled' ) {
               callback(API._('ERR_VFS_UPLOAD_CANCELLED'), null, ev);
@@ -1074,17 +1175,26 @@
     var _didx = 1;
 
     return function(args, callback) {
-      console.debug('VFS::download()', args);
+      callback = callback || noop;
       args = args || {};
 
+      console.debug('VFS::download()', args);
       if ( arguments.length < 2 ) {
-        throw new Error(API._('ERR_VFS_NUM_ARGS'));
+        callback(API._('ERR_VFS_NUM_ARGS'));
+        return;
       }
 
       if ( !args.path ) {
-        throw new Error(API._('ERR_VFS_DOWNLOAD_NO_FILE'));
+        callback(API._('ERR_VFS_DOWNLOAD_NO_FILE'));
+        return;
       }
-      args = checkMetadataArgument(args);
+
+      try {
+        args = checkMetadataArgument(args);
+      } catch ( e ) {
+        callback(e);
+        return;
+      }
 
       var lname = 'DownloadFile_' + _didx;
       _didx++;
@@ -1145,18 +1255,26 @@
    *
    * @function trash
    * @memberof OSjs.VFS
-   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
    * @param   {CallbackVFS}     callback  Callback function
    */
   VFS.trash = function VFS_trash(item, callback) {
+    callback = callback || noop;
+
     console.debug('VFS::trash()', item);
     if ( arguments.length < 2 ) {
-      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+      callback(API._('ERR_VFS_NUM_ARGS'));
+      return;
     }
 
-    item = checkMetadataArgument(item);
+    try {
+      item = checkMetadataArgument(item);
+    } catch ( e ) {
+      callback(e);
+      return;
+    }
+
     requestWrapper([item.path, 'trash', [item]], 'ERR_VFSMODULE_TRASH_FMT', callback);
   };
 
@@ -1167,18 +1285,26 @@
    *
    * @function untrash
    * @memberof OSjs.VFS
-   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
    * @param   {CallbackVFS}     callback  Callback function
    */
   VFS.untrash = function VFS_untrash(item, callback) {
+    callback = callback || noop;
+
     console.debug('VFS::untrash()', item);
     if ( arguments.length < 2 ) {
-      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+      callback(API._('ERR_VFS_NUM_ARGS'));
+      return;
     }
 
-    item = checkMetadataArgument(item);
+    try {
+      item = checkMetadataArgument(item);
+    } catch ( e ) {
+      callback(e);
+      return;
+    }
+
     requestWrapper([item.path, 'untrash', [item]], 'ERR_VFSMODULE_UNTRASH_FMT', callback);
   };
 
@@ -1189,14 +1315,16 @@
    *
    * @function emptyTrash
    * @memberof OSjs.VFS
-   * @throws {Error} On invalid arguments
    *
    * @param   {CallbackVFS}     callback  Callback function
    */
   VFS.emptyTrash = function VFS_emptyTrash(callback) {
+    callback = callback || noop;
+
     console.debug('VFS::emptyTrash()');
     if ( arguments.length < 1 ) {
-      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+      callback(API._('ERR_VFS_NUM_ARGS'));
+      return;
     }
 
     requestWrapper([null, 'emptyTrash', []], 'ERR_VFSMODULE_EMPTYTRASH_FMT', callback);
@@ -1211,18 +1339,25 @@
    *
    * @function freeSpace
    * @memberof OSjs.VFS
-   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
    * @param   {CallbackVFS}     callback  Callback function
    */
   VFS.freeSpace = function VFS_freeSpace(item, callback) {
+    callback = callback || noop;
+
     console.debug('VFS::freeSpace()', item);
     if ( arguments.length < 2 ) {
-      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+      callback(API._('ERR_VFS_NUM_ARGS'));
+      return;
     }
 
-    item = checkMetadataArgument(item);
+    try {
+      item = checkMetadataArgument(item);
+    } catch ( e ) {
+      callback(e);
+      return;
+    }
 
     var m = Core.getMountManager().getModuleFromPath(item.path, false, true);
 
@@ -1236,7 +1371,6 @@
    *
    * @function watch
    * @memberof OSjs.VFS
-   * @throws {Error} On invalid arguments
    *
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
    * @param   {CallbackVFS}     callback  Callback function
@@ -1244,11 +1378,19 @@
    * @return  {Number}                    The index of your watch (you can unwatch with this)
    */
   VFS.watch = function VFS_watch(item, callback) {
+    callback = callback || noop;
+
     if ( arguments.length < 2 ) {
-      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+      callback(API._('ERR_VFS_NUM_ARGS'));
+      return;
     }
 
-    item = checkMetadataArgument(item);
+    try {
+      item = checkMetadataArgument(item);
+    } catch ( e ) {
+      callback(e);
+      return;
+    }
 
     return watches.push({
       path: item.path,
@@ -1262,7 +1404,6 @@
    *
    * @function unwatch
    * @memberof OSjs.VFS
-   * @throws {Error} On invalid arguments
    *
    * @param {Number}      idx     Watch index (from watch() method)
    */

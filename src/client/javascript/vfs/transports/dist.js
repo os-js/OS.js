@@ -27,51 +27,53 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API, VFS) {
+(function(Utils, API) {
   'use strict';
 
   /**
-   * @namespace HTTP
+   * @namespace Dist
    * @memberof OSjs.VFS.Transports
    */
+
+  /////////////////////////////////////////////////////////////////////////////
+  // API
+  /////////////////////////////////////////////////////////////////////////////
+
+  /*
+   * OSjs 'dist' VFS Transport Module
+   *
+   * This is just a custom version of 'OSjs' module
+   */
+  var Transport = {
+    url: function(item, callback) {
+      var root = API.getBrowserPath();
+      var mm = OSjs.Core.getMountManager();
+      var module = mm.getModuleFromPath(item.path, false, true);
+      var url = item.path.replace(module.match, root);
+
+      callback(false, url);
+    }
+  };
+
+  // Inherit non-restricted methods
+  var restricted = ['write', 'move', 'unlink', 'mkdir', 'exists', 'fileinfo', 'trash', 'untrash', 'emptyTrash', 'freeSpace'];
+  var internal = OSjs.VFS.Transports.OSjs.module;
+  Object.keys(internal).forEach(function(n) {
+    if ( restricted.indexOf(n) === -1 ) {
+      Transport[n] = internal[n];
+    }
+  });
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  /*
-   * Default HTTP VFS Transport Module
-   */
-  VFS.Transports.HTTP = {
-    module: {
-      read: function(item, callback, options) {
-        VFS.Transports.OSjs.fetch(item.path, item.mime, callback, options);
-      }
+  OSjs.VFS.Transports.Dist = {
+    module: Transport,
+    defaults: function(opts) {
+      opts.readOnly = true;
+      opts.searchable = true;
     }
   };
 
-  /*
-   * A hidden mountpoint for making HTTP requests via VFS
-   */
-  OSjs.Core.getMountManager()._add({
-    readOnly: true,
-    name: 'HTTP',
-    transport: 'HTTP',
-    description: 'HTTP',
-    visible: false,
-    searchable: false,
-    unmount: function(cb) {
-      cb(false, false);
-    },
-    mounted: function() {
-      return true;
-    },
-    enabled: function() {
-      return true;
-    },
-    root: 'http:///',
-    icon: 'places/google-drive.png',
-    match: /^https?\:\/\//
-  });
-
-})(OSjs.Utils, OSjs.API, OSjs.VFS);
+})(OSjs.Utils, OSjs.API);

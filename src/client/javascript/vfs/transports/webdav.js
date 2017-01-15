@@ -143,7 +143,7 @@
     }
 
     if ( getCORSAllowed(sourceFile) ) {
-      OSjs.VFS.Transports.Internal.request('get', {url: sourceUrl, method: method}, callback);
+      OSjs.VFS.Transports.OSjs.request('get', {url: sourceUrl, method: method}, callback);
     } else {
       externalCall();
     }

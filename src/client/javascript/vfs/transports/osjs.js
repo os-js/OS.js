@@ -27,53 +27,277 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API) {
+(function(Utils, API, VFS) {
   'use strict';
 
   /**
-   * @namespace OSjs
+   * @namespace Filesystem
    * @memberof OSjs.VFS.Transports
    */
+
+  /////////////////////////////////////////////////////////////////////////////
+  // WRAPPERS
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Make a OS.js Server HTTP URL for VFS
+   *
+   * @param   {(String|OSjs.VFS.File)}    item        VFS File
+   *
+   * @return  {String}                  URL based on input
+   *
+   * @function path
+   * @memberof OSjs.VFS.Transports.OSjs
+   */
+  function makePath(item) {
+    if ( typeof item === 'string' ) {
+      item = new VFS.File(item);
+    }
+    return OSjs.Core.getConnection().getVFSPath(item);
+  }
+
+  /**
+   * Perform default VFS call via backend
+   *
+   * @param {String}    name      Request method name
+   * @param {Object}    args      Request arguments
+   * @param {Function}  callback  Callback function
+   *
+   * @function request
+   * @memberof OSjs.VFS.Transports.OSjs
+   */
+  function internalRequest(name, args, callback) {
+    API.call('FS:' + name, args, function(err, res) {
+      if ( !err && typeof res === 'undefined' ) {
+        err = API._('ERR_VFS_FATAL');
+      }
+      callback(err, res);
+    });
+  }
+
+  /**
+   * Wrapper for internal file uploads
+   *
+   * @param   {Object}      file        Upload object
+   * @param   {Object}      dest        Destination file info (VFS Object if possible)
+   * @param   {Function}    callback    Callback function
+   * @param   {Object}      options     Options
+   *
+   * @function upload
+   * @memberof OSjs.VFS.Transports.OSjs
+   */
+  function internalUpload(file, dest, callback, options) {
+    options = options || {};
+
+    if ( dest instanceof VFS.File ) {
+      dest = dest.path;
+    }
+
+    if ( typeof file.size !== 'undefined' ) {
+      var maxSize = API.getConfig('VFS.MaxUploadSize');
+      if ( maxSize > 0 ) {
+        var bytes = file.size;
+        if ( bytes > maxSize ) {
+          var msg = API._('DIALOG_UPLOAD_TOO_BIG_FMT', Utils.humanFileSize(maxSize));
+          callback('error', null, msg);
+          return;
+        }
+      }
+    }
+
+    var fd  = new FormData();
+    fd.append('upload', 1);
+    fd.append('path', dest);
+
+    if ( options ) {
+      Object.keys(options).forEach(function(key) {
+        fd.append(key, String(options[key]));
+      });
+    }
+
+    VFS.Helpers.addFormFile(fd, 'upload', file);
+
+    OSjs.Core.getConnection().request('FS:upload', fd, callback, null, options);
+  }
+
+  /**
+   * Read a remote file with URL (CORS)
+   *
+   * This function basically does a cURL call and downloads
+   * the data.
+   *
+   * @param   {String}          url             URL
+   * @param   {String}          mime            MIME Type
+   * @param   {Function}        callback        Callback function => fn(error, result)
+   * @param   {Object}          options         Options
+   * @param   {String}          [options.type]  What to return, default: binary. Can also be: text, datasource
+   *
+   * @function fetch
+   * @memberof OSjs.VFS.Transports.OSjs
+   */
+  function internalFetch(url, mime, callback, options) {
+    options = options || {};
+    options.type = options.type || 'binary';
+    mime = options.mime || 'application/octet-stream';
+
+    console.debug('VFS::Transports::Filesystem::fetch()', url, mime);
+
+    if ( arguments.length < 1 ) {
+      throw new Error(API._('ERR_VFS_NUM_ARGS'));
+    }
+
+    options = options || {};
+
+    API.curl({
+      url: url,
+      binary: true,
+      mime: mime
+    }, function(error, response) {
+      if ( error ) {
+        callback(error);
+        return;
+      }
+
+      if ( !response.body ) {
+        callback(API._('ERR_VFS_REMOTEREAD_EMPTY'));
+        return;
+      }
+
+      if ( options.type.toLowerCase() === 'datasource' ) {
+        callback(false, response.body);
+        return;
+      }
+
+      VFS.Helpers.dataSourceToAb(response.body, mime, function(error, response) {
+        if ( options.type === 'text' ) {
+          VFS.Helpers.abToText(response, mime, function(error, text) {
+            callback(error, text);
+          });
+          return;
+        }
+        callback(error, response);
+      });
+    });
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // API
   /////////////////////////////////////////////////////////////////////////////
 
   /*
-   * OSjs 'dist' VFS Transport Module
+   * Default VFS Transport Module
    *
-   * This is just a custom version of 'Internal' module
+   * All mountpoints without a spesified Transport module is routed through
+   * here. This means the node/php server handles the request directly
    */
   var Transport = {
-    url: function(item, callback) {
-      var root = API.getBrowserPath();
-      var mm = OSjs.Core.getMountManager();
-      var module = mm.getModuleFromPath(item.path, false, true);
-      var url = item.path.replace(module.match, root);
+    scandir: function(item, callback, options) {
+      options = options || {};
+      var args = {
+        path: item.path,
+        options: {
+          shortcuts: options.shortcuts
+        }
+      };
 
-      callback(false, url);
+      internalRequest('scandir', args, function(error, result) {
+        var list = [];
+        if ( result ) {
+          result = VFS.Helpers.filterScandir(result, options);
+          result.forEach(function(iter) {
+            list.push(new VFS.File(iter));
+          });
+        }
+        callback(error, list);
+      });
+    },
+
+    write: function(item, data, callback, options) {
+      options = options || {};
+      options.onprogress = options.onprogress || function() {};
+
+      function _write(dataSource) {
+        var wopts = {path: item.path, data: dataSource};
+        internalRequest('write', wopts, callback, options);
+      }
+
+      if ( typeof data === 'string' && !data.length ) {
+        _write(data);
+        return;
+      }
+
+      VFS.Helpers.abToDataSource(data, item.mime, function(error, dataSource) {
+        if ( error ) {
+          callback(error);
+          return;
+        }
+
+        _write(dataSource);
+      });
+    },
+
+    read: function(item, callback, options) {
+      if ( API.getConfig('Connection.Type') === 'nw' ) {
+        OSjs.Core.getConnection().nw.request(true, 'read', {
+          path: item.path,
+          options: {raw: true}
+        }, function(err, res) {
+          callback(err, res);
+        });
+        return;
+      }
+
+      internalRequest('get', {path: item.path}, callback, options);
+    },
+
+    copy: function(src, dest, callback) {
+      internalRequest('copy', {src: src.path, dest: dest.path}, callback);
+    },
+
+    move: function(src, dest, callback) {
+      internalRequest('move', {src: src.path, dest: dest.path}, callback);
+    },
+
+    unlink: function(item, callback) {
+      internalRequest('delete', {path: item.path}, callback);
+    },
+
+    mkdir: function(item, callback) {
+      internalRequest('mkdir', {path: item.path}, callback);
+    },
+
+    exists: function(item, callback) {
+      internalRequest('exists', {path: item.path}, callback);
+    },
+
+    fileinfo: function(item, callback) {
+      internalRequest('fileinfo', {path: item.path}, callback);
+    },
+
+    find: function(item, args, callback) {
+      internalRequest('find', {path: item.path, args: args}, callback);
+    },
+
+    url: function(item, callback) {
+      callback(false, VFS.Transports.OSjs.path(item));
+    },
+
+    freeSpace: function(root, callback) {
+      internalRequest('freeSpace', {root: root}, callback);
     }
   };
-
-  // Inherit non-restricted methods
-  var restricted = ['write', 'move', 'unlink', 'mkdir', 'exists', 'fileinfo', 'trash', 'untrash', 'emptyTrash', 'freeSpace'];
-  var internal = OSjs.VFS.Transports.Internal.module;
-  Object.keys(internal).forEach(function(n) {
-    if ( restricted.indexOf(n) === -1 ) {
-      Transport[n] = internal[n];
-    }
-  });
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
-  OSjs.VFS.Transports.OSjs = {
+  VFS.Transports.OSjs = {
+    request: internalRequest,
+    upload: internalUpload,
+    fetch: internalFetch,
+
     module: Transport,
-    defaults: function(opts) {
-      opts.readOnly = true;
-      opts.searchable = true;
-    }
+    path: makePath
   };
 
-})(OSjs.Utils, OSjs.API);
+})(OSjs.Utils, OSjs.API, OSjs.VFS);

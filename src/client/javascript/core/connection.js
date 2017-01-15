@@ -343,7 +343,7 @@
     };
 
     Utils.ajax(appendRequestOptions({
-      url: OSjs.VFS.Transports.Internal.path(),
+      url: OSjs.VFS.Transports.OSjs.path(),
       method: 'POST',
       body: form,
       onsuccess: function Connection_POST_success(result) {
@@ -381,7 +381,7 @@
     var self = this;
 
     Utils.ajax(appendRequestOptions({
-      url: args.url || OSjs.VFS.Transports.Internal.path(args.path),
+      url: args.url || OSjs.VFS.Transports.OSjs.path(args.path),
       method: args.method || 'GET',
       responseType: 'arraybuffer',
       onsuccess: function Connection_GET_success(response, xhr) {

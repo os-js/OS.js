@@ -88,7 +88,7 @@ const MODULES = {
 };
 
 const ENV = {
-  PORT: 8000,
+  PORT: null,
   DIST: 'dist',
   LOGLEVEL: -2,
   NODEDIR: _path.resolve(__dirname + '/../'),
@@ -127,7 +127,7 @@ function loadConfiguration(opts) {
       const config = JSON.parse(file);
 
       CONFIG = config;
-      if ( config.http.port ) {
+      if ( !ENV.PORT && config.http.port ) {
         ENV.PORT = config.http.port;
       }
 

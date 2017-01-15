@@ -37,7 +37,7 @@
    * @property {String}     icon                      Icon
    * @property {String}     root                      The root path (ex: home:///)
    * @property {RegExp}     match                     Matches a path given in VFS methods to this
-   * @property {String}     transport                 Transporter name (Internal/WebDAV)
+   * @property {String}     transport                 Transporter name (OSjs/WebDAV)
    * @property {Boolean}    [readOnly=false]          If this is a readonly point
    * @property {Boolean}    [visible=true]            If this is visible in the UIs
    * @property {Boolean}    [searchable=true]         If you can search for files in this module
@@ -122,7 +122,7 @@
         dynamic: dynamic === true,
         options: {},
 
-        transport: 'Internal',
+        transport: 'OSjs',
         root: sname + ':///',
         name: name,
         description: name,
@@ -145,7 +145,7 @@
       mount.match = args.match || match;
 
       // TODO: Make sure aliases inherit correct transport
-      var internals = ['Internal'];
+      var internals = ['OSjs'];
       if ( typeof mount.internal === 'undefined' ) {
         mount.internal = internals.indexOf(mount.transport) !== -1;
       }
@@ -402,26 +402,6 @@
         }
 
         return d;
-      },
-
-      /**
-       * Checks if internal module is enabled
-       *
-       * @function isInternalEnabled
-       * @memberof OSjs.Core.MountManager#
-       *
-       * @param   {String}    module        Module Name
-       *
-       * @return  {Boolean}
-       */
-      isInternalEnabled: function(module) {
-        try {
-          if ( API.getConfig('VFS.Internal.' + module + '.enabled') === false ) {
-            return false;
-          }
-        } catch ( e ) {}
-
-        return true;
       },
 
       /**
