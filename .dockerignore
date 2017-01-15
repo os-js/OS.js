@@ -1,0 +1,14 @@
+AUTHORS
+CHANGELOG
+*.md
+.git*
+.eslint*
+.csslint*
+.bithoundrc
+.travis.yml
+Vagrantfile
+doc/
+tmp/
+src/gfx
+src/installer
+src/x11-launcher
