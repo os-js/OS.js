@@ -118,15 +118,31 @@ function loadConfiguration(opts) {
 
   const path = _path.join(ENV.SERVERDIR, 'settings.json');
 
+  function _read(file) {
+    const config = Object.assign({
+      api: {},
+      vfs: {},
+      http: {},
+      mimes: {},
+      proxies: {},
+      modules: {}
+    }, JSON.parse(file));
+
+    config.modules.auth = config.modules.auth || {};
+    config.modules.storage = config.modules.storage || {};
+
+    return Object.freeze(config);
+  }
+
   function _load(resolve, reject) {
     _fs.readFile(path, function(err, file) {
       if ( err ) {
         return reject(err);
       }
 
-      const config = JSON.parse(file);
+      const config = _read(file);
 
-      CONFIG = config;
+      CONFIG = Object.assign({}, config);
       if ( !ENV.PORT && config.http.port ) {
         ENV.PORT = config.http.port;
       }
