@@ -155,7 +155,7 @@
    * @return {OSjs.GUI.Element} The current instance (this)
    */
   UIElement.prototype.empty = function() {
-    Utils.$empty(this.$element, true);
+    Utils.$empty(this.$element);
     return this;
   };
 

@@ -84,7 +84,7 @@
    * @memberof OSjs.Utils
    *
    * @param   {Node}             myNode                 The DOM Element
-   * @param   {Boolean|String}   [removeEvents=false]   Remove event handlers (on given elements)
+   * @param   {Boolean|String}   [removeEvents=false]   Force removal of event handlers (on given elements)
    */
   OSjs.Utils.$empty = function Utils_$empty(myNode, removeEvents) {
     if ( myNode ) {
