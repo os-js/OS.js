@@ -83,11 +83,19 @@
    * @function $empty
    * @memberof OSjs.Utils
    *
-   * @param   {Node}    myNode      The DOM Element
+   * @param   {Node}             myNode                 The DOM Element
+   * @param   {Boolean|String}   [removeEvents=false]   Remove event handlers (on given elements)
    */
-  OSjs.Utils.$empty = function Utils_$empty(myNode) {
+  OSjs.Utils.$empty = function Utils_$empty(myNode, removeEvents) {
     if ( myNode ) {
-      while (myNode.firstChild) {
+      if ( removeEvents ) {
+        removeEvents = typeof removeEvents === 'string' ? removeEvents : '*';
+        myNode.querySelectorAll(removeEvents).forEach(function(el) {
+          OSjs.Utils.$unbind(el);
+        });
+      }
+
+      while ( myNode.firstChild ) {
         myNode.removeChild(myNode.firstChild);
       }
     }

@@ -155,14 +155,7 @@
    * @return {OSjs.GUI.Element} The current instance (this)
    */
   UIElement.prototype.empty = function() {
-    if ( this.$element ) {
-      this.$element.querySelectorAll('*').forEach(function(el) {
-        Utils.$unbind(el);
-      });
-    }
-
-    Utils.$empty(this.$element);
-
+    Utils.$empty(this.$element, true);
     return this;
   };
 
