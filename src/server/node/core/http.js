@@ -462,7 +462,7 @@ function createWebsocketResponder(ws, index) {
 function createHttpObject(request, response, path, data, responder, session_id, files) {
   return Object.freeze({
     request: request,
-    response: request,
+    response: response,
     method: request.method,
     path: path,
     data: data || {},
