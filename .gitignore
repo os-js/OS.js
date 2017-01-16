@@ -7,6 +7,8 @@ node_modules
 twistd.*
 .vagrant/*
 *.pyc
+*.bak
+*.o
 
 # Misc
 .nightly
@@ -33,6 +35,7 @@ dist-electron
 !dist-dev/vendor
 doc/jsdoc
 src/server/*.sqlite
+src/x11-launcher/session-launch
 
 # Vendor
 vendor/dropbox*
