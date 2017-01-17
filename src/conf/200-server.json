@@ -27,9 +27,9 @@
     },
     "http": {
       "mode": "http",
-      "authenticator": "%AUTHENTICATOR%",
-      "storage": "%STORAGE%",
-      "connection": "%CONNECTION%",
+      "authenticator": "%authenticator%",
+      "storage": "%storage%",
+      "connection": "%connection%",
       "port" : 8000,
       "ws": {
         "port": "upgrade"

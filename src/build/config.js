@@ -309,6 +309,14 @@ function _togglePackage(config, packageName, enable) {
  * Gets currenct configuration(s)
  */
 function getConfiguration() {
+  const safeWords = [
+    '%VERSION%',
+    '%DIST%',
+    '%DROOT%',
+    '%UID%',
+    '%USERNAME%'
+  ];
+
   return new Promise(function(resolve, reject) {
     const path = _path.join(ROOT, 'src', 'conf');
 
@@ -317,7 +325,6 @@ function getConfiguration() {
 
       files.forEach(function(file) {
         const json = JSON.parse(_fs.readFileSync(file));
-
         try {
           object = _utils.mergeObject(object, json);
         } catch ( e ) {
@@ -325,16 +332,28 @@ function getConfiguration() {
         }
       });
 
-      const authenticator = object.authenticator || 'demo';
-      const connection = object.connection || 'http';
-      const storage = object.storage || 'demo';
+      // Resolves all "%something%" config entries
+      var tmpFile = JSON.stringify(object).replace(/%ROOT%/g, _utils.fixWinPath(ROOT));
+      const tmpConfig = JSON.parse(tmpFile);
 
-      const tmp = JSON.stringify(object).replace(/%ROOT%/g, _utils.fixWinPath(ROOT))
-        .replace(/%AUTHENTICATOR%/g, authenticator)
-        .replace(/%STORAGE%/g, storage)
-        .replace(/%CONNECTION%/g, connection);
+      const words = tmpFile.match(/%([A-z0-9_\-\.]+)%/g).filter((function() {
+        var seen = {};
+        return function(element, index, array) {
+          return !(element in seen) && (seen[element] = 1);
+        };
+      })());
 
-      resolve(Object.freeze(JSON.parse(tmp)));
+      words.forEach(function(w) {
+        const p = w.replace(/%/g, '');
+        const u = /^[A-Z]*$/.test(p);
+        if ( safeWords.indexOf(w) === -1 ) {
+          const value = (u ? process.env[p] : null) || getConfigPath(tmpConfig, p);
+          const re = w.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '$1');
+          tmpFile = tmpFile.replace(new RegExp(re, 'g'), String(value));
+        }
+      });
+
+      resolve(Object.freeze(JSON.parse(tmpFile)));
     }).catch(reject);
 
   });

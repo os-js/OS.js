@@ -118,7 +118,33 @@ function loadConfiguration(opts) {
 
   const path = _path.join(ENV.SERVERDIR, 'settings.json');
 
-  function _read(file) {
+  const safeWords = [
+    '%VERSION%',
+    '%DIST%',
+    '%DROOT%',
+    '%UID%',
+    '%USERNAME%'
+  ];
+
+  function _read(data) {
+    // Allow environmental variables to override certain internals in config
+    data.match(/%([A-Z0-9_\-]+)%/g).filter((function() {
+      var seen = {};
+      return function(element, index, array) {
+        return !(element in seen) && (seen[element] = 1);
+      };
+    })()).filter(function(w) {
+      return safeWords.indexOf(w) === -1;
+    }).forEach(function(w) {
+      const p = w.replace(/%/g, '');
+      const u = /^[A-Z]*$/.test(p);
+      const v = u ? process.env[p] : null;
+      if ( typeof v !== 'undefined' && v !== null ) {
+        const re = w.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '$1');
+        data = data.replace(new RegExp(re, 'g'), String(v));
+      }
+    });
+
     const config = Object.assign({
       api: {},
       vfs: {},
@@ -126,7 +152,7 @@ function loadConfiguration(opts) {
       mimes: {},
       proxies: {},
       modules: {}
-    }, JSON.parse(file));
+    }, JSON.parse(data));
 
     config.modules.auth = config.modules.auth || {};
     config.modules.storage = config.modules.storage || {};
@@ -140,7 +166,7 @@ function loadConfiguration(opts) {
         return reject(err);
       }
 
-      const config = _read(file);
+      const config = _read(file.toString());
 
       CONFIG = Object.assign({}, config);
       if ( !ENV.PORT && config.http.port ) {
