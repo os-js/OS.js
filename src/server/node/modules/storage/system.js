@@ -61,7 +61,7 @@ module.exports.setSettings = function(http, username, settings) {
   });
 
   return new Promise(function(resolve, reject) {
-    _fs.ensureFile(path, (err) => {
+    _fs.ensureFile(path, function(err) {
       if (err) {
         return reject(err);
       }
