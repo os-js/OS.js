@@ -33,7 +33,7 @@
 
 const _path = require('path');
 const _less = require('less');
-const _fs = require('node-fs-extra');
+const _fs = require('fs-extra');
 
 const ISWIN = /^win/.test(process.platform);
 const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));

@@ -30,7 +30,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-const _fs = require('node-fs-extra');
+const _fs = require('fs-extra');
 const _nfs = require('fs');
 const _path = require('path');
 const _chokidar = require('chokidar');
@@ -276,7 +276,7 @@ const VFS = {
         streamIn.destroy();
         streamOut.destroy();
 
-        _fs.unlink(source, function() {
+        _fs.remove(source, function() {
           http.respond.raw(String(1), 200, {
             'Content-Type': 'text/plain'
           });
@@ -406,7 +406,7 @@ const VFS = {
     const resolved = _vfs.parseVirtualPath(args.path, http);
 
     existsWrapper(true, resolved.real, function() {
-      _fs.mkdir(resolved.real, function(err) {
+      _fs.mkdirs(resolved.real, function(err) {
         if ( err ) {
           reject('Error creating directory: ' + err);
         } else {

@@ -83,7 +83,7 @@ const _auth = require('./auth.js');
 const _utils = require('./utils.js');
 
 const _url = require('url');
-const _fs = require('node-fs-extra');
+const _fs = require('fs-extra');
 const _path = require('path');
 const _cookie = require('cookie');
 const _session = require('simple-session');

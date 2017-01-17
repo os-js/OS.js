@@ -57,7 +57,7 @@
  */
 
 const _child = require('child_process');
-const _fs = require('node-fs-extra');
+const _fs = require('fs-extra');
 const _path = require('path');
 const _glob = require('glob-promise');
 

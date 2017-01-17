@@ -31,7 +31,7 @@
 'use strict';
 
 const _path = require('path');
-const _fs = require('node-fs-extra');
+const _fs = require('fs-extra');
 
 const _config = require('./config.js');
 const _manifest = require('./manifest.js');

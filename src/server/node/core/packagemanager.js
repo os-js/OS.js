@@ -31,7 +31,7 @@
 'use strict';
 
 const _path = require('path');
-const _fs = require('node-fs-extra');
+const _fs = require('fs-extra');
 const _unzip = require('unzip');
 const _vfs = require('./vfs.js');
 const _utils = require('./utils.js');

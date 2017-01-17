@@ -33,7 +33,7 @@
 
 const _path = require('path');
 const _glob = require('glob-promise');
-const _fs = require('node-fs-extra');
+const _fs = require('fs-extra');
 
 const _themes = require('./themes.js');
 const _metadata = require('./manifest.js');

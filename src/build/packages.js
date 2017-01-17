@@ -32,7 +32,7 @@
 'use strict';
 
 const _path = require('path');
-const _fs = require('node-fs-extra');
+const _fs = require('fs-extra');
 
 const _manifest = require('./manifest.js');
 const _utils = require('./utils.js');

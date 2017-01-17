@@ -30,7 +30,7 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
-const _fs = require('node-fs-extra');
+const _fs = require('fs-extra');
 const _vfs = require('./../../core/vfs.js');
 const _instance = require('./../../core/instance.js');
 
