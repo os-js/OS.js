@@ -61,12 +61,17 @@ module.exports.setSettings = function(http, username, settings) {
   });
 
   return new Promise(function(resolve, reject) {
-    _fs.writeFile(path, JSON.stringify(settings), function(err, res) {
-      if ( err ) {
-        reject(err);
-      } else {
-        resolve(true);
+    _fs.ensureFile(path, (err) => {
+      if (err) {
+        return reject(err);
       }
+      _fs.writeFile(path, JSON.stringify(settings), function(err, res) {
+        if ( err ) {
+          reject(err);
+        } else {
+          resolve(true);
+        }
+      });
     });
   });
 };
