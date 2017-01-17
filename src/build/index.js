@@ -222,6 +222,15 @@ const TASKS = {
     add_repository: function(cli, cfg) {
       return _config.addRepository(cfg, cli.option('name'));
     },
+    add_script: function(cli, cfg) {
+      return _config.addOverlayFile(cfg, 'javascript', cli.option('path'), cli.option('overlay', 'custom'));
+    },
+    add_style: function(cli, cfg) {
+      return _config.addOverlayFile(cfg, 'stylesheets', cli.option('path'), cli.option('overlay', 'custom'));
+    },
+    add_locale: function(cli, cfg) {
+      return _config.addOverlayFile(cfg, 'locales', cli.option('path'), cli.option('overlay', 'custom'));
+    },
     remove_repository: function(cli, cfg) {
       return _config.removeRepository(cfg, cli.option('name'));
     },

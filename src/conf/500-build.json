@@ -120,11 +120,6 @@
       "dev:src/client/stylesheets/debug.css"
     ],
     "overlays": {
-      "example": {
-        "locales": [],
-        "javascript": [],
-        "stylesheets": []
-      }
     }
   }
 }

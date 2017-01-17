@@ -443,6 +443,31 @@ function disablePackage(config, name) {
 }
 
 /*
+ * Adds a file to an overlay
+ */
+function addOverlayFile(config, type, path, overlay) {
+  const play = 'build.overlays.' + overlay;
+
+  var overlays = getConfigPath(config, 'build.overlays');
+  if ( typeof overlays !== 'object' ) {
+    overlays = {};
+  }
+
+  if ( typeof overlays[overlay] !== 'object' ) {
+    overlays[overlay] = {};
+  }
+
+  const files = overlays[overlay][type] || [];
+  if ( files.indexOf(path) === -1 ) {
+    files.push(path);
+  }
+  overlays[overlay][type] = files;
+
+  setConfigPath('build.overlays', {build: {overlays: overlays}}, true);
+  return Promise.resolve(getConfigPath(config, play));
+}
+
+/*
  * Add a mountpoint to config files
  */
 function addMount(config, name, description, path, transport, ro) {
@@ -585,6 +610,7 @@ module.exports.writeConfiguration = writeConfiguration;
 module.exports.getConfigPath = getConfigPath;
 module.exports.enablePackage = enablePackage;
 module.exports.disablePackage = disablePackage;
+module.exports.addOverlayFile = addOverlayFile;
 module.exports.addMount = addMount;
 module.exports.addPreload = addPreload;
 module.exports.addRepository = addRepository;
