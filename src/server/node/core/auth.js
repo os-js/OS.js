@@ -63,6 +63,7 @@ module.exports.checkPermission = function(http, type, options) {
   const config = _instance.getConfig();
   const groups = config.api.groups;
   const username = http.session.get('username');
+  const defaultGroups = config.api.defaultGroups instanceof Array ? config.api.defaultGroups : [];
 
   function checkApiPermission(userGroups) {
     return new Promise(function(resolve, reject) {
@@ -159,6 +160,10 @@ module.exports.checkPermission = function(http, type, options) {
 
       if ( checkGroups ) {
         _instance.getStorage().getGroups(http, username).then(function(userGroups) {
+          if ( !(userGroups instanceof Array) || !userGroups.length ) {
+            userGroups = defaultGroups;
+          }
+
           checkApiPermission(userGroups).then(function() {
             checkMountPermission(userGroups).then(function() {
               checkPackagePermission(userGroups).then(resolve).catch(reject);

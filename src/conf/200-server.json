@@ -15,6 +15,7 @@
       }
     },
     "api": {
+      "defaultGroups": ["api", "application", "upload", "fs"],
       "groups": {
         "users": "admin",
         "curl": "curl",
@@ -46,10 +47,8 @@
     "modules": {
       "auth": {
         "pam": {
-          "defaultGroups": ["admin"]
         },
         "shadow": {
-          "defaultGroups": ["admin"]
         },
         "database": {
           "driver": "mysql",
