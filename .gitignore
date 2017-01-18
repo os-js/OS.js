@@ -9,6 +9,7 @@ twistd.*
 *.pyc
 *.bak
 *.o
+.tern-project
 
 # Misc
 .nightly
@@ -26,6 +27,8 @@ src/conf/999-*
 src/conf/900-custom.json
 src/server/settings.json
 src/server/packages.json
+src/server/*.key
+src/server/*.crt
 src/installer/installer.exe
 
 # Builds
@@ -42,7 +45,5 @@ vendor/dropbox*
 vendor/zip.js
 vendor/html2canvas
 src/server/php/vendor
-src/packages/extras
-src/packages/development
-src/packages/games
-src/packages/system
+src/packages/*
+!src/packages/default
