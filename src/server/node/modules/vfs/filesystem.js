@@ -167,7 +167,7 @@ function createFileIter(query, real, iter, stat) {
     const spl = query.split('://');
     const proto = spl[0];
     const ppath = (spl[1] || '').replace(/\/?$/, '/');
-    return proto + '://' + _path.join(ppath, iter);
+    return proto + '://' + _path.join(ppath, iter).replace(/\\/g, '/');
   })();
 
   return {
