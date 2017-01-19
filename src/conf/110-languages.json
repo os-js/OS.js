@@ -3,7 +3,7 @@
     "Locale": "en_EN",
     "LocaleOptions" : {
       "AutoDetect": true,
-      "RTL": ["az", "fa", "he", "uz", "zh","ar"]
+      "RTL": ["az", "fa", "he", "uz", "ar"]
     },
     "Languages": {
       "en_EN": "English",
