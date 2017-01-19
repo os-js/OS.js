@@ -339,7 +339,7 @@ function createHttpResponder(env, request, response) {
       _fs.stat(path, function(err, stats) {
         if ( err ) {
           _error('File not found', 404);
-          return reject();
+          return /*reject()*/;
         }
 
         const range = request.headers.range;
