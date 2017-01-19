@@ -304,8 +304,8 @@
     //
     'ERR_FILE_APP_OPEN'         : 'Cannot open file',
     'ERR_FILE_APP_OPEN_FMT'     : 'The file {0} could not be opened because the mime {1} is not supported',
-    'ERR_FILE_APP_OPEN_ALT_FMT' : 'The file {0} could not be opened',
-    'ERR_FILE_APP_SAVE_ALT_FMT' : 'The file {0} could not be saved',
+    'ERR_FILE_APP_OPEN_ALT_FMT' : 'The file {0} could not be opened: {1}',
+    'ERR_FILE_APP_SAVE_ALT_FMT' : 'The file {0} could not be saved: {1}',
     'ERR_GENERIC_APP_FMT'       : '{0} Application Error',
     'ERR_GENERIC_APP_ACTION_FMT': 'Failed to perform action \'{0}\'',
     'ERR_GENERIC_APP_UNKNOWN'   : 'Unknown Error',

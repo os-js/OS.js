@@ -301,8 +301,8 @@
     //
     'ERR_FILE_APP_OPEN'         : 'Không thể mở tập tin',
     'ERR_FILE_APP_OPEN_FMT'     : 'Tập tin {0} không thể mở được vì mime {1} không được hỗ trợ',
-    'ERR_FILE_APP_OPEN_ALT_FMT' : 'Tập tin {0} không mở được',
-    'ERR_FILE_APP_SAVE_ALT_FMT' : 'Tập tin {0} không lưu được',
+    'ERR_FILE_APP_OPEN_ALT_FMT' : 'Tập tin {0} không mở được: {1}',
+    'ERR_FILE_APP_SAVE_ALT_FMT' : 'Tập tin {0} không lưu được: {1}',
     'ERR_GENERIC_APP_FMT'       : '{0} Lỗi phần mềm',
     'ERR_GENERIC_APP_ACTION_FMT': 'Không thể thực hiện hành động \'{0}\'',
     'ERR_GENERIC_APP_UNKNOWN'   : 'Lỗi không xác định',

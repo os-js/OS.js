@@ -256,8 +256,8 @@
     //
     'ERR_FILE_APP_OPEN'         : 'Dosya Açılamadı',
     'ERR_FILE_APP_OPEN_FMT'     : '{0} dosyası açılmadı çünkü  {1} desteklenmiyor',
-    'ERR_FILE_APP_OPEN_ALT_FMT' : '{0} dosyası açılamadı',
-    'ERR_FILE_APP_SAVE_ALT_FMT' : '{0} dosyası kaydedilemedi',
+    'ERR_FILE_APP_OPEN_ALT_FMT' : '{0} dosyası açılamadı: {1}',
+    'ERR_FILE_APP_SAVE_ALT_FMT' : '{0} dosyası kaydedilemedi: {1}',
     'ERR_GENERIC_APP_FMT'       : '{0} program hatası',
     'ERR_GENERIC_APP_ACTION_FMT': ' \'{0}\' gerçekleşirken hata oluştu',
     'ERR_GENERIC_APP_UNKNOWN'   : 'Bilinmeyen Hata',

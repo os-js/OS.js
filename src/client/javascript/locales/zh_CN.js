@@ -219,8 +219,8 @@
     // DefaultApplication
     'ERR_FILE_APP_OPEN'         : '无法打开文件',
     'ERR_FILE_APP_OPEN_FMT'     : '文件 {0} 的类型 {1} 不支持,无法打开',
-    'ERR_FILE_APP_OPEN_ALT_FMT' : '文件 {0} 无法打开',
-    'ERR_FILE_APP_SAVE_ALT_FMT' : '文件 {0} 无法保存',
+    'ERR_FILE_APP_OPEN_ALT_FMT' : '文件 {0} 无法打开: {1}',
+    'ERR_FILE_APP_SAVE_ALT_FMT' : '文件 {0} 无法保存: {1}',
     'ERR_GENERIC_APP_FMT'       : '{0} 应用错误',
     'ERR_GENERIC_APP_ACTION_FMT': '无法执行此操作 \'{0}\'',
     'ERR_GENERIC_APP_UNKNOWN'   : '未知错误',

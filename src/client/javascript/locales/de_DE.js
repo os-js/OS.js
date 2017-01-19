@@ -171,8 +171,8 @@
     // DefaultApplication
     'ERR_FILE_APP_OPEN'         : 'Datei kann nicht geöffnet werden',
     'ERR_FILE_APP_OPEN_FMT'     : 'Die Datei {0} kann nicht geöffnet werden, da der Dateityp (MIME) {1} nicht unterstützt wird',
-    'ERR_FILE_APP_OPEN_ALT_FMT' : 'Die Datei {0} konnte nicht geöffnet werden',
-    'ERR_FILE_APP_SAVE_ALT_FMT' : 'Die Datei {0} konnte nicht gespeichert werden',
+    'ERR_FILE_APP_OPEN_ALT_FMT' : 'Die Datei {0} konnte nicht geöffnet werden: {1}',
+    'ERR_FILE_APP_SAVE_ALT_FMT' : 'Die Datei {0} konnte nicht gespeichert werden: {1}',
     'ERR_GENERIC_APP_FMT'       : '{0} Anwendungsfehler',
     'ERR_GENERIC_APP_ACTION_FMT': 'Konnte Aktion nicht durchführen: \'{0}\'',
     'ERR_GENERIC_APP_UNKNOWN'   : 'Unbekannter Fehler',

@@ -257,8 +257,8 @@
     //
     'ERR_FILE_APP_OPEN'         : 'Nie można otworzyć',
     'ERR_FILE_APP_OPEN_FMT'     : 'Plik {0} nie może zostać otwarty ,ponieważ mime {1} nie jest wspierane',
-    'ERR_FILE_APP_OPEN_ALT_FMT' : 'Plik {0} nie może zostać otwarty',
-    'ERR_FILE_APP_SAVE_ALT_FMT' : 'Plik {0} nie może zostać zapisany',
+    'ERR_FILE_APP_OPEN_ALT_FMT' : 'Plik {0} nie może zostać otwarty: {1}',
+    'ERR_FILE_APP_SAVE_ALT_FMT' : 'Plik {0} nie może zostać zapisany: {1}',
     'ERR_GENERIC_APP_FMT'       : '{0} Błąd Aplikacji',
     'ERR_GENERIC_APP_ACTION_FMT': 'Nie udało się przeprowadzić akcji \'{0}\'.',
     'ERR_GENERIC_APP_UNKNOWN'   : 'Nieznany błąd',

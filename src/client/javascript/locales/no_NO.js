@@ -284,8 +284,8 @@
     // DefaultApplication
     'ERR_FILE_APP_OPEN'         : 'Kan ikke åpne filen',
     'ERR_FILE_APP_OPEN_FMT'     : 'Filen {0} ble ikke åpnet fordi MIME {1} ikke er støttet',
-    'ERR_FILE_APP_OPEN_ALT_FMT' : 'Filen {0} ble ikke åpnet',
-    'ERR_FILE_APP_SAVE_ALT_FMT' : 'Filen {0} ble ikke lagret',
+    'ERR_FILE_APP_OPEN_ALT_FMT' : 'Filen {0} ble ikke åpnet: {1}',
+    'ERR_FILE_APP_SAVE_ALT_FMT' : 'Filen {0} ble ikke lagret: {1}',
     'ERR_GENERIC_APP_FMT'       : '{0} Applikasjon Feil',
     'ERR_GENERIC_APP_ACTION_FMT': 'Klarte ikke utføre operasjon \'{0}\'',
     'ERR_GENERIC_APP_UNKNOWN'   : 'Ukjent feil',

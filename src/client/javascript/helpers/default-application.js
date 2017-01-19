@@ -117,7 +117,7 @@
         API.error(self.__label,
                   API._('ERR_FILE_APP_OPEN'),
                   API._('ERR_FILE_APP_OPEN_ALT_FMT',
-                  file.path));
+                  file.path, error));
         return true;
       }
       return false;
@@ -181,7 +181,7 @@
         API.error(self.__label,
                   API._('ERR_FILE_APP_SAVE'),
                   API._('ERR_FILE_APP_SAVE_ALT_FMT',
-                  file.path));
+                  file.path, error));
         return;
       }
 

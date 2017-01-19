@@ -248,8 +248,8 @@
     //
     'ERR_FILE_APP_OPEN'         : 'No se puede abrir el archivo',
     'ERR_FILE_APP_OPEN_FMT'     : 'El archivo {0} no pudo abrirse porque no hay soporte para el tipo MIME {1}',
-    'ERR_FILE_APP_OPEN_ALT_FMT' : 'No pudo abrirse el archivo {0}',
-    'ERR_FILE_APP_SAVE_ALT_FMT' : 'No pudo guardarse el archivo {0}',
+    'ERR_FILE_APP_OPEN_ALT_FMT' : 'No pudo abrirse el archivo {0}: {1}',
+    'ERR_FILE_APP_SAVE_ALT_FMT' : 'No pudo guardarse el archivo {0}: {1}',
     'ERR_GENERIC_APP_FMT'       : 'Error en la aplicación {0}',
     'ERR_GENERIC_APP_ACTION_FMT': 'No se pudo efectuar la acción \'{0}\'',
     'ERR_GENERIC_APP_UNKNOWN'   : 'Error desconocido',
