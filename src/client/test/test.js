@@ -279,13 +279,6 @@
 
       // -- fs.js
 
-      describe('checkdir()', function() {
-        it('should return identical dir', function() {
-          var res = OSjs.Utils.checkdir('home:///foo.bar');
-          expect(res).to.be.equal('home:///foo.bar');
-        });
-      });
-
       describe('filext()', function() {
         it('should return file extension', function() {
           var res = OSjs.Utils.filext('home:///foo.bar');
@@ -426,13 +419,9 @@
       describe('mkdir()', function() {
         describe('#exception', function() {
           it('should throw error', function() {
-            var error;
-            try {
-              OSjs.VFS.mkdir('invalid:///foo', function(err, res) {});
-            } catch ( e ) {
-              error = e;
-            }
-            expect(error).to.be.an.instanceof(Error);
+            OSjs.VFS.mkdir('invalid:///foo', function(err, res) {
+              expect(err).to.not.be.oneOf([false, null, '']);
+            });
           });
         });
 
@@ -459,13 +448,9 @@
       describe('write()', function() {
         describe('#exception', function() {
           it('should throw error', function() {
-            var error;
-            try {
-              OSjs.VFS.write('invalid:///foo', testString, function(err, res) {});
-            } catch ( e ) {
-              error = e;
-            }
-            expect(error).to.be.an.instanceof(Error);
+            OSjs.VFS.write('invalid:///foo', testString, function(err, res) {
+              expect(err).to.not.be.oneOf([false, null, '']);
+            });
           });
         });
 
@@ -491,13 +476,9 @@
       describe('read()', function() {
         describe('#exception', function() {
           it('should throw error', function() {
-            var error;
-            try {
-              OSjs.VFS.read('invalid:///foo', function(err, res) {});
-            } catch ( e ) {
-              error = e;
-            }
-            expect(error).to.be.an.instanceof(Error);
+            OSjs.VFS.read('invalid:///foo', function(err, res) {
+              expect(err).to.not.be.oneOf([false, null, '']);
+            });
           });
         });
 
@@ -523,13 +504,9 @@
       describe('exists()', function() {
         describe('#exception', function() {
           it('should throw error', function() {
-            var error;
-            try {
-              OSjs.VFS.exists('invalid:///foo', function(err, res) {});
-            } catch ( e ) {
-              error = e;
-            }
-            expect(error).to.be.an.instanceof(Error);
+            OSjs.VFS.exists('invalid:///foo', function(err, res) {
+              expect(err).to.not.be.oneOf([false, null, '']);
+            });
           });
         });
 
@@ -577,13 +554,9 @@
       describe('fileinfo()', function() {
         describe('#exception', function() {
           it('should throw error', function() {
-            var error;
-            try {
-              OSjs.VFS.fileinfo('invalid:///foo', function(err, res) {});
-            } catch ( e ) {
-              error = e;
-            }
-            expect(error).to.be.an.instanceof(Error);
+            OSjs.VFS.fileinfo('invalid:///foo', function(err, res) {
+              expect(err).to.not.be.oneOf([false, null, '']);
+            });
           });
         });
 
@@ -610,13 +583,9 @@
       describe('url()', function() {
         describe('#exception', function() {
           it('should throw error', function() {
-            var error;
-            try {
-              OSjs.VFS.url('invalid:///foo', function(err, res) {});
-            } catch ( e ) {
-              error = e;
-            }
-            expect(error).to.be.an.instanceof(Error);
+            OSjs.VFS.url('invalid:///foo', function(err, res) {
+              expect(err).to.not.be.oneOf([false, null, '']);
+            });
           });
         });
 
@@ -648,13 +617,9 @@
 
         describe('#exception', function() {
           it('should throw error', function() {
-            var error;
-            try {
-              OSjs.VFS.copy('invalid:///foo', 'invalid:///bar', function(err, res) {});
-            } catch ( e ) {
-              error = e;
-            }
-            expect(error).to.be.an.instanceof(Error);
+            OSjs.VFS.copy('invalid:///foo', 'invalid:///bar', function(err, res) {
+              expect(err).to.not.be.oneOf([false, null, '']);
+            });
           });
         });
 
@@ -704,13 +669,9 @@
 
         describe('#exception', function() {
           it('should throw error', function() {
-            var error;
-            try {
-              OSjs.VFS.move('invalid:///foo', 'invalid:///bar', function(err, res) {});
-            } catch ( e ) {
-              error = e;
-            }
-            expect(error).to.be.an.instanceof(Error);
+            OSjs.VFS.move('invalid:///foo', 'invalid:///bar', function(err, res) {
+              expect(err).to.not.be.oneOf([false, null, '']);
+            });
           });
         });
 
@@ -792,13 +753,9 @@
       describe('unlink()', function() {
         describe('#exception', function() {
           it('should throw error', function() {
-            var error;
-            try {
-              OSjs.VFS.unlink('invalid:///foo', function(err, res) {});
-            } catch ( e ) {
-              error = e;
-            }
-            expect(error).to.be.an.instanceof(Error);
+            OSjs.VFS.unlink('invalid:///foo', function(err, res) {
+              expect(err).to.not.be.oneOf([false, null, '']);
+            });
           });
         });
 
@@ -881,13 +838,9 @@
       describe('freeSpace()', function() {
         describe('#exception', function() {
           it('should throw error', function() {
-            var error;
-            try {
-              OSjs.VFS.freeSpace('invalid:///foo', function(err, res) {});
-            } catch ( e ) {
-              error = e;
-            }
-            expect(error).to.be.an.instanceof(Error);
+            OSjs.VFS.freeSpace('invalid:///foo', function(err, res) {
+              expect(err).to.not.be.oneOf([false, null, '']);
+            });
           });
         });
 
