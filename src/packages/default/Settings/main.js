@@ -161,6 +161,12 @@
     });
 
     app.modules.forEach(function(m) {
+      if ( typeof m.compatible === 'function' ) {
+        if ( !m.compatible() ) {
+          return;
+        }
+      }
+
       if ( containers[m.group] ) {
         var i = document.createElement('img');
         i.setAttribute('src', API.getIcon(m.icon, '32x32'));

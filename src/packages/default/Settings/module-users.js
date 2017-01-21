@@ -153,6 +153,11 @@
     icon: 'apps/system-users.png',
     button: false,
 
+    compatible: function() {
+      var cfg = API.getConfig('Connection.Authenticator');
+      return ['demo', 'pam', 'shadow'].indexOf(cfg) === -1;
+    },
+
     init: function() {
     },
 
