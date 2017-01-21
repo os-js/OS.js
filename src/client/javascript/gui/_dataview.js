@@ -70,7 +70,7 @@
 
   function isHeader(ev, row) {
     row = row || getEntryFromEvent(ev);
-    return !row || row.parentNode.tagName === 'GUI-LIST-VIEW-HEAD';
+    return row && row.parentNode.tagName === 'GUI-LIST-VIEW-HEAD';
   }
 
   function handleItemSelection(ev, item, idx, className, selected, root, multipleSelect) {
@@ -520,11 +520,21 @@
         API.blurMenu();
 
         var row = getEntryFromEvent(ev);
-        var className = row ? row.tagName.toLowerCase() : null;
+        if ( !row ) {
+          return false;
+        }
 
+        var className = row.tagName.toLowerCase();
         if ( isHeader(null, row) ) {
           var col = getEntryFromEvent(ev, true);
           if ( col ) {
+            var idx = Utils.$index(col);
+            col.parentNode.querySelectorAll('gui-list-view-column').forEach(function(e, i) {
+              if ( idx !== i ) {
+                e.removeAttribute('data-sortdir');
+              }
+            });
+
             var sortBy = col.getAttribute('data-sortby');
             if ( sortBy ) {
               var sortDir = col.getAttribute('data-sortdir');
@@ -541,7 +551,7 @@
               }}));
             }
           }
-          return;
+          return false;
         }
 
         if ( className === 'gui-tree-view-expander' ) {
@@ -563,7 +573,13 @@
         }
 
         if ( singleClick ) {
-          select(ev);
+          if ( select(ev) === false ) {
+            return;
+          }
+        } else {
+          if ( !getEntryFromEvent(ev) ) {
+            return;
+          }
         }
 
         el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected(el)}}));
