@@ -155,7 +155,7 @@
     }
 
     var result = list.filter(function(iter) {
-      if ( (iter.filename === '..' && ooptions.backlink === false) || !filterFile(iter) ) {
+      if ( iter.filename === '..' || !filterFile(iter) ) {
         return false;
       }
 

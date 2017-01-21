@@ -451,7 +451,7 @@
       }
 
       // Inserts the correct '..' entry if missing
-      if ( !error && result instanceof Array ) {
+      if ( !error && result instanceof Array && options.backlink !== false ) {
         var back = createBackLink(item, result, alias, oitem);
         if ( back ) {
           result.unshift(back);
