@@ -67,7 +67,11 @@
     'ERR_OPERATION_TIMEOUT'       : 'Operation Timeout',
     'ERR_OPERATION_TIMEOUT_FMT'   : 'Operation Timeout ({0})',
 
-    'ERR_ARGUMENT_FMT'    : '\'{0}\' prevede \'{1}\' di tipo \'{2}\', \'{3}\' ricevuto',
+    'ERR_ARGUMENT_FMT'            : '\'{0}\' prevede \'{1}\' di tipo \'{2}\', \'{3}\' ricevuto',
+    'ERR_INVALID_LOCATION'        : 'Percorso non valido',
+
+    'ERR_OPEN_LOCATION'           : 'Fallito aprire percorso',
+    'ERR_OPEN_LOCATION_FMT'       : 'Fallito aprire il percorso: {0}',
 
     // Window
     'ERR_WIN_DUPLICATE_FMT' : 'Hai già dato un nome alla finestra \'{0}\'',
@@ -470,7 +474,13 @@
     'LBL_MISC': 'Vari',
     'LBL_OTHER': 'Altro',
     'LBL_USERS': 'Utenti',
-    'LBL_FONTS': 'Fonts'
+    'LBL_FONTS': 'Fonts',
+    'LBL_OPEN_LOCATION': 'Apri percorso',
+    'LBL_HOME': 'Cartella Home',
+    'LBL_WIDGET': 'Widget',
+    'LBL_WIDGETS': 'Widgets',
+    'LBL_LOCK': 'Bloccare',
+    'LBL_UNLOCK': 'Sbloccare'
   };
 
 })();
