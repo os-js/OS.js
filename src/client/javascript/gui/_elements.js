@@ -583,7 +583,7 @@
 
     Object.keys(GUI.Elements).forEach(function(key) {
       node.querySelectorAll(key).forEach(function(pel) {
-        if ( pel._wasParsed ) {
+        if ( pel._wasParsed || Utils.$hasClass(pel, 'gui-data-view') ) {
           return;
         }
 

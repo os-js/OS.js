@@ -170,12 +170,14 @@
 
       if ( iter ) {
         columns.push({
+          sortBy: key,
           label: map.value(),
           icon: map.icon(),
           textalign: idx === 0 ? 'left' : 'right'
         });
       } else {
         columns.push({
+          sortBy: key,
           label: API._(map.label),
           size: map.size || '',
           resizable: idx > 0,
@@ -187,38 +189,6 @@
     return columns;
   }
 
-  function buildChildView(el) {
-    var type = el.getAttribute('data-type') || 'list-view';
-    if ( !type.match(/^gui\-/) ) {
-      type = 'gui-' + type;
-    }
-
-    var nel = new GUI.ElementDataView(GUI.Helpers.createElement(type, {'draggable': true, 'draggable-type': 'file'}));
-    GUI.Elements[type].build(nel.$element);
-
-    nel.on('select', function(ev) {
-      el.dispatchEvent(new CustomEvent('_select', {detail: ev.detail}));
-    });
-    nel.on('activate', function(ev) {
-      el.dispatchEvent(new CustomEvent('_activate', {detail: ev.detail}));
-    });
-    nel.on('contextmenu', function(ev) {
-      if ( !el.hasAttribute('data-has-contextmenu') || el.hasAttribute('data-has-contextmenu') === 'false' ) {
-        new GUI.Element(el).fn('contextmenu', [ev]);
-      }
-      el.dispatchEvent(new CustomEvent('_contextmenu', {detail: ev.detail}));
-    });
-
-    if ( type === 'gui-tree-view' ) {
-      nel.on('expand', function(ev) {
-        el.dispatchEvent(new CustomEvent('_expand', {detail: ev.detail}));
-      });
-    }
-
-    el.setAttribute('role', 'region');
-    el.appendChild(nel.$element);
-  }
-
   function scandir(tagName, dir, opts, cb, oncreate) {
     var file = new VFS.File(dir);
     file.type  = 'dir';
@@ -228,7 +198,9 @@
       showDotFiles:       opts.dotfiles === true,
       showFileExtensions: opts.extensions === true,
       mimeFilter:         opts.filter || [],
-      typeFilter:         opts.filetype || null
+      typeFilter:         opts.filetype || null,
+      sortBy:             opts.sortby,
+      sortDir:            opts.sortdir
     };
 
     try {
@@ -278,6 +250,13 @@
         opts[d] = (cc || function() {})();
       }
     }
+
+    setOption('data-sortby', 'sortby', function(val) {
+      return val;
+    });
+    setOption('data-sortdir', 'sortdir', function(val) {
+      return val;
+    });
     setOption('data-dotfiles', 'dotfiles', function(val) {
       return val === 'true';
     }, function() {
@@ -303,7 +282,9 @@
     scandir(tagName, dir, opts, function(error, result, summary) {
       if ( tagName === 'gui-list-view' ) {
         GUI.Elements[tagName].set(target, 'zebra', true);
-        GUI.Elements[tagName].set(target, 'columns', getListViewColumns(null, opts));
+        if ( sopts.headers !== false ) {
+          GUI.Elements[tagName].set(target, 'columns', getListViewColumns(null, opts));
+        }
       }
 
       done(error, result, summary);
@@ -344,6 +325,70 @@
     });
   }
 
+  function defaultReaddir(el, t, dir, cb, opts) {
+    cb = cb || function() {};
+
+    clearTimeout(el._readdirTimeout);
+    el._readdirTimeout = setTimeout(function() {
+      readdir(el, dir, function(error, result, summary) {
+        if ( error ) {
+          API.error(API._('ERR_VFSMODULE_XHR_ERROR'), API._('ERR_VFSMODULE_SCANDIR_FMT', dir), error);
+        } else {
+          t.clear();
+          t.add(result);
+        }
+        cb(error, summary);
+      }, opts);
+
+      el._readdirTimeout = clearTimeout(el._readdirTimeout);
+    }, 50); // Prevent exessive calls
+  }
+
+  function buildChildView(el) {
+    var type = el.getAttribute('data-type') || 'list-view';
+    if ( !type.match(/^gui\-/) ) {
+      type = 'gui-' + type;
+    }
+
+    var nel = new GUI.ElementDataView(GUI.Helpers.createElement(type, {'draggable': true, 'draggable-type': 'file'}));
+    GUI.Elements[type].build(nel.$element);
+
+    nel.on('select', function(ev) {
+      el.dispatchEvent(new CustomEvent('_select', {detail: ev.detail}));
+    });
+    nel.on('activate', function(ev) {
+      el.dispatchEvent(new CustomEvent('_activate', {detail: ev.detail}));
+    });
+    nel.on('sort', function(ev) {
+      el.setAttribute('data-sortby', String(ev.detail.sortBy));
+      el.setAttribute('data-sortdir', String(ev.detail.sortDir));
+
+      GUI.Elements['gui-file-view'].call(el, 'chdir', {
+        sopts: {
+          headers: false
+        },
+        path: el.getAttribute('data-path')
+      })
+
+      el.dispatchEvent(new CustomEvent('_sort', {detail: ev.detail}));
+    });
+    nel.on('contextmenu', function(ev) {
+      if ( !el.hasAttribute('data-has-contextmenu') || el.hasAttribute('data-has-contextmenu') === 'false' ) {
+        new GUI.Element(el).fn('contextmenu', [ev]);
+      }
+      el.dispatchEvent(new CustomEvent('_contextmenu', {detail: ev.detail}));
+    });
+
+    if ( type === 'gui-tree-view' ) {
+      nel.on('expand', function(ev) {
+        el.dispatchEvent(new CustomEvent('_expand', {detail: ev.detail}));
+      });
+    }
+
+    el.setAttribute('role', 'region');
+    el.appendChild(nel.$element);
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
@@ -373,7 +418,7 @@
    */
   GUI.Elements['gui-file-view'] = {
     bind: function(el, evName, callback, params) {
-      if ( (['activate', 'select', 'contextmenu']).indexOf(evName) !== -1 ) {
+      if ( (['activate', 'select', 'contextmenu', 'sort']).indexOf(evName) !== -1 ) {
         evName = '_' + evName;
       }
 
@@ -424,7 +469,7 @@
           });
         }
         return true;
-      } else if ( (['filter', 'dotfiles', 'filetype', 'extensions', 'defaultcolumns']).indexOf(param) >= 0 ) {
+      } else if ( (['filter', 'dotfiles', 'filetype', 'extensions', 'defaultcolumns', 'sortby', 'sortdir']).indexOf(param) >= 0 ) {
         GUI.Helpers.setProperty(el, param, value);
         return true;
       }
@@ -493,20 +538,7 @@
           var t = new GUI.ElementDataView(target);
           var dir = args.path || OSjs.API.getDefaultPath();
 
-          clearTimeout(el._readdirTimeout);
-          el._readdirTimeout = setTimeout(function() {
-            readdir(el, dir, function(error, result, summary) {
-              if ( error ) {
-                API.error(API._('ERR_VFSMODULE_XHR_ERROR'), API._('ERR_VFSMODULE_SCANDIR_FMT', dir), error);
-              } else {
-                t.clear();
-                t.add(result);
-              }
-              args.done(error, summary);
-            });
-
-            el._readdirTimeout = clearTimeout(el._readdirTimeout);
-          }, 50); // Prevent exessive calls
+          defaultReaddir(el, t, dir, args.done, args.sopts);
           return;
         }
 

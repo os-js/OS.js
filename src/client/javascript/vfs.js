@@ -128,6 +128,8 @@
     var ioptions = Utils.cloneObject(options, true);
     var ooptions = Utils.argumentDefaults(ioptions, defaultOptions.scandir || {});
     ooptions = Utils.argumentDefaults(ooptions, {
+      sortBy: null,
+      sortDir: 'asc',
       typeFilter: null,
       mimeFilter: [],
       showHiddenFiles: true
@@ -168,6 +170,23 @@
       }
       return iter;
     });
+
+    var sb = ooptions.sortBy;
+    if ( ['filename', 'size', 'mime'].indexOf(sb) !== -1  ) {
+      if ( sb === 'size' || !String.prototype.localeCompare ) {
+        result.sort(function(a, b) {
+          return (a[sb] > b[sb]) ? 1 : ((b[sb] > a[sb]) ? -1 : 0);
+        });
+      } else {
+        result.sort(function(a, b) {
+          return String(a[sb]).localeCompare(String(b[sb]));
+        });
+      }
+
+      if ( ooptions.sortDir === 'desc' ) {
+        result.reverse();
+      }
+    }
 
     return result.filter(function(iter) {
       return iter.type === 'dir';

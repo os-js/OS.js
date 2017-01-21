@@ -55,21 +55,29 @@
     return className;
   }
 
-  function getEntryFromEvent(ev) {
+  function getEntryFromEvent(ev, header) {
     var t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
     var tn = t.tagName.toLowerCase();
 
     if ( tn.match(/(view|textarea|body)$/) ) {
       return null;
-    } else if ( tn === 'gui-list-view-column' ) {
+    } else if ( tn === 'gui-list-view-column' && !header ) {
       return t.parentNode;
     }
 
     return t;
   }
 
+  function isHeader(ev, row) {
+    row = row || getEntryFromEvent(ev);
+    return !row || row.parentNode.tagName === 'GUI-LIST-VIEW-HEAD';
+  }
+
   function handleItemSelection(ev, item, idx, className, selected, root, multipleSelect) {
     root = root || item.parentNode;
+    if ( isHeader(null, item) ) {
+      return;
+    }
 
     if ( idx === -1 ) {
       root.querySelectorAll(getEntryTagName(root)).forEach(function(e) {
@@ -514,6 +522,28 @@
         var row = getEntryFromEvent(ev);
         var className = row ? row.tagName.toLowerCase() : null;
 
+        if ( isHeader(null, row) ) {
+          var col = getEntryFromEvent(ev, true);
+          if ( col ) {
+            var sortBy = col.getAttribute('data-sortby');
+            if ( sortBy ) {
+              var sortDir = col.getAttribute('data-sortdir');
+              sortDir = sortDir === 'asc' ? 'desc' : (sortDir === 'desc' ? null : 'asc');
+
+              col.setAttribute('data-sortdir', sortDir);
+
+              el.setAttribute('data-sortby', sortBy || '');
+              el.setAttribute('data-sortdir', sortDir || '');
+
+              el.dispatchEvent(new CustomEvent('_sort', {detail: {
+                sortDir: sortDir,
+                sortBy: sortBy
+              }}));
+            }
+          }
+          return;
+        }
+
         if ( className === 'gui-tree-view-expander' ) {
           OSjs.GUI.Elements[el.tagName.toLowerCase()].call(el, 'expand', {ev: ev, entry: row.parentNode});
           return;
@@ -528,6 +558,10 @@
         ev.stopPropagation();
         API.blurMenu();
 
+        if ( isHeader(ev) ) {
+          return;
+        }
+
         if ( singleClick ) {
           select(ev);
         }
@@ -536,6 +570,10 @@
       }
 
       function context(ev) {
+        if ( isHeader(ev) ) {
+          return;
+        }
+
         select(ev);
         el.dispatchEvent(new CustomEvent('_contextmenu', {detail: {entries: getSelected(el), x: ev.clientX, y: ev.clientY}}));
       }
@@ -612,7 +650,7 @@
     },
 
     bind: function(el, evName, callback, params) {
-      if ( (['activate', 'select', 'expand', 'contextmenu', 'render', 'drop']).indexOf(evName) !== -1 ) {
+      if ( (['activate', 'select', 'expand', 'contextmenu', 'render', 'drop', 'sort']).indexOf(evName) !== -1 ) {
         evName = '_' + evName;
       }
       Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);

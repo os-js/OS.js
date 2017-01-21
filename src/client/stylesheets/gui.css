@@ -1431,7 +1431,6 @@ gui-list-view {
     display : table-header-group;
     width : 100%;
     visibility : hidden;
-    pointer-events: none;
   }
 
     gui-list-view-row {
