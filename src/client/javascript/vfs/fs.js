@@ -415,6 +415,8 @@
    * @param   {Array}           [options.mimeFilter]             Array of mime regex matchers
    * @param   {Boolean}         [options.showHiddenFiles=true]   Show hidden files
    * @param   {Boolean}         [options.backlink=true]          Return '..' when applicable
+   * @param   {String}          [options.sortBy=null]            Sort by this key
+   * @param   {String}          [options.sortDir='asc']          Sort in this direction
    */
   VFS.scandir = function VFS_scandir(item, callback, options) {
     options = options || {};

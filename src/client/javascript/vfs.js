@@ -120,6 +120,8 @@
    * @param     {String}    options.typeFilter        `type` filter
    * @param     {Array}     options.mimeFilter        `mime` filter
    * @param     {Boolean}   options.showHiddenFiles   Show dotfiles
+   * @param     {String}    [options.sortBy=null]     Sort by this key
+   * @param     {String}    [options.sortDir='asc']   Sort in this direction
    *
    * @return  {Boolean}
    */
