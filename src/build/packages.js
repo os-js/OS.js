@@ -58,13 +58,13 @@ const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
  */
 function runBuildScripts(verbose, target, section, iter, src, dest, cb) {
   const build = iter.build || {};
-  const scripts = ((build.scripts ? build.scripts[section] : null) || []).filter(function(s) {
+  const scripts = ((build.scripts ? build.scripts[section] : null) || []).filter((s) => {
     return !!s;
   });
 
-  return Promise.each(scripts.map(function(cmd) {
+  return Promise.each(scripts.map((cmd) => {
     return function() {
-      return new Promise(function(resolve, reject) {
+      return new Promise((resolve, reject) => {
         cmd = cmd.replace('%PACKAGE%', src);
         console.log('$', cmd.replace(ROOT + '/', ''));
 
@@ -92,8 +92,8 @@ function runBuildScripts(verbose, target, section, iter, src, dest, cb) {
 function copyResources(verbose, iter, src, dest) {
   const copy = iter.build.copy || [];
   if ( copy.length ) {
-    return new Promise(function(resolve, reject) {
-      copy.forEach(function(file) {
+    return new Promise((resolve, reject) => {
+      copy.forEach((file) => {
         const d = _path.join(dest, file);
         const p = _path.dirname(d);
 
@@ -119,7 +119,7 @@ function copyResources(verbose, iter, src, dest) {
     });
   }
 
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     if ( verbose ) {
       _utils.log('-', src, '->', dest);
     }
@@ -137,8 +137,8 @@ function copyResources(verbose, iter, src, dest) {
 function buildLess(verbose, iter, src, dest) {
   const files = iter.build.less || {};
 
-  return Promise.all(Object.keys(files).map(function(f) {
-    return new Promise(function(resolve, reject) {
+  return Promise.all(Object.keys(files).map((f) => {
+    return new Promise((resolve, reject) => {
       const from = _path.join(src, f);
       const to = _path.join(dest, files[f]);
 
@@ -163,7 +163,7 @@ function buildLess(verbose, iter, src, dest) {
 function createStandaloneScheme(iter, dest) {
   var src = _path.join(dest, 'scheme.html');
   if ( _fs.existsSync(src) ) {
-    iter.preload.forEach(function(p) {
+    iter.preload.forEach((p) => {
       if ( p.type === 'scheme' ) {
         _utils.createStandaloneScheme(src, '/' + iter.path +  '/' + p.src, _path.join(dest, '_scheme.js'));
         _fs.removeSync(src);
@@ -183,8 +183,8 @@ function combineResources(standalone, metadata, dest) {
   };
 
   var iter = JSON.parse(JSON.stringify(metadata));
-  return new Promise(function(resolve, reject) {
-    iter.preload.forEach(function(p) {
+  return new Promise((resolve, reject) => {
+    iter.preload.forEach((p) => {
       if ( p.combine === false || p.src.match(/^(ftp|https?\:)?\/\//) ) {
         return;
       }
@@ -218,7 +218,7 @@ function combineResources(standalone, metadata, dest) {
 
       const found = scheme.match(/<gui\-fragment\s+?data\-fragment\-external=\"(.*)\"\s+?\/>/g);
       if ( found ) {
-        found.forEach(function(f) {
+        found.forEach((f) => {
           var src = f.split(/<gui\-fragment\s+?data\-fragment\-external=\"(.*)\"\s+?\/>/)[1];
           src = _path.join(dest, src);
 
@@ -232,7 +232,7 @@ function combineResources(standalone, metadata, dest) {
       _fs.writeFileSync(sfile, scheme);
     }
 
-    remove.forEach(function(f) {
+    remove.forEach((f) => {
       _fs.removeSync(f);
       _fs.removeSync(f + '.map');
     });
@@ -254,7 +254,7 @@ function combineResources(standalone, metadata, dest) {
  */
 function compressResources(verbose, iter, dest) {
 
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     const jsh = _utils.readTemplate('dist/header.js');
     const cssh = _utils.readTemplate('dist/header.css');
 
@@ -277,9 +277,9 @@ function compressResources(verbose, iter, dest) {
       }
     };
 
-    Promise.each(iter.preload.map(function(pre, idx) {
+    Promise.each(iter.preload.map((pre, idx) => {
       return function() {
-        return new Promise(function(yes, no) {
+        return new Promise((yes, no) => {
           const m = pre.src.match(/\.min\.(js|css)$/);
           if ( !m && !pre.src.match(/^(ftp|https?\:)?\/\//) ) {
             if ( types[pre.type] ) {
@@ -304,7 +304,7 @@ function compressResources(verbose, iter, dest) {
           yes();
         });
       };
-    })).then(function() {
+    })).then(() => {
       _fs.writeFileSync(_path.join(dest, 'metadata.json'), JSON.stringify(iter, null, 4));
       resolve();
     }).catch(reject);
@@ -320,7 +320,7 @@ const TARGETS = {
     const verbose = cli.option('verbose');
     const standalone = cli.option('standalone');
 
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
       const src = _path.join(ROOT, 'src', 'packages', name);
       const dest = _path.join(ROOT, 'dist', 'packages', name);
 
@@ -340,8 +340,8 @@ const TARGETS = {
         }, function() {
           return buildLess(verbose, metadata, src, dest);
         }, function() {
-          return new Promise(function(yes, no) {
-            return combineResources(standalone, metadata, dest).then(function(data) {
+          return new Promise((yes, no) => {
+            return combineResources(standalone, metadata, dest).then((data) => {
               metadata = data; // Make sure we set new metadata after changes
               yes();
             }).catch(no);
@@ -362,7 +362,7 @@ const TARGETS = {
   'dist-dev': function(cli, cfg, name, metadata) {
     const verbose = cli.option('verbose');
 
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
 
       const src = _path.join(ROOT, 'src', 'packages', name);
       const dest = _path.join(ROOT, 'src', 'packages', name);
@@ -388,7 +388,7 @@ const TARGETS = {
  * Builds given package
  */
 function buildPackage(target, cli, cfg, name, metadata) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     function _build(meta) {
       TARGETS[target](cli, cfg, name, meta).then(resolve).catch(reject);
     }
@@ -397,7 +397,7 @@ function buildPackage(target, cli, cfg, name, metadata) {
       if ( metadata ) {
         _build(metadata);
       } else {
-        _manifest.getPackage(name).then(function(meta) {
+        _manifest.getPackage(name).then((meta) => {
           _build(meta);
         });
       }
@@ -411,9 +411,9 @@ function buildPackage(target, cli, cfg, name, metadata) {
  * Builds all packages
  */
 function buildPackages(target, cli, cfg) {
-  return new Promise(function(resolve, reject) {
-    _manifest.getPackages(cfg.repositories).then(function(packages) {
-      Promise.each(Object.keys(packages).map(function(iter) {
+  return new Promise((resolve, reject) => {
+    _manifest.getPackages(cfg.repositories).then((packages) => {
+      Promise.each(Object.keys(packages).map((iter) => {
         return function() {
           return buildPackage(target, cli, cfg, packages[iter].path, packages[iter]);
         };

@@ -96,7 +96,7 @@ function checkEnabledState(enabled, disabled, meta) {
  */
 function getPackageMetadata(repo, file) {
 
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     const name = [repo, _path.basename(_path.dirname(file))].join('/');
     const meta = JSON.parse(_fs.readFileSync(file));
 
@@ -121,14 +121,14 @@ function getRepositoryPackages(repo, all) {
   const path = _path.join(ROOT, 'src/packages', repo);
   const result = {};
 
-  return new Promise(function(resolve, reject) {
-    _config.getConfiguration().then(function(cfg) {
+  return new Promise((resolve, reject) => {
+    _config.getConfiguration().then((cfg) => {
       const forceEnabled = _config.getConfigPath(cfg, 'packages.ForceEnable', []);
       const forceDisabled = _config.getConfigPath(cfg, 'packages.ForceDisable', []);
 
-      _glob(_path.join(path, '*', 'metadata.json')).then(function(files) {
+      _glob(_path.join(path, '*', 'metadata.json')).then((files) => {
 
-        Promise.each(files.map(function(file) {
+        Promise.each(files.map((file) => {
           return function() {
             return getPackageMetadata(repo, file);
           };
@@ -137,7 +137,7 @@ function getRepositoryPackages(repo, all) {
           if ( all || checkEnabledState(forceEnabled, forceDisabled, meta) ) {
             result[meta.path] = meta;
           }
-        }).then(function() {
+        }).then(() => {
           resolve(result);
         }).catch(reject);
 
@@ -156,16 +156,16 @@ function getPackages(repos, filter) {
   };
 
   var list = {};
-  return new Promise(function(resolve, reject) {
-    Promise.each(repos.map(function(repo) {
+  return new Promise((resolve, reject) => {
+    Promise.each(repos.map((repo) => {
       return function() {
         return getRepositoryPackages(repo);
       };
     }), function(packages) {
       list = Object.assign(list, packages);
-    }).then(function() {
+    }).then(() => {
       const result = {};
-      Object.keys(list).forEach(function(k) {
+      Object.keys(list).forEach((k) => {
         if ( filter(list[k]) ) {
           result[k] = list[k];
         }
@@ -180,7 +180,7 @@ function getPackages(repos, filter) {
  * Generates a client-side manifest file
  */
 function generateClientManifest(target, manifest) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     const dest = _path.join(ROOT, target, 'packages.js');
 
     var tpl = _fs.readFileSync(_path.join(ROOT, 'src/templates/dist/packages.js'));
@@ -214,7 +214,7 @@ function combinePreloads(manifest) {
   var pjs  = false;
   var preload = [];
 
-  manifest.preload.forEach(function(p) {
+  manifest.preload.forEach((p) => {
     if ( p.combine === false || p.src.match(/^(ftp|https?\:)?\/\//) ) {
       preload.push(p);
       return;
@@ -244,7 +244,7 @@ function combinePreloads(manifest) {
 function mutateClientManifest(packages) {
   packages = JSON.parse(JSON.stringify(packages));
 
-  Object.keys(packages).forEach(function(p) {
+  Object.keys(packages).forEach((p) => {
     packages[p].preload = combinePreloads(packages[p]);
 
     if ( packages[p].build ) {
@@ -270,8 +270,8 @@ function mutateClientManifest(packages) {
 
 const TARGETS = {
   'dist': function(cli, cfg) {
-    return new Promise(function(resolve, reject) {
-      getPackages(cfg.repositories).then(function(packages) {
+    return new Promise((resolve, reject) => {
+      getPackages(cfg.repositories).then((packages) => {
         packages = mutateClientManifest(packages);
 
         generateClientManifest('dist', packages).then(resolve).catch(reject);
@@ -280,15 +280,15 @@ const TARGETS = {
   },
 
   'dist-dev': function(cli, cfg) {
-    return new Promise(function(resolve, reject) {
-      getPackages(cfg.repositories).then(function(packages) {
+    return new Promise((resolve, reject) => {
+      getPackages(cfg.repositories).then((packages) => {
         packages = JSON.parse(JSON.stringify(packages));
 
-        Object.keys(packages).forEach(function(p) {
+        Object.keys(packages).forEach((p) => {
           var pkg = packages[p];
 
           if ( pkg.preload ) {
-            pkg.preload = pkg.preload.map(function(iter) {
+            pkg.preload = pkg.preload.map((iter) => {
               if ( !iter.src.match(/^(ftp|https?):/) ) {
                 try {
                   const asrc = _path.join(ROOT, 'src/packages', pkg.path, iter.src);
@@ -308,10 +308,10 @@ const TARGETS = {
   },
 
   'server': function(cli, cfg) {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
       const dest = _path.join(ROOT, 'src', 'server', 'packages.json');
 
-      getPackages(cfg.repositories).then(function(packages) {
+      getPackages(cfg.repositories).then((packages) => {
         const meta = {
           'dist': mutateClientManifest(packages),
           'dist-dev': packages
@@ -329,7 +329,7 @@ const TARGETS = {
  * Writes the given manifest file(s)
  */
 function writeManifest(target, cli, cfg) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     if ( TARGETS[target] ) {
       console.log('Generating manifest for', target);
       TARGETS[target](cli, cfg).then(resolve).catch(reject);

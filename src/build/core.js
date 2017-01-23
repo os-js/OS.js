@@ -70,9 +70,9 @@ function _filter(i, target) {
  * Wrapper for reading JS
  */
 function readScript(target, verbose, compress, list) {
-  return list.filter(function(i) {
+  return list.filter((i) => {
     return _filter(i, target);
-  }).map(function(i) {
+  }).map((i) => {
     const path = _path.join(ROOT, i.replace(/^(dev|prod):/, ''));
     if ( verbose ) {
       _utils.log('- using:', path, '(compress: ' + String(compress) + ')');
@@ -92,9 +92,9 @@ function readScript(target, verbose, compress, list) {
  * Wrapper for reading CSS
  */
 function readStyle(target, verbose, compress, list) {
-  return list.filter(function(i) {
+  return list.filter((i) => {
     return _filter(i, target);
-  }).map(function(i) {
+  }).map((i) => {
     const path = _path.join(ROOT, i.replace(/^(dev|prod):/, ''))
     if ( verbose ) {
       _utils.log('- using:', path, '(compress: ' + String(compress) + ')');
@@ -163,7 +163,7 @@ function getBuildFiles(opts) {
   var locales = opts.locales;
 
   if ( opts.overlays ) {
-    Object.keys(opts.overlays).forEach(function(k) {
+    Object.keys(opts.overlays).forEach((k) => {
       const a = opts.overlays[k];
       if ( a ) {
         if ( a.javascript instanceof Array ) {
@@ -194,15 +194,15 @@ function addFiles(dist, cfg, addStyle, addScript, test) {
   const jss = (test ? ['vendor/mocha.js', 'vendor/chai.js', 'client/test/test.js'] : []).concat(build.javascript);
   const csss = (test ? ['vendor/mocha.css'] : []).concat(build.stylesheets);
 
-  jss.forEach(function(i) {
+  jss.forEach((i) => {
     addScript(i.replace(/src\/client\/(.*)/, 'client/$1'));
   });
 
-  build.locales.forEach(function(i) {
+  build.locales.forEach((i) => {
     addScript(i.replace(/src\/client\/(.*)/, 'client/$1'));
   });
 
-  csss.forEach(function(i) {
+  csss.forEach((i) => {
     if ( _filter(i, dist) ) {
       addStyle(i.replace(/^(dev|prod):/, '').replace(/src\/client\/(.*)/, 'client/$1'));
     }
@@ -216,10 +216,10 @@ function copyResources(verbose, cfg, dist) {
   const tpldir = _path.join(ROOT, 'src', 'templates', 'dist', cfg.build.dist.template);
   const dest = _path.join(ROOT, dist);
 
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     _glob(_path.join(tpldir, '/**/*'), {
-    }).then(function(list) {
-      list.forEach(function(path) {
+    }).then((list) => {
+      list.forEach((path) => {
         if ( ['index.html', 'test.html'].indexOf(_path.basename(path)) === -1 ) {
           if ( verbose ) {
             _utils.log('- copying:', path);
@@ -229,7 +229,7 @@ function copyResources(verbose, cfg, dist) {
         }
       });
 
-      Object.keys(cfg.build.statics).forEach(function(f) {
+      Object.keys(cfg.build.statics).forEach((f) => {
         const dst = _path.join(ROOT, cfg.build.statics[f]);
 
         var path = f;
@@ -285,7 +285,7 @@ const TARGETS = {
     }
 
     function _build() {
-      return new Promise(function(resolve, reject) {
+      return new Promise((resolve, reject) => {
         const build = getBuildFiles(cfg.build);
         const end = compress ? '.min' : '';
 
@@ -323,8 +323,8 @@ const TARGETS = {
       });
     }
 
-    return new Promise(function(resolve, reject) {
-      _cleanup().then(_build).then(function() {
+    return new Promise((resolve, reject) => {
+      _cleanup().then(_build).then(() => {
         copyResources(verbose, cfg, 'dist').then(resolve);
       }).catch(reject);
     });
@@ -333,7 +333,7 @@ const TARGETS = {
   'dist-dev': function(cli, cfg) {
     const verbose = cli.option('verbose', false);
 
-    return new Promise(function(resolve) {
+    return new Promise((resolve) => {
       createIndex(verbose, cfg, 'dist-dev', addFiles);
       createIndex(verbose, cfg, 'dist-dev', addFiles, true);
 
@@ -346,7 +346,7 @@ const TARGETS = {
  * Builds core files
  */
 function buildFiles(target, cli, cfg) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     if ( TARGETS[target] ) {
       TARGETS[target](cli, cfg).then(resolve).catch(reject);
     } else {

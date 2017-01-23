@@ -54,7 +54,7 @@ require('colors');
 String.color = function(str, color) {
   str = String(str);
 
-  color.split(',').forEach(function(key) {
+  color.split(',').forEach((key) => {
     str = str[key.trim()] || str;
   });
   return str;
@@ -66,14 +66,14 @@ String.color = function(str, color) {
 Promise.each = function(list, onentry) {
   onentry = onentry || function() {};
 
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     (function next(i) {
       if ( i >= list.length ) {
         return resolve();
       }
 
       const iter = list[i]();
-      iter.then(function(arg) {
+      iter.then((arg) => {
         onentry(arg);
         next(i + 1);
       }).catch(reject);
@@ -93,10 +93,10 @@ function _getTargets(cli, defaults, strict) {
 
   var result = defaults;
   if ( target ) {
-    result = target.split(',').map(function(iter) {
+    result = target.split(',').map((iter) => {
       const val = iter.trim();
       return strict ? (defaults.indexOf(val) === -1 ? null : val) : val;
-    }).filter(function(iter) {
+    }).filter((iter) => {
       return !!iter;
     });
   }
@@ -112,9 +112,9 @@ function _eachTask(cli, args, taskName, namespace) {
     return Promise.reject('Not enough arguments');
   }
 
-  return new Promise(function(resolve, reject) {
-    _config.getConfiguration().then(function(cfg) {
-      Promise.each(args.replace(/\s/, '').split(',').map(function(iter) {
+  return new Promise((resolve, reject) => {
+    _config.getConfiguration().then((cfg) => {
+      Promise.each(args.replace(/\s/, '').split(',').map((iter) => {
         return function() {
           iter = (iter || '').replace('-', '_');
           if ( typeof namespace === 'function' ) {
@@ -142,7 +142,7 @@ const TASKS = {
     config: function(cli, cfg) {
       const list = _getTargets(cli, ['client', 'server'], true);
 
-      return Promise.all(list.map(function(target) {
+      return Promise.all(list.map((target) => {
         return _config.writeConfiguration(target, cli, cfg);
       }));
     },
@@ -150,7 +150,7 @@ const TASKS = {
     core: function(cli, cfg) {
       const list = _getTargets(cli, ['dist', 'dist-dev']);
 
-      return Promise.all(list.map(function(target) {
+      return Promise.all(list.map((target) => {
         return _core.buildFiles(target, cli, cfg);
       }));
     },
@@ -163,9 +163,9 @@ const TASKS = {
         [cli.option('fonts'), _themes.buildFonts]
       ];
 
-      const list = targets.filter(function(iter) {
+      const list = targets.filter((iter) => {
         return iter && iter[0];
-      }).map(function(iter) {
+      }).map((iter) => {
         return iter[1](cli, cfg, iter[0]);
       });
 
@@ -180,7 +180,7 @@ const TASKS = {
       const list = _getTargets(cli, ['dist', 'dist-dev']);
       list.push('server');
 
-      return Promise.all(list.map(function(target) {
+      return Promise.all(list.map((target) => {
         return _manifest.writeManifest(target, cli, cfg);
       }));
     },
@@ -193,14 +193,14 @@ const TASKS = {
         throw new Error('Invalid package name');
       }
 
-      return Promise.all(list.map(function(target) {
+      return Promise.all(list.map((target) => {
         return _packages.buildPackage(target, cli, cfg, name);
       }));
     },
 
     packages: function(cli, cfg) {
       const list = _getTargets(cli, ['dist', 'dist-dev']);
-      return Promise.all(list.map(function(target) {
+      return Promise.all(list.map((target) => {
         return _packages.buildPackages(target, cli, cfg);
       }));
     }
@@ -247,8 +247,8 @@ const TASKS = {
 
   generate: function(cli, cfg, task) {
     if ( _generate[task] ) {
-      return new Promise(function(resolve, reject) {
-        _generate[task](cli, cfg).then(function(arg) {
+      return new Promise((resolve, reject) => {
+        _generate[task](cli, cfg).then((arg) => {
 
           const out = cli.option('out');
           if ( out ) {
@@ -286,12 +286,12 @@ module.exports.build = function(cli, args) {
  * Task: `config`
  */
 module.exports.config = function(cli, arg) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     arg = (arg || '').replace('-', '_');
 
     if ( TASKS.config[arg] ) {
-      _config.getConfiguration().then(function(cfg) {
-        TASKS.config[arg](cli, cfg).then(function(arg) {
+      _config.getConfiguration().then((cfg) => {
+        TASKS.config[arg](cli, cfg).then((arg) => {
           if ( typeof arg !== 'undefined' ) {
             console.log(arg);
           }
@@ -323,7 +323,7 @@ module.exports.run = function(cli, args) {
     DIST: cli.option('target') || 'dist-dev'
   };
 
-  instance.init(opts).then(function(env) {
+  instance.init(opts).then((env) => {
     const config = instance.getConfig();
     if ( config.tz ) {
       process.env.TZ = config.tz;
@@ -338,12 +338,12 @@ module.exports.run = function(cli, args) {
     process.on('uncaughtException', function(error) {
       console.log('UNCAUGHT EXCEPTION', error, error.stack);
     });
-  }).catch(function(error) {
+  }).catch((error) => {
     console.log(error);
     process.exit(1);
   });
 
-  return new Promise(function() {
+  return new Promise(() => {
     // This is one promise we can't keep! :(
   });
 };

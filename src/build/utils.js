@@ -103,7 +103,7 @@ module.exports.mkdirSilent = function mkdirSilent(file) {
  */
 module.exports.makedict = function makedict(list, fn) {
   var result = {};
-  list.forEach(function(iter, idx) {
+  list.forEach((iter, idx) => {
     var data = fn(iter, idx);
     result[data[0]] = data[1];
   });
@@ -144,7 +144,7 @@ module.exports.compileLess = function compileLess(src, dest, opts, cb, onRead) {
       css = onRead(css);
     }
 
-    _less.render(css, opts).then(function(result) {
+    _less.render(css, opts).then((result) => {
       _fs.writeFileSync(dest, result.css);
       _fs.writeFileSync(dest + '.map', result.map);
       cb(false, true);

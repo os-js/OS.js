@@ -85,13 +85,13 @@ const TASKS = {
     const mimes = [];
     const proxies = [];
 
-    Object.keys(cfg.mime.mapping).forEach(function(i) {
+    Object.keys(cfg.mime.mapping).forEach((i) => {
       if ( i.match(/^\./) ) {
         mimes.push('  AddType ' + cfg.mime.mapping[i] + ' ' + i);
       }
     });
 
-    Object.keys(cfg.server.proxies).forEach(function(k) {
+    Object.keys(cfg.server.proxies).forEach((k) => {
       if ( k.substr(0, 1) !== '/' && typeof cfg.server.proxies[k] === 'string' ) {
         proxies.push('     RewriteRule ' + k + ' ' + cfg.server.proxies[k] + ' [P]');
       }
@@ -123,9 +123,9 @@ const TASKS = {
     const src = _path.join(ROOT, 'src', 'templates', 'lighttpd.conf');
 
     return Promise.resolve(_createWebserverConfig(cfg, target, src, function(mime) {
-      return Object.keys(mime.mapping).map(function(i) {
+      return Object.keys(mime.mapping).map((i) => {
         return i.match(/^\./) ? '  "' + i + '" => "' + mime.mapping[i] + '"' : null;
-      }).filter(function(i) {
+      }).filter((i) => {
         return !!i;
       }).join(',\n');
     }));
@@ -137,9 +137,9 @@ const TASKS = {
     const src = _path.join(ROOT, 'src', 'templates', 'nginx.conf');
 
     return Promise.resolve(_createWebserverConfig(cfg, target, src, function(mime) {
-      return Object.keys(mime.mapping).map(function(i) {
+      return Object.keys(mime.mapping).map((i) => {
         return i.match(/^\./) ? ('        ' + mime.mapping[i] + ' ' + i.replace(/^\./, '') + ';') : null;
-      }).filter(function(i) {
+      }).filter((i) => {
         return !!i;
       }).join('\n');
     }));
@@ -198,7 +198,7 @@ const TASKS = {
 
     _fs.copySync(src, dst);
 
-    typemap[type].cpy.forEach(function(c) {
+    typemap[type].cpy.forEach((c) => {
       _replaceInExample(name, _path.join(dst, c), false);
     });
 

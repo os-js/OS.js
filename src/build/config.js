@@ -49,10 +49,10 @@ const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
  * Generates a client-side config file
  */
 function generateClientConfiguration(target, cli, cfg) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     var settings = Object.assign({}, cfg.client);
 
-    const preloads = Object.keys(settings.Preloads || {}).map(function(k) {
+    const preloads = Object.keys(settings.Preloads || {}).map((k) => {
       return settings.Preloads[k];
     });
 
@@ -68,7 +68,7 @@ function generateClientConfiguration(target, cli, cfg) {
       settings.VFS.LocalStorage.Enabled = false;
 
       const valid = ['applications', 'home', 'osjs'];
-      Object.keys(settings.VFS.Mountpoints).forEach(function(k) {
+      Object.keys(settings.VFS.Mountpoints).forEach((k) => {
         if ( valid.indexOf(k) === -1 ) {
           delete settings.VFS.Mountpoints[k];
         }
@@ -85,7 +85,7 @@ function generateClientConfiguration(target, cli, cfg) {
       });
     }
 
-    _themes.readMetadata(cfg).then(function(themes) {
+    _themes.readMetadata(cfg).then((themes) => {
       settings.Fonts.list = themes.fonts.concat(settings.Fonts.list);
       settings.Styles = themes.styles;
       settings.Sounds = _utils.makedict(themes.sounds, function(iter) {
@@ -97,8 +97,8 @@ function generateClientConfiguration(target, cli, cfg) {
 
       _metadata.getPackages(cfg.repositories, function(pkg) {
         return pkg && pkg.autostart === true;
-      }).then(function(list) {
-        settings.AutoStart = settings.AutoStart.concat(Object.keys(list).map(function(k) {
+      }).then((list) => {
+        settings.AutoStart = settings.AutoStart.concat(Object.keys(list).map((k) => {
           return list[k].className;
         }));
         settings.MIME = cfg.mime;
@@ -117,15 +117,15 @@ function generateClientConfiguration(target, cli, cfg) {
 function generateServerConfiguration(cli, cfg) {
   var settings = Object.assign({}, cfg.server);
 
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     _metadata.getPackages(cfg.repositories, function(pkg) {
       return pkg && pkg.type === 'extension';
-    }).then(function(extensions) {
+    }).then((extensions) => {
       const src = _path.join(ROOT, 'src');
-      Object.keys(extensions).forEach(function(e) {
+      Object.keys(extensions).forEach((e) => {
 
         if ( extensions[e].conf && extensions[e].conf instanceof Array ) {
-          extensions[e].conf.forEach(function(c) {
+          extensions[e].conf.forEach((c) => {
             try {
               const p = _path.join(src, 'packages', extensions[e].path, c);
               try {
@@ -159,7 +159,7 @@ function getConfigPath(config, path, defaultValue) {
     var ns = config;
 
     const queue = path.split(/\./);
-    queue.forEach(function(k, i) {
+    queue.forEach((k, i) => {
       if ( i >= queue.length - 1 ) {
         result = ns[k];
       } else {
@@ -204,7 +204,7 @@ const setConfigPath = (function() {
     var resulted = {};
     var ns = resulted;
 
-    queue.forEach(function(k, i) {
+    queue.forEach((k, i) => {
       if ( i >= queue.length - 1 ) {
         ns[k] = value;
       } else {
@@ -317,13 +317,13 @@ function getConfiguration() {
     '%USERNAME%'
   ];
 
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     const path = _path.join(ROOT, 'src', 'conf');
 
     var object = {};
-    _glob(path + '/*.json').then(function(files) {
+    _glob(path + '/*.json').then((files) => {
 
-      files.forEach(function(file) {
+      files.forEach((file) => {
         const json = JSON.parse(_fs.readFileSync(file));
         try {
           object = _utils.mergeObject(object, json);
@@ -336,14 +336,14 @@ function getConfiguration() {
       var tmpFile = JSON.stringify(object).replace(/%ROOT%/g, _utils.fixWinPath(ROOT));
       const tmpConfig = JSON.parse(tmpFile);
 
-      const words = tmpFile.match(/%([A-z0-9_\-\.]+)%/g).filter((function() {
+      const words = tmpFile.match(/%([A-z0-9_\-\.]+)%/g).filter((() => {
         var seen = {};
         return function(element, index, array) {
           return !(element in seen) && (seen[element] = 1);
         };
       })());
 
-      words.forEach(function(w) {
+      words.forEach((w) => {
         const p = w.replace(/%/g, '');
         const u = /^[A-Z]*$/.test(p);
         if ( safeWords.indexOf(w) === -1 ) {
@@ -365,14 +365,14 @@ function getConfiguration() {
 
 const TARGETS = {
   client: function(cli, cfg) {
-    return Promise.each(['dist', 'dist-dev'].map(function(dist) {
+    return Promise.each(['dist', 'dist-dev'].map((dist) => {
       return function() {
-        return new Promise(function(resolve, reject) {
+        return new Promise((resolve, reject) => {
           const src = _path.join(ROOT, 'src', 'templates', 'dist', 'settings.js');
           const tpl = _fs.readFileSync(src).toString();
           const dest = _path.join(ROOT, dist, 'settings.js');
 
-          generateClientConfiguration(dist, cli, cfg).then(function(settings) {
+          generateClientConfiguration(dist, cli, cfg).then((settings) => {
             const data = tpl.replace('%CONFIG%', JSON.stringify(settings, null, 4));
             resolve(_fs.writeFileSync(dest, data));
           }).catch(reject);
@@ -382,10 +382,10 @@ const TARGETS = {
   },
 
   server: function(cli, cfg) {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
       const dest = _path.join(ROOT, 'src', 'server', 'settings.json');
 
-      generateServerConfiguration(cli, cfg).then(function(settings) {
+      generateServerConfiguration(cli, cfg).then((settings) => {
         const data = JSON.stringify(settings, null, 4);
         resolve(_fs.writeFileSync(dest, data));
       }).catch(reject);
@@ -397,7 +397,7 @@ const TARGETS = {
  * Writes given configuration file(s)
  */
 function writeConfiguration(target, cli, cfg) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     if ( TARGETS[target] ) {
       console.log('Generating configuration for', target);
       TARGETS[target](cli, cfg).then(resolve).catch(reject);
@@ -550,8 +550,8 @@ function removeRepository(config, name) {
  * Lists all packages
  */
 function listPackages(config) {
-  return new Promise(function(resolve) {
-    _metadata.getPackages(config.repositories).then(function(packages) {
+  return new Promise((resolve) => {
+    _metadata.getPackages(config.repositories).then((packages) => {
       const currentEnabled = getConfigPath(config, 'packages.ForceEnable') || [];
       const currentDisabled = getConfigPath(config, 'packages.ForceDisable') || [];
 
@@ -568,7 +568,7 @@ function listPackages(config) {
       }
 
       if ( packages ) {
-        Object.keys(packages).forEach(function(pn) {
+        Object.keys(packages).forEach((pn) => {
           const p = packages[pn];
 
           var es = p.enabled !== false;

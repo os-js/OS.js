@@ -59,14 +59,14 @@ function readMetadata(cfg) {
 
   function _readMetadata(dir, whitelist) {
 
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
       whitelist = whitelist || [];
 
-      _glob(_path.join(themes, dir, '*', 'metadata.json')).then(function(files) {
-        const list = files.filter(function(check) {
+      _glob(_path.join(themes, dir, '*', 'metadata.json')).then((files) => {
+        const list = files.filter((check) => {
           const d = _path.basename(_path.dirname(check));
           return whitelist.indexOf(d) >= 0;
-        }).map(function(check) {
+        }).map((check) => {
           var raw = _fs.readFileSync(check);
           return JSON.parse(raw);
         });
@@ -77,42 +77,42 @@ function readMetadata(cfg) {
   }
 
   function _readFonts(dir, whitelist) {
-    return new Promise(function(resolve, reject) {
-      _glob(_path.join(themes, dir, '*', 'style.css')).then(function(files) {
-        resolve(files.map(function(check) {
+    return new Promise((resolve, reject) => {
+      _glob(_path.join(themes, dir, '*', 'style.css')).then((files) => {
+        resolve(files.map((check) => {
           return _path.basename(_path.dirname(check));
         }));
       });
     });
   }
 
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     return Promise.all([
-      new Promise(function(yes, no) {
-        _readFonts('fonts', cfg.themes.fonts).then(function(list) {
+      new Promise((yes, no) => {
+        _readFonts('fonts', cfg.themes.fonts).then((list) => {
           result.fonts = list;
           yes();
         }).catch(no);
       }),
-      new Promise(function(yes, no) {
-        _readMetadata('icons', cfg.themes.icons).then(function(list) {
+      new Promise((yes, no) => {
+        _readMetadata('icons', cfg.themes.icons).then((list) => {
           result.icons = list;
           yes();
         }).catch(no);
       }),
-      new Promise(function(yes, no) {
-        _readMetadata('sounds', cfg.themes.sounds).then(function(list) {
+      new Promise((yes, no) => {
+        _readMetadata('sounds', cfg.themes.sounds).then((list) => {
           result.sounds = list;
           yes();
         }).catch(no);
       }),
-      new Promise(function(yes, no) {
-        _readMetadata('styles', cfg.themes.styles).then(function(list) {
+      new Promise((yes, no) => {
+        _readMetadata('styles', cfg.themes.styles).then((list) => {
           result.styles = list;
           yes();
         }).catch(no);
       })
-    ]).then(function() {
+    ]).then(() => {
       resolve(result);
     }).catch(reject);
   });
@@ -126,7 +126,7 @@ function readMetadata(cfg) {
  * Builds fonts
  */
 function buildFonts(cli, cfg) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     console.log('Building fonts');
     _utils.mkdirSilent(_path.join(ROOT, 'dist', 'themes', 'fonts'));
 
@@ -135,7 +135,7 @@ function buildFonts(cli, cfg) {
       rep = rep.replace(/^\w+\//, '');
     }
 
-    const concated = cfg.themes.fonts.map(function(iter) {
+    const concated = cfg.themes.fonts.map((iter) => {
       const src = _path.join(ROOT, 'src', 'client', 'themes', 'fonts', iter);
       const dst = _path.join(ROOT, 'dist', 'themes', 'fonts', iter);
 
@@ -158,7 +158,7 @@ function buildFonts(cli, cfg) {
  * Builds static files
  */
 function buildStatic(cli, cfg) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     console.log('Building statics');
 
     const src = _path.join(ROOT, 'src', 'client', 'themes', 'wallpapers');
@@ -168,7 +168,7 @@ function buildStatic(cli, cfg) {
     const sdst = _path.join(ROOT, 'dist', 'themes', 'sounds');
     _utils.mkdirSilent(sdst);
 
-    cfg.themes.sounds.forEach(function(i) {
+    cfg.themes.sounds.forEach((i) => {
       const src = _path.join(ROOT, 'src', 'client', 'themes', 'sounds', i);
       const dst = _path.join(ROOT, 'dist', 'themes', 'sounds', i);
       _fs.copySync(src, dst);
@@ -185,7 +185,7 @@ function buildStatic(cli, cfg) {
 function buildIcon(cli, cfg, name) {
 
   function _buildIcon(n) {
-    return new Promise(function(resolve) {
+    return new Promise((resolve) => {
       console.log('Building icon pack', String.color(n, 'blue,bold'));
 
       const src = _path.join(ROOT, 'src', 'client', 'themes', 'icons', n);
@@ -214,7 +214,7 @@ function buildIcon(cli, cfg, name) {
   }
 
   const list = name ? [name] : cfg.themes.icons;
-  return Promise.all(list.map(function(n) {
+  return Promise.all(list.map((n) => {
     return _buildIcon(n);
   }));
 }
@@ -225,7 +225,7 @@ function buildIcon(cli, cfg, name) {
 function buildStyle(cli, cfg, name) {
 
   function _buildStyle(n) {
-    return new Promise(function(resolve) {
+    return new Promise((resolve) => {
       console.log('Building style', String.color(n, 'blue,bold'));
 
       const src = _path.join(ROOT, 'src', 'client', 'themes', 'styles', n);
@@ -264,7 +264,7 @@ function buildStyle(cli, cfg, name) {
   }
 
   const list = name ? [name] : cfg.themes.styles;
-  return Promise.all(list.map(function(n) {
+  return Promise.all(list.map((n) => {
     return _buildStyle(n);
   }));
 }
