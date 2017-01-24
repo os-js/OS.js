@@ -50,7 +50,10 @@ spl_autoload_register(function($name) {
   }
 });
 
-@include __DIR__ . '/vendor/autoload.php';
+$al = __DIR__ . '/vendor/autoload.php';
+if ( file_exists($al) ) {
+    require $al;
+}
 
 use OSjs\Core\Instance;
 Instance::run();
