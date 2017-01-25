@@ -94,6 +94,9 @@
 
     // API
     'SERVICENOTIFICATION_TOOLTIP' : 'Logged into external services: {0}',
+    'CONNECTION_LOST': 'Connection to the server was lost. Reconnecting...',
+    'CONNECTION_RESTORED': 'Connection to the server was restored',
+    'CONNECTION_RESTORE_FAILED': 'Failed to re-establish connection. Trying again.',
 
     // Utils
     'ERR_UTILS_XHR_FATAL' : 'Fatal Error',
@@ -472,7 +475,9 @@
     'LBL_WIDGET': 'Widget',
     'LBL_WIDGETS': 'Widgets',
     'LBL_LOCK': 'Lock',
-    'LBL_UNLOCK': 'Unlock'
+    'LBL_UNLOCK': 'Unlock',
+    'LBL_WARNING': 'Warning',
+    'LBL_INFO': 'Info'
   };
 
 })();

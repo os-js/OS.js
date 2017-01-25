@@ -224,7 +224,7 @@
 
     var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
-      wm.notification({title: 'Warning!', message: 'You are On-line!'});
+      wm.notification({title: API._('LBL_INFO'), message: API._('CONNECTION_RESTORED')});
     }
   };
 
@@ -234,13 +234,13 @@
    * @function onOffline
    * @memberof OSjs.Core.Connection#
    */
-  Connection.prototype.onOffline = function() {
+  Connection.prototype.onOffline = function(reconnecting) {
     console.warn('Connection::onOffline()', 'Going offline...');
     this.offline = true;
 
     var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
-      wm.notification({title: 'Warning!', message: 'You are Off-line!'});
+      wm.notification({title: API._('LBL_WARNING'), message: API._(reconnecting ? 'CONNECTION_RESTORE_FAILED' : 'CONNECTION_LOST')});
     }
   };
 

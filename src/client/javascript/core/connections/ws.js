@@ -34,14 +34,27 @@
   function WSConnection() {
     Connection.apply(this, arguments);
 
+    var port = API.getConfig('Connection.WSPort');
+    var url = window.location.protocol.replace('http', 'ws') + '//' + window.location.host;
+    if ( port !== 'upgrade' ) {
+      if ( url.match(/:\d+$/) ) {
+        url = url.replace(/:\d+$/, '');
+      }
+      url += ':' + port;
+    }
+
     this.ws = null;
+    this.wsurl = url;
     this.wsqueue = {};
+    this.destroying = false;
   }
 
   WSConnection.prototype = Object.create(Connection.prototype);
   WSConnection.constructor = Connection;
 
   WSConnection.prototype.destroy = function() {
+    this.destroying = true;
+
     if ( this.ws ) {
       this.ws.close();
     }
@@ -52,51 +65,75 @@
   };
 
   WSConnection.prototype.init = function(callback) {
-    var self = this;
+    this.destroying = false;
 
-    var connected = false;
-    var port = API.getConfig('Connection.WSPort');
+    this._connect(false, callback);
+  };
 
-    var url = window.location.protocol.replace('http', 'ws') + '//' + window.location.host;
-    if ( port !== 'upgrade' ) {
-      if ( url.match(/:\d+$/) ) {
-        url = url.replace(/:\d+$/, '');
-      }
-      url += ':' + port;
+  WSConnection.prototype._connect = function(reconnect, callback) {
+    if ( this.destroying || this.ws && !reconnect ) {
+      return;
     }
 
-    console.info('Using WebSocket', url);
+    console.info('Trying WebSocket Connection', this.wsurl);
 
-    this.ws = new WebSocket(url);
+    var self = this;
+    var connected = false;
+
+    this.ws = new WebSocket(this.wsurl);
 
     this.ws.onopen = function() {
       connected = true;
-
       callback();
     };
 
     this.ws.onmessage = function(ev) {
       var data = JSON.parse(ev.data);
       var idx = data._index;
-
-      if ( typeof idx === 'undefined'  ) {
-        self.message(data);
-      } else {
-        if ( self.wsqueue[idx] ) {
-          delete data._index;
-
-          self.wsqueue[idx](data);
-
-          delete self.wsqueue[idx];
-        }
-      }
+      self._onmessage(idx, data);
     };
 
     this.ws.onclose = function(ev) {
       if ( !connected && ev.code !== 3001 ) {
         callback('WebSocket connection error'); // FIXME: Locale
       }
+      self._onclose();
     };
+  };
+
+  WSConnection.prototype._onmessage = function(idx, data) {
+    if ( typeof idx === 'undefined'  ) {
+      this.message(data);
+    } else {
+      if ( this.wsqueue[idx] ) {
+        delete data._index;
+
+        this.wsqueue[idx](data);
+
+        delete this.wsqueue[idx];
+      }
+    }
+  };
+
+  WSConnection.prototype._onclose = function(reconnecting) {
+    var self = this;
+    if ( this.destroying ) {
+      return;
+    }
+
+    this.onOffline(reconnecting);
+
+    this.ws = null;
+
+    setTimeout(function() {
+      self._connect(true, function(err) {
+        if ( err ) {
+          self._onclose((reconnecting || 0) + 1);
+        } else {
+          self.onOnline();
+        }
+      });
+    }, reconnecting ? 10000 : 1000);
   };
 
   WSConnection.prototype.message = function(data) {
