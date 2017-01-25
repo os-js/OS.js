@@ -844,7 +844,7 @@
 
       var preventTimeout;
       function _onanimationend(ev) {
-        if ( typeof self._animationCallback === 'function') {
+        if ( typeof animationCallback === 'function') {
           clearTimeout(preventTimeout);
           preventTimeout = setTimeout(function() {
             animationCallback(ev);
