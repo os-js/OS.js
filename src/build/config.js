@@ -75,8 +75,6 @@ function generateClientConfiguration(target, cli, cfg) {
       });
     }
 
-    settings.Connection.WSPath = cfg.server.http.ws.path;
-    settings.Connection.WSPort = cfg.server.http.ws.port;
     settings.Broadway = cfg.broadway;
 
     if ( cfg.broadway.enabled ) {

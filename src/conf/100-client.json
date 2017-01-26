@@ -4,6 +4,8 @@
       "Type": "%connection%",
       "Authenticator": "%authenticator%",
       "Storage": "%storage%",
+      "WSPort": "%server.http.ws.port%",
+      "WSPath": "%server.http.ws.path%",
       "RootURI": "",
       "APIURI": "API",
       "FSURI": "FS",
