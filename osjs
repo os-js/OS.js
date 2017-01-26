@@ -44,8 +44,10 @@
     console.log('  generate:package --name=REPO/NAME --type=TYPE        Generates a new package')
     console.log('');
     console.log('Misc:');
-    console.log('  run --target=DIR [--port=PORT]                       Runs OS.js on given dist');
+    console.log('  run --target=DIR [--port=N] [--loglevel=N]           Runs OS.js on given dist');
     console.log('');
+    console.log('Use the --verbose argument to get detailed information in build output. Loglevels: ');
+    console.log('INFO: 1, WARN: 2, WARNING: 2, ERROR: 3, VERBOSE: 8 (default: 7)');
 
     return done(true);
   }
