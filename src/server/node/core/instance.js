@@ -584,22 +584,19 @@ module.exports.init = function init(opts) {
  * @memberof core.instance
  */
 module.exports.run = function run(port) {
-  const httpConfig = CONFIG.http || {};
+  const httpConfig = Object.assign({ws: {}}, CONFIG.http || {});
 
   LOGGER.log('INFO', LOGGER.colored('Starting OS.js server', 'green'));
-  LOGGER.log('INFO', LOGGER.colored(['Using', httpConfig.mode, 'on port', ENV.PORT, 'in', ENV.DIST].join(' '), 'green'));
+  LOGGER.log('INFO', LOGGER.colored(['Using', ENV.DIST].join(' '), 'green'));
+  LOGGER.log('INFO', LOGGER.colored(['Running', httpConfig.mode, 'on localhost:' + ENV.PORT].join(' '), 'green'));
 
   if ( httpConfig.connection === 'ws' ) {
-    const msg = ['Using WebSocket'];
-    if ( httpConfig.ws && httpConfig.ws.port !== 'upgrade' ) {
-      msg.push('on port');
-      msg.push(String(httpConfig.ws.port));
-    }
+    const wsp = httpConfig.ws.port === 'upgrade' ? ENV.PORT : httpConfig.ws.port;
+    const msg = ['Running ws', 'on localhost:' + wsp + (httpConfig.ws.path || '')];
     LOGGER.log('INFO', LOGGER.colored(msg.join(' '), 'green'));
   }
 
   const result = _osjs.http.run(ENV.PORT);
-
   LOGGER.log('INFO', LOGGER.colored('Ready...', 'green'));
 
   return result;
