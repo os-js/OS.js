@@ -246,7 +246,12 @@ function copyResources(verbose, cfg, dist) {
         if ( verbose ) {
           _utils.log('- included:', dst);
         }
-        _fs.copySync(src, dst);
+
+        try {
+          _fs.copySync(src, dst);
+        } catch ( e ) {
+          _utils.log(String.color('Warning:', 'yellow'), e);
+        }
       });
 
       resolve();
