@@ -75,6 +75,7 @@ function generateClientConfiguration(target, cli, cfg) {
       });
     }
 
+    settings.Connection.WSPath = cfg.server.http.ws.path;
     settings.Connection.WSPort = cfg.server.http.ws.port;
     settings.Broadway = cfg.broadway;
 
@@ -324,8 +325,8 @@ function getConfiguration() {
     _glob(path + '/*.json').then((files) => {
 
       files.forEach((file) => {
-        const json = JSON.parse(_fs.readFileSync(file));
         try {
+          const json = JSON.parse(_fs.readFileSync(file));
           object = _utils.mergeObject(object, json);
         } catch ( e ) {
           console.warn('Failed to read JSON file', _path.basename(file), 'Syntax error ?', e);

@@ -33,7 +33,8 @@
       "connection": "%connection%",
       "port" : 8000,
       "ws": {
-        "port": "upgrade"
+        "port": "upgrade",
+        "path": ""
       },
       "cert": {
         "path": null,

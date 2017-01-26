@@ -567,9 +567,13 @@ function createServer(env, resolve, reject) {
       server: httpServer
     };
 
+    const path = httpConfig.ws ? httpConfig.ws.path : '';
     const port = httpConfig.ws ? httpConfig.ws.port : 'upgrade';
     if ( port !== 'upgrade' ) {
       opts.port = port;
+    }
+    if ( path ) {
+      opts.path = path;
     }
 
     websocketServer = new (require('ws')).Server(opts);

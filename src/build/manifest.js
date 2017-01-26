@@ -98,19 +98,23 @@ function getPackageMetadata(repo, file) {
 
   return new Promise((resolve, reject) => {
     const name = [repo, _path.basename(_path.dirname(file))].join('/');
-    const meta = JSON.parse(_fs.readFileSync(file));
+    try {
+      const meta = JSON.parse(_fs.readFileSync(file));
 
-    meta.type = meta.type || 'application';
-    meta.path = name;
-    meta.build = meta.build || {};
-    meta.repo = repo;
-    meta.preload = (meta.preload ? meta.preload : []).map(parsePreloads);
+      meta.type = meta.type || 'application';
+      meta.path = name;
+      meta.build = meta.build || {};
+      meta.repo = repo;
+      meta.preload = (meta.preload ? meta.preload : []).map(parsePreloads);
 
-    if ( typeof meta.sources !== 'undefined' ) {
-      meta.preload = meta.preload.concat(meta.sources.map(parsePreloads));
+      if ( typeof meta.sources !== 'undefined' ) {
+        meta.preload = meta.preload.concat(meta.sources.map(parsePreloads));
+      }
+
+      resolve(Object.freeze(meta));
+    } catch (e) {
+      reject('Error with ' + file + e)
     }
-
-    resolve(Object.freeze(meta));
   });
 }
 
