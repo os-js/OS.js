@@ -35,7 +35,9 @@
     Connection.apply(this, arguments);
 
     var port = API.getConfig('Connection.WSPort');
-    var url = window.location.protocol.replace('http', 'ws') + '//' + window.location.host;
+    var path = API.getConfig('Connection.WSPath') || '';
+    var url = window.location.protocol.replace('http', 'ws') + '//' + window.location.host + path;
+
     if ( port !== 'upgrade' ) {
       if ( url.match(/:\d+$/) ) {
         url = url.replace(/:\d+$/, '');
@@ -96,6 +98,7 @@
     this.ws.onclose = function(ev) {
       if ( !connected && ev.code !== 3001 ) {
         callback('WebSocket connection error'); // FIXME: Locale
+        return;
       }
       self._onclose();
     };
