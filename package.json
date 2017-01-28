@@ -29,6 +29,7 @@
   "dependencies": {
     "chokidar": "^1.6.1",
     "colors": "^1.1.2",
+    "compression": "^1.6.2",
     "diskspace": ">=1.0.3",
     "express-session": "^1.15.0",
     "findit": ">=2.0.0",

@@ -79,6 +79,7 @@ const _url = require('url');
 const _fs = require('fs-extra');
 const _path = require('path');
 const _formidable = require('formidable');
+const _compression = require('compression');
 
 var httpServer = null;
 var websocketServer = null;
@@ -523,30 +524,32 @@ function createServer(env, resolve, reject) {
 
       logger.log('VERBOSE', logger.colored(request.method, 'bold'), path);
 
-      const respond = createHttpResponder(env, request, response);
-      if ( request.method === 'POST' ) {
-        if ( contentType.indexOf('application/json') !== -1 ) {
-          var body = [];
-          request.on('data', function(data) {
-            body.push(data);
-          });
+      _compression(config.http.compression || {})(request, response, function() {
+        const respond = createHttpResponder(env, request, response);
+        if ( request.method === 'POST' ) {
+          if ( contentType.indexOf('application/json') !== -1 ) {
+            var body = [];
+            request.on('data', function(data) {
+              body.push(data);
+            });
 
-          request.on('end', function() {
-            const data = JSON.parse(Buffer.concat(body));
-            handleRequest(createHttpObject(request, response, path, data, respond));
-          });
-        } else if ( contentType.indexOf('multipart/form-data') !== -1 ) {
-          const form = new _formidable.IncomingForm({
-            uploadDir: tmpdir
-          });
+            request.on('end', function() {
+              const data = JSON.parse(Buffer.concat(body));
+              handleRequest(createHttpObject(request, response, path, data, respond));
+            });
+          } else if ( contentType.indexOf('multipart/form-data') !== -1 ) {
+            const form = new _formidable.IncomingForm({
+              uploadDir: tmpdir
+            });
 
-          form.parse(request, function(err, fields, files) {
-            handleRequest(createHttpObject(request, response, path, fields, respond, files));
-          });
+            form.parse(request, function(err, fields, files) {
+              handleRequest(createHttpObject(request, response, path, fields, respond, files));
+            });
+          }
+        } else {
+          handleRequest(createHttpObject(request, response, path, {}, respond));
         }
-      } else {
-        handleRequest(createHttpObject(request, response, path, {}, respond));
-      }
+      });
     });
   }
 
