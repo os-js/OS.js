@@ -61,7 +61,7 @@
    * @memberof OSjs.Helpers
    * @see OSjs.Core.Window
    *
-   * @link https://os.js.org/manual/package/iframe/
+   * @link https://os-js.org/manual/package/iframe/
    */
   function IFrameApplicationWindow(name, opts, app) {
     opts = Utils.argumentDefaults(opts, {

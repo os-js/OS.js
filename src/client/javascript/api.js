@@ -269,7 +269,7 @@
    * @param   {Object}    args      cURL Arguments (see docs)
    * @param   {Function}  callback  Callback function => fn(error, response)
    *
-   * @link https://os.js.org/manual/api/usage/curl/
+   * @link https://os-js.org/manual/api/usage/curl/
    */
   API.curl = function API_curl(args, callback) {
     args = args || {};

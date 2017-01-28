@@ -946,7 +946,7 @@
         // FIXME: NEEDS ALL TESTS ON A CUSTOM LOCATION
         it('should return 2XX', function(done) {
           OSjs.API.curl({
-            url: 'https://os.js.org'
+            url: 'https://os-js.org'
           }, function(err, res) {
             res = res || {};
 

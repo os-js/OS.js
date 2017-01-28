@@ -665,7 +665,7 @@
       });
       /*
       it('should successfully read remote file', function(done) {
-        get(url + '/FS/get/https://os.js.org/images/logo-header.png', function(err, res, body) {
+        get(url + '/FS/get/https://os-js.org/images/logo-header.png', function(err, res, body) {
           assert.equal(200, res.statusCode);
           assert.equal('image/png', res.headers['content-type']);
           done();
@@ -757,7 +757,7 @@
         it('successfull HEAD request', function(done) {
           instance.api.curl({
             method: 'HEAD',
-            url: 'http://os.js.org/test/curl-example.html'
+            url: 'http://os-js.org/test/curl-example.html'
           }, function(error, result) {
             assert.equal(false, error);
             assert.equal(200, result.httpCode);
@@ -771,7 +771,7 @@
         it('successfull GET request', function(done) {
           instance.api.curl({
             method: 'GET',
-            url: 'http://os.js.org/test/curl-example.html'
+            url: 'http://os-js.org/test/curl-example.html'
           }, function(error, result) {
             assert.equal(false, error);
             assert.equal(200, result.httpCode);
@@ -784,7 +784,7 @@
           instance.api.curl({
             method: 'GET',
             binary: true,
-            url: 'http://os.js.org/test/curl-example.html'
+            url: 'http://os-js.org/test/curl-example.html'
           }, function(error, result) {
             var data = 'data:application/octet-stream;base64,' + (new Buffer(testFor).toString('base64'));
             assert.equal(false, error);
@@ -800,7 +800,7 @@
         it('successfull POST request', function(done) {
           instance.api.curl({
             method: 'POST',
-            url: 'http://os.js.org/test/curl-example.html'
+            url: 'http://os-js.org/test/curl-example.html'
           }, function(error, result) {
             assert.equal(false, error);
             assert.equal(405, result.httpCode); // Should be 405 because of github pages

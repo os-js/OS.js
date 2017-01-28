@@ -37,7 +37,7 @@ module.exports.register = function(servers) {
 /*
  * When a HTTP request is performed
  *
- * See https://os.js.org/doc/server/global.html#ServerRequest for the `http`
+ * See https://os-js.org/doc/server/global.html#ServerRequest for the `http`
  * object documentation
  */
 module.exports.request = function(http, next) {

@@ -61,7 +61,7 @@
    * @param   {Metadata}          metadata    Application metadata
    * @param   {Object}            [settings]  Application settings
    *
-   * @link https://os.js.org/manual/package/application/
+   * @link https://os-js.org/manual/package/application/
    *
    * @abstract
    * @constructor
