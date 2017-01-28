@@ -79,16 +79,16 @@ function checkEnabledState(enabled, disabled, meta) {
   const shortName = meta.path.split('/')[1];
 
   if ( String(meta.enabled) === 'false' ) {
-    if ( enabled.indexOf(shortName) !== -1 ) {
+    if ( enabled.indexOf(shortName) !== -1 || enabled.indexOf(name) !== -1 ) {
       return true;
     }
-    return enabled.indexOf(name) !== -1;
+    return false;
   }
 
-  if ( disabled.indexOf(shortName) === -1 ) {
-    return true;
+  if ( disabled.indexOf(shortName) !== -1 || disabled.indexOf(name) !== -1 ) {
+    return false;
   }
-  return disabled.indexOf(name) === -1;
+  return true;
 }
 
 /*
