@@ -15,11 +15,21 @@
   var session = (function() {
     var _cache = {};
     return {
+      save: function(cb) {
+        if ( typeof cb !== 'function' ) {
+          cb = cb || function() {};
+        }
+        cb();
+      },
+      destroy: function(cb) {
+        return cb();
+      },
       get: function(key) {
         return _cache[key];
       },
-      set: function(key, value) {
+      set: function(key, value, save) {
         _cache[key] = value;
+        session.save(save);
       }
     };
   })();

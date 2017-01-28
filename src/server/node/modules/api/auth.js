@@ -48,8 +48,9 @@ const _instance = require('./../../core/instance.js');
 module.exports.login = function(http, data) {
   function _login(resolve, reject) {
     function _fail(e) {
-      http.session.set('username', '');
-      reject(e);
+      http.session.set('username', '', function() {
+        reject(e);
+      });
     }
 
     function _proceed(userData) {
@@ -57,14 +58,13 @@ module.exports.login = function(http, data) {
 
       _instance.getStorage().getSettings(http, userData.username).then(function(userSettings) {
         _instance.getStorage().getBlacklist(http, userData.username).then(function(blacklist) {
-          http.session.set('username', userData.username);
-
-          resolve({
-            userData: userData,
-            userSettings: userSettings,
-            blacklistedPackages: blacklist
+          http.session.set('username', userData.username, function() {
+            resolve({
+              userData: userData,
+              userSettings: userSettings,
+              blacklistedPackages: blacklist
+            });
           });
-
         }).catch(_fail);
       }).catch(_fail);
     }
@@ -97,9 +97,9 @@ module.exports.login = function(http, data) {
 module.exports.logout = function(http, resolve, reject) {
   return new Promise(function(resolve, reject) {
     _instance.getAuth().logout(http).then(function(arg) {
-      http.session.set('username', null);
-
-      resolve(arg);
+      http.session.destroy(function() {
+        resolve(arg);
+      });
     }).catch(reject);
   });
 };

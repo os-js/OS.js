@@ -35,14 +35,6 @@
  */
 
 /**
- * An object with session helpers
- * @property  {String}    id      Session ID
- * @property  {Function}  set     Sets a session variable
- * @property  {Function}  get     Gets a sesion variable
- * @typedef ServerSession
- */
-
-/**
  * An object filled with data regarding the Server request. Also allows you to use a responder to
  * interrupt the normal procedures.
  * @property  {http.Server}           _http       Node HTTP server
@@ -79,14 +71,13 @@
 
 const _vfs = require('./vfs.js');
 const _instance = require('./instance.js');
+const _session = require('./session.js');
 const _auth = require('./auth.js');
 const _utils = require('./utils.js');
 
 const _url = require('url');
 const _fs = require('fs-extra');
 const _path = require('path');
-const _cookie = require('cookie');
-const _session = require('simple-session');
 const _formidable = require('formidable');
 
 var httpServer = null;
@@ -162,7 +153,11 @@ function proxyCall(env, proxy, request, response) {
 /*
  * Handles a HTTP request
  */
-function handleRequest(http) {
+function handleRequest(http, onend) {
+  onend = onend || function(h, cb) {
+    cb(h, cb);
+  };
+
   const logger = _instance.getLogger();
   const env = _instance.getEnvironment();
   const api = _instance.getAPI();
@@ -184,10 +179,13 @@ function handleRequest(http) {
       }, 403);
     }
   }
+
   function _resolveResponse(result) {
-    http.respond.json({
-      error: null,
-      result: result
+    onend(http, function() {
+      http.respond.json({
+        error: null,
+        result: result
+      });
     });
   }
 
@@ -229,7 +227,7 @@ function handleRequest(http) {
 
   function _apiCall() {
     _checkPermission('api', {method: http.endpoint}, http.data).then(function() {
-      const session_id = http.session.id;
+      const session_id = http.sessionID;
       api[http.endpoint](http, http.data).then(function(res) {
         if ( http.endpoint === 'login' ) {
           const username = res.userData.username;
@@ -344,7 +342,7 @@ function createHttpResponder(env, request, response) {
 
         const range = request.headers.range;
         const headers = {
-          'Content-Type': mime || _vfs.getMime(path),
+          'Content-Type': mime || _vfs.getMime(path) || 'text/plain',
           'Content-Length': stats.size
         };
 
@@ -459,7 +457,7 @@ function createWebsocketResponder(ws, index) {
 /*
  * Creates the `ServerRequest` object passed around.
  */
-function createHttpObject(request, response, path, data, responder, session_id, files) {
+function createHttpObject(request, response, path, data, responder, files, session) {
   return Object.freeze({
     request: request,
     response: response,
@@ -471,16 +469,7 @@ function createHttpObject(request, response, path, data, responder, session_id, 
     isapi: path.match(/^\/API/) !== null,
     endpoint: path.replace(/^\/(FS|API)\/?/, ''),
     respond: responder,
-    session: {
-      id: session_id,
-      set: function(k, v) {
-        return _session.set(session_id, k, v === null ? null : String(v));
-      },
-      get: function(k) {
-        const v = _session.get(session_id, k);
-        return v !== false ? v[0] : false;
-      }
-    }
+    session: session || _session.getInterface(request)
   });
 }
 
@@ -500,43 +489,44 @@ function createServer(env, resolve, reject) {
   })();
 
   function onRequest(request, response) {
-    const rurl = request.url === '/' ? '/index.html' : request.url;
-    const url = _url.parse(rurl, true);
-    const path = decodeURIComponent(url.pathname);
-    const session_id = _session.init(request, response);
-    const contentType = request.headers['content-type'] || '';
+    _session.request(request, response).then(function() {
+      const rurl = request.url === '/' ? '/index.html' : request.url;
+      const url = _url.parse(rurl, true);
+      const path = decodeURIComponent(url.pathname);
+      const contentType = request.headers['content-type'] || '';
 
-    if ( proxyCall(env, proxyServer, request, response) ) {
-      logger.log('VERBOSE', logger.colored('PROXY', 'bold'), path);
-      return;
-    }
-
-    logger.log('VERBOSE', logger.colored(request.method, 'bold'), path);
-
-    const respond = createHttpResponder(env, request, response);
-    if ( request.method === 'POST' ) {
-      if ( contentType.indexOf('application/json') !== -1 ) {
-        var body = [];
-        request.on('data', function(data) {
-          body.push(data);
-        });
-
-        request.on('end', function() {
-          const data = JSON.parse(Buffer.concat(body));
-          handleRequest(createHttpObject(request, response, path, data, respond, session_id));
-        });
-      } else if ( contentType.indexOf('multipart/form-data') !== -1 ) {
-        const form = new _formidable.IncomingForm({
-          uploadDir: tmpdir
-        });
-
-        form.parse(request, function(err, fields, files) {
-          handleRequest(createHttpObject(request, response, path, fields, respond, session_id, files));
-        });
+      if ( proxyCall(env, proxyServer, request, response) ) {
+        logger.log('VERBOSE', logger.colored('PROXY', 'bold'), path);
+        return;
       }
-    } else {
-      handleRequest(createHttpObject(request, response, path, {}, respond, session_id));
-    }
+
+      logger.log('VERBOSE', logger.colored(request.method, 'bold'), path);
+
+      const respond = createHttpResponder(env, request, response);
+      if ( request.method === 'POST' ) {
+        if ( contentType.indexOf('application/json') !== -1 ) {
+          var body = [];
+          request.on('data', function(data) {
+            body.push(data);
+          });
+
+          request.on('end', function() {
+            const data = JSON.parse(Buffer.concat(body));
+            handleRequest(createHttpObject(request, response, path, data, respond));
+          });
+        } else if ( contentType.indexOf('multipart/form-data') !== -1 ) {
+          const form = new _formidable.IncomingForm({
+            uploadDir: tmpdir
+          });
+
+          form.parse(request, function(err, fields, files) {
+            handleRequest(createHttpObject(request, response, path, fields, respond, files));
+          });
+        }
+      } else {
+        handleRequest(createHttpObject(request, response, path, {}, respond));
+      }
+    });
   }
 
   // Proxy servers
@@ -548,79 +538,88 @@ function createServer(env, resolve, reject) {
   } catch ( e ) {}
 
   // HTTP servers
-  if ( httpConfig.mode === 'http2' || httpConfig.mode === 'https' ) {
-    const rdir = httpConfig.cert.path || env.SERVERDIR;
-    const cname = httpConfig.cert.name || 'localhost';
-    const copts = httpConfig.cert.options || {};
+  _session.init(httpConfig.session || {}).catch(reject).then(function() {
+    if ( httpConfig.mode === 'http2' || httpConfig.mode === 'https' ) {
+      const rdir = httpConfig.cert.path || env.SERVERDIR;
+      const cname = httpConfig.cert.name || 'localhost';
+      const copts = httpConfig.cert.options || {};
 
-    copts.key = _fs.readFileSync(_path.join(rdir, cname + '.key'));
-    copts.cert = _fs.readFileSync(_path.join(rdir, cname + '.crt'));
+      copts.key = _fs.readFileSync(_path.join(rdir, cname + '.key'));
+      copts.cert = _fs.readFileSync(_path.join(rdir, cname + '.crt'));
 
-    httpServer = require(httpConfig.mode).createServer(copts, onRequest);
-  } else {
-    httpServer = require('http').createServer(onRequest);
-  }
+      httpServer = require(httpConfig.mode).createServer(copts, onRequest);
+    } else {
+      httpServer = require('http').createServer(onRequest);
+    }
 
-  // Websocket servers
-  if ( httpConfig.connection === 'ws' ) {
-    const opts = {
-      server: httpServer
+    // Websocket servers
+    if ( httpConfig.connection === 'ws' ) {
+      const opts = {
+        server: httpServer
+      };
+
+      const path = httpConfig.ws ? httpConfig.ws.path : '';
+      const port = httpConfig.ws ? httpConfig.ws.port : 'upgrade';
+      if ( port !== 'upgrade' ) {
+        opts.port = port;
+      }
+      if ( path ) {
+        opts.path = path;
+      }
+
+      websocketServer = new (require('ws')).Server(opts);
+      websocketServer.on('connection', function(ws) {
+        logger.log('VERBOSE', logger.colored('WS', 'bold'), 'New connection...');
+
+        _session.getSession(ws.upgradeReq).then(function(session) {
+          const sid = session.id;
+
+          ws.on('message', function(data) {
+            const message = JSON.parse(data);
+            const path = message.path;
+            const respond = createWebsocketResponder(ws, message._index);
+
+            const newReq = Object.assign(ws.upgradeReq, {
+              originalUrl: '/',
+              method: 'POST',
+              url: path
+            });
+
+            handleRequest(createHttpObject(newReq, null, path, message.args, respond, null, session), function(http, cb) {
+              // Make sure that session data is updated for WS requests!
+              http.session.save(cb);
+            });
+          });
+
+          ws.on('close', function() {
+            logger.log('VERBOSE', logger.colored('WS', 'bold'), 'Connection closed...');
+
+            if ( typeof websocketMap[sid] !== 'undefined' ) {
+              delete websocketMap[sid];
+            }
+          });
+
+          websocketMap[sid] = ws;
+        });
+      });
+    }
+
+    // Middleware
+    const servers = {
+      httpServer: httpServer,
+      websocketServer: websocketServer,
+      proxyServer: proxyServer
     };
 
-    const path = httpConfig.ws ? httpConfig.ws.path : '';
-    const port = httpConfig.ws ? httpConfig.ws.port : 'upgrade';
-    if ( port !== 'upgrade' ) {
-      opts.port = port;
-    }
-    if ( path ) {
-      opts.path = path;
-    }
-
-    websocketServer = new (require('ws')).Server(opts);
-    websocketServer.on('connection', function(ws) {
-      logger.log('VERBOSE', logger.colored('WS', 'bold'), 'New connection...');
-
-      const cookie = _cookie.parse(ws.upgradeReq.headers.cookie);
-      const sid = cookie.session;
-
-      ws.on('message', function(data) {
-        const message = JSON.parse(data);
-        const path = message.path;
-        const respond = createWebsocketResponder(ws, message._index);
-
-        handleRequest(createHttpObject({
-          method: 'POST',
-          url: path
-        }, null, path, message.args, respond, sid));
-      });
-
-      ws.on('close', function() {
-        logger.log('VERBOSE', logger.colored('WS', 'bold'), 'Connection closed...');
-
-        if ( typeof websocketMap[sid] !== 'undefined' ) {
-          delete websocketMap[sid];
-        }
-      });
-
-      websocketMap[sid] = ws;
+    const middleware = _instance.getMiddleware();
+    middleware.forEach(function(m) {
+      if ( typeof m.register === 'function' ) {
+        m.register(servers);
+      }
     });
-  }
 
-  // Middleware
-  const servers = {
-    httpServer: httpServer,
-    websocketServer: websocketServer,
-    proxyServer: proxyServer
-  };
-
-  const middleware = _instance.getMiddleware();
-  middleware.forEach(function(m) {
-    if ( typeof m.register === 'function' ) {
-      m.register(servers);
-    }
+    resolve(servers);
   });
-
-  resolve(servers);
 }
 
 /*
@@ -675,6 +674,7 @@ function getWebsocketFromUser(username) {
  *
  * @function init
  * @memberof core.http
+ * @return Promise
  */
 module.exports.init = function init(env) {
   return new Promise(function(resolve, reject) {

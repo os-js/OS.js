@@ -30,58 +30,19 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
-var ver = process.version.substr(1).split(/\./g);
-if ( parseInt(ver[0], 10) < 4 ) {
-  console.error('You need Node v4 or above to run OS.js');
-  return process.exit(2);
-}
+const _path = require('path');
 
-const _instance = require('./core/instance.js');
-const _minimist = require('minimist');
+/*
+ * Registers the Session storage module
+ */
+module.exports.register = function(session, env, opts) {
+  const FileStore = require('session-file-store')(session);
 
-///////////////////////////////////////////////////////////////////////////////
-// MAIN
-///////////////////////////////////////////////////////////////////////////////
+  const nopts = Object.assign(opts, {
+    store: new FileStore({
+      path: _path.join(env.SERVERDIR, 'sessions')
+    })
+  });
 
-const argv = _minimist(process.argv.slice(2));
-const opts = {
-  DIST: argv._[0],
-  ROOT: argv.r || argv.root,
-  PORT: argv.p || argv.port,
-  LOGLEVEL: argv.l || argv.loglevel,
-  AUTH: argv.authenticator,
-  STORAGE: argv.storage
+  return Promise.resolve(nopts);
 };
-
-_instance.init(opts).then(function(env) {
-  const config = _instance.getConfig();
-  if ( config.tz ) {
-    process.env.TZ = config.tz;
-  }
-
-  ['SIGTERM', 'SIGINT'].forEach(function(sig) {
-    process.on(sig, function() {
-      console.log('\n');
-      _instance.destroy(function(err) {
-        process.exit(err ? 1 : 0);
-      });
-    });
-  });
-
-  process.on('exit', function() {
-    _instance.destroy();
-  });
-
-  _instance.run();
-
-  process.on('uncaughtException', function(error) {
-    console.log('UNCAUGHT EXCEPTION', error, error.stack);
-  });
-
-  process.on('unhandledRejection', function(error) {
-    console.log('UNCAUGHT REJECTION', error);
-  });
-}).catch(function(error) {
-  console.log(error);
-  process.exit(1);
-});

@@ -167,7 +167,6 @@
     try {
       this.ws.send(JSON.stringify({
         _index: idx,
-        sid: Utils.getCookie('session'),
         path: base + method.replace(/^FS:/, ''),
         args: args
       }));

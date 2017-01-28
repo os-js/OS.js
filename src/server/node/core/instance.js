@@ -40,6 +40,7 @@
  * @property  {Number}      [port=AUTO]     Which port to start on
  * @property  {String}      [AUTH]          Authentication module name
  * @property  {String}      [STORAGE]       Storage module name
+ * @property  {String}      [SESSION]       Session module name
  * @typedef ServerOptions
  */
 
@@ -82,6 +83,7 @@ const MODULES = {
   API: {},
   VFS: [],
   MIDDLEWARE: [],
+  SESSION: null,
   AUTH: null,
   STORAGE: null,
   LOGGER: null
@@ -211,6 +213,27 @@ function loadMiddleware(opts) {
         resolve(opts);
       }).catch(reject);
     }).catch(reject);
+  });
+}
+
+/*
+ * Loads and registers session module
+ */
+function loadSession(opts) {
+  const dirname = _path.join(ENV.MODULEDIR, 'session');
+  const name = opts.SESSION || (CONFIG.http.session.module || 'memory');
+
+  return new Promise(function(resolve, reject) {
+    const path = _path.join(dirname, name + '.js');
+
+    LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('Session', 'bold'), path.replace(ENV.ROOTDIR, ''));
+
+    try {
+      MODULES.SESSION = require(path);
+      resolve(opts);
+    } catch ( e ) {
+      reject(e);
+    }
   });
 }
 
@@ -559,6 +582,7 @@ module.exports.init = function init(opts) {
   return new Promise(function(resolve, reject) {
     loadConfiguration(opts)
       .then(loadMiddleware)
+      .then(loadSession)
       .then(loadAPI)
       .then(loadAuth)
       .then(loadStorage)
@@ -661,6 +685,16 @@ module.exports.getLogger = function() {
  */
 module.exports.getVFS = function() {
   return MODULES.VFS;
+};
+
+/**
+ * Gets registered Session module
+ *
+ * @function getSession
+ * @memberof core.instance
+ */
+module.exports.getSession = function() {
+  return MODULES.SESSION;
 };
 
 /**

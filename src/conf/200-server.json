@@ -32,6 +32,20 @@
       "storage": "%storage%",
       "connection": "%connection%",
       "port" : 8000,
+      "session": {
+        "module": "memory",
+        "secret": "YOU SHOULD GENERATE YOUR OWN KEY",
+        "name": null,
+        "cookie": {
+          "sameSite": null,
+          "domain": null,
+          "expires": null,
+          "httpOnly": true,
+          "maxAge": null,
+          "proxy": null,
+          "path": "/"
+        }
+      },
       "ws": {
         "port": "upgrade",
         "path": ""
