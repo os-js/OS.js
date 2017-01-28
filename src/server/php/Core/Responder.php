@@ -37,6 +37,8 @@
  */
 class Responder
 {
+  public static $done = false;
+
   /**
    * Respond with given content, code and headers
    *
@@ -48,6 +50,8 @@ class Responder
    * @return void
    */
   public function raw($data, $code, $headers = []) {
+    self::$done = true;
+
     if ( $code == 500 ) {
       $headers[] = 'HTTP/1.0 500 Internal Server Error';
     } else if ( $code == 404 ) {
@@ -63,7 +67,7 @@ class Responder
     }
 
     file_put_contents('php://output', $data);
-    exit;
+    Instance::end();
   }
 
   /**

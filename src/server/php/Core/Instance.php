@@ -51,6 +51,8 @@ class Instance
   protected static $VFS = [];
   protected static $MIDDLEWARE = [];
 
+  protected static $done = false;
+
   /////////////////////////////////////////////////////////////////////////////
   // LOADERS
   /////////////////////////////////////////////////////////////////////////////
@@ -181,12 +183,22 @@ class Instance
   /////////////////////////////////////////////////////////////////////////////
 
   /**
+   * Exits the app
+   * @access public
+   * @return void
+   */
+  final public static function end() {
+    self::$done = true;
+    exit;
+  }
+
+  /**
    * Shutdown handler
    * @access public
    * @return void
    */
   final public static function shutdown() {
-    if ( !is_null($error = error_get_last()) ) {
+    if ( !self::$done && !is_null($error = error_get_last()) ) {
       self::handle($error['type'], $error['message'], $error['file'], $error['line']);
     }
   }
