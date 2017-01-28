@@ -246,7 +246,9 @@ function handleRequest(http, onend) {
     const path = _path.join(env.ROOTDIR, env.DIST, _path.normalize(http.path));
 
     function _serve() {
-      http.respond.file(path).catch(finished);
+      http.respond.file(path, {
+        cache: 'static'
+      }).catch(finished);
     }
 
     function _deny() {
@@ -314,6 +316,7 @@ function handleRequest(http, onend) {
  * This allows you to respond with data in a certain format.
  */
 function createHttpResponder(env, request, response) {
+  const config = _instance.getConfig();
 
   function _raw(data, code, headers) {
     code = code || 200;
@@ -330,7 +333,8 @@ function createHttpResponder(env, request, response) {
     _raw(String(message), code);
   }
 
-  function _stream(path, stream, code, mime) {
+  function _stream(path, stream, code, mime, options) {
+    options = options || {};
     code = code || 200;
 
     return new Promise(function(resolve, reject) {
@@ -365,6 +369,20 @@ function createHttpResponder(env, request, response) {
             headers['Content-Length'] = (end - start) + 1;
             headers['Content-Range'] = 'bytes ' + start + '-' + end + '/' + total;
             headers['Accept-Ranges'] = 'bytes';
+          } else {
+            try {
+              const cacheEnabled = env.DIST !== 'dist-dev';
+              if ( cacheEnabled && options.cache ) {
+                const cacheConfig = config.http.cache[options.cache];
+                if ( typeof cacheConfig === 'object' ) {
+                  Object.keys(cacheConfig).forEach(function(k) {
+                    headers[k] = cacheConfig[k];
+                  });
+                }
+              }
+            } catch ( e ) {
+              // We can safely supress this. Errors due to configuration problems
+            }
           }
 
           stream = _fs.createReadStream(path, opts);
@@ -401,7 +419,10 @@ function createHttpResponder(env, request, response) {
       }
 
       _raw(data, 200, {
-        'Content-Type': 'application/json'
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Content-Type': 'application/json',
+        'Pragma': 'no-cache',
+        'Expires': 0
       });
     },
 
@@ -409,7 +430,7 @@ function createHttpResponder(env, request, response) {
 
     file: function(path, options, code) {
       options = options || {};
-      return _stream(path, true, code);
+      return _stream(path, true, code, null, options);
     }
   });
 }

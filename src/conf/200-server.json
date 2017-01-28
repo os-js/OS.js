@@ -32,6 +32,11 @@
       "storage": "%storage%",
       "connection": "%connection%",
       "port" : 8000,
+      "cache": {
+        "static": {
+          "Cache-Control": "private, max-age=86400000"
+        }
+      },
       "session": {
         "module": "memory",
         "secret": "YOU SHOULD GENERATE YOUR OWN KEY",
