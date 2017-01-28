@@ -39,10 +39,9 @@
         "cookie": {
           "sameSite": null,
           "domain": null,
-          "expires": null,
-          "httpOnly": true,
-          "maxAge": null,
           "proxy": null,
+          "maxAge": 86400000,
+          "httpOnly": true,
           "path": "/"
         }
       },
