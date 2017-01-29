@@ -878,7 +878,7 @@
    * @return  {String}            The absolute URL of resource
    */
   API.getApplicationResource = function API_getAppResource(app, name, vfspath) {
-    if ( name.match(/^\//) ) {
+    if ( name.match(/^(https?:)?\//) ) {
       return name;
     }
     name = name.replace(/^\.\//, '');
