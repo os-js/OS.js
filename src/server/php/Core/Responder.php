@@ -81,7 +81,10 @@ class Responder
    */
   public function json($data, $code = null) {
     return $this->raw(json_encode($data), $code ?: 200, [
-      'Content-Type' => 'application/json'
+      'Cache-Control' => 'no-cache, no-store, must-revalidate',
+      'Content-Type' => 'application/json',
+      'Pragma' => 'no-cache',
+      'Expires' => 0
     ]);
   }
 
@@ -91,11 +94,12 @@ class Responder
    * @param   String    $path       Path to file
    * @param   String    $mime       MIME type
    * @param   boolean   $error      Trigger error on failure
+   * @param   String    $cached     Cache identifier
    *
    * @access public
    * @return void
    */
-  public function file($path, $mime = null, $error = true) {
+  public function file($path, $mime = null, $error = true, $cached = false) {
     session_write_close();
 
     if ( !file_exists($path) || is_dir($path) ) {
@@ -131,18 +135,25 @@ class Responder
           flush();
         }
       } else {
-        $etag = md5(serialize(fstat($handle)));
+        if ( $cached && Instance::GetDist() != 'dist-dev' ) {
+          $cacheSettings = Instance::GetConfig()->http->cache;
+          if ( isset($cacheSettings->$cached) ) {
+            foreach ( $cacheSettings->$cached as $k => $v ) {
+              header("$k: $v");
+            }
+          }
 
-        header("Etag: {$etag}");
+          $etag = md5(serialize(fstat($handle)));
+          header("Etag: {$etag}");
+        }
+
         header("Content-length: {$size}");
-
         while ( !feof($handle) ) {
           print fread($handle, $chunkSize);
           ob_flush();
           flush();
         }
       }
-
 
       fclose($handle);
       exit;

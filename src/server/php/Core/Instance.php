@@ -351,7 +351,7 @@ class Instance
           $request->respond()->error('Permission denied!', 403);
         }
       }
-      $request->respond()->file(DIR_DIST . $request->url, null, false);
+      $request->respond()->file(DIR_DIST . $request->url, null, false, 'static');
     }
 
     foreach ( self::$MIDDLEWARE as $className ) {
