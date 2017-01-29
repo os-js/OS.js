@@ -8,7 +8,7 @@ These are some of the ways you can contribute to OS.js:
 * **Testing** Things are always changing, and automated tests are not enough to ensure everything is working 100%. [Join the Testing team](https://github.com/os-js/OS.js/wiki/Join-the-testing-team)
 * **Documentation** Found something in the [homepage or documentation](https://github.com/andersevenrud/os-js.org) that does not seem right?
 * **Chat** Join in our [Gitter](https://gitter.im/os-js/OS.js) chat room for fun and tech talk!
-* **Community** Join our [community](http://community.os-js.org/) where you can post your ideas and questions etc (that does not fit into Github Issues)
+* **Community** Join our [community](http://community.os.js.org/) where you can post your ideas and questions etc (that does not fit into Github Issues)
 * **Anonymous tips** Donate/tip anonymously with [Gratipay](https://gratipay.com/os-js/)
 * **Donate** Donate via [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=andersevenrud%40gmail%2ecom&lc=NO&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted)
 * **Support** by becoming a [Patreon](https://www.patreon.com/user?u=2978551&ty=h&u=2978551)
@@ -33,6 +33,6 @@ You can find information about development here: https://os-js.org/manual/develo
 
 If you are a member of the official OS.js developer Team:
 
-* [Discussions](http://community.os-js.org/c/team)
+* [Discussions](http://community.os.js.org/c/team)
 * [Tasks](https://trello.com/osjs)
 * [Chat](https://gitter.im/os-js/OS.js/teams)
