@@ -380,6 +380,9 @@ function createHttpResponder(env, request, response) {
                     headers[k] = cacheConfig[k];
                   });
                 }
+                if ( stats.mtime ) {
+                  headers['Last-Modified'] = stats.mtime;
+                }
               }
             } catch ( e ) {
               // We can safely supress this. Errors due to configuration problems
