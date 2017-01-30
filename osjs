@@ -1,89 +1,13 @@
 #!/usr/bin/env node
-(function(_build, _minimist) {
-  'use strict';
+(function(_path) {
 
   var ver = process.version.substr(1).split(/\./g);
   if ( parseInt(ver[0], 10) < 4 ) {
     console.warn(String.color('You need Node v4 or above to run OS.js', 'yellow'));
   }
 
-  function done(err) {
+  require(_path.join(__dirname, 'src/build/cli.js')).run(process.argv.slice(2), function(err) {
     process.exit(err ? 1 : 0);
-  }
-
-  var args = _minimist(process.argv.slice(2));
-
-  if ( process.argv.length < 3 || args.help ) {
-    console.log('=== OS.js Task Runner ===');
-    console.log('');
-    console.log('Below is the list of common tasks.');
-    console.log('Available targets are `dist` and `dist-dev` (with exception of manifest and config with `server` and `client`)');
-    console.log('More information: https://os.js.org/manual/build/cli/');
-    console.log('');
-    console.log('Building:');
-    console.log('  build [--target=]                                    Builds everything')
-    console.log('  build:config [--target=]                             Builds configuration files');
-    console.log('  build:manifest [--target=]                           Builds package manifest files');
-    console.log('  build:core [--target=]                               Builds core files');
-    console.log('  build:package --name=REPO/NAME [--target=]           Builds given package');
-    console.log('  build:packages [--target=]                           Builds all packages');
-    console.log('  build:themes                                         Builds all themes');
-    console.log('');
-    console.log('Configuration:');
-    console.log('  config:get --name=KEY                                Gets a configuration value');
-    console.log('  config:set --name=KEY --value=VALUE                  Sets a configuration entry');
-    console.log('  config:add-repository --name=NAME                    Adds a repository directory');
-    console.log('  config:remove-repository --name=NAME                 Removes a repository directory');
-    console.log('  config:list-packages                                 Lists all repositories and packages');
-    console.log('');
-    console.log('Generators:');
-    console.log('  generate:apache-htaccess [--target=]                 Generates .htaccess file');
-    console.log('  generate:apache-vhost --out=FILENAME [--target=]     Generates a vhost file ');
-    console.log('  generate:nginx-config --out=FILENAME [--target=]     Generates a nginx config');
-    console.log('  generate:lighttpd-config --out=FILENAME [--target=]  Generates a lighttpd config');
-    console.log('  generate:package --name=REPO/NAME --type=TYPE        Generates a new package')
-    console.log('');
-    console.log('Misc:');
-    console.log('  run --target=DIR [--port=N] [--loglevel=N]           Runs OS.js on given dist');
-    console.log('');
-    console.log('Use the --verbose argument to get detailed information in build output. Loglevels: ');
-    console.log('INFO: 1, WARN: 2, WARNING: 2, ERROR: 3, VERBOSE: 8 (default: 7)');
-
-    return done(true);
-  }
-
-  const actions = args._.map(function(iter) {
-    var action = iter.trim().split(':');
-    var task = action[0];
-    var arg = action[1];
-
-    if ( !_build[task] ) {
-      console.error('Invalid task', task);
-      return done(true);
-    }
-
-    return [task, arg]
   });
 
-  process.on('uncaughtException', function(error) {
-    console.error('An uncaught exception occured', error);
-    console.error(error.stack);
-    done(true);
-  });
-
-  Promise.each(actions.map(function(action) {
-    return function() {
-      return _build[action[0]]({
-        option: function(k, d) {
-          return typeof args[k] === 'undefined' ? d : args[k];
-        }
-      }, action[1]);
-    };
-  })).then(function() {
-    done();
-  }).catch(function(err) {
-    console.error(err);
-    done(err);
-  });
-
-})(require(__dirname + '/src/build/index.js'), require('minimist'), require('colors'));
+})(require('path'));
