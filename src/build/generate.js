@@ -148,7 +148,7 @@ const TASKS = {
   'package': function(cli, cfg) {
     var name = cli.option('name', '');
     const type = cli.option('type', 'application');
-    const words = name.replace(/\s+/g, ' ').split(' ');
+    const words = name.replace(/[^A-z0-9\._]/g, '').replace(/\s+/g, ' ').split(' ');
     name = [words[0]].concat(words.splice(1).map((w) => {
       return w.replace(/\b\w/g, (l) => l.toUpperCase());
     })).join('');
