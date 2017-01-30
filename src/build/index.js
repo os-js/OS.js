@@ -200,8 +200,10 @@ const TASKS = {
 
     packages: function(cli, cfg) {
       const list = _getTargets(cli, ['dist', 'dist-dev']);
-      return Promise.all(list.map((target) => {
-        return _packages.buildPackages(target, cli, cfg);
+      return Promise.each(list.map((target) => {
+        return function() {
+          return _packages.buildPackages(target, cli, cfg);
+        };
       }));
     }
   },
