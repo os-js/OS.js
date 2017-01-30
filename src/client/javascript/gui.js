@@ -514,6 +514,8 @@
    * @param   {Boolean}     prev        Get previous element instead of next
    * @param   {Node}        current     The current element
    * @param   {Node}        root        The root container
+   *
+   * @return {Node}
    */
   GUI.Helpers.getNextElement = function getNextElement(prev, current, root) {
     function getElements() {

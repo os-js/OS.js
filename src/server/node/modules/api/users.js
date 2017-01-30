@@ -44,6 +44,7 @@ const _instance = require('./../../core/instance.js');
  *
  * @function users
  * @memberof modules.api
+ * @return {Promise}
  */
 module.exports.users = function(http, data) {
   return _instance.getAuth().manage(http, data.command, data.user || {});

@@ -284,6 +284,7 @@
   };
 
   /**
+   * @param   {Mixed}       message     The message
    * @alias OSjs.Helpers.IframeApplicationWindow#postMessage
    */
   IFrameApplication.prototype.postMessage = function(message) {

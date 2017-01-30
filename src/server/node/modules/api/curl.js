@@ -54,6 +54,7 @@ const _instance = require('./../../core/instance.js');
  *
  * @function curl
  * @memberof modules.api
+ * @return {Promise}
  */
 module.exports.curl = function(http, args) {
   const logger = _instance.getLogger();

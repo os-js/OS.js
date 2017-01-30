@@ -44,6 +44,7 @@ const _instance = require('./../../core/instance.js');
  *
  * @function login
  * @memberof modules.api
+ * @return {Promise}
  */
 module.exports.login = function(http, data) {
   function _login(resolve, reject) {
@@ -91,6 +92,7 @@ module.exports.login = function(http, data) {
  *
  * @function logout
  * @memberof modules.api
+ * @return {Promise}
  */
 module.exports.logout = function(http, resolve, reject) {
   return new Promise(function(resolve, reject) {

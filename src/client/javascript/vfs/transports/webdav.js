@@ -291,7 +291,7 @@
    *
    * @param   {(String|OSjs.VFS.File)}    item        VFS File
    *
-   * @retun   {String}                  URL based on input
+   * @return  {String}                  URL based on input
    *
    * @function path
    * @memberof OSjs.VFS.Transports.WebDAV

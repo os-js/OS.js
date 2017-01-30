@@ -44,6 +44,7 @@ const _vfs = require('./vfs.js');
  *
  * @function initSession
  * @memberof core.auth
+ * @return {Promise}
  */
 module.exports.initSession = function(http) {
   return _instance.getAuth().initSession(http);
@@ -58,6 +59,7 @@ module.exports.initSession = function(http) {
  *
  * @function checkPermission
  * @memberof core.auth
+ * @return {Promise}
  */
 module.exports.checkPermission = function(http, type, options) {
   const config = _instance.getConfig();
@@ -184,6 +186,7 @@ module.exports.checkPermission = function(http, type, options) {
  *
  * @function checkSession
  * @memberof core.auth
+ * @return {Promise}
  */
 module.exports.checkSession = function(http) {
   return _instance.getAuth().checkSession(http);
@@ -198,6 +201,7 @@ module.exports.checkSession = function(http) {
  *
  * @function hasGroup
  * @memberof core.auth
+ * @return {Promise}
  */
 module.exports.hasGroup = function(userGroups, groupList, all) {
   if ( !(groupList instanceof Array) ) {

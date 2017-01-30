@@ -109,6 +109,7 @@ function getTransportName(query, mount) {
  *
  * @function request
  * @memberof core.vfs
+ * @return {Promise}
  */
 module.exports.request = function(http, method, args) {
   const transportName = getTransportName(args);

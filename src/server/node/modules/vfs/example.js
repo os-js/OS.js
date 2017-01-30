@@ -91,6 +91,8 @@ const VFS = {
  * @param   {ServerRequest}    http          OS.js Server Request
  * @param   {String}           method        VFS Method name
  * @param   {Object}           args          VFS Method arguments
+ *
+ * @return {Promise}
  */
 module.exports.request = function(http, method, args) {
   return new Promise(function(resolve, reject) {

@@ -397,6 +397,8 @@
    * @see OSjs.Core.Application#_getWindow
    *
    * @param {String}  name      Window Name
+   *
+   * @return {OSjs.Core.Window}
    */
   Application.prototype._getWindowByName = function(name) {
     return this._getWindow(name);

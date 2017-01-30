@@ -57,6 +57,8 @@
    * @param   {Function}   [args.onfailed]             onfailed callback => fn(evt)
    * @param   {Function}   [args.oncanceled]           oncanceled callback => fn(evt)
    * @param   {Function}   [args.ontimeout]            ontimeout callback => fn(evt)
+   *
+   * @return {void}
    */
   OSjs.Utils.ajax = function Utils_ajax(args) {
     var request;

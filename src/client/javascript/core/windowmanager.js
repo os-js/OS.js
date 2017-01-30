@@ -450,6 +450,8 @@
    *
    * @function destroy
    * @memberof OSjs.Core.WindowManager#
+   *
+   * @return {Boolean}
    */
   WindowManager.prototype.destroy = function() {
     var self = this;
@@ -727,6 +729,7 @@
    *
    * @function onSessionLoaded
    * @memberof OSjs.Core.WindowManager#
+   * @return {Boolean}
    */
   WindowManager.prototype.onSessionLoaded = function() {
     if ( this._sessionLoaded ) {
@@ -778,6 +781,7 @@
    */
   WindowManager.prototype.createNotificationIcon = function() {
     // Implement in your WM
+    return null;
   };
 
   /**
@@ -795,6 +799,7 @@
    */
   WindowManager.prototype.removeNotificationIcon = function() {
     // Implement in your WM
+    return false;
   };
 
   /**
@@ -812,6 +817,7 @@
    */
   WindowManager.prototype.eventWindow = function(ev, win) {
     // Implement in your WM
+    return false;
   };
 
   /**

@@ -215,6 +215,8 @@
    *
    * @param {String}  msg   Message
    *
+   * @return {DocumentFragment}
+   *
    * @function parseMessage
    * @memberof OSjs.Core.DialogWindow
    */

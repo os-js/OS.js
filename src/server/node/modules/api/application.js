@@ -49,6 +49,7 @@ const _instance = require('./../../core/instance.js');
  *
  * @function application
  * @memberof modules.api
+ * @return {Promise}
  */
 module.exports.application = function(http, data) {
   const env = _instance.getEnvironment();

@@ -76,6 +76,8 @@
    * @param   {String}    name        Event name
    * @param   {Function}  cb          Callback function
    * @param   {Object}    [thisArg]   Set 'this'
+   *
+   * @return  {Number}
    */
   EventHandler.prototype.on = function(name, cb, thisArg) {
     thisArg = thisArg || this;

@@ -1877,6 +1877,8 @@
    * @memberof OSjs.Core.Window#
    *
    * @param     {Boolean}     t       Toggle
+   *
+   * @return {Boolean} If activated
    */
   Window.prototype._toggleAttentionBlink = function(t) {
     if ( !this._$element || this._destroyed || this._state.focused ) {
@@ -1969,6 +1971,8 @@
    *
    * @param   {Event}      ev        DOM Event
    * @param   {String}     type      Key type
+   *
+   * @return {Boolean} If triggered
    */
   Window.prototype._onKeyEvent = function(ev, type) {
     if ( this._destroyed ) {
@@ -2183,6 +2187,7 @@
    * @function _getViewRect
    * @memberof OSjs.Core.Window#
    * @see OSjs.Utils.position
+   * @return {Object}
    */
   Window.prototype._getViewRect = function() {
     return this._$element ? Object.freeze(Utils.$position(this._$element)) : null;

@@ -74,7 +74,6 @@
     if ( node && node.parentNode ) {
       node.parentNode.removeChild(node);
     }
-    return null;
   };
 
   /**
@@ -287,6 +286,8 @@
    *
    * @param   {Node}      el      The dom Element
    * @param   {String}    name    The class name
+   *
+   * @return {Boolean}
    */
   OSjs.Utils.$hasClass = function Utils_$hasClass(el, name) {
     if ( el && name ) {

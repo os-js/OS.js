@@ -57,7 +57,7 @@
    *
    * @param   {(String|OSjs.VFS.File)}    file        VFS File
    *
-   * @retun   {String}                  URL based on input
+   * @return  {String}                  URL based on input
    *
    * @function path
    * @memberof OSjs.VFS.Transports.Web

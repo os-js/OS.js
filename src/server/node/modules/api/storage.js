@@ -44,6 +44,7 @@ const _instance = require('./../../core/instance.js');
  *
  * @function settings
  * @memberof modules.api
+ * @return {Promise}
  */
 module.exports.settings = function(http, data) {
   const username = http.session.get('username');

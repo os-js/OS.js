@@ -480,7 +480,7 @@
    * @see OSjs.Utils.$css
    */
   UIElement.prototype.css = function(k, v) {
-    return Utils.$css(this.$element, k, v);
+    Utils.$css(this.$element, k, v);
   };
 
   /**
@@ -488,6 +488,7 @@
    * @function position
    * @memberof OSjs.GUI.Element#
    * @see OSjs.Utils.$position
+   * @return {Object}
    */
   UIElement.prototype.position = function() {
     return Utils.$position(this.$element);
@@ -538,6 +539,7 @@
    *
    * @function createInstance
    * @memberof OSjs.GUI.Element
+   * @return {OSjs.GUI.Element}
    */
   UIElement.createInstance = function(el, q) {
     if ( el ) {

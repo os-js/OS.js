@@ -1783,6 +1783,8 @@
    * @function createMenu
    * @memberof OSjs.API
    * @see OSjs.GUI.Helpers.createMenu
+   *
+   * @return {Boolean}
    */
   API.createMenu = function API_createMenu() {
     return OSjs.GUI.Helpers.createMenu.apply(null, arguments);
@@ -1792,6 +1794,8 @@
    * @function blurMenu
    * @memberof OSjs.API
    * @see OSjs.GUI.Helpers.blurMenu
+   *
+   * @return {Boolean}
    */
   API.blurMenu = function API_blurMenu() {
     return OSjs.GUI.Helpers.blurMenu.apply(null, arguments);

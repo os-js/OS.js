@@ -57,7 +57,7 @@ var session;
  *
  * @function init
  * @memberof core.session
- * @return Promise
+ * @return {Promise}
  */
 module.exports.init = function(cfg) {
   return new Promise(function(resolve, reject) {
@@ -96,7 +96,7 @@ module.exports.init = function(cfg) {
  *
  * @function request
  * @memberof core.session
- * @return Promise
+ * @return {Promise}
  */
 module.exports.request = function(request, response) {
   return new Promise(function(resolve) {
@@ -111,7 +111,7 @@ module.exports.request = function(request, response) {
  *
  * @function getSession
  * @memberof core.session
- * @return Promise
+ * @return {Promise}
  */
 module.exports.getSession = function(request) {
   return new Promise(function(resolve) {
@@ -128,7 +128,7 @@ module.exports.getSession = function(request) {
  *
  * @function getInterface
  * @memberof core.session
- * @return Object
+ * @return {Object}
  */
 module.exports.getInterface = function(request) {
   const obj = {

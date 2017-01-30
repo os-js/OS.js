@@ -299,6 +299,7 @@
    * @param {Object}    to        The class to inherit
    * @param {Object}    from      The child class
    * @param {Object}    [extend]  Extend the class with these methods
+   * @return {Object}
    */
   OSjs.Utils.inherit = function Utils_inherit(to, from, extend) {
     from.prototype = Object.create(to.prototype);
@@ -340,7 +341,7 @@
    * @function convertToHEX
    * @memberof OSjs.Utils
    *
-   * @param   Object      rgb       (ALTERNATIVE 1) The RGB object in form of r, g, b
+   * @param   {Object}    rgb       (ALTERNATIVE 1) The RGB object in form of r, g, b
    * @param   {Number}    r         (ALTERNATIVE 2) Red value
    * @param   {Number}    g         (ALTERNATIVE 2) Green value
    * @param   {Number}    b         (ALTERNATIVE 2) Blue value

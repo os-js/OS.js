@@ -134,7 +134,7 @@ module.exports.create = function createLogger(lvl) {
      * @function log
      */
     log: function() {
-      return _log.apply(null, [true].concat(Array.prototype.slice.call(arguments)));
+      _log.apply(null, [true].concat(Array.prototype.slice.call(arguments)));
     },
 
     /**
@@ -147,7 +147,7 @@ module.exports.create = function createLogger(lvl) {
      * @function lognt
      */
     lognt: function() {
-      return _log.apply(null, [false].concat(Array.prototype.slice.call(arguments)));
+      _log.apply(null, [false].concat(Array.prototype.slice.call(arguments)));
     },
 
     /**
@@ -184,6 +184,7 @@ module.exports.create = function createLogger(lvl) {
      *
      * @memberof core.logger
      * @function getLevel
+     * @return Number
      */
     getLevel: function() {
       return level;

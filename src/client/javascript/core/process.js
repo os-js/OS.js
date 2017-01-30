@@ -383,6 +383,8 @@
    *
    * @param   {ProcessEvent}    k       Event name
    * @param   {Array}           args    Send these arguments (fn.apply)
+   *
+   * @return {Mixed} Result (last) from bound function(s)
    */
   Process.prototype._emit = function(k, args) {
     return this.__evHandler.emit(k, args);
@@ -416,7 +418,7 @@
    * @param   {Number}          idx     The hook index returned from _on()
    */
   Process.prototype._off = function(k, idx) {
-    return this.__evHandler.off(k, idx);
+    this.__evHandler.off(k, idx);
   };
 
   /**

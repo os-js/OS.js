@@ -47,6 +47,7 @@ const _pm = require('./../../core/packagemanager.js');
  *
  * @function packages
  * @memberof modules.api
+ * @return {Promise}
  */
 module.exports.packages = function(http, data) {
   const command = data.command;

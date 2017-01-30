@@ -35,6 +35,8 @@
  *
  * @param   {ServerRequest}    http          OS.js Server Request
  * @param   {Object}           data          Request data
+ *
+ * @return {Promise}
  */
 module.exports.login = function(http, data) {
   return new Promise(function(resolve, reject) {
@@ -50,6 +52,8 @@ module.exports.login = function(http, data) {
  * Handles user logout attempts
  *
  * @param   {ServerRequest}    http          OS.js Server Request
+ *
+ * @return {Promise}
  */
 module.exports.logout = function(http) {
   return new Promise(function(resolve) {
@@ -63,6 +67,8 @@ module.exports.logout = function(http) {
  * @param   {ServerRequest}    http          OS.js Server Request
  * @param   {String}           command       Management command
  * @param   {Object}           args          Command arguments
+ *
+ * @return {Promise}
  */
 module.exports.manage = function(http, command, args) {
   return new Promise(function(resolve, reject) {
@@ -76,6 +82,8 @@ module.exports.manage = function(http, command, args) {
  * @param   {ServerRequest}    http          OS.js Server Request
  * @param   {Function}         resolve       Resolve promise callback
  * @param   {Function}         reject        Reject promise callback
+ *
+ * @return {Promise}
  */
 module.exports.initSession = function(http, resolve, reject) {
   return new Promise(function(resolve) {
@@ -89,6 +97,8 @@ module.exports.initSession = function(http, resolve, reject) {
  * @param   {ServerRequest}    http          OS.js Server Request
  * @param   {String}           type          Permission type (vfs, api, package)
  * @param   {Object}           options       Permission options/arguments
+ *
+ * @return {Promise}
  */
 module.exports.checkPermission = function(http, type, options) {
   return new Promise(function(resolve) {
@@ -100,6 +110,8 @@ module.exports.checkPermission = function(http, type, options) {
  * Checks if a session is available
  *
  * @param   {ServerRequest}    http          OS.js Server Request
+ *
+ * @return {Promise}
  */
 module.exports.checkSession = function(http) {
   return new Promise(function(resolve, reject) {
@@ -115,6 +127,8 @@ module.exports.checkSession = function(http) {
  * When module is registered upon initialization
  *
  * @param   {Object}           config        Configuration for given auth module
+ *
+ * @return {Promise}
  */
 module.exports.register = function(config) {
   return Promise.resolve();
@@ -122,6 +136,8 @@ module.exports.register = function(config) {
 
 /**
  * When module is destroyed upon shutdown
+ *
+ * @return {Promise}
  */
 module.exports.destroy = function() {
   return Promise.resolve();

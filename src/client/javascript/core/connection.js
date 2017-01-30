@@ -231,6 +231,8 @@
   /**
    * When browser goes offline
    *
+   * @param {Number} reconnecting Amount retries for connection
+   *
    * @function onOffline
    * @memberof OSjs.Core.Connection#
    */
@@ -256,6 +258,8 @@
    * @param {Function}  cbError     On error
    * @param {Object}    [options]   Options passed on to the connection request method (ex: Utils.ajax)
    *
+   * @return {Boolean}
+   *
    * @function request
    * @memberof OSjs.Core.Connection#
    * @see OSjs.Core.API.call
@@ -267,10 +271,10 @@
 
     if ( this.offline ) {
       cbError('You are currently off-line and cannot perform this operation!');
-      return;
+      return false;
     } else if ( (API.getConfig('Connection.Type') === 'standalone') ) {
       cbError('You are currently running locally and cannot perform this operation!');
-      return;
+      return false;
     }
 
     if ( method.match(/^FS:/) ) {

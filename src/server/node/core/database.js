@@ -174,6 +174,7 @@ DatabaseInstance.prototype.queryAll = function(q, a, cb) {
  *
  * @function instance
  * @memberof core.database
+ * @return {Promise}
  */
 module.exports.instance = function(name, type, opts) {
   return new Promise(function(resolve, reject) {

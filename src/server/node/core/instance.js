@@ -581,6 +581,7 @@ module.exports.destroy = (function() {
  *
  * @function init
  * @memberof core.instance
+ * @return {Promise}
  */
 module.exports.init = function init(opts) {
   return new Promise(function(resolve, reject) {
@@ -610,6 +611,7 @@ module.exports.init = function init(opts) {
  *
  * @function run
  * @memberof core.instance
+ * @return {Promise}
  */
 module.exports.run = function run(port) {
   const httpConfig = Object.assign({ws: {}}, CONFIG.http || {});
@@ -646,6 +648,7 @@ module.exports.getEnvironment = function() {
  *
  * @function getAuthenticator
  * @memberof core.instance
+ * @return {Object}
  */
 module.exports.getAuth = function() {
   return MODULES.AUTH;
@@ -656,6 +659,7 @@ module.exports.getAuth = function() {
  *
  * @function getStorage
  * @memberof core.instance
+ * @return {Object}
  */
 module.exports.getStorage = function() {
   return MODULES.STORAGE;
@@ -666,6 +670,7 @@ module.exports.getStorage = function() {
  *
  * @function getConfig
  * @memberof core.instance
+ * @return {Object}
  */
 module.exports.getConfig = function() {
   return Object.freeze(CONFIG);
@@ -676,6 +681,7 @@ module.exports.getConfig = function() {
  *
  * @function getLogger
  * @memberof core.instance
+ * @return {Object}
  */
 module.exports.getLogger = function() {
   return LOGGER;
@@ -686,6 +692,7 @@ module.exports.getLogger = function() {
  *
  * @function getVFS
  * @memberof core.instance
+ * @return {Array}
  */
 module.exports.getVFS = function() {
   return MODULES.VFS;
@@ -696,6 +703,7 @@ module.exports.getVFS = function() {
  *
  * @function getSession
  * @memberof core.instance
+ * @return {Object}
  */
 module.exports.getSession = function() {
   return MODULES.SESSION;
@@ -706,6 +714,7 @@ module.exports.getSession = function() {
  *
  * @function getAPI
  * @memberof core.instance
+ * @return {Object}
  */
 module.exports.getAPI = function() {
   return MODULES.API;
@@ -716,6 +725,7 @@ module.exports.getAPI = function() {
  *
  * @function getMiddleware
  * @memberof core.instance
+ * @return {Array}
  */
 module.exports.getMiddleware = function() {
   return MODULES.MIDDLEWARE;
@@ -728,6 +738,7 @@ module.exports.getMiddleware = function() {
  *
  * @function getMetadata
  * @memberof core.instance
+ * @return {Object}
  */
 module.exports.getMetadata = function(packageName) {
   return packageName ? PACKAGES[packageName] : PACKAGES;

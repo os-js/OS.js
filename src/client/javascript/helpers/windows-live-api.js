@@ -206,7 +206,7 @@
    * @function logout
    * @memberof OSjs.Helpers.WindowsLiveAPI.Class#
    *
-   * @param   {Function}    cb      Callback => fn(error, result)
+   * @param   {Function}    callback      Callback => fn(error, result)
    */
   WindowsLiveAPI.prototype.logout = function(callback) {
     callback = callback || function() {};

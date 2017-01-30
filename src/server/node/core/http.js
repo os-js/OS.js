@@ -707,7 +707,7 @@ function getWebsocketFromUser(username) {
  *
  * @function init
  * @memberof core.http
- * @return Promise
+ * @return {Promise}
  */
 module.exports.init = function init(env) {
   return new Promise(function(resolve, reject) {
