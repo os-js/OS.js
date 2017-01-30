@@ -482,7 +482,7 @@ function createWebsocketResponder(ws, index) {
 /*
  * Creates the `ServerRequest` object passed around.
  */
-function createHttpObject(request, response, path, data, responder, files, session) {
+function createHttpObject(request, response, path, data, responder, files) {
   return Object.freeze({
     request: request,
     response: response,
@@ -494,7 +494,7 @@ function createHttpObject(request, response, path, data, responder, files, sessi
     isapi: path.match(/^\/API/) !== null,
     endpoint: path.replace(/^\/(FS|API)\/?/, ''),
     respond: responder,
-    session: session || _session.getInterface(request)
+    session: _session.getInterface(request)
   });
 }
 
@@ -598,23 +598,29 @@ function createServer(env, resolve, reject) {
       websocketServer.on('connection', function(ws) {
         logger.log('VERBOSE', logger.colored('WS', 'bold'), 'New connection...');
 
-        _session.getSession(ws.upgradeReq).then(function(session) {
-          const sid = session.id;
+        const request = ws.upgradeReq;
+        _session.getSession(request).then(function(sess) {
+          const sid = sess.id;
 
           ws.on('message', function(data) {
-            const message = JSON.parse(data);
-            const path = message.path;
-            const respond = createWebsocketResponder(ws, message._index);
+            const response = {};
 
-            const newReq = Object.assign(ws.upgradeReq, {
-              originalUrl: '/',
-              method: 'POST',
-              url: path
-            });
+            _session.request(request, response).then(function() {
+              const message = JSON.parse(data);
+              const path = message.path;
+              const respond = createWebsocketResponder(ws, message._index);
 
-            handleRequest(createHttpObject(newReq, null, path, message.args, respond, null, session), function(http, cb) {
-              // Make sure that session data is updated for WS requests!
-              http.session.save(cb);
+              const newReq = Object.assign(request, {
+                originalUrl: '/',
+                method: 'POST',
+                url: path
+              });
+
+              handleRequest(createHttpObject(newReq, response, path, message.args, respond), function(http, cb) {
+                // Make sure that session data is updated for WS requests!
+                //http.session.save(cb);
+                cb();
+              });
             });
           });
 

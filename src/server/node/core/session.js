@@ -48,7 +48,6 @@ const _instance = require('./../core/instance.js');
  * @typedef ServerSession
  */
 
-var changed = {};
 var session;
 
 /**
@@ -150,8 +149,6 @@ module.exports.getInterface = function(request) {
     },
 
     set: function(k, v, save) {
-      changed[request.session.id] = true;
-
       if ( typeof k === 'object' ) {
         Object.keys(k).forEach(function(kk) {
           request.session[kk] = String(k[kk]);
@@ -178,8 +175,7 @@ module.exports.getInterface = function(request) {
         cb = function() {};
       }
 
-      if ( request.session && changed[request.session.id] ) {
-        changed[request.session.id] = false;
+      if ( request.session ) {
         request.session.save(cb);
       } else {
         cb();

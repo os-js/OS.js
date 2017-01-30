@@ -54,19 +54,17 @@ module.exports.login = function(http, data) {
     }
 
     function _proceed(userData) {
-      http.session.set('username', userData.username);
-
-      _instance.getStorage().getSettings(http, userData.username).then(function(userSettings) {
-        _instance.getStorage().getBlacklist(http, userData.username).then(function(blacklist) {
-          http.session.set('username', userData.username, function() {
+      http.session.set('username', userData.username, function() {
+        _instance.getStorage().getSettings(http, userData.username).then(function(userSettings) {
+          _instance.getStorage().getBlacklist(http, userData.username).then(function(blacklist) {
             resolve({
               userData: userData,
               userSettings: userSettings,
               blacklistedPackages: blacklist
             });
-          });
+          }).catch(_fail);
         }).catch(_fail);
-      }).catch(_fail);
+      });
     }
 
     _instance.getAuth().login(http, data).then(function(userData) {
