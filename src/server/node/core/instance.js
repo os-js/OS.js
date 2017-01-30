@@ -156,6 +156,10 @@ function loadConfiguration(opts) {
       modules: {}
     }, JSON.parse(data));
 
+    if ( process.env.SECRET ) {
+      config.http.session.secret = process.env.SECRET;
+    }
+
     config.modules.auth = config.modules.auth || {};
     config.modules.storage = config.modules.storage || {};
 
