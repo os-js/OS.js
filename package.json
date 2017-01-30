@@ -42,7 +42,7 @@
     "minimist": "^1.2.0",
     "request": ">=2.79.0",
     "unzip": "^0.1.11",
-    "ws": "^1.1.1",
+    "ws": "^2.0.0",
     "zlibjs": "^0.2.0"
   },
   "devDependencies": {
