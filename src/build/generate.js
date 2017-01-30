@@ -146,9 +146,12 @@ const TASKS = {
   },
 
   'package': function(cli, cfg) {
-    const type = cli.option('type', 'application');
-
     var name = cli.option('name', '');
+    const type = cli.option('type', 'application');
+    const words = name.replace(/\s+/g, ' ').split(' ');
+    name = [words[0]].concat(words.splice(1).map((w) => {
+      return w.replace(/\b\w/g, (l) => l.toUpperCase());
+    })).join('');
 
     const tmp  = name.split('/');
     const repo = tmp.length > 1 ? tmp[0] : 'default';
