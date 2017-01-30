@@ -153,7 +153,7 @@ function getRepositoryPackages(repo, all) {
 /*
  * Get all packages (with filter)
  */
-function getPackages(repos, filter) {
+function getPackages(repos, filter, all) {
   repos = repos || [];
   filter = filter || function() {
     return true;
@@ -163,7 +163,7 @@ function getPackages(repos, filter) {
   return new Promise((resolve, reject) => {
     Promise.each(repos.map((repo) => {
       return function() {
-        return getRepositoryPackages(repo);
+        return getRepositoryPackages(repo, all);
       };
     }), function(packages) {
       list = Object.assign(list, packages);

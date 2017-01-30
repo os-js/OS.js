@@ -550,7 +550,7 @@ function removeRepository(config, name) {
  */
 function listPackages(config) {
   return new Promise((resolve) => {
-    _metadata.getPackages(config.repositories).then((packages) => {
+    _metadata.getPackages(config.repositories, null, true).then((packages) => {
       const currentEnabled = getConfigPath(config, 'packages.ForceEnable') || [];
       const currentDisabled = getConfigPath(config, 'packages.ForceDisable') || [];
 
@@ -570,7 +570,7 @@ function listPackages(config) {
         Object.keys(packages).forEach((pn) => {
           const p = packages[pn];
 
-          var es = p.enabled !== false;
+          var es = String(p.enabled) !== 'false';
           var esc = es ? 'green' : 'red';
 
           if ( es ) {
