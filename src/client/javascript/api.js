@@ -916,7 +916,7 @@
         if ( pkg.scope === 'user' ) {
           path = API.getConfig('Connection.FSURI') + '/get/' + Utils.pathJoin(pkg.path, name);
         } else {
-          path = API.getConfig('Connection.PackageURI') + '/' + pkg.path + '/' + name;
+          path = 'packages/' + pkg.path + '/' + name;
         }
       }
 
