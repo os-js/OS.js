@@ -49,6 +49,7 @@ const _instance = require('./../core/instance.js');
  */
 
 var session;
+var sessionCache = {};
 
 /**
  * Initializes session integration
@@ -157,13 +158,15 @@ module.exports.getInterface = function(request) {
         request.session[k] = String(v);
       }
 
+      sessionCache[obj.id] = obj.all();
+
       if ( save ) {
         obj.save(save);
       }
     },
 
     get: function(k, d) {
-      var v = request.session[k];
+      var v = sessionCache[obj.id][k] || request.session[k];
       if ( typeof v === 'undefined' ) {
         return d;
       }

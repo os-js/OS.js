@@ -604,23 +604,21 @@ function createServer(env, resolve, reject) {
 
           ws.on('message', function(data) {
             const response = {};
+            const message = JSON.parse(data);
+            const path = message.path;
+            const respond = createWebsocketResponder(ws, message._index);
 
-            _session.request(request, response).then(function() {
-              const message = JSON.parse(data);
-              const path = message.path;
-              const respond = createWebsocketResponder(ws, message._index);
+            const newReq = Object.assign(request, {
+              session: request.session,
+              originalUrl: '/',
+              method: 'POST',
+              url: path
+            });
 
-              const newReq = Object.assign(request, {
-                originalUrl: '/',
-                method: 'POST',
-                url: path
-              });
-
-              handleRequest(createHttpObject(newReq, response, path, message.args, respond), function(http, cb) {
-                // Make sure that session data is updated for WS requests!
-                //http.session.save(cb);
-                cb();
-              });
+            handleRequest(createHttpObject(newReq, response, path, message.args, respond), function(http, cb) {
+              // Make sure that session data is updated for WS requests!
+              //http.session.save(cb);
+              cb();
             });
           });
 

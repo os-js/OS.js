@@ -86,7 +86,10 @@
 
     this.ws.onopen = function() {
       connected = true;
-      callback();
+      // NOTE: For some reason it needs to be fired on next tick
+      setTimeout(function() {
+        callback();
+      }, 0);
     };
 
     this.ws.onmessage = function(ev) {
