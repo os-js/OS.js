@@ -150,15 +150,22 @@ module.exports.getInterface = function(request) {
     },
 
     set: function(k, v, save) {
-      if ( typeof k === 'object' ) {
-        Object.keys(k).forEach(function(kk) {
-          request.session[kk] = String(k[kk]);
-        });
-      } else {
-        request.session[k] = String(v);
+      function _set(sk, sv) {
+        request.session[sk] = sv;
+
+        if ( typeof sessionCache[obj.id] === 'undefined' ) {
+          sessionCache[obj.id] = {};
+        }
+        sessionCache[obj.id][sk] = sv;
       }
 
-      sessionCache[obj.id] = obj.all();
+      if ( typeof k === 'object' ) {
+        Object.keys(k).forEach(function(kk) {
+          _set(kk, String(k[kk]));
+        });
+      } else {
+        _set(k, String(v));
+      }
 
       if ( save ) {
         obj.save(save);

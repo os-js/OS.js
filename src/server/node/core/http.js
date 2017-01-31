@@ -617,8 +617,7 @@ function createServer(env, resolve, reject) {
 
             handleRequest(createHttpObject(newReq, response, path, message.args, respond), function(http, cb) {
               // Make sure that session data is updated for WS requests!
-              //http.session.save(cb);
-              cb();
+              http.session.save(cb);
             });
           });
 
