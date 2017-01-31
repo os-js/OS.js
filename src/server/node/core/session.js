@@ -173,7 +173,8 @@ module.exports.getInterface = function(request) {
     },
 
     get: function(k, d) {
-      var v = sessionCache[obj.id][k] || request.session[k];
+      var c = sessionCache[obj.id] || {};
+      var v = c[k] || request.session[k];
       if ( typeof v === 'undefined' ) {
         return d;
       }
