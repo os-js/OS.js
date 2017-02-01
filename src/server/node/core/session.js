@@ -84,7 +84,8 @@ module.exports.init = function(cfg) {
       cookie: cookie
     };
 
-    _instance.getSession().register(_session, _instance.getEnvironment(), opts).catch(reject).then(function() {
+    const conf = cfg.options[cfg.module] || {};
+    _instance.getSession().register(_session, conf, _instance.getEnvironment(), opts).catch(reject).then(function() {
       sessionStore = opts.store;
       session = _session(opts);
       resolve(session);

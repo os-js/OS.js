@@ -30,18 +30,14 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
-const _path = require('path');
-
 /*
  * Registers the Session storage module
  */
-module.exports.register = function(session, env, opts) {
+module.exports.register = function(session, conf, env, opts) {
   const FileStore = require('session-file-store')(session);
 
   const nopts = Object.assign(opts, {
-    store: new FileStore({
-      path: _path.join(env.SERVERDIR, 'sessions')
-    })
+    store: new FileStore(conf)
   });
 
   return Promise.resolve(nopts);

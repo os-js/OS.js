@@ -45,6 +45,13 @@
         "module": "memory",
         "secret": "YOU SHOULD GENERATE YOUR OWN KEY",
         "name": null,
+        "options": {
+          "memory": {
+          },
+          "file": {
+            "path": "%ROOT%/src/server/sessions"
+          }
+        },
         "cookie": {
           "sameSite": null,
           "domain": null,
