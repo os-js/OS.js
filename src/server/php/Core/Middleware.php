@@ -40,15 +40,16 @@ use OSjs\Core\Request;
 abstract class Middleware
 {
 
-  /**
-   * Method called when a HTTP request occurs
-   *
-   * @param \OSjs\Core\Request      $request      The HTTP request
-   * @throws \Exception
-   * @access public
-   * @return boolean
-   */
-  public static function request(Request $request) {
-    return true;
-  }
+    /**
+     * Method called when a HTTP request occurs
+     *
+     * @param  \OSjs\Core\Request $request The HTTP request
+     * @throws \Exception
+     * @access public
+     * @return boolean
+     */
+    public static function request(Request $request)
+    {
+        return true;
+    }
 }

@@ -41,135 +41,144 @@ use Exception;
  */
 abstract class Core
 {
-  public static function login(Request $request) {
-    $authenticator = Authenticator::getInstance();
-    $userData = $authenticator->login($request);
+    public static function login(Request $request)
+    {
+        $authenticator = Authenticator::getInstance();
+        $userData = $authenticator->login($request);
 
-    $_SESSION['username'] = $userData['username']; // Set before storage queries!"
+        $_SESSION['username'] = $userData['username']; // Set before storage queries!"
 
-    $storage = Storage::getInstance();
-    $userSettings = $storage->getSettings($request);
-    $blacklist = $storage->getBlacklist($request);
-    $groups = $storage->getGroups($request);
+        $storage = Storage::getInstance();
+        $userSettings = $storage->getSettings($request);
+        $blacklist = $storage->getBlacklist($request);
+        $groups = $storage->getGroups($request);
 
-    return [
-      'userData' => $userData,
-      'userSettings' => $userSettings,
-      'blacklistedPackages' => $blacklist
-    ];
-  }
+        return [
+        'userData' => $userData,
+        'userSettings' => $userSettings,
+        'blacklistedPackages' => $blacklist
+        ];
+    }
 
-  public static function logout(Request $request) {
-    return true;
-  }
+    public static function logout(Request $request)
+    {
+        return true;
+    }
 
-  public static function settings(Request $request) {
-    return Storage::getInstance()->setSettings($request);
-  }
+    public static function settings(Request $request)
+    {
+        return Storage::getInstance()->setSettings($request);
+    }
 
-  public static function users(Request $request) {
-    throw new Exception('Not available');
-  }
+    public static function users(Request $request)
+    {
+        throw new Exception('Not available');
+    }
 
-  public static function application(Request $request) {
-    $path = empty($request->data['path']) ? null : $request->data['path'];
-    $an = empty($request->data['application']) ? null : $request->data['application'];
-    $am = empty($request->data['method']) ? null : $request->data['method'];
-    $aa = empty($request->data['args']) ? Array() : $request->data['args'];
+    public static function application(Request $request)
+    {
+        $path = empty($request->data['path']) ? null : $request->data['path'];
+        $an = empty($request->data['application']) ? null : $request->data['application'];
+        $am = empty($request->data['method']) ? null : $request->data['method'];
+        $aa = empty($request->data['args']) ? Array() : $request->data['args'];
 
-    $apath = DIR_PACKAGES . '/' . $path . '/api.php';
+        $apath = DIR_PACKAGES . '/' . $path . '/api.php';
 
-    if ( !file_exists($apath) ) {
-      throw new Exception("No such application or API file not available ({$an})!");
-    } else {
-      $className = require $apath;
-      if ( is_string($className) && strlen($className) > 3 ) {
-        if ( method_exists($className, $am) ) {
-          return $className::$am($request, $aa);
+        if (!file_exists($apath)) {
+            throw new Exception("No such application or API file not available ({$an})!");
         } else {
-          throw new Exception('Application API missing!');
+            $className = include $apath;
+            if (is_string($className) && strlen($className) > 3) {
+                if (method_exists($className, $am)) {
+                    return $className::$am($request, $aa);
+                } else {
+                    throw new Exception('Application API missing!');
+                }
+            } else {
+                if (!class_exists($an) || !method_exists($an, 'call')) {
+                    throw new Exception('Application API missing!');
+                } else {
+                    return $an::call($am, $aa);
+                }
+            }
         }
-      } else {
-        if ( !class_exists($an) || !method_exists($an, 'call') ) {
-          throw new Exception('Application API missing!');
-        } else {
-          return $an::call($am, $aa);
+
+        return null;
+    }
+
+    public static function packages(Request $request)
+    {
+        if ($request->data['command'] === 'list') {
+            $request->respond()->json(
+                [
+                'error' => null,
+                'result' => Instance::GetPackages()
+                ]
+            );
         }
-      }
+
+        throw new Exception('Not available');
     }
 
-    return null;
-  }
+    public static function curl(Request $request) 
+    {
+        $url = empty($request->data['url']) ? null : $request->data['url'];
+        $method = empty($request->data['method']) ? 'GET' : strtoupper($request->data['method']);
+        $query = empty($request->data['query']) ? Array() : $request->data['query'];
+        $timeout = empty($request->data['timeout']) ? 0 : (int) $request->data['timeout'];
+        $binary = empty($request->data['binary']) ? false : $request->data['binary'] === true;
+        $mime = empty($request->data['mime']) ? null : $request->data['mime'];
 
-  public static function packages(Request $request) {
-    if ( $request->data['command'] === 'list' ) {
-      $request->respond()->json([
-        'error' => null,
-        'result' => Instance::GetPackages()
-      ]);
-    }
-
-    throw new Exception('Not available');
-  }
-
-  public static function curl(Request $request) {
-    $url = empty($request->data['url']) ? null : $request->data['url'];
-    $method = empty($request->data['method']) ? 'GET' : strtoupper($request->data['method']);
-    $query = empty($request->data['query']) ? Array() : $request->data['query'];
-    $timeout = empty($request->data['timeout']) ? 0 : (int) $request->data['timeout'];
-    $binary = empty($request->data['binary']) ? false : $request->data['binary'] === true;
-    $mime = empty($request->data['mime']) ? null : $request->data['mime'];
-
-    if ( !$mime && $binary ) {
-      $mime = 'application/octet-stream';
-    }
-
-    if ( !function_exists('curl_init') ) {
-      throw new Exception('cURL is not supported on this platform');
-    } else if ( !$url ) {
-      throw new Exception('cURL expects an url');
-    }
-
-    $data = '';
-    if ( $method === 'POST' ) {
-      if ( $query ) {
-        if ( is_array($query) ) {
-          $data = http_build_query($query);
-        } else if ( is_string($query) ) {
-          $data = $query;
+        if (!$mime && $binary) {
+            $mime = 'application/octet-stream';
         }
-      }
+
+        if (!function_exists('curl_init')) {
+            throw new Exception('cURL is not supported on this platform');
+        } else if (!$url) {
+            throw new Exception('cURL expects an url');
+        }
+
+        $data = '';
+        if ($method === 'POST') {
+            if ($query) {
+                if (is_array($query)) {
+                    $data = http_build_query($query);
+                } else if (is_string($query)) {
+                    $data = $query;
+                }
+            }
+        }
+
+        if (!($ch = curl_init())) {
+            throw new Exception('Failed to initialize cURL');
+        }
+
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        if ($timeout) {
+            curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+        }
+        if ($data) {
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        }
+
+        $response = curl_exec($ch);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        if ($binary && $response) {
+            $response = "data:{$mime};base64," . base64_encode($response);
+        }
+
+        $result = Array(
+        "httpCode" => $httpcode,
+        "body"     => $response
+        );
+
+        curl_close($ch);
+
+        return $result;
     }
-
-    if ( !($ch = curl_init()) ) {
-      throw new Exception('Failed to initialize cURL');
-    }
-
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    if ( $timeout ) {
-      curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
-    }
-    if ( $data ) {
-      curl_setopt($ch, CURLOPT_POST, true);
-      curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-    }
-
-    $response = curl_exec($ch);
-    $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-    if ( $binary && $response ) {
-      $response = "data:{$mime};base64," . base64_encode($response);
-    }
-
-    $result = Array(
-      "httpCode" => $httpcode,
-      "body"     => $response
-    );
-
-    curl_close($ch);
-
-    return $result;
-  }
 }
 

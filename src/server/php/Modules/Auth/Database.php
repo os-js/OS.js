@@ -37,57 +37,64 @@ use Exception;
 
 class Database extends Authenticator
 {
-  protected static $pdo;
+    protected static $pdo;
 
-  final protected function _query($q, Array $a = []) {
-    if ( !self::$pdo ) {
-      $config = $this->getConfig();
-      $driver = $config->driver;
-      $config = $config->$driver;
+    final protected function _query($q, Array $a = [])
+    {
+        if (!self::$pdo) {
+            $config = $this->getConfig();
+            $driver = $config->driver;
+            $config = $config->$driver;
 
-      if ( $driver == 'sqlite' ) {
-        self::$pdo = new PDO(sprintf('sqlite:/%s', $config->database));
-      } else {
-        $str = sprintf('%s:host=%s;dbname=%s', $driver,
-          $config->host,
-          $config->database);
+            if ($driver == 'sqlite') {
+                self::$pdo = new PDO(sprintf('sqlite:/%s', $config->database));
+            } else {
+                $str = sprintf(
+                    '%s:host=%s;dbname=%s', $driver,
+                    $config->host,
+                    $config->database
+                );
 
-        self::$pdo = new PDO($str, $config->user, $config->password);
-      }
+                self::$pdo = new PDO($str, $config->user, $config->password);
+            }
+        }
+
+        $stmt = self::$pdo->prepare($q);
+        $stmt->execute($a);
+        return $stmt;
     }
 
-    $stmt = self::$pdo->prepare($q);
-    $stmt->execute($a);
-    return $stmt;
-  }
 
-
-  final public function login(Request $request) {
-    $query = 'SELECT * FROM `users` WHERE `username` = ? LIMIT 1;';
-    if ( $row = self::_query($query, [$request->data['username']])->fetch() ) {
-      $hash = str_replace('$2y$', '$2a$', $row['password']);
-      if ( password_verify($request->data['password'], $hash) ) {
-        return [
-          'id'  => $row['id'],
-          'username' => $row['username'],
-          'name' => $row['name'],
-        ];
-      }
+    final public function login(Request $request)
+    {
+        $query = 'SELECT * FROM `users` WHERE `username` = ? LIMIT 1;';
+        if ($row = self::_query($query, [$request->data['username']])->fetch()) {
+            $hash = str_replace('$2y$', '$2a$', $row['password']);
+            if (password_verify($request->data['password'], $hash)) {
+                return [
+                'id'  => $row['id'],
+                'username' => $row['username'],
+                'name' => $row['name'],
+                ];
+            }
+        }
+        throw new Exception('Invalid login credentials!');
     }
-    throw new Exception('Invalid login credentials!');
-  }
 
-  final public function logout(Request $request) {
-    return parent::logout($request);
-  }
+    final public function logout(Request $request)
+    {
+        return parent::logout($request);
+    }
 
-  final public function checkSession(Request $request) {
-    return parent::checkSession($request);
-  }
+    final public function checkSession(Request $request)
+    {
+        return parent::checkSession($request);
+    }
 
-  final public function checkPermission(Request $request, $type, Array $options = []) {
-    return parent::checkPermission($request, $type, $options);
-  }
+    final public function checkPermission(Request $request, $type, Array $options = [])
+    {
+        return parent::checkPermission($request, $type, $options);
+    }
 
 }
 

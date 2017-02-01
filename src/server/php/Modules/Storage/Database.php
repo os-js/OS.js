@@ -37,54 +37,60 @@ use Exception;
 
 class Database extends Storage
 {
-  protected static $pdo;
+    protected static $pdo;
 
-  final protected function _query($q, Array $a = []) {
-    if ( !self::$pdo ) {
-      $config = $this->getConfig();
-      $driver = $config->driver;
-      $config = $config->$driver;
+    final protected function _query($q, Array $a = [])
+    {
+        if (!self::$pdo) {
+            $config = $this->getConfig();
+            $driver = $config->driver;
+            $config = $config->$driver;
 
-      if ( $driver == 'sqlite' ) {
-        self::$pdo = new PDO(sprintf('sqlite:/%s', $config->database));
-      } else {
-        $str = sprintf('%s:host=%s;dbname=%s', $driver,
-          $config->host,
-          $config->database);
+            if ($driver == 'sqlite') {
+                self::$pdo = new PDO(sprintf('sqlite:/%s', $config->database));
+            } else {
+                $str = sprintf(
+                    '%s:host=%s;dbname=%s', $driver,
+                    $config->host,
+                    $config->database
+                );
 
-        self::$pdo = new PDO($str, $config->user, $config->password);
-      }
+                self::$pdo = new PDO($str, $config->user, $config->password);
+            }
+        }
+
+        $stmt = self::$pdo->prepare($q);
+        $stmt->execute($a);
+        return $stmt;
     }
 
-    $stmt = self::$pdo->prepare($q);
-    $stmt->execute($a);
-    return $stmt;
-  }
-
-  final public function getGroups(Request $request) {
-    $query = 'SELECT `groups` FROM `users` WHERE `username` = ? LIMIT 1;';
-    if ( $result = self::_query($query, [$_SESSION['username']])->fetch() ) {
-      return json_decode($result['groups']) ?: [];
+    final public function getGroups(Request $request)
+    {
+        $query = 'SELECT `groups` FROM `users` WHERE `username` = ? LIMIT 1;';
+        if ($result = self::_query($query, [$_SESSION['username']])->fetch()) {
+            return json_decode($result['groups']) ?: [];
+        }
+        return [];
     }
-    return [];
-  }
 
-  final public function getSettings(Request $request) {
-    $query = 'SELECT settings FROM `users` WHERE `username` = ? LIMIT 1;';
-    if ( $result = self::_query($query, [$_SESSION['username']])->fetch() ) {
-      return json_decode($result['settings']) ?: [];
+    final public function getSettings(Request $request)
+    {
+        $query = 'SELECT settings FROM `users` WHERE `username` = ? LIMIT 1;';
+        if ($result = self::_query($query, [$_SESSION['username']])->fetch()) {
+            return json_decode($result['settings']) ?: [];
+        }
+        return [];
     }
-    return [];
-  }
 
-  final public function setSettings(Request $request) {
-    $settings = json_encode($request->data['settings']);
-    $query = 'UPDATE `users` SET `settings` = ? WHERE `username` = ? LIMIT 1;';
-    if ( self::_query($query, [$settings, $_SESSION['username']])->execute() ) {
-      return true;
+    final public function setSettings(Request $request)
+    {
+        $settings = json_encode($request->data['settings']);
+        $query = 'UPDATE `users` SET `settings` = ? WHERE `username` = ? LIMIT 1;';
+        if (self::_query($query, [$settings, $_SESSION['username']])->execute()) {
+            return true;
+        }
+        return false;
     }
-    return false;
-  }
 
 }
 

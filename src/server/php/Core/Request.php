@@ -39,78 +39,81 @@ use OSjs\Core\Responder;
  */
 class Request
 {
-  protected $method = 'GET';
-  protected $url = '/';
-  protected $data = [];
-  protected $files = [];
-  protected $isfs = false;
-  protected $isapi = false;
-  protected $endpoint = '';
+    protected $method = 'GET';
+    protected $url = '/';
+    protected $data = [];
+    protected $files = [];
+    protected $isfs = false;
+    protected $isapi = false;
+    protected $endpoint = '';
 
-  /**
-   * Constructor
-   */
-  public function __construct() {
-    $requestURI = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/';
-    $phpSelf = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : '/';
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $requestURI = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/';
+        $phpSelf = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : '/';
 
-    header('Content-type: text/plain');
+        header('Content-type: text/plain');
 
-    if ( substr($phpSelf, -7) == 'api.php' ) {
-      $requestURI = substr($requestURI, strlen(dirname($phpSelf)), strlen($requestURI)) ?: '/';
+        if (substr($phpSelf, -7) == 'api.php') {
+            $requestURI = substr($requestURI, strlen(dirname($phpSelf)), strlen($requestURI)) ?: '/';
+        }
+
+        $this->method = empty($_SERVER['REQUEST_METHOD']) ? 'GET' : $_SERVER['REQUEST_METHOD'];
+        $this->url = $requestURI;
+
+        if ($this->method === 'POST') {
+            if (strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
+                $this->data = json_decode(file_get_contents('php://input'), true);
+            } else {
+                $this->data = $_POST;
+            }
+            $this->files = $_FILES;
+        } else {
+            if ($this->url === '/') {
+                $this->url = '/index.html';
+            }
+
+            $this->data = $_GET;
+        }
+
+        if (preg_match('/^\/?FS/', $this->url)) {
+            $this->isfs = true;
+        } else if (preg_match('/^\/?API/', $this->url)) {
+            $this->isapi = true;
+        }
+
+        if (preg_match('/(FS|API)\/(.*)/', $this->url, $matches)) {
+            if (sizeof($matches) > 1) {
+                $this->endpoint = $matches[2];
+            }
+        }
     }
 
-    $this->method = empty($_SERVER['REQUEST_METHOD']) ? 'GET' : $_SERVER['REQUEST_METHOD'];
-    $this->url = $requestURI;
-
-    if ( $this->method === 'POST' ) {
-      if ( strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false ) {
-        $this->data = json_decode(file_get_contents('php://input'), true);
-      } else {
-        $this->data = $_POST;
-      }
-      $this->files = $_FILES;
-    } else {
-      if ( $this->url === '/' ) {
-        $this->url = '/index.html';
-      }
-
-      $this->data = $_GET;
+    /**
+     * Magical getter
+     *
+     * @access public
+     * @return mixed
+     */
+    public function __get($key)
+    {
+        if (isset($this->$key)) {
+            return $this->$key;
+        }
+        return null;
     }
 
-    if ( preg_match('/^\/?FS/', $this->url) ) {
-      $this->isfs = true;
-    } else if ( preg_match('/^\/?API/', $this->url) ) {
-      $this->isapi = true;
+    /**
+     * Make a HTTP Respose object
+     *
+     * @access public
+     * @return \OSjs\Core\Responder
+     */
+    public function respond()
+    {
+        return new Responder($this);
     }
-
-    if ( preg_match('/(FS|API)\/(.*)/', $this->url, $matches) ) {
-      if ( sizeof($matches) > 1 ) {
-        $this->endpoint = $matches[2];
-      }
-    }
-  }
-
-  /**
-   * Magical getter
-   *
-   * @access public
-   * @return mixed
-   */
-  public function __get($key) {
-    if ( isset($this->$key) ) {
-      return $this->$key;
-    }
-    return null;
-  }
-
-  /**
-   * Make a HTTP Respose object
-   *
-   * @access public
-   * @return \OSjs\Core\Responder
-   */
-  public function respond() {
-    return new Responder($this);
-  }
 }

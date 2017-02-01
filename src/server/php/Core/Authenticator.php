@@ -46,205 +46,215 @@ use Exception;
  */
 class Authenticator
 {
-  protected static $INSTANCE;
+    protected static $INSTANCE;
 
-  /**
-   * Create a new instance
-   */
-  protected function __construct() {
-  }
-
-  /**
-   * Performs a login
-   *
-   * @access public
-   * @param \OSjs\Core\Request      $request      The HTTP request
-   * @throws \Exception On failure
-   * @return  mixed   Login result
-   */
-  public function login(Request $request) {
-    throw new Exception('Invalid login handle');
-  }
-
-  /**
-   * Performs a logout
-   *
-   * @access public
-   * @param \OSjs\Core\Request      $request      The HTTP request
-   * @throws \Exception On failure
-   * @return  mixed   Login result
-   */
-  public function logout(Request $request) {
-    foreach ( array_keys($_SESSION) as $k ) {
-      unset($_SESSION[$k]);
+    /**
+     * Create a new instance
+     */
+    protected function __construct()
+    {
     }
 
-    return true;
-    return parent::logout($request);
-  }
-
-  /**
-   * Checks the permissions of the given type
-   *
-   * @access public
-   * @param \OSjs\Core\Request      $request      The HTTP request
-   * @param string                  $type         The request type (name)
-   * @param array                   $options      Options
-   *
-   * @return void
-   */
-  public static function CheckPermissions(Request $request, $type, Array $options = []) {
-    $authenticator = self::getInstance();
-
-    if ( !$authenticator->checkSession($request) ) {
-      $error = 'You have no OS.js Session, please log in!';
-      if ( ($request->isfs && $request->endpoint !=  'read') || $request->isapi ) {
-        $request->respond()->json([
-          'error' => $error
-        ], 403);
-      } else {
-        $request->respond()->error($error, 403);
-      }
+    /**
+     * Performs a login
+     *
+     * @access public
+     * @param  \OSjs\Core\Request $request The HTTP request
+     * @throws \Exception On failure
+     * @return mixed   Login result
+     */
+    public function login(Request $request)
+    {
+        throw new Exception('Invalid login handle');
     }
 
-    if ( !$authenticator->checkPermission($request, $type, $options) ) {
-      $error = 'Access denied!';
-      if ( ($request->isfs && $request->endpoint !=  'read') || $request->isapi ) {
-        $request->respond()->json([
-          'error' => $error
-        ], 403);
-      } else {
-        $request->respond()->error($error, 403);
-      }
-    }
-  }
-
-  /**
-   * Gets the current configuration from settings
-   *
-   * @access public
-   * @return object The configuration tree
-   */
-  final public function getConfig() {
-    $name = strtolower(str_replace('OSjs\\Modules\\Auth\\', '', get_class($this)));
-    return Instance::getConfig()->modules->auth->$name;
-  }
-
-  /**
-   * Checks the current session
-   *
-   * @param \OSjs\Core\Request      $request      The HTTP request
-   * @access public
-   * @return boolean
-   */
-  public function checkSession(Request $request) {
-    if ( $request->isapi && in_array($request->endpoint, ['login']) ) {
-      return true;
-    }
-    return isset($_SESSION['username']);
-  }
-
-  /**
-   * Checks a VFS permission
-   *
-   * @param   array   $checks     Array of permission checks
-   * @param   object  $config     The configuration tree
-   * @param   array   $options    A set of options
-   * @param   boolean $dest       If this is a destination and not a source
-   *
-   * @access protected
-   * @return boolean
-   */
-  protected function _checkFsPermission(Array &$checks, $config, $options, $dest = false) {
-    if ( $dest && empty($options['arguments']['dest']) ) {
-      return true;
-    }
-
-    $proto = VFS::GetProtocol($options['arguments'], $dest);
-    if ( $fsgroups = (array)$config->vfs->groups ) {
-      if ( isset($fsgroups[$proto]) ) {
-        $g = $fsgroups[$proto];
-
-        foreach ( is_array($g) ? $g : [$g] as $i ) {
-          $checks[] = $i;
+    /**
+     * Performs a logout
+     *
+     * @access public
+     * @param  \OSjs\Core\Request $request The HTTP request
+     * @throws \Exception On failure
+     * @return mixed   Login result
+     */
+    public function logout(Request $request)
+    {
+        foreach ( array_keys($_SESSION) as $k ) {
+            unset($_SESSION[$k]);
         }
-      }
-    }
 
-    $mounts = (array) $config->vfs->mounts;
-    if ( isset($mounts[$proto]) && is_array($mounts[$proto]) && isset($mounts[$proto]['ro']) ) {
-      if ( $dest ) {
-        $map = ['upload', 'write', 'delete', 'copy', 'move', 'mkdir'];
-      } else {
-        $map = ['upload', 'write', 'delete', 'mkdir'];
-      }
-
-      if ( $mounts[$proto]['ro'] && in_array($request->endpoint, $map) ) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  /**
-   * Checks a permission
-   *
-   * @param \OSjs\Core\Request      $request      The HTTP request
-   * @param string                  $type         Permission type (name)
-   * @param array                   $options      Options
-   *
-   * @access public
-   * @return boolean
-   */
-  public function checkPermission(Request $request, $type, Array $options = []) {
-    if ( $type === 'package' ) {
-      $blacklist = Storage::getInstance()->getBlacklist($request);
-      return !in_array($options['path'], $blacklist);
-    }
-
-    $checks = [];
-    $config = Instance::GetConfig();
-
-    if ( $type === 'fs' ) {
-      $checks = ['fs'];
-
-      if ( !$this->_checkFsPermission($checks, $config, $options) ||
-           !$this->_checkFsPermission($checks, $config, $options, true) ) {
-        return false;
-      }
-    } else if ( $type === 'api' ) {
-      $apigroups = (array)$config->api->groups;
-      if ( isset($apigroups[$request->endpoint]) ) {
-        $g = $apigroups[$request->endpoint];
-        $checks = is_array($g) ? $g : [$g];
-      }
-    }
-
-    if ( $checks ) {
-      $groups = Storage::getInstance()->getGroups($request);
-      if ( in_array('admin', $groups) ) {
         return true;
-      } else if ( sizeof(array_diff($groups, $checks)) ) {
-        return false;
-      }
+        return parent::logout($request);
     }
 
-    return true;
-  }
+    /**
+     * Checks the permissions of the given type
+     *
+     * @access public
+     * @param  \OSjs\Core\Request $request The HTTP request
+     * @param  string             $type    The request type (name)
+     * @param  array              $options Options
+     *
+     * @return void
+     */
+    public static function CheckPermissions(Request $request, $type, Array $options = [])
+    {
+        $authenticator = self::getInstance();
 
-  /**
-   * Get (or create) a new instance of the Authenticator
-   *
-   * @access public
-   * @return \OSjs\Core\Authenticator But with a top-class instance
-   */
-  public static function getInstance() {
-    if ( !self::$INSTANCE ) {
-      $name = Instance::GetConfig()->http->authenticator;
-      $name = 'OSjs\\Modules\\Auth\\' . ucfirst($name);
-      self::$INSTANCE = new $name();
+        if (!$authenticator->checkSession($request)) {
+            $error = 'You have no OS.js Session, please log in!';
+            if (($request->isfs && $request->endpoint !=  'read') || $request->isapi) {
+                $request->respond()->json([
+                    'error' => $error
+                ], 403);
+            } else {
+                $request->respond()->error($error, 403);
+            }
+        }
+
+        if (!$authenticator->checkPermission($request, $type, $options) ) {
+            $error = 'Access denied!';
+            if (($request->isfs && $request->endpoint !=  'read') || $request->isapi) {
+                $request->respond()->json([
+                    'error' => $error
+                ], 403);
+            } else {
+                $request->respond()->error($error, 403);
+            }
+        }
     }
-    return self::$INSTANCE;
-  }
+
+    /**
+     * Gets the current configuration from settings
+     *
+     * @access public
+     * @return object The configuration tree
+     */
+    final public function getConfig()
+    {
+        $name = strtolower(str_replace('OSjs\\Modules\\Auth\\', '', get_class($this)));
+        return Instance::getConfig()->modules->auth->$name;
+    }
+
+    /**
+     * Checks the current session
+     *
+     * @param  \OSjs\Core\Request $request The HTTP request
+     * @access public
+     * @return boolean
+     */
+    public function checkSession(Request $request)
+    {
+        if ($request->isapi && in_array($request->endpoint, ['login'])) {
+            return true;
+        }
+        return isset($_SESSION['username']);
+    }
+
+    /**
+     * Checks a VFS permission
+     *
+     * @param array   $checks  Array of permission checks
+     * @param object  $config  The configuration tree
+     * @param array   $options A set of options
+     * @param boolean $dest    If this is a destination and not a source
+     *
+     * @access protected
+     * @return boolean
+     */
+    protected function _checkFsPermission(Array &$checks, $config, $options, $dest = false)
+    {
+        if ($dest && empty($options['arguments']['dest'])) {
+            return true;
+        }
+
+        $proto = VFS::GetProtocol($options['arguments'], $dest);
+        if ($fsgroups = (array)$config->vfs->groups) {
+            if (isset($fsgroups[$proto]) ) {
+                $g = $fsgroups[$proto];
+
+                foreach ( is_array($g) ? $g : [$g] as $i ) {
+                    $checks[] = $i;
+                }
+            }
+        }
+
+        $mounts = (array) $config->vfs->mounts;
+        if (isset($mounts[$proto]) && is_array($mounts[$proto]) && isset($mounts[$proto]['ro'])) {
+            if ($dest ) {
+                $map = ['upload', 'write', 'delete', 'copy', 'move', 'mkdir'];
+            } else {
+                $map = ['upload', 'write', 'delete', 'mkdir'];
+            }
+
+            if ($mounts[$proto]['ro'] && in_array($request->endpoint, $map)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks a permission
+     *
+     * @param \OSjs\Core\Request $request The HTTP request
+     * @param string             $type    Permission type (name)
+     * @param array              $options Options
+     *
+     * @access public
+     * @return boolean
+     */
+    public function checkPermission(Request $request, $type, Array $options = [])
+    {
+        if ($type === 'package') {
+            $blacklist = Storage::getInstance()->getBlacklist($request);
+            return !in_array($options['path'], $blacklist);
+        }
+
+        $checks = [];
+        $config = Instance::GetConfig();
+
+        if ($type === 'fs') {
+            $checks = ['fs'];
+
+            if (!$this->_checkFsPermission($checks, $config, $options) 
+                || !$this->_checkFsPermission($checks, $config, $options, true) 
+            ) {
+                return false;
+            }
+        } else if ($type === 'api') {
+            $apigroups = (array)$config->api->groups;
+            if (isset($apigroups[$request->endpoint])) {
+                $g = $apigroups[$request->endpoint];
+                $checks = is_array($g) ? $g : [$g];
+            }
+        }
+
+        if ($checks) {
+            $groups = Storage::getInstance()->getGroups($request);
+            if (in_array('admin', $groups) ) {
+                return true;
+            } else if (sizeof(array_diff($groups, $checks))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Get (or create) a new instance of the Authenticator
+     *
+     * @access public
+     * @return \OSjs\Core\Authenticator But with a top-class instance
+     */
+    public static function getInstance()
+    {
+        if (!self::$INSTANCE ) {
+            $name = Instance::GetConfig()->http->authenticator;
+            $name = 'OSjs\\Modules\\Auth\\' . ucfirst($name);
+            self::$INSTANCE = new $name();
+        }
+        return self::$INSTANCE;
+    }
 }

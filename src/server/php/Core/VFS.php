@@ -40,103 +40,109 @@ use OSjs\Core\Instance;
 abstract class VFS
 {
 
-  /**
-   * Make a VFS request for internal usage
-   *
-   * @param string    $str      The virtual path
-   *
-   * @access public
-   * @return string  The real path
-   */
-  final public static function GetRealPath($str) {
-    $transport = self::GetTransportFromPath($str);
-    return $transport::getRealPath($str);
-  }
-
-  /**
-   * Get Transport VFS module from given path
-   *
-   * @param   mixed   $args   A string or a object from a a request (dest/src map)
-   *
-   * @access public
-   * @return boolean
-   */
-  final public static function GetTransportFromPath($args) {
-    $mounts = (array) (Instance::GetConfig()->vfs->mounts ?: []);
-
-    if ( $protocol = VFS::GetProtocol($args) ) {
-      $transport = 'filesystem';
-
-      if ( preg_match('/^(https?):/', $protocol) ) {
-        return 'OSjs\Modules\VFS\Http';
-      }
-
-      if ( isset($mounts[$protocol]) ) {
-        if ( is_array($mounts[$protocol]) && isset($mounts[$protocol]['transport']) ) {
-          $transport = $mounts[$protocol]['transport'];
-        }
-      }
-
-      foreach ( Instance::GetVFSModules() as $className ) {
-        if ( $className::TRANSPORT === $transport ) {
-          return $className;
-        }
-      }
+    /**
+     * Make a VFS request for internal usage
+     *
+     * @param string $str The virtual path
+     *
+     * @access public
+     * @return string  The real path
+     */
+    final public static function GetRealPath($str)
+    {
+        $transport = self::GetTransportFromPath($str);
+        return $transport::getRealPath($str);
     }
 
-    return null;
-  }
+    /**
+     * Get Transport VFS module from given path
+     *
+     * @param mixed $args A string or a object from a a request (dest/src map)
+     *
+     * @access public
+     * @return boolean
+     */
+    final public static function GetTransportFromPath($args)
+    {
+        $mounts = (array) (Instance::GetConfig()->vfs->mounts ?: []);
 
-  /**
-   * Flattens a path
-   *
-   * @return  string    $path     A path
-   *
-   * @access public
-   * @return string
-   */
-  public static function GetAbsoluteFilename($path) {
-    $unipath = strlen($path) == 0 || $path{0} != '/';
-    $path = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $path);
-    $parts = array_filter(explode(DIRECTORY_SEPARATOR, $path), 'strlen');
-    $absolutes = [];
+        if ($protocol = VFS::GetProtocol($args)) {
+            $transport = 'filesystem';
 
-    foreach ($parts as $part) {
-      if ('.'  == $part) continue;
+            if (preg_match('/^(https?):/', $protocol)) {
+                return 'OSjs\Modules\VFS\Http';
+            }
 
-      if ('..' == $part) {
-        array_pop($absolutes);
-      } else {
-        $absolutes[] = $part;
-      }
-    }
+            if (isset($mounts[$protocol])) {
+                if (is_array($mounts[$protocol]) && isset($mounts[$protocol]['transport'])) {
+                    $transport = $mounts[$protocol]['transport'];
+                }
+            }
 
-    $path = implode(DIRECTORY_SEPARATOR, $absolutes);
-    return !$unipath ? '/'.$path : $path;
-  }
-
-  /**
-   * Gets a protocol from path
-   *
-   * @param   mixed   $args   A string or a object from a a request (dest/src map)
-   *
-   * @access public
-   * @return string
-   */
-  public static function GetProtocol($args, $dest = false) {
-    $path = is_string($args) ? $args : null;
-
-    if ( is_array($args) ) {
-      $checks = $dest ? ['dest'] : ['path', 'src', 'root'];
-      foreach ( $checks as $c ) {
-        if ( isset($args[$c]) ) {
-          $path = $args[$c];
-          break;
+            foreach ( Instance::GetVFSModules() as $className ) {
+                if ($className::TRANSPORT === $transport) {
+                    return $className;
+                }
+            }
         }
-      }
+
+        return null;
     }
 
-    $parts = explode(':', $path, 2);
-    return $parts[0];
-  }
+    /**
+     * Flattens a path
+     *
+     * @return string    $path     A path
+     *
+     * @access public
+     * @return string
+     */
+    public static function GetAbsoluteFilename($path)
+    {
+        $unipath = strlen($path) == 0 || $path{0} != '/';
+        $path = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $path);
+        $parts = array_filter(explode(DIRECTORY_SEPARATOR, $path), 'strlen');
+        $absolutes = [];
+
+        foreach ($parts as $part) {
+            if ('.'  == $part) {
+                continue;
+            }
+
+            if ('..' == $part) {
+                array_pop($absolutes);
+            } else {
+                $absolutes[] = $part;
+            }
+        }
+
+        $path = implode(DIRECTORY_SEPARATOR, $absolutes);
+        return !$unipath ? '/'.$path : $path;
+    }
+
+    /**
+     * Gets a protocol from path
+     *
+     * @param mixed $args A string or a object from a a request (dest/src map)
+     *
+     * @access public
+     * @return string
+     */
+    public static function GetProtocol($args, $dest = false)
+    {
+        $path = is_string($args) ? $args : null;
+
+        if (is_array($args)) {
+            $checks = $dest ? ['dest'] : ['path', 'src', 'root'];
+            foreach ( $checks as $c ) {
+                if (isset($args[$c])) {
+                    $path = $args[$c];
+                    break;
+                }
+            }
+        }
+
+        $parts = explode(':', $path, 2);
+        return $parts[0];
+    }
 }

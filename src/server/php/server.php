@@ -42,16 +42,16 @@ ini_set('display_errors', 1);
 error_reporting(-1);
 
 spl_autoload_register(function($name) {
-  $name = str_replace('\\', '/', $name);
-  if ( substr($name, 0, 5) == 'OSjs/' ) {
-    $name = substr($name, 5, strlen($name));
-    $path = __DIR__ . '/' . $name . '.php';
-    require $path;
-  }
+    $name = str_replace('\\', '/', $name);
+    if (substr($name, 0, 5) == 'OSjs/') {
+        $name = substr($name, 5, strlen($name));
+        $path = __DIR__ . '/' . $name . '.php';
+        require $path;
+    }
 });
 
 $al = __DIR__ . '/vendor/autoload.php';
-if ( file_exists($al) ) {
+if (file_exists($al)) {
     require $al;
 }
 

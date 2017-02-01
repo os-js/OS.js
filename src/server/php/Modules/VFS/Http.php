@@ -40,12 +40,13 @@ use Exception;
 abstract class Http
   extends VFSTransport
 {
-  const TRANSPORT = 'http';
+    const TRANSPORT = 'http';
 
-  final public static function read(Request $request, Array $arguments = []) {
-    if ( !in_array('http', stream_get_wrappers()) ) {
-      throw new Exception('Not supported');
+    final public static function read(Request $request, Array $arguments = [])
+    {
+        if (!in_array('http', stream_get_wrappers())) {
+            throw new Exception('Not supported');
+        }
+        $request->respond()->remote($arguments['path'], !isset($arguments['raw']));
     }
-    $request->respond()->remote($arguments['path'], !isset($arguments['raw']));
-  }
 }

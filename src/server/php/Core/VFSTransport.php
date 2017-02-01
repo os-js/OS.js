@@ -38,15 +38,16 @@
 abstract class VFSTransport
 {
 
-  /**
-   * Gets a real path from virtual
-   *
-   * @param string $str Virtual path
-   * @access public
-   * @return string
-   */
-  public static function getRealPath($str) {
-    return $str;
-  }
+    /**
+     * Gets a real path from virtual
+     *
+     * @param  string $str Virtual path
+     * @access public
+     * @return string
+     */
+    public static function getRealPath($str)
+    {
+        return $str;
+    }
 
 }

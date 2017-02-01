@@ -35,26 +35,30 @@ use OSjs\Core\Authenticator;
 class Demo extends Authenticator
 {
 
-  final public function login(Request $request) {
-    return [
-      'id'  => 0,
-      'username' => 'demo',
-      'name' => 'Demo',
-      'groups' => ['admin']
-    ];
-  }
+    final public function login(Request $request)
+    {
+        return [
+            'id'  => 0,
+            'username' => 'demo',
+            'name' => 'Demo',
+            'groups' => ['admin']
+        ];
+    }
 
-  final public function logout(Request $request) {
-    return parent::logout($request);
-  }
+    final public function logout(Request $request)
+    {
+        return parent::logout($request);
+    }
 
-  final public function checkSession(Request $request) {
-    return parent::checkSession($request);
-  }
+    final public function checkSession(Request $request)
+    {
+        return parent::checkSession($request);
+    }
 
-  final public function checkPermission(Request $request, $type, Array $options = []) {
-    return parent::checkPermission($request, $type, $options);
-  }
+    final public function checkPermission(Request $request, $type, Array $options = [])
+    {
+        return parent::checkPermission($request, $type, $options);
+    }
 
 }
 

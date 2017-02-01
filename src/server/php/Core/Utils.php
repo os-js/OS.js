@@ -39,51 +39,61 @@ use OSjs\Core\Instance;
  */
 abstract class Utils
 {
-  /**
-   * Gets MIME from path
-   *
-   * @param   string    $fname      File path
-   *
-   * @access public
-   * @return string
-   */
-  final public static function getMIME($fname) {
-    if ( function_exists('pathinfo') ) {
-      if ( $ext = pathinfo($fname, PATHINFO_EXTENSION) ) {
-        $ext = strtolower($ext);
-        $mime = (array)Instance::GetConfig()->mimes;
-        if ( isset($mime[".{$ext}"]) ) {
-          return $mime[".{$ext}"];
+    /**
+     * Gets MIME from path
+     *
+     * @param string $fname File path
+     *
+     * @access public
+     * @return string
+     */
+    final public static function getMIME($fname)
+    {
+        if (function_exists('pathinfo')) {
+            if ($ext = pathinfo($fname, PATHINFO_EXTENSION)) {
+                $ext = strtolower($ext);
+                $mime = (array)Instance::GetConfig()->mimes;
+                if (isset($mime[".{$ext}"])) {
+                    return $mime[".{$ext}"];
+                }
+            }
         }
-      }
+
+        if (function_exists('finfo_open')) {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime = finfo_file($finfo, $fname);
+            finfo_close($finfo);
+            return $mime;
+        }
+
+        return null;
     }
 
-    if ( function_exists('finfo_open') ) {
-      $finfo = finfo_open(FILEINFO_MIME_TYPE);
-      $mime = finfo_file($finfo, $fname);
-      finfo_close($finfo);
-      return $mime;
-    }
+    /**
+     * Remove a directory recursively
+     *
+     * @param string $dir Path to directory
+     *
+     * @return boolean
+     */
+    final public static function rmdir($dir)
+    {
+        if (!is_dir($dir) || is_link($dir)) {
+            return unlink($dir);
+        }
 
-    return null;
-  }
+        foreach (scandir($dir) as $file) {
+            if ($file == '.' || $file == '..') {
+                continue;
+            }
 
-  /**
-   * Remove a directory recursively
-   *
-   * @param   string      $dir      Path to directory
-   *
-   * @return boolean
-   */
-  final public static function rmdir($dir) {
-    if (!is_dir($dir) || is_link($dir)) return unlink($dir);
-    foreach (scandir($dir) as $file) {
-      if ($file == '.' || $file == '..') continue;
-      if (!destroy_dir($dir . DIRECTORY_SEPARATOR . $file)) {
-        chmod($dir . DIRECTORY_SEPARATOR . $file, 0777);
-        if (!destroy_dir($dir . DIRECTORY_SEPARATOR . $file)) return false;
-      }
+            if (!destroy_dir($dir . DIRECTORY_SEPARATOR . $file)) {
+                chmod($dir . DIRECTORY_SEPARATOR . $file, 0777);
+                if (!destroy_dir($dir . DIRECTORY_SEPARATOR . $file)) {
+                    return false;
+                }
+            }
+        }
+        return rmdir($dir);
     }
-    return rmdir($dir);
-  }
 }

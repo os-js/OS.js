@@ -44,324 +44,365 @@ use Exception;
  */
 class Instance
 {
-  protected static $DIST = 'dist-dev';
-  protected static $CONFIG = [];
-  protected static $PACKAGES = [];
-  protected static $API = [];
-  protected static $VFS = [];
-  protected static $MIDDLEWARE = [];
+    protected static $DIST = 'dist-dev';
+    protected static $CONFIG = [];
+    protected static $PACKAGES = [];
+    protected static $API = [];
+    protected static $VFS = [];
+    protected static $MIDDLEWARE = [];
 
-  protected static $done = false;
+    protected static $done = false;
 
-  /////////////////////////////////////////////////////////////////////////////
-  // LOADERS
-  /////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////
+    // LOADERS
+    /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Loads configuration files
-   * @access protected
-   * @return void
-   */
-  final protected static function _loadConfiguration() {
-    self::$CONFIG = json_decode(file_get_contents(DIR_SERVER . '/settings.json'));
-    self::$PACKAGES = json_decode(file_get_contents(DIR_SERVER . '/packages.json'), true);
+    /**
+     * Loads configuration files
+     *
+     * @access protected
+     * @return void
+     */
+    final protected static function _loadConfiguration()
+    {
+        self::$CONFIG = json_decode(file_get_contents(DIR_SERVER . '/settings.json'));
+        self::$PACKAGES = json_decode(file_get_contents(DIR_SERVER . '/packages.json'), true);
 
-    if ( !empty(self::$CONFIG->tz) ) {
-      date_default_timezone_set(self::$CONFIG->tz);
-    }
-
-    if ( !date_default_timezone_get() ) {
-      date_default_timezone_set('UTC');
-    }
-  }
-
-  /**
-   * Loads all Middleware modules
-   * @access protected
-   * @return void
-   */
-  final protected static function _loadMiddleware() {
-    $path = DIR_SELF . '/Modules/Middleware/';
-    foreach ( scandir($path) as $file ) {
-      if ( substr($file, 0, 1) !== '.' ) {
-        require($path . $file);
-
-        $className = 'OSjs\\Modules\\Middleware\\' . pathinfo($file, PATHINFO_FILENAME);
-        self::$MIDDLEWARE[] = $className;
-      }
-    }
-  }
-
-  /**
-   * Loads API methods
-   * @access protected
-   * @return void
-   */
-  final protected static function _loadAPI() {
-    $path = DIR_SELF . '/Modules/API/';
-    foreach ( scandir($path) as $file ) {
-      if ( substr($file, 0, 1) !== '.' ) {
-        require($path . $file);
-
-        $className = 'OSjs\\Modules\\API\\' . pathinfo($file, PATHINFO_FILENAME);
-        self::registerAPIMethods($className);
-      }
-    }
-
-    foreach ( self::getPackages() as $p => $pkg ) {
-      if ( $pkg['type'] == 'extension' ) {
-        $path = DIR_ROOT . '/src/packages/' . $p . '/api.php';
-        if ( file_exists($path) ) {
-          $className = require($path);
-          if ( is_string($className) && strlen($className) > 3 ) {
-            self::registerAPIMethods($className);
-          }
+        if (!empty(self::$CONFIG->tz)) {
+            date_default_timezone_set(self::$CONFIG->tz);
         }
-      }
-    }
-  }
 
-  /**
-   * Loads VFS Transports
-   * @access protected
-   * @return void
-   */
-  final protected static function _loadVFS() {
-    $path = DIR_SELF . '/Modules/VFS/';
-    foreach ( scandir($path) as $file ) {
-      if ( substr($file, 0, 1) !== '.' ) {
-        require($path . $file);
-
-        $className = 'OSjs\\Modules\\VFS\\' . pathinfo($file, PATHINFO_FILENAME);
-        self::$VFS[] = $className;
-      }
-    }
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
-  // GETTERS
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Get Loaded configuration
-   * @access public
-   * @return object
-   */
-  final public static function GetConfig() {
-    return self::$CONFIG;
-  }
-
-  /**
-   * Get packages manifest
-   * @access public
-   * @return object
-   */
-  final public static function GetPackages() {
-    return self::$PACKAGES[self::$DIST];
-  }
-
-  /**
-   * Get current dist
-   * @access public
-   * @return string
-   */
-  final public static function GetDist() {
-    return self::$DIST;
-  }
-
-  /**
-   * Gets the VFS modules
-   * @access public
-   * @return array
-   */
-  final public static function GetVFSModules() {
-    return self::$VFS;
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
-  // APP
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Exits the app
-   * @access public
-   * @return void
-   */
-  final public static function end() {
-    self::$done = true;
-    exit;
-  }
-
-  /**
-   * Shutdown handler
-   * @access public
-   * @return void
-   */
-  final public static function shutdown() {
-    if ( !self::$done && !is_null($error = error_get_last()) ) {
-      self::handle($error['type'], $error['message'], $error['file'], $error['line']);
-    }
-  }
-
-  /**
-   * Error handler
-   * @access public
-   * @return void
-   */
-  final public static function handle($errno, $errstr, $errfile, $errline) {
-    @header_remove();
-
-    while ( ob_get_level() ) {
-      ob_end_flush();
-    }
-
-    header('HTTP/1.0 500 Internal Server Error');
-    header('Content-type: text/html');
-
-    print '<html><head></head><body>';
-    print '<h1>Error</h1><pre>';
-    print print_r([
-      'message' => $errstr,
-      'type' => $errno,
-      'file' => $errfile,
-      'line' => $errline
-    ], true);
-    print '</pre></body></html>';
-    exit;
-  }
-
-  /**
-   * Takes all public methods from a class and registeres them in
-   * the API
-   * @param string $className The class namespace path
-   * @access public
-   * @return void
-   */
-  final public static function registerAPIMethods($className) {
-    foreach ( get_class_methods($className) as $methodName ) {
-      if ( substr($methodName, 0, 1) != '_' ) {
-        self::$API[$methodName] = $className;
-      }
-    }
-  }
-
-  /**
-   * Startup handler
-   *
-   * @access public
-   * @return void
-   */
-  final public static function run() {
-    $root = basename(getcwd());
-    if ( in_array($root, ['dist', 'dist-dev']) ) {
-      self::$DIST = $root;
-    }
-
-    register_shutdown_function([__CLASS__, 'shutdown']);
-    set_error_handler([__CLASS__, 'handle']);
-
-    define('DIR_ROOT', realpath(__DIR__ . '/../../../../'));
-    define('DIR_SERVER', realpath(__DIR__ . '/../../'));
-    define('DIR_SELF', realpath(__DIR__ . '/../'));
-
-    try {
-      self::_loadConfiguration();
-      self::_loadMiddleware();
-      self::_loadAPI();
-      self::_loadVFS();
-    } catch ( Exception $e ) {
-      (new Responder())->error('Failed to initialize');
-    }
-
-    if ( !defined('DIR_DIST') ) {
-      define('DIR_DIST', DIR_ROOT . '/' . self::$DIST);
-    }
-    define('DIR_PACKAGES', DIR_ROOT . '/src/packages');
-
-    session_start();
-
-    $request = new Request();
-
-    if ( $request->isfs ) {
-      if ( $request->method === 'GET' ) {
-        $endpoint = 'read';
-        $args = [
-          'path' => rawurldecode(preg_replace('/(^get\/)?/', '', $request->endpoint)),
-          'raw' => true
-        ];
-      } else {
-        $endpoint = $request->endpoint;
-        $args = $request->data;
-      }
-
-      try {
-        $valid = !in_array($endpoint, ['getRealPath']) && substr($endpoint, 0, 1) !== '_';
-        $transport = $valid ? VFS::GetTransportFromPath($args) : null;
-
-        if ( $valid && $transport && is_callable($transport, $endpoint) ) {
-          Authenticator::CheckPermissions($request, 'fs', [
-            'method' => $endpoint,
-            'arguments' => $args
-          ]);
-
-          $result = call_user_func_array([$transport, $endpoint], [$request, $args]);
-          $request->respond()->json([
-            'error' => null,
-            'result' => $result
-          ]);
-        } else {
-          $request->respond()->json([
-            'error' => 'No such VFS method',
-            'result' => null
-          ], 500);
+        if (!date_default_timezone_get()) {
+            date_default_timezone_set('UTC');
         }
-      } catch ( Exception $e ) {
-        $request->respond()->json([
-          'error' => $e->getMessage(),
-          'result' => null
-        ]);
-      }
-    } else if ( $request->isapi && $request->method === 'POST' ) {
-      Authenticator::CheckPermissions($request, 'api', ['method' => $request->endpoint]);
+    }
 
-      if ( isset(self::$API[$request->endpoint]) ) {
+    /**
+     * Loads all Middleware modules
+     *
+     * @access protected
+     * @return void
+     */
+    final protected static function _loadMiddleware()
+    {
+        $path = DIR_SELF . '/Modules/Middleware/';
+        foreach ( scandir($path) as $file ) {
+            if (substr($file, 0, 1) !== '.') {
+                include $path . $file;
+
+                $className = 'OSjs\\Modules\\Middleware\\' . pathinfo($file, PATHINFO_FILENAME);
+                self::$MIDDLEWARE[] = $className;
+            }
+        }
+    }
+
+    /**
+     * Loads API methods
+     *
+     * @access protected
+     * @return void
+     */
+    final protected static function _loadAPI()
+    {
+        $path = DIR_SELF . '/Modules/API/';
+        foreach ( scandir($path) as $file ) {
+            if (substr($file, 0, 1) !== '.') {
+                include $path . $file;
+
+                $className = 'OSjs\\Modules\\API\\' . pathinfo($file, PATHINFO_FILENAME);
+                self::registerAPIMethods($className);
+            }
+        }
+
+        foreach ( self::getPackages() as $p => $pkg ) {
+            if ($pkg['type'] == 'extension' ) {
+                $path = DIR_ROOT . '/src/packages/' . $p . '/api.php';
+                if (file_exists($path)) {
+                    $className = include $path;
+                    if (is_string($className) && strlen($className) > 3) {
+                        self::registerAPIMethods($className);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Loads VFS Transports
+     *
+     * @access protected
+     * @return void
+     */
+    final protected static function _loadVFS()
+    {
+        $path = DIR_SELF . '/Modules/VFS/';
+        foreach ( scandir($path) as $file ) {
+            if (substr($file, 0, 1) !== '.') {
+                include $path . $file;
+
+                $className = 'OSjs\\Modules\\VFS\\' . pathinfo($file, PATHINFO_FILENAME);
+                self::$VFS[] = $className;
+            }
+        }
+    }
+
+    /////////////////////////////////////////////////////////////////////////////
+    // GETTERS
+    /////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Get Loaded configuration
+     *
+     * @access public
+     * @return object
+     */
+    final public static function GetConfig()
+    {
+        return self::$CONFIG;
+    }
+
+    /**
+     * Get packages manifest
+     *
+     * @access public
+     * @return object
+     */
+    final public static function GetPackages()
+    {
+        return self::$PACKAGES[self::$DIST];
+    }
+
+    /**
+     * Get current dist
+     *
+     * @access public
+     * @return string
+     */
+    final public static function GetDist()
+    {
+        return self::$DIST;
+    }
+
+    /**
+     * Gets the VFS modules
+     *
+     * @access public
+     * @return array
+     */
+    final public static function GetVFSModules()
+    {
+        return self::$VFS;
+    }
+
+    /////////////////////////////////////////////////////////////////////////////
+    // APP
+    /////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Exits the app
+     *
+     * @access public
+     * @return void
+     */
+    final public static function end()
+    {
+        self::$done = true;
+        exit;
+    }
+
+    /**
+     * Shutdown handler
+     *
+     * @access public
+     * @return void
+     */
+    final public static function shutdown()
+    {
+        if (!self::$done && !is_null($error = error_get_last())) {
+            self::handle($error['type'], $error['message'], $error['file'], $error['line']);
+        }
+    }
+
+    /**
+     * Error handler
+     *
+     * @access public
+     * @return void
+     */
+    final public static function handle($errno, $errstr, $errfile, $errline)
+    {
+        @header_remove();
+
+        while ( ob_get_level() ) {
+            ob_end_flush();
+        }
+
+        header('HTTP/1.0 500 Internal Server Error');
+        header('Content-type: text/html');
+
+        print '<html><head></head><body>';
+        print '<h1>Error</h1><pre>';
+        print print_r(
+            [
+            'message' => $errstr,
+            'type' => $errno,
+            'file' => $errfile,
+            'line' => $errline
+            ], true
+        );
+        print '</pre></body></html>';
+        exit;
+    }
+
+    /**
+     * Takes all public methods from a class and registeres them in
+     * the API
+     *
+     * @param  string $className The class namespace path
+     * @access public
+     * @return void
+     */
+    final public static function registerAPIMethods($className)
+    {
+        foreach ( get_class_methods($className) as $methodName ) {
+            if (substr($methodName, 0, 1) != '_') {
+                self::$API[$methodName] = $className;
+            }
+        }
+    }
+
+    /**
+     * Startup handler
+     *
+     * @access public
+     * @return void
+     */
+    final public static function run()
+    {
+        $root = basename(getcwd());
+        if (in_array($root, ['dist', 'dist-dev'])) {
+            self::$DIST = $root;
+        }
+
+        register_shutdown_function([__CLASS__, 'shutdown']);
+        set_error_handler([__CLASS__, 'handle']);
+
+        define('DIR_ROOT', realpath(__DIR__ . '/../../../../'));
+        define('DIR_SERVER', realpath(__DIR__ . '/../../'));
+        define('DIR_SELF', realpath(__DIR__ . '/../'));
+
         try {
-          $result = call_user_func_array([self::$API[$request->endpoint], $request->endpoint], [$request]);
-
-          $request->respond()->json([
-            'error' => null,
-            'result' => $result
-          ]);
+            self::_loadConfiguration();
+            self::_loadMiddleware();
+            self::_loadAPI();
+            self::_loadVFS();
         } catch ( Exception $e ) {
-          $request->respond()->json([
-            'error' => $e->getMessage(),
-            'result' => null
-          ]);
+            (new Responder())->error('Failed to initialize');
         }
-      } else {
-        $request->respond()->json([
-          'error' => 'No such API method',
-          'result' => null
-        ], 500);
-      }
-      return;
-    } else {
-      if ( preg_match('/^\/?packages\/(.*\/.*)\/(.*)/', $request->url, $matches) ) {
-        if ( !Authenticator::getInstance()->checkPermission($request, 'package', ['path' => $matches[1]]) ) {
-          $request->respond()->error('Permission denied!', 403);
+
+        if (!defined('DIR_DIST') ) {
+            define('DIR_DIST', DIR_ROOT . '/' . self::$DIST);
         }
-      }
-      $request->respond()->file(DIR_DIST . $request->url, null, false, 'static');
-    }
+        define('DIR_PACKAGES', DIR_ROOT . '/src/packages');
 
-    foreach ( self::$MIDDLEWARE as $className ) {
-      $result = $className::request($request);
-      if ( !$result ) {
-        break;
-      }
-    }
+        session_start();
 
-    $request->respond()->error('File not found', 404);
-  }
+        $request = new Request();
+
+        if ($request->isfs) {
+            if ($request->method === 'GET') {
+                $endpoint = 'read';
+                $args = [
+                'path' => rawurldecode(preg_replace('/(^get\/)?/', '', $request->endpoint)),
+                'raw' => true
+                ];
+            } else {
+                $endpoint = $request->endpoint;
+                $args = $request->data;
+            }
+
+            try {
+                $valid = !in_array($endpoint, ['getRealPath']) && substr($endpoint, 0, 1) !== '_';
+                $transport = $valid ? VFS::GetTransportFromPath($args) : null;
+
+                if ($valid && $transport && is_callable($transport, $endpoint)) {
+                    Authenticator::CheckPermissions(
+                        $request, 'fs', [
+                        'method' => $endpoint,
+                        'arguments' => $args
+                        ]
+                    );
+
+                    $result = call_user_func_array([$transport, $endpoint], [$request, $args]);
+                    $request->respond()->json(
+                        [
+                        'error' => null,
+                        'result' => $result
+                        ]
+                    );
+                } else {
+                    $request->respond()->json(
+                        [
+                        'error' => 'No such VFS method',
+                        'result' => null
+                        ], 500
+                    );
+                }
+            } catch ( Exception $e ) {
+                $request->respond()->json(
+                    [
+                    'error' => $e->getMessage(),
+                    'result' => null
+                    ]
+                );
+            }
+        } else if ($request->isapi && $request->method === 'POST') {
+            Authenticator::CheckPermissions($request, 'api', ['method' => $request->endpoint]);
+
+            if (isset(self::$API[$request->endpoint])) {
+                try {
+                    $result = call_user_func_array([self::$API[$request->endpoint], $request->endpoint], [$request]);
+
+                    $request->respond()->json(
+                        [
+                        'error' => null,
+                        'result' => $result
+                        ]
+                    );
+                } catch ( Exception $e ) {
+                    $request->respond()->json(
+                        [
+                        'error' => $e->getMessage(),
+                        'result' => null
+                        ]
+                    );
+                }
+            } else {
+                $request->respond()->json(
+                    [
+                    'error' => 'No such API method',
+                    'result' => null
+                    ], 500
+                );
+            }
+            return;
+        } else {
+            if (preg_match('/^\/?packages\/(.*\/.*)\/(.*)/', $request->url, $matches)) {
+                if (!Authenticator::getInstance()->checkPermission($request, 'package', ['path' => $matches[1]]) ) {
+                    $request->respond()->error('Permission denied!', 403);
+                }
+            }
+            $request->respond()->file(DIR_DIST . $request->url, null, false, 'static');
+        }
+
+        foreach ( self::$MIDDLEWARE as $className ) {
+            $result = $className::request($request);
+            if (!$result) {
+                break;
+            }
+        }
+
+        $request->respond()->error('File not found', 404);
+    }
 
 }

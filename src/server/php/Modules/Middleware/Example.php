@@ -34,8 +34,9 @@ use OSjs\Core\Middleware;
 
 class Example extends Middleware
 {
-  final public static function request(Request $request) {
-    return true; // Allow next middleware module to run
-    //return false; // Or stop here
-  }
+    final public static function request(Request $request)
+    {
+        return true; // Allow next middleware module to run
+        //return false; // Or stop here
+    }
 }
