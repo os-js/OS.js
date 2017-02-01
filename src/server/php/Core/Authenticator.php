@@ -217,8 +217,8 @@ class Authenticator
         if ($type === 'fs') {
             $checks = ['fs'];
 
-            if (!$this->_checkFsPermission($checks, $config, $options) 
-                || !$this->_checkFsPermission($checks, $config, $options, true) 
+            if (!$this->_checkFsPermission($checks, $config, $options)
+                || !$this->_checkFsPermission($checks, $config, $options, true)
             ) {
                 return false;
             }

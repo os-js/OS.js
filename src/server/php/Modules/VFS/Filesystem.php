@@ -189,10 +189,12 @@ abstract class Filesystem
         $path = self::_getRealPath($arguments['path']);
 
         if (is_file($path)) {
-            if (!is_writeable($path)) { throw new Exception('Read permission denied');
+            if (!is_writeable($path)) {
+                throw new Exception('Read permission denied');
             }
         } else if (is_dir($path)) {
-            if (!is_writeable(dirname($path))) { throw new Exception('Read permission denied');
+            if (!is_writeable(dirname($path))) {
+                throw new Exception('Read permission denied');
             }
             return Utils::rmdir($path);
         } else {
@@ -207,13 +209,17 @@ abstract class Filesystem
         $src = self::_getRealPath($arguments['src']);
         $dest = self::_getRealPath($arguments['dest']);
 
-        if ($src === $dest) { throw new Exception('Source and destination cannot be the same');
+        if ($src === $dest) {
+            throw new Exception('Source and destination cannot be the same');
         }
-        if (!file_exists($src)) { throw new Exception('File does not exist');
+        if (!file_exists($src)) {
+            throw new Exception('File does not exist');
         }
-        if (!is_writeable(dirname($dest))) { throw new Exception('Permission denied');
+        if (!is_writeable(dirname($dest))) {
+            throw new Exception('Permission denied');
         }
-        if (file_exists($dest)) { throw new Exception('Destination file already exist');
+        if (file_exists($dest)) {
+            throw new Exception('Destination file already exist');
         }
 
         return copy($src, $dest);
@@ -224,13 +230,17 @@ abstract class Filesystem
         $src = self::_getRealPath($arguments['src']);
         $dest = self::_getRealPath($arguments['dest']);
 
-        if ($src === $dest) { throw new Exception('Source and destination cannot be the same');
+        if ($src === $dest) {
+            throw new Exception('Source and destination cannot be the same');
         }
-        if (!file_exists($src)) { throw new Exception('File does not exist');
+        if (!file_exists($src)) {
+            throw new Exception('File does not exist');
         }
-        if (!is_writeable(dirname($dest))) { throw new Exception('Permission denied');
+        if (!is_writeable(dirname($dest))) {
+            throw new Exception('Permission denied');
         }
-        if (file_exists($dest)) { throw new Exception('Destination file already exist');
+        if (file_exists($dest)) {
+            throw new Exception('Destination file already exist');
         }
 
         return rename($src, $dest);
@@ -240,7 +250,8 @@ abstract class Filesystem
     {
         $path = self::_getRealPath($arguments['path']);
 
-        if (file_exists($path)) { throw new Exception('Destination already exists');
+        if (file_exists($path)) {
+            throw new Exception('Destination already exists');
         }
 
         if (!mkdir($path)) {
@@ -262,7 +273,8 @@ abstract class Filesystem
         if (empty($opts['recursive']) || !$opts['recursive']) {
             if (($files = scandir($root)) !== false) {
                 foreach ( $files as $f ) {
-                    if ($f == "." || $f == "..") { continue;
+                    if ($f == "." || $f == "..") {
+                        continue;
                     }
 
                     if (stristr($f, $opts['query']) !== false) {
@@ -276,7 +288,9 @@ abstract class Filesystem
 
         $p = preg_replace('/\/$/', '', $path);
         $limit = isset($opts['limit']) ? (int) $opts['limit'] : 0;
-        $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($p), RecursiveIteratorIterator::SELF_FIRST);
+        $objects = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($p),
+            RecursiveIteratorIterator::SELF_FIRST);
 
         foreach ( $objects as $name => $object ) {
             if (stristr($name, $opts['query']) !== false) {

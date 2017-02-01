@@ -120,7 +120,7 @@ abstract class Core
         throw new Exception('Not available');
     }
 
-    public static function curl(Request $request) 
+    public static function curl(Request $request)
     {
         $url = empty($request->data['url']) ? null : $request->data['url'];
         $method = empty($request->data['method']) ? 'GET' : strtoupper($request->data['method']);
