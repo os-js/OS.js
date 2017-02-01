@@ -228,7 +228,7 @@ function handleRequest(http, onend) {
 
   function _apiCall() {
     _checkPermission('api', {method: http.endpoint}, http.data).then(function() {
-      const session_id = http.sessionID;
+      const session_id = http.session.id;
       api[http.endpoint](http, http.data).then(function(res) {
         if ( http.endpoint === 'login' ) {
           const username = res.userData.username;
@@ -598,39 +598,35 @@ function createServer(env, resolve, reject) {
       websocketServer.on('connection', function(ws) {
         logger.log('VERBOSE', logger.colored('WS', 'bold'), 'New connection...');
 
-        const request = ws.upgradeReq;
-        _session.getSession(request).then(function(sess) {
-          const sid = sess.id;
+        const sid = _session.getSessionId(ws.upgradeReq);
 
-          ws.on('message', function(data) {
-            const response = {};
-            const message = JSON.parse(data);
-            const path = message.path;
-            const respond = createWebsocketResponder(ws, message._index);
+        ws.on('message', function(data) {
+          const message = JSON.parse(data);
+          const path = message.path;
+          const respond = createWebsocketResponder(ws, message._index);
 
-            const newReq = Object.assign(request, {
-              session: request.session,
-              originalUrl: '/',
+          _session.getSession(ws.upgradeReq).then(function(ss) {
+            const newReq = Object.assign(ws.upgradeReq, {
+              session: ss,
               method: 'POST',
               url: path
             });
 
-            handleRequest(createHttpObject(newReq, response, path, message.args, respond), function(http, cb) {
-              // Make sure that session data is updated for WS requests!
-              http.session.save(cb);
+            handleRequest(createHttpObject(newReq, {}, path, message.args, respond), function(http, cb) {
+              _session.touch(newReq, ss, cb);
             });
           });
-
-          ws.on('close', function() {
-            logger.log('VERBOSE', logger.colored('WS', 'bold'), 'Connection closed...');
-
-            if ( typeof websocketMap[sid] !== 'undefined' ) {
-              delete websocketMap[sid];
-            }
-          });
-
-          websocketMap[sid] = ws;
         });
+
+        ws.on('close', function() {
+          logger.log('VERBOSE', logger.colored('WS', 'bold'), 'Connection closed...');
+
+          if ( typeof websocketMap[sid] !== 'undefined' ) {
+            delete websocketMap[sid];
+          }
+        });
+
+        websocketMap[sid] = ws;
       });
     }
 

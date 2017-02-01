@@ -35,6 +35,8 @@
  */
 
 const _session = require('express-session');
+const _cookie = require('cookie');
+const _parser = require('cookie-parser');
 const _instance = require('./../core/instance.js');
 
 /**
@@ -49,7 +51,7 @@ const _instance = require('./../core/instance.js');
  */
 
 var session;
-var sessionCache = {};
+var sessionStore;
 
 /**
  * Initializes session integration
@@ -83,6 +85,7 @@ module.exports.init = function(cfg) {
     };
 
     _instance.getSession().register(_session, _instance.getEnvironment(), opts).catch(reject).then(function() {
+      sessionStore = opts.store;
       session = _session(opts);
       resolve(session);
     });
@@ -106,6 +109,35 @@ module.exports.request = function(request, response) {
 };
 
 /**
+ * Touches a session to keep it alive
+ *
+ * @param  {http.ClientRequest}    request     HTTP Request object
+ * @param  {Object}                session     The session object
+ * @param  {Function}              cb          Callback function
+ *
+ * @function touch
+ * @memberof core.session
+ */
+module.exports.touch = function(request, session, cb) {
+  const sid = module.exports.getSessionId(request);
+  sessionStore.touch(sid, session, cb);
+};
+
+/**
+ * Touches a session to keep it alive
+ *
+ * @param  {http.ClientRequest}    request     HTTP Request object
+ *
+ * @function getSessionId
+ * @memberof core.session
+ * @return String
+ */
+module.exports.getSessionId = function(request) {
+  const cookies = _cookie.parse(request.headers.cookie);
+  return _parser.signedCookie(cookies['connect.sid'], 'PNxiA3YGUVLwqeOtrubI7pIKW9ZQPPmq');
+}
+
+/**
  * Gets a session from request
  *
  * @param  {http.ClientRequest}    request     HTTP Request object
@@ -117,7 +149,7 @@ module.exports.request = function(request, response) {
 module.exports.getSession = function(request) {
   return new Promise(function(resolve) {
     session(request, {}, function() {
-      resolve(module.exports.getInterface(request));
+      resolve(request.session);
     });
   });
 };
@@ -150,21 +182,12 @@ module.exports.getInterface = function(request) {
     },
 
     set: function(k, v, save) {
-      function _set(sk, sv) {
-        request.session[sk] = sv;
-
-        if ( typeof sessionCache[obj.id] === 'undefined' ) {
-          sessionCache[obj.id] = {};
-        }
-        sessionCache[obj.id][sk] = sv;
-      }
-
       if ( typeof k === 'object' ) {
         Object.keys(k).forEach(function(kk) {
-          _set(kk, String(k[kk]));
+          request.session[kk] = String(k[kk]);
         });
       } else {
-        _set(k, String(v));
+        request.session[k] = String(v);
       }
 
       if ( save ) {
@@ -173,8 +196,7 @@ module.exports.getInterface = function(request) {
     },
 
     get: function(k, d) {
-      var c = sessionCache[obj.id] || {};
-      var v = c[k] || request.session[k];
+      var v = request.session[k];
       if ( typeof v === 'undefined' ) {
         return d;
       }
