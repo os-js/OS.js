@@ -51,12 +51,16 @@ abstract class Core
         $storage = Storage::getInstance();
         $userSettings = $storage->getSettings($request);
         $blacklist = $storage->getBlacklist($request);
-        $groups = $storage->getGroups($request);
+
+        if ( !isset($userData['groups']) ) {
+            $groups = $storage->getGroups($request);
+            $userData['groups'] = $groups;
+        }
 
         return [
-        'userData' => $userData,
-        'userSettings' => $userSettings,
-        'blacklistedPackages' => $blacklist
+            'userData' => $userData,
+            'userSettings' => $userSettings,
+            'blacklistedPackages' => $blacklist
         ];
     }
 

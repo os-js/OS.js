@@ -292,7 +292,7 @@ abstract class Filesystem
             new RecursiveDirectoryIterator($p),
             RecursiveIteratorIterator::SELF_FIRST);
 
-        foreach ( $objects as $name => $object ) {
+        foreach ( array_keys($objects) as $name ) {
             if (stristr($name, $opts['query']) !== false) {
                 $result[] = self::_getFileMetadata(substr($name, strlen($path)), $dirname, $root);
             }
