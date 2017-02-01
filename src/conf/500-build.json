@@ -7,7 +7,7 @@
     },
     "statics": {
       "src/client/dialogs.html": "dist/dialogs.html",
-      "?src/templates/vfs/home/.desktop/.shortcuts.json": "vfs/home/demo/.desktop/.shortcuts.json"
+      "?src/templates/misc/vfs/home/.desktop/.shortcuts.json": "vfs/home/demo/.desktop/.shortcuts.json"
     },
     "locales": [
       "src/client/javascript/locales/en_EN.js",

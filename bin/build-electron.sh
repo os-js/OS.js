@@ -29,7 +29,7 @@ rm -rf ${DIR}/dist-dev/packages
 mv ${DIR}/packages-tmp ${DIR}/dist-dev/packages
 
 # Electron base
-cp -r src/templates/electron/*.* ${DIR}/
+cp -r src/templates/distro/electron/*.* ${DIR}/
 
 # OS.js server and dependencies
 cp src/server/*.json ${DIR}/

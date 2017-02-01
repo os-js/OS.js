@@ -62,7 +62,7 @@ cp -r $SRCDIR/* $OUTDIR/opt/osjs/
 mv src/x11-launcher/session-launch $OUTDIR/usr/local/bin/osjs-launcher
 
 # Copy system image
-cp -r src/templates/deb/* $OUTDIR/
+cp -r src/templates/distro/deb/* $OUTDIR/
 
 #
 # Debian CONTROL

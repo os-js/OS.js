@@ -71,7 +71,7 @@ function _replaceInExample(name, file, dest) {
 
 const TASKS = {
   'apache_vhost': function(cli, cfg) {
-    const src = _path.join(ROOT, 'src', 'templates', 'apache', 'vhost.conf');
+    const src = _path.join(ROOT, 'src', 'templates', 'webserver', 'apache_vhost.conf');
     const target = cli.option('target', 'dist');
 
     return Promise.resolve(_createWebserverConfig(cfg, target, src, function(mime) {
@@ -108,10 +108,10 @@ const TASKS = {
     }
 
     if ( target === 'dist' ) {
-      generate_htaccess('apache/prod-htaccess.conf', target);
+      generate_htaccess('webserver/prod-htaccess.conf', target);
     } else {
-      generate_htaccess('apache/prod-htaccess.conf', 'dist');
-      generate_htaccess('apache/dev-htaccess.conf', 'dist-dev');
+      generate_htaccess('webserver/prod-htaccess.conf', 'dist');
+      generate_htaccess('webserver/dev-htaccess.conf', 'dist-dev');
     }
 
     return Promise.resolve();
@@ -120,7 +120,7 @@ const TASKS = {
   'lighttpd_config': function(cli, cfg) {
     const target = cli.option('target', 'dist');
 
-    const src = _path.join(ROOT, 'src', 'templates', 'lighttpd.conf');
+    const src = _path.join(ROOT, 'src', 'templates', 'webserver', 'lighttpd.conf');
 
     return Promise.resolve(_createWebserverConfig(cfg, target, src, function(mime) {
       return Object.keys(mime.mapping).map((i) => {
@@ -134,7 +134,7 @@ const TASKS = {
   'nginx_config': function(cli, cfg) {
     const target = cli.option('target', 'dist');
 
-    const src = _path.join(ROOT, 'src', 'templates', 'nginx.conf');
+    const src = _path.join(ROOT, 'src', 'templates', 'webserver', 'nginx.conf');
 
     return Promise.resolve(_createWebserverConfig(cfg, target, src, function(mime) {
       return Object.keys(mime.mapping).map((i) => {

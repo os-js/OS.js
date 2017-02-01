@@ -64,7 +64,7 @@ echo "[opkg] Packing..."
 #
 
 F=$(readlink -f $OUTDIR)
-cp src/templates/opkg/$TEMPLATE/* $OUTDIR/ipkg/CONTROL/
+cp src/templates/distro/opkg/$TEMPLATE/* $OUTDIR/ipkg/CONTROL/
 awk '{gsub("ARCH", "'"$ARCH"'", $0); print }' $OUTDIR/ipkg/CONTROL/control_tmpl | awk '{gsub("VER", "'"${VERSION}"'", $0); print }' > $OUTDIR/ipkg/CONTROL/control
 rm -rf $OUTDIR/ipkg/CONTROL/control_tmpl
 (cd $OUTDIR/ipkg/CONTROL; tar -cz --format=gnu -f $F/control.tar.gz *)
