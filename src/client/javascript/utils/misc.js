@@ -341,12 +341,11 @@
    * @function convertToHEX
    * @memberof OSjs.Utils
    *
-   * @param   {Object}    rgb       (ALTERNATIVE 1) The RGB object in form of r, g, b
-   * @param   {Number}    r         (ALTERNATIVE 2) Red value
-   * @param   {Number}    g         (ALTERNATIVE 2) Green value
-   * @param   {Number}    b         (ALTERNATIVE 2) Blue value
+   * @param   {Number|Object}    r         Red value or RGB object
+   * @param   {Number|undefined} [g]       Green value
+   * @param   {Number|undefined} [b]       Blue value
    *
-   * @return  {String}                Hex string (with #)
+   * @return  {String}              Hex string (with #)
    */
   OSjs.Utils.convertToHEX = function Utils_convertToHEX(r, g, b) {
     if ( typeof r === 'object' ) {

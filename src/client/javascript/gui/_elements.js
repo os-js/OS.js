@@ -619,6 +619,7 @@
    *
    * @function clear
    * @memberof OSjs.GUI.ElementDataView#
+   * @return {OSjs.GUI.Element} this
    */
   UIElementDataView.prototype.clear = function() {
     return this._call('clear', []);
@@ -631,6 +632,7 @@
    *
    * @function add
    * @memberof OSjs.GUI.ElementDataView#
+   * @return {OSjs.GUI.Element} this
    */
   UIElementDataView.prototype.add = function(props) {
     return this._call('add', [props]);
@@ -643,6 +645,7 @@
    *
    * @function patch
    * @memberof OSjs.GUI.ElementDataView#
+   * @return {OSjs.GUI.Element} this
    */
   UIElementDataView.prototype.patch = function(props) {
     return this._call('patch', [props]);
@@ -656,6 +659,7 @@
    *
    * @function remove
    * @memberof OSjs.GUI.ElementDataView#
+   * @return {OSjs.GUI.Element} this
    */
   UIElementDataView.prototype.remove = function(id, key) {
     return this._call('remove', [id, key]);

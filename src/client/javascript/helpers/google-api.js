@@ -251,7 +251,8 @@
     console.info('GoogleAPI::revoke()');
 
     if ( !this.accessToken ) {
-      return callback(false);
+      callback(false);
+      return;
     }
 
     var url = 'https://accounts.google.com/o/oauth2/revoke?token=' + this.accessToken;
