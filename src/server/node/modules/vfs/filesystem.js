@@ -34,6 +34,7 @@ const _fs = require('fs-extra');
 const _nfs = require('fs');
 const _path = require('path');
 const _chokidar = require('chokidar');
+const _diskspace = require('diskspace');
 
 const _utils = require('./../../core/utils.js');
 const _vfs = require('./../../core/vfs.js');
@@ -517,13 +518,9 @@ const VFS = {
   freeSpace: function(http, args, resolve, reject) {
     const resolved = _vfs.parseVirtualPath(args.root, http);
 
-    try {
-      require('diskspace').check(resolved.real, function(err, total, free, stat) {
-        resolve(free);
-      });
-    } catch ( e ) {
-      reject('Failed to load diskspace node library: ' + e.toString());
-    }
+    _diskspace.check(resolved.real, function(err, total, free, stat) {
+      resolve(free);
+    });
   }
 };
 

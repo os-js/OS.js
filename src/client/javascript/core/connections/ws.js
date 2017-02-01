@@ -36,7 +36,7 @@
 
     var port = API.getConfig('Connection.WSPort');
     var path = API.getConfig('Connection.WSPath') || '';
-    var url = window.location.protocol.replace('http', 'ws') + '//' + window.location.host + path;
+    var url = window.location.protocol.replace('http', 'ws') + '//' + window.location.host;
 
     if ( port !== 'upgrade' ) {
       if ( url.match(/:\d+$/) ) {
@@ -44,6 +44,7 @@
       }
       url += ':' + port;
     }
+    url += path;
 
     this.ws = null;
     this.wsurl = url;
