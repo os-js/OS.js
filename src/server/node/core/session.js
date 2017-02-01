@@ -134,7 +134,8 @@ module.exports.touch = function(request, session, cb) {
  */
 module.exports.getSessionId = function(request) {
   const cookies = _cookie.parse(request.headers.cookie);
-  return _parser.signedCookie(cookies['connect.sid'], 'PNxiA3YGUVLwqeOtrubI7pIKW9ZQPPmq');
+  const secret = _instance.getConfig().http.session.secret;
+  return _parser.signedCookie(cookies['connect.sid'], secret);
 }
 
 /**
