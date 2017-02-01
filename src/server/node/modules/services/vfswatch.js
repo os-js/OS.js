@@ -45,22 +45,26 @@ module.exports.destroy = function() {
  * Registers VFS watching
  */
 module.exports.register = function(env, config, servers) {
-  const wss = servers.websocketServer;
-  if ( !wss ) {
-    return;
-  }
-
   const logger = _instance.getLogger();
 
-  const list = _vfs.initWatch(function(data) {
-    const username = data.watch.args['%USERNAME'];
-    _http.broadcastMessage(username, 'vfs:watch', {
-      path: data.watch.path
-    });
-  });
+  try {
+    const wss = servers.websocketServer;
+    if ( !wss ) {
+      return;
+    }
 
-  if ( list.length ) {
-    logger.lognt('INFO', 'Service:', logger.colored('Watching', 'bold'), list.join(', '));
+    const list = _vfs.initWatch(function(data) {
+      const username = data.watch.args['%USERNAME'];
+      _http.broadcastMessage(username, 'vfs:watch', {
+        path: data.watch.path
+      });
+    });
+
+    if ( list.length ) {
+      logger.lognt('INFO', 'Service:', logger.colored('Watching', 'bold'), list.join(', '));
+    }
+  } catch ( e ) {
+    logger.lognt('ERROR', e);
   }
 
 };

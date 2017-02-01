@@ -359,26 +359,30 @@ module.exports.initWatch = function(callback) {
     });
   }
 
-  Object.keys(config.vfs.mounts).forEach(function(name) {
-    var mount = mountpoints[name];
-    if ( typeof mount === 'string' ) {
-      mount = {
-        transport: '__default__',
-        destination: mount
-      };
-    }
-
-    const found = _instance.getVFS().find(function(iter) {
-      return iter.name === mount.transport;
-    });
-
-    if ( found ) {
-      if ( typeof found.createWatch === 'function' ) {
-        found.createWatch(name, mount, _onWatch);
-        watching.push(name);
+  try {
+    Object.keys(config.vfs.mounts).forEach(function(name) {
+      var mount = mountpoints[name];
+      if ( typeof mount === 'string' ) {
+        mount = {
+          transport: '__default__',
+          destination: mount
+        };
       }
-    }
-  });
+
+      const found = _instance.getVFS().find(function(iter) {
+        return iter.name === mount.transport;
+      });
+
+      if ( found ) {
+        if ( typeof found.createWatch === 'function' ) {
+          found.createWatch(name, mount, _onWatch);
+          watching.push(name);
+        }
+      }
+    });
+  } catch ( e ) {
+    console.warn(e, e.stack);
+  }
 
   return watching;
 };

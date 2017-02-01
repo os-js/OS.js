@@ -91,23 +91,27 @@ module.exports.register = function(env, config, servers) {
     */
   }
 
-  const port = defaults.spawner.port;
+  try {
+    const port = defaults.spawner.port;
+    logger.lognt('INFO', 'Service:', logger.colored('Broadway', 'bold'), 'is starting up on port', logger.colored(port, 'bold'));
 
-  logger.lognt('INFO', 'Service:', logger.colored('Broadway', 'bold'), 'is starting up on port', logger.colored(port, 'bold'));
-
-  wss = new _ws({
-    port: port
-  });
-
-  wss.on('connection', function(ws) {
-    logger.log('INFO', 'Incoming broadway connection');
-
-    ws.on('message', function(message) {
-      const json = JSON.parse(message);
-      if ( json.method === 'launch' ) {
-        spawnBroadwayProcess(json.argument);
-      }
+    wss = new _ws({
+      port: port
     });
-  });
+
+    wss.on('connection', function(ws) {
+      logger.log('INFO', 'Incoming broadway connection');
+
+      ws.on('message', function(message) {
+        const json = JSON.parse(message);
+        if ( json.method === 'launch' ) {
+          spawnBroadwayProcess(json.argument);
+        }
+      });
+    });
+
+  } catch ( e ) {
+    logger.log('ERROR', e);
+  }
 
 };
