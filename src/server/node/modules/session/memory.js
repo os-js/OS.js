@@ -30,9 +30,15 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
+const _session = require('express-session');
+
 /*
  * Registers the Session storage module
  */
 module.exports.register = function(session, env, opts) {
-  return Promise.resolve(Object.assign(opts, {}));
+  const nopts = Object.assign(opts, {
+    store: new _session.MemoryStore()
+  });
+
+  return Promise.resolve(nopts);
 };

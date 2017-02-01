@@ -119,8 +119,12 @@ module.exports.request = function(request, response) {
  * @memberof core.session
  */
 module.exports.touch = function(request, session, cb) {
-  const sid = module.exports.getSessionId(request);
-  sessionStore.touch(sid, session, cb);
+  if ( typeof sessionStore.touch === 'function' ) {
+    const sid = module.exports.getSessionId(request);
+    sessionStore.touch(sid, session, cb);
+  } else {
+    cb();
+  }
 };
 
 /**
