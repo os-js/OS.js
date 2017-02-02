@@ -34,6 +34,7 @@
  * @namespace modules.api
  */
 
+const _fs = require('fs');
 const _path = require('path');
 const _instance = require('./../../core/instance.js');
 
@@ -54,6 +55,7 @@ const _instance = require('./../../core/instance.js');
 module.exports.application = function(http, data) {
   const env = _instance.getEnvironment();
   const logger = _instance.getLogger();
+  const config = _instance.getConfig();
 
   /*eslint dot-notation: "off"*/
   const apath = data.path || null;
@@ -67,42 +69,49 @@ module.exports.application = function(http, data) {
   const fpath = _path.join(aroot, filename);
 
   return new Promise(function(resolve, reject) {
-    var found = null;
-
-    try {
-      const module = require(fpath);
-      if ( typeof module.api === 'object' ) {
-        if ( typeof module.api[ameth] === 'function' ) {
-          found = function applicationApiCall() {
-            module.api[ameth](env, http, resolve, reject, aargs);
-          };
-        }
-      } else {
-        // Backward compatible with old API
-        var imported = {};
-        module.register(imported, {}, {});
-
-        if ( typeof imported[ameth] === 'function' ) {
-          found = function backwardCompatibleApplicationApiCall() {
-            imported[ameth](aargs, function(error, result) {
-              if ( error ) {
-                reject(error);
-              } else {
-                resolve(result);
-              }
-            }, http.request, http.response, _instance.getConfig());
-          };
-        }
+    _fs.access(fpath, _fs.constants.R_OK, function(err) {
+      if ( err ) {
+        logger.log(logger.WARNING, err);
+        return reject('Failed to load Application API for ' + apath);
       }
-    } catch ( e ) {
-      logger.log(logger.WARNING, e.stack, e.trace);
-      return reject('Application API error or missing: ' + e.toString(), null);
-    }
 
-    if ( found ) {
-      found();
-    } else {
-      reject('No such Application API method.')
-    }
+      var found = null;
+      try {
+        const module = require(fpath);
+
+        if ( typeof module.api === 'object' ) {
+          if ( typeof module.api[ameth] === 'function' ) {
+            found = function applicationApiCall() {
+              module.api[ameth](env, http, resolve, reject, aargs);
+            };
+          }
+        } else {
+          // Backward compatible with old API
+          var imported = {};
+          module.register(imported, {}, {});
+
+          if ( typeof imported[ameth] === 'function' ) {
+            found = function backwardCompatibleApplicationApiCall() {
+              imported[ameth](aargs, function(error, result) {
+                if ( error ) {
+                  reject(error);
+                } else {
+                  resolve(result);
+                }
+              }, http.request, http.response, config);
+            };
+          }
+        }
+      } catch ( e ) {
+        logger.log(logger.WARNING, e.stack, e.trace);
+        return reject('Application API error: ' + e.toString());
+      }
+
+      if ( found ) {
+        found();
+      } else {
+        reject('No such Application API method.')
+      }
+    })
   });
 };
