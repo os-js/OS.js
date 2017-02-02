@@ -159,6 +159,9 @@ function loadConfiguration(opts) {
     if ( process.env.SECRET ) {
       config.http.session.secret = process.env.SECRET;
     }
+    if ( opts.CONNECTION || process.env.CONNECTION ) {
+      config.http.connection = opts.CONNECTION || process.env.CONNECTION;
+    }
 
     config.modules.auth = config.modules.auth || {};
     config.modules.storage = config.modules.storage || {};

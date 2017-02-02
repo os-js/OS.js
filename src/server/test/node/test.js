@@ -67,7 +67,8 @@
         PORT: 8008,
         DIST: 'dist-dev',
         AUTH: 'test',
-        STORAGE: 'test'
+        STORAGE: 'test',
+        CONNECTION: 'http'
       }).then(function(i) {
         ENV = i;
         CONF = _osjs.getConfig();
