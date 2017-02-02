@@ -442,11 +442,13 @@
       // Makes sure aliased mounts have correct paths and entries
       if ( alias && result ) {
         result = result.map(function(iter) {
+          var isShortcut = iter.shortcut === true;
           var niter = new VFS.File(iter);
-          var str = iter.path.replace(/\/?$/, '');
-          var tmp = alias.options.alias.replace(/\/?$/, '');
-
-          niter.path = Utils.pathJoin(alias.root, str.replace(tmp, ''));
+          if ( !isShortcut ) {
+            var str = iter.path.replace(/\/?$/, '');
+            var tmp = alias.options.alias.replace(/\/?$/, '');
+            niter.path = Utils.pathJoin(alias.root, str.replace(tmp, ''));
+          }
 
           return niter;
         });
