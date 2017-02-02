@@ -69,9 +69,10 @@ module.exports.application = function(http, data) {
   const fpath = _path.join(aroot, filename);
 
   return new Promise(function(resolve, reject) {
-    _fs.access(fpath, _fs.constants.R_OK, function(err) {
-      if ( err ) {
-        logger.log(logger.WARNING, err);
+    // NOTE: Deprecated for old node
+    //_fs.access(fpath, _fs.constants.R_OK, function(err) {
+    _fs.exists(fpath, function(exists) {
+      if ( !exists ) {
         return reject('Failed to load Application API for ' + apath);
       }
 
