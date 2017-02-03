@@ -174,15 +174,28 @@
     });
 
     var sb = ooptions.sortBy;
-    if ( ['filename', 'size', 'mime'].indexOf(sb) !== -1  ) {
-      if ( sb === 'size' || !String.prototype.localeCompare ) {
+    var types = {
+      mtime: 'date',
+      ctime : 'date'
+    };
+
+    if ( ['filename', 'size', 'mime', 'ctime', 'mtime'].indexOf(sb) !== -1  ) {
+      if ( types[sb] === 'date' ) {
         result.sort(function(a, b) {
-          return (a[sb] > b[sb]) ? 1 : ((b[sb] > a[sb]) ? -1 : 0);
+          a = new Date(a[sb]);
+          b = new Date(b[sb]);
+          return (a > b) ? 1 : ((b > a) ? -1 : 0);
         });
       } else {
-        result.sort(function(a, b) {
-          return String(a[sb]).localeCompare(String(b[sb]));
-        });
+        if ( sb === 'size' || !String.prototype.localeCompare ) {
+          result.sort(function(a, b) {
+            return (a[sb] > b[sb]) ? 1 : ((b[sb] > a[sb]) ? -1 : 0);
+          });
+        } else {
+          result.sort(function(a, b) {
+            return String(a[sb]).localeCompare(String(b[sb]));
+          });
+        }
       }
 
       if ( ooptions.sortDir === 'desc' ) {
