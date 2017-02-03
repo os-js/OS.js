@@ -673,7 +673,7 @@ function destroyServer(cb) {
  * Gets a WebSocket connection from username
  */
 function getWebsocketFromUser(username) {
-  const foundSid = null;
+  var foundSid = null;
 
   Object.keys(sidMap).forEach(function(sid) {
     if ( foundSid === null && sidMap[sid] === username ) {

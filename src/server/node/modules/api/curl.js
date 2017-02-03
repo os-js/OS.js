@@ -58,7 +58,7 @@ const _instance = require('./../../core/instance.js');
  */
 module.exports.curl = function(http, args) {
   const logger = _instance.getLogger();
-  const url = args.url;
+  var url = args.url;
 
   var curlRequest = (function parseRequestParameters() {
     const query = args.body || args.query || {}; // 'query' was the old name, but kept for compability
