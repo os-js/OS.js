@@ -32,6 +32,7 @@
 
 const _path = require('path');
 const _fs = require('fs-extra');
+const _glob = require('glob');
 
 const _config = require('./config.js');
 const _manifest = require('./manifest.js');
@@ -272,6 +273,15 @@ const TASKS = {
 ///////////////////////////////////////////////////////////////////////////////
 // EXPORTS
 ///////////////////////////////////////////////////////////////////////////////
+
+/*
+ * Init
+ */
+module.exports._init = function() {
+  _glob.sync(_path.join(__dirname, 'modules/*.js')).forEach((file) => {
+    require(file).register(TASKS);
+  });
+};
 
 /*
  * Task: `build`

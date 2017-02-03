@@ -30,53 +30,14 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
-const _fs = require('fs');
-const _path = require('path');
-const _build = require('./index.js');
-const _minimist = require('minimist');
-require('colors');
-
-module.exports.run = function(args, done) {
-  args = _minimist(args);
-
-  if ( process.argv.length < 3 || args.help ) {
-    console.log(_fs.readFileSync(_path.join(__dirname, 'help.txt'), 'utf-8'));
-    return done(true);
-  }
-
-  _build._init();
-
-  const actions = args._.map((iter) => {
-    let action = iter.trim().split(':');
-    let task = action[0];
-    let arg = action[1];
-
-    if ( task.substr(0, 1) === '_' || !_build[task] ) {
-      console.error('Invalid task', task);
-      return done(true);
-    }
-
-    return [task, arg]
-  });
-
-  process.on('uncaughtException', (error) => {
-    console.error('An uncaught exception occured', error);
-    console.error(error.stack);
-    done(true);
-  });
-
-  Promise.each(actions.map((action) => {
-    return function() {
-      return _build[action[0]]({
-        option: function(k, d) {
-          return typeof args[k] === 'undefined' ? d : args[k];
-        }
-      }, action[1]);
-    };
-  })).then(() => {
-    done();
-  }).catch((err) => {
-    console.error(err);
-    done(err);
-  });
+/*
+ * This method is called whenever the OS.js [CLI] build tool is initialized.
+ *
+ * Please note that this is synchronous and is only intended for loading externals
+ * or adding custom tasks.
+ */
+module.exports.register = function(TASKS) {
+  TASKS.build.custom = function(cli, cfg) {
+    return Promise.resolve();
+  };
 };
