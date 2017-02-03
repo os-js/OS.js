@@ -213,7 +213,12 @@ function loadMiddleware(opts) {
       Promise.all(list.map(function(path) {
         LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('Middleware', 'bold'), path.replace(ENV.ROOTDIR, ''));
 
-        MODULES.MIDDLEWARE.push(require(path));
+        try {
+          MODULES.MIDDLEWARE.push(require(path));
+        } catch ( e ) {
+          LOGGER.lognt('WARN', LOGGER.colored('Warning:', 'yellow'), e);
+          console.warn(e.stack);
+        }
 
         return Promise.resolve(opts);
       })).then(function() {
@@ -278,18 +283,24 @@ function loadAuth(opts) {
     const path = _path.join(ENV.MODULEDIR, 'auth/' + name + '.js');
     LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('Authenticator', 'bold'), path.replace(ENV.ROOTDIR, ''));
 
-    const a = require(path);
-    const c = CONFIG.modules.auth[name] || {};
-    const r = a.register(c);
+    try {
+      const a = require(path);
+      const c = CONFIG.modules.auth[name] || {};
+      const r = a.register(c);
 
-    MODULES.AUTH = a;
+      MODULES.AUTH = a;
 
-    if ( r instanceof Promise ) {
-      r.then(function() {
+      if ( r instanceof Promise ) {
+        r.then(function() {
+          resolve(opts);
+        }).catch(reject);
+      } else {
         resolve(opts);
-      }).catch(reject);
-    } else {
-      resolve(opts);
+      }
+    } catch ( e ) {
+      LOGGER.lognt('WARN', LOGGER.colored('Warning:', 'yellow'), e);
+      console.warn(e.stack);
+      reject(e);
     }
   }
 
@@ -306,15 +317,21 @@ function loadStorage(opts) {
     const path = _path.join(ENV.MODULEDIR, 'storage/' + name + '.js');
     LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('Storage', 'bold'), path.replace(ENV.ROOTDIR, ''));
 
-    const a = require(path);
-    const c = CONFIG.modules.storage[name] || {};
-    const r = a.register(c);
-    MODULES.STORAGE = a;
+    try {
+      const a = require(path);
+      const c = CONFIG.modules.storage[name] || {};
+      const r = a.register(c);
+      MODULES.STORAGE = a;
 
-    if ( r instanceof Promise ) {
-      r.then(resolve).catch(reject);
-    } else {
-      resolve();
+      if ( r instanceof Promise ) {
+        r.then(resolve).catch(reject);
+      } else {
+        resolve();
+      }
+    } catch ( e ) {
+      LOGGER.lognt('WARN', LOGGER.colored('Warning:', 'yellow'), e);
+      console.warn(e.stack);
+      reject(e);
     }
   }
 
@@ -337,7 +354,12 @@ function loadVFS() {
         if ( ['.', '_'].indexOf(filename.substr(0, 1)) === -1 ) {
           const path = _path.join(dirname, filename);
           LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('VFS Transport', 'bold'), path.replace(ENV.ROOTDIR, ''));
-          MODULES.VFS.push(require(path));
+          try {
+            MODULES.VFS.push(require(path));
+          } catch ( e ) {
+            LOGGER.lognt('WARN', LOGGER.colored('Warning:', 'yellow'), e);
+            console.warn(e.stack);
+          }
         }
         next();
       }, resolve);
@@ -476,9 +498,14 @@ function registerServices(servers) {
     _glob(_path.join(dirname, '*.js')).then(function(list) {
       Promise.all(list.map(function(path) {
         LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('Service', 'bold'), path.replace(ENV.ROOTDIR, ''));
-        const p = require(path).register(ENV, CONFIG, servers);
-        if ( p instanceof Promise ) {
-          return p;
+        try {
+          const p = require(path).register(ENV, CONFIG, servers);
+          if ( p instanceof Promise ) {
+            return p;
+          }
+        } catch ( e ) {
+          LOGGER.lognt('WARN', LOGGER.colored('Warning:', 'yellow'), e);
+          console.warn(e.stack);
         }
         return Promise.resolve();
       })).then(resolve).catch(reject);
@@ -494,12 +521,17 @@ function destroyPackages() {
     const queue = Object.keys(PACKAGES).map(function(path) {
       const check = _path.join(ENV.PKGDIR, path, 'api.js');
       if ( _fs.existsSync(check) ) {
-        const mod = require(check);
+        try {
+          const mod = require(check);
 
-        LOGGER.lognt('VERBOSE', 'Destroying:', LOGGER.colored('Package', 'bold'), check.replace(ENV.ROOTDIR, ''));
-        if ( typeof mod.destroy === 'function' ) {
-          const res = mod.destroy();
-          return res instanceof Promise ? res : Promise.resolve();
+          LOGGER.lognt('VERBOSE', 'Destroying:', LOGGER.colored('Package', 'bold'), check.replace(ENV.ROOTDIR, ''));
+          if ( typeof mod.destroy === 'function' ) {
+            const res = mod.destroy();
+            return res instanceof Promise ? res : Promise.resolve();
+          }
+        } catch ( e ) {
+          LOGGER.lognt('WARN', LOGGER.colored('Warning:', 'yellow'), e);
+          console.warn(e.stack);
         }
       }
 
@@ -520,8 +552,14 @@ function destroyServices() {
     _glob(_path.join(dirname, '*.js')).then(function(list) {
       Promise.all(list.map(function(path) {
         LOGGER.lognt('VERBOSE', 'Destroying:', LOGGER.colored('Service', 'bold'), path.replace(ENV.ROOTDIR, ''));
-        const res = require(path).destroy();
-        return res instanceof Promise ? res : Promise.resolve();
+        try {
+          const res = require(path).destroy();
+          return res instanceof Promise ? res : Promise.resolve();
+        } catch ( e ) {
+          LOGGER.lognt('WARN', LOGGER.colored('Warning:', 'yellow'), e);
+          console.warn(e.stack);
+        }
+        return Promise.resolve();
       })).then(resolve).catch(reject);
     }).catch(reject);
   });
