@@ -499,7 +499,6 @@ const VFS = {
           if ( !(additions instanceof Array) ) {
             additions = [];
           }
-          console.log(additions)
           resolve(list.concat(additions));
         });
       } else {
