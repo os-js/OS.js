@@ -443,12 +443,11 @@ function registerPackages(servers) {
   }
 
   function _load(resolve, reject) {
-    _fs.readFile(path, (err, file) => {
+    _fs.readJson(path, (err, manifest) => {
       if ( err ) {
         return reject(err);
       }
 
-      const manifest = JSON.parse(file);
       const packages = manifest[ENV.DIST];
 
       Object.keys(packages).forEach((p) => {

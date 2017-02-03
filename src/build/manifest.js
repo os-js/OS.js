@@ -99,7 +99,7 @@ function getPackageMetadata(repo, file) {
   return new Promise((resolve, reject) => {
     const name = [repo, _path.basename(_path.dirname(file))].join('/');
     try {
-      const meta = JSON.parse(_fs.readFileSync(file));
+      const meta = _fs.readJsonSync(file);
 
       meta.type = meta.type || 'application';
       meta.path = name;

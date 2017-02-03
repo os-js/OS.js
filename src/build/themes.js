@@ -67,8 +67,7 @@ function readMetadata(cfg) {
           const d = _path.basename(_path.dirname(check));
           return whitelist.indexOf(d) >= 0;
         }).map((check) => {
-          let raw = _fs.readFileSync(check);
-          return JSON.parse(raw);
+          return _fs.readJsonSync(check);
         });
 
         resolve(list);
@@ -200,7 +199,7 @@ function buildIcon(cli, cfg, name) {
       }
 
       const metafile = _path.join(src, 'metadata.json');
-      const metadata = JSON.parse(_fs.readFileSync(metafile));
+      const metadata = _fs.readJsonSync(metafile);
 
       if ( !metadata.parent ) {
         return _next();

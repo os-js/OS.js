@@ -128,7 +128,7 @@ function generateServerConfiguration(cli, cfg) {
             try {
               const p = _path.join(src, 'packages', extensions[e].path, c);
               try {
-                const s = JSON.parse(_fs.readFileSync(p));
+                const s = _fs.readJsonSync(p);
                 settings = _utils.mergeObject(settings, s);
               } catch ( e ) {
                 _utils.log(String.color('Failed reading:', 'yellow'), p);
@@ -247,7 +247,7 @@ const setConfigPath = (() => {
     let oldTree = {};
 
     try {
-      oldTree = JSON.parse(_fs.readFileSync(path).toString());
+      oldTree = _fs.readJsonSync(path);
     } catch ( e ) {
       oldTree = {};
     }
@@ -324,7 +324,7 @@ function getConfiguration() {
 
       files.forEach((file) => {
         try {
-          const json = JSON.parse(_fs.readFileSync(file));
+          const json = _fs.readJsonSync(file);
           object = _utils.mergeObject(object, json);
         } catch ( e ) {
           console.warn('Failed to read JSON file', _path.basename(file), 'Syntax error ?', e);

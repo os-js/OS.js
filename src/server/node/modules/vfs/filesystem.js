@@ -495,17 +495,11 @@ const VFS = {
         const path = args.path.replace(/\/?$/, '/' + filename);
         const realMeta = _vfs.parseVirtualPath(path, http);
 
-        _fs.readFile(realMeta.real, (err, contents) => {
-          let additions = [];
-          if ( !err ) {
-            try {
-              additions = JSON.parse(contents.toString());
-              if ( !(additions instanceof Array) ) {
-                additions = [];
-              }
-            } catch ( e ) {}
+        _fs.readJson(realMeta.real, (err, additions) => {
+          if ( !(additions instanceof Array) ) {
+            additions = [];
           }
-
+          console.log(additions)
           resolve(list.concat(additions));
         });
       } else {
