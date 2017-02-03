@@ -49,7 +49,7 @@ module.exports.iterate = function iterate(list, entry, done) {
     if ( i >= list.length ) {
       return done();
     }
-    entry(list[i], i, function() {
+    entry(list[i], i, () => {
       _next(i + 1);
     });
   })(0);
@@ -65,8 +65,8 @@ module.exports.iterate = function iterate(list, entry, done) {
  * @memberof core.utils
  */
 module.exports.permissionToString = function permissionToString(mode) {
-  var str = '';
-  var map = {
+  let str = '';
+  let map = {
     0xC000: 's',
     0xA000: 'l',
     0x8000: '-',
@@ -75,8 +75,8 @@ module.exports.permissionToString = function permissionToString(mode) {
     0x1000: 'p'
   };
 
-  var type = 'u';
-  Object.keys(map).forEach(function(k) {
+  let type = 'u';
+  Object.keys(map).forEach((k) => {
     if ( (mode & k) === k ) {
       type = map[k];
     }
@@ -84,24 +84,24 @@ module.exports.permissionToString = function permissionToString(mode) {
   });
 
   // Owner
-  str += (function() {
-    var ret = ((mode & 0x0100) ? 'r' : '-');
+  str += (() => {
+    let ret = ((mode & 0x0100) ? 'r' : '-');
     ret += ((mode & 0x0080) ? 'w' : '-');
     ret += ((mode & 0x0040) ? ((mode & 0x0800) ? 's' : 'x' ) : ((mode & 0x0800) ? 'S' : '-'));
     return ret;
   })();
 
   // Group
-  str += (function() {
-    var ret = ((mode & 0x0020) ? 'r' : '-');
+  str += (() => {
+    let ret = ((mode & 0x0020) ? 'r' : '-');
     ret += ((mode & 0x0010) ? 'w' : '-');
     ret += ((mode & 0x0008) ? ((mode & 0x0400) ? 's' : 'x' ) : ((mode & 0x0400) ? 'S' : '-'));
     return ret;
   })();
 
   // World
-  str += (function() {
-    var ret = ((mode & 0x0004) ? 'r' : '-');
+  str += (() => {
+    let ret = ((mode & 0x0004) ? 'r' : '-');
     ret += ((mode & 0x0002) ? 'w' : '-');
     ret += ((mode & 0x0001) ? ((mode & 0x0200) ? 't' : 'x' ) : ((mode & 0x0200) ? 'T' : '-'));
     return ret;

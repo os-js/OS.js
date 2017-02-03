@@ -49,15 +49,15 @@ const _instance = require('./../../core/instance.js');
 module.exports.login = function(http, data) {
   function _login(resolve, reject) {
     function _fail(e) {
-      http.session.set('username', '', function() {
+      http.session.set('username', '', () => {
         reject(e);
       });
     }
 
     function _proceed(userData) {
-      http.session.set('username', userData.username, function() {
-        _instance.getStorage().getSettings(http, userData.username).then(function(userSettings) {
-          _instance.getStorage().getBlacklist(http, userData.username).then(function(blacklist) {
+      http.session.set('username', userData.username, () => {
+        _instance.getStorage().getSettings(http, userData.username).then((userSettings) => {
+          _instance.getStorage().getBlacklist(http, userData.username).then((blacklist) => {
             resolve({
               userData: userData,
               userSettings: userSettings,
@@ -68,9 +68,9 @@ module.exports.login = function(http, data) {
       });
     }
 
-    _instance.getAuth().login(http, data).then(function(userData) {
+    _instance.getAuth().login(http, data).then((userData) => {
       if ( typeof userData.groups === 'undefined' ) {
-        _instance.getStorage().getGroups(http, userData.username).then(function(groups) {
+        _instance.getStorage().getGroups(http, userData.username).then((groups) => {
           userData.groups = groups;
           _proceed(userData);
         }).catch(_fail);
@@ -95,9 +95,9 @@ module.exports.login = function(http, data) {
  * @return {Promise}
  */
 module.exports.logout = function(http, resolve, reject) {
-  return new Promise(function(resolve, reject) {
-    _instance.getAuth().logout(http).then(function(arg) {
-      http.session.destroy(function() {
+  return new Promise((resolve, reject) => {
+    _instance.getAuth().logout(http).then((arg) => {
+      http.session.destroy(() => {
         resolve(arg);
       });
     }).catch(reject);

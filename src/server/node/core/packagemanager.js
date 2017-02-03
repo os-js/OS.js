@@ -48,12 +48,12 @@ const _instance = require('./instance.js');
 function getSystemMetadata(http, resolve, reject, args) {
   const env = _instance.getEnvironment();
   const path = _path.join(env.SERVERDIR, 'packages.json');
-  _fs.readFile(path, function(e, data) {
+  _fs.readFile(path, (e, data) => {
     if ( e ) {
       reject(e);
     } else {
-      var meta = JSON.parse(data)[env.DIST];
-      Object.keys(meta).forEach(function(k) {
+      let meta = JSON.parse(data)[env.DIST];
+      Object.keys(meta).forEach((k) => {
         meta[k].scope = 'system';
       });
       resolve(meta);
@@ -63,9 +63,9 @@ function getSystemMetadata(http, resolve, reject, args) {
 
 function getUserMetadata(http, resolve, reject, args) {
   const paths = args.paths || [];
-  var summed = {};
+  let summed = {};
 
-  _utils.iterate(paths, function(iter, index, next) {
+  _utils.iterate(paths, (iter, index, next) => {
     const path = [iter, 'packages.json'].join('/'); // path.join does not work
     try {
       const args = {
@@ -76,9 +76,9 @@ function getUserMetadata(http, resolve, reject, args) {
         }
       };
 
-      _vfs._request(http, 'read', args).then(function(res) {
-        var meta = JSON.parse(res);
-        Object.keys(meta).forEach(function(k) {
+      _vfs._request(http, 'read', args).then((res) => {
+        let meta = JSON.parse(res);
+        Object.keys(meta).forEach((k) => {
           summed[k] = meta[k];
           summed[k].scope = 'user';
         });
@@ -87,18 +87,18 @@ function getUserMetadata(http, resolve, reject, args) {
     } catch ( e ) {
       next();
     }
-  }, function() {
+  }, () => {
     resolve(summed);
   });
 }
 
 function generateUserMetadata(http, resolve, reject, args) {
   const paths = args.paths || [];
-  var summed = {};
+  let summed = {};
 
-  _utils.iterate(paths, function(root, rindex, next) {
-    _vfs._request(http, 'scandir', {path: root}).then(function(list) {
-      _utils.iterate(list || [], function(liter, lindex, nnext) {
+  _utils.iterate(paths, (root, rindex, next) => {
+    _vfs._request(http, 'scandir', {path: root}).then((list) => {
+      _utils.iterate(list || [], (liter, lindex, nnext) => {
         const dirname = liter.filename;
         if ( liter.type === 'dir' && dirname.substr(0, 1) !== '.' ) {
           const path = [root, dirname, 'metadata.json'].join('/'); // path.join does not work
@@ -110,9 +110,9 @@ function generateUserMetadata(http, resolve, reject, args) {
             }
           };
 
-          _vfs._request(http, 'read', args).then(function(res) {
+          _vfs._request(http, 'read', args).then((res) => {
             if ( res ) {
-              var meta = JSON.parse(res);
+              let meta = JSON.parse(res);
               meta.path = root + '/' + dirname;
               summed[meta.className] = meta;
             }
@@ -122,7 +122,7 @@ function generateUserMetadata(http, resolve, reject, args) {
         } else {
           nnext();
         }
-      }, function() {
+      }, () => {
         const args = {
           data: JSON.stringify(summed),
           path: [root, 'packages.json'].join('/'),
@@ -135,7 +135,7 @@ function generateUserMetadata(http, resolve, reject, args) {
         _vfs._request(http, 'write', args).then(next).catch(next);
       });
     }).catch(next);
-  }, function() {
+  }, () => {
     resolve(true);
   });
 }
@@ -164,9 +164,9 @@ module.exports.install = function(http, resolve, reject, args) {
   /*eslint new-cap: "off"*/
 
   function _onerror(e) {
-    _vfs._request(http, 'delete', {path: args.dest}).then(function() {
+    _vfs._request(http, 'delete', {path: args.dest}).then(() => {
       reject(e);
-    }).catch(function() {
+    }).catch(() => {
       reject(e);
     });
   }
@@ -174,16 +174,16 @@ module.exports.install = function(http, resolve, reject, args) {
   if ( args.zip && args.dest && args.paths ) {
     _vfs._request(http, 'exists', {
       path: args.dest
-    }).then(function() {
+    }).then(() => {
       _vfs._request(http, 'mkdir', {
         path: args.dest
-      }).then(function() {
-        _vfs.createReadStream(http, args.zip).then(function(zipStream) {
-          zipStream.pipe(_unzip.Parse()).on('entry', function(entry) {
-            _vfs.createWriteStream(http, [args.dest, entry.path].join('/')).then(function(s) {
+      }).then(() => {
+        _vfs.createReadStream(http, args.zip).then((zipStream) => {
+          zipStream.pipe(_unzip.Parse()).on('entry', (entry) => {
+            _vfs.createWriteStream(http, [args.dest, entry.path].join('/')).then((s) => {
               entry.pipe(s);
             });
-          }).on('finish', function() {
+          }).on('finish', () => {
             resolve(true);
           }).on('error', _onerror);
         }).catch(_onerror);
@@ -249,7 +249,7 @@ module.exports.update = function(http, resolve, reject, args) {
  * @memberof core.packagemanager
  */
 module.exports.cache = function(http, resolve, reject, args) {
-  var action = args.action;
+  let action = args.action;
   if ( action === 'generate' && args.scope === 'user' ) {
     generateUserMetadata(http, resolve, reject, args);
   } else {
@@ -273,11 +273,11 @@ module.exports.cache = function(http, resolve, reject, args) {
  */
 module.exports.list = function(http, resolve, reject, args) {
   if ( !args.scope ) {
-    getSystemMetadata(http, function(summed) {
+    getSystemMetadata(http, (summed) => {
       summed = summed || {};
 
-      getUserMetadata(http, function(r) {
-        Object.keys(r || {}).forEach(function(k) {
+      getUserMetadata(http, (r) => {
+        Object.keys(r || {}).forEach((k) => {
           if ( !summed[k] ) {
             summed[k] = r[k];
           }

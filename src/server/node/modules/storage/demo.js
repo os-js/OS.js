@@ -31,31 +31,31 @@
 'use strict';
 
 module.exports.setSettings = function(http, username, data) {
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     resolve(true);
   });
 };
 
 module.exports.getSettings = function(http, username) {
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     resolve({});
   });
 };
 
 module.exports.getGroups = function(http, username) {
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     resolve(['admin']);
   });
 };
 
 module.exports.getBlacklist = function(http, username) {
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     resolve([]);
   });
 };
 
 module.exports.setBlacklist = function(http, username, list) {
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     resolve(true);
   });
 };

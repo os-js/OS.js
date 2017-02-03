@@ -31,7 +31,7 @@
 'use strict';
 
 module.exports.login = function(http, data) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     resolve({
       id: 0,
       username: 'demo',
@@ -42,31 +42,31 @@ module.exports.login = function(http, data) {
 };
 
 module.exports.logout = function(http) {
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     resolve(true);
   });
 };
 
 module.exports.manage = function(http) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     reject('Not available');
   });
 };
 
 module.exports.initSession = function(http) {
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     resolve(true);
   });
 };
 
 module.exports.checkPermission = function(http, type, options) {
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     resolve(true);
   });
 };
 
 module.exports.checkSession = function(http) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     if ( http.session.get('username') ) {
       resolve();
     } else {

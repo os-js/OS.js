@@ -53,7 +53,7 @@ module.exports.register = function(env, config, servers) {
       return;
     }
 
-    const list = _vfs.initWatch(function(data) {
+    const list = _vfs.initWatch((data) => {
       const username = data.watch.args['%USERNAME'];
       _http.broadcastMessage(username, 'vfs:watch', {
         path: data.watch.path

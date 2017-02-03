@@ -48,7 +48,7 @@ const _vfs = require('./../../core/vfs.js');
  */
 function createReadStream(http, path) {
   const resolved = _vfs.parseVirtualPath(path, http);
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     /*eslint new-cap: "off"*/
     resolve(_fs.createReadStream(resolved.real, {
       bufferSize: 64 * 1024
@@ -61,7 +61,7 @@ function createReadStream(http, path) {
  */
 function createWriteStream(http, path) {
   const resolved = _vfs.parseVirtualPath(path, http);
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     /*eslint new-cap: "off"*/
     resolve(_fs.createWriteStream(resolved.real));
   });
@@ -86,8 +86,8 @@ function createWatch(name, mount, callback) {
   };
 
   function _onChange(evname, wpath) {
-    var args = {};
-    (wpath.match(re) || []).forEach(function(a, idx) {
+    let args = {};
+    (wpath.match(re) || []).forEach((a, idx) => {
       if ( matches[idx] ) {
         args[matches[idx]] = a;
       }
@@ -104,7 +104,7 @@ function createWatch(name, mount, callback) {
     });
   }
 
-  _chokidar.watch(dir, {ignoreInitial: true, persistent: true}).on('all', function(evname, wpath) {
+  _chokidar.watch(dir, {ignoreInitial: true, persistent: true}).on('all', (evname, wpath) => {
     if ( ['change', 'error'].indexOf(evname) === -1 ) {
       _onChange(evname, wpath);
     }
@@ -117,7 +117,7 @@ function createWatch(name, mount, callback) {
 function readExif(path, mime) {
   mime = mime || '';
 
-  var _read = function defaultRead(resolve, reject) {
+  let _read = function defaultRead(resolve, reject) {
     resolve(null);
   };
 
@@ -125,7 +125,7 @@ function readExif(path, mime) {
     try {
       _read = function exifRead(resolve, reject) {
         /*eslint no-new: "off"*/
-        new require('exif').ExifImage({image: path}, function(err, result) {
+        new require('exif').ExifImage({image: path}, (err, result) => {
           if ( err ) {
             reject(err);
           } else {
@@ -155,7 +155,7 @@ function createFileIter(query, real, iter, stat) {
     }
   }
 
-  var mime = '';
+  let mime = '';
   const filename = iter ? iter : _path.basename(query);
   const type = stat.isFile() ? 'file' : 'dir';
 
@@ -164,7 +164,7 @@ function createFileIter(query, real, iter, stat) {
   }
 
   const perm = _utils.permissionToString(stat.mode);
-  const filepath = !iter ? query : (function() {
+  const filepath = !iter ? query : (() => {
     const spl = query.split('://');
     const proto = spl[0];
     const ppath = (spl[1] || '').replace(/\/?$/, '/');
@@ -187,7 +187,7 @@ function createFileIter(query, real, iter, stat) {
  * Check if given file exists or not
  */
 function existsWrapper(checkFound, real, resolve, reject) {
-  _fs.exists(real, function(exists) {
+  _fs.exists(real, (exists) => {
     if ( checkFound ) {
       if ( exists ) {
         reject('File or directory already exist.');
@@ -212,12 +212,12 @@ function readDir(query, real, filter) {
     return ['.', '..'].indexOf(iter) === -1;
   };
 
-  return new Promise(function(resolve, reject) {
-    _fs.readdir(real, function(err, list) {
+  return new Promise((resolve, reject) => {
+    _fs.readdir(real, (err, list) => {
       if ( err ) {
         reject(err);
       } else {
-        resolve(list.filter(filter).map(function(iter) {
+        resolve(list.filter(filter).map((iter) => {
           return createFileIter(query, _path.join(real, iter), iter);
         }));
       }
@@ -233,7 +233,7 @@ const VFS = {
 
   exists: function(http, args, resolve, reject) {
     const resolved = _vfs.parseVirtualPath(args.path, http);
-    _fs.exists(resolved.real, function(exists) {
+    _fs.exists(resolved.real, (exists) => {
       resolve(exists);
     });
   },
@@ -247,7 +247,7 @@ const VFS = {
       if ( options.stream !== false ) {
         resolve(resolved.real);
       } else {
-        _fs.readFile(resolved.real, function(e, r) {
+        _fs.readFile(resolved.real, (e, r) => {
           if ( e ) {
             reject(e);
           } else {
@@ -257,7 +257,7 @@ const VFS = {
       }
     } else {
       const mime = _vfs.getMime(args.path);
-      _fs.readFile(resolved.real, function(e, data) {
+      _fs.readFile(resolved.real, (e, data) => {
         if ( e ) {
           reject(e);
         } else {
@@ -277,7 +277,7 @@ const VFS = {
         streamIn.destroy();
         streamOut.destroy();
 
-        _fs.remove(source, function() {
+        _fs.remove(source, () => {
           http.respond.raw(String(1), 200, {
             'Content-Type': 'text/plain'
           });
@@ -301,11 +301,11 @@ const VFS = {
     const dresolved = _vfs.parseVirtualPath(http.data.path, http);
     const dest = _path.join(dresolved.real, http.files.upload.name);
 
-    existsWrapper(false, source, function() {
+    existsWrapper(false, source, () => {
       if ( String(http.data.overwrite) === 'true' ) {
         _proceed(source, dest);
       } else {
-        existsWrapper(true, dest, function() {
+        existsWrapper(true, dest, () => {
           _proceed(source, dest);
         }, reject);
       }
@@ -315,10 +315,10 @@ const VFS = {
   write: function(http, args, resolve, reject) {
     const resolved = _vfs.parseVirtualPath(args.path, http);
     const options = args.options || {};
-    var data = args.data || ''; // FIXME
+    let data = args.data || ''; // FIXME
 
     function writeFile(d, e) {
-      _fs.writeFile(resolved.real, d, e || 'utf8', function(error) {
+      _fs.writeFile(resolved.real, d, e || 'utf8', (error) => {
         if ( error ) {
           reject('Error writing file: ' + error);
         } else {
@@ -327,7 +327,7 @@ const VFS = {
       });
     }
 
-    /*existsWrapper(true, resolved.real, function() {
+    /*existsWrapper(true, resolved.real, () => {
     }, reject);*/
     if ( options.raw ) {
       writeFile(data, options.rawtype || 'binary');
@@ -344,8 +344,8 @@ const VFS = {
       return reject('Permission denied');
     }
 
-    existsWrapper(false, resolved.real, function() {
-      _fs.remove(resolved.real, function(err) {
+    existsWrapper(false, resolved.real, () => {
+      _fs.remove(resolved.real, (err) => {
         if ( err ) {
           reject('Error deleting: ' + err);
         } else {
@@ -359,13 +359,13 @@ const VFS = {
     const sresolved = _vfs.parseVirtualPath(args.src, http);
     const dresolved = _vfs.parseVirtualPath(args.dest, http);
 
-    existsWrapper(false, sresolved.real, function() {
-      existsWrapper(true, dresolved.real, function() {
-        _fs.access(_path.dirname(dresolved.real), _nfs.W_OK, function(err) {
+    existsWrapper(false, sresolved.real, () => {
+      existsWrapper(true, dresolved.real, () => {
+        _fs.access(_path.dirname(dresolved.real), _nfs.W_OK, (err) => {
           if ( err ) {
             reject('Cannot write to destination');
           } else {
-            _fs.copy(sresolved.real, dresolved.real, function(error, data) {
+            _fs.copy(sresolved.real, dresolved.real, (error, data) => {
               if ( error ) {
                 reject('Error copying: ' + error);
               } else {
@@ -382,15 +382,15 @@ const VFS = {
     const sresolved = _vfs.parseVirtualPath(args.src, http);
     const dresolved = _vfs.parseVirtualPath(args.dest, http);
 
-    _fs.access(sresolved.real, _nfs.R_OK, function(err) {
+    _fs.access(sresolved.real, _nfs.R_OK, (err) => {
       if ( err ) {
         reject('Cannot read source');
       } else {
-        _fs.access(_path.dirname(dresolved.real), _nfs.W_OK, function(err) {
+        _fs.access(_path.dirname(dresolved.real), _nfs.W_OK, (err) => {
           if ( err ) {
             reject('Cannot write to destination');
           } else {
-            _fs.rename(sresolved.real, dresolved.real, function(error, data) {
+            _fs.rename(sresolved.real, dresolved.real, (error, data) => {
               if ( error ) {
                 reject('Error renaming/moving: ' + error);
               } else {
@@ -406,8 +406,8 @@ const VFS = {
   mkdir: function(http, args, resolve, reject) {
     const resolved = _vfs.parseVirtualPath(args.path, http);
 
-    existsWrapper(true, resolved.real, function() {
-      _fs.mkdirs(resolved.real, function(err) {
+    existsWrapper(true, resolved.real, () => {
+      _fs.mkdirs(resolved.real, (err) => {
         if ( err ) {
           reject('Error creating directory: ' + err);
         } else {
@@ -423,7 +423,7 @@ const VFS = {
     const resolved = _vfs.parseVirtualPath(args.path, http);
 
     if ( !qargs.recursive ) {
-      return readDir(resolved.path, resolved.real, function(iter) {
+      return readDir(resolved.path, resolved.real, (iter) => {
         if (  ['.', '..'].indexOf(iter) === -1 ) {
           return iter.toLowerCase().indexOf(query) !== -1;
         }
@@ -431,14 +431,14 @@ const VFS = {
       }).then(resolve).catch(reject);
     }
 
-    var find;
+    let find;
     try {
       find = require('findit')(resolved.real);
     } catch ( e ) {
       return reject('Failed to load findit node library: ' + e.toString());
     }
 
-    var list = [];
+    let list = [];
 
     function addIter(file, stat) {
       const filename = _path.basename(file).toLowerCase();
@@ -449,7 +449,7 @@ const VFS = {
       }
     }
 
-    find.on('path', function() {
+    find.on('path', () => {
       if ( qargs.limit && list.length >= qargs.limit ) {
         find.stop();
       }
@@ -458,11 +458,11 @@ const VFS = {
     find.on('directory', addIter);
     find.on('file', addIter);
 
-    find.on('end', function() {
+    find.on('end', () => {
       resolve(list);
     });
 
-    find.on('stop', function() {
+    find.on('stop', () => {
       resolve(list);
     });
   },
@@ -470,14 +470,14 @@ const VFS = {
   fileinfo: function(http, args, resolve, reject) {
     const resolved = _vfs.parseVirtualPath(args.path, http);
 
-    existsWrapper(false, resolved.real, function() {
+    existsWrapper(false, resolved.real, () => {
       const info = createFileIter(resolved.query, resolved.real, null);
       const mime = _vfs.getMime(resolved.real);
 
-      readExif(resolved.real, mime).then(function(result) {
+      readExif(resolved.real, mime).then((result) => {
         info.exif = result || 'No EXIF data available';
         resolve(info);
-      }).catch(function(error) {
+      }).catch((error) => {
         info.exif = error;
         resolve(info);
       });
@@ -488,15 +488,15 @@ const VFS = {
     const resolved = _vfs.parseVirtualPath(args.path, http);
     const opts = args.options || {};
 
-    readDir(resolved.query, resolved.real).then(function(list) {
+    readDir(resolved.query, resolved.real).then((list) => {
 
       if ( opts.shortcuts !== false ) {
         const filename = typeof opts.shortcuts === 'string' ? opts.shortcuts.replace(/\/+g/, '') : '.shortcuts.json';
         const path = args.path.replace(/\/?$/, '/' + filename);
         const realMeta = _vfs.parseVirtualPath(path, http);
 
-        _fs.readFile(realMeta.real, function(err, contents) {
-          var additions = [];
+        _fs.readFile(realMeta.real, (err, contents) => {
+          let additions = [];
           if ( !err ) {
             try {
               additions = JSON.parse(contents.toString());
@@ -518,7 +518,7 @@ const VFS = {
   freeSpace: function(http, args, resolve, reject) {
     const resolved = _vfs.parseVirtualPath(args.root, http);
 
-    _diskspace.check(resolved.real, function(err, total, free, stat) {
+    _diskspace.check(resolved.real, (err, total, free, stat) => {
       resolve(free);
     });
   }
@@ -529,7 +529,7 @@ const VFS = {
 ///////////////////////////////////////////////////////////////////////////////
 
 module.exports.request = function(http, method, args) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     if ( typeof VFS[method] === 'function' ) {
       VFS[method](http, args, resolve, reject);
     } else {

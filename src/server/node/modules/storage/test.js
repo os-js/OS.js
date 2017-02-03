@@ -31,20 +31,20 @@
 'use strict';
 
 module.exports.setSettings = function(http, username, data) {
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     resolve(true);
   });
 };
 
 module.exports.getSettings = function(http, username) {
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     resolve({});
   });
 };
 
 module.exports.getGroups = function(http, username) {
-  return new Promise(function(resolve) {
-    var groups = ({
+  return new Promise((resolve) => {
+    let groups = ({
       normal: ['admin'],
       demo: ['admin'],
       restricted: ['application']
@@ -54,7 +54,7 @@ module.exports.getGroups = function(http, username) {
 };
 
 module.exports.getBlacklist = function(http, username) {
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     if ( username === 'restricted' ) {
       resolve(['default/CoreWM']);
     } else {
@@ -64,7 +64,7 @@ module.exports.getBlacklist = function(http, username) {
 };
 
 module.exports.setBlacklist = function(http, username, list) {
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     resolve(true);
   });
 };

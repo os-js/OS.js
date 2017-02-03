@@ -91,7 +91,7 @@ Promise.each = function(list, onentry) {
 function _getTargets(cli, defaults, strict) {
   const target = cli.option('target');
 
-  var result = defaults;
+  let result = defaults;
   if ( target ) {
     result = target.split(',').map((iter) => {
       const val = iter.trim();
@@ -331,13 +331,13 @@ module.exports.run = function(cli, args) {
       process.env.TZ = config.tz;
     }
 
-    process.on('exit', function() {
+    process.on('exit', () => {
       instance.destroy();
     });
 
     instance.run();
 
-    process.on('uncaughtException', function(error) {
+    process.on('uncaughtException', (error) => {
       console.log('UNCAUGHT EXCEPTION', error, error.stack);
     });
   }).catch((error) => {

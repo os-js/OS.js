@@ -81,11 +81,11 @@ const _path = require('path');
 const _formidable = require('formidable');
 const _compression = require('compression');
 
-var httpServer = null;
-var websocketServer = null;
-var proxyServer = null;
-var websocketMap = {};
-var sidMap = {};
+let httpServer = null;
+let websocketServer = null;
+let proxyServer = null;
+let websocketMap = {};
+let sidMap = {};
 
 ///////////////////////////////////////////////////////////////////////////////
 // APIs
@@ -100,7 +100,7 @@ function proxyCall(env, proxy, request, response) {
   const logger = _instance.getLogger();
 
   function _getMatcher(k) {
-    var matcher = k;
+    let matcher = k;
 
     const isRegexp = k.match(/\/(.*)\/([a-z]+)?/);
     if ( isRegexp && isRegexp.length === 3 ) {
@@ -132,7 +132,7 @@ function proxyCall(env, proxy, request, response) {
 
   const proxies = (_instance.getConfig()).proxies;
   if ( proxy && proxies ) {
-    return !Object.keys(proxies).every(function(k) {
+    return !Object.keys(proxies).every((k) => {
       const matcher = _getMatcher(k);
       if ( typeof matcher === 'string' ? isStringMatch(matcher, request.url) : matcher.test(request.url) ) {
         const pots = _getOptions(request.url, matcher, proxies[k]);
@@ -182,7 +182,7 @@ function handleRequest(http, onend) {
   }
 
   function _resolveResponse(result) {
-    onend(http, function() {
+    onend(http, () => {
       http.respond.json({
         error: null,
         result: result
@@ -194,14 +194,14 @@ function handleRequest(http, onend) {
   function _checkPermission(type, options) {
     const skip = type === 'api' && ['login'].indexOf(options.method) !== -1;
 
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
       if ( skip ) {
         resolve();
       } else {
         _auth.checkSession(http).then(resolve).catch(_rejectResponse);
       }
-    }).then(function() {
-      return new Promise(function(resolve, reject) {
+    }).then(() => {
+      return new Promise((resolve, reject) => {
         if ( skip ) {
           resolve();
         } else {
@@ -213,23 +213,23 @@ function handleRequest(http, onend) {
 
   // Wrappers for performing API calls
   function _vfsCall() {
-    var method = http.endpoint.replace(/(^get\/)?/, '');
-    var args = http.data;
+    let method = http.endpoint.replace(/(^get\/)?/, '');
+    let args = http.data;
 
     if ( http.endpoint.match(/^get\//) ) {
       method = 'read';
       args = {path: http.endpoint.replace(/(^get\/)?/, '')};
     }
 
-    _checkPermission('fs', {method: method, args: args}).then(function() {
+    _checkPermission('fs', {method: method, args: args}).then(() => {
       _vfs.request(http, method, args).then(_resolveResponse).catch(_rejectResponse);
     }).catch(_rejectResponse);
   }
 
   function _apiCall() {
-    _checkPermission('api', {method: http.endpoint}, http.data).then(function() {
+    _checkPermission('api', {method: http.endpoint}, http.data).then(() => {
       const session_id = http.session.id;
-      api[http.endpoint](http, http.data).then(function(res) {
+      api[http.endpoint](http, http.data).then((res) => {
         if ( http.endpoint === 'login' ) {
           const username = res.userData.username;
           sidMap[session_id] = username;
@@ -259,7 +259,7 @@ function handleRequest(http, onend) {
     if ( method === 'GET' ) {
       const pmatch = http.path.match(/^\/?packages\/(.*\/.*)\/(.*)/);
       if ( pmatch && pmatch.length === 3 ) {
-        _checkPermission('package', {path: pmatch[1]}).then(function() {
+        _checkPermission('package', {path: pmatch[1]}).then(() => {
           _auth.checkSession(http)
             .then(_serve).catch(_deny);
         }).catch(_deny);
@@ -273,21 +273,21 @@ function handleRequest(http, onend) {
 
   function _middlewareRequest(method, done) {
     const middleware = _instance.getMiddleware();
-    _utils.iterate(middleware, function(iter, idx, next) {
-      iter.request(http, function(error) {
+    _utils.iterate(middleware, (iter, idx, next) => {
+      iter.request(http, (error) => {
         if ( error ) {
           done(error);
         } else {
           next();
         }
       });
-    }, function() {
+    }, () => {
       done(false);
     });
   }
 
   // Take on the HTTP request
-  _auth.initSession(http).then(function() {
+  _auth.initSession(http).then(() => {
     const method = http.request.method;
 
     if ( http.isfs ) {
@@ -301,8 +301,8 @@ function handleRequest(http, onend) {
         }, 500);
       }
     } else {
-      _staticResponse(method, function() {
-        _middlewareRequest(method, function(error) {
+      _staticResponse(method, () => {
+        _middlewareRequest(method, (error) => {
           if ( error ) {
             http.respond.error('Method not allowed', 405);
           }
@@ -338,8 +338,8 @@ function createHttpResponder(env, request, response) {
     options = options || {};
     code = code || 200;
 
-    return new Promise(function(resolve, reject) {
-      _fs.stat(path, function(err, stats) {
+    return new Promise((resolve, reject) => {
+      _fs.stat(path, (err, stats) => {
         if ( err ) {
           _error('File not found', 404);
           return /*reject()*/;
@@ -376,7 +376,7 @@ function createHttpResponder(env, request, response) {
               if ( cacheEnabled && options.cache ) {
                 const cacheConfig = config.http.cache[options.cache];
                 if ( typeof cacheConfig === 'object' ) {
-                  Object.keys(cacheConfig).forEach(function(k) {
+                  Object.keys(cacheConfig).forEach((k) => {
                     headers[k] = cacheConfig[k];
                   });
                 }
@@ -392,12 +392,12 @@ function createHttpResponder(env, request, response) {
           stream = _fs.createReadStream(path, opts);
         }
 
-        stream.on('error', function(err) {
+        stream.on('error', (err) => {
           console.error('An error occured while streaming', path, err);
           response.end();
         });
 
-        stream.on('end', function() {
+        stream.on('end', () => {
           response.end();
         });
 
@@ -505,7 +505,7 @@ function createServer(env, resolve, reject) {
   const config = _instance.getConfig();
   const httpConfig = config.http || {};
   const logger = _instance.getLogger();
-  const tmpdir = (function() {
+  const tmpdir = (() => {
     try {
       return require('os').tmpdir();
     } catch ( e ) {
@@ -514,7 +514,7 @@ function createServer(env, resolve, reject) {
   })();
 
   function onRequest(request, response) {
-    _session.request(request, response).then(function() {
+    _session.request(request, response).then(() => {
       const rurl = request.url === '/' ? '/index.html' : request.url;
       const url = _url.parse(rurl, true);
       const path = decodeURIComponent(url.pathname);
@@ -527,16 +527,16 @@ function createServer(env, resolve, reject) {
 
       logger.log('VERBOSE', logger.colored(request.method, 'bold'), path);
 
-      _compression(config.http.compression || {})(request, response, function() {
+      _compression(config.http.compression || {})(request, response, () => {
         const respond = createHttpResponder(env, request, response);
         if ( request.method === 'POST' ) {
           if ( contentType.indexOf('application/json') !== -1 ) {
-            var body = [];
-            request.on('data', function(data) {
+            let body = [];
+            request.on('data', (data) => {
               body.push(data);
             });
 
-            request.on('end', function() {
+            request.on('end', () => {
               const data = JSON.parse(Buffer.concat(body));
               handleRequest(createHttpObject(request, response, path, data, respond));
             });
@@ -545,7 +545,7 @@ function createServer(env, resolve, reject) {
               uploadDir: tmpdir
             });
 
-            form.parse(request, function(err, fields, files) {
+            form.parse(request, (err, fields, files) => {
               handleRequest(createHttpObject(request, response, path, fields, respond, files));
             });
           }
@@ -559,13 +559,13 @@ function createServer(env, resolve, reject) {
   // Proxy servers
   try {
     proxyServer = require('http-proxy').createProxyServer({});
-    proxyServer.on('error', function(err) {
+    proxyServer.on('error', (err) => {
       console.warn(err);
     });
   } catch ( e ) {}
 
   // HTTP servers
-  _session.init(httpConfig.session || {}).catch(reject).then(function() {
+  _session.init(httpConfig.session || {}).catch(reject).then(() => {
     if ( httpConfig.mode === 'http2' || httpConfig.mode === 'https' ) {
       const rdir = httpConfig.cert.path || env.SERVERDIR;
       const cname = httpConfig.cert.name || 'localhost';
@@ -595,30 +595,30 @@ function createServer(env, resolve, reject) {
       }
 
       websocketServer = new (require('ws')).Server(opts);
-      websocketServer.on('connection', function(ws) {
+      websocketServer.on('connection', (ws) => {
         logger.log('VERBOSE', logger.colored('WS', 'bold'), 'New connection...');
 
         const sid = _session.getSessionId(ws.upgradeReq);
 
-        ws.on('message', function(data) {
+        ws.on('message', (data) => {
           const message = JSON.parse(data);
           const path = message.path;
           const respond = createWebsocketResponder(ws, message._index);
 
-          _session.getSession(ws.upgradeReq).then(function(ss) {
+          _session.getSession(ws.upgradeReq).then((ss) => {
             const newReq = Object.assign(ws.upgradeReq, {
               session: ss,
               method: 'POST',
               url: path
             });
 
-            handleRequest(createHttpObject(newReq, {}, path, message.args, respond), function(http, cb) {
+            handleRequest(createHttpObject(newReq, {}, path, message.args, respond), (http, cb) => {
               _session.touch(newReq, ss, cb);
             });
           });
         });
 
-        ws.on('close', function() {
+        ws.on('close', () => {
           logger.log('VERBOSE', logger.colored('WS', 'bold'), 'Connection closed...');
 
           if ( typeof websocketMap[sid] !== 'undefined' ) {
@@ -638,7 +638,7 @@ function createServer(env, resolve, reject) {
     };
 
     const middleware = _instance.getMiddleware();
-    middleware.forEach(function(m) {
+    middleware.forEach((m) => {
       if ( typeof m.register === 'function' ) {
         m.register(servers);
       }
@@ -673,9 +673,9 @@ function destroyServer(cb) {
  * Gets a WebSocket connection from username
  */
 function getWebsocketFromUser(username) {
-  var foundSid = null;
+  let foundSid = null;
 
-  Object.keys(sidMap).forEach(function(sid) {
+  Object.keys(sidMap).forEach((sid) => {
     if ( foundSid === null && sidMap[sid] === username ) {
       foundSid = sid;
     }
@@ -703,7 +703,7 @@ function getWebsocketFromUser(username) {
  * @return {Promise}
  */
 module.exports.init = function init(env) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     createServer(env, resolve, reject);
   });
 };

@@ -48,7 +48,7 @@ const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
  */
 function parsePreloads(iter) {
   if ( typeof iter === 'string' ) {
-    var niter = {
+    let niter = {
       src: iter,
       type: null
     };
@@ -136,7 +136,7 @@ function getRepositoryPackages(repo, all) {
           return function() {
             return getPackageMetadata(repo, file);
           };
-        }), function(meta) {
+        }), (meta) => {
           meta = Object.assign({}, meta);
           if ( all || checkEnabledState(forceEnabled, forceDisabled, meta) ) {
             result[meta.path] = meta;
@@ -159,13 +159,13 @@ function getPackages(repos, filter, all) {
     return true;
   };
 
-  var list = {};
+  let list = {};
   return new Promise((resolve, reject) => {
     Promise.each(repos.map((repo) => {
       return function() {
         return getRepositoryPackages(repo, all);
       };
-    }), function(packages) {
+    }), (packages) => {
       list = Object.assign(list, packages);
     }).then(() => {
       const result = {};
@@ -187,10 +187,10 @@ function generateClientManifest(target, manifest) {
   return new Promise((resolve, reject) => {
     const dest = _path.join(ROOT, target, 'packages.js');
 
-    var tpl = _fs.readFileSync(_path.join(ROOT, 'src/templates/dist/packages.js'));
+    let tpl = _fs.readFileSync(_path.join(ROOT, 'src/templates/dist/packages.js'));
     tpl = tpl.toString().replace('%PACKAGES%', JSON.stringify(manifest, null, 4));
 
-    _fs.writeFile(dest, tpl, function(err) {
+    _fs.writeFile(dest, tpl, (err) => {
       /*eslint no-unused-expressions: "off"*/
       err ? reject(err) : resolve();
     });
@@ -214,9 +214,9 @@ function getPackage(name) {
  * Combines preload files
  */
 function combinePreloads(manifest) {
-  var pcss = false;
-  var pjs  = false;
-  var preload = [];
+  let pcss = false;
+  let pjs  = false;
+  let preload = [];
 
   manifest.preload.forEach((p) => {
     if ( p.combine === false || p.src.match(/^(ftp|https?\:)?\/\//) ) {
@@ -289,7 +289,7 @@ const TARGETS = {
         packages = JSON.parse(JSON.stringify(packages));
 
         Object.keys(packages).forEach((p) => {
-          var pkg = packages[p];
+          let pkg = packages[p];
 
           if ( pkg.preload ) {
             pkg.preload = pkg.preload.map((iter) => {
@@ -321,7 +321,7 @@ const TARGETS = {
           'dist-dev': packages
         };
 
-        _fs.writeFile(dest, JSON.stringify(meta, null, 4), function(err) {
+        _fs.writeFile(dest, JSON.stringify(meta, null, 4), (err) => {
           err ? reject(err) : resolve();
         });
       });

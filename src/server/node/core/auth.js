@@ -68,8 +68,8 @@ module.exports.checkPermission = function(http, type, options) {
   const defaultGroups = config.api.defaultGroups instanceof Array ? config.api.defaultGroups : [];
 
   function checkApiPermission(userGroups) {
-    return new Promise(function(resolve, reject) {
-      var checks = [];
+    return new Promise((resolve, reject) => {
+      let checks = [];
       if ( type === 'fs' ) {
         checks = [type];
       } else {
@@ -123,7 +123,7 @@ module.exports.checkPermission = function(http, type, options) {
       return false;
     }
 
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
       if ( type === 'fs' ) {
         if ( _check() ) {
           resolve();
@@ -137,15 +137,15 @@ module.exports.checkPermission = function(http, type, options) {
   }
 
   function checkPackagePermission(userGroups) {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
       if ( type === 'package' ) {
-        _instance.getStorage().getBlacklist(http, username).then(function(blacklist) {
+        _instance.getStorage().getBlacklist(http, username).then((blacklist) => {
           if ( blacklist && blacklist.indexOf(options.path) !== -1 ) {
             reject('Access Denied!');
           } else {
             resolve();
           }
-        }).catch(function() {
+        }).catch(() => {
           reject('Access Denied!');
         });
       } else {
@@ -154,20 +154,20 @@ module.exports.checkPermission = function(http, type, options) {
     });
   }
 
-  return new Promise(function(resolve, reject) {
-    _instance.getAuth().checkPermission(http, type, options).then(function(checkGroups) {
+  return new Promise((resolve, reject) => {
+    _instance.getAuth().checkPermission(http, type, options).then((checkGroups) => {
       if ( typeof checkGroups === 'undefined' ) {
         checkGroups = true;
       }
 
       if ( checkGroups ) {
-        _instance.getStorage().getGroups(http, username).then(function(userGroups) {
+        _instance.getStorage().getGroups(http, username).then((userGroups) => {
           if ( !(userGroups instanceof Array) || !userGroups.length ) {
             userGroups = defaultGroups;
           }
 
-          checkApiPermission(userGroups).then(function() {
-            checkMountPermission(userGroups).then(function() {
+          checkApiPermission(userGroups).then(() => {
+            checkMountPermission(userGroups).then(() => {
               checkPackagePermission(userGroups).then(resolve).catch(reject);
             }).catch(reject);
           }).catch(reject);
@@ -221,7 +221,7 @@ module.exports.hasGroup = function(userGroups, groupList, all) {
   }
 
   const m = (typeof all === 'undefined' || all) ? 'every' : 'some';
-  return groupList[m](function(name) {
+  return groupList[m]((name) => {
     if ( userGroups.indexOf(name) !== -1 ) {
       return true;
     }

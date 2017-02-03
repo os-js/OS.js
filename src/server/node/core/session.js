@@ -50,8 +50,8 @@ const _instance = require('./../core/instance.js');
  * @typedef ServerSession
  */
 
-var session;
-var sessionStore;
+let session;
+let sessionStore;
 
 /**
  * Initializes session integration
@@ -63,14 +63,14 @@ var sessionStore;
  * @return {Promise}
  */
 module.exports.init = function(cfg) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     if ( session ) {
       resolve(session);
       return;
     }
 
     const cookie = {};
-    Object.keys(cfg.cookie || {}).forEach(function(k) {
+    Object.keys(cfg.cookie || {}).forEach((k) => {
       if ( cfg.cookie[k] !== null ) {
         cookie[k] = cfg.cookie[k];
       }
@@ -85,7 +85,7 @@ module.exports.init = function(cfg) {
     };
 
     const conf = cfg.options[cfg.module] || {};
-    _instance.getSession().register(_session, conf, _instance.getEnvironment(), opts).catch(reject).then(function() {
+    _instance.getSession().register(_session, conf, _instance.getEnvironment(), opts).catch(reject).then(() => {
       sessionStore = opts.store;
       session = _session(opts);
       resolve(session);
@@ -104,7 +104,7 @@ module.exports.init = function(cfg) {
  * @return {Promise}
  */
 module.exports.request = function(request, response) {
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     session(request, response, resolve);
   });
 };
@@ -153,8 +153,8 @@ module.exports.getSessionId = function(request) {
  * @return {Promise}
  */
 module.exports.getSession = function(request) {
-  return new Promise(function(resolve) {
-    session(request, {}, function() {
+  return new Promise((resolve) => {
+    session(request, {}, () => {
       resolve(request.session);
     });
   });
@@ -179,9 +179,9 @@ module.exports.getInterface = function(request) {
 
     all: function() {
       const dict = {};
-      Object.keys(request.session).filter(function(k) {
+      Object.keys(request.session).filter((k) => {
         return k !== 'cookie';
-      }).forEach(function(k) {
+      }).forEach((k) => {
         dict[k] = request.session[k];
       });
       return dict;
@@ -189,7 +189,7 @@ module.exports.getInterface = function(request) {
 
     set: function(k, v, save) {
       if ( typeof k === 'object' ) {
-        Object.keys(k).forEach(function(kk) {
+        Object.keys(k).forEach((kk) => {
           request.session[kk] = String(k[kk]);
         });
       } else {
@@ -202,7 +202,7 @@ module.exports.getInterface = function(request) {
     },
 
     get: function(k, d) {
-      var v = request.session[k];
+      let v = request.session[k];
       if ( typeof v === 'undefined' ) {
         return d;
       }

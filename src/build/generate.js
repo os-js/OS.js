@@ -48,7 +48,7 @@ const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
 function _createWebserverConfig(cfg, target, src, mimecb) {
   const mimes = mimecb(cfg.mime);
 
-  var tpl = _fs.readFileSync(src).toString();
+  let tpl = _fs.readFileSync(src).toString();
   tpl = tpl.replace(/%DISTDIR%/, _path.join(ROOT, target));
   tpl = tpl.replace(/%MIMES%/, mimes);
   return tpl;
@@ -60,7 +60,7 @@ function _createWebserverConfig(cfg, target, src, mimecb) {
 function _replaceInExample(name, file, dest) {
   dest = dest ? dest : file;
 
-  var c = _fs.readFileSync(file).toString();
+  let c = _fs.readFileSync(file).toString();
   c = _utils.replaceAll(c, 'EXAMPLE', name);
   _fs.writeFileSync(dest, c);
 }
@@ -74,7 +74,7 @@ const TASKS = {
     const src = _path.join(ROOT, 'src', 'templates', 'webserver', 'apache_vhost.conf');
     const target = cli.option('target', 'dist');
 
-    return Promise.resolve(_createWebserverConfig(cfg, target, src, function(mime) {
+    return Promise.resolve(_createWebserverConfig(cfg, target, src, (mime) => {
       return '';
     }));
   },
@@ -101,7 +101,7 @@ const TASKS = {
       const src = _path.join(ROOT, 'src', 'templates', t);
       const dst = _path.join(ROOT, d, '.htaccess');
 
-      var tpl = _fs.readFileSync(src).toString();
+      let tpl = _fs.readFileSync(src).toString();
       tpl = tpl.replace(/%MIMES%/, mimes.join('\n'));
       tpl = tpl.replace(/%PROXIES%/, proxies.join('\n'));
       _fs.writeFileSync(dst, tpl);
@@ -122,7 +122,7 @@ const TASKS = {
 
     const src = _path.join(ROOT, 'src', 'templates', 'webserver', 'lighttpd.conf');
 
-    return Promise.resolve(_createWebserverConfig(cfg, target, src, function(mime) {
+    return Promise.resolve(_createWebserverConfig(cfg, target, src, (mime) => {
       return Object.keys(mime.mapping).map((i) => {
         return i.match(/^\./) ? '  "' + i + '" => "' + mime.mapping[i] + '"' : null;
       }).filter((i) => {
@@ -136,7 +136,7 @@ const TASKS = {
 
     const src = _path.join(ROOT, 'src', 'templates', 'webserver', 'nginx.conf');
 
-    return Promise.resolve(_createWebserverConfig(cfg, target, src, function(mime) {
+    return Promise.resolve(_createWebserverConfig(cfg, target, src, (mime) => {
       return Object.keys(mime.mapping).map((i) => {
         return i.match(/^\./) ? ('        ' + mime.mapping[i] + ' ' + i.replace(/^\./, '') + ';') : null;
       }).filter((i) => {
@@ -146,7 +146,7 @@ const TASKS = {
   },
 
   'package': function(cli, cfg) {
-    var name = cli.option('name', '');
+    let name = cli.option('name', '');
     const type = cli.option('type', 'application');
     const words = name.replace(/[^A-z0-9\._]/g, '').replace(/\s+/g, ' ').split(' ');
     name = [words[0]].concat(words.splice(1).map((w) => {

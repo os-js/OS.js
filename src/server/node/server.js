@@ -53,35 +53,35 @@ const opts = {
   STORAGE: argv.storage
 };
 
-_instance.init(opts).then(function(env) {
+_instance.init(opts).then((env) => {
   const config = _instance.getConfig();
   if ( config.tz ) {
     process.env.TZ = config.tz;
   }
 
-  ['SIGTERM', 'SIGINT'].forEach(function(sig) {
-    process.on(sig, function() {
+  ['SIGTERM', 'SIGINT'].forEach((sig) => {
+    process.on(sig, () => {
       console.log('\n');
-      _instance.destroy(function(err) {
+      _instance.destroy((err) => {
         process.exit(err ? 1 : 0);
       });
     });
   });
 
-  process.on('exit', function() {
+  process.on('exit', () => {
     _instance.destroy();
   });
 
   _instance.run();
 
-  process.on('uncaughtException', function(error) {
+  process.on('uncaughtException', (error) => {
     console.log('UNCAUGHT EXCEPTION', error, error.stack);
   });
 
-  process.on('unhandledRejection', function(error) {
+  process.on('unhandledRejection', (error) => {
     console.log('UNCAUGHT REJECTION', error);
   });
-}).catch(function(error) {
+}).catch((error) => {
   console.log(error);
   process.exit(1);
 });

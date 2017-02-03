@@ -68,15 +68,15 @@ module.exports.application = function(http, data) {
   const aroot = _path.join(env.PKGDIR, apath);
   const fpath = _path.join(aroot, filename);
 
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     // NOTE: Deprecated for old node
-    //_fs.access(fpath, _fs.constants.R_OK, function(err) {
-    _fs.exists(fpath, function(exists) {
+    //_fs.access(fpath, _fs.constants.R_OK, (err) => {
+    _fs.exists(fpath, (exists) => {
       if ( !exists ) {
         return reject('Failed to load Application API for ' + apath);
       }
 
-      var found = null;
+      let found = null;
       try {
         const module = require(fpath);
 
@@ -88,12 +88,12 @@ module.exports.application = function(http, data) {
           }
         } else {
           // Backward compatible with old API
-          var imported = {};
+          let imported = {};
           module.register(imported, {}, {});
 
           if ( typeof imported[ameth] === 'function' ) {
             found = function backwardCompatibleApplicationApiCall() {
-              imported[ameth](aargs, function(error, result) {
+              imported[ameth](aargs, (error, result) => {
                 if ( error ) {
                   reject(error);
                 } else {

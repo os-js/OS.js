@@ -35,12 +35,12 @@ const _db = require('./../../core/database.js');
 const _instance = require('./../../core/instance.js');
 
 module.exports.setSettings = function(http, username, settings) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     function done() {
       resolve(true);
     }
 
-    _db.instance('authstorage').then(function(db) {
+    _db.instance('authstorage').then((db) => {
       db.query('UPDATE `users` SET `settings` = ? WHERE `username` = ?;', [JSON.stringify(settings), username])
         .then(done).catch(reject);
     }).catch(reject);
@@ -48,17 +48,17 @@ module.exports.setSettings = function(http, username, settings) {
 };
 
 module.exports.getSettings = function(http, username) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     function done(row) {
       row = row || {};
-      var json = {};
+      let json = {};
       try {
         json = JSON.parse(row.settings);
       } catch (e) {}
       resolve(json);
     }
 
-    _db.instance('authstorage').then(function(db) {
+    _db.instance('authstorage').then((db) => {
       db.query('SELECT `settings` FROM `users` WHERE `username` = ? LIMIT 1;', [username])
         .then(done).catch(reject);
     }).catch(reject);
@@ -66,17 +66,17 @@ module.exports.getSettings = function(http, username) {
 };
 
 module.exports.getGroups = function(http, username) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     function done(row) {
       row = row || {};
-      var json = [];
+      let json = [];
       try {
         json = JSON.parse(row.groups);
       } catch (e) {}
       resolve(json);
     }
 
-    _db.instance('authstorage').then(function(db) {
+    _db.instance('authstorage').then((db) => {
       db.query('SELECT `groups` FROM `users` WHERE `username` = ? LIMIT 1;', [username])
         .then(done).catch(reject);
     }).catch(reject);
@@ -84,13 +84,13 @@ module.exports.getGroups = function(http, username) {
 };
 
 module.exports.getBlacklist = function(http, username) {
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     resolve([]);
   });
 };
 
 module.exports.setBlacklist = function(http, username, list) {
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     resolve(true);
   });
 };

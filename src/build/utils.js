@@ -72,7 +72,7 @@ module.exports.readTemplate = function readTemplate(name) {
  * Replace all occurences of something
  */
 module.exports.replaceAll = function replaceAll(temp, stringToFind, stringToReplace) {
-  var index = temp.indexOf(stringToFind);
+  let index = temp.indexOf(stringToFind);
   while (index !== -1) {
     temp = temp.replace(stringToFind,stringToReplace);
     index = temp.indexOf(stringToFind);
@@ -102,9 +102,9 @@ module.exports.mkdirSilent = function mkdirSilent(file) {
  * Make a dictionary from list
  */
 module.exports.makedict = function makedict(list, fn) {
-  var result = {};
+  let result = {};
   list.forEach((iter, idx) => {
-    var data = fn(iter, idx);
+    let data = fn(iter, idx);
     result[data[0]] = data[1];
   });
   return result;
@@ -115,7 +115,7 @@ module.exports.makedict = function makedict(list, fn) {
  */
 module.exports.mergeObject = function mergeObject(into, from) {
   function mergeJSON(obj1, obj2) {
-    for ( var p in obj2 ) {
+    for ( let p in obj2 ) {
       if ( obj2.hasOwnProperty(p) ) {
         try {
           if ( obj2[p].constructor === Object ) {
@@ -139,7 +139,7 @@ module.exports.mergeObject = function mergeObject(into, from) {
 module.exports.compileLess = function compileLess(src, dest, opts, cb, onRead) {
   console.log('$ less', src.replace(ROOT + '/', ''), dest.replace(ROOT + '/', ''))
   try {
-    var css = _fs.readFileSync(src).toString();
+    let css = _fs.readFileSync(src).toString();
     if ( typeof onRead === 'function' ) {
       css = onRead(css);
     }
@@ -148,7 +148,7 @@ module.exports.compileLess = function compileLess(src, dest, opts, cb, onRead) {
       _fs.writeFileSync(dest, result.css);
       _fs.writeFileSync(dest + '.map', result.map);
       cb(false, true);
-    }, function(error) {
+    }, (error) => {
       console.warn(error);
       cb(error);
     });
@@ -162,9 +162,9 @@ module.exports.compileLess = function compileLess(src, dest, opts, cb, onRead) {
  * Creates standalone scheme files
  */
 module.exports.createStandaloneScheme = function createStandaloneScheme(src, name, dest) {
-  var data = module.exports.addslashes(_fs.readFileSync(src).toString().replace(/\n/g, ''));
+  let data = module.exports.addslashes(_fs.readFileSync(src).toString().replace(/\n/g, ''));
 
-  var tpl = module.exports.readTemplate('dist/schemes.js');
+  let tpl = module.exports.readTemplate('dist/schemes.js');
   tpl = tpl.replace('%DATA%', data);
   tpl = tpl.replace('%NAME%', name);
 

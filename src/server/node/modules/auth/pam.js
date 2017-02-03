@@ -34,8 +34,8 @@ const _pam = require('authenticate-pam');
 const _userid = require('userid');
 
 module.exports.login = function(http, data) {
-  return new Promise(function(resolve, reject) {
-    _pam.authenticate(data.username, data.password, function(err) {
+  return new Promise((resolve, reject) => {
+    _pam.authenticate(data.username, data.password, (err) => {
       if ( err ) {
         reject(err);
       } else {
@@ -50,31 +50,31 @@ module.exports.login = function(http, data) {
 };
 
 module.exports.logout = function(http) {
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     resolve(true);
   });
 };
 
 module.exports.manage = function(http) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     reject('Not available');
   });
 };
 
 module.exports.initSession = function(http) {
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     resolve(true);
   });
 };
 
 module.exports.checkPermission = function(http, type, options) {
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     resolve(true);
   });
 };
 
 module.exports.checkSession = function(http) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     if ( http.session.get('username') ) {
       resolve();
     } else {

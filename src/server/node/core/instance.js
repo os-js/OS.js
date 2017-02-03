@@ -74,10 +74,10 @@ const _osjs = {
 // GLOBALS
 ///////////////////////////////////////////////////////////////////////////////
 
-var CHILDREN = [];
-var CONFIG = {};
-var PACKAGES = {};
-var LOGGER;
+let CHILDREN = [];
+let CONFIG = {};
+let PACKAGES = {};
+let LOGGER;
 
 const MODULES = {
   API: {},
@@ -108,7 +108,7 @@ const ENV = {
  * Loads generated configuration file
  */
 function loadConfiguration(opts) {
-  Object.keys(opts).forEach(function(k) {
+  Object.keys(opts).forEach((k) => {
     if ( typeof ENV[k] !== 'undefined' && typeof opts[k] !== 'undefined' ) {
       ENV[k] = opts[k];
     }
@@ -130,14 +130,14 @@ function loadConfiguration(opts) {
 
   function _read(data) {
     // Allow environmental variables to override certain internals in config
-    data.match(/%([A-Z0-9_\-]+)%/g).filter((function() {
-      var seen = {};
+    data.match(/%([A-Z0-9_\-]+)%/g).filter((() => {
+      let seen = {};
       return function(element, index, array) {
         return !(element in seen) && (seen[element] = 1);
       };
-    })()).filter(function(w) {
+    })()).filter((w) => {
       return safeWords.indexOf(w) === -1;
-    }).forEach(function(w) {
+    }).forEach((w) => {
       const p = w.replace(/%/g, '');
       const u = /^[A-Z]*$/.test(p);
       const v = u ? process.env[p] : null;
@@ -170,7 +170,7 @@ function loadConfiguration(opts) {
   }
 
   function _load(resolve, reject) {
-    _fs.readFile(path, function(err, file) {
+    _fs.readFile(path, (err, file) => {
       if ( err ) {
         return reject(err);
       }
@@ -191,7 +191,7 @@ function loadConfiguration(opts) {
       ENV.PKGDIR = opts.PKGDIR || _path.join(ENV.ROOTDIR, 'src/packages');
       LOGGER = _osjs.logger.create(ENV.LOGLEVEL);
 
-      Object.keys(config.proxies).forEach(function(k) {
+      Object.keys(config.proxies).forEach((k) => {
         LOGGER.lognt('INFO', 'Using:', LOGGER.colored('Proxy', 'bold'), k);
       });
 
@@ -208,9 +208,9 @@ function loadConfiguration(opts) {
 function loadMiddleware(opts) {
   const dirname = _path.join(ENV.MODULEDIR, 'middleware');
 
-  return new Promise(function(resolve, reject) {
-    _glob(_path.join(dirname, '*.js')).then(function(list) {
-      Promise.all(list.map(function(path) {
+  return new Promise((resolve, reject) => {
+    _glob(_path.join(dirname, '*.js')).then((list) => {
+      Promise.all(list.map((path) => {
         LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('Middleware', 'bold'), path.replace(ENV.ROOTDIR, ''));
 
         try {
@@ -221,7 +221,7 @@ function loadMiddleware(opts) {
         }
 
         return Promise.resolve(opts);
-      })).then(function() {
+      })).then(() => {
         resolve(opts);
       }).catch(reject);
     }).catch(reject);
@@ -235,7 +235,7 @@ function loadSession(opts) {
   const dirname = _path.join(ENV.MODULEDIR, 'session');
   const name = opts.SESSION || (CONFIG.http.session.module || 'memory');
 
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     const path = _path.join(dirname, name + '.js');
 
     LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('Session', 'bold'), path.replace(ENV.ROOTDIR, ''));
@@ -255,18 +255,18 @@ function loadSession(opts) {
 function loadAPI(opts) {
   const dirname = _path.join(ENV.MODULEDIR, 'api');
 
-  return new Promise(function(resolve, reject) {
-    _glob(_path.join(dirname, '*.js')).then(function(list) {
-      Promise.all(list.map(function(path) {
+  return new Promise((resolve, reject) => {
+    _glob(_path.join(dirname, '*.js')).then((list) => {
+      Promise.all(list.map((path) => {
         LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('API', 'bold'), path.replace(ENV.ROOTDIR, ''));
 
         const methods = require(path);
-        Object.keys(methods).forEach(function(k) {
+        Object.keys(methods).forEach((k) => {
           MODULES.API[k] = methods[k];
         });
 
         return Promise.resolve(opts);
-      })).then(function() {
+      })).then(() => {
         resolve(opts);
       }).catch(reject);
     }).catch(reject);
@@ -291,7 +291,7 @@ function loadAuth(opts) {
       MODULES.AUTH = a;
 
       if ( r instanceof Promise ) {
-        r.then(function() {
+        r.then(() => {
           resolve(opts);
         }).catch(reject);
       } else {
@@ -345,12 +345,12 @@ function loadVFS() {
   const dirname = _path.join(ENV.MODULEDIR, 'vfs');
 
   function _load(resolve, reject) {
-    _fs.readdir(dirname, function(err, list) {
+    _fs.readdir(dirname, (err, list) => {
       if ( err ) {
         return reject(err);
       }
 
-      _osjs.utils.iterate(list, function(filename, index, next) {
+      _osjs.utils.iterate(list, (filename, index, next) => {
         if ( ['.', '_'].indexOf(filename.substr(0, 1)) === -1 ) {
           const path = _path.join(dirname, filename);
           LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('VFS Transport', 'bold'), path.replace(ENV.ROOTDIR, ''));
@@ -407,19 +407,19 @@ function registerPackages(servers) {
 
   function _registerExtension(module) {
     if ( typeof module.api === 'object' ) {
-      Object.keys(module.api).forEach(function(k) {
+      Object.keys(module.api).forEach((k) => {
         MODULES.API[k] = module.api[k];
       });
 
       return false;
     } else if ( typeof module.register === 'function' ) {
       // Backward compatible with old API
-      var backAPI = {};
+      let backAPI = {};
       module.register(backAPI, {}, _createOldInstance());
 
-      Object.keys(backAPI).forEach(function(k) {
+      Object.keys(backAPI).forEach((k) => {
         MODULES.API[k] = function(http, resolve, reject, args) {
-          backAPI[k](_createOldInstance(), args, function(err, res) {
+          backAPI[k](_createOldInstance(), args, (err, res) => {
             if ( err ) {
               reject(err);
             } else {
@@ -443,7 +443,7 @@ function registerPackages(servers) {
   }
 
   function _load(resolve, reject) {
-    _fs.readFile(path, function(err, file) {
+    _fs.readFile(path, (err, file) => {
       if ( err ) {
         return reject(err);
       }
@@ -451,10 +451,10 @@ function registerPackages(servers) {
       const manifest = JSON.parse(file);
       const packages = manifest[ENV.DIST];
 
-      Object.keys(packages).forEach(function(p) {
+      Object.keys(packages).forEach((p) => {
         const metadata = packages[p];
 
-        var filename = 'api.js';
+        let filename = 'api.js';
         if ( metadata.build && metadata.build.index ) {
           filename = _path.resolve(metadata.build.index);
         }
@@ -463,7 +463,7 @@ function registerPackages(servers) {
 
         const check = _path.join(ENV.PKGDIR, p, filename);
         if ( metadata.enabled !== false && _fs.existsSync(check) ) {
-          var deprecated = false;
+          let deprecated = false;
           if ( metadata.type === 'extension' ) {
             LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('Extension', 'bold'), check.replace(ENV.ROOTDIR, ''));
             deprecated = _registerExtension(require(check));
@@ -494,9 +494,9 @@ function registerPackages(servers) {
 function registerServices(servers) {
   const dirname = _path.join(ENV.MODULEDIR, 'services');
 
-  return new Promise(function(resolve, reject) {
-    _glob(_path.join(dirname, '*.js')).then(function(list) {
-      Promise.all(list.map(function(path) {
+  return new Promise((resolve, reject) => {
+    _glob(_path.join(dirname, '*.js')).then((list) => {
+      Promise.all(list.map((path) => {
         LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('Service', 'bold'), path.replace(ENV.ROOTDIR, ''));
         try {
           const p = require(path).register(ENV, CONFIG, servers);
@@ -517,8 +517,8 @@ function registerServices(servers) {
  * Sends the destruction signals to all Packages
  */
 function destroyPackages() {
-  return new Promise(function(resolve, reject) {
-    const queue = Object.keys(PACKAGES).map(function(path) {
+  return new Promise((resolve, reject) => {
+    const queue = Object.keys(PACKAGES).map((path) => {
       const check = _path.join(ENV.PKGDIR, path, 'api.js');
       if ( _fs.existsSync(check) ) {
         try {
@@ -548,9 +548,9 @@ function destroyPackages() {
 function destroyServices() {
   const dirname = _path.join(ENV.MODULEDIR, 'services');
 
-  return new Promise(function(resolve, reject) {
-    _glob(_path.join(dirname, '*.js')).then(function(list) {
-      Promise.all(list.map(function(path) {
+  return new Promise((resolve, reject) => {
+    _glob(_path.join(dirname, '*.js')).then((list) => {
+      Promise.all(list.map((path) => {
         LOGGER.lognt('VERBOSE', 'Destroying:', LOGGER.colored('Service', 'bold'), path.replace(ENV.ROOTDIR, ''));
         try {
           const res = require(path).destroy();
@@ -577,8 +577,8 @@ function destroyServices() {
  * @function destroy
  * @memberof core.instance
  */
-module.exports.destroy = (function() {
-  var destroyed = false;
+module.exports.destroy = (() => {
+  let destroyed = false;
 
   return function destroy(cb) {
     cb = cb || function() {};
@@ -590,7 +590,7 @@ module.exports.destroy = (function() {
     LOGGER.log('INFO', LOGGER.colored('Trying to shut down sanely...', 'bold'));
 
     function done() {
-      CHILDREN.forEach(function(c) {
+      CHILDREN.forEach((c) => {
         c.kill();
       });
 
@@ -602,7 +602,7 @@ module.exports.destroy = (function() {
         MODULES.STORAGE.destroy();
       }
 
-      _osjs.http.destroy(function(err) {
+      _osjs.http.destroy((err) => {
         destroyed = true;
 
         cb(err);
@@ -625,7 +625,7 @@ module.exports.destroy = (function() {
  * @return {Promise}
  */
 module.exports.init = function init(opts) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     loadConfiguration(opts)
       .then(loadMiddleware)
       .then(loadSession)
@@ -633,12 +633,12 @@ module.exports.init = function init(opts) {
       .then(loadAuth)
       .then(loadStorage)
       .then(loadVFS)
-      .then(function() {
+      .then(() => {
         return _osjs.http.init(ENV);
       })
       .then(registerPackages)
       .then(registerServices)
-      .then(function(servers) {
+      .then((servers) => {
         resolve(Object.freeze(ENV));
       })
       .catch(reject);

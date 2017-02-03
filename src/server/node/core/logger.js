@@ -39,7 +39,7 @@
  * Gets timestamp
  */
 function timestamp() {
-  var now = new Date();
+  let now = new Date();
   return now.toISOString();
 }
 
@@ -49,8 +49,8 @@ function timestamp() {
  * Level -1 is everything, -2 is everything except verbose
  */
 module.exports.create = function createLogger(lvl) {
-  var ns = {};
-  var level = 0;
+  let ns = {};
+  let level = 0;
 
   const levelMap = {
     INFO: 1,
@@ -65,14 +65,14 @@ module.exports.create = function createLogger(lvl) {
    */
   function _check(lvl) {
     if ( level > 0 ) {
-      var tests = [
+      let tests = [
         (level & ns.INFO) === ns.INFO && (lvl & ns.INFO) === ns.INFO,
         (level & ns.WARNING) === ns.WARNING && (lvl & ns.WARNING) === ns.WARNING,
         (level & ns.ERROR) === ns.ERROR && (lvl & ns.ERROR) === ns.ERROR,
         (level & ns.VERBOSE) === ns.VERBOSE && (lvl & ns.VERBOSE) === ns.VERBOSE
       ];
 
-      return tests.some(function(i) {
+      return tests.some((i) => {
         return !!i;
       });
     }
@@ -100,13 +100,13 @@ module.exports.create = function createLogger(lvl) {
       return;
     }
 
-    var line = [];
+    let line = [];
     if ( stamp ) {
       line.push(timestamp());
     }
 
-    for ( var i = 2; i < arguments.length; i++ ) {
-      var a = arguments[i];
+    for ( let i = 2; i < arguments.length; i++ ) {
+      let a = arguments[i];
       if ( a instanceof Array ) {
         line.push(a.concat(' '));
       } else {
@@ -156,20 +156,20 @@ module.exports.create = function createLogger(lvl) {
      * @memberof core.logger
      * @function colored
      */
-    colored: (function() {
-      var colors;
+    colored: (() => {
+      let colors;
 
       try {
         colors = require('colors');
       } catch ( e ) {}
 
       return function() {
-        var args = Array.prototype.slice.call(arguments);
-        var str = args.shift();
+        let args = Array.prototype.slice.call(arguments);
+        let str = args.shift();
 
         if ( colors ) {
-          var ref = colors || [];
-          args.forEach(function(a) {
+          let ref = colors || [];
+          args.forEach((a) => {
             ref = ref[a] || 'white';
           });
           return ref(str);
@@ -199,7 +199,7 @@ module.exports.create = function createLogger(lvl) {
      * @function setLevel
      */
     setLevel: function(lvl) {
-      var found = Object.keys(exports).some(function(k) {
+      let found = Object.keys(exports).some((k) => {
         return exports[k] === lvl;
       });
 

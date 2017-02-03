@@ -56,9 +56,9 @@ const manager = {
   },
 
   passwd: function(db, user, callback) {
-    return new Promise(function(resolve, reject) {
-      _bcrypt.genSalt(10, function(err, salt) {
-        _bcrypt.hash(user.password, salt, function(err, hash) {
+    return new Promise((resolve, reject) => {
+      _bcrypt.genSalt(10, (err, salt) => {
+        _bcrypt.hash(user.password, salt, (err, hash) => {
           const q = 'UPDATE `users` SET `password` = ? WHERE `id` = ?;';
           const a = [hash, user.id]
 
@@ -71,9 +71,9 @@ const manager = {
   list: function(db, user, callback) {
     const q = 'SELECT `id`, `username`, `name`, `groups` FROM `users`;';
 
-    return new Promise(function(resolve, reject) {
-      db.queryAll(q, []).then(function(rows) {
-        resolve((rows || []).map(function(iter) {
+    return new Promise((resolve, reject) => {
+      db.queryAll(q, []).then((rows) => {
+        resolve((rows || []).map((iter) => {
           try {
             iter.groups = JSON.parse(iter.groups) || [];
           } catch ( e ) {
@@ -90,14 +90,14 @@ module.exports.login = function(http, data) {
   const q = 'SELECT `id`, `username`, `name`, `password` FROM `users` WHERE `username` = ? LIMIT 1;';
   const a = [data.username];
 
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     function _invalid() {
       reject('Invalid credentials');
     }
 
     function _auth(row) {
       const hash = row.password.replace(/^\$2y(.+)$/i, '\$2a$1');
-      _bcrypt.compare(data.password, hash, function(err, res) {
+      _bcrypt.compare(data.password, hash, (err, res) => {
         if ( err ) {
           reject(err);
         } else if ( res === true ) {
@@ -112,8 +112,8 @@ module.exports.login = function(http, data) {
       });
     }
 
-    _db.instance('authstorage').then(function(db) {
-      db.query(q, a).then(function(row) {
+    _db.instance('authstorage').then((db) => {
+      db.query(q, a).then((row) => {
         if ( row ) {
           _auth(row);
         } else {
@@ -125,25 +125,25 @@ module.exports.login = function(http, data) {
 };
 
 module.exports.logout = function(http) {
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     resolve(true);
   });
 };
 
 module.exports.initSession = function(http) {
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     resolve(true);
   });
 };
 
 module.exports.checkPermission = function(http, type, options) {
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     resolve(true);
   });
 };
 
 module.exports.checkSession = function(http) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     if ( http.session.get('username') ) {
       resolve();
     } else {
@@ -153,9 +153,9 @@ module.exports.checkSession = function(http) {
 };
 
 module.exports.manage = function(http, command, args) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     if ( manager[command] ) {
-      _db.instance('authstorage').then(function(db) {
+      _db.instance('authstorage').then((db) => {
         manager[command](db, args)
           .then(resolve)
           .catch(reject);

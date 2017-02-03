@@ -58,15 +58,15 @@ const _instance = require('./../../core/instance.js');
  */
 module.exports.curl = function(http, args) {
   const logger = _instance.getLogger();
-  var url = args.url;
+  let url = args.url;
 
-  var curlRequest = (function parseRequestParameters() {
+  let curlRequest = (function parseRequestParameters() {
     const query = args.body || args.query || {}; // 'query' was the old name, but kept for compability
     const binary = args.binary === true;
     const method = args.method || 'GET';
     const mime = args.mime || (binary ? 'application/octet-stream' : null);
 
-    var opts = (function() {
+    let opts = (() => {
       return {
         url: url,
         method: method,
@@ -92,7 +92,7 @@ module.exports.curl = function(http, args) {
       function _parseOTHER() {
         if ( typeof query === 'object' && url.indexOf('?') === '1' ) {
           try {
-            url += '?' + Object.keys(query).map(function(k) {
+            url += '?' + Object.keys(query).map((k) => {
               return encodeURIComponent(k) + '=' + encodeURIComponent(query[k]);
             }).join('&');
           } catch ( e ) {
@@ -121,12 +121,12 @@ module.exports.curl = function(http, args) {
     };
   })();
 
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     if ( !url ) {
       return reject('cURL expects an \'url\'');
     }
 
-    require('request')(curlRequest.opts, function(error, response, body) {
+    require('request')(curlRequest.opts, (error, response, body) => {
       if ( error ) {
         return reject(error);
       }

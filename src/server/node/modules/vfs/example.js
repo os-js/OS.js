@@ -9,7 +9,7 @@
  * Create a read stream
  */
 function createReadStream(http, path) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     reject('Unavailable');
   });
 }
@@ -18,7 +18,7 @@ function createReadStream(http, path) {
  * Create a write stream
  */
 function createWriteStream(http, path) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     reject('Unavailable');
   });
 }
@@ -95,7 +95,7 @@ const VFS = {
  * @return {Promise}
  */
 module.exports.request = function(http, method, args) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     if ( typeof VFS[method] === 'function' ) {
       VFS[method](http, args, resolve, reject);
     } else {

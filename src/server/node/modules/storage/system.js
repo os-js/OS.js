@@ -40,7 +40,7 @@ function _readFile(username, path, resolve) {
     resolve(username ? (data[username] || []) : data);
   }
 
-  _fs.readFile(path, function(err, data) {
+  _fs.readFile(path, (err, data) => {
     if ( err ) {
       _done(null);
     } else {
@@ -60,12 +60,12 @@ module.exports.setSettings = function(http, username, settings) {
     username: username
   });
 
-  return new Promise(function(resolve, reject) {
-    _fs.ensureFile(path, function(err) {
+  return new Promise((resolve, reject) => {
+    _fs.ensureFile(path, (err) => {
       if (err) {
         return reject(err);
       }
-      _fs.writeFile(path, JSON.stringify(settings), function(err, res) {
+      _fs.writeFile(path, JSON.stringify(settings), (err, res) => {
         if ( err ) {
           reject(err);
         } else {
@@ -81,7 +81,7 @@ module.exports.getSettings = function(http, username) {
   const path = _vfs.resolvePathArguments(config.modules.storage.system.settings, {
     username: username
   });
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     _readFile(null, path, resolve);
   });
 };
@@ -89,7 +89,7 @@ module.exports.getSettings = function(http, username) {
 module.exports.getGroups = function(http, username) {
   const config = _instance.getConfig();
   const path = config.modules.storage.system.groups;
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     _readFile(username, path, resolve);
   });
 };
@@ -97,13 +97,13 @@ module.exports.getGroups = function(http, username) {
 module.exports.getBlacklist = function(http, username) {
   const config = _instance.getConfig();
   const path = config.modules.storage.system.blacklist;
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     _readFile(username, path, resolve);
   });
 };
 
 module.exports.setBlacklist = function(http, username, list) {
-  return new Promise(function(resolve) {
+  return new Promise((resolve) => {
     resolve(true);
   });
 };

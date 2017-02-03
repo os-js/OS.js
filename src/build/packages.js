@@ -37,8 +37,8 @@ const _fs = require('fs-extra');
 const _manifest = require('./manifest.js');
 const _utils = require('./utils.js');
 
-var _ugly;
-var Cleancss;
+let _ugly;
+let Cleancss;
 
 try {
   _ugly = require('uglify-js');
@@ -68,11 +68,11 @@ function runBuildScripts(verbose, target, section, iter, src, dest, cb) {
         cmd = cmd.replace('%PACKAGE%', src);
         console.log('$', cmd.replace(ROOT + '/', ''));
 
-        var env = Object.create(process.env);
+        let env = Object.create(process.env);
         env.OSJS_TARGET = target;
         env.OSJS_PACKAGE = src;
 
-        require('child_process').exec(cmd, {cwd: dest, env: env}, function(err, stdout, stderr) {
+        require('child_process').exec(cmd, {cwd: dest, env: env}, (err, stdout, stderr) => {
           if ( stderr ) {
             console.error(stderr);
           }
@@ -124,7 +124,7 @@ function copyResources(verbose, iter, src, dest) {
       _utils.log('-', src, '->', dest);
     }
 
-    _fs.copy(_fs.realpathSync(src), dest, function(err) {
+    _fs.copy(_fs.realpathSync(src), dest, (err) => {
       /*eslint no-unused-expressions: "off"*/
       err ? reject(err) : resolve();
     });
@@ -149,7 +149,7 @@ function buildLess(verbose, iter, src, dest) {
           _path.join(ROOT, 'src', 'client', 'themes'),
           _path.join(ROOT, 'src', 'client', 'stylesheets')
         ]
-      }, function(err) {
+      }, (err) => {
         /*eslint no-unused-expressions: "off"*/
         err ? reject(err) : resolve();
       });
@@ -161,7 +161,7 @@ function buildLess(verbose, iter, src, dest) {
  * Create standalone scheme files
  */
 function createStandaloneScheme(iter, dest) {
-  var src = _path.join(dest, 'scheme.html');
+  let src = _path.join(dest, 'scheme.html');
   if ( _fs.existsSync(src) ) {
     iter.preload.forEach((p) => {
       if ( p.type === 'scheme' ) {
@@ -182,7 +182,7 @@ function combineResources(standalone, metadata, dest) {
     stylesheet: []
   };
 
-  var iter = JSON.parse(JSON.stringify(metadata));
+  let iter = JSON.parse(JSON.stringify(metadata));
   return new Promise((resolve, reject) => {
     iter.preload.forEach((p) => {
       if ( p.combine === false || p.src.match(/^(ftp|https?\:)?\/\//) ) {
@@ -214,12 +214,12 @@ function combineResources(standalone, metadata, dest) {
 
     const sfile = _path.join(dest, 'scheme.html');
     if ( _fs.existsSync(sfile) ) {
-      var scheme = String(_fs.readFileSync(sfile));
+      let scheme = String(_fs.readFileSync(sfile));
 
       const found = scheme.match(/<gui\-fragment\s+?data\-fragment\-external=\"(.*)\"\s+?\/>/g);
       if ( found ) {
         found.forEach((f) => {
-          var src = f.split(/<gui\-fragment\s+?data\-fragment\-external=\"(.*)\"\s+?\/>/)[1];
+          let src = f.split(/<gui\-fragment\s+?data\-fragment\-external=\"(.*)\"\s+?\/>/)[1];
           src = _path.join(dest, src);
 
           if ( src && _fs.existsSync(src) ) {
@@ -335,24 +335,24 @@ const TARGETS = {
         },
         function() {
           return runBuildScripts(verbose, 'dist', 'before', metadata, src, dest);
-        }, function() {
+        }, () => {
           return copyResources(verbose, metadata, src, dest);
-        }, function() {
+        }, () => {
           return buildLess(verbose, metadata, src, dest);
-        }, function() {
+        }, () => {
           return new Promise((yes, no) => {
             return combineResources(standalone, metadata, dest).then((data) => {
               metadata = data; // Make sure we set new metadata after changes
               yes();
             }).catch(no);
           });
-        }, function() {
+        }, () => {
           if ( cli.option('compress') ) {
             return compressResources(verbose, metadata, dest);
           } else {
             return Promise.resolve(true);
           }
-        }, function() {
+        }, () => {
           return runBuildScripts(verbose, 'dist', 'after', metadata, src, dest);
         }
       ]).then(resolve).catch(reject);
@@ -374,9 +374,9 @@ const TARGETS = {
         },
         function() {
           return runBuildScripts(verbose, 'dist-dev', 'before', metadata, src, dest);
-        }, function() {
+        }, () => {
           return buildLess(verbose, metadata, src, dest);
-        }, function() {
+        }, () => {
           return runBuildScripts(verbose, 'dist-dev', 'after', metadata, src, dest);
         }
       ]).then(resolve).catch(reject);

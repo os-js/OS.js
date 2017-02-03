@@ -42,12 +42,12 @@ const _instance = require('./instance.js');
 ///////////////////////////////////////////////////////////////////////////////
 
 function createRequest(http, method, args) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     function _nullResponder(arg) {
       resolve(arg);
     }
 
-    var newHttp = Object.assign({}, http);
+    let newHttp = Object.assign({}, http);
     newHttp._virtual = true;
     newHttp.endpoint = method;
     newHttp.data = args;
@@ -116,12 +116,12 @@ module.exports.request = function(http, method, args) {
   const transport = module.exports.getTransport(transportName);
   const opts = args.options || {};
 
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     if ( !transport ) {
       return reject('Could not find any supported VFS module');
     }
 
-    transport.request(http, method, args).then(function(data) {
+    transport.request(http, method, args).then((data) => {
       if ( method === 'read' && opts.stream !== false ) {
         if ( typeof data === 'string' ) {
           return http.respond.stream(data, true);
@@ -239,7 +239,7 @@ module.exports.getMime = function getMime(iter) {
  * @memberof core.vfs
  */
 module.exports.getTransport = function(transportName) {
-  return _instance.getVFS().find(function(module) {
+  return _instance.getVFS().find((module) => {
     return module.name === transportName;
   });
 };
@@ -259,7 +259,7 @@ module.exports.getTransport = function(transportName) {
  * @memberof core.vfs
  */
 module.exports.parseVirtualPath = function(query, options) {
-  var realPath = '';
+  let realPath = '';
 
   const config = _instance.getConfig();
   const mountpoints = config.vfs.mounts || {};
@@ -330,7 +330,7 @@ module.exports.resolvePathArguments = function(path, options) {
     }
   };
 
-  Object.keys(rmap).forEach(function(k) {
+  Object.keys(rmap).forEach((k) => {
     path = path.replace(new RegExp(k, 'g'), rmap[k]());
   });
 
@@ -360,8 +360,8 @@ module.exports.initWatch = function(callback) {
   }
 
   try {
-    Object.keys(config.vfs.mounts).forEach(function(name) {
-      var mount = mountpoints[name];
+    Object.keys(config.vfs.mounts).forEach((name) => {
+      let mount = mountpoints[name];
       if ( typeof mount === 'string' ) {
         mount = {
           transport: '__default__',
@@ -369,7 +369,7 @@ module.exports.initWatch = function(callback) {
         };
       }
 
-      const found = _instance.getVFS().find(function(iter) {
+      const found = _instance.getVFS().find((iter) => {
         return iter.name === mount.transport;
       });
 

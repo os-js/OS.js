@@ -67,7 +67,7 @@ function readMetadata(cfg) {
           const d = _path.basename(_path.dirname(check));
           return whitelist.indexOf(d) >= 0;
         }).map((check) => {
-          var raw = _fs.readFileSync(check);
+          let raw = _fs.readFileSync(check);
           return JSON.parse(raw);
         });
 
@@ -130,7 +130,7 @@ function buildFonts(cli, cfg) {
     console.log('Building fonts');
     _utils.mkdirSilent(_path.join(ROOT, 'dist', 'themes', 'fonts'));
 
-    var rep = cfg.client.Connection.FontURI;
+    let rep = cfg.client.Connection.FontURI;
     if ( !rep.match(/^\//) ) { // Fix for relative paths (CSS)
       rep = rep.replace(/^\w+\//, '');
     }
@@ -237,7 +237,7 @@ function buildStyle(cli, cfg, name) {
       const from = _path.join(src, 'style.less');
       const to = _path.join(dst, n + '.css');
 
-      var base = 'theme.less';
+      let base = 'theme.less';
       try {
         base = cfg.themes.styleBase;
       } catch ( e ) {}
@@ -249,14 +249,14 @@ function buildStyle(cli, cfg, name) {
           _path.join(ROOT, 'src', 'client', 'themes'),
           _path.join(ROOT, 'src', 'client', 'stylesheets')
         ]
-      }, function(err) {
+      }, (err) => {
         if ( !err ) {
           _utils.removeSilent(_path.join(dst, n, 'metadata.json'));
           _utils.removeSilent(_path.join(dst, n, 'style.less'));
         }
 
         resolve();
-      }, function(css) {
+      }, (css) => {
         const header = '@import "' + base + '";\n\n';
         return header + css;
       });

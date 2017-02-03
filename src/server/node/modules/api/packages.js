@@ -53,7 +53,7 @@ module.exports.packages = function(http, data) {
   const command = data.command;
   const args = data.args || {};
 
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     if ( _pm[command] ) {
       _pm[command](http, resolve, reject, args);
     } else {

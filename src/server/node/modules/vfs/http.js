@@ -8,13 +8,13 @@ const _request = require('request');
 ///////////////////////////////////////////////////////////////////////////////
 
 function createReadStream(http, path) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     resolve(_request.get(path));
   });
 }
 
 function createWriteStream(http, path) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     reject('Unavailable');
   });
 }
@@ -28,7 +28,7 @@ const VFS = {
     const options = args.options || {};
 
     function _read(path, encode) {
-      _request(path).on('response', function(response) {
+      _request(path).on('response', (response) => {
         const mime = response.headers['content-type'];
         const data = response.body;
 
@@ -38,7 +38,7 @@ const VFS = {
         } else {
           resolve(data);
         }
-      }).on('error', function(err) {
+      }).on('error', (err) => {
         reject(err);
       });
     }
@@ -60,7 +60,7 @@ const VFS = {
 ///////////////////////////////////////////////////////////////////////////////
 
 module.exports.request = function(http, method, args) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     if ( typeof VFS[method] === 'function' ) {
       VFS[method](http, args, resolve, reject);
     } else {

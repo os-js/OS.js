@@ -39,8 +39,8 @@ const _utils = require('./utils.js');
 
 const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
 
-var _ugly;
-var Cleancss;
+let _ugly;
+let Cleancss;
 
 try {
   _ugly = require('uglify-js');
@@ -78,7 +78,7 @@ function readScript(target, verbose, compress, list) {
       _utils.log('- using:', path, '(compress: ' + String(compress) + ')');
     }
 
-    var data = compress ? _ugly.minify(path, {comments: false}).code : _fs.readFileSync(path).toString();
+    let data = compress ? _ugly.minify(path, {comments: false}).code : _fs.readFileSync(path).toString();
     data = data.replace(/\/\*\![\s\S]*?\*\//, '')
       .replace(/console\.(log|debug|info|group|groupStart|groupEnd|count)\((.*)\);/g, '')
       .replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:^\s*\/\/(?:.*)$)/gm, '')
@@ -100,7 +100,7 @@ function readStyle(target, verbose, compress, list) {
       _utils.log('- using:', path, '(compress: ' + String(compress) + ')');
     }
 
-    var data = _fs.readFileSync(path).toString();
+    let data = _fs.readFileSync(path).toString();
     if ( compress ) {
       data = new Cleancss().minify(data).styles;
     }
@@ -125,12 +125,12 @@ function createIndex(verbose, cfg, dist, fn, test) {
   const scripts = [];
   const styles = [];
 
-  fn(dist, cfg, function(i) {
+  fn(dist, cfg, (i) => {
     if ( verbose ) {
       _utils.log('- including:', i);
     }
     styles.push('    <link type="text/css" rel="stylesheet" href="' + i + '" />');
-  }, function(i) {
+  }, (i) => {
     if ( verbose ) {
       _utils.log('- including:', i);
     }
@@ -145,7 +145,7 @@ function createIndex(verbose, cfg, dist, fn, test) {
   const splashFile = _path.join(ROOT, 'src', 'templates', 'dist', 'splash', splashName + '.html');
   const splashHTML = _fs.readFileSync(splashFile).toString();
 
-  var tpl = _fs.readFileSync(_path.join(tpldir, fileName)).toString();
+  let tpl = _fs.readFileSync(_path.join(tpldir, fileName)).toString();
   tpl = _utils.replaceAll(tpl, '%STYLES%', styles.join('\n'));
   tpl = _utils.replaceAll(tpl, '%SCRIPTS%', scripts.join('\n'));
   tpl = _utils.replaceAll(tpl, '%LOGIN%', loginHTML);
@@ -158,9 +158,9 @@ function createIndex(verbose, cfg, dist, fn, test) {
  * Get build files
  */
 function getBuildFiles(opts) {
-  var javascripts = opts.javascript;
-  var stylesheets = opts.stylesheets;
-  var locales = opts.locales;
+  let javascripts = opts.javascript;
+  let stylesheets = opts.stylesheets;
+  let locales = opts.locales;
 
   if ( opts.overlays ) {
     Object.keys(opts.overlays).forEach((k) => {
@@ -232,7 +232,7 @@ function copyResources(verbose, cfg, dist) {
       Object.keys(cfg.build.statics).forEach((f) => {
         const dst = _path.join(ROOT, cfg.build.statics[f]);
 
-        var path = f;
+        let path = f;
         try {
           if ( f.substr(0, 1) === '?' ) {
             path = path.substr(1);
@@ -279,9 +279,9 @@ const TARGETS = {
 
     function _cleanup() {
       /*
-      return new Promise(function(resolve) {
-        _glob(_path.join(ROOT, 'dist/*.*')).then(function(list) {
-          list.forEach(function(file) {
+      return new Promise((resolve) => {
+        _glob(_path.join(ROOT, 'dist/*.*')).then((list) => {
+          list.forEach((file) => {
             if ( ['settings.js', 'packages.js'].indexOf(_path.basename(file)) !== -1 ) {
               _utils.removeSilent(file);
             }
@@ -302,12 +302,12 @@ const TARGETS = {
         _fs.writeFileSync(_path.join(ROOT, 'dist', 'locales' + end +  '.js'), jsh + readScript(target, verbose, compress, build.locales));
         _fs.writeFileSync(_path.join(ROOT, 'dist', 'osjs' + end +  '.css'), cssh + readStyle(target, verbose, compress, build.stylesheets));
 
-        var appendString = '';
+        let appendString = '';
         if ( cfg.client.Connection.AppendVersion ) {
           appendString = '?ver=' + cfg.client.Connection.AppendVersion;
         }
 
-        createIndex(verbose, cfg, 'dist', function(dist, c, addStyle, addScript) {
+        createIndex(verbose, cfg, 'dist', (dist, c, addStyle, addScript) => {
           if ( compress ) {
             addStyle('osjs.min.css' + appendString);
             addScript('osjs.min.js' + appendString);

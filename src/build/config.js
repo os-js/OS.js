@@ -50,7 +50,7 @@ const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
  */
 function generateClientConfiguration(target, cli, cfg) {
   return new Promise((resolve, reject) => {
-    var settings = Object.assign({}, cfg.client);
+    let settings = Object.assign({}, cfg.client);
 
     const preloads = Object.keys(settings.Preloads || {}).map((k) => {
       return settings.Preloads[k];
@@ -87,14 +87,14 @@ function generateClientConfiguration(target, cli, cfg) {
     _themes.readMetadata(cfg).then((themes) => {
       settings.Fonts.list = themes.fonts.concat(settings.Fonts.list);
       settings.Styles = themes.styles;
-      settings.Sounds = _utils.makedict(themes.sounds, function(iter) {
+      settings.Sounds = _utils.makedict(themes.sounds, (iter) => {
         return [iter.name, iter.title];
       });
-      settings.Icons = _utils.makedict(themes.icons, function(iter) {
+      settings.Icons = _utils.makedict(themes.icons, (iter) => {
         return [iter.name, iter.title];
       });
 
-      _metadata.getPackages(cfg.repositories, function(pkg) {
+      _metadata.getPackages(cfg.repositories, (pkg) => {
         return pkg && pkg.autostart === true;
       }).then((list) => {
         settings.AutoStart = settings.AutoStart.concat(Object.keys(list).map((k) => {
@@ -114,10 +114,10 @@ function generateClientConfiguration(target, cli, cfg) {
  * Generates a server-side config file
  */
 function generateServerConfiguration(cli, cfg) {
-  var settings = Object.assign({}, cfg.server);
+  let settings = Object.assign({}, cfg.server);
 
   return new Promise((resolve, reject) => {
-    _metadata.getPackages(cfg.repositories, function(pkg) {
+    _metadata.getPackages(cfg.repositories, (pkg) => {
       return pkg && pkg.type === 'extension';
     }).then((extensions) => {
       const src = _path.join(ROOT, 'src');
@@ -154,8 +154,8 @@ function generateServerConfiguration(cli, cfg) {
  */
 function getConfigPath(config, path, defaultValue) {
   if ( typeof path === 'string' ) {
-    var result = null;
-    var ns = config;
+    let result = null;
+    let ns = config;
 
     const queue = path.split(/\./);
     queue.forEach((k, i) => {
@@ -179,12 +179,12 @@ function getConfigPath(config, path, defaultValue) {
 /*
  * Sets a config value
  */
-const setConfigPath = (function() {
+const setConfigPath = (() => {
 
   function removeNulls(obj) {
     const isArray = obj instanceof Array;
 
-    for (var k in obj) {
+    for (let k in obj) {
       if ( obj[k] === null ) {
         if ( isArray ) {
           obj.splice(k, 1);
@@ -200,8 +200,8 @@ const setConfigPath = (function() {
   function getNewTree(key, value) {
     const queue = key.split(/\./);
 
-    var resulted = {};
-    var ns = resulted;
+    let resulted = {};
+    let ns = resulted;
 
     queue.forEach((k, i) => {
       if ( i >= queue.length - 1 ) {
@@ -243,8 +243,8 @@ const setConfigPath = (function() {
 
     const path = _path.join(ROOT, 'src', 'conf', '900-custom.json');
 
-    var newTree = isTree ? value : getNewTree(key, value);
-    var oldTree = {};
+    let newTree = isTree ? value : getNewTree(key, value);
+    let oldTree = {};
 
     try {
       oldTree = JSON.parse(_fs.readFileSync(path).toString());
@@ -252,7 +252,7 @@ const setConfigPath = (function() {
       oldTree = {};
     }
 
-    var result = _utils.mergeObject(oldTree, newTree);
+    let result = _utils.mergeObject(oldTree, newTree);
     removeNulls(result);
 
     _fs.writeFileSync(path, JSON.stringify(result, null, 2));
@@ -270,7 +270,7 @@ function _togglePackage(config, packageName, enable) {
   const currentEnabled = getConfigPath(config, 'packages.ForceEnable') || [];
   const currentDisabled = getConfigPath(config, 'packages.ForceDisable') || [];
 
-  var idx;
+  let idx;
   if ( enable ) {
     if ( currentEnabled.indexOf(packageName) < 0 ) {
       currentEnabled.push(packageName);
@@ -319,7 +319,7 @@ function getConfiguration() {
   return new Promise((resolve, reject) => {
     const path = _path.join(ROOT, 'src', 'conf');
 
-    var object = {};
+    let object = {};
     _glob(path + '/*.json').then((files) => {
 
       files.forEach((file) => {
@@ -332,11 +332,11 @@ function getConfiguration() {
       });
 
       // Resolves all "%something%" config entries
-      var tmpFile = JSON.stringify(object).replace(/%ROOT%/g, _utils.fixWinPath(ROOT));
+      let tmpFile = JSON.stringify(object).replace(/%ROOT%/g, _utils.fixWinPath(ROOT));
       const tmpConfig = JSON.parse(tmpFile);
 
       const words = tmpFile.match(/%([A-z0-9_\-\.]+)%/g).filter((() => {
-        var seen = {};
+        let seen = {};
         return function(element, index, array) {
           return !(element in seen) && (seen[element] = 1);
         };
@@ -410,7 +410,7 @@ function writeConfiguration(target, cli, cfg) {
  * Gets a configuration option
  */
 function getConfig(config, key) {
-  var dump = getConfigPath(config, key);
+  let dump = getConfigPath(config, key);
   try {
     dump = JSON.stringify(dump, null, 4);
   } catch ( e ) {}
@@ -447,7 +447,7 @@ function disablePackage(config, name) {
 function addOverlayFile(config, type, path, overlay) {
   const play = 'build.overlays.' + overlay;
 
-  var overlays = getConfigPath(config, 'build.overlays');
+  let overlays = getConfigPath(config, 'build.overlays');
   if ( typeof overlays !== 'object' ) {
     overlays = {};
   }
@@ -478,7 +478,7 @@ function addMount(config, name, description, path, transport, ro) {
     return Promise.reject('You have to define a path and name for a mountpoint');
   }
 
-  var iter = path;
+  let iter = path;
   if ( transport || ro ) {
     iter = {destination: path};
     if ( transport ) {
@@ -489,7 +489,7 @@ function addMount(config, name, description, path, transport, ro) {
     }
   }
 
-  var current = getConfigPath(config, 'client.VFS.Mountpoints') || {};
+  let current = getConfigPath(config, 'client.VFS.Mountpoints') || {};
   current[name] = {description: description || name};
   setConfigPath('client.VFS.Mountpoints', {client: {VFS: {Mountpoints: current}}}, true);
 
@@ -506,7 +506,7 @@ function addMount(config, name, description, path, transport, ro) {
 function addPreload(config, name, path, type) {
   type = type || 'javascript';
 
-  var current = getConfigPath(config, 'client.Preloads') || {};
+  let current = getConfigPath(config, 'client.Preloads') || {};
   current[name] = {type: type, src: path};
 
   setConfigPath('client.Preloads', {client: {Preloads: current}}, true);
@@ -518,7 +518,7 @@ function addPreload(config, name, path, type) {
  * Add a repository to config files
  */
 function addRepository(config, name) {
-  var current = getConfigPath(config, 'repositories') || [];
+  let current = getConfigPath(config, 'repositories') || [];
   if ( current.indexOf(name) === -1 ) {
     current.push(name);
   }
@@ -531,8 +531,8 @@ function addRepository(config, name) {
  * Removes a repository from config files
  */
 function removeRepository(config, name) {
-  var current = getConfigPath(config, 'repositories') || [];
-  var found = current.indexOf(name);
+  let current = getConfigPath(config, 'repositories') || [];
+  let found = current.indexOf(name);
   if ( found >= 0 ) {
     current.splice(found, 1);
   }
@@ -570,8 +570,8 @@ function listPackages(config) {
         Object.keys(packages).forEach((pn) => {
           const p = packages[pn];
 
-          var es = String(p.enabled) !== 'false';
-          var esc = es ? 'green' : 'red';
+          let es = String(p.enabled) !== 'false';
+          let esc = es ? 'green' : 'red';
 
           if ( es ) {
             if ( !_metadata.checkEnabledState(currentEnabled, currentDisabled, p) ) {

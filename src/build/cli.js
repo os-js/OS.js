@@ -44,10 +44,10 @@ module.exports.run = function(args, done) {
     return done(true);
   }
 
-  const actions = args._.map(function(iter) {
-    var action = iter.trim().split(':');
-    var task = action[0];
-    var arg = action[1];
+  const actions = args._.map((iter) => {
+    let action = iter.trim().split(':');
+    let task = action[0];
+    let arg = action[1];
 
     if ( !_build[task] ) {
       console.error('Invalid task', task);
@@ -57,13 +57,13 @@ module.exports.run = function(args, done) {
     return [task, arg]
   });
 
-  process.on('uncaughtException', function(error) {
+  process.on('uncaughtException', (error) => {
     console.error('An uncaught exception occured', error);
     console.error(error.stack);
     done(true);
   });
 
-  Promise.each(actions.map(function(action) {
+  Promise.each(actions.map((action) => {
     return function() {
       return _build[action[0]]({
         option: function(k, d) {
@@ -71,9 +71,9 @@ module.exports.run = function(args, done) {
         }
       }, action[1]);
     };
-  })).then(function() {
+  })).then(() => {
     done();
-  }).catch(function(err) {
+  }).catch((err) => {
     console.error(err);
     done(err);
   });

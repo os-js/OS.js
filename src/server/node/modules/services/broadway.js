@@ -34,13 +34,13 @@ const _instance = require('./../../core/instance.js');
 const _spawn = require('child_process').spawn;
 const _ws = require('ws').Server;
 
-var wss;
+let wss;
 
 /*
  * Unloads broadway daemons
  */
 module.exports.destroy = function() {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     if ( wss ) {
       wss.close(resolve);
     }
@@ -64,7 +64,7 @@ module.exports.register = function(env, config, servers) {
     const args = [launch];
 
     const env = Object.assign({}, process.env);
-    Object.keys(defaults.env).forEach(function(k) {
+    Object.keys(defaults.env).forEach((k) => {
       env[k] = defaults.env[k];
     });
 
@@ -73,19 +73,19 @@ module.exports.register = function(env, config, servers) {
     /*
     const ls = _spawn(cmd, args, {env: env});
 
-    ls.stdout.on('data', function(data) {
+    ls.stdout.on('data', (data) => {
       console.log('stdout: ' + data);
     });
 
-    ls.stderr.on('data', function(data) {
+    ls.stderr.on('data', (data) => {
       console.log('stderr: ' + data);
     });
 
-    ls.on('error', function(data) {
+    ls.on('error', (data) => {
       console.log('error: ' + data);
     });
 
-    ls.on('close', function(code) {
+    ls.on('close', (code) => {
       console.log('child process exited with code ' + code);
     });
     */
@@ -99,10 +99,10 @@ module.exports.register = function(env, config, servers) {
       port: port
     });
 
-    wss.on('connection', function(ws) {
+    wss.on('connection', (ws) => {
       logger.log('INFO', 'Incoming broadway connection');
 
-      ws.on('message', function(message) {
+      ws.on('message', (message) => {
         const json = JSON.parse(message);
         if ( json.method === 'launch' ) {
           spawnBroadwayProcess(json.argument);

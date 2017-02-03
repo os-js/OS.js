@@ -34,15 +34,15 @@
  * @namespace core.database
  */
 
-var instances = {};
+let instances = {};
 
 ///////////////////////////////////////////////////////////////////////////////
 // HELPERS
 ///////////////////////////////////////////////////////////////////////////////
 
 function mysqlConfiguration(config) {
-  var ccfg = {};
-  Object.keys(config).forEach(function(c) {
+  let ccfg = {};
+  Object.keys(config).forEach((c) => {
     if ( typeof config[c] === 'object' ) {
       ccfg[c] = config[c];
     } else {
@@ -86,7 +86,7 @@ DatabaseInstance.prototype.init = function() {
   const type = this.type;
 
   if ( type === 'sqlite' ) {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
       conn.serialize(resolve);
     });
   }
@@ -101,11 +101,11 @@ DatabaseInstance.prototype._query = function(q, a, all, cb) {
   const conn = this.conn;
 
   function mysqlQuery(done) {
-    conn.getConnection(function(err, connection) {
+    conn.getConnection((err, connection) => {
       if ( err ) {
         done(err);
       } else {
-        connection.query(q, a, function(err, row, fields) {
+        connection.query(q, a, (err, row, fields) => {
           if ( all ) {
             done(err, row, fields);
           } else {
@@ -127,9 +127,9 @@ DatabaseInstance.prototype._query = function(q, a, all, cb) {
   }
 
   if ( conn ) {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
       if ( type === 'mysql' ) {
-        mysqlQuery(function(err, res) {
+        mysqlQuery((err, res) => {
           if ( err ) {
             reject(err);
           } else {
@@ -137,7 +137,7 @@ DatabaseInstance.prototype._query = function(q, a, all, cb) {
           }
         });
       } else if ( type === 'sqlite' ) {
-        sqliteQuery(function(err, res) {
+        sqliteQuery((err, res) => {
           if ( err ) {
             reject(err);
           } else {
@@ -177,14 +177,14 @@ DatabaseInstance.prototype.queryAll = function(q, a, cb) {
  * @return {Promise}
  */
 module.exports.instance = function(name, type, opts) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     if ( arguments.length === 1 || !(type && opts) ) {
       return resolve(instances[name]);
     }
 
     try {
-      var i = new DatabaseInstance(name, type, opts);
-      i.init().then(function() {
+      let i = new DatabaseInstance(name, type, opts);
+      i.init().then(() => {
         instances[name] = i;
         resolve(i);
       }).catch(reject);
@@ -207,7 +207,7 @@ module.exports.destroy = function(name) {
     instances[name].destroy();
     delete instances[name];
   } else {
-    Object.keys(instances).forEach(function(k) {
+    Object.keys(instances).forEach((k) => {
       instances[k].destroy();
       delete instances[k];
     });
