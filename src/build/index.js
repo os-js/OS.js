@@ -270,6 +270,14 @@ const TASKS = {
   }
 };
 
+const ORIGINAL_TASKS = (function() {
+  const tmp = {};
+  Object.keys(TASKS).forEach(function(s) {
+    tmp[s] = Object.keys(TASKS[s]);
+  });
+  return tmp;
+})();
+
 ///////////////////////////////////////////////////////////////////////////////
 // EXPORTS
 ///////////////////////////////////////////////////////////////////////////////
@@ -288,7 +296,11 @@ module.exports._init = function() {
  */
 module.exports.build = function(cli, args) {
   if ( !args ) {
-    args = 'config,core,themes,manifest,packages';
+    args = ['config', 'core', 'themes', 'manifest', 'packages'];
+
+    args = args.concat(Object.keys(TASKS.build).filter(function(i) {
+      return ORIGINAL_TASKS.build.indexOf(i) === -1 && args.indexOf(i) === -1;
+    })).join(',');
   }
 
   return _eachTask(cli, args, 'build', TASKS.build);

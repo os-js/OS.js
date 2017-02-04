@@ -37,7 +37,9 @@
  * or adding custom tasks.
  */
 module.exports.register = function(TASKS) {
+  /* You can for example add your own build task that will be run by default
   TASKS.build.custom = function(cli, cfg) {
     return Promise.resolve();
   };
+  */
 };
