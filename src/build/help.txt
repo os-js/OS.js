@@ -5,30 +5,37 @@ Available targets are `dist` and `dist-dev` (with exception of manifest and conf
 More information: https://os.js.org/manual/build/cli/
 
 Building:
-  build [--target=]                                    Builds everything
-  build:config [--target=]                             Builds configuration files
-  build:manifest [--target=]                           Builds package manifest files
-  build:core [--target=]                               Builds core files
-  build:package --name=REPO/NAME [--target=]           Builds given package
-  build:packages [--target=]                           Builds all packages
-  build:themes                                         Builds all themes
+  build [--target=]                                      Builds everything
+  build:config [--target=]                               Builds configuration files
+  build:manifest [--target=]                             Builds package manifest files
+  build:core [--target=]                                 Builds core files
+  build:package --name=REPO/NAME [--target=]             Builds given package
+  build:packages [--target=]                             Builds all packages
+  build:themes                                           Builds all themes
 
 Configuration:
-  config:get --name=KEY                                Gets a configuration value
-  config:set --name=KEY --value=VALUE                  Sets a configuration entry
-  config:add-repository --name=NAME                    Adds a repository directory
-  config:remove-repository --name=NAME                 Removes a repository directory
-  config:list-packages                                 Lists all repositories and packages
+  config:get --name=KEY                                  Gets a configuration value
+  config:set --name=KEY --value=VALUE                    Sets a configuration entry
+  config:add-repository --name=NAME                      Adds a repository directory
+  config:remove-repository --name=NAME                   Removes a repository directory
+  config:list-packages                                   Lists all repositories and packages
+  config:enable-package --name=REPO/NAME                 Force-enable given package
+  config:disable-package --name=REPO/NAME                Force-disable given package
+  config:add-script --path=PATH [--overlay=NAME]         Add a script to overlay
+  config:add-style --path=PATH [--overlay=NAME]          Add a stylesheet to overlay
+  config:add-locale --path=PATH [--overlay=NAME]         Add a locale to overlay
+  config:add-preload --name=NAME --path=PATH             Adds a preload file
+  config:add-mount --name=NAME --desc=DESC --path=PATH   Adds a mountpoint
 
 Generators:
-  generate:apache-htaccess [--target=]                 Generates .htaccess file
-  generate:apache-vhost --out=FILENAME [--target=]     Generates a vhost file
-  generate:nginx-config --out=FILENAME [--target=]     Generates a nginx config
-  generate:lighttpd-config --out=FILENAME [--target=]  Generates a lighttpd config
-  generate:package --name=REPO/NAME --type=TYPE        Generates a new package
+  generate:apache-htaccess [--target=]                   Generates .htaccess file
+  generate:apache-vhost --out=FILENAME [--target=]       Generates a vhost file
+  generate:nginx-config --out=FILENAME [--target=]       Generates a nginx config
+  generate:lighttpd-config --out=FILENAME [--target=]    Generates a lighttpd config
+  generate:package --name=REPO/NAME --type=TYPE          Generates a new package
 
 Misc:
-  run --target=DIR [--port=N] [--loglevel=N]           Runs OS.js on given dist
+  run --target=DIR [--port=N] [--loglevel=N]             Runs OS.js on given dist
 
 Use the --verbose argument to get detailed information in build output. Loglevels:
 INFO: 1, WARN: 2, WARNING: 2, ERROR: 3, VERBOSE: 8 (default: 7)

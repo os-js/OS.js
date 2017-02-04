@@ -217,7 +217,7 @@ const TASKS = {
       return _config.get(cfg, cli.option('name'));
     },
     add_mount: function(cli, cfg) {
-      return _config.addMount(cfg, cli.option('name'), cli.option('description'), cli.option('path'), cli.option('transport'), cli.option('ro'));
+      return _config.addMount(cfg, cli.option('name'), cli.option('description') || cli.option('desc'), cli.option('path'), cli.option('transport'), cli.option('ro'));
     },
     add_preload: function(cli, cfg) {
       return _config.addPreload(cfg, cli.option('name'), cli.option('path'), cli.option('type'));
