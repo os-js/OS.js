@@ -1,3 +1,51 @@
+# 2.0.0-alpha83
+
+This release brings a new Session Management system for the node server and a
+bunch of bugfixes and compability updates.
+
+Relevant:
+
+* http://community.os.js.org/t/update-version-bump-alpha83/114
+
+Digest:
+
+* Settings: Hide unavailable modules
+* CoreWM: Fixes to notification system
+* Connection: Added automatic reconnection if WS drops out
+* Utils: Bugfixes
+* API: 'getApplicationResource()' now returns correct VFS paths
+* VFS: Bugfixes
+* VFS: Added sorting to scandir
+* GUI: Added 'click' alias for gui-menu 'select'
+* GUI: Sortable ListView
+* server-php: Bugfixes
+* server-php: Added support for chunked HTTP file transfers
+* server-php: Now PSR-2 compatible as well
+* server-node: Bugfixes
+* server-node: Added 'Service' example
+* server-node: Fill in blanks if any in config on init
+* server-node: Moved 'defaultGroups' into core
+* server-node: Websocket can now have a custom path
+* server-node: Better logging on init
+* server-node: New Session management via Cookies
+* server-node: Better error handling
+* build: Bugfixes and improvements
+* build: Added new 'config:' tasks for overlay configuration
+* build: Updated error handling
+* build: Added more configuration generators
+* build: Added support for adding custom modules
+* build: Updated help
+* misc: Some code standard updates
+* misc: Updated locales
+* misc: Updated templates
+* misc: Changed from 'node-fs-extra' to 'node-fs'
+* misc: Updated package.json dependencies
+* misc: Added some compability checks
+* misc: Updated Dockerfile
+* misc: Updated Travis CI
+* misc: Updated documentation
+* misc: Cleaned up filetree
+
 # 2.0.0-alpha82
 
 This release brings new Broadway implementation, Support for HTTP middleware,
