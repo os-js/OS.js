@@ -51,6 +51,7 @@ function _createWebserverConfig(cfg, target, src, mimecb) {
   let tpl = _fs.readFileSync(src).toString();
   tpl = tpl.replace(/%DISTDIR%/, _path.join(ROOT, target));
   tpl = tpl.replace(/%MIMES%/, mimes);
+  tpl = tpl.replace(/%PORT%/, cfg.server.http.port);
   return tpl;
 }
 
@@ -117,6 +118,12 @@ const TASKS = {
     return Promise.resolve();
   },
 
+  'apache_proxy': function(cli, cfg) {
+    const src = _path.join(ROOT, 'src', 'templates', 'webserver', 'apache-proxy.conf');
+
+    return Promise.resolve(_createWebserverConfig(cfg, '', src, function() {}));
+  },
+
   'lighttpd_config': function(cli, cfg) {
     const target = cli.option('target', 'dist');
 
@@ -143,6 +150,12 @@ const TASKS = {
         return !!i;
       }).join('\n');
     }));
+  },
+
+  'nginx_proxy': function(cli, cfg) {
+    const src = _path.join(ROOT, 'src', 'templates', 'webserver', 'nginx-proxy.conf');
+
+    return Promise.resolve(_createWebserverConfig(cfg, '', src, function() {}));
   },
 
   'package': function(cli, cfg) {

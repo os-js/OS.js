@@ -28,10 +28,12 @@ Configuration:
   config:add-mount --name=NAME --desc=DESC --path=PATH   Adds a mountpoint
 
 Generators:
-  generate:apache-htaccess [--target=]                   Generates .htaccess file
-  generate:apache-vhost --out=FILENAME [--target=]       Generates a vhost file
-  generate:nginx-config --out=FILENAME [--target=]       Generates a nginx config
-  generate:lighttpd-config --out=FILENAME [--target=]    Generates a lighttpd config
+  generate:apache-htaccess [--target=]                   Generates apache htaccess file (PHP)
+  generate:apache-vhost --out=FILENAME [--target=]       Generates apache vhost file (PHP)
+  generate:apache-proxy --out=FILENAME                   Generates apache reverse-proxy (Node)
+  generate:nginx-config --out=FILENAME [--target=]       Generates nginx config (PHP)
+  generate:nginx-proxy --out=FILENAME                    Generates nginx reverse-proxy (Node)
+  generate:lighttpd-config --out=FILENAME [--target=]    Generates lighttpd config (PHP)
   generate:package --name=REPO/NAME --type=TYPE          Generates a new package
 
 Misc:
