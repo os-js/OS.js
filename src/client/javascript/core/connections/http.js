@@ -58,7 +58,7 @@
   HttpConnection.prototype.onVFSRequestCompleted = function(module, method, args, error, result, callback, appRef) {
     if ( !error ) {
       // Emit a VFS event when a change occures
-      if ( ['write', 'mkdir', 'copy', 'move'].indexOf(method) !== -1 ) {
+      if ( ['write', 'mkdir', 'copy', 'move', 'unlink'].indexOf(method) !== -1 ) {
         var arg = method === 'move' ? {
           source: args[0],
           destination: args[1]

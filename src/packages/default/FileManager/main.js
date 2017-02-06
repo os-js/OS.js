@@ -35,7 +35,9 @@
   function getSelected(view) {
     var selected = [];
     (view.get('value') || []).forEach(function(sub) {
-      selected.push(sub.data);
+      if ( !sub.data.shortcut ) {
+        selected.push(sub.data);
+      }
     });
     return selected;
   }
@@ -293,6 +295,8 @@
   };
 
   ApplicationFileManagerWindow.prototype.checkSelection = function(files) {
+    files = files || [];
+
     var scheme = this._scheme;
 
     if ( !scheme ) {
@@ -306,7 +310,7 @@
 
     var sum, label;
 
-    function toggleMenuItems(isFile, isDirectory) {
+    function toggleMenuItems(isFile, isDirectory, isShort) {
       /*
        * Toggling MenuItems with the bit MODE_F or MODE_FD set by type of selected items
        * MODE_F : Selected items consist of ONLY files
@@ -316,14 +320,14 @@
       var MODE_F = !isFile || !!isDirectory;
       var MODE_FD = !(isFile || isDirectory);
 
-      scheme.find(self, 'MenuRename').set('disabled', MODE_FD);
-      scheme.find(self, 'MenuDelete').set('disabled', MODE_FD);
+      scheme.find(self, 'MenuRename').set('disabled', isShort || MODE_FD);
+      scheme.find(self, 'MenuDelete').set('disabled', isShort || MODE_FD);
       scheme.find(self, 'MenuInfo').set('disabled', MODE_FD);  // TODO: Directory info must be supported
       scheme.find(self, 'MenuDownload').set('disabled', MODE_F);
       scheme.find(self, 'MenuOpen').set('disabled', MODE_F);
 
-      scheme.find(self, 'ContextMenuRename').set('disabled', MODE_FD);
-      scheme.find(self, 'ContextMenuDelete').set('disabled', MODE_FD);
+      scheme.find(self, 'ContextMenuRename').set('disabled', isShort || MODE_FD);
+      scheme.find(self, 'ContextMenuDelete').set('disabled', isShort || MODE_FD);
       scheme.find(self, 'ContextMenuInfo').set('disabled', MODE_FD);  // TODO: Directory info must be supported
       scheme.find(self, 'ContextMenuDownload').set('disabled', MODE_F);
       scheme.find(self, 'ContextMenuOpen').set('disabled', MODE_F);
@@ -331,7 +335,8 @@
 
     if ( files && files.length ) {
       sum = {files: 0, directories: 0, size: 0};
-      (files || []).forEach(function(f) {
+
+      files.forEach(function(f) {
         if ( f.data.type === 'dir' ) {
           sum.directories++;
         } else {
@@ -340,10 +345,12 @@
         }
       });
 
+      var isShortcut = files.length === 1 ? files[0].data.shortcut === true : false;
+
       label = 'Selected {0} files, {1} dirs, {2}';
       content = doTranslate(label, sum.files, sum.directories, Utils.humanFileSize(sum.size));
 
-      toggleMenuItems(sum.files, sum.directories);
+      toggleMenuItems(sum.files, sum.directories, isShortcut);
     } else {
       sum = this.currentSummary;
       if ( sum ) {
@@ -351,7 +358,7 @@
         content = doTranslate(label, sum.files, sum.hidden, sum.directories, Utils.humanFileSize(sum.size));
       }
 
-      toggleMenuItems(false, false);
+      toggleMenuItems(false, false, false);
     }
 
     statusbar.set('value', content);
