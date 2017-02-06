@@ -159,13 +159,20 @@ abstract class Filesystem
         }
 
         $config = Instance::GetConfig()->vfs;
-        if ($file['size'] <= 0 || $file['size'] > $config->maxuploadsize) {
+        $fileSize = isset($file['size']) ? $file['size'] : (isset($arguments['size']) ? $arguments['size'] : 0);
+        $overwrite = !empty($arguments['overwrite']) && $arguments['overwrite'] == true;
+
+        if ( $fileSize < 0 || $fileSize > $config->maxuploadsize) {
             throw new Exception('The upload request is either empty or too large!');
         }
 
         session_write_close();
 
         $path = self::_getRealPath("{$arguments['path']}/{$file['name']}");
+        if ( !$overwrite && file_exists($path) ) {
+            throw new Exception('File already exists');
+
+        }
         if (move_uploaded_file($file['tmp_name'], $path) === true) {
             //chmod("{$root}/{$file['name']}", 0600);
             return true;
@@ -174,10 +181,6 @@ abstract class Filesystem
         return false;
     }
 
-    /*
-     * NOTE: This method is pretty much deprecated as the
-     * frontend uses uploading as a method of writing.
-     */
     final public static function write(Request $request, Array $arguments = [])
     {
         $data = $arguments['data'];

@@ -116,6 +116,10 @@
       });
     }
 
+    if ( file instanceof window.ArrayBuffer ) {
+      fd.append('size', String(file.byteLength));
+    }
+
     VFS.Helpers.addFormFile(fd, 'upload', file, options.meta);
 
     OSjs.Core.getConnection().request('FS:upload', fd, callback, null, options);

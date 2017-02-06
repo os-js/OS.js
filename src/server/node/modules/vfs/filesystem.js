@@ -337,14 +337,10 @@ const VFS = {
     }, reject);
   },
 
-  /*
-   * NOTE: This method is pretty much deprecated as the
-   * frontend uses uploading as a method of writing.
-   */
   write: function(http, args, resolve, reject) {
     const resolved = _vfs.parseVirtualPath(args.path, http);
     const options = args.options || {};
-    let data = args.data || ''; // FIXME
+    let data = args.data || '';
 
     function writeFile(d, e) {
       _fs.writeFile(resolved.real, d, e || 'utf8', (error) => {

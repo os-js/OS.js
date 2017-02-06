@@ -211,7 +211,7 @@
     options = options || {};
 
     try {
-      if ( typeof options.overwrite !== 'undefined' && options.overwrite === true ) {
+      if ( options.overwrite === true ) {
         callback();
       } else {
         VFS.exists(item, function(error, result) {
@@ -1051,15 +1051,15 @@
    * @function upload
    * @memberof OSjs.VFS
    *
-   * @param   {Object}                    args                Function arguments (see below)
-   * @param   {String}                    args.destination    Full path to destination
-   * @param   {Array}                     args.files          Array of 'File'
-   * @param   {OSjs.Core.Application}     [args.app]          If specified (Application ref) it will create a Dialog window
-   * @param   {OSjs.Core.Window}          [args.win]          Save as above only will add as child to this window
-   * @param   {CallbackVFS}               callback            Callback function
-   * @param   {Object}                    [options]           Set of options
-   * @param   {Boolean}                   [options.overwrite] If set to true it will not check if the destination exists
-   * @param   {OSjs.Core.Application}     [appRef]            Reference to an Application
+   * @param   {Object}                    args                      Function arguments (see below)
+   * @param   {String}                    args.destination          Full path to destination
+   * @param   {Array}                     args.files                Array of 'File'
+   * @param   {OSjs.Core.Application}     [args.app]                If specified (Application ref) it will create a Dialog window
+   * @param   {OSjs.Core.Window}          [args.win]                Save as above only will add as child to this window
+   * @param   {CallbackVFS}               callback                  Callback function
+   * @param   {Object}                    [options]                 Set of options
+   * @param   {Boolean}                   [options.overwrite=false] If set to true it will not check if the destination exists
+   * @param   {OSjs.Core.Application}     [appRef]                  Reference to an Application
    */
   VFS.upload = function VFS_upload(args, callback, options, appRef) {
     callback = callback || noop;
