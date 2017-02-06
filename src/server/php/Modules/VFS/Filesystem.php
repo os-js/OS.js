@@ -138,7 +138,6 @@ abstract class Filesystem
         $mime = Utils::getMIME($path);
 
         if (!isset($arguments["raw"])) {
-            // NOTE: This is pretty much deprecated ?!?!
             print "data:{$mime};base64,";
             while ( !feof($handle)) {
                 $plain = fread($handle, 57 * 143);
@@ -175,6 +174,10 @@ abstract class Filesystem
         return false;
     }
 
+    /*
+     * NOTE: This method is pretty much deprecated as the
+     * frontend uses uploading as a method of writing.
+     */
     final public static function write(Request $request, Array $arguments = [])
     {
         $data = $arguments['data'];

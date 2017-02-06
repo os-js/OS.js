@@ -248,23 +248,22 @@
    * @param   {OSjs.VFS.File}                   file    File Metadata
    */
   VFS.Helpers.addFormFile = function addFormFile(fd, key, data, file) {
+    file = file || {mime: 'application/octet-stream', filename: 'filename'};
+
     if ( data instanceof window.File ) {
       fd.append(key, data);
+    } else if ( data instanceof window.ArrayBuffer ) {
+      try {
+        data = new Blob([data], {type: file.mime});
+      } catch ( e ) {
+        data = null;
+        console.warn(e, e.stack);
+      }
+
+      fd.append(key, data, file.filename);
     } else {
-      if ( file ) {
-        if ( data instanceof window.ArrayBuffer ) {
-          try {
-            data = new Blob([data], {type: file.mime});
-          } catch ( e ) {
-            data = null;
-            console.warn(e, e.stack);
-          }
-        }
-        fd.append(key, data, file.filename);
-      } else {
-        if ( data.data && data.filename ) { // In case user defines custom
-          fd.append(key, data.data, data.filename);
-        }
+      if ( data.data && data.filename ) { // In case user defines custom
+        fd.append(key, data.data, data.filename);
       }
     }
   };

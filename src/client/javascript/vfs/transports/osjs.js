@@ -106,16 +106,17 @@
     }
 
     var fd  = new FormData();
-    fd.append('upload', 1);
     fd.append('path', dest);
 
     if ( options ) {
       Object.keys(options).forEach(function(key) {
-        fd.append(key, String(options[key]));
+        if ( key !== 'meta' && typeof options[key] !== 'function' ) {
+          fd.append(key, String(options[key]));
+        }
       });
     }
 
-    VFS.Helpers.addFormFile(fd, 'upload', file);
+    VFS.Helpers.addFormFile(fd, 'upload', file, options.meta);
 
     OSjs.Core.getConnection().request('FS:upload', fd, callback, null, options);
   }
@@ -214,26 +215,15 @@
 
     write: function(item, data, callback, options) {
       options = options || {};
+      options.meta = item;
+      options.overwrite = true;
       options.onprogress = options.onprogress || function() {};
 
-      function _write(dataSource) {
-        var wopts = {path: item.path, data: dataSource};
-        internalRequest('write', wopts, callback, options);
-      }
-
-      if ( typeof data === 'string' && !data.length ) {
-        _write(data);
-        return;
-      }
-
-      VFS.Helpers.abToDataSource(data, item.mime, function(error, dataSource) {
-        if ( error ) {
-          callback(error);
-          return;
-        }
-
-        _write(dataSource);
-      });
+      var parentItem = VFS.file(Utils.dirname(item.path), item.mime);
+      internalUpload(data, parentItem, function() {
+        console.warn(arguments)
+        callback(null, true);
+      }, options);
     },
 
     read: function(item, callback, options) {
