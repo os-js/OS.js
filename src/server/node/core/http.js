@@ -228,12 +228,11 @@ function handleRequest(http, onend) {
 
     if ( http.isfs ) {
       // VFS Call
-      let func = http.endpoint.replace(/(^get\/)?/, '');
+      let func = http.endpoint;
       let args = http.data;
 
-      if ( http.endpoint.match(/^get\//) ) {
-        func = 'read';
-        args = {path: http.endpoint.replace(/(^get\/)?/, '')};
+      if ( func === 'read' && http.method === 'GET' ) {
+        args = {path: http.query.path};
       }
 
       _checkPermission('fs', {method: func, args: args}).then(() => {
@@ -273,11 +272,14 @@ function handleRequest(http, onend) {
  * Creates the `ServerRequest` object passed around.
  */
 function createHttpObject(request, response, path, data, responder, files) {
+  const url = _url.parse(request.url, true);
+
   return Object.freeze({
     request: request,
     response: response,
     method: request.method,
     path: path,
+    query: url.query || {},
     data: data || {},
     files: files || {},
     isfs: path.match(/^\/FS/) !== null,

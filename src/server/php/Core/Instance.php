@@ -313,8 +313,8 @@ class Instance
             if ($request->method === 'GET') {
                 $endpoint = 'read';
                 $args = [
-                'path' => rawurldecode(preg_replace('/(^get\/)?/', '', $request->endpoint)),
-                'raw' => true
+                    'path' => isset($request->data['path']) ? rawurldecode($request->data['path']) : null,
+                    'raw' => true
                 ];
             } else {
                 $endpoint = $request->endpoint;
@@ -328,31 +328,31 @@ class Instance
                 if ($valid && $transport && is_callable($transport, $endpoint)) {
                     Authenticator::CheckPermissions(
                         $request, 'fs', [
-                        'method' => $endpoint,
-                        'arguments' => $args
+                            'method' => $endpoint,
+                            'arguments' => $args
                         ]
                     );
 
                     $result = call_user_func_array([$transport, $endpoint], [$request, $args]);
                     $request->respond()->json(
                         [
-                        'error' => null,
-                        'result' => $result
+                            'error' => null,
+                            'result' => $result
                         ]
                     );
                 } else {
                     $request->respond()->json(
                         [
-                        'error' => 'No such VFS method',
-                        'result' => null
+                            'error' => 'No such VFS method',
+                            'result' => null
                         ], 500
                     );
                 }
             } catch ( Exception $e ) {
                 $request->respond()->json(
                     [
-                    'error' => $e->getMessage(),
-                    'result' => null
+                        'error' => $e->getMessage(),
+                        'result' => null
                     ]
                 );
             }
@@ -365,23 +365,23 @@ class Instance
 
                     $request->respond()->json(
                         [
-                        'error' => null,
-                        'result' => $result
+                            'error' => null,
+                            'result' => $result
                         ]
                     );
                 } catch ( Exception $e ) {
                     $request->respond()->json(
                         [
-                        'error' => $e->getMessage(),
-                        'result' => null
+                            'error' => $e->getMessage(),
+                            'result' => null
                         ]
                     );
                 }
             } else {
                 $request->respond()->json(
                     [
-                    'error' => 'No such API method',
-                    'result' => null
+                        'error' => 'No such API method',
+                        'result' => null
                     ], 500
                 );
             }

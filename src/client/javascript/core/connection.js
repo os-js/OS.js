@@ -143,7 +143,7 @@
 
     base = API.getConfig('Connection.FSURI', '/');
     if ( item ) {
-      return base + '/get/' + item.path;
+      return base + '/read?path=' + encodeURIComponent(item.path);
     }
     return base + '/upload';
   };
