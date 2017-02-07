@@ -146,7 +146,7 @@
   WSConnection.prototype.message = function(data) {
     // Emit a VFS event when a change occures
     if ( data.action === 'vfs:watch' ) {
-      VFS.Helpers.triggerWatch(data.action.split(':')[1], VFS.file(data.args));
+      VFS.Helpers.triggerWatch(data.args.event, VFS.file(data.args.file));
     }
 
     // Emit a subscription event
@@ -184,6 +184,10 @@
     }
 
     return false;
+  };
+
+  WSConnection.prototype.onVFSRequestCompleted = function() {
+    return OSjs.Connections.http.prototype.onVFSRequestCompleted.apply(this, arguments);
   };
 
   /////////////////////////////////////////////////////////////////////////////
