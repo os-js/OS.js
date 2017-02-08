@@ -71,42 +71,69 @@ function createWriteStream(http, path) {
  * Creates watch
  */
 function createWatch(name, mount, callback) {
-  const path = mount.destination;
-  const matches = path.match(/%(\w+)%/g);
-  const dir = _vfs.resolvePathArguments(path, {
-    username: '**',
-    uid: '**'
-  });
-
-  const re = new RegExp('^' + dir.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&').replace('\\*\\*', '([^/]+)'));
-
   const watchMap = {
     add: 'write',
     change: 'write'
   };
 
-  function _onChange(evname, wpath) {
-    let args = {};
-    (wpath.match(re) || []).forEach((a, idx) => {
-      if ( matches[idx] ) {
-        args[matches[idx]] = a;
+  const configPath = _vfs.resolvePathArguments(mount.destination, {
+    username: '%USERNAME%',
+    uid: '%USERNAME%'
+  });
+
+  const parseWatch = (function parseWatch() {
+    const reps = (s) => s.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+
+    const tmpDir = configPath.replace(/\\/g, '/');
+    const tmpRestr = reps(tmpDir).replace(/%(.*)%/g, '([^\/]*)');
+    const tmpRe = new RegExp('^' + tmpRestr, 'g')
+    const tmpArgs = tmpDir.match(/%(.*)%/g) || [];
+    const hasArgs = configPath.match(/(%[A-z_]+%)/g);
+
+    return (realPath) => {
+      realPath = realPath.replace(/\\/g, '/');
+      const matched = realPath.match(tmpRe) || [];
+      const relPath = realPath.replace(tmpRe, '');
+
+      if ( hasArgs.length !== matched.length || !relPath ) {
+        return null;
       }
-    });
 
-    const relative = wpath.replace(re, '');
-    const virtual = name + '://' + relative.replace(/^\/?/, '/');
+      return {
+        virtual: relPath,
+        args: (function() {
+          const args = {};
+          tmpArgs.forEach((key, idx) => {
+            args[key.replace(/%/g, '').toLowerCase()] = matched[idx];
+          });
+          return args;
+        })()
+      };
+    };
+  })();
 
-    callback(name, mount, {
-      event: watchMap[evname] || evname,
-      real: wpath,
-      path: virtual,
-      args: args
-    });
-  }
+  const found = configPath.indexOf('%');
+  const dir = found > 0 ? configPath.substr(0, found) : configPath;
 
   _chokidar.watch(dir, {ignoreInitial: true, persistent: true}).on('all', (evname, wpath) => {
     if ( ['change', 'error'].indexOf(evname) === -1 ) {
-      _onChange(evname, wpath);
+      try {
+        const parsed = parseWatch(wpath);
+        if ( !parsed ) {
+          return;
+        }
+
+        const virtual = name + '://' + parsed.virtual.replace(/^\/?/, '/');
+
+        callback(name, mount, {
+          event: watchMap[evname] || evname,
+          real: wpath,
+          path: virtual,
+          args: parsed.args
+        });
+      } catch ( e ) {
+        console.warn(e, e.stack);
+      }
     }
   });
 }

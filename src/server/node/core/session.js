@@ -138,7 +138,12 @@ module.exports.touch = function(request, session, cb) {
  * @return String
  */
 module.exports.getSessionId = function(request) {
-  const cookies = _cookie.parse(request.headers.cookie);
+  const cookie = request.headers.cookie;
+  if ( !cookie ) {
+    return null;
+  }
+
+  const cookies = _cookie.parse(cookie);
   const secret = _instance.getConfig().http.session.secret;
   return _parser.signedCookie(cookies['connect.sid'], secret);
 }

@@ -30,8 +30,8 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
-//const _vfs = require('./../../core/vfs.js');
-//const _http = require('./../../core/http.js');
+const _vfs = require('./../../core/vfs.js');
+const _http = require('./../../core/http.js');
 const _instance = require('./../../core/instance.js');
 
 /*
@@ -47,7 +47,6 @@ module.exports.destroy = function() {
 module.exports.register = function(env, config, servers) {
   const logger = _instance.getLogger();
 
-  /*
   try {
     const wss = servers.websocketServer;
     if ( !wss ) {
@@ -70,7 +69,4 @@ module.exports.register = function(env, config, servers) {
   } catch ( e ) {
     logger.lognt('ERROR', e);
   }
-  */
-
-  logger.lognt('WARN', logger.colored('VFS watching module is disabled due to issues related to third-party modules. Client-side watching is used instead....', 'yellow'));
 };

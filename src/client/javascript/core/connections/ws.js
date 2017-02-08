@@ -186,10 +186,6 @@
     return false;
   };
 
-  WSConnection.prototype.onVFSRequestCompleted = function() {
-    return OSjs.Connections.http.prototype.onVFSRequestCompleted.apply(this, arguments);
-  };
-
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
