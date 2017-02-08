@@ -709,6 +709,10 @@
   };
 
   ApplicationFileManager.prototype.download = function(items) {
+    if ( !items.length ) {
+      return;
+    }
+
     items.forEach(function(item) {
       VFS.url(new VFS.File(item), function(error, result) {
         if ( result ) {
@@ -720,6 +724,9 @@
 
   ApplicationFileManager.prototype.rm = function(items, win) {
     var self = this;
+    if ( !items.length ) {
+      return;
+    }
 
     // TODO: These must be async
     var files = [];
@@ -749,6 +756,10 @@
   };
 
   ApplicationFileManager.prototype.info = function(items, win) {
+    if ( !items.length ) {
+      return;
+    }
+
     items.forEach(function(item) {
       if ( item.type === 'file' ) {
         API.createDialog('FileInfo', {
@@ -759,6 +770,10 @@
   };
 
   ApplicationFileManager.prototype.open = function(items) {
+    if ( !items.length ) {
+      return;
+    }
+
     items.forEach(function(item) {
       if ( item.type === 'file' ) {
         API.open(new VFS.File(item), {forceList: true});
@@ -769,6 +784,9 @@
   ApplicationFileManager.prototype.rename = function(items, win) {
     // TODO: These must be async
     var self = this;
+    if ( !items.length ) {
+      return;
+    }
 
     function rename(item, newName) {
       item = new VFS.File(item);
