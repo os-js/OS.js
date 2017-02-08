@@ -148,7 +148,15 @@
     });
 
     this.$iconview = new GUI.ElementDataView(this.$element);
-    this.$iconview.on('activate', function(ev) {
+    this.$iconview.on('select', function() {
+      if ( wm ) {
+        var win = wm.getCurrentWindow();
+        if ( win ) {
+          win._blur();
+        }
+      }
+
+    }).on('activate', function(ev) {
       if ( ev && ev.detail ) {
         ev.detail.entries.forEach(function(entry) {
           var item = entry.data;
