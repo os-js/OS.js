@@ -99,12 +99,32 @@ function read(env, opts) {
   CACHE = Object.freeze(config);
 }
 
+/**
+ * Initializes the settings configuration tree with given
+ * environmental variables and options.
+ *
+ * @param {Object} [env]  Envrionmental variables
+ * @param {Object} [opts] Opther option variables
+ *
+ * @memberof core.settings
+ * @function init
+ *
+ * @return Object
+ */
 module.exports.init = function(env, opts) {
   read(env, opts);
 
   return CACHE;
 };
 
+/**
+ * Gets the entire configuration tree for server settings
+ *
+ * @memberof core.settings
+ * @function get
+ *
+ * @return Object
+ */
 module.exports.get = function() {
   if ( !CACHE ) {
     read();
