@@ -30,16 +30,16 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
-/**
- * @namespace core.vfs
- */
-
 const _fs = require('fs');
 const _path = require('path');
 const _env = require('./env.js');
 const _utils = require('./utils.js');
 const _logger = require('./logger.js');
 const _settings = require('./settings.js');
+
+/**
+ * @namespace core.vfs
+ */
 
 const MODULES = [];
 

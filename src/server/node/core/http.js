@@ -161,9 +161,6 @@ function handleRequest(http, onend) {
     cb(h, cb);
   };
 
-  const env = _env.get();
-  const api = _api.get();
-
   // We use JSON as default responses, no matter what
   function _rejectResponse(err) {
     if ( typeof err === 'undefined' ) {
@@ -212,39 +209,8 @@ function handleRequest(http, onend) {
     }).catch(_rejectResponse);
   }
 
-  // Wrappers for performing API calls
-  function _vfsCall() {
-    let method = http.endpoint.replace(/(^get\/)?/, '');
-    let args = http.data;
-
-    if ( http.endpoint.match(/^get\//) ) {
-      method = 'read';
-      args = {path: http.endpoint.replace(/(^get\/)?/, '')};
-    }
-
-    _checkPermission('fs', {method: method, args: args}).then(() => {
-      _vfs.request(http, method, args).then(_resolveResponse).catch(_rejectResponse);
-    }).catch(_rejectResponse);
-  }
-
-  function _apiCall() {
-    _checkPermission('api', {method: http.endpoint}, http.data).then(() => {
-      const session_id = http.session.id;
-      api[http.endpoint](http, http.data).then((res) => {
-        if ( http.endpoint === 'login' ) {
-          const username = res.userData.username;
-          sidMap[session_id] = username;
-        } else if ( http.endpoint === 'logout' ) {
-          if ( typeof sidMap[session_id] !== 'undefined' ) {
-            delete sidMap[session_id];
-          }
-        }
-        _resolveResponse(res);
-      }).catch(_rejectResponse);
-    }).catch(_rejectResponse);
-  }
-
   function _staticResponse(method, finished) {
+    const env = _env.get();
     const path = _path.join(env.ROOTDIR, env.DIST, _path.normalize(http.path));
 
     function _serve() {
@@ -275,18 +241,40 @@ function handleRequest(http, onend) {
   // Take on the HTTP request
   _auth.initSession(http).then(() => {
     const method = http.request.method;
+    const session_id = http.session.id;
 
     if ( http.isfs ) {
-      _vfsCall();
-    } else if ( http.isapi ) {
-      if ( method === 'POST' && typeof api[http.endpoint] === 'function' ) {
-        _apiCall();
-      } else {
-        http.respond.json({
-          error: 'No such API method'
-        }, 500);
+      // VFS Call
+      let func = http.endpoint.replace(/(^get\/)?/, '');
+      let args = http.data;
+
+      if ( http.endpoint.match(/^get\//) ) {
+        func = 'read';
+        args = {path: http.endpoint.replace(/(^get\/)?/, '')};
       }
+
+      _checkPermission('fs', {method: func, args: args}).then(() => {
+        _vfs.request(http, func, args).then(_resolveResponse).catch(_rejectResponse);
+      }).catch(_rejectResponse);
+    } else if ( http.isapi ) {
+      // API Call
+      _checkPermission('api', {method: http.endpoint}, http.data).then(() => {
+        _api.request(http).then((res) => {
+
+          if ( http.endpoint === 'login' ) {
+            const username = res.userData.username;
+            sidMap[session_id] = username;
+          } else if ( http.endpoint === 'logout' ) {
+            if ( typeof sidMap[session_id] !== 'undefined' ) {
+              delete sidMap[session_id];
+            }
+          }
+
+          _resolveResponse(res);
+        }).catch(_rejectResponse);
+      }).catch(_rejectResponse);
     } else {
+      // Assets and Middleware
       _staticResponse(method, () => {
         _middleware.request(http).catch((error) => {
           if ( error ) {

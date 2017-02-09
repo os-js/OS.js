@@ -36,11 +36,11 @@ const _glob = require('glob-promise');
 const _logger = require('./../core/logger.js');
 const _settings = require('./../core/settings.js');
 
-const MODULES = {};
-
 /**
  * @namespace core.api
  */
+
+const MODULES = {};
 
 /**
  * Loads the API modules
@@ -126,4 +126,23 @@ module.exports.register = function(module) {
     });
   }
   return true;
+};
+
+/**
+ * Performs a request to APIs
+ *
+ * @param   {ServerRequest}    http          OS.js Server Request
+ *
+ * @function request
+ * @memberof core.api
+ * @return {Promise}
+ */
+module.exports.request = function(http) {
+  return new Promise((resolve, reject) => {
+    if ( http.method !== 'POST' || typeof MODULES[http.endpoint] !== 'function' ) {
+      reject('No such API method');
+    } else {
+      MODULES[http.endpoint](http, http.data).then(resolve).catch(reject);
+    }
+  });
 };
