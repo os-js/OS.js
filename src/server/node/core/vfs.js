@@ -36,9 +36,9 @@
 
 const _fs = require('fs');
 const _path = require('path');
+const _env = require('./env.js');
 const _utils = require('./utils.js');
 const _logger = require('./logger.js');
-const _instance = require('./instance.js');
 const _settings = require('./settings.js');
 
 const MODULES = [];
@@ -366,7 +366,7 @@ module.exports.parseVirtualPath = function(query, options) {
 module.exports.resolvePathArguments = function(path, options) {
   options = options || {};
 
-  const env = _instance.getEnvironment();
+  const env = _env.get();
   const rmap = {
     '%DIST%': function() {
       return env.DIST;

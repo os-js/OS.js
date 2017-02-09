@@ -36,7 +36,8 @@
 
 const _fs = require('fs');
 const _path = require('path');
-const _instance = require('./../../core/instance.js');
+const _env = require('./../../core/env.js');
+const _metadata = require('./../../core/metadata.js');
 const _settings = require('./../../core/settings.js');
 const _logger = require('./../../core/logger.js');
 
@@ -55,7 +56,7 @@ const _logger = require('./../../core/logger.js');
  * @return {Promise}
  */
 module.exports.application = function(http, data) {
-  const env = _instance.getEnvironment();
+  const env = _env.get();
   const config = _settings.get();
 
   /*eslint dot-notation: "off"*/
@@ -63,7 +64,7 @@ module.exports.application = function(http, data) {
   const ameth = data.method || null;
   const aargs = data.args || {};
 
-  const manifest = _instance.getMetadata(apath) || {};
+  const manifest = _metadata.get(apath) || {};
   const filename = manifest && manifest._indexFile ? manifest._indexFile : 'api.js';
 
   const aroot = _path.join(env.PKGDIR, apath);

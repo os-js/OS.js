@@ -35,7 +35,7 @@ const _fs = require('fs-extra');
 const _unzip = require('unzip');
 const _vfs = require('./vfs.js');
 const _utils = require('./utils.js');
-const _instance = require('./instance.js');
+const _env = require('./env.js');
 
 /**
  * @namespace core.packagemanager
@@ -46,7 +46,7 @@ const _instance = require('./instance.js');
 /////////////////////////////////////////////////////////////////////////////
 
 function getSystemMetadata(http, resolve, reject, args) {
-  const env = _instance.getEnvironment();
+  const env = _env.get();
   const path = _path.join(env.SERVERDIR, 'packages.json');
   _fs.readFile(path, (e, data) => {
     if ( e ) {

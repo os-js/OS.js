@@ -82,6 +82,15 @@ module.exports.get = function() {
   return MODULES;
 };
 
+/**
+ * Registers API methods
+ *
+ * @param {Object} module The module to import
+ *
+ * @function register
+ * @memberof core.api
+ * @return {Boolean}
+ */
 module.exports.register = function(module) {
   function _createOldInstance(env) {
     return {

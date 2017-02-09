@@ -71,7 +71,7 @@
 
 const _api = require('./api.js');
 const _vfs = require('./vfs.js');
-const _instance = require('./instance.js');
+const _env = require('./env.js');
 const _middleware = require('./middleware.js');
 const _logger = require('./logger.js');
 const _settings = require('./settings.js');
@@ -162,7 +162,7 @@ function handleRequest(http, onend) {
     cb(h, cb);
   };
 
-  const env = _instance.getEnvironment();
+  const env = _env.get();
   const api = _api.get();
 
   // We use JSON as default responses, no matter what

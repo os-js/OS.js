@@ -62,6 +62,7 @@ const _fs = require('fs-extra');
 const _path = require('path');
 const _glob = require('glob-promise');
 
+const _env = require('./env.js');
 const _api = require('./api.js');
 const _auth = require('./auth.js');
 const _vfs = require('./vfs.js');
@@ -70,6 +71,7 @@ const _logger = require('./logger.js');
 const _settings = require('./settings.js');
 const _storage = require('./storage.js');
 const _session = require('./session.js');
+const _metadata = require('./metadata.js');
 const _middleware = require('./middleware.js');
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -79,17 +81,7 @@ const _middleware = require('./middleware.js');
 let CHILDREN = [];
 let CONFIG = {};
 let PACKAGES = {};
-
-const ENV = {
-  PORT: null,
-  DIST: 'dist',
-  LOGLEVEL: -2,
-  NODEDIR: _path.resolve(__dirname + '/../'),
-  ROOTDIR: _path.resolve(__dirname + '/../../../../'),
-  MODULEDIR: _path.resolve(__dirname + '/../modules'),
-  SERVERDIR: _path.resolve(__dirname + '/../../'),
-  PKGDIR: _path.resolve(__dirname, '/../../../../src/packages')
-};
+let ENV = {};
 
 ///////////////////////////////////////////////////////////////////////////////
 // LOADERS
@@ -99,31 +91,11 @@ const ENV = {
  * Loads generated configuration file
  */
 function loadConfiguration(opts) {
-  Object.keys(opts).forEach((k) => {
-    if ( typeof ENV[k] !== 'undefined' && typeof opts[k] !== 'undefined' ) {
-      ENV[k] = opts[k];
-    }
-  });
-
-  if ( opts.ROOT ) {
-    ENV.ROOTDIR = opts.ROOT;
-  }
+  _env.init(opts);
 
   function _load(resolve, reject) {
-    CONFIG = _settings.init(ENV, opts);
-
-    if ( !ENV.PORT && CONFIG.http.port ) {
-      ENV.PORT = CONFIG.http.port;
-    }
-
-    if ( typeof opts.LOGLEVEL === 'number' ) {
-      ENV.LOGLEVEL = opts.LOGLEVEL;
-    } else if ( typeof CONFIG.logging === 'number' ) {
-      ENV.LOGLEVEL = CONFIG.logging;
-    }
-
-    ENV.PKGDIR = opts.PKGDIR || _path.join(ENV.ROOTDIR, 'src/packages');
-
+    CONFIG = _settings.init(opts);
+    ENV = _env.update(CONFIG);
     _logger.init(ENV.LOGLEVEL);
 
     Object.keys(CONFIG.proxies).forEach((k) => {
@@ -278,13 +250,7 @@ function registerPackages(servers) {
   }
 
   function _load(resolve, reject) {
-    _fs.readJson(path, (err, manifest) => {
-      if ( err ) {
-        return reject(err);
-      }
-
-      const packages = manifest[ENV.DIST];
-
+    _metadata.load(path, ENV.DIST).then((packages) => {
       Object.keys(packages).forEach((p) => {
         const metadata = packages[p];
 
@@ -316,7 +282,7 @@ function registerPackages(servers) {
       PACKAGES = Object.freeze(packages);
 
       resolve(servers);
-    });
+    }).catch(reject);
   }
 
   return new Promise(_load);
@@ -507,28 +473,4 @@ module.exports.run = function run(port) {
   _logger.log('INFO', _logger.colored('Ready...', 'green'));
 
   return result;
-};
-
-/**
- * Gets the `ENV` object
- *
- * @function getEnvironment
- * @memberof core.instance
- * @return {ServerEnvironment}
- */
-module.exports.getEnvironment = function() {
-  return Object.freeze(ENV);
-};
-
-/**
- * Gets metadata for package(s)
- *
- * @param {String}    packageName     Package Name ("DISTO/PACKAGE")
- *
- * @function getMetadata
- * @memberof core.instance
- * @return {Object}
- */
-module.exports.getMetadata = function(packageName) {
-  return packageName ? PACKAGES[packageName] : PACKAGES;
 };

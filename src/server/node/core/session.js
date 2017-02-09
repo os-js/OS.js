@@ -37,7 +37,7 @@
 const _session = require('express-session');
 const _cookie = require('cookie');
 const _parser = require('cookie-parser');
-const _instance = require('./../core/instance.js');
+const _env = require('./../core/env.js');
 const _settings = require('./../core/settings.js');
 
 /**
@@ -112,7 +112,7 @@ module.exports.init = function(cfg) {
     };
 
     const conf = cfg.options[cfg.module] || {};
-    MODULE.register(_session, conf, _instance.getEnvironment(), opts).catch(reject).then(() => {
+    MODULE.register(_session, conf, _env.get(), opts).catch(reject).then(() => {
       sessionStore = opts.store;
       session = _session(opts);
       resolve(session);

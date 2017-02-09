@@ -33,18 +33,17 @@
 const _fs = require('fs');
 const _path = require('path');
 
+const _env = require('./env.js')
+
 /**
  * @namespace core.settings
  */
 
 let CACHE;
 
-function read(env, opts) {
+function read(opts) {
   opts = opts || {};
-  env = Object.assign({
-    SERVERDIR: _path.dirname(_path.dirname(__dirname))
-  }, env || {});
-
+  const env = _env.get();
   const path = _path.join(env.SERVERDIR, 'settings.json');
   const data = _fs.readFileSync(path, 'utf-8');
 
@@ -103,7 +102,6 @@ function read(env, opts) {
  * Initializes the settings configuration tree with given
  * environmental variables and options.
  *
- * @param {Object} [env]  Envrionmental variables
  * @param {Object} [opts] Opther option variables
  *
  * @memberof core.settings
@@ -111,8 +109,8 @@ function read(env, opts) {
  *
  * @return Object
  */
-module.exports.init = function(env, opts) {
-  read(env, opts);
+module.exports.init = function(opts) {
+  read(opts);
 
   return CACHE;
 };
