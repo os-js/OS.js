@@ -30,24 +30,54 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
+const _settings = require('./../core/settings.js');
+const _logger = require('./../core/logger.js');
+
+let MODULE;
+
 /**
- * @namespace modules.api
+ * @namespace core.storage
  */
 
-const _storage = require('./../../core/storage.js');
-
 /**
- * Attempt to store settings
+ * Loads the Storage module
  *
- * @param   {ServerRequest}    http          OS.js Server Request
- * @param   {Object}           data          Request data
+ * @param {String}  path  Path to module
+ * @param {String}  name  Name of module
  *
- * @function settings
- * @memberof modules.api
+ * @function load
+ * @memberof core.storage
  * @return {Promise}
  */
-module.exports.settings = function(http, data) {
-  const username = http.session.get('username');
-  const settings = data.settings;
-  return _storage.get().setSettings(http, username, settings);
+module.exports.load = function(path, name) {
+  return new Promise((resolve, reject) => {
+
+    try {
+      const a = require(path);
+      const c = _settings.get().modules.storage[name] || {};
+      const r = a.register(c);
+      MODULE = a;
+
+      if ( r instanceof Promise ) {
+        r.then(resolve).catch(reject);
+      } else {
+        resolve();
+      }
+    } catch ( e ) {
+      _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
+      console.warn(e.stack);
+      reject(e);
+    }
+  });
+};
+
+/**
+ * Gets the Storage module
+ *
+ * @function get
+ * @memberof core.storage
+ * @return {Object}
+ */
+module.exports.get = function() {
+  return MODULE;
 };

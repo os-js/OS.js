@@ -34,9 +34,14 @@
  * @namespace core.vfs
  */
 
+const _fs = require('fs');
 const _path = require('path');
+const _utils = require('./utils.js');
+const _logger = require('./logger.js');
 const _instance = require('./instance.js');
 const _settings = require('./settings.js');
+
+const MODULES = [];
 
 ///////////////////////////////////////////////////////////////////////////////
 // HELPERS
@@ -97,6 +102,55 @@ function getTransportName(query, mount) {
 ///////////////////////////////////////////////////////////////////////////////
 // EXPORTS
 ///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Loads the VFS modules
+ *
+ * @param {String}   dirname  Path to modules
+ * @param {Function} cb       Callback on iter
+ *
+ * @function load
+ * @memberof core.vfs
+ * @return {Promise}
+ */
+module.exports.load = function(dirname, cb) {
+  cb = cb || function() {};
+
+  function _load(resolve, reject) {
+    _fs.readdir(dirname, (err, list) => {
+      if ( err ) {
+        return reject(err);
+      }
+
+      _utils.iterate(list, (filename, index, next) => {
+        if ( ['.', '_'].indexOf(filename.substr(0, 1)) === -1 ) {
+          const path = _path.join(dirname, filename);
+          cb(path);
+          try {
+            MODULES.push(require(path));
+          } catch ( e ) {
+            _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
+            console.warn(e.stack);
+          }
+        }
+        next();
+      }, resolve);
+    });
+  }
+
+  return new Promise(_load);
+};
+
+/**
+ * Gets the VFS module(s)
+ *
+ * @function get
+ * @memberof core.vfs
+ * @return {Object}
+ */
+module.exports.get = function() {
+  return MODULES;
+};
 
 /**
  * Performs a VFS request
@@ -240,7 +294,7 @@ module.exports.getMime = function getMime(iter) {
  * @memberof core.vfs
  */
 module.exports.getTransport = function(transportName) {
-  return _instance.getVFS().find((module) => {
+  return MODULES.find((module) => {
     return module.name === transportName;
   });
 };
@@ -370,7 +424,7 @@ module.exports.initWatch = function(callback) {
         };
       }
 
-      const found = _instance.getVFS().find((iter) => {
+      const found = MODULES.find((iter) => {
         return iter.name === mount.transport;
       });
 

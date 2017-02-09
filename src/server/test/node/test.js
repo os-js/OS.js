@@ -9,6 +9,7 @@
   const _osjs = require('../../node/core/instance.js');
   const _settings = require('../../node/core/settings.js');
   const _vfs = require('../../node/core/vfs.js');
+  const _api = require('../../node/core/api.js');
 
   var ENV;
   var CONF;
@@ -36,7 +37,7 @@
   })();
 
   function _callAPI(m, a, cb) {
-    _osjs.getAPI()[m]({
+    _api.get()[m]({
       session: session,
       data: a
     }, a).then(function(result) {

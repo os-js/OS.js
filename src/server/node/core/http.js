@@ -69,8 +69,10 @@
 // GLOBALS
 ///////////////////////////////////////////////////////////////////////////////
 
+const _api = require('./api.js');
 const _vfs = require('./vfs.js');
 const _instance = require('./instance.js');
+const _middleware = require('./middleware.js');
 const _logger = require('./logger.js');
 const _settings = require('./settings.js');
 const _session = require('./session.js');
@@ -161,7 +163,7 @@ function handleRequest(http, onend) {
   };
 
   const env = _instance.getEnvironment();
-  const api = _instance.getAPI();
+  const api = _api.get();
 
   // We use JSON as default responses, no matter what
   function _rejectResponse(err) {
@@ -272,7 +274,7 @@ function handleRequest(http, onend) {
   }
 
   function _middlewareRequest(method, done) {
-    const middleware = _instance.getMiddleware();
+    const middleware = _middleware.get();
     _utils.iterate(middleware, (iter, idx, next) => {
       iter.request(http, (error) => {
         if ( error ) {
@@ -636,7 +638,7 @@ function createServer(env, resolve, reject) {
       proxyServer: proxyServer
     };
 
-    const middleware = _instance.getMiddleware();
+    const middleware = _middleware.get();
     middleware.forEach((m) => {
       if ( typeof m.register === 'function' ) {
         m.register(servers);

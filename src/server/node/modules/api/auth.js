@@ -34,7 +34,8 @@
  * @namespace modules.api
  */
 
-const _instance = require('./../../core/instance.js');
+const _storage = require('./../../core/storage.js');
+const _auth = require('./../../core/auth.js');
 
 /**
  * Send a login attempt
@@ -56,8 +57,8 @@ module.exports.login = function(http, data) {
 
     function _proceed(userData) {
       http.session.set('username', userData.username, () => {
-        _instance.getStorage().getSettings(http, userData.username).then((userSettings) => {
-          _instance.getStorage().getBlacklist(http, userData.username).then((blacklist) => {
+        _storage.get().getSettings(http, userData.username).then((userSettings) => {
+          _storage.get().getBlacklist(http, userData.username).then((blacklist) => {
             resolve({
               userData: userData,
               userSettings: userSettings,
@@ -68,9 +69,9 @@ module.exports.login = function(http, data) {
       });
     }
 
-    _instance.getAuth().login(http, data).then((userData) => {
+    _auth.get().login(http, data).then((userData) => {
       if ( typeof userData.groups === 'undefined' ) {
-        _instance.getStorage().getGroups(http, userData.username).then((groups) => {
+        _storage.get().getGroups(http, userData.username).then((groups) => {
           userData.groups = groups;
           _proceed(userData);
         }).catch(_fail);
@@ -96,7 +97,7 @@ module.exports.login = function(http, data) {
  */
 module.exports.logout = function(http, resolve, reject) {
   return new Promise((resolve, reject) => {
-    _instance.getAuth().logout(http).then((arg) => {
+    _auth.get().logout(http).then((arg) => {
       http.session.destroy(() => {
         resolve(arg);
       });

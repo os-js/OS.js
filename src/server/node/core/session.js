@@ -53,6 +53,32 @@ const _settings = require('./../core/settings.js');
 
 let session;
 let sessionStore;
+let MODULE;
+
+/**
+ * Loads the Session module
+ *
+ * @param {String}  path  Path to module
+ *
+ * @function load
+ * @memberof core.session
+ * @return {Promise}
+ */
+module.exports.load = function(path) {
+  MODULE = require(path);
+  return Promise.resolve();
+};
+
+/**
+ * Gets the Session module
+ *
+ * @function get
+ * @memberof core.session
+ * @return {Object}
+ */
+module.exports.get = function() {
+  return MODULE;
+};
 
 /**
  * Initializes session integration
@@ -86,7 +112,7 @@ module.exports.init = function(cfg) {
     };
 
     const conf = cfg.options[cfg.module] || {};
-    _instance.getSession().register(_session, conf, _instance.getEnvironment(), opts).catch(reject).then(() => {
+    MODULE.register(_session, conf, _instance.getEnvironment(), opts).catch(reject).then(() => {
       sessionStore = opts.store;
       session = _session(opts);
       resolve(session);

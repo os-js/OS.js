@@ -30,24 +30,52 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
+const _path = require('path');
+const _glob = require('glob-promise');
+const _logger = require('./../core/logger.js');
+
+const MODULES = [];
+
 /**
- * @namespace modules.api
+ * @namespace core.middleware
  */
 
-const _storage = require('./../../core/storage.js');
-
 /**
- * Attempt to store settings
+ * Loads the Middleware modules
  *
- * @param   {ServerRequest}    http          OS.js Server Request
- * @param   {Object}           data          Request data
+ * @param {String}   dirname     Path to modules
+ * @param {Function} cb          Callback on iter
  *
- * @function settings
- * @memberof modules.api
+ * @function load
+ * @memberof core.middleware
  * @return {Promise}
  */
-module.exports.settings = function(http, data) {
-  const username = http.session.get('username');
-  const settings = data.settings;
-  return _storage.get().setSettings(http, username, settings);
+module.exports.load = function(dirname, cb) {
+  cb = cb || function() {};
+
+  return new Promise((resolve, reject) => {
+    _glob(_path.join(dirname, '*.js')).then((list) => {
+      Promise.all(list.map((path) => {
+        try {
+          MODULES.push(require(path));
+        } catch ( e ) {
+          _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
+          console.warn(e.stack);
+        }
+
+        return Promise.resolve();
+      })).then(resolve).catch(reject);
+    }).catch(reject);
+  });
+};
+
+/**
+ * Gets the Middleware
+ *
+ * @function get
+ * @memberof core.middleware
+ * @return {Object}
+ */
+module.exports.get = function() {
+  return MODULES;
 };

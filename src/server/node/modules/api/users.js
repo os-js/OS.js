@@ -34,7 +34,7 @@
  * @namespace modules.api
  */
 
-const _instance = require('./../../core/instance.js');
+const _auth = require('./../../core/auth.js');
 
 /**
  * Manage Users
@@ -47,5 +47,5 @@ const _instance = require('./../../core/instance.js');
  * @return {Promise}
  */
 module.exports.users = function(http, data) {
-  return _instance.getAuth().manage(http, data.command, data.user || {});
+  return _auth.get().manage(http, data.command, data.user || {});
 };

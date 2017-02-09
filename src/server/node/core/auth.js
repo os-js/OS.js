@@ -34,9 +34,55 @@
  * @namespace core.auth
  */
 
-const _instance = require('./instance.js');
 const _settings = require('./settings.js');
+const _storage = require('./storage.js');
+const _logger = require('./logger.js');
 const _vfs = require('./vfs.js');
+
+let MODULE;
+
+/**
+ * Loads the authentication module
+ *
+ * @param {String}  path  Path to module
+ * @param {String}  name  Module name
+ *
+ * @function load
+ * @memberof core.auth
+ * @return {Promise}
+ */
+module.exports.load = function(path, name) {
+  return new Promise((resolve, reject) => {
+    try {
+      const a = require(path);
+      const c = _settings.get().modules.auth[name] || {};
+      const r = a.register(c);
+
+      MODULE = a;
+
+      if ( r instanceof Promise ) {
+        r.then(resolve).catch(reject);
+      } else {
+        resolve();
+      }
+    } catch ( e ) {
+      _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
+      console.warn(e.stack);
+      reject(e);
+    }
+  });
+};
+
+/**
+ * Gets the authentication module
+ *
+ * @function get
+ * @memberof core.auth
+ * @return {Object}
+ */
+module.exports.get = function() {
+  return MODULE;
+};
 
 /**
  * Initializes a session
@@ -48,7 +94,7 @@ const _vfs = require('./vfs.js');
  * @return {Promise}
  */
 module.exports.initSession = function(http) {
-  return _instance.getAuth().initSession(http);
+  return MODULE.initSession(http);
 };
 
 /**
@@ -140,7 +186,7 @@ module.exports.checkPermission = function(http, type, options) {
   function checkPackagePermission(userGroups) {
     return new Promise((resolve, reject) => {
       if ( type === 'package' ) {
-        _instance.getStorage().getBlacklist(http, username).then((blacklist) => {
+        _storage.get().getBlacklist(http, username).then((blacklist) => {
           if ( blacklist && blacklist.indexOf(options.path) !== -1 ) {
             reject('Access Denied!');
           } else {
@@ -156,13 +202,13 @@ module.exports.checkPermission = function(http, type, options) {
   }
 
   return new Promise((resolve, reject) => {
-    _instance.getAuth().checkPermission(http, type, options).then((checkGroups) => {
+    MODULE.checkPermission(http, type, options).then((checkGroups) => {
       if ( typeof checkGroups === 'undefined' ) {
         checkGroups = true;
       }
 
       if ( checkGroups ) {
-        _instance.getStorage().getGroups(http, username).then((userGroups) => {
+        _storage.get().getGroups(http, username).then((userGroups) => {
           if ( !(userGroups instanceof Array) || !userGroups.length ) {
             userGroups = defaultGroups;
           }
@@ -190,7 +236,7 @@ module.exports.checkPermission = function(http, type, options) {
  * @return {Promise}
  */
 module.exports.checkSession = function(http) {
-  return _instance.getAuth().checkSession(http);
+  return MODULE.checkSession(http);
 };
 
 /**

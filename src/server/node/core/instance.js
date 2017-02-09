@@ -62,10 +62,15 @@ const _fs = require('fs-extra');
 const _path = require('path');
 const _glob = require('glob-promise');
 
+const _api = require('./api.js');
+const _auth = require('./auth.js');
+const _vfs = require('./vfs.js');
 const _http = require('./http.js');
 const _logger = require('./logger.js');
-const _utils = require('./utils.js');
 const _settings = require('./settings.js');
+const _storage = require('./storage.js');
+const _session = require('./session.js');
+const _middleware = require('./middleware.js');
 
 ///////////////////////////////////////////////////////////////////////////////
 // GLOBALS
@@ -74,15 +79,6 @@ const _settings = require('./settings.js');
 let CHILDREN = [];
 let CONFIG = {};
 let PACKAGES = {};
-
-const MODULES = {
-  API: {},
-  VFS: [],
-  MIDDLEWARE: [],
-  SESSION: null,
-  AUTH: null,
-  STORAGE: null
-};
 
 const ENV = {
   PORT: null,
@@ -147,21 +143,10 @@ function loadMiddleware(opts) {
   const dirname = _path.join(ENV.MODULEDIR, 'middleware');
 
   return new Promise((resolve, reject) => {
-    _glob(_path.join(dirname, '*.js')).then((list) => {
-      Promise.all(list.map((path) => {
-        _logger.lognt('INFO', 'Loading:', _logger.colored('Middleware', 'bold'), path.replace(ENV.ROOTDIR, ''));
-
-        try {
-          MODULES.MIDDLEWARE.push(require(path));
-        } catch ( e ) {
-          _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
-          console.warn(e.stack);
-        }
-
-        return Promise.resolve(opts);
-      })).then(() => {
-        resolve(opts);
-      }).catch(reject);
+    _middleware.load(dirname, (path) => {
+      _logger.lognt('INFO', 'Loading:', _logger.colored('Middleware', 'bold'), path.replace(ENV.ROOTDIR, ''));
+    }).then(() => {
+      resolve(opts);
     }).catch(reject);
   });
 }
@@ -172,18 +157,14 @@ function loadMiddleware(opts) {
 function loadSession(opts) {
   const dirname = _path.join(ENV.MODULEDIR, 'session');
   const name = opts.SESSION || (CONFIG.http.session.module || 'memory');
+  const path = _path.join(dirname, name + '.js');
 
   return new Promise((resolve, reject) => {
-    const path = _path.join(dirname, name + '.js');
-
     _logger.lognt('INFO', 'Loading:', _logger.colored('Session', 'bold'), path.replace(ENV.ROOTDIR, ''));
 
-    try {
-      MODULES.SESSION = require(path);
+    return _session.load(path).then(() => {
       resolve(opts);
-    } catch ( e ) {
-      reject(e);
-    }
+    }).catch(reject);
   });
 }
 
@@ -194,19 +175,10 @@ function loadAPI(opts) {
   const dirname = _path.join(ENV.MODULEDIR, 'api');
 
   return new Promise((resolve, reject) => {
-    _glob(_path.join(dirname, '*.js')).then((list) => {
-      Promise.all(list.map((path) => {
-        _logger.lognt('INFO', 'Loading:', _logger.colored('API', 'bold'), path.replace(ENV.ROOTDIR, ''));
-
-        const methods = require(path);
-        Object.keys(methods).forEach((k) => {
-          MODULES.API[k] = methods[k];
-        });
-
-        return Promise.resolve(opts);
-      })).then(() => {
-        resolve(opts);
-      }).catch(reject);
+    _api.load(dirname, (path) => {
+      _logger.lognt('INFO', 'Loading:', _logger.colored('API', 'bold'), path.replace(ENV.ROOTDIR, ''));
+    }).then(() => {
+      resolve(opts);
     }).catch(reject);
   });
 }
@@ -215,34 +187,17 @@ function loadAPI(opts) {
  * Loads and registers Authentication module(s)
  */
 function loadAuth(opts) {
+  const dirname = _path.join(ENV.MODULEDIR, 'auth');
   const name = opts.AUTH || (CONFIG.http.authenticator || 'demo');
+  const path = _path.join(dirname, name + '.js');
 
-  function _load(resolve, reject) {
-    const path = _path.join(ENV.MODULEDIR, 'auth/' + name + '.js');
+  return new Promise((resolve, reject) => {
     _logger.lognt('INFO', 'Loading:', _logger.colored('Authenticator', 'bold'), path.replace(ENV.ROOTDIR, ''));
 
-    try {
-      const a = require(path);
-      const c = CONFIG.modules.auth[name] || {};
-      const r = a.register(c);
-
-      MODULES.AUTH = a;
-
-      if ( r instanceof Promise ) {
-        r.then(() => {
-          resolve(opts);
-        }).catch(reject);
-      } else {
-        resolve(opts);
-      }
-    } catch ( e ) {
-      _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
-      console.warn(e.stack);
-      reject(e);
-    }
-  }
-
-  return new Promise(_load);
+    _auth.load(path, name).then(() => {
+      resolve(opts);
+    }).catch(reject);
+  });
 }
 
 /*
@@ -250,30 +205,15 @@ function loadAuth(opts) {
  */
 function loadStorage(opts) {
   const name = opts.STORAGE || (CONFIG.http.storage || 'demo');
+  const path = _path.join(ENV.MODULEDIR, 'storage', name + '.js');
 
-  function _load(resolve, reject) {
-    const path = _path.join(ENV.MODULEDIR, 'storage/' + name + '.js');
+  return new Promise((resolve, reject) => {
     _logger.lognt('INFO', 'Loading:', _logger.colored('Storage', 'bold'), path.replace(ENV.ROOTDIR, ''));
 
-    try {
-      const a = require(path);
-      const c = CONFIG.modules.storage[name] || {};
-      const r = a.register(c);
-      MODULES.STORAGE = a;
-
-      if ( r instanceof Promise ) {
-        r.then(resolve).catch(reject);
-      } else {
-        resolve();
-      }
-    } catch ( e ) {
-      _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
-      console.warn(e.stack);
-      reject(e);
-    }
-  }
-
-  return new Promise(_load);
+    return _storage.load(path).then(() => {
+      resolve(opts);
+    }).catch(reject);
+  });
 }
 
 /*
@@ -282,29 +222,9 @@ function loadStorage(opts) {
 function loadVFS() {
   const dirname = _path.join(ENV.MODULEDIR, 'vfs');
 
-  function _load(resolve, reject) {
-    _fs.readdir(dirname, (err, list) => {
-      if ( err ) {
-        return reject(err);
-      }
-
-      _utils.iterate(list, (filename, index, next) => {
-        if ( ['.', '_'].indexOf(filename.substr(0, 1)) === -1 ) {
-          const path = _path.join(dirname, filename);
-          _logger.lognt('INFO', 'Loading:', _logger.colored('VFS Transport', 'bold'), path.replace(ENV.ROOTDIR, ''));
-          try {
-            MODULES.VFS.push(require(path));
-          } catch ( e ) {
-            _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
-            console.warn(e.stack);
-          }
-        }
-        next();
-      }, resolve);
-    });
-  }
-
-  return new Promise(_load);
+  return _vfs.load(dirname, (path) => {
+    _logger.lognt('INFO', 'Loading:', _logger.colored('VFS Transport', 'bold'), path.replace(ENV.ROOTDIR, ''));
+  });
 }
 
 /*
@@ -344,30 +264,7 @@ function registerPackages(servers) {
   }
 
   function _registerExtension(module) {
-    if ( typeof module.api === 'object' ) {
-      Object.keys(module.api).forEach((k) => {
-        MODULES.API[k] = module.api[k];
-      });
-
-      return false;
-    } else if ( typeof module.register === 'function' ) {
-      // Backward compatible with old API
-      let backAPI = {};
-      module.register(backAPI, {}, _createOldInstance());
-
-      Object.keys(backAPI).forEach((k) => {
-        MODULES.API[k] = function(http, resolve, reject, args) {
-          backAPI[k](_createOldInstance(), args, (err, res) => {
-            if ( err ) {
-              reject(err);
-            } else {
-              resolve(res);
-            }
-          });
-        };
-      });
-    }
-    return true;
+    return _api.register(module);
   }
 
   function _launchSpawners(pn, module, metadata) {
@@ -531,12 +428,14 @@ module.exports.destroy = (() => {
         c.kill();
       });
 
-      if ( MODULES.AUTH ) {
-        MODULES.AUTH.destroy();
+      const auth = _auth.get();
+      if ( auth ) {
+        auth.destroy();
       }
 
-      if ( MODULES.STORAGE ) {
-        MODULES.STORAGE.destroy();
+      const storage = _storage.get();
+      if ( storage ) {
+        storage.destroy();
       }
 
       _http.destroy((err) => {
@@ -619,72 +518,6 @@ module.exports.run = function run(port) {
  */
 module.exports.getEnvironment = function() {
   return Object.freeze(ENV);
-};
-
-/**
- * Gets the `Authenticator`
- *
- * @function getAuthenticator
- * @memberof core.instance
- * @return {Object}
- */
-module.exports.getAuth = function() {
-  return MODULES.AUTH;
-};
-
-/**
- * Gets the `Storage`
- *
- * @function getStorage
- * @memberof core.instance
- * @return {Object}
- */
-module.exports.getStorage = function() {
-  return MODULES.STORAGE;
-};
-
-/**
- * Gets all the registered VFS modules
- *
- * @function getVFS
- * @memberof core.instance
- * @return {Array}
- */
-module.exports.getVFS = function() {
-  return MODULES.VFS;
-};
-
-/**
- * Gets registered Session module
- *
- * @function getSession
- * @memberof core.instance
- * @return {Object}
- */
-module.exports.getSession = function() {
-  return MODULES.SESSION;
-};
-
-/**
- * Gets all the registered API methods
- *
- * @function getAPI
- * @memberof core.instance
- * @return {Object}
- */
-module.exports.getAPI = function() {
-  return MODULES.API;
-};
-
-/**
- * Gets all the registered Middleware modules
- *
- * @function getMiddleware
- * @memberof core.instance
- * @return {Array}
- */
-module.exports.getMiddleware = function() {
-  return MODULES.MIDDLEWARE;
 };
 
 /**
