@@ -291,10 +291,11 @@ function createHttpObject(request, response, path, data, responder, files) {
 /*
  * Creates the HTTP, WebSocket and Proxy servers for OS.js
  */
-function createServer(env, resolve, reject) {
+function createServer(resolve, reject) {
   let servers = {};
 
   const config = _settings.get();
+  const env = _env.get();
   const httpConfig = config.http || {};
   const tmpdir = (() => {
     try {
@@ -486,9 +487,9 @@ function getWebsocketFromUser(username) {
  * @memberof core.http
  * @return {Promise}
  */
-module.exports.init = function init(env) {
+module.exports.init = function init() {
   return new Promise((resolve, reject) => {
-    createServer(env, resolve, reject);
+    createServer(resolve, reject);
   });
 };
 

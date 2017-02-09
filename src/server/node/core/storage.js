@@ -30,27 +30,36 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
-const _settings = require('./../core/settings.js');
-const _logger = require('./../core/logger.js');
+const _path = require('path');
 
-let MODULE;
+const _settings = require('./settings.js');
+const _logger = require('./logger.js');
+const _env = require('./env.js');
 
 /**
  * @namespace core.storage
  */
 
+let MODULE;
+
 /**
  * Loads the Storage module
  *
- * @param {String}  path  Path to module
- * @param {String}  name  Name of module
+ * @param {Object}  opts   Initial options
  *
  * @function load
  * @memberof core.storage
  * @return {Promise}
  */
-module.exports.load = function(path, name) {
+module.exports.load = function(opts) {
   return new Promise((resolve, reject) => {
+    const ok = () => resolve(opts);
+
+    const config = _settings.get();
+    const name = opts.STORAGE || (config.http.storage || 'demo');
+    const path = _path.join(_env.get('MODULEDIR'), 'storage', name + '.js');
+
+    _logger.lognt('INFO', 'Loading:', _logger.colored('Storage', 'bold'), path.replace(_env.get('ROOTDIR'), ''));
 
     try {
       const a = require(path);
@@ -59,9 +68,9 @@ module.exports.load = function(path, name) {
       MODULE = a;
 
       if ( r instanceof Promise ) {
-        r.then(resolve).catch(reject);
+        r.then(ok).catch(reject);
       } else {
-        resolve();
+        ok();
       }
     } catch ( e ) {
       _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);

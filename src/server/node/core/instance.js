@@ -109,97 +109,6 @@ function loadConfiguration(opts) {
 }
 
 /*
- * Loads and registers all Middleware
- */
-function loadMiddleware(opts) {
-  const dirname = _path.join(ENV.MODULEDIR, 'middleware');
-
-  return new Promise((resolve, reject) => {
-    _middleware.load(dirname, (path) => {
-      _logger.lognt('INFO', 'Loading:', _logger.colored('Middleware', 'bold'), path.replace(ENV.ROOTDIR, ''));
-    }).then(() => {
-      resolve(opts);
-    }).catch(reject);
-  });
-}
-
-/*
- * Loads and registers session module
- */
-function loadSession(opts) {
-  const dirname = _path.join(ENV.MODULEDIR, 'session');
-  const name = opts.SESSION || (CONFIG.http.session.module || 'memory');
-  const path = _path.join(dirname, name + '.js');
-
-  return new Promise((resolve, reject) => {
-    _logger.lognt('INFO', 'Loading:', _logger.colored('Session', 'bold'), path.replace(ENV.ROOTDIR, ''));
-
-    return _session.load(path).then(() => {
-      resolve(opts);
-    }).catch(reject);
-  });
-}
-
-/*
- * Loads and registers all API methods
- */
-function loadAPI(opts) {
-  const dirname = _path.join(ENV.MODULEDIR, 'api');
-
-  return new Promise((resolve, reject) => {
-    _api.load(dirname, (path) => {
-      _logger.lognt('INFO', 'Loading:', _logger.colored('API', 'bold'), path.replace(ENV.ROOTDIR, ''));
-    }).then(() => {
-      resolve(opts);
-    }).catch(reject);
-  });
-}
-
-/*
- * Loads and registers Authentication module(s)
- */
-function loadAuth(opts) {
-  const dirname = _path.join(ENV.MODULEDIR, 'auth');
-  const name = opts.AUTH || (CONFIG.http.authenticator || 'demo');
-  const path = _path.join(dirname, name + '.js');
-
-  return new Promise((resolve, reject) => {
-    _logger.lognt('INFO', 'Loading:', _logger.colored('Authenticator', 'bold'), path.replace(ENV.ROOTDIR, ''));
-
-    _auth.load(path, name).then(() => {
-      resolve(opts);
-    }).catch(reject);
-  });
-}
-
-/*
- * Loads and registers Storage module(s)
- */
-function loadStorage(opts) {
-  const name = opts.STORAGE || (CONFIG.http.storage || 'demo');
-  const path = _path.join(ENV.MODULEDIR, 'storage', name + '.js');
-
-  return new Promise((resolve, reject) => {
-    _logger.lognt('INFO', 'Loading:', _logger.colored('Storage', 'bold'), path.replace(ENV.ROOTDIR, ''));
-
-    return _storage.load(path).then(() => {
-      resolve(opts);
-    }).catch(reject);
-  });
-}
-
-/*
- * Loads and registers VFS module(s)
- */
-function loadVFS() {
-  const dirname = _path.join(ENV.MODULEDIR, 'vfs');
-
-  return _vfs.load(dirname, (path) => {
-    _logger.lognt('INFO', 'Loading:', _logger.colored('VFS Transport', 'bold'), path.replace(ENV.ROOTDIR, ''));
-  });
-}
-
-/*
  * Loads generated package manifest
  */
 function registerPackages(servers) {
@@ -429,15 +338,19 @@ module.exports.destroy = (() => {
 module.exports.init = function init(opts) {
   return new Promise((resolve, reject) => {
     loadConfiguration(opts)
-      .then(loadMiddleware)
-      .then(loadSession)
-      .then(loadAPI)
-      .then(loadAuth)
-      .then(loadStorage)
-      .then(loadVFS)
-      .then(() => {
-        return _http.init(ENV);
+      .then((opts) => {
+        return new Promise((resolve, reject) => {
+          _middleware.load().then(() => {
+            resolve(opts);
+          }).catch(reject);
+        });
       })
+      .then(_session.load)
+      .then(_api.load)
+      .then(_auth.load)
+      .then(_storage.load)
+      .then(_vfs.load)
+      .then(_http.init)
       .then(registerPackages)
       .then(registerServices)
       .then((servers) => {

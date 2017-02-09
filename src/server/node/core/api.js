@@ -33,8 +33,9 @@
 const _path = require('path');
 const _glob = require('glob-promise');
 
-const _logger = require('./../core/logger.js');
-const _settings = require('./../core/settings.js');
+const _env = require('./env.js');
+const _logger = require('./logger.js');
+const _settings = require('./settings.js');
 
 /**
  * @namespace core.api
@@ -45,20 +46,21 @@ const MODULES = {};
 /**
  * Loads the API modules
  *
- * @param {String}   dirname  Path to modules
- * @param {Function} cb       Callback on iter
+ * @param {Object}  opts   Initial options
  *
  * @function load
  * @memberof core.api
  * @return {Promise}
  */
-module.exports.load = function(dirname, cb) {
-  cb = cb || function() {};
-
+module.exports.load = function(opts) {
   return new Promise((resolve, reject) => {
+    const ok = () => resolve(opts);
+
+    const dirname = _path.join(_env.get('MODULEDIR'), 'api');
+
     _glob(_path.join(dirname, '*.js')).then((list) => {
       Promise.all(list.map((path) => {
-        cb(path);
+        _logger.lognt('INFO', 'Loading:', _logger.colored('API', 'bold'), path.replace(_env.get('ROOTDIR'), ''));
 
         const methods = require(path);
         Object.keys(methods).forEach((k) => {
@@ -66,7 +68,7 @@ module.exports.load = function(dirname, cb) {
         });
 
         return Promise.resolve();
-      })).then(resolve).catch(reject);
+      })).then(ok).catch(reject);
     }).catch(reject);
   });
 };

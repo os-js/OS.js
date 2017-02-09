@@ -106,17 +106,15 @@ function getTransportName(query, mount) {
 /**
  * Loads the VFS modules
  *
- * @param {String}   dirname  Path to modules
- * @param {Function} cb       Callback on iter
+ * @param {Object}  opts   Initial options
  *
  * @function load
  * @memberof core.vfs
  * @return {Promise}
  */
-module.exports.load = function(dirname, cb) {
-  cb = cb || function() {};
-
-  function _load(resolve, reject) {
+module.exports.load = function(opts) {
+  return new Promise((resolve, reject) => {
+    const dirname = _path.join(_env.get('MODULEDIR'), 'vfs');
     _fs.readdir(dirname, (err, list) => {
       if ( err ) {
         return reject(err);
@@ -125,7 +123,9 @@ module.exports.load = function(dirname, cb) {
       _utils.iterate(list, (filename, index, next) => {
         if ( ['.', '_'].indexOf(filename.substr(0, 1)) === -1 ) {
           const path = _path.join(dirname, filename);
-          cb(path);
+
+          _logger.lognt('INFO', 'Loading:', _logger.colored('VFS Transport', 'bold'), path.replace(_env.get('ROOTDIR'), ''));
+
           try {
             MODULES.push(require(path));
           } catch ( e ) {
@@ -136,9 +136,7 @@ module.exports.load = function(dirname, cb) {
         next();
       }, resolve);
     });
-  }
-
-  return new Promise(_load);
+  });
 };
 
 /**

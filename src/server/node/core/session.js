@@ -30,15 +30,14 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
-/**
- * @namespace core.session
- */
-
-const _session = require('express-session');
+const _path = require('path');
 const _cookie = require('cookie');
 const _parser = require('cookie-parser');
-const _env = require('./../core/env.js');
-const _settings = require('./../core/settings.js');
+const _session = require('express-session');
+
+const _env = require('./env.js');
+const _logger = require('./logger.js');
+const _settings = require('./settings.js');
 
 /**
  * An object with session helpers
@@ -51,6 +50,10 @@ const _settings = require('./../core/settings.js');
  * @typedef ServerSession
  */
 
+/**
+ * @namespace core.session
+ */
+
 let session;
 let sessionStore;
 let MODULE;
@@ -58,15 +61,27 @@ let MODULE;
 /**
  * Loads the Session module
  *
- * @param {String}  path  Path to module
+ * @param {Object}  opts  Options
  *
  * @function load
  * @memberof core.session
  * @return {Promise}
  */
-module.exports.load = function(path) {
-  MODULE = require(path);
-  return Promise.resolve();
+module.exports.load = function(opts) {
+  return new Promise((resolve, reject) => {
+    const ok = () => resolve(opts);
+
+    const dirname = _path.join(_env.get('MODULEDIR'), 'session');
+    const config = _settings.get();
+    const name = opts.SESSION || (config.http.session.module || 'memory');
+    const path = _path.join(dirname, name + '.js');
+
+    _logger.lognt('INFO', 'Loading:', _logger.colored('Session', 'bold'), path.replace(_env.get('ROOTDIR'), ''));
+
+    MODULE = require(path);
+
+    ok();
+  });
 };
 
 /**

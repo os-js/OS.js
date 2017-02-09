@@ -30,29 +30,39 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
-/**
- * @namespace core.auth
- */
+const _path = require('path');
 
 const _settings = require('./settings.js');
 const _storage = require('./storage.js');
 const _logger = require('./logger.js');
 const _vfs = require('./vfs.js');
+const _env = require('./env.js');
+
+/**
+ * @namespace core.auth
+ */
 
 let MODULE;
 
 /**
  * Loads the authentication module
  *
- * @param {String}  path  Path to module
- * @param {String}  name  Module name
+ * @param {Object}  opts   Initial options
  *
  * @function load
  * @memberof core.auth
  * @return {Promise}
  */
-module.exports.load = function(path, name) {
+module.exports.load = function(opts) {
   return new Promise((resolve, reject) => {
+    const config = _settings.get();
+    const dirname = _path.join(_env.get('MODULEDIR'), 'auth');
+    const name = opts.AUTH || (config.http.authenticator || 'demo');
+    const path = _path.join(dirname, name + '.js');
+    const ok = () => resolve(opts);
+
+    _logger.lognt('INFO', 'Loading:', _logger.colored('Authenticator', 'bold'), path.replace(_env.get('ROOTDIR'), ''));
+
     try {
       const a = require(path);
       const c = _settings.get().modules.auth[name] || {};
@@ -61,9 +71,9 @@ module.exports.load = function(path, name) {
       MODULE = a;
 
       if ( r instanceof Promise ) {
-        r.then(resolve).catch(reject);
+        r.then(ok).catch(reject);
       } else {
-        resolve();
+        ok();
       }
     } catch ( e ) {
       _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);

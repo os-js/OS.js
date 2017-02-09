@@ -32,14 +32,16 @@
 
 const _path = require('path');
 const _glob = require('glob-promise');
-const _logger = require('./../core/logger.js');
-const _utils = require('./../core/utils.js');
 
-const MODULES = [];
+const _env = require('./env.js');
+const _logger = require('./logger.js');
+const _utils = require('./utils.js');
 
 /**
  * @namespace core.middleware
  */
+
+const MODULES = [];
 
 /**
  * Loads the Middleware modules
@@ -55,8 +57,12 @@ module.exports.load = function(dirname, cb) {
   cb = cb || function() {};
 
   return new Promise((resolve, reject) => {
+    const dirname = _path.join(_env.get('MODULEDIR'), 'middleware');
+
     _glob(_path.join(dirname, '*.js')).then((list) => {
       Promise.all(list.map((path) => {
+        _logger.lognt('INFO', 'Loading:', _logger.colored('Middleware', 'bold'), path.replace(_env.get('ROOTDIR'), ''));
+
         try {
           MODULES.push(require(path));
         } catch ( e ) {
