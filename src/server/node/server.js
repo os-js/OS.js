@@ -54,7 +54,8 @@ const opts = {
 };
 
 _instance.init(opts).then((env) => {
-  const config = _instance.getConfig();
+  const config = require('./core/settings.js').get();
+
   if ( config.tz ) {
     process.env.TZ = config.tz;
   }

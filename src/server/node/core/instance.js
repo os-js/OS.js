@@ -62,13 +62,10 @@ const _fs = require('fs-extra');
 const _path = require('path');
 const _glob = require('glob-promise');
 
-const _osjs = {
-  http: require('./http.js'),
-  logger: require('./logger.js'),
-  auth: require('./auth.js'),
-  vfs: require('./vfs.js'),
-  utils: require('./utils.js')
-};
+const _http = require('./http.js');
+const _logger = require('./logger.js');
+const _utils = require('./utils.js');
+const _settings = require('./settings.js');
 
 ///////////////////////////////////////////////////////////////////////////////
 // GLOBALS
@@ -77,7 +74,6 @@ const _osjs = {
 let CHILDREN = [];
 let CONFIG = {};
 let PACKAGES = {};
-let LOGGER;
 
 const MODULES = {
   API: {},
@@ -85,8 +81,7 @@ const MODULES = {
   MIDDLEWARE: [],
   SESSION: null,
   AUTH: null,
-  STORAGE: null,
-  LOGGER: null
+  STORAGE: null
 };
 
 const ENV = {
@@ -118,85 +113,28 @@ function loadConfiguration(opts) {
     ENV.ROOTDIR = opts.ROOT;
   }
 
-  const path = _path.join(ENV.SERVERDIR, 'settings.json');
-
-  const safeWords = [
-    '%VERSION%',
-    '%DIST%',
-    '%DROOT%',
-    '%UID%',
-    '%USERNAME%'
-  ];
-
-  function _read(data) {
-    // Allow environmental variables to override certain internals in config
-    data.match(/%([A-Z0-9_\-]+)%/g).filter((() => {
-      let seen = {};
-      return function(element, index, array) {
-        return !(element in seen) && (seen[element] = 1);
-      };
-    })()).filter((w) => {
-      return safeWords.indexOf(w) === -1;
-    }).forEach((w) => {
-      const p = w.replace(/%/g, '');
-      const u = /^[A-Z]*$/.test(p);
-      const v = u ? process.env[p] : null;
-      if ( typeof v !== 'undefined' && v !== null ) {
-        const re = w.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '$1');
-        data = data.replace(new RegExp(re, 'g'), String(v));
-      }
-    });
-
-    const config = Object.assign({
-      api: {},
-      vfs: {},
-      http: {},
-      mimes: {},
-      proxies: {},
-      modules: {}
-    }, JSON.parse(data));
-
-    if ( process.env.SECRET ) {
-      config.http.session.secret = process.env.SECRET;
-    }
-    if ( opts.CONNECTION || process.env.CONNECTION ) {
-      config.http.connection = opts.CONNECTION || process.env.CONNECTION;
-    }
-
-    config.modules.auth = config.modules.auth || {};
-    config.modules.storage = config.modules.storage || {};
-
-    return Object.freeze(config);
-  }
-
   function _load(resolve, reject) {
-    _fs.readFile(path, (err, file) => {
-      if ( err ) {
-        return reject(err);
-      }
+    CONFIG = _settings.init(ENV, opts);
 
-      const config = _read(file.toString());
+    if ( !ENV.PORT && CONFIG.http.port ) {
+      ENV.PORT = CONFIG.http.port;
+    }
 
-      CONFIG = Object.assign({}, config);
-      if ( !ENV.PORT && config.http.port ) {
-        ENV.PORT = config.http.port;
-      }
+    if ( typeof opts.LOGLEVEL === 'number' ) {
+      ENV.LOGLEVEL = opts.LOGLEVEL;
+    } else if ( typeof CONFIG.logging === 'number' ) {
+      ENV.LOGLEVEL = CONFIG.logging;
+    }
 
-      if ( typeof opts.LOGLEVEL === 'number' ) {
-        ENV.LOGLEVEL = opts.LOGLEVEL;
-      } else if ( typeof config.logging === 'number' ) {
-        ENV.LOGLEVEL = config.logging;
-      }
+    ENV.PKGDIR = opts.PKGDIR || _path.join(ENV.ROOTDIR, 'src/packages');
 
-      ENV.PKGDIR = opts.PKGDIR || _path.join(ENV.ROOTDIR, 'src/packages');
-      LOGGER = _osjs.logger.create(ENV.LOGLEVEL);
+    _logger.init(ENV.LOGLEVEL);
 
-      Object.keys(config.proxies).forEach((k) => {
-        LOGGER.lognt('INFO', 'Using:', LOGGER.colored('Proxy', 'bold'), k);
-      });
-
-      resolve(opts);
+    Object.keys(CONFIG.proxies).forEach((k) => {
+      _logger.lognt('INFO', 'Using:', _logger.colored('Proxy', 'bold'), k);
     });
+
+    resolve(opts);
   }
 
   return new Promise(_load);
@@ -211,12 +149,12 @@ function loadMiddleware(opts) {
   return new Promise((resolve, reject) => {
     _glob(_path.join(dirname, '*.js')).then((list) => {
       Promise.all(list.map((path) => {
-        LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('Middleware', 'bold'), path.replace(ENV.ROOTDIR, ''));
+        _logger.lognt('INFO', 'Loading:', _logger.colored('Middleware', 'bold'), path.replace(ENV.ROOTDIR, ''));
 
         try {
           MODULES.MIDDLEWARE.push(require(path));
         } catch ( e ) {
-          LOGGER.lognt('WARN', LOGGER.colored('Warning:', 'yellow'), e);
+          _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
           console.warn(e.stack);
         }
 
@@ -238,7 +176,7 @@ function loadSession(opts) {
   return new Promise((resolve, reject) => {
     const path = _path.join(dirname, name + '.js');
 
-    LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('Session', 'bold'), path.replace(ENV.ROOTDIR, ''));
+    _logger.lognt('INFO', 'Loading:', _logger.colored('Session', 'bold'), path.replace(ENV.ROOTDIR, ''));
 
     try {
       MODULES.SESSION = require(path);
@@ -258,7 +196,7 @@ function loadAPI(opts) {
   return new Promise((resolve, reject) => {
     _glob(_path.join(dirname, '*.js')).then((list) => {
       Promise.all(list.map((path) => {
-        LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('API', 'bold'), path.replace(ENV.ROOTDIR, ''));
+        _logger.lognt('INFO', 'Loading:', _logger.colored('API', 'bold'), path.replace(ENV.ROOTDIR, ''));
 
         const methods = require(path);
         Object.keys(methods).forEach((k) => {
@@ -281,7 +219,7 @@ function loadAuth(opts) {
 
   function _load(resolve, reject) {
     const path = _path.join(ENV.MODULEDIR, 'auth/' + name + '.js');
-    LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('Authenticator', 'bold'), path.replace(ENV.ROOTDIR, ''));
+    _logger.lognt('INFO', 'Loading:', _logger.colored('Authenticator', 'bold'), path.replace(ENV.ROOTDIR, ''));
 
     try {
       const a = require(path);
@@ -298,7 +236,7 @@ function loadAuth(opts) {
         resolve(opts);
       }
     } catch ( e ) {
-      LOGGER.lognt('WARN', LOGGER.colored('Warning:', 'yellow'), e);
+      _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
       console.warn(e.stack);
       reject(e);
     }
@@ -315,7 +253,7 @@ function loadStorage(opts) {
 
   function _load(resolve, reject) {
     const path = _path.join(ENV.MODULEDIR, 'storage/' + name + '.js');
-    LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('Storage', 'bold'), path.replace(ENV.ROOTDIR, ''));
+    _logger.lognt('INFO', 'Loading:', _logger.colored('Storage', 'bold'), path.replace(ENV.ROOTDIR, ''));
 
     try {
       const a = require(path);
@@ -329,7 +267,7 @@ function loadStorage(opts) {
         resolve();
       }
     } catch ( e ) {
-      LOGGER.lognt('WARN', LOGGER.colored('Warning:', 'yellow'), e);
+      _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
       console.warn(e.stack);
       reject(e);
     }
@@ -350,14 +288,14 @@ function loadVFS() {
         return reject(err);
       }
 
-      _osjs.utils.iterate(list, (filename, index, next) => {
+      _utils.iterate(list, (filename, index, next) => {
         if ( ['.', '_'].indexOf(filename.substr(0, 1)) === -1 ) {
           const path = _path.join(dirname, filename);
-          LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('VFS Transport', 'bold'), path.replace(ENV.ROOTDIR, ''));
+          _logger.lognt('INFO', 'Loading:', _logger.colored('VFS Transport', 'bold'), path.replace(ENV.ROOTDIR, ''));
           try {
             MODULES.VFS.push(require(path));
           } catch ( e ) {
-            LOGGER.lognt('WARN', LOGGER.colored('Warning:', 'yellow'), e);
+            _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
             console.warn(e.stack);
           }
         }
@@ -374,7 +312,7 @@ function loadVFS() {
  */
 function registerPackages(servers) {
   const path = _path.join(ENV.SERVERDIR, 'packages.json');
-  LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('Configuration', 'bold'), path.replace(ENV.ROOTDIR, ''));
+  _logger.lognt('INFO', 'Loading:', _logger.colored('Configuration', 'bold'), path.replace(ENV.ROOTDIR, ''));
 
   function _createOldInstance(env) {
     return {
@@ -382,7 +320,7 @@ function registerPackages(servers) {
       response: null,
       config: CONFIG,
       handler: null,
-      logger: LOGGER
+      logger: _logger
     };
   }
 
@@ -435,7 +373,7 @@ function registerPackages(servers) {
   function _launchSpawners(pn, module, metadata) {
     if ( metadata.spawn && metadata.spawn.enabled ) {
       const spawner = _path.join(ENV.PKGDIR, pn, metadata.spawn.exec);
-      LOGGER.lognt('INFO', 'Launching', LOGGER.colored('Spawner', 'bold'), spawner.replace(ENV.ROOTDIR, ''));
+      _logger.lognt('INFO', 'Launching', _logger.colored('Spawner', 'bold'), spawner.replace(ENV.ROOTDIR, ''));
       CHILDREN.push(_child.fork(spawner, [], {
         stdio: 'pipe'
       }));
@@ -464,16 +402,16 @@ function registerPackages(servers) {
         if ( metadata.enabled !== false && _fs.existsSync(check) ) {
           let deprecated = false;
           if ( metadata.type === 'extension' ) {
-            LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('Extension', 'bold'), check.replace(ENV.ROOTDIR, ''));
+            _logger.lognt('INFO', 'Loading:', _logger.colored('Extension', 'bold'), check.replace(ENV.ROOTDIR, ''));
             deprecated = _registerExtension(require(check));
             _launchSpawners(p, module, metadata);
           } else {
-            LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('Application', 'bold'), check.replace(ENV.ROOTDIR, ''));
+            _logger.lognt('INFO', 'Loading:', _logger.colored('Application', 'bold'), check.replace(ENV.ROOTDIR, ''));
             deprecated = _registerApplication(p, packages, require(check));
           }
 
           if ( deprecated ) {
-            LOGGER.lognt('WARN', LOGGER.colored('Warning:', 'yellow'), p, LOGGER.colored('is using the deprecated Application API(s)', 'bold'));
+            _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), p, _logger.colored('is using the deprecated Application API(s)', 'bold'));
           }
         }
       });
@@ -496,14 +434,14 @@ function registerServices(servers) {
   return new Promise((resolve, reject) => {
     _glob(_path.join(dirname, '*.js')).then((list) => {
       Promise.all(list.map((path) => {
-        LOGGER.lognt('INFO', 'Loading:', LOGGER.colored('Service', 'bold'), path.replace(ENV.ROOTDIR, ''));
+        _logger.lognt('INFO', 'Loading:', _logger.colored('Service', 'bold'), path.replace(ENV.ROOTDIR, ''));
         try {
           const p = require(path).register(ENV, CONFIG, servers);
           if ( p instanceof Promise ) {
             return p;
           }
         } catch ( e ) {
-          LOGGER.lognt('WARN', LOGGER.colored('Warning:', 'yellow'), e);
+          _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
           console.warn(e.stack);
         }
         return Promise.resolve();
@@ -523,13 +461,13 @@ function destroyPackages() {
         try {
           const mod = require(check);
 
-          LOGGER.lognt('VERBOSE', 'Destroying:', LOGGER.colored('Package', 'bold'), check.replace(ENV.ROOTDIR, ''));
+          _logger.lognt('VERBOSE', 'Destroying:', _logger.colored('Package', 'bold'), check.replace(ENV.ROOTDIR, ''));
           if ( typeof mod.destroy === 'function' ) {
             const res = mod.destroy();
             return res instanceof Promise ? res : Promise.resolve();
           }
         } catch ( e ) {
-          LOGGER.lognt('WARN', LOGGER.colored('Warning:', 'yellow'), e);
+          _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
           console.warn(e.stack);
         }
       }
@@ -550,12 +488,12 @@ function destroyServices() {
   return new Promise((resolve, reject) => {
     _glob(_path.join(dirname, '*.js')).then((list) => {
       Promise.all(list.map((path) => {
-        LOGGER.lognt('VERBOSE', 'Destroying:', LOGGER.colored('Service', 'bold'), path.replace(ENV.ROOTDIR, ''));
+        _logger.lognt('VERBOSE', 'Destroying:', _logger.colored('Service', 'bold'), path.replace(ENV.ROOTDIR, ''));
         try {
           const res = require(path).destroy();
           return res instanceof Promise ? res : Promise.resolve();
         } catch ( e ) {
-          LOGGER.lognt('WARN', LOGGER.colored('Warning:', 'yellow'), e);
+          _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
           console.warn(e.stack);
         }
         return Promise.resolve();
@@ -586,7 +524,7 @@ module.exports.destroy = (() => {
       return cb();
     }
 
-    LOGGER.log('INFO', LOGGER.colored('Trying to shut down sanely...', 'bold'));
+    _logger.log('INFO', _logger.colored('Trying to shut down sanely...', 'bold'));
 
     function done() {
       CHILDREN.forEach((c) => {
@@ -601,7 +539,7 @@ module.exports.destroy = (() => {
         MODULES.STORAGE.destroy();
       }
 
-      _osjs.http.destroy((err) => {
+      _http.destroy((err) => {
         destroyed = true;
 
         cb(err);
@@ -633,7 +571,7 @@ module.exports.init = function init(opts) {
       .then(loadStorage)
       .then(loadVFS)
       .then(() => {
-        return _osjs.http.init(ENV);
+        return _http.init(ENV);
       })
       .then(registerPackages)
       .then(registerServices)
@@ -656,18 +594,18 @@ module.exports.init = function init(opts) {
 module.exports.run = function run(port) {
   const httpConfig = Object.assign({ws: {}}, CONFIG.http || {});
 
-  LOGGER.log('INFO', LOGGER.colored('Starting OS.js server', 'green'));
-  LOGGER.log('INFO', LOGGER.colored(['Using', ENV.DIST].join(' '), 'green'));
-  LOGGER.log('INFO', LOGGER.colored(['Running', httpConfig.mode, 'on localhost:' + ENV.PORT].join(' '), 'green'));
+  _logger.log('INFO', _logger.colored('Starting OS.js server', 'green'));
+  _logger.log('INFO', _logger.colored(['Using', ENV.DIST].join(' '), 'green'));
+  _logger.log('INFO', _logger.colored(['Running', httpConfig.mode, 'on localhost:' + ENV.PORT].join(' '), 'green'));
 
   if ( httpConfig.connection === 'ws' ) {
     const wsp = httpConfig.ws.port === 'upgrade' ? ENV.PORT : httpConfig.ws.port;
     const msg = ['Running ws', 'on localhost:' + wsp + (httpConfig.ws.path || '')];
-    LOGGER.log('INFO', LOGGER.colored(msg.join(' '), 'green'));
+    _logger.log('INFO', _logger.colored(msg.join(' '), 'green'));
   }
 
-  const result = _osjs.http.run(ENV.PORT);
-  LOGGER.log('INFO', LOGGER.colored('Ready...', 'green'));
+  const result = _http.run(ENV.PORT);
+  _logger.log('INFO', _logger.colored('Ready...', 'green'));
 
   return result;
 };
@@ -703,28 +641,6 @@ module.exports.getAuth = function() {
  */
 module.exports.getStorage = function() {
   return MODULES.STORAGE;
-};
-
-/**
- * Gets the `Config`
- *
- * @function getConfig
- * @memberof core.instance
- * @return {Object}
- */
-module.exports.getConfig = function() {
-  return Object.freeze(CONFIG);
-};
-
-/**
- * Gets the `Logger"
- *
- * @function getLogger
- * @memberof core.instance
- * @return {Object}
- */
-module.exports.getLogger = function() {
-  return LOGGER;
 };
 
 /**

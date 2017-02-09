@@ -340,6 +340,7 @@ module.exports.generate = function(cli, args) {
  */
 module.exports.run = function(cli, args) {
   const instance = require(_path.join(ROOT, 'src/server/node/core/instance.js'));
+  const settings = require(_path.join(ROOT, 'src/server/node/core/settings.js'));
 
   const opts = {
     PORT: cli.option('port'),
@@ -348,7 +349,7 @@ module.exports.run = function(cli, args) {
   };
 
   instance.init(opts).then((env) => {
-    const config = instance.getConfig();
+    const config = settings.get();
     if ( config.tz ) {
       process.env.TZ = config.tz;
     }

@@ -33,7 +33,7 @@
 
 const _bcrypt = require('bcrypt');
 const _db = require('./../../core/database.js');
-const _instance = require('./../../core/instance.js');
+const _logger = require('./../../core/logger.js');
 
 const manager = {
 
@@ -169,10 +169,9 @@ module.exports.manage = function(http, command, args) {
 module.exports.register = function(config) {
   const type = config.driver;
   const settings = config[type];
-  const logger = _instance.getLogger();
 
   const str = type === 'sqlite' ? require('path').basename(settings.database) : settings.user + '@' + settings.host + ':/' + settings.database;
-  logger.lognt('INFO', 'Module:', logger.colored('Authenticator', 'bold'), 'using', logger.colored(type, 'green'), '->', logger.colored(str, 'green'));
+  _logger.lognt('INFO', 'Module:', _logger.colored('Authenticator', 'bold'), 'using', _logger.colored(type, 'green'), '->', _logger.colored(str, 'green'));
 
   return _db.instance('authstorage', type, settings);
 };

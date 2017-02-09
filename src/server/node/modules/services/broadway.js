@@ -30,7 +30,7 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
-const _instance = require('./../../core/instance.js');
+const _logger = require('./../../core/logger.js');
 const _spawn = require('child_process').spawn;
 const _ws = require('ws').Server;
 
@@ -56,7 +56,6 @@ module.exports.register = function(env, config, servers) {
     return;
   }
 
-  const logger = _instance.getLogger();
   const defaults = config.broadway.defaults;
 
   function spawnBroadwayProcess(launch) {
@@ -93,14 +92,14 @@ module.exports.register = function(env, config, servers) {
 
   try {
     const port = defaults.spawner.port;
-    logger.lognt('INFO', 'Service:', logger.colored('Broadway', 'bold'), 'is starting up on port', logger.colored(port, 'bold'));
+    _logger.lognt('INFO', 'Service:', _logger.colored('Broadway', 'bold'), 'is starting up on port', _logger.colored(port, 'bold'));
 
     wss = new _ws({
       port: port
     });
 
     wss.on('connection', (ws) => {
-      logger.log('INFO', 'Incoming broadway connection');
+      _logger.log('INFO', 'Incoming broadway connection');
 
       ws.on('message', (message) => {
         const json = JSON.parse(message);
@@ -111,7 +110,7 @@ module.exports.register = function(env, config, servers) {
     });
 
   } catch ( e ) {
-    logger.log('ERROR', e);
+    _logger.log('ERROR', e);
   }
 
 };

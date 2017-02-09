@@ -32,7 +32,7 @@
 'use strict';
 
 const _db = require('./../../core/database.js');
-const _instance = require('./../../core/instance.js');
+const _logger = require('./../../core/logger.js');
 
 module.exports.setSettings = function(http, username, settings) {
   return new Promise((resolve, reject) => {
@@ -98,10 +98,9 @@ module.exports.setBlacklist = function(http, username, list) {
 module.exports.register = function(config) {
   const type = config.driver;
   const settings = config[type];
-  const logger = _instance.getLogger();
 
   const str = type === 'sqlite' ? require('path').basename(settings.database) : settings.user + '@' + settings.host + ':/' + settings.database;
-  logger.lognt('INFO', 'Module:', logger.colored('Storage', 'bold'), 'using', logger.colored(type, 'green'), '->', logger.colored(str, 'green'));
+  _logger.lognt('INFO', 'Module:', _logger.colored('Storage', 'bold'), 'using', _logger.colored(type, 'green'), '->', _logger.colored(str, 'green'));
 
   return _db.instance('authstorage', type, settings);
 };

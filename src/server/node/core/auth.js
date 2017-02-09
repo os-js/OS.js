@@ -35,6 +35,7 @@
  */
 
 const _instance = require('./instance.js');
+const _settings = require('./settings.js');
 const _vfs = require('./vfs.js');
 
 /**
@@ -62,7 +63,7 @@ module.exports.initSession = function(http) {
  * @return {Promise}
  */
 module.exports.checkPermission = function(http, type, options) {
-  const config = _instance.getConfig();
+  const config = _settings.get();
   const groups = config.api.groups;
   const username = http.session.get('username');
   const defaultGroups = config.api.defaultGroups instanceof Array ? config.api.defaultGroups : [];

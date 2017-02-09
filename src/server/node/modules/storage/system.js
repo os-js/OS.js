@@ -32,7 +32,7 @@
 
 const _fs = require('fs-extra');
 const _vfs = require('./../../core/vfs.js');
-const _instance = require('./../../core/instance.js');
+const _settings = require('./../../core/settings.js');
 
 function _readFile(username, path, resolve) {
   function _done(data) {
@@ -55,7 +55,7 @@ function _readFile(username, path, resolve) {
 }
 
 module.exports.setSettings = function(http, username, settings) {
-  const config = _instance.getConfig();
+  const config = _settings.get();
   const path = _vfs.resolvePathArguments(config.modules.storage.system.settings, {
     username: username
   });
@@ -77,7 +77,7 @@ module.exports.setSettings = function(http, username, settings) {
 };
 
 module.exports.getSettings = function(http, username) {
-  const config = _instance.getConfig();
+  const config = _settings.get();
   const path = _vfs.resolvePathArguments(config.modules.storage.system.settings, {
     username: username
   });
@@ -87,7 +87,7 @@ module.exports.getSettings = function(http, username) {
 };
 
 module.exports.getGroups = function(http, username) {
-  const config = _instance.getConfig();
+  const config = _settings.get();
   const path = config.modules.storage.system.groups;
   return new Promise((resolve) => {
     _readFile(username, path, resolve);
@@ -95,7 +95,7 @@ module.exports.getGroups = function(http, username) {
 };
 
 module.exports.getBlacklist = function(http, username) {
-  const config = _instance.getConfig();
+  const config = _settings.get();
   const path = config.modules.storage.system.blacklist;
   return new Promise((resolve) => {
     _readFile(username, path, resolve);

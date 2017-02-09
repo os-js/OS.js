@@ -1975,7 +1975,7 @@
    * @return {Boolean} If triggered
    */
   Window.prototype._onKeyEvent = function(ev, type) {
-    if ( this._destroyed ) {
+    if ( this._destroyed || !this._state.focused) {
       return false;
     }
 

@@ -32,7 +32,7 @@
 
 const _vfs = require('./../../core/vfs.js');
 const _http = require('./../../core/http.js');
-const _instance = require('./../../core/instance.js');
+const _logger = require('./../../core/logger.js');
 
 /*
  * Unloads the VFS watching
@@ -45,8 +45,6 @@ module.exports.destroy = function() {
  * Registers VFS watching
  */
 module.exports.register = function(env, config, servers) {
-  const logger = _instance.getLogger();
-
   try {
     const wss = servers.websocketServer;
     if ( !wss ) {
@@ -64,9 +62,9 @@ module.exports.register = function(env, config, servers) {
     });
 
     if ( list.length ) {
-      logger.lognt('INFO', 'Service:', logger.colored('Watching', 'bold'), list.join(', '));
+      _logger.lognt('INFO', 'Service:', _logger.colored('Watching', 'bold'), list.join(', '));
     }
   } catch ( e ) {
-    logger.lognt('ERROR', e);
+    _logger.lognt('ERROR', e);
   }
 };

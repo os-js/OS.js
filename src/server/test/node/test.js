@@ -7,6 +7,7 @@
   const _path = require('path');
   const _fs = require('fs');
   const _osjs = require('../../node/core/instance.js');
+  const _settings = require('../../node/core/settings.js');
   const _vfs = require('../../node/core/vfs.js');
 
   var ENV;
@@ -71,7 +72,7 @@
         CONNECTION: 'http'
       }).then(function(i) {
         ENV = i;
-        CONF = _osjs.getConfig();
+        CONF = _settings.get();
         done();
       }).catch(function(error) {
         assert.equal(null, error);

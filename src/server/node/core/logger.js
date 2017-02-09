@@ -44,21 +44,19 @@ function timestamp() {
 }
 
 /*
- * Create the logger instance
- *
- * Level -1 is everything, -2 is everything except verbose
+ * Loglevel maps
  */
-module.exports.create = function createLogger(lvl) {
-  let ns = {};
-  let level = 0;
+const levelMap = {
+  INFO: 1,
+  WARN: 2,
+  WARNING: 2,
+  ERROR: 3,
+  VERBOSE: 8
+};
 
-  const levelMap = {
-    INFO: 1,
-    WARN: 2,
-    WARNING: 2,
-    ERROR: 3,
-    VERBOSE: 8
-  };
+module.exports = (function() {
+  let level = 0;
+  let ns = {};
 
   /*
    * Check if this message can be logged according to level
@@ -117,12 +115,33 @@ module.exports.create = function createLogger(lvl) {
     console.log(line.join(' '));
   }
 
-  // The namespace
   ns = {
     INFO: 1,
     WARNING: 2,
     ERROR: 4,
     VERBOSE: 8,
+
+    /**
+     * Initialize logger instance
+     *
+     * Level -1 is everything, -2 is everything except verbose
+     *
+     * @param {Number}          lvl     Log level
+     *
+     * @memberof core.logger
+     * @function init
+     */
+    init: function(lvl) {
+      if ( lvl === -1 ) {
+        level = ns.INFO | ns.WARNING | ns.ERROR | ns.VERBOSE;
+      } else if ( lvl === -2 ) {
+        level = ns.INFO | ns.WARNING | ns.ERROR;
+      } else {
+        level = lvl;
+      }
+
+      ns.lognt(ns.INFO, 'Loading:', ns.colored('Logger', 'bold'), 'with level', level);
+    },
 
     /**
      * Logs a message
@@ -209,16 +228,5 @@ module.exports.create = function createLogger(lvl) {
     }
   };
 
-  // Make sure we take logging options from cmd/configs
-  if ( lvl === -1 ) {
-    level = ns.INFO | ns.WARNING | ns.ERROR | ns.VERBOSE;
-  } else if ( lvl === -2 ) {
-    level = ns.INFO | ns.WARNING | ns.ERROR;
-  } else {
-    level = lvl;
-  }
-
-  ns.lognt(ns.INFO, 'Loading:', ns.colored('Logger', 'bold'), 'with level', level);
-
   return ns;
-};
+})();

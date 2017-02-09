@@ -37,6 +37,8 @@
 const _fs = require('fs');
 const _path = require('path');
 const _instance = require('./../../core/instance.js');
+const _settings = require('./../../core/settings.js');
+const _logger = require('./../../core/logger.js');
 
 /**
  * Sends a request to an application
@@ -54,8 +56,7 @@ const _instance = require('./../../core/instance.js');
  */
 module.exports.application = function(http, data) {
   const env = _instance.getEnvironment();
-  const logger = _instance.getLogger();
-  const config = _instance.getConfig();
+  const config = _settings.get();
 
   /*eslint dot-notation: "off"*/
   const apath = data.path || null;
@@ -104,7 +105,7 @@ module.exports.application = function(http, data) {
           }
         }
       } catch ( e ) {
-        logger.log(logger.WARNING, e.stack, e.trace);
+        _logger.log(_logger.WARNING, e.stack, e.trace);
         return reject('Application API error: ' + e.toString());
       }
 

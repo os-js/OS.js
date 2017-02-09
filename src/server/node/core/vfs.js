@@ -36,6 +36,7 @@
 
 const _path = require('path');
 const _instance = require('./instance.js');
+const _settings = require('./settings.js');
 
 ///////////////////////////////////////////////////////////////////////////////
 // HELPERS
@@ -79,7 +80,7 @@ function getTransportName(query, mount) {
 
   if ( !mount ) {
     const protocol = query.split(':')[0];
-    const config = _instance.getConfig();
+    const config = _settings.get();
     const mountpoints = config.vfs.mounts || {};
     mount = mountpoints[protocol];
   }
@@ -225,7 +226,7 @@ module.exports.createWriteStream = function(http, path) {
 module.exports.getMime = function getMime(iter) {
   const dotindex = iter.lastIndexOf('.');
   const ext = (dotindex === -1) ? null : iter.substr(dotindex);
-  const config = _instance.getConfig();
+  const config = _settings.get();
   return config.mimes[ext || 'default'];
 };
 
@@ -261,7 +262,7 @@ module.exports.getTransport = function(transportName) {
 module.exports.parseVirtualPath = function(query, options) {
   let realPath = '';
 
-  const config = _instance.getConfig();
+  const config = _settings.get();
   const mountpoints = config.vfs.mounts || {};
 
   const parts = query.split(/([A-z0-9\-_]+)\:\/\/(.*)/);
@@ -347,7 +348,7 @@ module.exports.resolvePathArguments = function(path, options) {
  * @memberof core.vfs
  */
 module.exports.initWatch = function(callback) {
-  const config = _instance.getConfig();
+  const config = _settings.get();
   const mountpoints = config.vfs.mounts || {};
   const watching = [];
 

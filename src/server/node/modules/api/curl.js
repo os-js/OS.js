@@ -34,7 +34,7 @@
  * @namespace modules.api
  */
 
-const _instance = require('./../../core/instance.js');
+const _logger = require('./../../core/logger.js');
 
 /**
  * Do a HTTP request
@@ -57,7 +57,6 @@ const _instance = require('./../../core/instance.js');
  * @return {Promise}
  */
 module.exports.curl = function(http, args) {
-  const logger = _instance.getLogger();
   let url = args.url;
 
   let curlRequest = (function parseRequestParameters() {
@@ -96,7 +95,7 @@ module.exports.curl = function(http, args) {
               return encodeURIComponent(k) + '=' + encodeURIComponent(query[k]);
             }).join('&');
           } catch ( e ) {
-            logger.log(logger.WARNING, 'Failed to transform curl query', e.stack, e);
+            _logger.log(_logger.WARNING, 'Failed to transform curl query', e.stack, e);
           }
         }
       }

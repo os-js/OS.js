@@ -38,6 +38,7 @@ const _session = require('express-session');
 const _cookie = require('cookie');
 const _parser = require('cookie-parser');
 const _instance = require('./../core/instance.js');
+const _settings = require('./../core/settings.js');
 
 /**
  * An object with session helpers
@@ -144,7 +145,7 @@ module.exports.getSessionId = function(request) {
   }
 
   const cookies = _cookie.parse(cookie);
-  const secret = _instance.getConfig().http.session.secret;
+  const secret = _settings.get().http.session.secret;
   return _parser.signedCookie(cookies['connect.sid'], secret);
 }
 

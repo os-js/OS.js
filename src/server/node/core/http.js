@@ -71,6 +71,8 @@
 
 const _vfs = require('./vfs.js');
 const _instance = require('./instance.js');
+const _logger = require('./logger.js');
+const _settings = require('./settings.js');
 const _session = require('./session.js');
 const _auth = require('./auth.js');
 const _utils = require('./utils.js');
@@ -97,7 +99,6 @@ let sidMap = {};
  * will perform a proxy request.
  */
 function proxyCall(env, proxy, request, response) {
-  const logger = _instance.getLogger();
 
   function _getMatcher(k) {
     let matcher = k;
@@ -130,14 +131,14 @@ function proxyCall(env, proxy, request, response) {
     return rm === um;
   }
 
-  const proxies = (_instance.getConfig()).proxies;
+  const proxies = _settings.get().proxies;
   if ( proxy && proxies ) {
     return !Object.keys(proxies).every((k) => {
       const matcher = _getMatcher(k);
       if ( typeof matcher === 'string' ? isStringMatch(matcher, request.url) : matcher.test(request.url) ) {
         const pots = _getOptions(request.url, matcher, proxies[k]);
 
-        logger.log('VERBOSE', logger.colored('PROXY', 'bold'), k, '=>', pots.target);
+        _logger.log('VERBOSE', _logger.colored('PROXY', 'bold'), k, '=>', pots.target);
 
         proxy.web(request, response, pots);
 
@@ -159,7 +160,6 @@ function handleRequest(http, onend) {
     cb(h, cb);
   };
 
-  const logger = _instance.getLogger();
   const env = _instance.getEnvironment();
   const api = _instance.getAPI();
 
@@ -169,7 +169,7 @@ function handleRequest(http, onend) {
       err = '<undefined error>';
     }
 
-    logger.log('ERROR', logger.colored(err, 'red'), err.stack || '<no stack trace>');
+    _logger.log('ERROR', _logger.colored(err, 'red'), err.stack || '<no stack trace>');
 
     if ( !http.isfs && !http.isapi ) {
       http.respond.error(err, 403);
@@ -317,7 +317,7 @@ function handleRequest(http, onend) {
  * This allows you to respond with data in a certain format.
  */
 function createHttpResponder(env, request, response) {
-  const config = _instance.getConfig();
+  const config = _settings.get();
 
   function _raw(data, code, headers) {
     code = code || 200;
@@ -502,9 +502,8 @@ function createHttpObject(request, response, path, data, responder, files) {
  * Creates the HTTP, WebSocket and Proxy servers for OS.js
  */
 function createServer(env, resolve, reject) {
-  const config = _instance.getConfig();
+  const config = _settings.get();
   const httpConfig = config.http || {};
-  const logger = _instance.getLogger();
   const tmpdir = (() => {
     try {
       return require('os').tmpdir();
@@ -521,11 +520,11 @@ function createServer(env, resolve, reject) {
       const contentType = request.headers['content-type'] || '';
 
       if ( proxyCall(env, proxyServer, request, response) ) {
-        logger.log('VERBOSE', logger.colored('PROXY', 'bold'), path);
+        _logger.log('VERBOSE', _logger.colored('PROXY', 'bold'), path);
         return;
       }
 
-      logger.log('VERBOSE', logger.colored(request.method, 'bold'), path);
+      _logger.log('VERBOSE', _logger.colored(request.method, 'bold'), path);
 
       _compression(config.http.compression || {})(request, response, () => {
         const respond = createHttpResponder(env, request, response);
@@ -596,7 +595,7 @@ function createServer(env, resolve, reject) {
 
       websocketServer = new (require('ws')).Server(opts);
       websocketServer.on('connection', (ws) => {
-        logger.log('VERBOSE', logger.colored('WS', 'bold'), 'New connection...');
+        _logger.log('VERBOSE', _logger.colored('WS', 'bold'), 'New connection...');
 
         const sid = _session.getSessionId(ws.upgradeReq);
 
@@ -619,7 +618,7 @@ function createServer(env, resolve, reject) {
         });
 
         ws.on('close', () => {
-          logger.log('VERBOSE', logger.colored('WS', 'bold'), 'Connection closed...');
+          _logger.log('VERBOSE', _logger.colored('WS', 'bold'), 'Connection closed...');
 
           if ( typeof websocketMap[sid] !== 'undefined' ) {
             delete websocketMap[sid];
