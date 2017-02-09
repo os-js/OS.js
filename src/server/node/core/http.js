@@ -30,16 +30,35 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
+const _url = require('url');
+const _path = require('path');
+const _fs = require('fs-extra');
+const _formidable = require('formidable');
+const _compression = require('compression');
+
+const _middleware = require('./middleware.js');
+const _responder = require('./responder.js');
+const _settings = require('./settings.js');
+const _session = require('./session.js');
+const _logger = require('./logger.js');
+const _auth = require('./auth.js');
+const _api = require('./api.js');
+const _vfs = require('./vfs.js');
+const _env = require('./env.js');
+
 /**
  * @namespace core.http
  */
 
+let httpServer = null;
+let websocketServer = null;
+let proxyServer = null;
+let websocketMap = {};
+let sidMap = {};
+
 /**
  * An object filled with data regarding the Server request. Also allows you to use a responder to
  * interrupt the normal procedures.
- * @property  {http.Server}           _http       Node HTTP server
- * @property  {ws.Server}             _ws         Node WebSocket server
- * @property  {ProxyServer}           _proxy      Node Proxy server
  * @property  {http.ClientRequest}    request     HTTP Request object
  * @property  {http.ServerResponse}   response    HTTP Response object
  * @property  {String}                method      HTTP Method name
@@ -53,42 +72,6 @@
  * @property  {ServerResponder}       respond     Responder object
  * @typedef ServerRequest
  */
-
-/**
- * Sends a response directly to the connection
- *
- * @property  {Function}    raw     Respond with raw data
- * @property  {Function}    error   Respond with a error
- * @property  {Function}    file    Respond with a file
- * @property  {Function}    stream  Respond with a stream
- * @property  {Function}    json    Respond with JSON
- * @typedef ServerResponder
- */
-
-///////////////////////////////////////////////////////////////////////////////
-// GLOBALS
-///////////////////////////////////////////////////////////////////////////////
-
-const _api = require('./api.js');
-const _vfs = require('./vfs.js');
-const _env = require('./env.js');
-const _middleware = require('./middleware.js');
-const _logger = require('./logger.js');
-const _settings = require('./settings.js');
-const _session = require('./session.js');
-const _auth = require('./auth.js');
-
-const _url = require('url');
-const _fs = require('fs-extra');
-const _path = require('path');
-const _formidable = require('formidable');
-const _compression = require('compression');
-
-let httpServer = null;
-let websocketServer = null;
-let proxyServer = null;
-let websocketMap = {};
-let sidMap = {};
 
 ///////////////////////////////////////////////////////////////////////////////
 // APIs
@@ -287,173 +270,6 @@ function handleRequest(http, onend) {
 }
 
 /*
- * Creates a `ServerResponder` object for HTTP connections.
- * This allows you to respond with data in a certain format.
- */
-function createHttpResponder(env, request, response) {
-  const config = _settings.get();
-
-  function _raw(data, code, headers) {
-    code = code || 200;
-    headers = headers || {};
-
-    response.writeHead(code, headers);
-    response.write(data)
-    response.end();
-  }
-
-  function _error(message, code) {
-    code = code || 500;
-
-    _raw(String(message), code);
-  }
-
-  function _stream(path, stream, code, mime, options) {
-    options = options || {};
-    code = code || 200;
-
-    return new Promise((resolve, reject) => {
-      _fs.stat(path, (err, stats) => {
-        if ( err ) {
-          _error('File not found', 404);
-          return /*reject()*/;
-        }
-
-        const range = request.headers.range;
-        const headers = {
-          'Content-Type': mime || _vfs.getMime(path) || 'text/plain',
-          'Content-Length': stats.size
-        };
-
-        if ( stream === true ) {
-          const opts = {
-            bufferSize: 64 * 1024
-          };
-
-          if ( range ) {
-            code = 206;
-
-            const positions = range.replace(/bytes=/, '').split('-');
-            const start = parseInt(positions[0], 10);
-            const total = stats.size;
-            const end = positions[1] ? parseInt(positions[1], 10) : total - 1;
-
-            opts.start = start;
-            opts.end = end;
-
-            headers['Content-Length'] = (end - start) + 1;
-            headers['Content-Range'] = 'bytes ' + start + '-' + end + '/' + total;
-            headers['Accept-Ranges'] = 'bytes';
-          } else {
-            try {
-              const cacheEnabled = env.DIST !== 'dist-dev';
-              if ( cacheEnabled && options.cache ) {
-                const cacheConfig = config.http.cache[options.cache];
-                if ( typeof cacheConfig === 'object' ) {
-                  Object.keys(cacheConfig).forEach((k) => {
-                    headers[k] = cacheConfig[k];
-                  });
-                }
-                if ( stats.mtime ) {
-                  headers['Last-Modified'] = stats.mtime;
-                }
-              }
-            } catch ( e ) {
-              // We can safely supress this. Errors due to configuration problems
-            }
-          }
-
-          stream = _fs.createReadStream(path, opts);
-        }
-
-        stream.on('error', (err) => {
-          console.error('An error occured while streaming', path, err);
-          response.end();
-        });
-
-        stream.on('end', () => {
-          response.end();
-        });
-
-        response.writeHead(code, headers);
-        stream.pipe(response);
-
-        return resolve();
-      });
-    });
-  }
-
-  return Object.freeze({
-    _http: httpServer,
-    _ws: websocketServer,
-    _proxy: proxyServer,
-
-    error: _error,
-    raw: _raw,
-
-    json: function(data, code) {
-      if ( typeof data !== 'string' ) {
-        data = JSON.stringify(data);
-      }
-
-      _raw(data, 200, {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Content-Type': 'application/json',
-        'Pragma': 'no-cache',
-        'Expires': 0
-      });
-    },
-
-    stream: _stream,
-
-    file: function(path, options, code) {
-      options = options || {};
-      return _stream(path, true, code, null, options);
-    }
-  });
-}
-
-/*
- * Creates a `ServerResponder` object for WebSocket connections.
- * This allows you to respond with data in a certain format.
- */
-function createWebsocketResponder(ws, index) {
-  function _json(message) {
-    if ( typeof message === 'object' ) {
-      message._index = index;
-    }
-    ws.send(JSON.stringify(message))
-  }
-
-  return Object.freeze({
-    _http: httpServer,
-    _ws: websocketServer,
-    _proxy: proxyServer,
-
-    raw: function(data) {
-      ws.send(data);
-    },
-
-    stream: function() {
-      _json({error: 'Not available'});
-    },
-
-    file: function() {
-      _json({error: 'Not available'});
-      return false;
-    },
-
-    json: function(data) {
-      _json(data);
-    },
-
-    error: function(error) {
-      _json({error: error});
-    }
-  });
-}
-
-/*
  * Creates the `ServerRequest` object passed around.
  */
 function createHttpObject(request, response, path, data, responder, files) {
@@ -476,6 +292,8 @@ function createHttpObject(request, response, path, data, responder, files) {
  * Creates the HTTP, WebSocket and Proxy servers for OS.js
  */
 function createServer(env, resolve, reject) {
+  let servers = {};
+
   const config = _settings.get();
   const httpConfig = config.http || {};
   const tmpdir = (() => {
@@ -501,7 +319,7 @@ function createServer(env, resolve, reject) {
       _logger.log('VERBOSE', _logger.colored(request.method, 'bold'), path);
 
       _compression(config.http.compression || {})(request, response, () => {
-        const respond = createHttpResponder(env, request, response);
+        const respond = _responder.createFromHttp(servers, request, response);
         if ( request.method === 'POST' ) {
           if ( contentType.indexOf('application/json') !== -1 ) {
             let body = [];
@@ -576,7 +394,7 @@ function createServer(env, resolve, reject) {
         ws.on('message', (data) => {
           const message = JSON.parse(data);
           const path = message.path;
-          const respond = createWebsocketResponder(ws, message._index);
+          const respond = _responder.createFromWebsocket(servers, ws, message._index);
 
           _session.getSession(ws.upgradeReq).then((ss) => {
             const newReq = Object.assign(ws.upgradeReq, {
@@ -603,13 +421,11 @@ function createServer(env, resolve, reject) {
       });
     }
 
-    // Middleware
-    const servers = {
-      httpServer: httpServer,
-      websocketServer: websocketServer,
-      proxyServer: proxyServer
-    };
+    servers.httpServer = httpServer;
+    servers.proxyServer = proxyServer;
+    servers.websocketServer = websocketServer;
 
+    // Middleware
     _middleware.register(servers);
 
     resolve(servers);
