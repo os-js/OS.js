@@ -77,7 +77,6 @@ const _logger = require('./logger.js');
 const _settings = require('./settings.js');
 const _session = require('./session.js');
 const _auth = require('./auth.js');
-const _utils = require('./utils.js');
 
 const _url = require('url');
 const _fs = require('fs-extra');
@@ -273,21 +272,6 @@ function handleRequest(http, onend) {
     }
   }
 
-  function _middlewareRequest(method, done) {
-    const middleware = _middleware.get();
-    _utils.iterate(middleware, (iter, idx, next) => {
-      iter.request(http, (error) => {
-        if ( error ) {
-          done(error);
-        } else {
-          next();
-        }
-      });
-    }, () => {
-      done(false);
-    });
-  }
-
   // Take on the HTTP request
   _auth.initSession(http).then(() => {
     const method = http.request.method;
@@ -304,11 +288,11 @@ function handleRequest(http, onend) {
       }
     } else {
       _staticResponse(method, () => {
-        _middlewareRequest(method, (error) => {
+        _middleware.request(http).catch((error) => {
           if ( error ) {
             http.respond.error('Method not allowed', 405);
           }
-        });
+        })
       });
     }
   });
@@ -638,12 +622,7 @@ function createServer(env, resolve, reject) {
       proxyServer: proxyServer
     };
 
-    const middleware = _middleware.get();
-    middleware.forEach((m) => {
-      if ( typeof m.register === 'function' ) {
-        m.register(servers);
-      }
-    });
+    _middleware.register(servers);
 
     resolve(servers);
   });

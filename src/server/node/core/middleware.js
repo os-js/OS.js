@@ -33,6 +33,7 @@
 const _path = require('path');
 const _glob = require('glob-promise');
 const _logger = require('./../core/logger.js');
+const _utils = require('./../core/utils.js');
 
 const MODULES = [];
 
@@ -74,8 +75,49 @@ module.exports.load = function(dirname, cb) {
  *
  * @function get
  * @memberof core.middleware
- * @return {Object}
+ * @return {Array}
  */
 module.exports.get = function() {
   return MODULES;
+};
+
+/**
+ * Registers all Middleware modules
+ *
+ * @param {Object} servers Servers Object
+ *
+ * @function register
+ * @memberof core.middleware
+ */
+module.exports.register = function(servers) {
+  MODULES.forEach((m) => {
+    if ( typeof m.register === 'function' ) {
+      m.register(servers);
+    }
+  });
+};
+
+/**
+ * Performs a request to Middleware
+ *
+ * @param   {ServerRequest}    http          OS.js Server Request
+ *
+ * @function request
+ * @memberof core.middleware
+ * @return {Promise}
+ */
+module.exports.request = function(http) {
+  return new Promise((resolve, reject) => {
+    _utils.iterate(MODULES, (iter, idx, next) => {
+      iter.request(http, (error) => {
+        if ( error ) {
+          reject(error);
+        } else {
+          next();
+        }
+      });
+    }, () => {
+      resolve();
+    });
+  });
 };
