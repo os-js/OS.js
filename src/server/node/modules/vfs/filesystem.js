@@ -88,11 +88,11 @@ function createWatch(name, mount, callback) {
     const tmpRestr = reps(tmpDir).replace(/%(.*)%/g, '([^\/]*)');
     const tmpRe = new RegExp('^' + tmpRestr, 'g')
     const tmpArgs = tmpDir.match(/%(.*)%/g) || [];
-    const hasArgs = configPath.match(/(%[A-z_]+%)/g);
+    const hasArgs = configPath.match(/(%[A-z_]+%)/g) || [];
 
     return (realPath) => {
       realPath = realPath.replace(/\\/g, '/');
-      const matched = realPath.match(tmpRe) || [];
+      const matched = hasArgs.length ? realPath.match(tmpRe) || [] : [];
       const relPath = realPath.replace(tmpRe, '');
 
       if ( hasArgs.length !== matched.length || !relPath ) {
