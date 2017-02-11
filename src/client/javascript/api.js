@@ -327,6 +327,7 @@
       response = response || {};
       cb(response.error || false, response.result);
     }, function API_call_error(err) {
+      API.destroyLoading(lname);
       cb(err);
     }, options);
   };
