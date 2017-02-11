@@ -33,7 +33,7 @@
 const _fs = require('fs');
 const _path = require('path');
 
-const _env = require('./env.js')
+const _env = require('./env.js');
 
 /**
  * @namespace core.settings

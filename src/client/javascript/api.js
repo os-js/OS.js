@@ -1674,7 +1674,7 @@
       str = str.replace(/\/?$/, app.replace(/^\/?/, '/'));
     }
     return str;
-  }
+  };
 
   /**
    * Signs the user out and shuts down OS.js

@@ -234,7 +234,7 @@ module.exports.checkPermission = function(http, type, options) {
       }
     }).catch(reject);
   });
-}
+};
 
 /**
  * Checks a session

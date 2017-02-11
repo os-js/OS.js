@@ -95,7 +95,7 @@ function readStyle(target, verbose, compress, list) {
   return list.filter((i) => {
     return _filter(i, target);
   }).map((i) => {
-    const path = _path.join(ROOT, i.replace(/^(dev|prod):/, ''))
+    const path = _path.join(ROOT, i.replace(/^(dev|prod):/, ''));
     if ( verbose ) {
       _utils.log('- using:', path, '(compress: ' + String(compress) + ')');
     }

@@ -35,8 +35,19 @@
       "all"
     ],
     "no-bitwise": 0,
+    "no-dupe-args": 2,
+    "use-isnan": 2,
+    "valid-typeof": [2, {
+      "requireStringLiterals": true
+    }],
+    "semi": [
+      "error",
+      "always"
+    ],
     "eqeqeq": 2,
     "new-cap": 2,
+    "no-inner-declarations": 2,
+    "no-extra-semi": 2,
     "no-caller": 2,
     "no-empty": [
       2,
@@ -51,6 +62,8 @@
       "args": "none"
     }],
     "no-irregular-whitespace": 2,
+    "no-obj-calls": 2,
+    "no-unreachable": 2,
     "no-cond-assign": [
       2,
       "except-parens"

@@ -113,7 +113,7 @@ function getPackageMetadata(repo, file) {
 
       resolve(Object.freeze(meta));
     } catch (e) {
-      reject('Error with ' + file + e)
+      reject('Error with ' + file + e);
     }
   });
 }

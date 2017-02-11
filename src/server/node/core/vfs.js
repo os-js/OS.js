@@ -184,8 +184,6 @@ module.exports.request = function(http, method, args) {
       resolve(data);
     }).catch(reject);
   });
-
-  return transport.request(http, method, args);
 };
 
 /**

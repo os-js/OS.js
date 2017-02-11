@@ -244,7 +244,7 @@
         s = spl[1] || '';
       }
 
-      s = s.replace(/^\/+/, '').replace(/\/+$/, '')
+      s = s.replace(/^\/+/, '').replace(/\/+$/, '');
 
       return s.split('/').filter(function(i) {
         return ['', '.', '..'].indexOf(i) === -1;

@@ -895,7 +895,7 @@
     },
 
     keypress: function(id, cid, ev) {
-      var kdlen = keyDownList.length
+      var kdlen = keyDownList.length;
 
       if (((typeof ev.which !== 'undefined') && (ev.which === 0)) || getKeysymSpecial(ev)) {
         // Firefox and Opera generate a keyPress event even if keyDown

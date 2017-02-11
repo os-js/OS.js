@@ -72,7 +72,7 @@
 
     this._broadwayId = id;
     this._canvas = canvas;
-  };
+  }
 
   BroadwayWindow.prototype = Object.create(Window.prototype);
 

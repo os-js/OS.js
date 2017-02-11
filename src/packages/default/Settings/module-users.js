@@ -91,7 +91,7 @@
     nwin._on('init', function(root) {
       var self = this;
 
-      scheme.render(this, this._name, root)
+      scheme.render(this, this._name, root);
 
       if ( Object.keys(data).length ) {
         scheme.find(self, 'UserUsername').set('value', data.username);
@@ -169,7 +169,7 @@
       function _action(cb, te) {
         var sel = win._find('UsersList').get('selected');
         if ( sel && sel.length ) {
-          cb(sel[0].data)
+          cb(sel[0].data);
         } else {
           if ( te ) {
             cb(null);
@@ -177,7 +177,7 @@
         }
       }
       win._find('UsersAdd').on('click', function() {
-        showDialog(win, scheme, null)
+        showDialog(win, scheme, null);
       });
       win._find('UsersRemove').on('click', function() {
         _action(function(data) {
@@ -186,12 +186,12 @@
       });
       win._find('UsersEdit').on('click', function() {
         _action(function(data) {
-          showDialog(win, scheme, data)
+          showDialog(win, scheme, data);
         });
       });
       win._find('UsersPasswd').on('click', function() {
         _action(function(data) {
-          showDialog(win, scheme, null, true)
+          showDialog(win, scheme, null, true);
         });
       });
     },

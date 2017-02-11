@@ -263,7 +263,7 @@ function handleRequest(http, onend) {
           if ( error ) {
             http.respond.error('Method not allowed', 405);
           }
-        })
+        });
       });
     }
   });

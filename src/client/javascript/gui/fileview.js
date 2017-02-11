@@ -368,7 +368,7 @@
           headers: false
         },
         path: el.getAttribute('data-path')
-      })
+      });
 
       el.dispatchEvent(new CustomEvent('_sort', {detail: ev.detail}));
     });
