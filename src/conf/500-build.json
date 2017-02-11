@@ -87,7 +87,7 @@
       "src/client/javascript/dialogs/fileupload.js",
       "src/client/javascript/dialogs/font.js",
       "src/client/javascript/dialogs/input.js",
-      "src/client/javascript/vfs.js",
+      "src/client/javascript/vfs/helpers.js",
       "src/client/javascript/vfs/fs.js",
       "src/client/javascript/vfs/file.js",
       "src/client/javascript/vfs/transports/osjs.js",
