@@ -1054,8 +1054,6 @@
    * @param   {Object}                    args                      Function arguments (see below)
    * @param   {String}                    args.destination          Full path to destination
    * @param   {Array}                     args.files                Array of 'File'
-   * @param   {OSjs.Core.Application}     [args.app]                If specified (Application ref) it will create a Dialog window
-   * @param   {OSjs.Core.Window}          [args.win]                Save as above only will add as child to this window
    * @param   {CallbackVFS}               callback                  Callback function
    * @param   {Object}                    [options]                 Set of options
    * @param   {Boolean}                   [options.overwrite=false] If set to true it will not check if the destination exists
@@ -1081,26 +1079,6 @@
       return;
     }
 
-    function _createFile(filename, mime, size) {
-      var npath = (args.destination + '/' + filename).replace(/\/\/\/\/+/, '///');
-      return new VFS.File({
-        filename: filename,
-        path: npath,
-        mime: mime || 'application/octet-stream',
-        size: size
-      });
-    }
-
-    function _dialogClose(ev, btn, ufile) {
-      if ( btn !== 'ok' && btn !== 'complete' ) {
-        callback(false, false);
-        return;
-      }
-
-      var file = _createFile(ufile.name, ufile.mime, ufile.size);
-      callback(false, file);
-    }
-
     var mm = Core.getMountManager();
     if ( !mm.isInternal(args.destination) ) {
       args.files.forEach(function(f, i) {
@@ -1114,37 +1092,6 @@
       return;
     }
 
-    function doRequest(f, i) {
-      if ( args.app ) {
-        API.createDialog('FileUpload', {
-          dest: args.destination,
-          file: f
-        }, _dialogClose, args.win || args.app);
-      } else {
-        var realDest = new VFS.File(args.destination);
-        var tmpPath = hasAlias(realDest);
-        if ( tmpPath ) {
-          realDest = tmpPath;
-        }
-
-        VFS.Transports.OSjs.upload(f, realDest, function(err, result, ev) {
-          if ( err ) {
-            if ( err === 'canceled' ) {
-              callback(API._('ERR_VFS_UPLOAD_CANCELLED'), null, ev);
-            } else {
-              var errstr = ev ? ev.toString() : 'Unknown reason';
-              var msg = API._('ERR_VFS_UPLOAD_FAIL_FMT', errstr);
-              callback(msg, null, ev);
-            }
-          } else {
-            var file = _createFile(f.name, f.type, f.size);
-            //broadcastMessage('vfs:upload', file, args.app, appRef); // FIXME
-            callback(false, file, ev);
-          }
-        }, options);
-      }
-    }
-
     args.files.forEach(function(f, i) {
       var filename = (f instanceof window.File) ? f.name : f.filename;
       var dest = new VFS.File(args.destination + '/' + filename);
@@ -1155,7 +1102,27 @@
         }
 
         try {
-          doRequest(f, i);
+          var realDest = new VFS.File(args.destination);
+          var tmpPath = hasAlias(realDest);
+          if ( tmpPath ) {
+            realDest = tmpPath;
+          }
+
+          VFS.Transports.OSjs.upload(f, realDest, function(err, result, ev) {
+            if ( err ) {
+              if ( err === 'canceled' ) {
+                callback(API._('ERR_VFS_UPLOAD_CANCELLED'), null, ev);
+              } else {
+                var errstr = ev ? ev.toString() : 'Unknown reason';
+                var msg = API._('ERR_VFS_UPLOAD_FAIL_FMT', errstr);
+                callback(msg, null, ev);
+              }
+            } else {
+              var file = VFS.Helpers.createFileFromUpload(args.destination, f);
+              //broadcastMessage('vfs:upload', file, args.app, appRef); // FIXME
+              callback(false, file, ev);
+            }
+          }, options);
         } catch ( e ) {
           callback(API._('ERR_VFS_UPLOAD_FAIL_FMT', e));
         }

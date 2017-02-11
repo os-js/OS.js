@@ -914,19 +914,25 @@
     function upload() {
       win._toggleLoading(true);
 
-      VFS.upload({
-        files: files,
-        destination: dest,
-        win: win,
-        app: self
-      }, function(error, file) {
+      function done(error, file) {
         win._toggleLoading(false);
         if ( error ) {
           API.error(API._('ERR_GENERIC_APP_FMT', self.__label), API._('ERR_GENERIC_APP_REQUEST'), error);
           return;
         }
         win.changePath(null, file, false, false, true);
-      });
+      }
+
+      if ( files ) {
+        VFS.upload({
+          files: files,
+          destination: dest
+        }, done, self);
+      } else {
+        VFS.Helpers.createUploadDialog({
+          destination: dest
+        }, done, self);
+      }
     }
 
     if ( files ) {

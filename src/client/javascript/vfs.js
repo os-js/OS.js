@@ -394,4 +394,57 @@
     }
   };
 
+  /////////////////////////////////////////////////////////////////////////////
+  // OTHER HELPERS
+  /////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Creates a new VFS.File from an upload
+   *
+   * @function createFileFromUpload
+   * @memberof OSjs.VFS.Helpers
+   *
+   * @param     {String}      destination         Destination path
+   * @param     {File}        f                   File
+   *
+   * @return {OSjs.VFS.File}
+   */
+  VFS.Helpers.createFileFromUpload = function(destination, f) {
+    return new VFS.File({
+      filename: f.name,
+      path: (destination + '/' + f.name).replace(/\/\/\/\/+/, '///'),
+      mime: f.mime || 'application/octet-stream',
+      size: f.size
+    });
+  };
+
+  /**
+   * Create a new Upload dialog
+   *
+   * @function createUploadDialog
+   * @memberof OSjs.VFS.Helpers
+   *
+   * @param   {Object}                                     opts                 Options
+   * @param   {String}                                     opts.destination     Destination for upload
+   * @param   {File}                                       [opts.file]          Uploads this file immediately
+   * @param   {Function}                                   cb                   Callback function => fn(error, file, event)
+   * @param   {OSjs.Core.Window|OSjs.Core.Application}     [ref]                Set reference in new window
+   */
+  VFS.Helpers.createUploadDialog = function(opts, cb, ref) {
+    var destination = opts.destination;
+    var upload = opts.file;
+
+    API.createDialog('FileUpload', {
+      dest: destination,
+      file: upload
+    }, function(ev, btn, ufile) {
+      if ( btn !== 'ok' && btn !== 'complete' ) {
+        cb(false, false);
+      } else {
+        var file = VFS.Helpers.createFileFromUpload(destination, ufile);
+        cb(false, file);
+      }
+    }, ref);
+  };
+
 })(OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.Core);
