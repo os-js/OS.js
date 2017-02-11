@@ -918,9 +918,9 @@
         win._toggleLoading(false);
         if ( error ) {
           API.error(API._('ERR_GENERIC_APP_FMT', self.__label), API._('ERR_GENERIC_APP_REQUEST'), error);
-          return;
+        } else {
+          //win.changePath(null, file, false, false, true);
         }
-        win.changePath(null, file, false, false, true);
       }
 
       if ( files ) {

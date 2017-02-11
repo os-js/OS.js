@@ -1119,7 +1119,7 @@
               }
             } else {
               var file = VFS.Helpers.createFileFromUpload(args.destination, f);
-              //broadcastMessage('vfs:upload', file, args.app, appRef); // FIXME
+              broadcastMessage('vfs:upload', file, args.app, appRef);
               callback(false, file, ev);
             }
           }, options);

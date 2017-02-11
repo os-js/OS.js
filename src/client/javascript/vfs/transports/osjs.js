@@ -225,7 +225,6 @@
 
       var parentItem = VFS.file(Utils.dirname(item.path), item.mime);
       internalUpload(data, parentItem, function() {
-        console.warn(arguments)
         callback(null, true);
       }, options);
     },
