@@ -34,6 +34,7 @@
 const _path = require('path');
 const _glob = require('glob-promise');
 const _fs = require('fs-extra');
+const _sjc = require('simplejsonconf');
 
 const _themes = require('./themes.js');
 const _metadata = require('./manifest.js');
@@ -153,115 +154,27 @@ function generateServerConfiguration(cli, cfg) {
  * Get a configuration value by path
  */
 function getConfigPath(config, path, defaultValue) {
-  if ( typeof path === 'string' ) {
-    let result = null;
-    let ns = config;
-
-    const queue = path.split(/\./);
-    queue.forEach((k, i) => {
-      if ( i >= queue.length - 1 ) {
-        result = ns[k];
-      } else {
-        ns = ns[k];
-      }
-    });
-
-    if ( typeof result === 'undefined' ) {
-      return defaultValue;
-    }
-
-    return result;
-  }
-
-  return config;
+  return _sjc.getJSON(config, path, defaultValue);
 }
 
 /*
  * Sets a config value
  */
-const setConfigPath = (() => {
+function setConfigPath(key, value, isTree) {
+  const path = _path.join(ROOT, 'src', 'conf', '900-custom.json');
+  const conf = _fs.readJsonSync(path);
 
-  function removeNulls(obj) {
-    const isArray = obj instanceof Array;
+  const result = _sjc.setJSON(conf, isTree ? null : key, value, {
+    prune: true,
+    guess: true
+  });
 
-    for (let k in obj) {
-      if ( obj[k] === null ) {
-        if ( isArray ) {
-          obj.splice(k, 1);
-        } else {
-          delete obj[k];
-        }
-      } else if ( typeof obj[k] === 'object') {
-        removeNulls(obj[k]);
-      }
-    }
-  }
+  _fs.writeFileSync(path, JSON.stringify(result, null, 2));
 
-  function getNewTree(key, value) {
-    const queue = key.split(/\./);
+  console.warn(String.color('Remember to run \'osjs build:config\' to update your build(s)...', 'green'));
 
-    let resulted = {};
-    let ns = resulted;
-
-    queue.forEach((k, i) => {
-      if ( i >= queue.length - 1 ) {
-        ns[k] = value;
-      } else {
-        if ( typeof ns[k] === 'undefined' ) {
-          ns[k] = {};
-        }
-        ns = ns[k];
-      }
-    });
-
-    return resulted;
-  }
-
-  function guessValue(value) {
-    value = String(value);
-
-    if ( value === 'true' ) {
-      return true;
-    } else if ( value === 'false' ) {
-      return false;
-    } else if ( value === 'null' ) {
-      return null;
-    } else {
-      if ( value.match(/^\d+$/) && !value.match(/^0/) ) {
-        return parseInt(value, 10);
-      } else if ( value.match(/^\d{0,2}(\.\d{0,2}){0,1}$/) ) {
-        return parseFloat(value);
-      }
-    }
-    return value;
-  }
-
-  return function(key, value, isTree) {
-    if ( !isTree ) {
-      value = guessValue(value);
-    }
-
-    const path = _path.join(ROOT, 'src', 'conf', '900-custom.json');
-
-    let newTree = isTree ? value : getNewTree(key, value);
-    let oldTree = {};
-
-    try {
-      oldTree = _fs.readJsonSync(path);
-    } catch ( e ) {
-      oldTree = {};
-    }
-
-    let result = _utils.mergeObject(oldTree, newTree);
-    removeNulls(result);
-
-    _fs.writeFileSync(path, JSON.stringify(result, null, 2));
-
-    console.warn(String.color('Remember to run \'osjs build:config\' to update your build(s)...', 'green'));
-
-    return result;
-  };
-})();
+  return result;
+}
 
 /*
  * Toggles package enable state
