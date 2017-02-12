@@ -186,7 +186,7 @@ module.exports.getSessionId = function(request) {
   }
 
   const cookies = _cookie.parse(cookie);
-  const secret = _settings.get().http.session.secret;
+  const secret = _settings.get('http.session.secret');
   return _parser.signedCookie(cookies['connect.sid'], secret);
 };
 

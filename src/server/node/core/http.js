@@ -115,7 +115,7 @@ function proxyCall(env, proxy, request, response) {
     return rm === um;
   }
 
-  const proxies = _settings.get().proxies;
+  const proxies = _settings.get('proxies');
   if ( proxy && proxies ) {
     return !Object.keys(proxies).every((k) => {
       const matcher = _getMatcher(k);

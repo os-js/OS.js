@@ -32,6 +32,7 @@
 
 const _fs = require('fs');
 const _path = require('path');
+const _sjc = require('simplejsonconf');
 
 const _env = require('./env.js');
 
@@ -107,7 +108,7 @@ function read(opts) {
  * @memberof core.settings
  * @function init
  *
- * @return Object
+ * @return {Mixed}
  */
 module.exports.init = function(opts) {
   read(opts);
@@ -118,14 +119,16 @@ module.exports.init = function(opts) {
 /**
  * Gets the entire configuration tree for server settings
  *
+ * @param {String}   [path]     Resolve this path and return entry
+ *
  * @memberof core.settings
  * @function get
  *
- * @return Object
+ * @return {Mixed}
  */
-module.exports.get = function() {
+module.exports.get = function(path) {
   if ( !CACHE ) {
     read();
   }
-  return CACHE;
+  return path ? _sjc.getJSON(CACHE, path) : CACHE;
 };
