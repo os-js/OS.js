@@ -868,7 +868,7 @@
         return;
       }
 
-      var item = new VFS.File(dir + '/' + result);
+      var item = new VFS.File(Utils.pathJoin(dir, result));
       self._action('mkdir', [item], function() {
         win._toggleDisabled(false);
         win.changePath(null, item);

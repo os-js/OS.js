@@ -737,7 +737,7 @@
     }
 
     var mm = OSjs.Core.getMountManager();
-    if ( Utils.dirname(dir.path) !== Utils.getPathFromVirtual(mm.getModuleProperty('GoogleDrive', 'root')) ) {
+    if ( Utils.getPathFromVirtual(Utils.dirname(dir.path)) !== Utils.getPathFromVirtual(mm.getModuleProperty('GoogleDrive', 'root')) ) {
       getParentPathId(dir, function(error, id) {
         console.debug('GoogleDrive::mkdir()->getParentPathId()', id, 'of', dir);
         if ( error || !id ) {
