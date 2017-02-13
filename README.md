@@ -39,3 +39,5 @@ Head over to the [installation manual page](https://os-js.org/manual/installatio
 * [Google+](https://plus.google.com/b/113399210633478618934/113399210633478618934)
 * [Facebook](https://www.facebook.com/os-js.org)
 
+
+[![Analytics](https://ga-beacon.appspot.com/UA-35975596-2/repo?pixel)](https://github.com/igrigorik/ga-beacon)
