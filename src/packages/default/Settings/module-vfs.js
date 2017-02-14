@@ -97,7 +97,7 @@
         self._close();
       }
 
-      scheme.render(this, this._name, root)
+      scheme.render(this, this._name, root);
 
       if ( selected ) {
         scheme.find(self, 'MountType').set('value', selected.transport);

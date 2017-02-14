@@ -168,7 +168,7 @@ function createStandaloneScheme(iter, dest) {
         _utils.createStandaloneScheme(src, '/' + iter.path +  '/' + p.src, _path.join(dest, '_scheme.js'));
         _fs.removeSync(src);
       }
-    })
+    });
   }
 }
 

@@ -113,8 +113,8 @@ module.exports.application = function(http, data) {
       if ( found ) {
         found();
       } else {
-        reject('No such Application API method.')
+        reject('No such Application API method.');
       }
-    })
+    });
   });
 };

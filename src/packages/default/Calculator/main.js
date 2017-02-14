@@ -122,7 +122,6 @@
     }).set('readonly', true).focus();
 
     root.querySelectorAll('gui-button').forEach(function(el, idx) {
-      console.log(el)
       var r = parseInt(idx / 4, 10);
       var c = idx % 4;
       var op = buttons[r][c];

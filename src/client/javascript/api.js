@@ -43,6 +43,7 @@
   var CurrentLocale = 'en_EN';
 
   var _CLIPBOARD;         // Current 'clipboard' data
+  var _LAUNCHING = [];
 
   var _hooks = {
     'onInitialize':          [],
@@ -327,6 +328,7 @@
       response = response || {};
       cb(response.error || false, response.result);
     }, function API_call_error(err) {
+      API.destroyLoading(lname);
       cb(err);
     }, options);
   };
@@ -507,6 +509,11 @@
   API.launch = function API_launch(name, args, ondone, onerror, onconstruct) {
     args = args || {};
 
+    if ( _LAUNCHING.indexOf(name) !== -1 ) {
+      console.warn('Application', name, 'is already launching...');
+      return;
+    }
+
     var err;
 
     var splash = null;
@@ -517,6 +524,7 @@
     var compability = Utils.getCompability();
     var metadata = packman.getPackage(name);
     var running = API.getProcess(name, true);
+    var launchIndex = -1;
 
     var preloads = (function() {
       var list = (metadata.preload || []).slice(0);
@@ -583,6 +591,10 @@
     }
 
     function _destroySplash() {
+      if ( launchIndex >= 0 ) {
+        _LAUNCHING.splice(launchIndex, 1);
+      }
+
       API.destroyLoading(name);
       if ( splash ) {
         splash.destroy();
@@ -629,15 +641,19 @@
         throw new Error(isCompatible);
       }
 
-      if ( metadata.singular === true && running ) {
-        if ( running instanceof OSjs.Core.Application ) {
-          // In this case we do not trigger an error. Applications simply get a signal for attention
-          console.warn('API::launch()', 'detected that this application is a singular and already running...');
-          running._onMessage('attention', args);
-          _onFinished(true);
-          return; // muy importante!
-        } else {
-          throw new Error(API._('ERR_APP_LAUNCH_ALREADY_RUNNING_FMT', name));
+      if ( metadata.singular === true ) {
+        launchIndex = _LAUNCHING.push(name) - 1;
+
+        if ( running ) {
+          if ( running instanceof OSjs.Core.Application ) {
+            // In this case we do not trigger an error. Applications simply get a signal for attention
+            console.warn('API::launch()', 'detected that this application is a singular and already running...');
+            running._onMessage('attention', args);
+            _onFinished(true);
+            return; // muy importante!
+          } else {
+            throw new Error(API._('ERR_APP_LAUNCH_ALREADY_RUNNING_FMT', name));
+          }
         }
       }
 
@@ -1658,7 +1674,7 @@
       str = str.replace(/\/?$/, app.replace(/^\/?/, '/'));
     }
     return str;
-  }
+  };
 
   /**
    * Signs the user out and shuts down OS.js

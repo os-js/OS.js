@@ -69,7 +69,7 @@
 
   function getSelectionEventAttribs(mel, didx) {
     var id = mel.getAttribute('data-id');
-    var idx = Utils.$index(mel)
+    var idx = Utils.$index(mel);
 
     if ( !didx ) {
       idx = parseInt(mel.getAttribute('data-index'), 10);

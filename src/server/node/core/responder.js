@@ -74,7 +74,7 @@ module.exports.createFromHttp = function(servers, request, response) {
     headers = headers || {};
 
     response.writeHead(code, headers);
-    response.write(data)
+    response.write(data);
     response.end();
   }
 
@@ -206,7 +206,7 @@ module.exports.createFromWebsocket = function(servers, ws, index) {
     if ( typeof message === 'object' ) {
       message._index = index;
     }
-    ws.send(JSON.stringify(message))
+    ws.send(JSON.stringify(message));
   }
 
   return Object.freeze({

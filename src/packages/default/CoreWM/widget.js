@@ -86,7 +86,7 @@
       if ( instance._options.aspect === true ) {
         var width = dimension.width + dx;
         var height = width / instance._aspect;
-        return {width: width, height: height}
+        return {width: width, height: height};
       }
 
       return {
@@ -156,7 +156,7 @@
 
     Utils.$bind(instance._$element, 'contextmenu:widgetcontext', function(ev) {
       instance._onContextMenu(ev);
-    })
+    });
   }
 
   function validNumber(num) {
@@ -221,7 +221,7 @@
     this._$element = null;
     this._$resize = null;
     this._$canvas = null;
-    this._$context = null
+    this._$context = null;
 
     Utils.mergeObject(this._options.settings, settings.get('settings', {}));
 
@@ -419,7 +419,7 @@
         menu.push({
           title: _('Open {0} Settings', _(this._name)),
           onClick: function(ev) {
-            self._openSettings(ev)
+            self._openSettings(ev);
           }
         });
       }
@@ -561,7 +561,7 @@
     if ( this._$element ) {
       this._$element.setAttribute('data-locked', String(this._locked));
     }
-  }
+  };
 
   /**
    * Updates the Widgets position based on internal options

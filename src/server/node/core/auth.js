@@ -65,7 +65,7 @@ module.exports.load = function(opts) {
 
     try {
       const a = require(path);
-      const c = _settings.get().modules.auth[name] || {};
+      const c = _settings.get('modules.auth')[name] || {};
       const r = a.register(c);
 
       MODULE = a;
@@ -234,7 +234,7 @@ module.exports.checkPermission = function(http, type, options) {
       }
     }).catch(reject);
   });
-}
+};
 
 /**
  * Checks a session

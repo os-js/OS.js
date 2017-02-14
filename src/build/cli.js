@@ -56,7 +56,7 @@ module.exports.run = function(args, done) {
       return done(true);
     }
 
-    return [task, arg]
+    return [task, arg];
   });
 
   process.on('uncaughtException', (error) => {

@@ -49,7 +49,7 @@
    */
   function noop(err, res) {
     if ( err ) {
-      console.error('VFS operation without callback caused an error', err)
+      console.error('VFS operation without callback caused an error', err);
     } else {
       console.warn('VFS operation without callback', res);
     }

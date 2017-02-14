@@ -209,7 +209,7 @@ function buildIcon(cli, cfg, name) {
       _fs.copySync(psrc, dst);
 
       _next();
-    })
+    });
   }
 
   const list = name ? [name] : cfg.themes.icons;

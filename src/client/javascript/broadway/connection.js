@@ -115,7 +115,7 @@
               if ( btn === 'ok' && value ) {
                 OSjs.Broadway.Connection.spawn(value);
               }
-            })
+            });
           }
         });
       } else {
@@ -162,7 +162,7 @@
     };
 
     _ws.onopen = function() {
-      cb(null, _ws)
+      cb(null, _ws);
     };
 
     _ws.onclose = function() {
@@ -237,7 +237,7 @@
     setTimeout(function() {
       updateNotification();
     }, 100);
-  };
+  }
 
   /**
    * Creates new Broadway connections
@@ -256,7 +256,7 @@
       _connected = true;
 
       if ( err ) {
-        API.error('Broadway', 'Failed to connect', err)
+        API.error('Broadway', 'Failed to connect', err);
       } else {
         try {
           var host = createURL(conf.defaults.connection);
@@ -266,7 +266,7 @@
         }
       }
     });
-  };
+  }
 
   /**
    * Spawns a new process on the Broadway server
@@ -285,7 +285,7 @@
       method: 'launch',
       argument: cmd
     }));
-  };
+  }
 
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS

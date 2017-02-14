@@ -95,7 +95,7 @@
               }
             });
           }
-        })
+        });
       }
     });
 
@@ -184,7 +184,7 @@
 
     this.$view.$element.setAttribute('data-zoom', attr);
     this.$view.$element.firstChild.style.width = (w === null ? 'auto' : String(w) + 'px');
-  }
+  };
 
   ApplicationPreviewWindow.prototype.onZoomIn = function() {
     this._onZoom('in');

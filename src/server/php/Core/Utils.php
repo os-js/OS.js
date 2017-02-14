@@ -87,9 +87,9 @@ abstract class Utils
                 continue;
             }
 
-            if (!destroy_dir($dir . DIRECTORY_SEPARATOR . $file)) {
+            if (!self::rmdir($dir . DIRECTORY_SEPARATOR . $file)) {
                 chmod($dir . DIRECTORY_SEPARATOR . $file, 0777);
-                if (!destroy_dir($dir . DIRECTORY_SEPARATOR . $file)) {
+                if (!self::rmdir($dir . DIRECTORY_SEPARATOR . $file)) {
                     return false;
                 }
             }

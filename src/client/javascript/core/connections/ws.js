@@ -164,6 +164,9 @@
     if ( res !== false ) {
       return res;
     }
+    if ( !this.ws ) {
+      return false;
+    }
 
     var idx = this.index++;
     var base = method.match(/^FS:/) ? '/FS/' : '/API/';

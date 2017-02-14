@@ -39,19 +39,19 @@ const manager = {
 
   add: function(db, user, callback) {
     const q = 'INSERT INTO `users` (`username`, `name`, `groups`, `password`) VALUES(?, ?, ?, ?);';
-    const a = [user.username, user.name, user.groups.join(','), '']
+    const a = [user.username, user.name, user.groups.join(','), ''];
     return db.query(q, a);
   },
 
   remove: function(db, user, callback) {
     const q = 'DELETE FROM `users` WHERE `id` = ?;';
-    const a = [user.id]
+    const a = [user.id];
     return db.query(q, a);
   },
 
   edit: function(db, user, callback) {
     const q = 'UPDATE `users` SET `username` = ?, `name` = ?, `groups` = ? WHERE `id` = ?;';
-    const a = [user.username, user.name, user.groups.join(','), user.id]
+    const a = [user.username, user.name, user.groups.join(','), user.id];
     return db.query(q, a);
   },
 
@@ -60,7 +60,7 @@ const manager = {
       _bcrypt.genSalt(10, (err, salt) => {
         _bcrypt.hash(user.password, salt, (err, hash) => {
           const q = 'UPDATE `users` SET `password` = ? WHERE `id` = ?;';
-          const a = [hash, user.id]
+          const a = [hash, user.id];
 
           db.query(q, a).then(resolve).catch(reject);
         });
