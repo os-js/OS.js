@@ -4,9 +4,11 @@ node_js:
   - 6
   - 5
   - 4
-before_script:
+install:
+  - npm install
   - npm install mocha
   - npm install grunt-cli -g
+before_script:
   - node osjs build:config build:manifest build:core
 after_success:
   - node osjs build
