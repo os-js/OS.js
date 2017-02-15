@@ -560,3 +560,4 @@ module.exports.removeRepository = removeRepository;
 module.exports.listPackages = listPackages;
 module.exports.get = getConfig;
 module.exports.set = setConfig;
+module.exports._set = setConfigPath;
