@@ -211,7 +211,7 @@ const TASKS = {
 
   config: {
     set: function(cli, cfg) {
-      return _config.set(cfg, cli.option('name'), cli.option('value'));
+      return _config.set(cfg, cli.option('name'), cli.option('value'), cli.option('import'));
     },
     get: function(cli, cfg) {
       return _config.get(cfg, cli.option('name'));

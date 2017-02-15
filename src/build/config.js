@@ -333,10 +333,40 @@ function getConfig(config, key) {
 /*
  * Sets a configuration option
  */
-function setConfig(config, key, value) {
+function setConfig(config, key, value, importFile) {
+  key = key || '';
+
+  function getNewTree(k, v) {
+    let resulted = {};
+
+    if ( k.length ) {
+      const queue = k.split(/\./);
+      let ns = resulted;
+      queue.forEach((k, i) => {
+        if ( i >= queue.length - 1 ) {
+          ns[k] = v;
+        } else {
+          if ( typeof ns[k] === 'undefined' ) {
+            ns[k] = {};
+          }
+          ns = ns[k];
+        }
+      });
+    }
+
+    return resulted;
+  }
+
+  if ( importFile ) {
+    const importJson = _fs.readJsonSync(importFile);
+    const importTree = key.length ? getNewTree(key, importJson) : importJson;
+    return Promise.resolve(setConfigPath(null, importTree, true));
+  }
+
   if ( typeof value === 'undefined' ) {
     return Promise.resolve(value);
   }
+
   return Promise.resolve(setConfigPath(key, value));
 }
 
