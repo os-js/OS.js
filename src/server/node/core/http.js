@@ -329,7 +329,7 @@ function createServer(resolve, reject) {
             });
 
             request.on('end', () => {
-              const data = JSON.parse(Buffer.concat(body));
+              const data = body.length ? JSON.parse(Buffer.concat(body)) : {};
               handleRequest(createHttpObject(request, response, path, data, respond));
             });
           } else if ( contentType.indexOf('multipart/form-data') !== -1 ) {
