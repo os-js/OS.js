@@ -35,6 +35,7 @@ const _path = require('path');
 const _fs = require('fs-extra');
 
 const _utils = require('./utils.js');
+const _logger = _utils.logger;
 
 const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
 
@@ -219,7 +220,7 @@ const TASKS = {
     });
 
     if ( (cfg.repositories || []).indexOf(repo) < 0 ) {
-      console.warn(String.color('The repository \'' + repo + '\' is not active.', 'yellow'));
+      _logger.warn(String.color('The repository \'' + repo + '\' is not active.', 'yellow'));
     }
 
     return Promise.resolve();

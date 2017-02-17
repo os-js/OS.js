@@ -33,8 +33,8 @@
 const _fs = require('fs');
 const _path = require('path');
 const _build = require('./index.js');
+const _utils = require('./utils.js');
 const _minimist = require('minimist');
-require('colors');
 
 module.exports.run = function(args, done) {
   args = _minimist(args);
@@ -65,7 +65,7 @@ module.exports.run = function(args, done) {
     done(true);
   });
 
-  Promise.each(actions.map((action) => {
+  _utils.eachp(actions.map((action) => {
     return function() {
       return _build[action[0]]({
         option: function(k, d) {

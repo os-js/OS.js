@@ -38,6 +38,8 @@ const _fs = require('fs-extra');
 const ISWIN = /^win/.test(process.platform);
 const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
 
+require('colors');
+
 ///////////////////////////////////////////////////////////////////////////////
 // EXPORTS
 ///////////////////////////////////////////////////////////////////////////////
@@ -57,7 +59,7 @@ module.exports.fixWinPath = function fixWinPath(str) {
  */
 module.exports.log = function log() {
   const str = Array.prototype.slice.call(arguments).join(' ');
-  console.log(module.exports.replaceAll(str, ROOT + '/', ''));
+  module.exports.logger.log(module.exports.replaceAll(str, ROOT + '/', ''));
 };
 
 /*
@@ -177,3 +179,50 @@ module.exports.createStandaloneScheme = function createStandaloneScheme(src, nam
 module.exports.addslashes = function addslashes(str) {
   return (str + '').replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0');
 };
+
+/*
+ * Helper for running promises in sequence
+ */
+module.exports.eachp = function(list, onentry) {
+  onentry = onentry || function() {};
+
+  return new Promise((resolve, reject) => {
+    (function next(i) {
+      if ( i >= list.length ) {
+        return resolve();
+      }
+
+      const iter = list[i]();
+      iter.then((arg) => {
+        onentry(arg);
+        next(i + 1);
+      }).catch(reject);
+    })(0);
+  });
+};
+
+/*
+ * Logging helper
+ */
+module.exports.logger = {
+  log: function() {
+    console.log.apply(console, arguments);
+  },
+  warn: function() {
+    console.warn.apply(console, arguments);
+  },
+  info: function() {
+    console.info.apply(console, arguments);
+  },
+  error: function() {
+    console.error.apply(console, arguments);
+  },
+  color: (str, color) => {
+    str = String(str);
+    color.split(',').forEach((key) => {
+      str = str[key.trim()] || str;
+    });
+    return str;
+  }
+};
+

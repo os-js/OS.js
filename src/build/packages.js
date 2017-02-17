@@ -36,6 +36,7 @@ const _fs = require('fs-extra');
 
 const _manifest = require('./manifest.js');
 const _utils = require('./utils.js');
+const _logger = _utils.logger;
 
 let _ugly;
 let Cleancss;
@@ -62,11 +63,11 @@ function runBuildScripts(verbose, target, section, iter, src, dest, cb) {
     return !!s;
   });
 
-  return Promise.each(scripts.map((cmd) => {
+  return _utils.eachp(scripts.map((cmd) => {
     return function() {
       return new Promise((resolve, reject) => {
         cmd = cmd.replace('%PACKAGE%', src);
-        console.log('$', cmd.replace(ROOT + '/', ''));
+        _logger.log('$', cmd.replace(ROOT + '/', ''));
 
         let env = Object.create(process.env);
         env.OSJS_TARGET = target;
@@ -74,10 +75,10 @@ function runBuildScripts(verbose, target, section, iter, src, dest, cb) {
 
         require('child_process').exec(cmd, {cwd: dest, env: env}, (err, stdout, stderr) => {
           if ( stderr ) {
-            console.error(stderr);
+            _logger.error(stderr);
           }
           if ( verbose ) {
-            console.log(stdout);
+            _logger.log(stdout);
           }
           resolve();
         });
@@ -110,8 +111,8 @@ function copyResources(verbose, iter, src, dest) {
           }
           _fs.copySync(_path.join(src, file), d);
         } catch ( e ) {
-          console.warn(e);
-          console.warn('Failed copying resource', _path.join(src, file));
+          _logger.warn(e);
+          _logger.warn('Failed copying resource', _path.join(src, file));
         }
       });
 
@@ -195,12 +196,12 @@ function combineResources(standalone, metadata, dest) {
           try {
             combined[p.type].push(_fs.readFileSync(path).toString());
           } catch ( e ) {
-            _utils.log(String.color('Failed reading:', 'yellow'), path);
+            _utils.log(_logger.color('Failed reading:', 'yellow'), path);
           }
           remove.push(path);
         }
       } catch ( e ) {
-        console.error(e);
+        _logger.error(e);
       }
     });
 
@@ -277,7 +278,7 @@ function compressResources(verbose, iter, dest) {
       }
     };
 
-    Promise.each(iter.preload.map((pre, idx) => {
+    _utils.eachp(iter.preload.map((pre, idx) => {
       return function() {
         return new Promise((yes, no) => {
           const m = pre.src.match(/\.min\.(js|css)$/);
@@ -324,9 +325,9 @@ const TARGETS = {
       const src = _path.join(ROOT, 'src', 'packages', name);
       const dest = _path.join(ROOT, 'dist', 'packages', name);
 
-      Promise.each([
+      _utils.eachp([
         function() {
-          console.log('Building', String.color('dist:', 'bold') + String.color(name, 'blue,bold'));
+          _logger.log('Building', _logger.color('dist:', 'bold') + _logger.color(name, 'blue,bold'));
 
           _utils.removeSilent(dest);
           _utils.mkdirSilent(dest);
@@ -367,9 +368,9 @@ const TARGETS = {
       const src = _path.join(ROOT, 'src', 'packages', name);
       const dest = _path.join(ROOT, 'src', 'packages', name);
 
-      Promise.each([
+      _utils.eachp([
         function() {
-          console.log('Building', String.color('dist-dev:', 'bold') + String.color(name, 'blue,bold'));
+          _logger.log('Building', _logger.color('dist-dev:', 'bold') + _logger.color(name, 'blue,bold'));
           return Promise.resolve();
         },
         function() {
@@ -413,7 +414,7 @@ function buildPackage(target, cli, cfg, name, metadata) {
 function buildPackages(target, cli, cfg) {
   return new Promise((resolve, reject) => {
     _manifest.getPackages(cfg.repositories).then((packages) => {
-      Promise.each(Object.keys(packages).map((iter) => {
+      _utils.eachp(Object.keys(packages).map((iter) => {
         return function() {
           return buildPackage(target, cli, cfg, packages[iter].path, packages[iter]);
         };

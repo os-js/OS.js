@@ -39,6 +39,7 @@ const _sjc = require('simplejsonconf');
 const _themes = require('./themes.js');
 const _metadata = require('./manifest.js');
 const _utils = require('./utils.js');
+const _logger = _utils.logger;
 
 const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
 
@@ -132,10 +133,10 @@ function generateServerConfiguration(cli, cfg) {
                 const s = _fs.readJsonSync(p);
                 settings = _utils.mergeObject(settings, s);
               } catch ( e ) {
-                _utils.log(String.color('Failed reading:', 'yellow'), p);
+                _utils.log(_logger.color('Failed reading:', 'yellow'), p);
               }
             } catch ( e ) {
-              console.warn('createConfigurationFiles()', e, e.stack);
+              _logger.warn('createConfigurationFiles()', e, e.stack);
             }
           });
         }
@@ -171,7 +172,7 @@ function setConfigPath(key, value, isTree) {
 
   _fs.writeFileSync(path, JSON.stringify(result, null, 2));
 
-  console.warn(String.color('Remember to run \'osjs build:config\' to update your build(s)...', 'green'));
+  _logger.warn(_logger.color('Remember to run \'osjs build:config\' to update your build(s)...', 'green'));
 
   return result;
 }
@@ -240,7 +241,7 @@ function getConfiguration() {
           const json = _fs.readJsonSync(file);
           object = _utils.mergeObject(object, json);
         } catch ( e ) {
-          console.warn('Failed to read JSON file', _path.basename(file), 'Syntax error ?', e);
+          _logger.warn('Failed to read JSON file', _path.basename(file), 'Syntax error ?', e);
         }
       });
 
@@ -277,7 +278,7 @@ function getConfiguration() {
 
 const TARGETS = {
   client: function(cli, cfg) {
-    return Promise.each(['dist', 'dist-dev'].map((dist) => {
+    return _utils.eachp(['dist', 'dist-dev'].map((dist) => {
       return function() {
         return new Promise((resolve, reject) => {
           const src = _path.join(ROOT, 'src', 'templates', 'dist', 'settings.js');
@@ -311,7 +312,7 @@ const TARGETS = {
 function writeConfiguration(target, cli, cfg) {
   return new Promise((resolve, reject) => {
     if ( TARGETS[target] ) {
-      console.log('Generating configuration for', target);
+      _logger.log('Generating configuration for', target);
       TARGETS[target](cli, cfg).then(resolve).catch(reject);
     } else {
       reject('Invalid target ' + target);
@@ -534,7 +535,7 @@ function listPackages(config) {
           const lblrepo = p.repo[es ? 'white' : 'grey'];
           const lbltype = p.type[es ? 'white' : 'grey'];
 
-          console.log(pl(lblenabled, 20), pl(lblrepo, 30), pl(lbltype, 25), lblname);
+          _logger.log(pl(lblenabled, 20), pl(lblrepo, 30), pl(lbltype, 25), lblname);
         });
       }
 

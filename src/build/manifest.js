@@ -36,6 +36,8 @@ const _glob = require('glob-promise');
 const _fs = require('fs-extra');
 
 const _config = require('./config.js');
+const _utils = require('./utils.js');
+const _logger = _utils.logger;
 
 const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
 
@@ -132,7 +134,7 @@ function getRepositoryPackages(repo, all) {
 
       _glob(_path.join(path, '*', 'metadata.json')).then((files) => {
 
-        Promise.each(files.map((file) => {
+        _utils.eachp(files.map((file) => {
           return function() {
             return getPackageMetadata(repo, file);
           };
@@ -161,7 +163,7 @@ function getPackages(repos, filter, all) {
 
   let list = {};
   return new Promise((resolve, reject) => {
-    Promise.each(repos.map((repo) => {
+    _utils.eachp(repos.map((repo) => {
       return function() {
         return getRepositoryPackages(repo, all);
       };
@@ -335,7 +337,7 @@ const TARGETS = {
 function writeManifest(target, cli, cfg) {
   return new Promise((resolve, reject) => {
     if ( TARGETS[target] ) {
-      console.log('Generating manifest for', target);
+      _logger.log('Generating manifest for', target);
       TARGETS[target](cli, cfg).then(resolve).catch(reject);
     } else {
       reject('Invalid target ' + target);

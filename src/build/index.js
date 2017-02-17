@@ -40,47 +40,10 @@ const _themes = require('./themes.js');
 const _packages = require('./packages.js');
 const _core = require('./core.js');
 const _generate = require('./generate.js');
+const _utils = require('./utils.js');
+const _logger = _utils.logger;
 
 const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
-
-///////////////////////////////////////////////////////////////////////////////
-// POLYFILLS
-///////////////////////////////////////////////////////////////////////////////
-
-require('colors');
-
-/*
- * Helper for printing colors
- */
-String.color = function(str, color) {
-  str = String(str);
-
-  color.split(',').forEach((key) => {
-    str = str[key.trim()] || str;
-  });
-  return str;
-};
-
-/*
- * Helper for running promises in sequence
- */
-Promise.each = function(list, onentry) {
-  onentry = onentry || function() {};
-
-  return new Promise((resolve, reject) => {
-    (function next(i) {
-      if ( i >= list.length ) {
-        return resolve();
-      }
-
-      const iter = list[i]();
-      iter.then((arg) => {
-        onentry(arg);
-        next(i + 1);
-      }).catch(reject);
-    })(0);
-  });
-};
 
 ///////////////////////////////////////////////////////////////////////////////
 // HELPERS
@@ -115,14 +78,14 @@ function _eachTask(cli, args, taskName, namespace) {
 
   return new Promise((resolve, reject) => {
     _config.getConfiguration().then((cfg) => {
-      Promise.each(args.replace(/\s/, '').split(',').map((iter) => {
+      _utils.eachp(args.replace(/\s/, '').split(',').map((iter) => {
         return function() {
           iter = (iter || '').replace('-', '_');
           if ( typeof namespace === 'function' ) {
             return namespace(cli, cfg, iter);
           } else {
             if ( namespace[iter] ) {
-              console.log(String.color('Running task:', 'bold'), String.color([taskName, iter].join(':'), 'green'));
+              _logger.log(_logger.color('Running task:', 'bold'), _logger.color([taskName, iter].join(':'), 'green'));
               return namespace[iter](cli, cfg);
             }
           }
@@ -201,7 +164,7 @@ const TASKS = {
 
     packages: function(cli, cfg) {
       const list = _getTargets(cli, ['dist', 'dist-dev']);
-      return Promise.each(list.map((target) => {
+      return _utils.eachp(list.map((target) => {
         return function() {
           return _packages.buildPackages(target, cli, cfg);
         };
@@ -258,7 +221,7 @@ const TASKS = {
             _fs.writeFileSync(out, String(arg));
             return resolve();
           } else {
-            console.log(arg);
+            _logger.log(arg);
           }
 
           resolve();
@@ -317,7 +280,7 @@ module.exports.config = function(cli, arg) {
       _config.getConfiguration().then((cfg) => {
         TASKS.config[arg](cli, cfg).then((arg) => {
           if ( typeof arg !== 'undefined' ) {
-            console.log(arg);
+            _logger.log(arg);
           }
           resolve();
         }).catch(reject);
@@ -361,10 +324,10 @@ module.exports.run = function(cli, args) {
     instance.run();
 
     process.on('uncaughtException', (error) => {
-      console.log('UNCAUGHT EXCEPTION', error, error.stack);
+      _logger.log('UNCAUGHT EXCEPTION', error, error.stack);
     });
   }).catch((error) => {
-    console.log(error);
+    _logger.log(error);
     process.exit(1);
   });
 

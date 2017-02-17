@@ -36,6 +36,7 @@ const _glob = require('glob-promise');
 const _fs = require('fs-extra');
 
 const _utils = require('./utils.js');
+const _logger = _utils.logger;
 
 const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
 
@@ -126,7 +127,7 @@ function readMetadata(cfg) {
  */
 function buildFonts(cli, cfg) {
   return new Promise((resolve, reject) => {
-    console.log('Building fonts');
+    _logger.log('Building fonts');
     _utils.mkdirSilent(_path.join(ROOT, 'dist', 'themes', 'fonts'));
 
     let rep = cfg.client.Connection.FontURI;
@@ -158,7 +159,7 @@ function buildFonts(cli, cfg) {
  */
 function buildStatic(cli, cfg) {
   return new Promise((resolve, reject) => {
-    console.log('Building statics');
+    _logger.log('Building statics');
 
     const src = _path.join(ROOT, 'src', 'client', 'themes', 'wallpapers');
     const dst = _path.join(ROOT, 'dist', 'themes', 'wallpapers');
@@ -185,7 +186,7 @@ function buildIcon(cli, cfg, name) {
 
   function _buildIcon(n) {
     return new Promise((resolve) => {
-      console.log('Building icon pack', String.color(n, 'blue,bold'));
+      _logger.log('Building icon pack', _logger.color(n, 'blue,bold'));
 
       const src = _path.join(ROOT, 'src', 'client', 'themes', 'icons', n);
       const dst = _path.join(ROOT, 'dist', 'themes', 'icons', n);
@@ -225,7 +226,7 @@ function buildStyle(cli, cfg, name) {
 
   function _buildStyle(n) {
     return new Promise((resolve) => {
-      console.log('Building style', String.color(n, 'blue,bold'));
+      _logger.log('Building style', _logger.color(n, 'blue,bold'));
 
       const src = _path.join(ROOT, 'src', 'client', 'themes', 'styles', n);
       const dst = _path.join(ROOT, 'dist', 'themes', 'styles');
