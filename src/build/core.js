@@ -233,11 +233,12 @@ function copyResources(verbose, cfg, dist) {
         const dst = _path.join(ROOT, cfg.build.statics[f]);
 
         let path = f;
+        let skip = false;
         try {
           if ( f.substr(0, 1) === '?' ) {
             path = path.substr(1);
             if ( _fs.existsSync(dst) ) {
-              return;
+              skip = true;
             } else {
               _fs.mkdirSync(_path.dirname(dst));
             }
@@ -246,15 +247,17 @@ function copyResources(verbose, cfg, dist) {
           _utils.log(String.color('Warning:', 'yellow'), e);
         }
 
-        const src = _path.join(ROOT, path);
-        if ( verbose ) {
-          _utils.log('- included:', dst);
-        }
+        if ( !skip ) {
+          const src = _path.join(ROOT, path);
+          if ( verbose ) {
+            _utils.log('- included:', dst);
+          }
 
-        try {
-          _fs.copySync(src, dst);
-        } catch ( e ) {
-          _utils.log(String.color('Warning:', 'yellow'), e);
+          try {
+            _fs.copySync(src, dst);
+          } catch ( e ) {
+            _utils.log(String.color('Warning:', 'yellow'), e);
+          }
         }
       });
 
