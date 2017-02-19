@@ -305,6 +305,8 @@
         return;
       }
 
+      ev.preventDefault();
+
       var result;
       var dx = mousePosition.x - current.startX;
       var dy = mousePosition.y - current.startY;
