@@ -59,7 +59,7 @@ module.exports.fixWinPath = function fixWinPath(str) {
  */
 module.exports.log = function log() {
   const str = Array.prototype.slice.call(arguments).join(' ');
-  module.exports.logger.log(module.exports.replaceAll(str, ROOT + '/', ''));
+  console.log(module.exports.replaceAll(str, ROOT + '/', ''));
 };
 
 /*

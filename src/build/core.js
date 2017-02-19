@@ -36,6 +36,7 @@ const _fs = require('fs-extra');
 const _glob = require('glob-promise');
 
 const _utils = require('./utils.js');
+const _logger = _utils.logger;
 
 const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
 
@@ -244,7 +245,7 @@ function copyResources(verbose, cfg, dist) {
             }
           }
         } catch ( e ) {
-          _utils.log(String.color('Warning:', 'yellow'), e);
+          _utils.log(_logger.color('Warning:', 'yellow'), e);
         }
 
         if ( !skip ) {
@@ -256,7 +257,7 @@ function copyResources(verbose, cfg, dist) {
           try {
             _fs.copySync(src, dst);
           } catch ( e ) {
-            _utils.log(String.color('Warning:', 'yellow'), e);
+            _utils.log(_logger.color('Warning:', 'yellow'), e);
           }
         }
       });
