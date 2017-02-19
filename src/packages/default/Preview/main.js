@@ -73,7 +73,7 @@
     this._find('ZoomFit').son('click', this, this.onZoomFit);
     this._find('ZoomOriginal').son('click', this, this.onZoomOriginal);
 
-    this._scheme.find(this, 'SubmenuFile').on('select', function(ev) {
+    this._find('SubmenuFile').on('select', function(ev) {
       if ( ev.detail.id === 'MenuOpenLocation' ) {
         API.createDialog('Input', {
           value: 'http://'
@@ -113,7 +113,7 @@
 
   ApplicationPreviewWindow.prototype.showFile = function(file, result) {
     var self = this;
-    var root = this._scheme.find(this, 'Content').$element;
+    var root = this._find('Content').$element;
     Utils.$empty(root);
 
     if ( result ) {
@@ -121,7 +121,7 @@
 
       if ( file.mime.match(/^image/) ) {
         this.isImage = true;
-        this.$view = this._scheme.create(self, 'gui-image', {src: result}, root, {
+        this.$view = this._create('gui-image', {src: result}, root, {
           onload: function() {
             self.origWidth = this.offsetWidth;
             self.origHeight = this.offsetHeight;
@@ -130,7 +130,7 @@
         });
       } else if ( file.mime.match(/^video/) ) {
         this.isImage = false;
-        this.$view = this._scheme.create(self, 'gui-video', {src: result, controls: true, autoplay: true}, root, {
+        this.$view = this._create('gui-video', {src: result, controls: true, autoplay: true}, root, {
           onload: function() {
             self._resizeTo(this.offsetWidth, this.offsetHeight, true, false, this);
           }

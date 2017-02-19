@@ -79,22 +79,22 @@
       _: OSjs.Applications.ApplicationMusicPlayer._
     });
 
-    var label = this._scheme.find(this, 'LabelTime');
-    var seeker = this._scheme.find(this, 'Seek');
+    var label = this._find('LabelTime');
+    var seeker = this._find('Seek');
 
-    var player = scheme.find(this, 'Player');
+    var player = this._find('Player');
     var audio = player.$element.firstChild;
 
-    scheme.find(this, 'ButtonStart').set('disabled', true);
-    scheme.find(this, 'ButtonRew').set('disabled', true);
-    var buttonPlay = scheme.find(this, 'ButtonPlay').set('disabled', true).on('click', function() {
+    this._find('ButtonStart').set('disabled', true);
+    this._find('ButtonRew').set('disabled', true);
+    var buttonPlay = this._find('ButtonPlay').set('disabled', true).on('click', function() {
       audio.play();
     });
-    var buttonPause = scheme.find(this, 'ButtonPause').set('disabled', true).on('click', function() {
+    var buttonPause = this._find('ButtonPause').set('disabled', true).on('click', function() {
       audio.pause();
     });
-    scheme.find(this, 'ButtonFwd').set('disabled', true);
-    scheme.find(this, 'ButtonEnd').set('disabled', true);
+    this._find('ButtonFwd').set('disabled', true);
+    this._find('ButtonEnd').set('disabled', true);
 
     seeker.on('change', function(ev) {
       if ( audio && !audio.paused ) {
@@ -169,18 +169,17 @@
     }
 
     var self = this;
-    var scheme = this._scheme;
-    var player = scheme.find(this, 'Player');
-    var seeker = this._scheme.find(this, 'Seek');
+    var player = this._find('Player');
+    var seeker = this._find('Seek');
     var audio = player.$element.firstChild;
 
     var artist = file ? file.filename : '';
     var album = file ? Utils.dirname(file.path) : '';
 
-    var labelArtist = this._scheme.find(this, 'LabelArtist').set('value', '');
-    var labelTitle  = this._scheme.find(this, 'LabelTitle').set('value', artist);
-    var labelAlbum  = this._scheme.find(this, 'LabelAlbum').set('value', album);
-    this._scheme.find(this, 'LabelTime').set('value', '');
+    var labelArtist = this._find('LabelArtist').set('value', '');
+    var labelTitle  = this._find('LabelTitle').set('value', artist);
+    var labelAlbum  = this._find('LabelAlbum').set('value', album);
+    this._find('LabelTime').set('value', '');
     seeker.set('min', 0);
     seeker.set('max', 0);
     seeker.set('value', 0);
@@ -213,7 +212,7 @@
       return; // Important because async
     }
 
-    var player = this._scheme.find(this, 'Player');
+    var player = this._find('Player');
     var audio = player.$element.firstChild;
 
     var total   = audio.duration;

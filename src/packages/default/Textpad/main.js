@@ -55,7 +55,7 @@
 
     // Load and set up scheme (GUI) here
     scheme.render(this, 'TextpadWindow', root);
-    scheme.find(this, 'Text').on('change', function() {
+    this._find('Text').on('change', function() {
       self.hasChanged = true;
     });
 
@@ -64,22 +64,22 @@
 
   ApplicationTextpadWindow.prototype.updateFile = function(file) {
     DefaultApplicationWindow.prototype.updateFile.apply(this, arguments);
-    this._scheme.find(this, 'Text').$element.focus();
+    this._find('Text').$element.focus();
   };
 
   ApplicationTextpadWindow.prototype.showFile = function(file, content) {
-    this._scheme.find(this, 'Text').set('value', content || '');
+    this._find('Text').set('value', content || '');
     DefaultApplicationWindow.prototype.showFile.apply(this, arguments);
   };
 
   ApplicationTextpadWindow.prototype.getFileData = function() {
-    return this._scheme.find(this, 'Text').get('value');
+    return this._find('Text').get('value');
   };
 
   ApplicationTextpadWindow.prototype._focus = function() {
     if ( DefaultApplicationWindow.prototype._focus.apply(this, arguments) ) {
       if ( this._scheme ) {
-        var input = this._scheme.find(this, 'Text').$element;
+        var input = this._find('Text').$element;
         if ( input ) {
           input.focus();
         }

@@ -56,7 +56,7 @@
     // Load and set up scheme (GUI) here
     scheme.render(this, 'ProcessViewerWindow', root);
 
-    var view = scheme.find(this, 'View');
+    var view = this._find('View');
 
     function update() {
       var now = new Date();
@@ -87,7 +87,7 @@
       {label: 'Alive', size: '60px', textalign: 'right'}
     ]);
 
-    scheme.find(this, 'ButtonKill').on('click', function() {
+    this._find('ButtonKill').on('click', function() {
       var selected = view.get('selected');
       if ( selected && selected[0] && typeof selected[0].data !== 'undefined' ) {
         API.kill(selected[0].data);

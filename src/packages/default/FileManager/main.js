@@ -216,10 +216,10 @@
       }
     }
 
-    scheme.find(this, 'SubmenuFile').on('select', menuEvent);
-    var contextMenu = scheme.find(this, 'SubmenuContext').on('select', menuEvent);
-    scheme.find(this, 'SubmenuEdit').on('select', menuEvent);
-    var viewMenu = scheme.find(this, 'SubmenuView').on('select', menuEvent);
+    this._find('SubmenuFile').on('select', menuEvent);
+    var contextMenu = this._find('SubmenuContext').on('select', menuEvent);
+    this._find('SubmenuEdit').on('select', menuEvent);
+    var viewMenu = this._find('SubmenuView').on('select', menuEvent);
 
     viewMenu.set('checked', 'MenuViewList', viewType === 'gui-list-view');
     viewMenu.set('checked', 'MenuViewTree', viewType === 'gui-tree-view');
@@ -232,20 +232,20 @@
     //
     // Toolbar
     //
-    scheme.find(this, 'GoLocation').on('enter', function(ev) {
+    this._find('GoLocation').on('enter', function(ev) {
       self.changePath(ev.detail, null, false, true);
     });
-    scheme.find(this, 'GoBack').on('click', function(ev) {
+    this._find('GoBack').on('click', function(ev) {
       self.changeHistory(-1);
     });
-    scheme.find(this, 'GoNext').on('click', function(ev) {
+    this._find('GoNext').on('click', function(ev) {
       self.changeHistory(1);
     });
 
     //
     // Side View
     //
-    var side = scheme.find(this, 'SideView');
+    var side = this._find('SideView');
     side.on('activate', function(ev) {
       if ( ev && ev.detail && ev.detail.entries ) {
         var entry = ev.detail.entries[0];
@@ -258,7 +258,7 @@
     //
     // File View
     //
-    view = this._scheme.find(this, 'FileView');
+    view = this._find('FileView');
     view.on('activate', function(ev) {
       if ( ev && ev.detail && ev.detail.entries ) {
         self.checkActivation(ev.detail.entries);
@@ -305,7 +305,7 @@
 
     var self = this;
     var content = '';
-    var statusbar = scheme.find(this, 'Statusbar');
+    var statusbar = this._find('Statusbar');
     var doTranslate = OSjs.Applications.ApplicationFileManager._;
 
     var sum, label;
@@ -320,17 +320,17 @@
       var MODE_F = !isFile || !!isDirectory;
       var MODE_FD = !(isFile || isDirectory);
 
-      scheme.find(self, 'MenuRename').set('disabled', isShort || MODE_FD);
-      scheme.find(self, 'MenuDelete').set('disabled', isShort || MODE_FD);
-      scheme.find(self, 'MenuInfo').set('disabled', MODE_FD);  // TODO: Directory info must be supported
-      scheme.find(self, 'MenuDownload').set('disabled', MODE_F);
-      scheme.find(self, 'MenuOpen').set('disabled', MODE_F);
+      self._find('MenuRename').set('disabled', isShort || MODE_FD);
+      self._find('MenuDelete').set('disabled', isShort || MODE_FD);
+      self._find('MenuInfo').set('disabled', MODE_FD);  // TODO: Directory info must be supported
+      self._find('MenuDownload').set('disabled', MODE_F);
+      self._find('MenuOpen').set('disabled', MODE_F);
 
-      scheme.find(self, 'ContextMenuRename').set('disabled', isShort || MODE_FD);
-      scheme.find(self, 'ContextMenuDelete').set('disabled', isShort || MODE_FD);
-      scheme.find(self, 'ContextMenuInfo').set('disabled', MODE_FD);  // TODO: Directory info must be supported
-      scheme.find(self, 'ContextMenuDownload').set('disabled', MODE_F);
-      scheme.find(self, 'ContextMenuOpen').set('disabled', MODE_F);
+      self._find('ContextMenuRename').set('disabled', isShort || MODE_FD);
+      self._find('ContextMenuDelete').set('disabled', isShort || MODE_FD);
+      self._find('ContextMenuInfo').set('disabled', MODE_FD);  // TODO: Directory info must be supported
+      self._find('ContextMenuDownload').set('disabled', MODE_F);
+      self._find('ContextMenuOpen').set('disabled', MODE_F);
     }
 
     if ( files && files.length ) {
@@ -396,7 +396,7 @@
       }
     });
 
-    var view = this._scheme.find(this, 'SideView');
+    var view = this._find('SideView');
     view.set('selected', found, 'root');
   };
 
@@ -433,7 +433,7 @@
       });
     });
 
-    var side = this._scheme.find(this, 'SideView');
+    var side = this._find('SideView');
     side.clear();
     side.add(sideViewItems);
   };
@@ -482,12 +482,12 @@
     dir = dir || this.currentPath;
 
     var self = this;
-    var view = this._scheme.find(this, 'FileView');
+    var view = this._find('FileView');
 
     function updateNavigation() {
-      self._scheme.find(self, 'GoLocation').set('value', dir);
-      self._scheme.find(self, 'GoBack').set('disabled', self.historyIndex <= 0);
-      self._scheme.find(self, 'GoNext').set('disabled', self.historyIndex < 0 || self.historyIndex >= (self.history.length - 1));
+      self._find('GoLocation').set('value', dir);
+      self._find('GoBack').set('disabled', self.historyIndex <= 0);
+      self._find('GoNext').set('disabled', self.historyIndex < 0 || self.historyIndex >= (self.history.length - 1));
     }
 
     function updateHistory(dir) {
@@ -554,7 +554,7 @@
       return;
     }
 
-    var view = this._scheme.find(this, 'FileView');
+    var view = this._find('FileView');
     view.set('type', viewType, !!set);
 
     if ( set ) {
@@ -569,7 +569,7 @@
 
     this.viewOptions.ViewSide = toggle;
 
-    var container = this._scheme.find(this, 'SideContainer');
+    var container = this._find('SideContainer');
     var handle = new GUI.Element(container.$element.parentNode.querySelector('gui-paned-view-handle'));
     if ( toggle ) {
       container.show();
@@ -589,7 +589,7 @@
       return;
     }
 
-    var view = this._scheme.find(this, 'FileView');
+    var view = this._find('FileView');
     var vfsOptions = OSjs.Core.getSettingsManager().instance('VFS');
 
     var opts = {scandir: {}};
@@ -624,7 +624,7 @@
 
     this.viewOptions.ViewNavigation = toggle;
 
-    var viewNav  = this._scheme.find(this, 'ToolbarContainer');
+    var viewNav  = this._find('ToolbarContainer');
     if ( toggle ) {
       viewNav.show();
     } else {
@@ -660,7 +660,7 @@
       OSjs.Core.getSettingsManager().set('VFS', 'scandir', scandirOptions, set);
     }
 
-    var viewMenu = this._scheme.find(this, 'SubmenuView');
+    var viewMenu = this._find('SubmenuView');
     viewMenu.set('checked', 'MenuColumnFilename', viewColumns.indexOf('filename') >= 0);
     viewMenu.set('checked', 'MenuColumnMIME', viewColumns.indexOf('mime') >= 0);
     viewMenu.set('checked', 'MenuColumnCreated', viewColumns.indexOf('ctime') >= 0);

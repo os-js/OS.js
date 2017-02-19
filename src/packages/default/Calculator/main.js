@@ -105,7 +105,7 @@
     // Load and gel.set up scheme (GUI) here
     scheme.render(this, 'CalculatorWindow', root);
 
-    this._scheme.find(this, 'Output').on('keypress', function(ev) {
+    this._find('Output').on('keypress', function(ev) {
       ev.stopPropagation();
       ev.preventDefault();
 
@@ -145,7 +145,7 @@
     var self = this;
 
     if (this.temp == '' && ['plus', 'minus', 'multiply', 'divide'].indexOf(val) !== -1) {
-      this.temp = this._scheme.find(this, 'Output').get('value');
+      this.temp = this._find('Output').get('value');
     }
 
     function getAnswer() {
@@ -224,10 +224,10 @@
         }, 3000);
       }
 
-      this._scheme.find(this, 'Output').set('value', String(output));
+      this._find('Output').set('value', String(output));
     }
 
-    this._scheme.find(this, 'Output').focus();
+    this._find('Output').focus();
   };
 
   /////////////////////////////////////////////////////////////////////////////

@@ -88,7 +88,7 @@
 
     scheme.find(this, 'ButtonItemOK').on('click', function() {
       self.closed = true;
-      var selected = scheme.find(self, 'List').get('selected');
+      var selected = self._find('List').get('selected');
       self.callback('ok', selected.length ? selected[0] : null);
       self._close();
     });

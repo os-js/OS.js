@@ -78,7 +78,7 @@
       _: _
     });
 
-    var text = scheme.find(this, 'Text');
+    var text = this._find('Text');
 
     var buttons = {
       'text-bold': {
@@ -172,8 +172,8 @@
       }
     }
 
-    scheme.find(this, 'SubmenuEdit').on('select', menuEvent);
-    scheme.find(this, 'SubmenuInsert').on('select', menuEvent);
+    this._find('SubmenuEdit').on('select', menuEvent);
+    this._find('SubmenuInsert').on('select', menuEvent);
 
     function getSelectionStyle() {
       function _call(cmd) {
@@ -225,14 +225,14 @@
       }, self);
     }
 
-    var back = scheme.find(this, 'Background').on('click', function() {
+    var back = this._find('Background').on('click', function() {
       createColorDialog(self.color.background, function(hex) {
         text._call('command', ['hiliteColor', false, hex]);
         self.color.background = hex;
         back.set('value', hex);
       });
     });
-    var front = scheme.find(this, 'Foreground').on('click', function() {
+    var front = this._find('Foreground').on('click', function() {
       createColorDialog(self.color.foreground, function(hex) {
         text._call('command', ['foreColor', false, hex]);
         self.color.foreground = hex;
@@ -240,7 +240,7 @@
       });
     });
 
-    var font = scheme.find(this, 'Font').on('click', function() {
+    var font = this._find('Font').on('click', function() {
       createFontDialog(null, function(font) {
         text._call('command', ['fontName', false, font.fontName]);
         text._call('command', ['fontSize', false, font.fontSize]);
@@ -305,7 +305,7 @@
     DefaultApplicationWindow.prototype.updateFile.apply(this, arguments);
 
     try {
-      var el = this._scheme.find(this, 'Text');
+      var el = this._find('Text');
       el.$element.focus();
     } catch ( e ) {}
 
@@ -313,17 +313,17 @@
   };
 
   ApplicationWriterWindow.prototype.showFile = function(file, content) {
-    this._scheme.find(this, 'Text').set('value', content || '');
+    this._find('Text').set('value', content || '');
     DefaultApplicationWindow.prototype.showFile.apply(this, arguments);
   };
 
   ApplicationWriterWindow.prototype.getFileData = function() {
-    return this._scheme.find(this, 'Text').get('value');
+    return this._find('Text').get('value');
   };
 
   ApplicationWriterWindow.prototype._focus = function(file, content) {
     if ( DefaultApplicationWindow.prototype._focus.apply(this, arguments) ) {
-      this._scheme.find(this, 'Text').focus();
+      this._find('Text').focus();
       return true;
     }
     return false;
