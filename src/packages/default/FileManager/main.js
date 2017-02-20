@@ -242,6 +242,15 @@
       self.changeHistory(1);
     });
 
+    var pw = this._find('PanedView');
+    this._find('ToggleSideview').on('click', function(ev) {
+      if ( !pw.$element ) {
+        return;
+      }
+      var curr = pw.$element.getAttribute('data-toggled');
+      pw.$element.setAttribute('data-toggled', String(curr === 'true' ? false : true));
+    });
+
     //
     // Side View
     //

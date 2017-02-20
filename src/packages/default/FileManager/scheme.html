@@ -80,6 +80,7 @@
 
         <gui-button data-icon="stock://16x16/actions/back.png" data-id="GoBack"></gui-button>
         <gui-button data-icon="stock://16x16/actions/next.png" data-id="GoNext"></gui-button>
+        <gui-button data-icon="stock://16x16/devices/harddrive.png" data-id="ToggleSideview"></gui-button>
         <gui-text class="gui-flex-grow" data-id="GoLocation" data-placeholder="location:///path"></gui-text>
 
       </gui-toolbar>
@@ -87,7 +88,7 @@
 
     <!-- CONTENT -->
     <gui-vbox-container data-grow="1" data-shrink="0" data-basis="auto" data-fill="true">
-      <gui-paned-view>
+      <gui-paned-view data-id="PanedView">
         <!-- SIDE PANEL -->
         <gui-paned-view-container data-basis="150px" data-grow="0" data-shrink="0" data-multiple="false" data-id="SideContainer">
           <gui-list-view data-id="SideView" data-single-click="true">
