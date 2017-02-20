@@ -431,7 +431,8 @@
     this._stylesheet     = null;
     this._sessionLoaded  = false;
     this._fullyLoaded    = false;
-    this._isResponsive   = window.innerWidth <= 800;
+    this._isResponsive   = false;
+    this._responsiveRes  = 800;
     this._scheme         = null;
 
     // Important for usage as "Application"
@@ -510,6 +511,15 @@
     Utils.$bind(document, 'mouseenter:windowmanager', function(ev) {
       self._onMouseLeave(ev);
     });
+
+    var queries = this.getDefaultSetting('mediaQueries') || {};
+    var maxWidth = 0;
+    Object.keys(queries).forEach(function(q) {
+      maxWidth = Math.max(maxWidth, queries[q]);
+    });
+    this._responsiveRes = maxWidth || 800;
+
+    this.resize();
   };
 
   /**
@@ -759,7 +769,7 @@
 
   WindowManager.prototype.resize = function(ev, rect) {
     // Implement in your WM
-    this._isResponsive = window.innerWidth <= 800;
+    this._isResponsive = window.innerWidth <= 1024;
 
     this.onResize(ev);
   };

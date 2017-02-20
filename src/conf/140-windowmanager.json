@@ -82,6 +82,7 @@
             ]
           }
         ],
+        "fullscreenTrigger": 800,
         "mediaQueries": {
           "mobile": 500,
           "tablet": 1024

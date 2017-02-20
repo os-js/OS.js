@@ -126,7 +126,7 @@
 
       var wm = OSjs.Core.getWindowManager();
       if ( wm ) {
-        var qs = wm._settings.get('mediaQueries') || {};
+        var qs = wm.getDefaultSetting('mediaQueries') || {};
 
         Object.keys(qs).forEach(function(k) {
           if ( qs[k] ) {
@@ -157,18 +157,19 @@
       return;
     }
 
-    var qs = win._properties.media_queries || {};
-    var ir = wm._isResponsive;
-    var w = ir ? win._$element.offsetWidth : window.innerWidth;
-    var h = ir ? win._$element.offsetHeight : window.innerHeight;
     var n = '';
-    var k;
+    if ( wm._isResponsive ) {
+      var qs = win._properties.media_queries || {};
+      var w = win._$element.offsetWidth;
+      var h = win._$element.offsetHeight;
+      var k;
 
-    for ( k in qs ) {
-      if ( qs.hasOwnProperty(k) ) {
-        if ( qs[k](w, h, win) ) {
-          n = k;
-          break;
+      for ( k in qs ) {
+        if ( qs.hasOwnProperty(k) ) {
+          if ( qs[k](w, h, win) ) {
+            n = k;
+            break;
+          }
         }
       }
     }

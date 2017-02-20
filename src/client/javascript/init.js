@@ -235,14 +235,9 @@
       }
 
       return function(ev, wasInited) {
-        if ( _timeout ) {
-          clearTimeout(_timeout);
-          _timeout = null;
-        }
-
-        var self = this;
+        _timeout = clearTimeout(_timeout);
         _timeout = setTimeout(function() {
-          _resize.call(self, ev, wasInited);
+          _resize(ev, wasInited);
         }, 100);
       };
     })(),

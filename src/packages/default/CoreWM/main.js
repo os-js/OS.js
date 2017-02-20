@@ -1113,7 +1113,8 @@
       });
     }
 
-    raw += '@media all and (max-width: 800px) {\n';
+    var mw = this.getDefaultSetting('fullscreenTrigger') || 800;
+    raw += '@media all and (max-width: ' + String(mw) + 'px) {\n';
     raw += 'application-window {\n';
 
     var borderSize = 0;
