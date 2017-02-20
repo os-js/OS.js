@@ -38,20 +38,20 @@
   display : none;
 }
 
-.ApplicationFileManagerWindow:not([data-media="mobile"]) gui-button[data-id="ToggleSideview"] {
+body[data-responsive="true"] .ApplicationFileManagerWindow:not([data-media="mobile"]) gui-button[data-id="ToggleSideview"] {
   display : none;
 }
-.ApplicationFileManagerWindow[data-media="mobile"] gui-paned-view:not([data-toggled="true"]) > gui-paned-view-container:nth-child(1),
-.ApplicationFileManagerWindow[data-media="mobile"] gui-paned-view:not([data-toggled="true"]) > gui-paned-view-handle:nth-child(2) {
+body[data-responsive="true"] .ApplicationFileManagerWindow[data-media="mobile"] gui-paned-view:not([data-toggled="true"]) > gui-paned-view-container:nth-child(1),
+body[data-responsive="true"] .ApplicationFileManagerWindow[data-media="mobile"] gui-paned-view:not([data-toggled="true"]) > gui-paned-view-handle:nth-child(2) {
   display : none;
 }
-.ApplicationFileManagerWindow[data-media="mobile"] gui-paned-view[data-toggled="true"] > gui-paned-view-container:nth-child(3),
-.ApplicationFileManagerWindow[data-media="mobile"] gui-paned-view[data-toggled="true"] > gui-paned-view-handle:nth-child(2) {
+body[data-responsive="true"] .ApplicationFileManagerWindow[data-media="mobile"] gui-paned-view[data-toggled="true"] > gui-paned-view-container:nth-child(3),
+body[data-responsive="true"] .ApplicationFileManagerWindow[data-media="mobile"] gui-paned-view[data-toggled="true"] > gui-paned-view-handle:nth-child(2) {
   display : none;
 }
-.ApplicationFileManagerWindow[data-media="mobile"] gui-paned-view[data-toggled="true"] > gui-paned-view-container {
+body[data-responsive="true"] .ApplicationFileManagerWindow[data-media="mobile"] gui-paned-view[data-toggled="true"] > gui-paned-view-container {
   flex : 1 0 auto !important;
 }
-.ApplicationFileManagerWindow[data-media="mobile"] gui-file-view gui-list-view-row > gui-list-view-column:nth-child(n+2) {
+body[data-responsive="true"] .ApplicationFileManagerWindow[data-media="mobile"] gui-file-view gui-list-view-row > gui-list-view-column:nth-child(n+2) {
   display : none;
 }

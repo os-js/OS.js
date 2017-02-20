@@ -894,6 +894,8 @@
           w._emit('resize');
         });
       }, 100);
+
+      document.body.setAttribute('data-responsive', String(self._isResponsive));
     };
 
   })();

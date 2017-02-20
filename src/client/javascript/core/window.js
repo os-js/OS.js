@@ -158,18 +158,16 @@
     }
 
     var n = '';
-    if ( wm._isResponsive ) {
-      var qs = win._properties.media_queries || {};
-      var w = win._$element.offsetWidth;
-      var h = win._$element.offsetHeight;
-      var k;
+    var qs = win._properties.media_queries || {};
+    var w = win._$element.offsetWidth;
+    var h = win._$element.offsetHeight;
+    var k;
 
-      for ( k in qs ) {
-        if ( qs.hasOwnProperty(k) ) {
-          if ( qs[k](w, h, win) ) {
-            n = k;
-            break;
-          }
+    for ( k in qs ) {
+      if ( qs.hasOwnProperty(k) ) {
+        if ( qs[k](w, h, win) ) {
+          n = k;
+          break;
         }
       }
     }
