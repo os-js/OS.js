@@ -83,8 +83,8 @@
           }
         ],
         "mediaQueries": {
-          "mobile": 640,
-          "tablet": 960
+          "mobile": 500,
+          "tablet": 1024
         },
         "menu": {
           "development": {
