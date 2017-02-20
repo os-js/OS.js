@@ -152,13 +152,15 @@
    * Checks window dimensions and makes media queries dynamic
    */
   function checkMediaQueries(win) {
-    if ( !win._$element ) {
+    var wm = OSjs.Core.getWindowManager();
+    if ( !win._$element || !wm ) {
       return;
     }
 
     var qs = win._properties.media_queries || {};
-    var w = win._$element.offsetWidth;
-    var h = win._$element.offsetHeight;
+    var ir = wm._isResponsive;
+    var w = ir ? win._$element.offsetWidth : window.innerWidth;
+    var h = ir ? win._$element.offsetHeight : window.innerHeight;
     var n = '';
     var k;
 

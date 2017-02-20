@@ -431,6 +431,7 @@
     this._stylesheet     = null;
     this._sessionLoaded  = false;
     this._fullyLoaded    = false;
+    this._isResponsive   = window.innerWidth <= 800;
     this._scheme         = null;
 
     // Important for usage as "Application"
@@ -758,6 +759,8 @@
 
   WindowManager.prototype.resize = function(ev, rect) {
     // Implement in your WM
+    this._isResponsive = window.innerWidth <= 800;
+
     this.onResize(ev);
   };
 

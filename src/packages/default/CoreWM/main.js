@@ -69,7 +69,6 @@
     this.$themeScript     = null;
     this.$animationLink   = null;
     this.importedSettings = Utils.mergeObject(API.getConfig('SettingsManager.CoreWM'), importSettings);
-    this.isResponsive     = window.innerWidth <= 800;
 
     this.generatedHotkeyMap = {};
 
@@ -519,11 +518,11 @@
   //
 
   CoreWM.prototype.resize = function(ev, rect, wasInited) {
+    WindowManager.prototype.resize.apply(this, arguments);
 
     var space = this.getWindowSpace();
     var margin = this.getSetting('desktopMargin');
     var windows = this._windows;
-    var responsive = window.innerWidth <= 800;
 
     function moveIntoView() {
       var i = 0, l = windows.length, iter, wrect;
@@ -570,15 +569,11 @@
       }
     }
 
-    if ( !responsive ) {
+    if ( !this._isResponsive ) {
       if ( this.getSetting('moveOnResize') ) {
         moveIntoView();
       }
     }
-
-    this.isResponsive = responsive;
-
-    return WindowManager.prototype.resize.apply(this, arguments);
   };
 
   CoreWM.prototype.onDropLeave = function() {
