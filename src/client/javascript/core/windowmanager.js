@@ -724,6 +724,20 @@
    */
   WindowManager.prototype.onOrientationChange = function(ev, orientation) {
     console.info('ORIENTATION CHANGED', ev, orientation);
+
+    this._onDisplayChange();
+  };
+
+  /**
+   * When size of the device display has been changed
+   *
+   * @function onResize
+   * @memberof OSjs.Core.WindowManager#
+   *
+   * @param   {Event}    ev             DOM Event
+   */
+  WindowManager.prototype.onResize = function(ev) {
+    this._onDisplayChange();
   };
 
   /**
@@ -744,6 +758,7 @@
 
   WindowManager.prototype.resize = function(ev, rect) {
     // Implement in your WM
+    this.onResize(ev);
   };
 
   /**
@@ -846,6 +861,29 @@
       this._mouselock = true;
     }
   };
+
+  WindowManager.prototype._onDisplayChange = (function() {
+    var _timeout;
+
+    return function() {
+      var self = this;
+
+      _timeout = clearTimeout(_timeout);
+      _timeout = setTimeout(function() {
+        if ( !_WM ) {
+          return;
+        }
+
+        self._windows.filter(function(w) {
+          return !!w;
+        }).forEach(function(w) {
+          w._onResize();
+          w._emit('resize');
+        });
+      }, 100);
+    };
+
+  })();
 
   /**
    * Get default Settings

@@ -570,27 +570,15 @@
       }
     }
 
-    function emitResize() {
-      windows.forEach(function(w) {
-        if ( w ) {
-          w._emit('resize');
-        }
-      });
-    }
-
-    if ( responsive ) {
-      emitResize();
-    } else {
-      if ( this.isResponsive ) { // Emit the resize signal again if we changed view
-        emitResize();
-      }
-
+    if ( !responsive ) {
       if ( this.getSetting('moveOnResize') ) {
         moveIntoView();
       }
     }
 
     this.isResponsive = responsive;
+
+    return WindowManager.prototype.resize.apply(this, arguments);
   };
 
   CoreWM.prototype.onDropLeave = function() {

@@ -157,8 +157,8 @@
     }
 
     var qs = win._properties.media_queries || {};
-    var w = win._dimension.w;
-    var h = win._dimension.h;
+    var w = win._$element.offsetWidth;
+    var h = win._$element.offsetHeight;
     var n = '';
     var k;
 
