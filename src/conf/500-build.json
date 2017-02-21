@@ -31,13 +31,7 @@
     ],
     "javascript": [
       "src/client/javascript/polyfill.js",
-      "src/client/javascript/init.js",
-      "src/client/javascript/utils/compability.js",
-      "src/client/javascript/utils/events.js",
-      "src/client/javascript/utils/misc.js",
-      "src/client/javascript/utils/dom.js",
-      "src/client/javascript/utils/xhr.js",
-      "src/client/javascript/utils/fs.js",
+      "src/client/javascript/core/boot.js",
       "src/client/javascript/core/api.js",
       "src/client/javascript/core/handler.js",
       "src/client/javascript/core/connection.js",
@@ -61,6 +55,12 @@
       "src/client/javascript/core/storage/demo.js",
       "src/client/javascript/core/storage/database.js",
       "src/client/javascript/core/storage/system.js",
+      "src/client/javascript/utils/compability.js",
+      "src/client/javascript/utils/events.js",
+      "src/client/javascript/utils/misc.js",
+      "src/client/javascript/utils/dom.js",
+      "src/client/javascript/utils/xhr.js",
+      "src/client/javascript/utils/fs.js",
       "src/client/javascript/gui/helpers.js",
       "src/client/javascript/gui/scheme.js",
       "src/client/javascript/gui/elements.js",
@@ -112,7 +112,8 @@
       "src/client/javascript/helpers/google-api.js",
       "src/client/javascript/helpers/windows-live-api.js",
       "src/client/javascript/helpers/zip-archiver.js",
-      "src/client/javascript/helpers/settings-fragment.js"
+      "src/client/javascript/helpers/settings-fragment.js",
+      "src/client/javascript/init.js"
     ],
     "stylesheets": [
       "src/client/stylesheets/core.css",

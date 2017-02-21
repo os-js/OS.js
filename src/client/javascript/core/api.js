@@ -35,6 +35,21 @@
    * @memberof OSjs
    */
 
+  /**
+   * @namespace Core
+   * @memberof OSjs
+   */
+
+  /**
+   * @namespace Utils
+   * @memberof OSjs
+   */
+
+  /**
+   * @namespace Helpers
+   * @memberof OSjs
+   */
+
   /*@
    * Please note that there are some more methods defined in `process.js`
    */
@@ -773,12 +788,7 @@
       throw new Error(err);
     }
 
-    console.group('API::launch()', {
-      name: name,
-      args: args,
-      metadata: metadata,
-      preloads: preloads
-    });
+    console.group('API::launch()', {name: name, args: args, metadata: metadata, preloads: preloads});
 
     if ( args.__preload__ ) { // This is for relaunch()
       pargs = args.__preload__;
@@ -1792,8 +1802,27 @@
   // EXTERNALS
   /////////////////////////////////////////////////////////////////////////////
 
-  API.shutdown = API.shutdown || function() {}; // init.js
-  API.isShuttingDown = API.isShuttingDown || function() {}; // init.js
+  /**
+   * Shuts down OS.js
+   *
+   * @function shutdown
+   * @memberof OSjs.API
+   * @return {Boolean}
+   */
+  API.shutdown = function API_shutdown() {
+    return OSjs.Bootstrap.stop();
+  };
+
+  /**
+   * Check if OS.js is shutting down
+   *
+   * @function isShuttingDown
+   * @memberof OSjs.API
+   * @return {Boolean}
+   */
+  API.isShuttingDown = function API_isShuttingDown() {
+    return OSjs.Bootstrap.isShuttingDown.apply(null, arguments);
+  };
 
   /**
    * @function createMenu
@@ -1815,6 +1844,37 @@
    */
   API.blurMenu = function API_blurMenu() {
     return OSjs.GUI.Helpers.blurMenu.apply(null, arguments);
+  };
+
+  /**
+   * Get default configured settings
+   *
+   * THIS IS JUST A PLACEHOLDER. 'settings.js' SHOULD HAVE THIS!
+   *
+   * You should use 'OSjs.API.getConfig()' to get a setting
+   *
+   * @function getConfig
+   * @memberof OSjs.Core
+   * @see OSjs.API.getConfig
+   *
+   * @return  {Object}
+   */
+  OSjs.Core.getConfig = OSjs.Core.getConfig || function() {
+    return {};
+  };
+
+  /**
+   * Get default configured packages
+   *
+   * THIS IS JUST A PLACEHOLDER. 'packages.js' SHOULD HAVE THIS!
+   *
+   * @function getMetadata
+   * @memberof OSjs.Core
+   *
+   * @return  {Metadata[]}
+   */
+  OSjs.Core.getMetadata = OSjs.Core.getMetadata || function() {
+    return {};
   };
 
 })(OSjs.Utils, OSjs.API);
