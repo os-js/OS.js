@@ -534,9 +534,13 @@ const VFS = {
   freeSpace: function(http, args, resolve, reject) {
     const resolved = _vfs.parseVirtualPath(args.root, http);
 
-    _diskspace.check(resolved.real, (err, total, free, stat) => {
-      resolve(free);
-    });
+    if ( resolved.protocol === 'osjs' ) {
+      reject('Not supported');
+    } else {
+      _diskspace.check(resolved.real, (err, total, free, stat) => {
+        resolve(free);
+      });
+    }
   }
 };
 
