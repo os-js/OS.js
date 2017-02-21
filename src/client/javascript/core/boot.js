@@ -700,13 +700,13 @@
      * @function run
      * @memberof OSjs.Bootstrap
      */
-    run: function() {
+    run: function(opts) {
       if ( loaded ) {
         return;
       }
       loaded = true;
 
-      init();
+      init(opts);
     },
 
     /**
