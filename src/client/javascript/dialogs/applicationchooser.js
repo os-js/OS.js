@@ -84,7 +84,7 @@
       }
     });
 
-    this.scheme.find(this, 'ApplicationList').set('columns', cols).add(rows).on('activate', function(ev) {
+    this._find('ApplicationList').set('columns', cols).add(rows).on('activate', function(ev) {
       self.onClose(ev, 'ok');
     });
 
@@ -95,8 +95,8 @@
       label = API._('DIALOG_APPCHOOSER_SET_DEFAULT', this.args.file.mime);
     }
 
-    this.scheme.find(this, 'FileName').set('value', file);
-    this.scheme.find(this, 'SetDefault').set('label', label);
+    this._find('FileName').set('value', file);
+    this._find('SetDefault').set('label', label);
 
     return root;
   };
@@ -105,8 +105,8 @@
     var result = null;
 
     if ( button === 'ok' ) {
-      var useDefault = this.scheme.find(this, 'SetDefault').get('value');
-      var selected = this.scheme.find(this, 'ApplicationList').get('value');
+      var useDefault = this._find('SetDefault').get('value');
+      var selected = this._find('ApplicationList').get('value');
       if ( selected && selected.length ) {
         result = selected[0].data.className;
       }

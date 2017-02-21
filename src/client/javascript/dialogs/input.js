@@ -67,10 +67,10 @@
 
     if ( this.args.message ) {
       var msg = DialogWindow.parseMessage(this.args.message);
-      this.scheme.find(this, 'Message').empty().append(msg);
+      this._find('Message').empty().append(msg);
     }
 
-    var input = this.scheme.find(this, 'Input');
+    var input = this._find('Input');
     input.set('placeholder', this.args.placeholder || '');
     input.set('value', this.args.value || '');
     input.on('enter', function(ev) {
@@ -82,19 +82,19 @@
 
   InputDialog.prototype._focus = function() {
     if ( DialogWindow.prototype._focus.apply(this, arguments) ) {
-      this.scheme.find(this, 'Input').focus();
+      this._find('Input').focus();
       return true;
     }
     return false;
   };
 
   InputDialog.prototype.onClose = function(ev, button) {
-    var result = this.scheme.find(this, 'Input').get('value');
+    var result = this._find('Input').get('value');
     this.closeCallback(ev, button, button === 'ok' ? result : null);
   };
 
   InputDialog.prototype.setRange = function(range) {
-    var input = this.scheme.find(this, 'Input');
+    var input = this._find('Input');
     if ( input.$element ) {
       input.$element.querySelector('input').select(range);
     }

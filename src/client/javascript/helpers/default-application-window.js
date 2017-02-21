@@ -102,13 +102,13 @@
       }
     };
 
-    this._scheme.find(this, 'SubmenuFile').on('select', function(ev) {
+    this._find('SubmenuFile').on('select', function(ev) {
       if ( menuMap[ev.detail.id] ) {
         menuMap[ev.detail.id]();
       }
     });
 
-    this._scheme.find(this, 'MenuSave').set('disabled', true);
+    this._find('MenuSave').set('disabled', true);
 
     // Load given file
     if ( this.currentFile ) {
@@ -215,7 +215,7 @@
     this.hasChanged = false;
 
     if ( this._scheme && (this._scheme instanceof GUI.Scheme) ) {
-      this._scheme.find(this, 'MenuSave').set('disabled', !file);
+      this._find('MenuSave').set('disabled', !file);
     }
 
     if ( file ) {

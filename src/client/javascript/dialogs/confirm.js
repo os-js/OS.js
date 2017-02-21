@@ -67,7 +67,7 @@
     var root = DialogWindow.prototype.init.apply(this, arguments);
 
     var msg = DialogWindow.parseMessage(this.args.message);
-    this.scheme.find(this, 'Message').empty().append(msg);
+    this._find('Message').empty().append(msg);
 
     var buttonMap = {
       yes: 'ButtonYes',
@@ -83,7 +83,7 @@
     });
 
     hide.forEach(function(b) {
-      self.scheme.find(self, buttonMap[b]).hide();
+      self._find(buttonMap[b]).hide();
     });
 
     return root;

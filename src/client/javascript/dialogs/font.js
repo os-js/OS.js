@@ -89,7 +89,7 @@
     var root = DialogWindow.prototype.init.apply(this, arguments);
 
     var self = this;
-    var preview = this.scheme.find(this, 'FontPreview');
+    var preview = this._find('FontPreview');
     var sizes = [];
     var fonts = [];
 
@@ -105,14 +105,14 @@
       preview.querySelector('textarea').style.fontSize = self.selection.fontSize;
     }
 
-    var listFonts = this.scheme.find(this, 'FontName');
+    var listFonts = this._find('FontName');
     listFonts.add(fonts).set('value', this.args.fontName);
     listFonts.on('change', function(ev) {
       self.selection.fontName = ev.detail;
       updatePreview();
     });
 
-    var listSizes = this.scheme.find(this, 'FontSize');
+    var listSizes = this._find('FontSize');
     listSizes.add(sizes).set('value', this.args.fontSize);
     listSizes.on('change', function(ev) {
       self.selection.fontSize = ev.detail + self.args.unit;
@@ -124,7 +124,7 @@
     preview.set('value', this.args.text);
 
     if ( this.args.fontSize < 0 ) {
-      this.scheme.find(this, 'FontSizeContainer').hide();
+      this._find('FontSizeContainer').hide();
     }
 
     updatePreview();

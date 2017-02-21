@@ -503,6 +503,29 @@
   };
 
   /**
+   * Creates a new GUI Element into given parent
+   *
+   * @param   {String}                tagName       OS.js GUI Element name
+   * @param   {Object}                params        Parameters
+   * @param   {Node}                  [parentNode]  Parent Node
+   * @param   {Object}                [applyArgs]   New element parameters
+   * @param   {OSjs.Core.Window}      [win]         OS.js Window
+   *
+   * @return  {OSjs.GUI.Element}
+   * @function createInto
+   * @memberof OSjs.GUI.Element
+   */
+  UIElement.createInto = function createGUIElementInto(tagName, params, parentNode, applyArgs, win) {
+    if ( parentNode instanceof GUI.Element ) {
+      parentNode = parentNode.$element;
+    }
+
+    var gel = GUI.Element.create(tagName, params, applyArgs, win);
+    parentNode.appendChild(gel.$element);
+    return gel;
+  };
+
+  /**
    * Creates a new GUI.Element
    *
    * @param   {String}                tagName         OS.js GUI Element name

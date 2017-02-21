@@ -86,10 +86,10 @@
     var root = DialogWindow.prototype.init.apply(this, arguments);
 
     function updateHex(update) {
-      self.scheme.find(self, 'LabelRed').set('value', API._('DIALOG_COLOR_R', self.color.r));
-      self.scheme.find(self, 'LabelGreen').set('value', API._('DIALOG_COLOR_G', self.color.g));
-      self.scheme.find(self, 'LabelBlue').set('value', API._('DIALOG_COLOR_B', self.color.b));
-      self.scheme.find(self, 'LabelAlpha').set('value', API._('DIALOG_COLOR_A', self.color.a));
+      self._find('LabelRed').set('value', API._('DIALOG_COLOR_R', self.color.r));
+      self._find('LabelGreen').set('value', API._('DIALOG_COLOR_G', self.color.g));
+      self._find('LabelBlue').set('value', API._('DIALOG_COLOR_B', self.color.b));
+      self._find('LabelAlpha').set('value', API._('DIALOG_COLOR_A', self.color.a));
 
       if ( update ) {
         self.color.hex = Utils.convertToHEX(self.color.r, self.color.g, self.color.b);
@@ -99,40 +99,40 @@
       if ( self.color.a !== null && !isNaN(self.color.a) ) {
         value = Utils.format('rgba({0}, {1}, {2}, {3})', self.color.r, self.color.g, self.color.b, self.color.a);
       }
-      self.scheme.find(self, 'ColorPreview').set('value', value);
+      self._find('ColorPreview').set('value', value);
     }
 
-    this.scheme.find(this, 'ColorSelect').on('change', function(ev) {
+    this._find('ColorSelect').on('change', function(ev) {
       self.color = ev.detail;
-      self.scheme.find(self, 'Red').set('value', self.color.r);
-      self.scheme.find(self, 'Green').set('value', self.color.g);
-      self.scheme.find(self, 'Blue').set('value', self.color.b);
+      self._find('Red').set('value', self.color.r);
+      self._find('Green').set('value', self.color.g);
+      self._find('Blue').set('value', self.color.b);
       updateHex(true);
     });
 
-    this.scheme.find(this, 'Red').on('change', function(ev) {
+    this._find('Red').on('change', function(ev) {
       self.color.r = parseInt(ev.detail, 10);
       updateHex(true);
     }).set('value', this.color.r);
 
-    this.scheme.find(this, 'Green').on('change', function(ev) {
+    this._find('Green').on('change', function(ev) {
       self.color.g = parseInt(ev.detail, 10);
       updateHex(true);
     }).set('value', this.color.g);
 
-    this.scheme.find(this, 'Blue').on('change', function(ev) {
+    this._find('Blue').on('change', function(ev) {
       self.color.b = parseInt(ev.detail, 10);
       updateHex(true);
     }).set('value', this.color.b);
 
-    this.scheme.find(this, 'Alpha').on('change', function(ev) {
+    this._find('Alpha').on('change', function(ev) {
       self.color.a = parseInt(ev.detail, 10) / 100;
       updateHex(true);
     }).set('value', this.color.a * 100);
 
     if ( this.color.a === null ) {
-      this.scheme.find(this, 'AlphaContainer').hide();
-      this.scheme.find(this, 'AlphaLabelContainer').hide();
+      this._find('AlphaContainer').hide();
+      this._find('AlphaLabelContainer').hide();
     }
 
     updateHex(false, this.color.a !== null);

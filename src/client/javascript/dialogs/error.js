@@ -91,16 +91,16 @@
     root.setAttribute('role', 'alertdialog');
 
     var msg = DialogWindow.parseMessage(this.args.message);
-    this.scheme.find(this, 'Message').empty().append(msg);
-    this.scheme.find(this, 'Summary').set('value', this.args.error);
-    this.scheme.find(this, 'Trace').set('value', this.traceMessage);
+    this._find('Message').empty().append(msg);
+    this._find('Summary').set('value', this.args.error);
+    this._find('Trace').set('value', this.traceMessage);
     if ( !this.traceMessage ) {
-      this.scheme.find(this, 'Trace').hide();
-      this.scheme.find(this, 'TraceLabel').hide();
+      this._find('Trace').hide();
+      this._find('TraceLabel').hide();
     }
 
     if ( this.args.bugreport ) {
-      this.scheme.find(this, 'ButtonBugReport').on('click', function() {
+      this._find('ButtonBugReport').on('click', function() {
         var title = '';
         var body = [];
 
@@ -142,7 +142,7 @@
         window.open(url);
       });
     } else {
-      this.scheme.find(this, 'ButtonBugReport').hide();
+      this._find('ButtonBugReport').hide();
     }
 
     return root;

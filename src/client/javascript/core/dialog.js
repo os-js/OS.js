@@ -156,8 +156,8 @@
     var focusButtons = ['ButtonCancel', 'ButtonNo'];
 
     Object.keys(buttonMap).forEach(function(id) {
-      if ( self.scheme.findDOM(self, id) ) {
-        var btn = self.scheme.find(self, id);
+      if ( self._findDOM(id) ) {
+        var btn = self._find(id);
         btn.on('click', function(ev) {
           self.onClose(ev, buttonMap[id]);
         });

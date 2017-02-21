@@ -1047,28 +1047,60 @@
   /**
    * Finds a GUI Element by ID from Scheme.
    *
-   * THIS IS JUST A SHORTCUT METHOD FROM THE UI SCHEME CLASS
-   *
    * @function _find
    * @memberof OSjs.Core.Window#
-   * @see OSjs.GUI.Scheme#find
    *
-   * @param     {String}      id        The value of element 'data-id' parameter
+   * @param   {String}                id        Element ID (data-id)
+   * @param   {Node}                  [root]    Root Node
    *
    * @return {OSjs.GUI.Element}
    */
-  Window.prototype._find = function(id) {
-    return this._scheme ? this._scheme.find(this, id) : null;
+  Window.prototype._find = function(id, root) {
+    var q = '[data-id="' + id + '"]';
+    return this._findByQuery(q, root);
+  };
+
+  /**
+   * Renders a scheme into the window
+   *
+   * By default uses the internally assigned scheme file from preload (if any)
+   *
+   * @function _render
+   * @memberof OSjs.Core.Window#
+   *
+   * @param {String}           [id]         Scheme fragment ID (defaults to window name)
+   * @param {OSjs.GUI.Scheme}  [scheme]     Scheme reference (defaults to internal)
+   * @param {Node}             [root]       Root element (defaults to internal Node)
+   */
+  Window.prototype._render = function(id, scheme, root) {
+    scheme = scheme || this._scheme;
+    root = root || this._getRoot();
+
+    scheme.render(this, name, root);
+  };
+
+  /**
+   * Returns given DOMElement by ID
+   *
+   * @function _findDOM
+   * @memberof OSjs.Core.Window#
+   *
+   * @param   {String}                id        Element ID (data-id)
+   * @param   {Node}                  [root]    Root Node
+   *
+   * @return  {Node}
+   */
+  Window.prototype._findDOM = function(id, root) {
+    root = root || this._getRoot();
+    var q = '[data-id="' + id + '"]';
+    return root.querySelector(q);
   };
 
   /**
    * Creates a new GUI Element
    *
-   * THIS IS JUST A SHORTCUT METHOD FROM THE UI SCHEME CLASS
-   *
    * @function _create
    * @memberof OSjs.Core.Window#
-   * @see OSjs.GUI.Scheme#create
    *
    * @param   {String}                tagName       OS.js GUI Element name
    * @param   {Object}                params        Parameters
@@ -1078,22 +1110,34 @@
    * @return {OSjs.GUI.Element}
    */
   Window.prototype._create = function(tagName, params, parentNode, applyArgs) {
-    return this._scheme ? this._scheme.create(this, tagName, params, parentNode, applyArgs) : null;
+    parentNode = parentNode || this._getRoot();
+    return GUI.Element.createInto(tagName, params, parentNode, applyArgs, this);
   };
 
   /**
    * Finds a GUI Element by ID from Scheme.
    *
-   * THIS IS JUST A SHORTCUT METHOD FROM THE UI SCHEME CLASS
+   * @param   {String}                query     DOM Element query
+   * @param   {Node}                  [root]    Root Node
+   * @param   {Boolean}               [all]     Perform `querySelectorAll`
    *
    * @function _findByQuery
    * @memberof OSjs.Core.Window#
-   * @see OSjs.GUI.Scheme#findByQuery
    *
    * @return {(Array|OSjs.GUI.Element)}
    */
-  Window.prototype._findByQuery = function(q, root, all) {
-    return this._scheme ? this._scheme.findByQuery(this, q, root, all) : null;
+  Window.prototype._findByQuery = function(query, root, all) {
+    root = root || this._getRoot();
+
+    var el;
+    if ( all ) {
+      el = root.querySelectorAll(query).map(function(e) {
+        return GUI.Element.createInstance(e, query);
+      });
+    }
+
+    el = root.querySelector(query);
+    return GUI.Element.createInstance(el, query);
   };
 
   /**

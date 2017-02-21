@@ -67,12 +67,12 @@
   FileUploadDialog.prototype.init = function() {
     var self = this;
     var root = DialogWindow.prototype.init.apply(this, arguments);
-    var message = this.scheme.find(this, 'Message');
+    var message = this._find('Message');
     var maxSize = API.getConfig('VFS.MaxUploadSize');
 
     message.set('value', API._('DIALOG_UPLOAD_DESC', this.args.dest, maxSize), true);
 
-    var input = this.scheme.find(this, 'File');
+    var input = this._find('File');
     if ( this.args.file ) {
       this.setFile(this.args.file, input);
     } else {
@@ -111,7 +111,7 @@
         input.set('disabled', true);
       }
 
-      this.scheme.find(this, 'ButtonCancel').set('disabled', true);
+      this._find('ButtonCancel').set('disabled', true);
 
       var desc = OSjs.API._('DIALOG_UPLOAD_MSG_FMT', file.name, file.type, fileSize, this.dest);
 

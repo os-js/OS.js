@@ -423,112 +423,27 @@
     this._trigger('render', [root]);
   };
 
-  /**
-   * Renders the given fragment into Window
-   *
-   * @function create
-   * @memberof OSjs.GUI.Scheme#
-   *
-   * @param   {OSjs.Core.Window}      win           OS.js Window
-   * @param   {String}                tagName       OS.js GUI Element name
-   * @param   {Object}                params        Parameters
-   * @param   {Node}                  [parentNode]  Parent Node
-   * @param   {Object}                [applyArgs]   New element parameters
-   *
-   * @return  {OSjs.GUI.Element}
-   */
   UIScheme.prototype.create = function(win, tagName, params, parentNode, applyArgs) {
-    parentNode = parentNode || win._getRoot();
-    if ( parentNode instanceof GUI.Element ) {
-      parentNode = parentNode.$element;
+    console.warn('UIScheme::create() is deprecated, use Window::_create() or Element::createInto() instead');
+    if ( win ) {
+      return win._create(tagName, params, parentNode, applyArgs);
     }
-
-    var gel = GUI.Element.create(tagName, params, applyArgs, win);
-    parentNode.appendChild(gel.$element);
-    return gel;
+    return GUI.Element.createInto(tagName, params, parentNode, applyArgs);
   };
 
-  /**
-   * Returns given UIElement by ID
-   *
-   * @function find
-   * @memberof OSjs.GUI.Scheme#
-   *
-   * @param   {OSjs.Core.Window}      win       OS.js Window
-   * @param   {String}                id        Element ID (data-id)
-   * @param   {Node}                  [root]    Root Node
-   *
-   * @return  {OSjs.GUI.Element}
-   */
   UIScheme.prototype.find = function(win, id, root) {
-    root = this._findRoot(win, root);
-    var res = this._findDOM(win, id, root);
-    return GUI.Element.createInstance(res.el, res.q);
+    console.warn('UIScheme::find() is deprecated, use Window::_find() instead');
+    return win._find(id, root);
   };
 
-  /**
-   * Returns given UIElement by query
-   *
-   * @function findByQuery
-   * @memberof OSjs.GUI.Scheme#
-   *
-   * @param   {OSjs.Core.Window}      win       OS.js Window
-   * @param   {String}                query     DOM Element query
-   * @param   {Node}                  [root]    Root Node
-   * @param   {Boolean}               [all]     Perform `querySelectorAll`
-   *
-   * @return  {OSjs.GUI.Element}
-   */
   UIScheme.prototype.findByQuery = function(win, query, root, all) {
-    root = this._findRoot(win, root);
-
-    var el;
-    if ( all ) {
-      el = root.querySelectorAll(query).map(function(e) {
-        return GUI.Element.createInstance(e, query);
-      });
-    }
-
-    el = root.querySelector(query);
-    return GUI.Element.createInstance(el, query);
+    console.warn('UIScheme::findByQuery() is deprecated, use Window::_findByQuery() instead');
+    return win._findByQuery(query, root, all);
   };
 
-  /**
-   * Returns given DOMElement by ID
-   *
-   * @function findDOM
-   * @memberof OSjs.GUI.Scheme#
-   *
-   * @param   {OSjs.Core.Window}      win       OS.js Window
-   * @param   {String}                id        Element ID (data-id)
-   * @param   {Node}                  [root]    Root Node
-   *
-   * @return  {Node}
-   */
   UIScheme.prototype.findDOM = function(win, id, root) {
-    root = this._findRoot(win, root);
-    return this._findDOM(win, id, root).el;
-  };
-
-  /*
-   * Find Root Element
-   */
-  UIScheme.prototype._findRoot = function(win, root) {
-    if ( !(win instanceof OSjs.Core.Window) ) {
-      throw new Error('UIScheme::_findDOM() expects a instance of Window');
-    }
-    return root || win._getRoot();
-  };
-
-  /*
-   * Find DOM element
-   */
-  UIScheme.prototype._findDOM = function(win, id, root) {
-    var q = '[data-id="' + id + '"]';
-    return {
-      q: q,
-      el: root.querySelector(q)
-    };
+    console.warn('UIScheme::findDOM() is deprecated, use Window::_findDOM() instead');
+    return win._findDOM(id, root);
   };
 
   /**
