@@ -41,7 +41,7 @@
     this._settings = settings;
     this.scheme = scheme;
 
-    Window.apply(this, [name, args]);
+    Window.apply(this, [name, args, null, scheme]);
   }
 
   PanelItemDialog.prototype = Object.create(Window.prototype);
@@ -50,14 +50,15 @@
   PanelItemDialog.prototype.init = function(wm, app) {
     var self = this;
     var root = Window.prototype.init.apply(this, arguments);
-    this.scheme.render(this, this._name);
 
-    this.scheme.find(this, 'ButtonApply').on('click', function() {
+    this._render(this._name);
+
+    this._find('ButtonApply').on('click', function() {
       self.applySettings();
       self._close('ok');
     });
 
-    this.scheme.find(this, 'ButtonCancel').on('click', function() {
+    this._find('ButtonCancel').on('click', function() {
       self._close();
     });
 
@@ -73,7 +74,6 @@
   };
 
   PanelItemDialog.prototype._destroy = function() {
-    this.scheme = null;
     this._settings = null;
 
     return Window.prototype._destroy.apply(this, arguments);

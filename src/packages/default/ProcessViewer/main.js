@@ -54,7 +54,7 @@
     var root = Window.prototype.init.apply(this, arguments);
 
     // Load and set up scheme (GUI) here
-    scheme.render(this, 'ProcessViewerWindow', root);
+    this._render('ProcessViewerWindow');
 
     var view = this._find('View');
 

@@ -66,7 +66,7 @@
     var root = DefaultApplicationWindow.prototype.init.apply(this, arguments);
 
     // Load and set up scheme (GUI) here
-    scheme.render(this, 'PreviewWindow', root);
+    this._render('PreviewWindow');
 
     this._find('ZoomIn').son('click', this, this.onZoomIn);
     this._find('ZoomOut').son('click', this, this.onZoomOut);

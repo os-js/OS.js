@@ -54,7 +54,9 @@
 
   ApplicationAboutWindow.prototype.init = function(wm, app, scheme) {
     var root = Window.prototype.init.apply(this, arguments);
-    scheme.render(this, 'AboutWindow', root);
+
+    this._render('AboutWindow');
+
     root.getElementsByTagName('img')[0].src = API.getApplicationResource(app, 'about.png');
     return root;
   };

@@ -50,7 +50,7 @@
 
   ApplicationHTMLViewerWindow.prototype.init = function(wmRef, app, scheme) {
     var root = DefaultApplicationWindow.prototype.init.apply(this, arguments);
-    scheme.render(this, 'HTMLViewerWindow', root);
+    this._render('HTMLViewerWindow');
     return root;
   };
 

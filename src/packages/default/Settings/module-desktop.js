@@ -66,7 +66,7 @@
       var app = win._app;
       var nwin = new OSjs.Applications.ApplicationSettings.SettingsItemDialog(app, app.__metadata, scheme, cb);
       nwin._on('inited', function(scheme) {
-        scheme.find(this, 'List').clear().add(Object.keys(items).map(function(i, idx) {
+        this._find('List').clear().add(Object.keys(items).map(function(i, idx) {
           return {
             value: i,
             columns: [{

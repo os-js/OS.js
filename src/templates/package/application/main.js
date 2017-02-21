@@ -52,8 +52,8 @@
     var root = Window.prototype.init.apply(this, arguments);
     var self = this;
 
-    // Load and render `scheme.html` file
-    scheme.render(this, 'EXAMPLEWindow', root);
+    // Render our Scheme file fragment into this Window
+    this._render('EXAMPLEWindow');
 
     // Put your GUI code here (or make a new prototype function and call it):
 

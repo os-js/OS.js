@@ -226,7 +226,8 @@
       min_width: 400,
       min_height: 450,
       width: 800,
-      height: 450
+      height: 450,
+      translator: doTranslate
     }, app, scheme, file]);
 
     this.tool = {
@@ -247,9 +248,7 @@
     var self = this;
 
     // Load and set up scheme (GUI) here
-    scheme.render(this, 'DrawWindow', root, null, null, {
-      _: doTranslate
-    });
+    this._render('DrawWindow');
 
     var statusbar = this._find('Statusbar');
 

@@ -471,11 +471,14 @@
 
     win._on('init', function(root, scheme) {
       var opts = self.onOpenSettings(root, scheme, ev);
-      scheme.render(this, opts.id);
-      scheme.find(this, 'ButtonOK').on('click', function() {
+
+      this._render(opts.id);
+
+      this._find('ButtonOK').on('click', function() {
         var settings = opts.save(root, scheme, ev);
         self._saveOptions(settings);
       });
+
       opts.render(root, scheme, ev);
     });
 

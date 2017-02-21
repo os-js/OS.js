@@ -47,8 +47,8 @@
       }, app, scheme);
 
       win._on('init', function(root, scheme) {
-        // Window was inited
-        scheme.render(this, this._name, root);
+        // Window was inited. Render our scheme file fragment into window
+        this._render(this._name);
       });
 
       win._on('inited', function(scheme) {

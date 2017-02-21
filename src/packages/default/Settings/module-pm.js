@@ -72,7 +72,7 @@
       var name = row.getAttribute('data-value');
       var enabled = hidden.indexOf(name) >= 0;
 
-      scheme.create(win, 'gui-checkbox', {value: enabled}, col).on('change', function(ev) {
+      win._create('gui-checkbox', {value: enabled}, col).on('change', function(ev) {
         var idx = hidden.indexOf(name);
 
         if ( ev.detail ) {

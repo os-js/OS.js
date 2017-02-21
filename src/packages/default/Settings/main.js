@@ -67,7 +67,8 @@
       icon: metadata.icon,
       title: metadata.name,
       width: 400,
-      height: 300
+      height: 300,
+      translator: OSjs.Applications.ApplicationSettings._
     }, app, scheme]);
 
     this.callback = callback;
@@ -82,18 +83,16 @@
     var root = Window.prototype.init.apply(this, arguments);
 
     // Load and set up scheme (GUI) here
-    scheme.render(this, 'SettingsItemWindow', root, null, null, {
-      _: OSjs.Applications.ApplicationSettings._
-    });
+    this._render('SettingsItemWindow');
 
-    scheme.find(this, 'ButtonItemOK').on('click', function() {
+    this._find('ButtonItemOK').on('click', function() {
       self.closed = true;
       var selected = self._find('List').get('selected');
       self.callback('ok', selected.length ? selected[0] : null);
       self._close();
     });
 
-    scheme.find(this, 'ButtonItemCancel').on('click', function() {
+    this._find('ButtonItemCancel').on('click', function() {
       self._close();
     });
 
@@ -117,7 +116,8 @@
       title: metadata.name,
       width: 500,
       height: 450,
-      allow_resize: true
+      allow_resize: true,
+      translator: OSjs.Applications.ApplicationSettings._
     }, app, scheme]);
 
     this.initialCategory = initialCategory;
@@ -133,7 +133,7 @@
     var _ = OSjs.Applications.ApplicationSettings._;
 
     // Load and render `scheme.html` file
-    scheme.render(this, 'SettingsWindow', root, null, null, {_: _});
+    this._render('SettingsWindow');
 
     this._find('ButtonOK').son('click', this, this.onButtonOK);
     this._find('ButtonCancel').son('click', this, this.onButtonCancel);

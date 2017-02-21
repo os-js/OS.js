@@ -75,54 +75,54 @@
             if ( typeof val === 'function' ) {
               val = val();
             }
-            scheme.find(self, k).set('value', val);
+            self._find(k).set('value', val);
           });
         }
       }
 
       function done() {
         ondone({
-          transport: scheme.find(self, 'MountType').get('value'),
-          name: scheme.find(self, 'MountName').get('value'),
-          description: scheme.find(self, 'MountDescription').get('value'),
+          transport: self._find('MountType').get('value'),
+          name: self._find('MountName').get('value'),
+          description: self._find('MountDescription').get('value'),
           options: {
-            host: scheme.find(self, 'MountHost').get('value'),
-            ns: scheme.find(self, 'MountNamespace').get('value'),
-            username: scheme.find(self, 'MountUsername').get('value'),
-            password: scheme.find(self, 'MountPassword').get('value'),
-            cors: scheme.find(self, 'MountCORS').get('value')
+            host: self._find('MountHost').get('value'),
+            ns: self._find('MountNamespace').get('value'),
+            username: self._find('MountUsername').get('value'),
+            password: self._find('MountPassword').get('value'),
+            cors: self._find('MountCORS').get('value')
           }
         }, selected);
 
         self._close();
       }
 
-      scheme.render(this, this._name, root);
+      this._render(this._name);
 
       if ( selected ) {
-        scheme.find(self, 'MountType').set('value', selected.transport);
-        scheme.find(self, 'MountName').set('value', selected.name);
-        scheme.find(self, 'MountDescription').set('value', selected.description);
+        self._find('MountType').set('value', selected.transport);
+        self._find('MountName').set('value', selected.name);
+        self._find('MountDescription').set('value', selected.description);
 
         if ( selected.options ) {
-          scheme.find(self, 'MountHost').set('value', selected.options.host);
-          scheme.find(self, 'MountNamespace').set('value', selected.options.ns);
-          scheme.find(self, 'MountUsername').set('value', selected.options.username);
-          scheme.find(self, 'MountPassword').set('value', selected.options.password);
-          scheme.find(self, 'MountCORS').set('value', selected.options.cors);
+          self._find('MountHost').set('value', selected.options.host);
+          self._find('MountNamespace').set('value', selected.options.ns);
+          self._find('MountUsername').set('value', selected.options.username);
+          self._find('MountPassword').set('value', selected.options.password);
+          self._find('MountCORS').set('value', selected.options.cors);
         }
       } else {
-        setTemplate(scheme.find(this, 'MountType').get('value'));
-        scheme.find(this, 'MountType').on('change', function(ev) {
+        setTemplate(this._find('MountType').get('value'));
+        this._find('MountType').on('change', function(ev) {
           setTemplate(ev.detail);
         });
       }
 
-      scheme.find(this, 'ButtonClose').on('click', function() {
+      this._find('ButtonClose').on('click', function() {
         self._close();
       });
 
-      scheme.find(this, 'ButtonOK').on('click', function() {
+      this._find('ButtonOK').on('click', function() {
         done();
       });
     });

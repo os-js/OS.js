@@ -54,7 +54,8 @@
     var self = this;
 
     // Load and set up scheme (GUI) here
-    scheme.render(this, 'TextpadWindow', root);
+    this._render('TextpadWindow');
+
     this._find('Text').on('change', function() {
       self.hasChanged = true;
     });

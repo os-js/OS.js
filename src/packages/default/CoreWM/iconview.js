@@ -56,9 +56,8 @@
       allow_maximize: false,
       allow_resize: false,
       allow_minimize: false
-    }]);
+    }, null, scheme]);
 
-    this.scheme = scheme;
     this.values = {
       path: item.path,
       filename: item.filename,
@@ -73,18 +72,19 @@
   IconViewShortcutDialog.prototype.init = function(wm, app) {
     var self = this;
     var root = Window.prototype.init.apply(this, arguments);
-    this.scheme.render(this, this._name);
 
-    this.scheme.find(this, 'InputShortcutLaunch').set('value', this.values.path);
-    this.scheme.find(this, 'InputShortcutLabel').set('value', this.values.filename);
-    this.scheme.find(this, 'InputTooltipFormatString').set('value', JSON.stringify(this.values.args || {}));
+    this._render(this._name);
 
-    this.scheme.find(this, 'ButtonApply').on('click', function() {
+    this._find('InputShortcutLaunch').set('value', this.values.path);
+    this._find('InputShortcutLabel').set('value', this.values.filename);
+    this._find('InputTooltipFormatString').set('value', JSON.stringify(this.values.args || {}));
+
+    this._find('ButtonApply').on('click', function() {
       self.applySettings();
       self._close('ok');
     });
 
-    this.scheme.find(this, 'ButtonCancel').on('click', function() {
+    this._find('ButtonCancel').on('click', function() {
       self._close();
     });
 
@@ -92,9 +92,9 @@
   };
 
   IconViewShortcutDialog.prototype.applySettings = function() {
-    this.values.path = this.scheme.find(this, 'InputShortcutLaunch').get('value');
-    this.values.filename = this.scheme.find(this, 'InputShortcutLabel').get('value');
-    this.values.args = JSON.parse(this.scheme.find(this, 'InputTooltipFormatString').get('value') || {});
+    this.values.path = this._find('InputShortcutLaunch').get('value');
+    this.values.filename = this._find('InputShortcutLabel').get('value');
+    this.values.args = JSON.parse(this._find('InputTooltipFormatString').get('value') || {});
   };
 
   IconViewShortcutDialog.prototype._close = function(button) {
@@ -103,7 +103,6 @@
   };
 
   IconViewShortcutDialog.prototype._destroy = function() {
-    this.scheme = null;
     return Window.prototype._destroy.apply(this, arguments);
   };
 

@@ -54,7 +54,8 @@
       title: metadata.name,
       allow_drop: true,
       width: 650,
-      height: 420
+      height: 420,
+      translator: OSjs.Applications.ApplicationFileManager._
     }, app, scheme]);
 
     this.wasFileDropped = false;
@@ -128,9 +129,7 @@
     var viewExtension = scandirOptions.showFileExtensions === true;
 
     // Load and set up scheme (GUI) here
-    scheme.render(this, 'FileManagerWindow', root, null, null, {
-      _: OSjs.Applications.ApplicationFileManager._
-    });
+    this._render('FileManagerWindow');
 
     if ( (API.getConfig('Connection.Type') !== 'nw') && window.location.protocol.match(/^file/) ) { // FIXME: Translation
       this._setWarning('VFS does not work when in standalone mode');

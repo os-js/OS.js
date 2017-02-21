@@ -103,7 +103,7 @@
     var self = this;
 
     // Load and gel.set up scheme (GUI) here
-    scheme.render(this, 'CalculatorWindow', root);
+    this._render('CalculatorWindow');
 
     this._find('Output').on('keypress', function(ev) {
       ev.stopPropagation();

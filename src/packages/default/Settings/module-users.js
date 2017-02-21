@@ -91,25 +91,25 @@
     nwin._on('init', function(root) {
       var self = this;
 
-      scheme.render(this, this._name, root);
+      this._render(this._name);
 
       if ( Object.keys(data).length ) {
-        scheme.find(self, 'UserUsername').set('value', data.username);
-        scheme.find(self, 'UserName').set('value', data.name);
-        scheme.find(self, 'UserGroups').set('value', JSON.stringify(data.groups));
+        self._find('UserUsername').set('value', data.username);
+        self._find('UserName').set('value', data.name);
+        self._find('UserGroups').set('value', JSON.stringify(data.groups));
       }
 
-      scheme.find(this, 'ButtonClose').on('click', function() {
+      this._find('ButtonClose').on('click', function() {
         self._close();
       });
 
-      scheme.find(this, 'ButtonOK').on('click', function() {
-        data.username = scheme.find(self, 'UserUsername').get('value');
-        data.name = scheme.find(self, 'UserName').get('value') || data.username;
+      this._find('ButtonOK').on('click', function() {
+        data.username = self._find('UserUsername').get('value');
+        data.name = self._find('UserName').get('value') || data.username;
         data.groups = [];
 
         try {
-          data.groups = JSON.parse(scheme.find(self, 'UserGroups').get('value'));
+          data.groups = JSON.parse(self._find('UserGroups').get('value'));
         } catch ( e ) {
         }
 

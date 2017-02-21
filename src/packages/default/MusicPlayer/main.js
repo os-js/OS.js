@@ -61,7 +61,8 @@
       allow_resize: false,
       allow_maximize: false,
       width: 370,
-      height: 260
+      height: 260,
+      translator: OSjs.Applications.ApplicationMusicPlayer._
     }, app, scheme, file]);
 
     this.updated = false;
@@ -75,9 +76,7 @@
     var self = this;
 
     // Load and set up scheme (GUI) here
-    scheme.render(this, 'MusicPlayerWindow', root, null, null, {
-      _: OSjs.Applications.ApplicationMusicPlayer._
-    });
+    this._render('MusicPlayerWindow');
 
     var label = this._find('LabelTime');
     var seeker = this._find('Seek');

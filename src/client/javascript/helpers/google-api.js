@@ -410,7 +410,8 @@
     }
 
     if ( SingletonInstance ) {
-      return _run();
+      _run();
+      return;
     }
 
     var clientId = null;

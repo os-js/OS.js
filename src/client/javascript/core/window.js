@@ -213,6 +213,7 @@
    * @param   {Object}                    [opts.media_queries]     Media queries to apply CSS attribute => {name: fn(w,h,win) => Boolean }
    * @param   {String}                    [opts.sound]             Sound name when window is displayed
    * @param   {Number}                    [opts.sound_volume]      Sound volume
+   * @param   {Function}                  [opts.translator]        Translation method
    * @param   {OSjs.Core.Application}     appRef                   Application Reference
    * @param   {OSjs.GUI.Scheme}           schemeRef                GUI Scheme Reference
    *
@@ -547,6 +548,7 @@
         onbottom  : false
       };
 
+      this._translator = null;
       this._animationCallback = null;
 
       //
@@ -1068,15 +1070,21 @@
    * @function _render
    * @memberof OSjs.Core.Window#
    *
-   * @param {String}           [id]         Scheme fragment ID (defaults to window name)
+   * @param {String}           id           Scheme fragment ID
    * @param {OSjs.GUI.Scheme}  [scheme]     Scheme reference (defaults to internal)
    * @param {Node}             [root]       Root element (defaults to internal Node)
+   * @param {Object}           [args]       Arguments to pass to parser
    */
-  Window.prototype._render = function(id, scheme, root) {
+  Window.prototype._render = function(id, scheme, root, args) {
     scheme = scheme || this._scheme;
     root = root || this._getRoot();
+    args = args || {};
 
-    scheme.render(this, name, root);
+    if ( this._translator ) {
+      args._ = this._translator;
+    }
+
+    scheme.render(this, id, root, null, null, args);
   };
 
   /**
