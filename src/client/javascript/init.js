@@ -750,19 +750,8 @@
 
     console.warn('OS.js was shut down!');
 
-    if ( OSjs.API.getConfig('Connection.Type') === 'nw' ) {
-      try {
-        var gui = require('nw.gui');
-        var win = gui.Window.get();
-        setTimeout(function() {
-          win.close();
-        }, 500);
-      } catch ( e ) {
-      }
-    } else {
-      if ( OSjs.API.getConfig('ReloadOnShutdown') === true ) {
-        window.location.reload();
-      }
+    if ( OSjs.API.getConfig('ReloadOnShutdown') === true ) {
+      window.location.reload();
     }
 
     Object.keys(OSjs).forEach(function(k) {
