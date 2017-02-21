@@ -445,7 +445,35 @@
         });
       });
 
-      describe('write()', function() {
+      describe('write() (encoded)', function() {
+        describe('#exception', function() {
+          it('should throw error', function() {
+            OSjs.VFS.write('invalid:///foo', testString, function(err, res) {
+              expect(err).to.not.be.oneOf([false, null, '']);
+            }, {upload: false});
+          });
+        });
+
+        describe('#failure', function() {
+          it('should not be written', function(done) {
+            OSjs.VFS.write('osjs:///mocha-error', testString, function(err, res) {
+              expect(err).to.not.be.oneOf([false, null, '']);
+              done();
+            }, {upload: false});
+          });
+        });
+
+        describe('#success', function() {
+          it('should be written', function(done) {
+            OSjs.VFS.write('home:///mocha-file', testString, function(err, res) {
+              expect(res).to.be.equal(true);
+              done();
+            }, {upload: false});
+          });
+        });
+      });
+
+      describe('write() (binary)', function() {
         describe('#exception', function() {
           it('should throw error', function() {
             OSjs.VFS.write('invalid:///foo', testString, function(err, res) {
@@ -601,7 +629,7 @@
         describe('#success', function() {
           it('should have URL', function(done) {
             OSjs.VFS.url('home:///mocha-file', function(err, res) {
-              expect(res).to.be.equal('/FS/get/home:///mocha-file');
+              expect(res).to.be.equal('/FS/read?path=home%3A%2F%2F%2Fmocha-file');
               done();
             });
           });
@@ -817,10 +845,6 @@
           });
 
         });
-      });
-
-      describe('upload()', function() {
-        // TODO
       });
 
       describe('trash()', function() {

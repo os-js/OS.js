@@ -223,6 +223,27 @@
       options.overwrite = true;
       options.onprogress = options.onprogress || function() {};
 
+      function _write(dataSource) {
+        var wopts = {path: item.path, data: dataSource};
+        internalRequest('write', wopts, callback, options);
+      }
+
+      if ( options.upload === false ) {
+        if ( typeof data === 'string' && !data.length ) {
+          _write(data);
+        } else {
+          VFS.Helpers.abToDataSource(data, item.mime, function(error, dataSource) {
+            if ( error ) {
+              callback(error);
+              return;
+            }
+
+            _write(dataSource);
+          });
+        }
+        return;
+      }
+
       var parentItem = VFS.file(Utils.dirname(item.path), item.mime);
       internalUpload(data, parentItem, function() {
         callback(null, true);
