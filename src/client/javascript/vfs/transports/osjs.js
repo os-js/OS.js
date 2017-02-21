@@ -230,16 +230,6 @@
     },
 
     read: function(item, callback, options) {
-      if ( API.getConfig('Connection.Type') === 'nw' ) {
-        OSjs.Core.getConnection().nw.request(true, 'read', {
-          path: item.path,
-          options: {raw: true}
-        }, function(err, res) {
-          callback(err, res);
-        });
-        return;
-      }
-
       internalRequest('get', {path: item.path}, callback, options);
     },
 
