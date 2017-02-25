@@ -1060,7 +1060,7 @@
 
     if ( this.$animationLink ) {
       if ( settings.animations ) {
-        this.setAnimationLink(API.getApplicationResource(this, 'animations.css'));
+        this.setAnimationLink(this._getResource('animations.css'));
       } else {
         this.setAnimationLink(API.getThemeCSS(null));
       }

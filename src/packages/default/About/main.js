@@ -57,7 +57,7 @@
 
     this._render('AboutWindow');
 
-    root.getElementsByTagName('img')[0].src = API.getApplicationResource(app, 'about.png');
+    root.getElementsByTagName('img')[0].src = app._getResource('about.png');
     return root;
   };
 

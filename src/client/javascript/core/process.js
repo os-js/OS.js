@@ -496,11 +496,12 @@
    * @see API.getApplicationResource()
    *
    * @param   {String}      src       Resource name (path)
+   * @param   {Boolean}     [vfspath] Return a valid VFS path
    *
    * @return  {String}
    */
-  Process.prototype._getResource = function(src) {
-    return API.getApplicationResource(this, src);
+  Process.prototype._getResource = function(src, vfspath) {
+    return API.getApplicationResource(this, src, vfspath);
   };
 
   /**
