@@ -162,14 +162,15 @@ const TASKS = {
   'package': function(cli, cfg) {
     let name = cli.option('name', '');
     const type = cli.option('type', 'application');
-    const words = name.replace(/[^A-z0-9\._]/g, '').replace(/\s+/g, ' ').split(' ');
-    name = [words[0]].concat(words.splice(1).map((w) => {
-      return w.replace(/\b\w/g, (l) => l.toUpperCase());
-    })).join('');
 
     const tmp  = name.split('/');
     const repo = tmp.length > 1 ? tmp[0] : 'default';
     name = tmp.length > 1 ? tmp[1] : name;
+
+    const words = name.replace(/[^A-z0-9\._]/g, '').replace(/\s+/g, ' ').split(' ');
+    name = [words[0]].concat(words.splice(1).map((w) => {
+      return w.replace(/\b\w/g, (l) => l.toUpperCase());
+    })).join('');
 
     const typemap = {
       iframe: {
