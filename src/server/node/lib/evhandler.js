@@ -33,12 +33,14 @@
 /**
  * Internal events:
  *
+ * <pre><code>
  *   http:start => fn()
  *   http:end => fn()
  *   request:start() => fn()
  *   request:end() => fn()
  *   api:request => fn(type, method)
  *   ws:connection => fn(ws)
+ * </code></pre>
  *
  * @namespace lib.evhandler
  */
@@ -51,6 +53,9 @@ const eventHandlers = {};
  * @param {String}    evName        Event name
  * @param {Array}     [args]        Array of arguments
  * @param {Object}    [thisArg]     The `this` to apply
+ *
+ * @memberof lib.evhandler
+ * @function emit
  *
  * @return {Boolean}
  */
@@ -71,6 +76,9 @@ module.exports.emit = function(evName, args, thisArg) {
  * @param {String}    evName        Event name
  * @param {Function}  cb            Callback function
  *
+ * @memberof lib.evhandler
+ * @function subscribe
+ *
  * @return {Number} Event index
  */
 module.exports.subscribe = function(evName, cb) {
@@ -85,6 +93,9 @@ module.exports.subscribe = function(evName, cb) {
  *
  * @param {String}    evName        Event name
  * @param {Function}  [cb]          Callback function
+ *
+ * @memberof lib.evhandler
+ * @function unsubscribe
  *
  * @return {Boolean}
  */
