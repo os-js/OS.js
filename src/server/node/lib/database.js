@@ -31,7 +31,7 @@
 'use strict';
 
 /**
- * @namespace .database
+ * @namespace lib.database
  */
 
 let instances = {};
