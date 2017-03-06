@@ -585,6 +585,7 @@
 
       Utils.$addClass(el, 'gui-data-view');
 
+      var wasResized = false;
       var singleClick = el.getAttribute('data-single-click') === 'true';
       var multipleSelect = el.getAttribute('data-multiple');
       multipleSelect = multipleSelect === null || multipleSelect === 'true';
@@ -592,6 +593,10 @@
       function select(ev) {
         ev.stopPropagation();
         API.blurMenu();
+
+        if ( wasResized ) {
+          return;
+        }
 
         var row = getEntryFromEvent(ev);
         if ( !row ) {
@@ -671,6 +676,11 @@
         el.dispatchEvent(new CustomEvent('_contextmenu', {detail: {entries: self.values(), x: ev.clientX, y: ev.clientY}}));
       }
 
+      function mousedown(ev) {
+        var target = ev.target;
+        wasResized = target && target.tagName === 'GUI-LIST-VIEW-COLUMN-RESIZER';
+      }
+
       if ( !el.querySelector('textarea.gui-focus-element') && !el.getAttribute('no-selection') ) {
         var underlay = document.createElement('textarea');
         underlay.setAttribute('aria-label', '');
@@ -692,6 +702,8 @@
         Utils.$bind(underlay, 'keypress', function(ev) {
           ev.preventDefault();
         });
+
+        Utils.$bind(el, 'mousedown', mousedown, true);
 
         if ( singleClick ) {
           Utils.$bind(el, 'click', activate, true);
