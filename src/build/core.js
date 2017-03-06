@@ -151,6 +151,7 @@ function createIndex(verbose, cfg, dist, fn, test) {
   tpl = _utils.replaceAll(tpl, '%SCRIPTS%', scripts.join('\n'));
   tpl = _utils.replaceAll(tpl, '%LOGIN%', loginHTML);
   tpl = _utils.replaceAll(tpl, '%SPLASH%', splashHTML);
+  tpl = _utils.replaceAll(tpl, '%VERSION%', cfg.client.Version);
 
   _fs.writeFileSync(_path.join(outdir, fileName), tpl);
 }
