@@ -34,7 +34,7 @@
  * @namespace modules.api
  */
 
-const _logger = require('./../../core/logger.js');
+const _logger = require('./../../lib/logger.js');
 
 /**
  * Do a HTTP request

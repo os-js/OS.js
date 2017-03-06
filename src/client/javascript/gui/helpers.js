@@ -42,6 +42,8 @@
    * @memberof OSjs.GUI
    */
 
+  var lastMenu;
+
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
@@ -194,7 +196,7 @@
     }
 
     if ( (param === 'value' || param === 'selected') && isDataView ) {
-      return GUI.Elements[tagName].values(el);
+      return GUI.Element.createFromNode(el).values();
     }
 
     return el.getAttribute('data-' + param);
@@ -821,6 +823,172 @@
       //Utils.$removeClass(el, 'onDragEnter');
       return args.onLeave.call(this, ev, this, args);
     }, false);
+  };
+
+  OSjs.GUI.Helpers._menuSetActive = function(menu) {
+    lastMenu = menu;
+  };
+
+  OSjs.GUI.Helpers._menuClickWrapper = function(ev, pos, onclick, original) {
+    var t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
+
+    ev.preventDefault();
+    if ( t && t.tagName === 'GUI-MENU-ENTRY' ) {
+      var isExpander = !!t.querySelector('gui-menu');
+      var hasInput = t.querySelector('input');
+
+      if ( hasInput || isExpander ) {
+        ev.stopPropagation();
+      }
+
+      onclick(ev, pos, t, original);
+    }
+  };
+
+  OSjs.GUI.Helpers._menuClamp = function(r) {
+    function _clamp(rm) {
+      rm.querySelectorAll('gui-menu-entry').forEach(function(srm) {
+        var sm = srm.querySelector('gui-menu');
+        if ( sm ) {
+          sm.style.left = String(-parseInt(sm.offsetWidth, 10)) + 'px';
+          _clamp(sm);
+        }
+      });
+    }
+
+    var pos = Utils.$position(r);
+    if ( pos && (window.innerWidth - pos.right) < r.offsetWidth ) {
+      Utils.$addClass(r, 'gui-overflowing');
+      _clamp(r);
+    }
+
+    // this class is used in caclulations (DOM needs to be visible for that)
+    Utils.$addClass(r, 'gui-showing');
+  };
+
+  /**
+   * Blur the currently open menu (aka hiding)
+   *
+   * @param {Event} [ev] Browser event
+   * @function blurMenu
+   * @memberof OSjs.GUI.Helpers
+   */
+  OSjs.GUI.Helpers.blurMenu = function blurMenu(ev) {
+    if ( lastMenu ) {
+      lastMenu(ev);
+    }
+    lastMenu = null;
+
+    API.triggerHook('onBlurMenu');
+  };
+
+  /**
+   * Create and show a new menu
+   *
+   * @example
+   * createMenu([
+   *    {
+   *      title: "Title",
+   *      icon: "Icon",
+   *      onClick: function() {}, // Callback
+   *      menu: [] // Recurse :)
+   *    }
+   * ])
+   *
+   * @param   {Array}                items             Array of items
+   * @param   {(Event|Object)}       ev                DOM Event or dict with x/y
+   * @param   {Mixed}                [customInstance]  Show a custom created menu
+   *
+   * @function createMenu
+   * @memberof OSjs.GUI.Helpers
+   */
+  OSjs.GUI.Helpers.createMenu = function createMenu(items, ev, customInstance) {
+    items = items || [];
+
+    OSjs.GUI.Helpers.blurMenu(ev);
+
+    var root = customInstance;
+    var callbackMap = [];
+
+    function resolveItems(arr, par) {
+      arr.forEach(function(iter) {
+        var props = {label: iter.title, icon: iter.icon, disabled: iter.disabled, labelHTML: iter.titleHTML, type: iter.type, checked: iter.checked};
+        var entry = GUI.Helpers.createElement('gui-menu-entry', props);
+        if ( iter.menu ) {
+          var nroot = GUI.Helpers.createElement('gui-menu', {});
+          resolveItems(iter.menu, nroot);
+          entry.appendChild(nroot);
+        }
+        if ( iter.onClick ) {
+          var index = callbackMap.push(iter.onClick);
+          entry.setAttribute('data-callback-id', String(index - 1));
+        }
+        par.appendChild(entry);
+      });
+    }
+
+    if ( !root ) {
+      root = GUI.Helpers.createElement('gui-menu', {});
+      resolveItems(items || [], root);
+
+      GUI.Element.createFromNode(root, null, 'gui-menu').build(true);
+
+      Utils.$bind(root, 'click', function(ev, pos) {
+        OSjs.GUI.Helpers._menuClickWrapper(ev, pos, function(ev, pos, t) {
+          var index = parseInt(t.getAttribute('data-callback-id'), 10);
+          if ( callbackMap[index] ) {
+            callbackMap[index](ev, pos);
+
+            OSjs.GUI.Helpers.blurMenu(ev); // !last!
+          }
+        });
+      }, true);
+
+      Utils.$bind(root, 'touchstart', function(ev) {
+        ev.preventDefault();
+      }, true);
+    }
+
+    if ( root.$element ) {
+      root = root.$element;
+    }
+
+    var wm = OSjs.Core.getWindowManager();
+    var space = wm.getWindowSpace(true);
+    var pos = Utils.mousePosition(ev);
+
+    Utils.$addClass(root, 'gui-root-menu');
+    root.style.left = pos.x + 'px';
+    root.style.top  = pos.y + 'px';
+    document.body.appendChild(root);
+
+    // Make sure it stays within viewport
+    setTimeout(function() {
+      var pos = Utils.$position(root);
+      if ( pos ) {
+        if ( pos.right > space.width ) {
+          var newLeft = Math.round(space.width - pos.width);
+          root.style.left = Math.max(0, newLeft) + 'px';
+        }
+        if ( pos.bottom > space.height ) {
+          var newTop = Math.round(space.height - pos.height);
+          root.style.top = Math.max(0, newTop) + 'px';
+        }
+      }
+
+      OSjs.GUI.Helpers._menuClamp(root);
+    }, 1);
+
+    lastMenu = function() {
+      callbackMap = null;
+      if ( root ) {
+        root.querySelectorAll('gui-menu-entry').forEach(function(el) {
+          Utils.$unbind(el);
+        });
+        Utils.$unbind(root);
+      }
+      root = Utils.$remove(root);
+    };
   };
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

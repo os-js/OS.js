@@ -34,6 +34,7 @@ const _fs = require('fs-extra');
 const _vfs = require('./vfs.js');
 const _env = require('./env.js');
 const _settings = require('./settings.js');
+const _evhandler = require('../lib/evhandler.js');
 
 /**
  * @namespace core.responder
@@ -52,6 +53,12 @@ const _settings = require('./settings.js');
  * @property  {Function}        json    Respond with JSON
  * @typedef ServerResponder
  */
+
+function endResponse(response) {
+  response.end(null, () => {
+    _evhandler.emit('http:end', []);
+  });
+}
 
 /*
  * Creates a `ServerResponder` object for HTTP connections.
@@ -75,7 +82,7 @@ module.exports.createFromHttp = function(servers, request, response) {
 
     response.writeHead(code, headers);
     response.write(data);
-    response.end();
+    endResponse(response);
   }
 
   function _error(message, code) {
@@ -144,11 +151,11 @@ module.exports.createFromHttp = function(servers, request, response) {
 
         stream.on('error', (err) => {
           console.error('An error occured while streaming', path, err);
-          response.end();
+          endResponse(response);
         });
 
         stream.on('end', () => {
-          response.end();
+          endResponse(response);
         });
 
         response.writeHead(code, headers);
@@ -202,11 +209,15 @@ module.exports.createFromHttp = function(servers, request, response) {
  * @return {ServerResponder}
  */
 module.exports.createFromWebsocket = function(servers, ws, index) {
+  function _send(msg) {
+    ws.send(msg);
+  }
+
   function _json(message) {
     if ( typeof message === 'object' ) {
       message._index = index;
     }
-    ws.send(JSON.stringify(message));
+    _send(JSON.stringify(message));
   }
 
   return Object.freeze({
@@ -215,7 +226,7 @@ module.exports.createFromWebsocket = function(servers, ws, index) {
     _ws: servers.websocketServer,
 
     raw: function(data) {
-      ws.send(data);
+      _send(data);
     },
 
     stream: function() {

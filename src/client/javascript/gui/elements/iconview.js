@@ -34,12 +34,12 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
-  function createEntry(e) {
+  function createEntry(cls, e) {
     var entry = GUI.Helpers.createElement('gui-icon-view-entry', e);
     return entry;
   }
 
-  function initEntry(el, cel) {
+  function initEntry(cls, cel) {
     var icon = cel.getAttribute('data-icon');
     var label = GUI.Helpers.getLabel(cel);
 
@@ -53,7 +53,7 @@
     dspan.appendChild(document.createTextNode(label));
     dlabel.appendChild(dspan);
 
-    GUI.Elements._dataview.bindEntryEvents(el, cel, 'gui-icon-view-entry');
+    cls.bindEntryEvents(cel, 'gui-icon-view-entry');
 
     cel.setAttribute('role', 'listitem');
     cel.appendChild(dicon);
@@ -82,22 +82,25 @@
    *      value: "something or JSON or whatever"
    *   }])
    *
-   * @constructs OSjs.GUI.DataView
+   * @constructor IconView
+   * @extends OSjs.GUI.DataView
    * @memberof OSjs.GUI.Elements
-   * @var gui-icon-view
    */
-  GUI.Elements['gui-icon-view'] = {
-    bind: GUI.Elements._dataview.bind,
-
-    values: function(el) {
-      return GUI.Elements._dataview.getSelected(el, el.querySelectorAll('gui-icon-view-entry'));
+  GUI.Element.register({
+    parent: GUI.DataView,
+    tagName: 'gui-icon-view'
+  }, {
+    values: function() {
+      return this.getSelected(this.$element.querySelectorAll('gui-icon-view-entry'));
     },
 
-    build: function(el, applyArgs) {
+    build: function() {
+      var el = this.$element;
       var body = el.querySelector('gui-icon-view-body');
       var found = !!body;
+      var self = this;
 
-      if ( !body ) {
+      if ( !found ) {
         body = document.createElement('gui-icon-view-body');
         el.appendChild(body);
       }
@@ -106,53 +109,58 @@
         if ( !found ) {
           body.appendChild(cel);
         }
-        initEntry(el, cel);
+        initEntry(self, cel);
       });
 
       el.setAttribute('role', 'list');
 
-      GUI.Elements._dataview.build(el, applyArgs);
+      return GUI.DataView.prototype.build.apply(this, arguments);
     },
 
-    get: function(el, param, value, arg, asValue) {
+    get: function(param, value, arg, asValue) {
       if ( param === 'entry' ) {
-        var body = el.querySelector('gui-icon-view-body');
+        var body = this.$element.querySelector('gui-icon-view-body');
         var rows = body.querySelectorAll('gui-icon-view-entry');
-        return GUI.Elements._dataview.getEntry(el, rows, value, arg, asValue);
+        return this.getEntry(rows, value, arg, asValue);
       }
-      return GUI.Helpers.getProperty(el, param);
+      return GUI.DataView.prototype.get.apply(this, arguments);
     },
 
-    set: function(el, param, value, arg) {
-      var body = el.querySelector('gui-icon-view-body');
+    set: function(param, value, arg) {
+      var body = this.$element.querySelector('gui-icon-view-body');
       if ( param === 'selected' || param === 'value' ) {
-        GUI.Elements._dataview.setSelected(el, body, body.querySelectorAll('gui-icon-view-entry'), value, arg);
-        return true;
+        this.setSelected(body, body.querySelectorAll('gui-icon-view-entry'), value, arg);
+        return this;
       }
 
-      return false;
+      return GUI.DataView.prototype.set.apply(this, arguments);
     },
 
-    call: function(el, method, args) {
-      var body = el.querySelector('gui-icon-view-body');
-      if ( method === 'add' ) {
-        GUI.Elements._dataview.add(el, args, function(e) {
-          var entry = createEntry(e);
-          body.appendChild(entry);
-          initEntry(el, entry);
-        });
-      } else if ( method === 'remove' ) {
-        GUI.Elements._dataview.remove(el, args, 'gui-icon-view-entry');
-      } else if ( method === 'clear' ) {
-        GUI.Elements._dataview.clear(el, body);
-      } else if ( method === 'patch' ) {
-        GUI.Elements._dataview.patch(el, args, 'gui-icon-view-entry', body, createEntry, initEntry);
-      } else if ( method === 'focus' ) {
-        GUI.Elements._dataview.focus(el);
-      }
-      return this;
+    add: function(entries) {
+      var body = this.$element.querySelector('gui-icon-view-body');
+      var self = this;
+
+      return GUI.DataView.prototype.add.call(this, entries, function(cls, e) {
+        var entry = createEntry(self, e);
+        body.appendChild(entry);
+        initEntry(self, entry);
+      });
+    },
+
+    clear: function() {
+      var body = this.$element.querySelector('gui-icon-view-body');
+      return GUI.DataView.prototype.clear.call(this, body);
+    },
+
+    remove: function(entries) {
+      return GUI.DataView.prototype.remove.call(this, entries, 'gui-icon-view-entry');
+    },
+
+    patch: function(entries) {
+      var body = this.$element.querySelector('gui-icon-view-body');
+      return GUI.DataView.prototype.patch.call(this, entries, 'gui-icon-view-entry', body, createEntry, initEntry);
     }
 
-  };
+  });
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

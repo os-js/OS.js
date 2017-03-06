@@ -285,7 +285,7 @@
 
     this._toggleLoading(true);
 
-    view._call('chdir', {
+    view.chdir({
       path: dir || this.path,
       done: function(error) {
         if ( error ) {

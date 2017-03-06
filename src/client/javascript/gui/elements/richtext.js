@@ -126,7 +126,7 @@
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
+  // CLASSES
   /////////////////////////////////////////////////////////////////////////////
 
   /**
@@ -139,18 +139,21 @@
    *   setter    value   String        The value/contents
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor RichText
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-richtext
    */
-  GUI.Elements['gui-richtext'] = {
-    bind: function(el, evName, callback, params) {
+  var GUIRichText = {
+    on: function(evName, callback, params) {
       if ( (['selection']).indexOf(evName) !== -1 ) {
         evName = '_' + evName;
       }
-      Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
+      Utils.$bind(this.$element, evName, callback.bind(this), params);
+      return this;
     },
-    build: function(el) {
+
+    build: function() {
+      var el = this.$element;
       var text = el.childNodes.length ? el.childNodes[0].nodeValue : '';
 
       Utils.$empty(el);
@@ -174,37 +177,56 @@
           console.warn('gui-richtext', 'build()', e);
         }
       }, 1);
+
+      return this;
     },
-    call: function(el, method, args) {
-      var doc = getDocument(el);
+
+    command: function() {
       try {
-        if ( method === 'command' ) {
-          if ( doc && doc.execCommand ) {
-            return doc.execCommand.apply(doc, args);
-          }
-        } else if ( method === 'query' ) {
-          if ( doc && doc.queryCommandValue ) {
-            return doc.queryCommandValue.apply(doc, args);
-          }
+        var doc = getDocument(this.$element);
+        if ( doc && doc.execCommand ) {
+          return doc.execCommand.apply(doc, arguments);
+        }
+      } catch ( e ) {
+        console.warn('gui-richtext call() warning', e.stack, e);
+      }
+      return this;
+    },
+
+    query: function() {
+      try {
+        var doc = getDocument(this.$element);
+        if ( doc && doc.queryCommandValue ) {
+          return doc.queryCommandValue.apply(doc, arguments);
         }
       } catch ( e ) {
         console.warn('gui-richtext call() warning', e.stack, e);
       }
       return null;
     },
-    get: function(el, param, value) {
+
+    get: function(param, value) {
       if ( param === 'value' ) {
-        return getDocumentData(el);
+        return getDocumentData(this.$element);
       }
-      return GUI.Helpers.getProperty(el, param);
+      return GUI.Element.prototype.get.apply(this, arguments);
     },
-    set: function(el, param, value) {
+
+    set: function(param, value) {
       if ( param === 'value' ) {
-        setDocumentData(el, value);
-        return true;
+        setDocumentData(this.$element, value);
+        return this;
       }
-      return false;
+      return GUI.Element.prototype.set.apply(this, arguments);
     }
   };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // REGISTRATION
+  /////////////////////////////////////////////////////////////////////////////
+
+  GUI.Element.register({
+    tagName: 'gui-richtext'
+  }, GUIRichText);
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

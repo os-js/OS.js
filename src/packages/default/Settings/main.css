@@ -66,6 +66,7 @@
   overflow : auto;
   height : 100%;
   width : 100%;
+  box-sizing : border-box;
 }
 
 .ApplicationSettingsWindow application-window-content [data-id="ContainerSelection"] {

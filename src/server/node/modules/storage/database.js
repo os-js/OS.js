@@ -31,8 +31,8 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
-const _db = require('./../../core/database.js');
-const _logger = require('./../../core/logger.js');
+const _db = require('./../../lib/database.js');
+const _logger = require('./../../lib/logger.js');
 
 module.exports.setSettings = function(http, username, settings) {
   return new Promise((resolve, reject) => {

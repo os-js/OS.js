@@ -99,7 +99,9 @@
   /*
    * Applies DOM changes for a row to be rendered properly
    */
-  function initRow(el, row) {
+  function initRow(cls, row) {
+    var el = cls.$element;
+
     row.querySelectorAll('gui-list-view-column').forEach(function(cel, idx) {
       var icon = cel.getAttribute('data-icon');
       if ( icon && icon !== 'null' ) {
@@ -122,7 +124,7 @@
       cel.setAttribute('role', 'listitem');
     });
 
-    GUI.Elements._dataview.bindEntryEvents(el, row, 'gui-list-view-row');
+    cls.bindEntryEvents(row, 'gui-list-view-row');
   }
 
   /*
@@ -158,7 +160,7 @@
   /*
    * Creates a new `gui-list-view-row` from iter
    */
-  function createRow(e) {
+  function createRow(cls, e) {
     e = e || {};
     if ( e.columns ) {
       var row = GUI.Helpers.createElement('gui-list-view-row', e, ['columns']);
@@ -212,28 +214,33 @@
    *   }
    * ])
    *
-   * @constructs OSjs.GUI.DataView
+   * @constructor ListView
+   * @extends OSjs.GUI.DataView
    * @memberof OSjs.GUI.Elements
-   * @var gui-list-view
    */
-  GUI.Elements['gui-list-view'] = {
-    bind: GUI.Elements._dataview.bind,
+  GUI.Element.register({
+    parent: GUI.DataView,
+    tagName: 'gui-list-view'
+  }, {
 
-    values: function(el) {
-      var body = el.querySelector('gui-list-view-body');
-      return GUI.Elements._dataview.getSelected(el, body.querySelectorAll('gui-list-view-row'));
+    values: function() {
+      var body = this.$element.querySelector('gui-list-view-body');
+      var values = this.getSelected(body.querySelectorAll('gui-list-view-row'));
+      return values;
     },
 
-    get: function(el, param, value, arg, asValue) {
+    get: function(param, value, arg, asValue) {
       if ( param === 'entry' ) {
-        var body = el.querySelector('gui-list-view-body');
+        var body = this.$element.querySelector('gui-list-view-body');
         var rows = body.querySelectorAll('gui-list-view-row');
-        return GUI.Elements._dataview.getEntry(el, rows, value, arg, asValue);
+        return this.getEntry(rows, value, arg, asValue);
       }
-      return GUI.Helpers.getProperty(el, param);
+      return GUI.DataView.prototype.get.apply(this, arguments);
     },
 
-    set: function(el, param, value, arg, arg2) {
+    set: function(param, value, arg, arg2) {
+      var el = this.$element;
+
       if ( param === 'columns' ) {
         var head = el.querySelector('gui-list-view-head');
         var row = document.createElement('gui-list-view-row');
@@ -257,42 +264,50 @@
         head.appendChild(row);
 
         createFakeHeader(el);
-        return true;
+        return this;
       } else if ( param === 'selected' || param === 'value' ) {
         var body = el.querySelector('gui-list-view-body');
-        GUI.Elements._dataview.setSelected(el, body, body.querySelectorAll('gui-list-view-row'), value, arg, arg2);
-        return true;
+        this.setSelected(body, body.querySelectorAll('gui-list-view-row'), value, arg, arg2);
+        return this;
       }
 
-      return false;
+      return GUI.DataView.prototype.set.apply(this, arguments);
     },
 
-    call: function(el, method, args) {
-      var body = el.querySelector('gui-list-view-body');
-      if ( method === 'add' ) {
-        GUI.Elements._dataview.add(el, args, function(e) {
-          var cbCreated = e.onCreated || function() {};
-          var row = createRow(e);
-          if ( row ) {
-            body.appendChild(row);
-            initRow(el, row);
-          }
+    add: function(entries) {
+      var el = this.$element;
+      var body = this.$element.querySelector('gui-list-view-body');
+      var self = this;
 
-          cbCreated(row);
-        });
-      } else if ( method === 'remove' ) {
-        GUI.Elements._dataview.remove(el, args, 'gui-list-view-row', null, body);
-      } else if ( method === 'clear' ) {
-        GUI.Elements._dataview.clear(el, el.querySelector('gui-list-view-body'));
-      } else if ( method === 'patch' ) {
-        GUI.Elements._dataview.patch(el, args, 'gui-list-view-row', body, createRow, initRow);
-      } else if ( method === 'focus' ) {
-        GUI.Elements._dataview.focus(el);
-      }
-      return this;
+      return GUI.DataView.prototype.add.call(this, entries, function(cls, e) {
+        var cbCreated = e.onCreated || function() {};
+        var row = createRow(self, e);
+        if ( row ) {
+          body.appendChild(row);
+          initRow(self, el, row);
+        }
+
+        cbCreated(row);
+      });
     },
 
-    build: function(el, applyArgs) {
+    clear: function() {
+      var body = this.$element.querySelector('gui-list-view-body');
+      return GUI.DataView.prototype.clear.call(this, body);
+    },
+
+    remove: function(entries) {
+      var body = this.$element.querySelector('gui-list-view-body');
+      return GUI.DataView.prototype.remove.call(this, entries, 'gui-list-view-row', null, body);
+    },
+
+    patch: function(entries) {
+      var body = this.$element.querySelector('gui-list-view-body');
+      return GUI.DataView.prototype.patch.call(this, entries, 'gui-list-view-row', body, createRow, initRow);
+    },
+
+    build: function() {
+      var el = this.$element;
       el._columns  = [];
 
       // Make sure base elements are in the dom
@@ -371,11 +386,11 @@
 
       // Create scheme defined rows
       el.querySelectorAll('gui-list-view-body gui-list-view-row').forEach(function(row) {
-        initRow(el, row);
+        initRow(self, row);
       });
 
-      GUI.Elements._dataview.build(el, applyArgs);
+      return GUI.DataView.prototype.build.apply(this, arguments);
     }
-  };
+  });
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

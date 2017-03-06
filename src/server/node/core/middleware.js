@@ -34,8 +34,8 @@ const _path = require('path');
 const _glob = require('glob-promise');
 
 const _env = require('./env.js');
-const _logger = require('./logger.js');
-const _utils = require('./utils.js');
+const _logger = require('./../lib/logger.js');
+const _utils = require('./../lib/utils.js');
 
 /**
  * @namespace core.middleware

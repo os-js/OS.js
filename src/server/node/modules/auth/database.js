@@ -32,8 +32,8 @@
 'use strict';
 
 const _bcrypt = require('bcrypt');
-const _db = require('./../../core/database.js');
-const _logger = require('./../../core/logger.js');
+const _db = require('./../../lib/database.js');
+const _logger = require('./../../lib/logger.js');
 
 const manager = {
 

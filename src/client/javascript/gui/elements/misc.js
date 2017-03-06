@@ -31,10 +31,6 @@
   'use strict';
 
   /////////////////////////////////////////////////////////////////////////////
-  // HELPERS
-  /////////////////////////////////////////////////////////////////////////////
-
-  /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
 
@@ -48,25 +44,31 @@
    *   setter    value   String        The value (color)
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor ColorBox
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-color-box
    */
-  GUI.Elements['gui-color-box'] = {
-    bind: function(el, evName, callback, params) {
+  var GUIColorBox = {
+    on: function(evName, callback, params) {
+      var el = this.$element;
       var target = el.querySelector('div');
-      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
+      Utils.$bind(target, evName, callback.bind(this), params);
+      return this;
     },
-    set: function(el, param, value) {
+
+    set: function(param, value) {
       if ( param === 'value' ) {
-        el.firstChild.style.backgroundColor = value;
-        return true;
+        this.$element.firstChild.style.backgroundColor = value;
+        return this;
       }
-      return false;
+      return GUI.Element.prototype.set.apply(this, arguments);
     },
-    build: function(el) {
+
+    build: function() {
       var inner = document.createElement('div');
-      el.appendChild(inner);
+      this.$element.appendChild(inner);
+
+      return this;
     }
   };
 
@@ -83,25 +85,29 @@
    *   event     change                When input has changed => fn(ev)
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor ColorSwatch
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-color-swatch
    */
-  GUI.Elements['gui-color-swatch'] = {
-    bind: function(el, evName, callback, params) {
+  var GUIColorSwatch = {
+    on: function(evName, callback, params) {
+      var el = this.$element;
       var target = el.querySelector('canvas');
       if ( evName === 'select' || evName === 'change' ) {
         evName = '_change';
       }
-      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
+      Utils.$bind(target, evName, callback.bind(this), params);
+      return this;
     },
-    build: function(el) {
-      var cv        = document.createElement('canvas');
-      cv.width      = 100;
-      cv.height     = 100;
 
-      var ctx       = cv.getContext('2d');
-      var gradient  = ctx.createLinearGradient(0, 0, ctx.canvas.width, 0);
+    build: function() {
+      var el = this.$element;
+      var cv = document.createElement('canvas');
+      cv.width = 100;
+      cv.height = 100;
+
+      var ctx = cv.getContext('2d');
+      var gradient = ctx.createLinearGradient(0, 0, ctx.canvas.width, 0);
 
       function getColor(ev) {
         var pos = OSjs.Utils.$position(cv);
@@ -149,6 +155,8 @@
       }, false);
 
       el.appendChild(cv);
+
+      return this;
     }
   };
 
@@ -161,31 +169,38 @@
    *   property  src     String        The source (src)
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor Iframe
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-iframe
    */
-  GUI.Elements['gui-iframe'] = (function() {
+  var GUIIframe = (function() {
     var tagName = 'iframe';
     if ( (['nw', 'electron', 'x11']).indexOf(API.getConfig('Connection.Type')) >= 0 ) {
       tagName = 'webview';
     }
 
     return {
-      set: function(el, key, val) {
+
+      set: function(key, val) {
         if ( key === 'src' ) {
-          el.querySelector(tagName).src = val;
+          this.$element.querySelector(tagName).src = val;
+          return this;
         }
+        return GUI.Element.prototype.set.apply(this, arguments);
       },
 
-      build: function(el) {
+      build: function() {
+        var el = this.$element;
         var src = el.getAttribute('data-src') || 'about:blank';
         var iframe = document.createElement(tagName);
         iframe.src = src;
         iframe.setAttribute('border', 0);
         el.appendChild(iframe);
+
+        return this;
       }
     };
+
   })();
 
   /**
@@ -198,12 +213,13 @@
    *   property  progress    integer     Progress value (percentage)
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor ProgressBar
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-progress-bar
    */
-  GUI.Elements['gui-progress-bar'] = {
-    set: function(el, param, value) {
+  var GUIProgressBar = {
+    set: function(param, value) {
+      var el = this.$element;
       el.setAttribute('data-' + param, value);
       if ( param === 'progress' || param === 'value' ) {
         value = parseInt(value, 10);
@@ -214,11 +230,15 @@
 
         el.querySelector('div').style.width = value.toString() + '%';
         el.querySelector('span').innerHTML = value + '%';
-        return true;
+        return this;
       }
-      return false;
+
+      return GUI.Element.prototype.set.apply(this, arguments);
     },
-    build: function(el) {
+
+    build: function() {
+      var el = this.$element;
+
       var p = (el.getAttribute('data-progress') || 0);
       p = Math.max(0, Math.min(100, p));
 
@@ -238,6 +258,8 @@
 
       el.appendChild(progress);
       el.appendChild(span);
+
+      return this;
     }
   };
 
@@ -251,23 +273,25 @@
    *   setter    label       String      Alias of 'value'
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor StatusBar
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-statusbar
    */
-  GUI.Elements['gui-statusbar'] = {
-    set: function(el, param, value) {
+  var GUIStatusBar = {
+    set: function(param, value) {
       if ( param === 'label' || param === 'value' ) {
-        var span = el.getElementsByTagName('gui-statusbar-label')[0];
+        var span = this.$element.getElementsByTagName('gui-statusbar-label')[0];
         if ( span ) {
           Utils.$empty(span);
           span.innerHTML = value;
         }
-        return true;
+        return this;
       }
-      return false;
+      return GUI.Element.prototype.set.apply(this, arguments);
     },
-    build: function(el) {
+
+    build: function(args, win) {
+      var el = this.$element;
       var span = document.createElement('gui-statusbar-label');
 
       var lbl = el.getAttribute('data-label') || el.getAttribute('data-value');
@@ -295,7 +319,33 @@
       span.innerHTML = lbl;
       el.setAttribute('role', 'log');
       el.appendChild(span);
+
+      return this;
     }
   };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // REGISTRATION
+  /////////////////////////////////////////////////////////////////////////////
+
+  GUI.Element.register({
+    tagName: 'gui-color-box'
+  }, GUIColorBox);
+
+  GUI.Element.register({
+    tagName: 'gui-color-swatch'
+  }, GUIColorSwatch);
+
+  GUI.Element.register({
+    tagName: 'gui-iframe'
+  }, GUIIframe);
+
+  GUI.Element.register({
+    tagName: 'gui-progress-bar'
+  }, GUIProgressBar);
+
+  GUI.Element.register({
+    tagName: 'gui-statusbar'
+  }, GUIStatusBar);
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

@@ -43,3 +43,4 @@ module.exports.destroy = function() {
 module.exports.register = function(env, config, servers) {
   return Promise.resolve();
 };
+

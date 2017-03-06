@@ -34,7 +34,7 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
-  function createEntry(e) {
+  function createEntry(cls, e) {
     var entry = GUI.Helpers.createElement('gui-tree-view-entry', e, ['entries']);
     return entry;
   }
@@ -67,7 +67,8 @@
     el.dispatchEvent(new CustomEvent('_expand', {detail: {entries: [selected], expanded: expanded, element: root}}));
   } // handleItemExpand()
 
-  function initEntry(el, sel) {
+  function initEntry(cls, sel) {
+    var el = cls.$element;
     if ( sel._rendered ) {
       return;
     }
@@ -148,7 +149,7 @@
 
     handleItemExpand(null, el, sel, expanded);
 
-    GUI.Elements._dataview.bindEntryEvents(el, sel, 'gui-tree-view-entry');
+    cls.bindEntryEvents(sel, 'gui-tree-view-entry');
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -171,20 +172,25 @@
    *      entries: [] // Recurse :)
    *   })
    *
-   * @constructs OSjs.GUI.DataView
+   * @constructor TreeView
+   * @extends OSjs.GUI.DataView
    * @memberof OSjs.GUI.Elements
-   * @var gui-tree-view
    */
-  GUI.Elements['gui-tree-view'] = {
-    bind: GUI.Elements._dataview.bind,
+  GUI.Element.register({
+    parent: GUI.DataView,
+    tagName: 'gui-tree-view'
+  }, {
 
-    values: function(el) {
-      return GUI.Elements._dataview.getSelected(el, el.querySelectorAll('gui-tree-view-entry'));
+    values: function() {
+      var el = this.$element;
+      return this.getSelected(el.querySelectorAll('gui-tree-view-entry'));
     },
 
-    build: function(el, applyArgs) {
+    build: function(applyArgs) {
+      var el = this.$element;
       var body = el.querySelector('gui-tree-view-body');
       var found = !!body;
+      var self = this;
 
       if ( !body ) {
         body = document.createElement('gui-tree-view-body');
@@ -203,79 +209,83 @@
         }
 
         sel.setAttribute('role', 'treeitem');
-        initEntry(el, sel);
+        initEntry(self, sel);
       });
 
-      GUI.Elements._dataview.build(el, applyArgs);
+      return GUI.DataView.prototype.build.apply(this, arguments);
     },
 
-    get: function(el, param, value, arg) {
+    get: function(param, value, arg) {
       if ( param === 'entry' ) {
-        var body = el.querySelector('gui-tree-view-body');
-        return GUI.Elements._dataview.getEntry(el, body.querySelectorAll('gui-tree-view-entry'), value, arg);
+        var body = this.$element.querySelector('gui-tree-view-body');
+        return this.getEntry(body.querySelectorAll('gui-tree-view-entry'), value, arg);
       }
-      return GUI.Helpers.getProperty(el, param);
+      return GUI.DataView.prototype.get.apply(this, arguments);
     },
 
-    set: function(el, param, value, arg, arg2) {
+    set: function(param, value, arg, arg2) {
+      var el = this.$element;
       var body = el.querySelector('gui-tree-view-body');
       if ( param === 'selected' || param === 'value' ) {
-        GUI.Elements._dataview.setSelected(el, body, body.querySelectorAll('gui-tree-view-entry'), value, arg, arg2);
-        return true;
+        this.setSelected(body, body.querySelectorAll('gui-tree-view-entry'), value, arg, arg2);
+        return this;
       }
-
-      return false;
+      return GUI.DataView.prototype.set.apply(this, arguments);
     },
 
-    call: function(el, method, args) {
-      var body = el.querySelector('gui-tree-view-body');
+    clear: function() {
+      var body = this.$element.querySelector('gui-tree-view-body');
+      return GUI.DataView.prototype.clear.call(this, body);
+    },
+
+    add: function(entries) {
+      var body = this.$element.querySelector('gui-tree-view-body');
+      var parentNode = body;
+      var adder = GUI.DataView.prototype.add;
+      var self = this;
 
       function recurse(a, root, level) {
-        GUI.Elements._dataview.add(el, a, function(e) {
+        adder.call(self, a, function(cls, e) {
           if ( e ) {
             if ( e.parentNode ) {
               delete e.parentNode;
             }
 
-            var entry = createEntry(e);
+            var entry = createEntry(self, e);
             root.appendChild(entry);
 
             if ( e.entries ) {
-              recurse([e.entries], entry, level + 1);
+              recurse(e.entries, entry, level + 1);
             }
 
-            initEntry(el, entry);
+            initEntry(self, entry);
           }
         });
       }
 
-      function add() {
-        var parentNode = body;
-        var entries = args;
-
-        if ( typeof args[0] === 'object' && !(args[0] instanceof Array) && Object.keys(args[0]).length ) {
-          entries = [args[0].entries || []];
-          parentNode = args[0].parentNode || body;
-        }
-
-        recurse(entries, parentNode, 0);
+      if ( typeof entries === 'object' && !(entries instanceof Array) && Object.keys(entries).length ) {
+        entries = entries.entries || [];
+        parentNode = entries.parentNode || body;
       }
 
-      if ( method === 'add' ) {
-        add();
-      } else if ( method === 'remove' ) {
-        GUI.Elements._dataview.remove(el, args, 'gui-tree-view-entry');
-      } else if ( method === 'clear' ) {
-        GUI.Elements._dataview.clear(el, body);
-      } else if ( method === 'patch' ) {
-        GUI.Elements._dataview.patch(el, args, 'gui-tree-view-entry', body, createEntry, initEntry);
-      } else if ( method === 'focus' ) {
-        GUI.Elements._dataview.focus(el);
-      } else if ( method === 'expand' ) {
-        handleItemExpand(args.ev, el, args.entry);
-      }
+      recurse(entries, parentNode, 0);
+
+      return this;
+    },
+
+    remove: function(entries) {
+      return GUI.DataView.prototype.remove.call(this, entries, 'gui-tree-view-entry');
+    },
+
+    patch: function(entries) {
+      var body = this.$element.querySelector('gui-tree-view-body');
+      return GUI.DataView.prototype.patch.call(this, entries, 'gui-list-view-entry', body, createEntry, initEntry);
+    },
+
+    expand: function(entry) {
+      handleItemExpand(entry.ev, this.$element, entry.entry);
       return this;
     }
-  };
+  });
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

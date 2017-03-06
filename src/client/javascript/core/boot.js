@@ -40,7 +40,7 @@
     OSjs[ns] = OSjs[ns] || {};
   });
 
-  (['Elements', 'Helpers']).forEach(function(ns) {
+  (['Helpers']).forEach(function(ns) {
     OSjs.GUI[ns] = OSjs.GUI[ns] || {};
   });
 
@@ -697,6 +697,7 @@
 
     /**
      * Start OS.js
+     * @param {Object} opts Options
      * @function run
      * @memberof OSjs.Bootstrap
      */

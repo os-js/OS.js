@@ -36,8 +36,8 @@ const _parser = require('cookie-parser');
 const _session = require('express-session');
 
 const _env = require('./env.js');
-const _logger = require('./logger.js');
 const _settings = require('./settings.js');
+const _logger = require('./../lib/logger.js');
 
 /**
  * An object with session helpers

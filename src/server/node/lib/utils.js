@@ -31,7 +31,7 @@
 'use strict';
 
 /**
- * @namespace core.utils
+ * @namespace lib.utils
  */
 
 /**
@@ -42,7 +42,7 @@
  * @param {Function}  done      Callback on done
  *
  * @function iterate
- * @memberof core.utils
+ * @memberof lib.utils
  */
 module.exports.iterate = function iterate(list, entry, done) {
   (function _next(i) {
@@ -62,7 +62,7 @@ module.exports.iterate = function iterate(list, entry, done) {
  *
  * @return {String}
  * @function permissionToString
- * @memberof core.utils
+ * @memberof lib.utils
  */
 module.exports.permissionToString = function permissionToString(mode) {
   let str = '';

@@ -67,12 +67,13 @@ const _api = require('./api.js');
 const _auth = require('./auth.js');
 const _vfs = require('./vfs.js');
 const _http = require('./http.js');
-const _logger = require('./logger.js');
 const _settings = require('./settings.js');
 const _storage = require('./storage.js');
 const _session = require('./session.js');
 const _metadata = require('./metadata.js');
 const _middleware = require('./middleware.js');
+
+const _logger = require('./../lib/logger.js');
 
 ///////////////////////////////////////////////////////////////////////////////
 // GLOBALS

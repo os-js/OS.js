@@ -73,7 +73,7 @@
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
+  // CLASSES
   /////////////////////////////////////////////////////////////////////////////
 
   /**
@@ -87,17 +87,21 @@
    *   property  src   String        The source (src)
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor Audio
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-audio
    */
-  GUI.Elements['gui-audio'] = {
-    bind: function(el, evName, callback, params) {
-      var target = el.querySelector('audio');
-      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
+  var GUIAudio = {
+    on: function(evName, callback, params) {
+      var target = this.$element.querySelector('audio');
+      Utils.$bind(target, evName, callback.bind(this), params);
+      return this;
     },
-    build: function(el, applyArgs) {
-      createVisualElement(el, 'audio', applyArgs);
+
+    build: function(applyArgs) {
+      createVisualElement(this.$element, 'audio', applyArgs);
+
+      return this;
     }
   };
 
@@ -112,17 +116,21 @@
    *   property  src   String        The source (src)
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor Video
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-video
    */
-  GUI.Elements['gui-video'] = {
-    bind: function(el, evName, callback, params) {
-      var target = el.querySelector('video');
-      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
+  var GUIVideo = {
+    on: function(evName, callback, params) {
+      var target = this.$element.querySelector('video');
+      Utils.$bind(target, evName, callback.bind(this), params);
+      return this;
     },
-    build: function(el, applyArgs) {
-      createVisualElement(el, 'video', applyArgs);
+
+    build: function(applyArgs) {
+      createVisualElement(this.$element, 'video', applyArgs);
+
+      return this;
     }
   };
 
@@ -137,17 +145,21 @@
    *   property  src   String        The source (src)
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor Image
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-image
    */
-  GUI.Elements['gui-image'] = {
-    bind: function(el, evName, callback, params) {
-      var target = el.querySelector('img');
-      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
+  var GUIImage = {
+    on: function(evName, callback, params) {
+      var target = this.$element.querySelector('img');
+      Utils.$bind(target, evName, callback.bind(this), params);
+      return this;
     },
-    build: function(el, applyArgs) {
-      createVisualElement(el, 'img', applyArgs);
+
+    build: function(applyArgs) {
+      createVisualElement(this.$element, 'img', applyArgs);
+
+      return this;
     }
   };
 
@@ -162,19 +174,43 @@
    *   property  src   String        The source (src)
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor Canvas
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-canvas
    */
-  GUI.Elements['gui-canvas'] = {
-    bind: function(el, evName, callback, params) {
-      var target = el.querySelector('canvas');
-      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
+  var GUICanvas = {
+    on: function(evName, callback, params) {
+      var target = this.$element.querySelector('canvas');
+      Utils.$bind(target, evName, callback.bind(this), params);
+      return this;
     },
-    build: function(el) {
+
+    build: function() {
       var canvas = document.createElement('canvas');
-      el.appendChild(canvas);
+      this.$element.appendChild(canvas);
+
+      return this;
     }
   };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // REGISTRATION
+  /////////////////////////////////////////////////////////////////////////////
+
+  GUI.Element.register({
+    tagName: 'gui-audio'
+  }, GUIAudio);
+
+  GUI.Element.register({
+    tagName: 'gui-video'
+  }, GUIVideo);
+
+  GUI.Element.register({
+    tagName: 'gui-image'
+  }, GUIImage);
+
+  GUI.Element.register({
+    tagName: 'gui-canvas'
+  }, GUICanvas);
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

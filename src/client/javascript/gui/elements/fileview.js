@@ -42,10 +42,6 @@
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
 
-  function getChildView(el) {
-    return el.children[0];
-  }
-
   function getFileIcon(iter, size) {
     if ( iter.icon && typeof iter.icon === 'object' ) {
       return API.getIcon(iter.icon.filename, size, iter.icon.application);
@@ -189,7 +185,7 @@
     return columns;
   }
 
-  function scandir(tagName, dir, opts, cb, oncreate) {
+  function scandir(dir, opts, cb, oncreate) {
     var file = new VFS.File(dir);
     file.type  = 'dir';
 
@@ -232,13 +228,18 @@
     }
   }
 
-  function readdir(el, dir, done, sopts) {
+  function readdir(cls, dir, done, sopts) {
+    var childView = cls.getChildView();
+    if ( !childView ) {
+      return;
+    }
     sopts = sopts || {};
 
     var vfsOptions = Utils.cloneObject(OSjs.Core.getSettingsManager().get('VFS') || {});
     var scandirOptions = vfsOptions.scandir || {};
 
-    var target = getChildView(el);
+    var el = cls.$element;
+    var target = childView.$element;
     var tagName = target.tagName.toLowerCase();
     el.setAttribute('data-path', dir);
 
@@ -279,11 +280,11 @@
     } catch ( e ) {
     }
 
-    scandir(tagName, dir, opts, function(error, result, summary) {
+    scandir(dir, opts, function(error, result, summary) {
       if ( tagName === 'gui-list-view' ) {
-        GUI.Elements[tagName].set(target, 'zebra', true);
+        cls.getChildView().set('zebra', true);
         if ( sopts.headers !== false ) {
-          GUI.Elements[tagName].set(target, 'columns', getListViewColumns(null, opts));
+          cls.getChildView().set('columns', getListViewColumns(null, opts));
         }
       }
 
@@ -325,70 +326,6 @@
     });
   }
 
-  function defaultReaddir(el, t, dir, cb, opts) {
-    cb = cb || function() {};
-
-    clearTimeout(el._readdirTimeout);
-    el._readdirTimeout = setTimeout(function() {
-      readdir(el, dir, function(error, result, summary) {
-        if ( error ) {
-          API.error(API._('ERR_VFSMODULE_XHR_ERROR'), API._('ERR_VFSMODULE_SCANDIR_FMT', dir), error);
-        } else {
-          t.clear();
-          t.add(result);
-        }
-        cb(error, summary);
-      }, opts);
-
-      el._readdirTimeout = clearTimeout(el._readdirTimeout);
-    }, 50); // Prevent exessive calls
-  }
-
-  function buildChildView(el) {
-    var type = el.getAttribute('data-type') || 'list-view';
-    if ( !type.match(/^gui\-/) ) {
-      type = 'gui-' + type;
-    }
-
-    var nel = new GUI.ElementDataView(GUI.Helpers.createElement(type, {'draggable': true, 'draggable-type': 'file'}));
-    GUI.Elements[type].build(nel.$element);
-
-    nel.on('select', function(ev) {
-      el.dispatchEvent(new CustomEvent('_select', {detail: ev.detail}));
-    });
-    nel.on('activate', function(ev) {
-      el.dispatchEvent(new CustomEvent('_activate', {detail: ev.detail}));
-    });
-    nel.on('sort', function(ev) {
-      el.setAttribute('data-sortby', String(ev.detail.sortBy));
-      el.setAttribute('data-sortdir', String(ev.detail.sortDir));
-
-      GUI.Elements['gui-file-view'].call(el, 'chdir', {
-        sopts: {
-          headers: false
-        },
-        path: el.getAttribute('data-path')
-      });
-
-      el.dispatchEvent(new CustomEvent('_sort', {detail: ev.detail}));
-    });
-    nel.on('contextmenu', function(ev) {
-      if ( !el.hasAttribute('data-has-contextmenu') || el.hasAttribute('data-has-contextmenu') === 'false' ) {
-        new GUI.Element(el).fn('contextmenu', [ev]);
-      }
-      el.dispatchEvent(new CustomEvent('_contextmenu', {detail: ev.detail}));
-    });
-
-    if ( type === 'gui-tree-view' ) {
-      nel.on('expand', function(ev) {
-        el.dispatchEvent(new CustomEvent('_expand', {detail: ev.detail}));
-      });
-    }
-
-    el.setAttribute('role', 'region');
-    el.appendChild(nel.$element);
-  }
-
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////
@@ -409,88 +346,104 @@
    *   action    chdir                     Change directory => fn(args)  (args = {path: '', done: function() })
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor FileView
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-file-view
-   * @see OSjs.GUI.Elements.gui-list-view
-   * @see OSjs.GUI.Elements.gui-tree-view
-   * @see OSjs.GUI.Elements.gui-icon-view
+   * @see OSjs.GUI.Elements.GUIListView
+   * @see OSjs.GUI.Elements.GUITreeView
+   * @see OSjs.GUI.Elements.GUIIconView
    */
-  GUI.Elements['gui-file-view'] = {
-    bind: function(el, evName, callback, params) {
+  GUI.Element.register({
+    tagName: 'gui-file-view'
+  }, {
+    on: function(evName, callback, params) {
       if ( (['activate', 'select', 'contextmenu', 'sort']).indexOf(evName) !== -1 ) {
         evName = '_' + evName;
       }
 
+      var el = this.$element;
       if ( evName === '_contextmenu' ) {
         el.setAttribute('data-has-contextmenu', 'true');
       }
 
-      Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
+      Utils.$bind(el, evName, callback.bind(this), params);
+      return this;
     },
-    set: function(el, param, value, arg, arg2) {
+
+    set: function(param, value, arg, arg2) {
+      var el = this.$element;
+
       if ( param === 'type' ) {
         var firstChild = el.children[0];
         if ( firstChild && firstChild.tagName.toLowerCase() === value ) {
           return true;
         }
 
-        Utils.$empty(el);
         el.setAttribute('data-type', value);
-        Utils.$bind(el, '_expand', function(ev) {
-          var target = ev.detail.element;
-          if ( target.getAttribute('data-was-rendered') ) {
-            return;
-          }
-
-          if ( ev.detail.expanded ) {
-            var view = new GUI.ElementDataView(getChildView(el));
-            var entry = ev.detail.entries[0].data;
-            target.setAttribute('data-was-rendered', String(true));
-            readdir(el, entry.path, function(error, result, summary) {
-              if ( !error ) {
-                target.querySelectorAll('gui-tree-view-entry').forEach(function(e) {
-                  Utils.$remove(e);
-
-                  view.add({
-                    entries: result,
-                    parentNode: target
-                  });
-                });
-              }
-            }, {backlink: false});
-          }
-        });
-        buildChildView(el);
+        this.buildChildView();
 
         if ( typeof arg === 'undefined' || arg === true ) {
-          GUI.Elements['gui-file-view'].call(el, 'chdir', {
+          this.chdir({
             path: el.getAttribute('data-path')
           });
         }
-        return true;
+        return this;
       } else if ( (['filter', 'dotfiles', 'filetype', 'extensions', 'defaultcolumns', 'sortby', 'sortdir']).indexOf(param) >= 0 ) {
         GUI.Helpers.setProperty(el, param, value);
-        return true;
+        return this;
       }
 
-      var target = getChildView(el);
-      if ( target ) {
-        var tagName = target.tagName.toLowerCase();
-        GUI.Elements[tagName].set(target, param, value, arg, arg2);
-        return true;
+      var childView = this.getChildView();
+      if ( childView ) {
+        return childView.set.apply(childView, arguments);
+      }
+      return GUI.DataView.prototype.set.apply(this, arguments);
+    },
+
+    build: function() {
+      if ( this.childView ) {
+        return;
       }
 
-      return false;
+      this.buildChildView();
+
+      var el = this.$element;
+      var self = this;
+
+      Utils.$bind(el, '_expand', function(ev) {
+        var target = ev.detail.element;
+        if ( target.getAttribute('data-was-rendered') ) {
+          return;
+        }
+
+        if ( ev.detail.expanded ) {
+          var entry = ev.detail.entries[0].data;
+          target.setAttribute('data-was-rendered', String(true));
+          readdir(self, entry.path, function(error, result, summary) {
+            if ( !error ) {
+              target.querySelectorAll('gui-tree-view-entry').forEach(function(e) {
+                Utils.$remove(e);
+              });
+
+              var childView = self.getChildView();
+              if ( childView ) {
+                childView.add({
+                  entries: result,
+                  parentNode: target
+                });
+              }
+            }
+          }, {backlink: false});
+        }
+      });
+
+      return this;
     },
-    build: function(el) {
-      buildChildView(el);
-    },
-    values: function(el) {
-      var target = getChildView(el);
-      if ( target ) {
-        var tagName = target.tagName.toLowerCase();
-        return GUI.Elements[tagName].values(target);
+
+    values: function() {
+      var childView = this.getChildView();
+      if ( childView ) {
+        return childView.values();
       }
       return null;
     },
@@ -505,46 +458,116 @@
         vfsOptions.set(null, opts, true);
       }
 
-      API.createMenu([
-        {
-          title: API._('LBL_SHOW_HIDDENFILES'),
-          type: 'checkbox',
-          checked: scandirOptions.showHiddenFiles === true,
-          onClick: function() {
-            setOption('showHiddenFiles', !scandirOptions.showHiddenFiles);
-          }
-        },
-        {
-          title: API._('LBL_SHOW_FILEEXTENSIONS'),
-          type: 'checkbox',
-          checked: scandirOptions.showFileExtensions === true,
-          onClick: function() {
-            setOption('showFileExtensions', !scandirOptions.showFileExtensions);
-          }
+      API.createMenu([{
+        title: API._('LBL_SHOW_HIDDENFILES'),
+        type: 'checkbox',
+        checked: scandirOptions.showHiddenFiles === true,
+        onClick: function() {
+          setOption('showHiddenFiles', !scandirOptions.showHiddenFiles);
         }
-      ], ev);
+      }, {
+        title: API._('LBL_SHOW_FILEEXTENSIONS'),
+        type: 'checkbox',
+        checked: scandirOptions.showFileExtensions === true,
+        onClick: function() {
+          setOption('showFileExtensions', !scandirOptions.showFileExtensions);
+        }
+      }], ev);
     },
 
-    call: function(el, method, args) {
-      args = args || {};
-      args.done = args.done || function() {};
+    chdir: function(args) {
+      var childView = this.getChildView();
+      if ( !childView ) {
+        childView = this.buildChildView();
+      }
 
-      var target = getChildView(el);
+      var self = this;
+      var cb = args.done || function() {};
+      var dir = args.path || OSjs.API.getDefaultPath();
+      var child = childView;
+      var el = this.$element;
 
-      if ( target ) {
-        var tagName = target.tagName.toLowerCase();
+      clearTimeout(el._readdirTimeout);
+      el._readdirTimeout = setTimeout(function() {
+        readdir(self, dir, function(error, result, summary) {
+          if ( error ) {
+            API.error(API._('ERR_VFSMODULE_XHR_ERROR'), API._('ERR_VFSMODULE_SCANDIR_FMT', dir), error);
+          } else {
+            child.clear();
+            child.add(result);
+          }
+          cb(error, summary);
+        }, args.opts);
+      }, 50); // Prevent exessive calls
+    },
 
-        if ( method === 'chdir' ) {
-          var t = new GUI.ElementDataView(target);
-          var dir = args.path || OSjs.API.getDefaultPath();
+    getChildViewType: function() {
+      var type = this.$element.getAttribute('data-type') || 'list-view';
+      if ( !type.match(/^gui\-/) ) {
+        type = 'gui-' + type;
+      }
+      return type;
+    },
 
-          defaultReaddir(el, t, dir, args.done, args.sopts);
+    getChildView: function() {
+      return GUI.Element.createFromNode(this.$element.children[0]);
+    },
+
+    buildChildView: function() {
+      var self = this;
+      var el = this.$element;
+      var type = this.getChildViewType();
+      var childView = this.getChildView();
+
+      if ( childView ) {
+        if ( childView.$element && childView.$element.tagName.toLowerCase() === type ) {
           return;
         }
-
-        GUI.Elements[tagName].call(target, method, args);
       }
+
+      Utils.$empty(el);
+
+      var nel = GUI.Element.create(type, {'draggable': true, 'draggable-type': 'file'});
+      nel.build();
+
+      nel.on('select', function(ev) {
+        el.dispatchEvent(new CustomEvent('_select', {detail: ev.detail}));
+      });
+      nel.on('activate', function(ev) {
+        el.dispatchEvent(new CustomEvent('_activate', {detail: ev.detail}));
+      });
+      nel.on('sort', function(ev) {
+        el.setAttribute('data-sortby', String(ev.detail.sortBy));
+        el.setAttribute('data-sortdir', String(ev.detail.sortDir));
+
+        self.chdir({
+          sopts: {
+            headers: false
+          },
+          path: el.getAttribute('data-path')
+        });
+
+        el.dispatchEvent(new CustomEvent('_sort', {detail: ev.detail}));
+      });
+      nel.on('contextmenu', function(ev) {
+        if ( !el.hasAttribute('data-has-contextmenu') || el.hasAttribute('data-has-contextmenu') === 'false' ) {
+          nel.contextmenu(ev);
+        }
+        el.dispatchEvent(new CustomEvent('_contextmenu', {detail: ev.detail}));
+      });
+
+      if ( type === 'gui-tree-view' ) {
+        nel.on('expand', function(ev) {
+          el.dispatchEvent(new CustomEvent('_expand', {detail: ev.detail}));
+        });
+      }
+
+      el.setAttribute('role', 'region');
+      el.appendChild(nel.$element);
+
+      return nel;
     }
-  };
+
+  });
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

@@ -99,7 +99,7 @@
   }
 
   /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
+  // CLASSES
   /////////////////////////////////////////////////////////////////////////////
 
   /**
@@ -112,52 +112,78 @@
    *   event     activate                  Alias of 'select'
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor Tabs
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-tabs
    */
-  GUI.Elements['gui-tabs'] = {
-    bind: function(el, evName, callback, params) {
+  var GUITabs = {
+    on: function(evName, callback, params) {
       if ( (['select', 'activate']).indexOf(evName) !== -1 ) {
         evName = 'change';
       }
       if ( evName === 'change' ) {
         evName = '_' + evName;
       }
-      Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
+
+      Utils.$bind(this.$element, evName, callback.bind(this), params);
+
+      return this;
     },
-    set: function(el, param, value) {
+
+    set: function(param, value) {
       if ( ['current', 'selected', 'active'].indexOf(param) !== -1 ) {
+        var el = this.$element;
         var tabs = el.querySelector('ul');
         var found = findTab(el, tabs, value);
         if ( found !== null ) {
           selectTab(el, tabs, null, found, tabs[found]);
         }
+
+        return this;
       }
+      return GUI.Element.prototype.set.apply(this, arguments);
     },
-    get: function(el, param, value) {
+
+    get: function(param, value) {
       if ( ['current', 'selected', 'active'].indexOf(param) !== -1 ) {
-        var cur = el.querySelector('ul > li[class="gui-active"]');
+        var cur = this.$element.querySelector('ul > li[class="gui-active"]');
         return Utils.$index(cur);
       }
-      return GUI.Helpers.getProperty(el, param);
+      return GUI.Element.prototype.get.apply(this, arguments);
     },
-    call: function(el, method, arg) {
+
+    add: function(newtabs) {
+      var el = this.$element;
       var tabs = el.querySelector('ul');
 
-      if ( method === 'add' ) {
-        arg.forEach(function(label) {
-          createTab(el, tabs, label, true);
-        });
-      } else if ( method === 'remove' ) {
-        arg.forEach(function(id) {
-          if ( typeof id !== 'undefined' ) {
-            removeTab(el, tabs, id);
-          }
-        });
+      if ( !(newtabs instanceof Array) ) {
+        newtabs = [newtabs];
       }
+
+      newtabs.forEach(function(label) {
+        createTab(el, tabs, label, true);
+      });
+
+      return this;
     },
-    build: function(el) {
+
+    remove: function(removetabs) {
+      var el = this.$element;
+      var tabs = el.querySelector('ul');
+
+      if ( !(removetabs instanceof Array) ) {
+        removetabs = [removetabs];
+      }
+
+      removetabs.forEach(function(id) {
+        removeTab(el, tabs, id);
+      });
+
+      return this;
+    },
+
+    build: function() {
+      var el = this.$element;
       var tabs = document.createElement('ul');
 
       el.querySelectorAll('gui-tab-container').forEach(function(tel, idx) {
@@ -176,7 +202,17 @@
 
       var currentTab = parseInt(el.getAttribute('data-selected-index'), 10) || 0;
       selectTab(el, tabs, null, currentTab);
+
+      return this;
     }
   };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // REGISTRATION
+  /////////////////////////////////////////////////////////////////////////////
+
+  GUI.Element.register({
+    tagName: 'gui-tabs'
+  }, GUITabs);
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

@@ -1406,14 +1406,13 @@
     title.appendChild(titleText);
     title.appendChild(document.createTextNode('...'));
 
-    var splashBar = document.createElement('gui-progress-bar');
-    OSjs.GUI.Elements['gui-progress-bar'].build(splashBar);
+    var progressBar = OSjs.GUI.Element.create('gui-progress-bar');
 
     if ( img ) {
       splash.appendChild(img);
     }
     splash.appendChild(title);
-    splash.appendChild(splashBar);
+    splash.appendChild(progressBar.$element);
 
     parentEl.appendChild(splash);
 
@@ -1424,11 +1423,11 @@
         img = null;
         title = null;
         titleText = null;
-        splashBar = null;
+        progressBar = null;
       },
 
       update: function(p, c) {
-        if ( !splash || !splashBar ) {
+        if ( !splash || !progressBar ) {
           return;
         }
 
@@ -1436,7 +1435,7 @@
         if ( c ) {
           per = (p / c) * 100;
         }
-        (new OSjs.GUI.Element(splashBar)).set('value', per);
+        progressBar.set('value', per);
       }
     };
   };
@@ -1507,6 +1506,7 @@
       }
 
       window.alert(title + '\n\n' + message + '\n\n' + error);
+      console.warn(title, message, error, exception);
     }
   };
 

@@ -63,7 +63,7 @@
       "src/client/javascript/utils/fs.js",
       "src/client/javascript/gui/helpers.js",
       "src/client/javascript/gui/scheme.js",
-      "src/client/javascript/gui/elements.js",
+      "src/client/javascript/gui/element.js",
       "src/client/javascript/gui/dataview.js",
       "src/client/javascript/gui/elements/misc.js",
       "src/client/javascript/gui/elements/menus.js",

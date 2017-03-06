@@ -32,6 +32,8 @@
 (function(WindowManager, Window, GUI, Utils, API, VFS) {
   'use strict';
 
+  // TODO: Redo this because of new API
+
   function createCreateDialog(title, dir, cb) {
     API.createDialog('Input', {
       value: title,
@@ -122,8 +124,6 @@
     this.shortcutCache = [];
     this.refreshTimeout = null;
 
-    GUI.Elements['gui-icon-view'].build(this.$element);
-
     GUI.Helpers.createDroppable(this.$element, {
       onOver: function(ev, el, args) {
         wm.onDropOver(ev, el, args);
@@ -146,7 +146,9 @@
       }
     });
 
-    this.$iconview = new GUI.ElementDataView(this.$element);
+    this.$iconview = GUI.Element.createFromNode(this.$element);
+    this.$iconview.build();
+
     this.$iconview.on('select', function() {
       if ( wm ) {
         var win = wm.getCurrentWindow();
@@ -188,7 +190,7 @@
   };
 
   DesktopIconView.prototype.blur = function() {
-    var cel = new GUI.ElementDataView(this.$element);
+    var cel = GUI.Element.createFromNode(this.$element);
     cel.set('value', null);
   };
 

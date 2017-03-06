@@ -33,9 +33,10 @@
 const _fs = require('fs');
 const _path = require('path');
 const _env = require('./env.js');
-const _utils = require('./utils.js');
-const _logger = require('./logger.js');
 const _settings = require('./settings.js');
+
+const _utils = require('./../lib/utils.js');
+const _logger = require('./../lib/logger.js');
 
 /**
  * @namespace core.vfs
@@ -159,12 +160,15 @@ module.exports.get = function() {
  * @param   {ServerRequest}    http          OS.js Server Request
  * @param   {String}           method        VFS Method name
  * @param   {Object}           args          VFS Method arguments
+ * @param   {Function}         [cb]          Callback when request was handled
  *
  * @function request
  * @memberof core.vfs
  * @return {Promise}
  */
-module.exports.request = function(http, method, args) {
+module.exports.request = function(http, method, args, cb) {
+  cb = cb || function() {};
+
   const transportName = getTransportName(args);
   const transport = module.exports.getTransport(transportName);
   const opts = args.options || {};
@@ -175,6 +179,12 @@ module.exports.request = function(http, method, args) {
     }
 
     transport.request(http, method, args).then((data) => {
+      try {
+        cb();
+      } catch ( e ) {
+        console.warn(e.stack, e);
+      }
+
       if ( method === 'read' && opts.stream !== false ) {
         if ( typeof data === 'string' ) {
           return http.respond.stream(data, true);

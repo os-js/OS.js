@@ -30,64 +30,79 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
-const _path = require('path');
-
-const _settings = require('./settings.js');
-const _env = require('./env.js');
-
-const _logger = require('./../lib/logger.js');
-
 /**
- * @namespace core.storage
+ * Internal events:
+ *
+ *   http:start => fn()
+ *   http:end => fn()
+ *   request:start() => fn()
+ *   request:end() => fn()
+ *   api:request => fn(type, method)
+ *   ws:connection => fn(ws)
+ *
+ * @namespace lib.evhandler
  */
 
-let MODULE;
+const eventHandlers = {};
 
 /**
- * Loads the Storage module
+ * Emits an event
  *
- * @param {Object}  opts   Initial options
+ * @param {String}    evName        Event name
+ * @param {Array}     [args]        Array of arguments
+ * @param {Object}    [thisArg]     The `this` to apply
  *
- * @function load
- * @memberof core.storage
- * @return {Promise}
+ * @return {Boolean}
  */
-module.exports.load = function(opts) {
-  return new Promise((resolve, reject) => {
-    const ok = () => resolve(opts);
+module.exports.emit = function(evName, args, thisArg) {
+  args = args || [];
 
-    const config = _settings.get();
-    const name = opts.STORAGE || (config.http.storage || 'demo');
-    const path = _path.join(_env.get('MODULEDIR'), 'storage', name + '.js');
+  if ( typeof eventHandlers[evName] !== 'undefined' ) {
+    eventHandlers[evName].forEach((fn) => fn.apply(thisArg, args));
+    return true;
+  }
 
-    _logger.lognt('INFO', 'Loading:', _logger.colored('Storage', 'bold'), path.replace(_env.get('ROOTDIR'), ''));
-
-    try {
-      const a = require(path);
-      const c = _settings.get('modules.storage')[name] || {};
-      const r = a.register(c);
-      MODULE = a;
-
-      if ( r instanceof Promise ) {
-        r.then(ok).catch(reject);
-      } else {
-        ok();
-      }
-    } catch ( e ) {
-      _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
-      console.warn(e.stack);
-      reject(e);
-    }
-  });
+  return false;
 };
 
 /**
- * Gets the Storage module
+ * Subscribes to an event
  *
- * @function get
- * @memberof core.storage
- * @return {Object}
+ * @param {String}    evName        Event name
+ * @param {Function}  cb            Callback function
+ *
+ * @return {Number} Event index
  */
-module.exports.get = function() {
-  return MODULE;
+module.exports.subscribe = function(evName, cb) {
+  if ( typeof eventHandlers[evName] === 'undefined' ) {
+    eventHandlers[evName] = [];
+  }
+  return eventHandlers[evName].push(cb) - 1;
+};
+
+/**
+ * Un-subscribes to an event
+ *
+ * @param {String}    evName        Event name
+ * @param {Function}  [cb]          Callback function
+ *
+ * @return {Boolean}
+ */
+module.exports.unsubscribe = function(evName, cb) {
+  if ( typeof eventHandlers[evName] === 'undefined' ) {
+    return false;
+  }
+
+  if ( arguments.length === 1 || !cb ) {
+    eventHandlers[evName] = [];
+    return true;
+  }
+
+  return eventHandlers[evName].some((ccb, idx) => {
+    if ( ccb.toString() === cb.toString() ) {
+      eventHandlers.splice(idx, 1);
+      return true;
+    }
+    return false;
+  });
 };

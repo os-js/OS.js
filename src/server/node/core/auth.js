@@ -34,9 +34,9 @@ const _path = require('path');
 
 const _settings = require('./settings.js');
 const _storage = require('./storage.js');
-const _logger = require('./logger.js');
 const _vfs = require('./vfs.js');
 const _env = require('./env.js');
+const _logger = require('./../lib/logger.js');
 
 /**
  * @namespace core.auth

@@ -113,31 +113,31 @@
 
     var menuEntries = {
       'MenuUndo': function() {
-        text._call('command', ['undo', false]);
+        text.command('undo', false);
       },
       'MenuRedo': function() {
-        text._call('command', ['redo', false]);
+        text.command('redo', false);
       },
       'MenuCopy': function() {
-        text._call('command', ['copy', false]);
+        text.command('copy', false);
       },
       'MenuCut': function() {
-        text._call('command', ['cut', false]);
+        text.command('cut', false);
       },
       'MenuDelete': function() {
-        text._call('command', ['delete', false]);
+        text.command('delete', false);
       },
       'MenuPaste': function() {
-        text._call('command', ['paste', false]);
+        text.command('paste', false);
       },
       'MenuUnlink': function() {
-        text._call('command', ['unlink', false]);
+        text.command('unlink', false);
       },
       'MenuInsertOL': function() {
-        text._call('command', ['insertOrderedList', false]);
+        text.command('insertOrderedList', false);
       },
       'MenuInsertUL': function() {
-        text._call('command', ['insertUnorderedList', false]);
+        text.command('insertUnorderedList', false);
       },
       'MenuInsertImage': function() {
         API.createDialog('File', {
@@ -148,7 +148,7 @@
           }
 
           VFS.url(result, function(error, url) {
-            text._call('command', ['insertImage', false, url]);
+            text.command('insertImage', false, url);
           });
         }, self);
       },
@@ -160,7 +160,7 @@
           if ( button !== 'ok' || !result ) {
             return;
           }
-          text._call('command', ['createLink', false, result]);
+          text.command('createLink', false, result);
         }, self);
       }
     };
@@ -176,7 +176,7 @@
 
     function getSelectionStyle() {
       function _call(cmd) {
-        return text._call('query', [cmd]);
+        return text.query(cmd);
       }
 
       var style = {
@@ -226,14 +226,14 @@
 
     var back = this._find('Background').on('click', function() {
       createColorDialog(self.color.background, function(hex) {
-        text._call('command', ['hiliteColor', false, hex]);
+        text.command('hiliteColor', false, hex);
         self.color.background = hex;
         back.set('value', hex);
       });
     });
     var front = this._find('Foreground').on('click', function() {
       createColorDialog(self.color.foreground, function(hex) {
-        text._call('command', ['foreColor', false, hex]);
+        text.command('foreColor', false, hex);
         self.color.foreground = hex;
         front.set('value', hex);
       });
@@ -241,8 +241,8 @@
 
     var font = this._find('Font').on('click', function() {
       createFontDialog(null, function(font) {
-        text._call('command', ['fontName', false, font.fontName]);
-        text._call('command', ['fontSize', false, font.fontSize]);
+        text.command('fontName', false, font.fontName);
+        text.command('fontSize', false, font.fontSize);
         self.font.name = font.fontName;
         self.font.size = font.fontSize;
       });
@@ -252,8 +252,8 @@
       var id = b.getAttribute('data-id');
       var button = buttons[id];
       if ( button ) {
-        (new GUI.Element(b)).on('click', function() {
-          text._call('command', [button.command]);
+        GUI.Element.createFromNode(b).on('click', function() {
+          text.command(button.command);
         }).on('mousedown', function(ev) {
           ev.preventDefault();
         });

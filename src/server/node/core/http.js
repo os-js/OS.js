@@ -36,11 +36,13 @@ const _fs = require('fs-extra');
 const _formidable = require('formidable');
 const _compression = require('compression');
 
+const _evhandler = require('../lib/evhandler.js');
+const _logger = require('../lib/logger.js');
+
 const _middleware = require('./middleware.js');
 const _responder = require('./responder.js');
 const _settings = require('./settings.js');
 const _session = require('./session.js');
-const _logger = require('./logger.js');
 const _auth = require('./auth.js');
 const _api = require('./api.js');
 const _vfs = require('./vfs.js');
@@ -144,6 +146,10 @@ function handleRequest(http, onend) {
     cb(h, cb);
   };
 
+  function _final() {
+    _evhandler.emit('request:end', []);
+  }
+
   // We use JSON as default responses, no matter what
   function _rejectResponse(err) {
     if ( typeof err === 'undefined' ) {
@@ -151,6 +157,8 @@ function handleRequest(http, onend) {
     }
 
     _logger.log('ERROR', _logger.colored(err, 'red'), err.stack || '<no stack trace>');
+
+    _final();
 
     if ( !http.isfs && !http.isapi ) {
       http.respond.error(err, 403);
@@ -163,6 +171,8 @@ function handleRequest(http, onend) {
   }
 
   function _resolveResponse(result) {
+    _final();
+
     onend(http, () => {
       http.respond.json({
         error: null,
@@ -197,12 +207,16 @@ function handleRequest(http, onend) {
     const path = _path.join(env.ROOTDIR, env.DIST, _path.normalize(http.path));
 
     function _serve() {
+      _evhandler.emit('request:end', []);
+
       http.respond.file(path, {
         cache: 'static'
       }).catch(finished);
     }
 
     function _deny() {
+      _evhandler.emit('request:end', []);
+
       http.respond.error('Access denied', 403);
     }
 
@@ -218,10 +232,15 @@ function handleRequest(http, onend) {
       }
     } else {
       finished();
+      return false;
     }
+
+    return true;
   }
 
   // Take on the HTTP request
+  _evhandler.emit('request:start', []);
+
   _auth.initSession(http).then(() => {
     const method = http.request.method;
     const session_id = http.session.id;
@@ -235,11 +254,16 @@ function handleRequest(http, onend) {
         args = {path: http.query.path};
       }
 
+      _evhandler.emit('api:request', ['vfs', func]);
+
       _checkPermission('fs', {method: func, args: args}).then(() => {
-        _vfs.request(http, func, args).then(_resolveResponse).catch(_rejectResponse);
+        _vfs.request(http, func, args, _final).then(_resolveResponse).catch(_rejectResponse);
       }).catch(_rejectResponse);
     } else if ( http.isapi ) {
       // API Call
+
+      _evhandler.emit('api:request', ['api', http.endpoint]);
+
       _checkPermission('api', {method: http.endpoint}, http.data).then(() => {
         _api.request(http).then((res) => {
 
@@ -257,13 +281,17 @@ function handleRequest(http, onend) {
       }).catch(_rejectResponse);
     } else {
       // Assets and Middleware
-      _staticResponse(method, () => {
-        _middleware.request(http).catch((error) => {
+      const isStatic = _staticResponse(method, () => {
+        _middleware.request(http).then(_final).catch((error) => {
+          _final();
+
           if ( error ) {
             http.respond.error('Method not allowed', 405);
           }
         });
       });
+
+      _evhandler.emit('api:request', [isStatic ? 'static' : 'middleware', http.endpoint]);
     }
   });
 }
@@ -308,6 +336,9 @@ function createServer(resolve, reject) {
   })();
 
   function onRequest(request, response) {
+
+    _evhandler.emit('http:start', []);
+
     _session.request(request, response).then(() => {
       const rurl = request.url === '/' ? '/index.html' : request.url;
       const url = _url.parse(rurl, true);
@@ -393,6 +424,8 @@ function createServer(resolve, reject) {
         _logger.log('VERBOSE', _logger.colored('WS', 'bold'), 'New connection...');
 
         const sid = _session.getSessionId(ws.upgradeReq);
+
+        _evhandler.emit('ws:connection', [ws]);
 
         ws.on('message', (data) => {
           const message = JSON.parse(data);

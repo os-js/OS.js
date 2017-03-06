@@ -139,15 +139,16 @@
     _create();
   }
 
-  function bindInputEvents(el, evName, callback, params) {
+  function bindInputEvents(evName, callback, params) {
     if ( evName === 'enter' ) {
       evName = '_enter';
     } else if ( evName === 'change' ) {
       evName = '_change';
     }
 
-    var target = el.querySelector('textarea, input, select');
-    Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
+    var target = this.$element.querySelector('textarea, input, select');
+    Utils.$bind(target, evName, callback.bind(this), params);
+    return this;
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -179,17 +180,6 @@
       }
       return true;
     });
-  }
-
-  function callSelectBox(el, method, args) {
-    if ( method === 'add' ) {
-      addToSelectBox(el, args[0]);
-    } else if ( method === 'remove' ) {
-      removeFromSelectBox(el, args[0]);
-    } else if ( method === 'clear' ) {
-      var target = el.querySelector('select');
-      Utils.$empty(target);
-    }
   }
 
   function createSelectInput(el, multiple) {
@@ -254,20 +244,8 @@
     }
   }
 
-  var guiSelect = {
-    bind: bindInputEvents,
-    call: function() {
-      callSelectBox.apply(this, arguments);
-      return this;
-    },
-    build: function(el) {
-      var multiple = (el.tagName.toLowerCase() === 'gui-select-list');
-      createSelectInput(el, multiple);
-    }
-  };
-
   /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
+  // CLASSES
   /////////////////////////////////////////////////////////////////////////////
 
   /**
@@ -282,12 +260,13 @@
    *   property  disabled  boolean       Disabled state
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor Label
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-label
    */
-  GUI.Elements['gui-label'] = {
-    set: function(el, param, value, isHTML) {
+  var GUILabel = {
+    set: function(param, value, isHTML) {
+      var el = this.$element;
       if ( param === 'value' || param === 'label' ) {
         el.setAttribute('data-label', String(value));
 
@@ -298,17 +277,21 @@
         } else {
           lbl.appendChild(document.createTextNode(value));
         }
-        return true;
+        return this;
       }
-      return false;
+      return GUI.Element.prototype.set.apply(this, arguments);
     },
-    build: function(el) {
+
+    build: function() {
+      var el = this.$element;
       var label = GUI.Helpers.getValueLabel(el, true);
       var lbl = document.createElement('label');
       lbl.appendChild(document.createTextNode(label));
       el.setAttribute('role', 'heading');
       el.setAttribute('data-label', String(label));
       el.appendChild(lbl);
+
+      return this;
     }
   };
 
@@ -330,24 +313,29 @@
    *   event     change                      When input has changed => fn(ev)
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor Textarea
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-textarea
    */
-  GUI.Elements['gui-textarea'] = {
-    bind: bindInputEvents,
-    build: function(el) {
-      createInputOfType(el, 'textarea');
+  var GUITextarea = {
+    on: bindInputEvents,
+
+    build: function() {
+      createInputOfType(this.$element, 'textarea');
+
+      return this;
     },
-    set: function(el, param, value) {
+
+    set: function(param, value) {
+      var el = this.$element;
       if ( el && param === 'scrollTop' ) {
         if ( typeof value !== 'number' ) {
           value = el.firstChild.scrollHeight;
         }
         el.firstChild.scrollTop = value;
-        return true;
+        return this;
       }
-      return false;
+      return GUI.Element.prototype.set.apply(this, arguments);
     }
   };
 
@@ -369,14 +357,16 @@
    *   event     enter                       When enter key was pressed => fn(ev)
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor Text
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-text
    */
-  GUI.Elements['gui-text'] = {
-    bind: bindInputEvents,
-    build: function(el) {
-      createInputOfType(el, 'text');
+  var GUIText = {
+    on: bindInputEvents,
+    build: function() {
+      createInputOfType(this.$element, 'text');
+
+      return this;
     }
   };
 
@@ -398,14 +388,16 @@
    *   event     enter                       When enter key was pressed => fn(ev)
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor Password
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-password
    */
-  GUI.Elements['gui-password'] = {
-    bind: bindInputEvents,
-    build: function(el) {
-      createInputOfType(el, 'password');
+  var GUIPassword = {
+    on: bindInputEvents,
+    build: function() {
+      createInputOfType(this.$element, 'password');
+
+      return this;
     }
   };
 
@@ -424,20 +416,22 @@
    *   event     change                  When input has changed => fn(ev)
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor FileUpload
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-file-upload
    */
-  GUI.Elements['gui-file-upload'] = {
-    bind: bindInputEvents,
-    build: function(el) {
+  var GUIFileUpload = {
+    on: bindInputEvents,
+    build: function() {
       var input = document.createElement('input');
       input.setAttribute('role', 'button');
       input.setAttribute('type', 'file');
       input.onchange = function(ev) {
         input.dispatchEvent(new CustomEvent('_change', {detail: input.files[0]}));
       };
-      el.appendChild(input);
+      this.$element.appendChild(input);
+
+      return this;
     }
   };
 
@@ -458,14 +452,16 @@
    *   event     change                  When input has changed => fn(ev)
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor Radio
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-radio
    */
-  GUI.Elements['gui-radio'] = {
-    bind: bindInputEvents,
-    build: function(el) {
-      createInputOfType(el, 'radio');
+  var GUIRadio = {
+    on: bindInputEvents,
+    build: function() {
+      createInputOfType(this.$element, 'radio');
+
+      return this;
     }
   };
 
@@ -486,14 +482,16 @@
    *   event     change                  When input has changed => fn(ev)
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor Checkbox
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-checkbox
    */
-  GUI.Elements['gui-checkbox'] = {
-    bind: bindInputEvents,
-    build: function(el) {
-      createInputOfType(el, 'checkbox');
+  var GUICheckbox = {
+    on: bindInputEvents,
+    build: function() {
+      createInputOfType(this.$element, 'checkbox');
+
+      return this;
     }
   };
 
@@ -512,24 +510,27 @@
    *   event     change                  When input has changed => fn(ev)
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor Button
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-switch
    */
-  GUI.Elements['gui-switch'] = {
-    bind: bindInputEvents,
-    set: function(el, param, value) {
+  var GUISwitch = {
+    on: bindInputEvents,
+
+    set: function(param, value) {
       if ( param === 'value' ) {
-        var input = el.querySelector('input');
-        var button = el.querySelector('button');
+        var input = this.$element.querySelector('input');
+        var button = this.$element.querySelector('button');
 
         setSwitchValue(value, input, button);
-        return true;
+
+        return this;
       }
-      return false;
+      return GUI.Element.prototype.set.apply(this, arguments);
     },
 
-    build: function(el) {
+    build: function() {
+      var el = this.$element;
       var input = document.createElement('input');
       input.type = 'checkbox';
       el.appendChild(input);
@@ -561,6 +562,8 @@
       }, false);
 
       toggleValue(false);
+
+      return this;
     }
   };
 
@@ -579,14 +582,14 @@
    *   event     click                   When input was clicked => fn(ev)
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor Button
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-button
    */
-  GUI.Elements['gui-button'] = {
-    set: function(el, param, value, isHTML) {
+  var GUIButton = {
+    set: function(param, value, isHTML) {
       if ( param === 'value' || param === 'label' ) {
-        var lbl = el.querySelector('button');
+        var lbl = this.$element.querySelector('button');
         Utils.$empty(lbl);
         if ( isHTML ) {
           lbl.innerHTML = value;
@@ -596,10 +599,11 @@
 
         lbl.setAttribute('aria-label', value);
 
-        return true;
+        return this;
       }
-      return false;
+      return GUI.Element.prototype.set.apply(this, arguments);
     },
+
     create: function(params) {
       var label = params.label;
       if ( params.label ) {
@@ -612,11 +616,15 @@
       }
       return el;
     },
-    bind: function(el, evName, callback, params) {
-      var target = el.querySelector('button');
-      Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
+
+    on: function(evName, callback, params) {
+      var target = this.$element.querySelector('button');
+      Utils.$bind(target, evName, callback.bind(this), params);
+      return this;
     },
-    build: function(el) {
+
+    build: function() {
+      var el = this.$element;
       var icon = el.getAttribute('data-icon');
       var disabled = el.getAttribute('data-disabled') !== null;
       var group = el.getAttribute('data-group');
@@ -684,6 +692,8 @@
 
       el.setAttribute('role', 'navigation');
       el.appendChild(input);
+
+      return this;
     }
   };
 
@@ -711,11 +721,37 @@
    *    value: "Value"
    *   })
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor SelectList
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-select
    */
-  GUI.Elements['gui-select'] = guiSelect;
+  var GUISelect = {
+    on: bindInputEvents,
+
+    add: function(arg) {
+      addToSelectBox(this.$element, arg);
+      return this;
+    },
+
+    remove: function(arg) {
+      removeFromSelectBox(this.$element, arg);
+      return this;
+    },
+
+    clear: function() {
+      var target = this.$element.querySelector('select');
+      Utils.$empty(target);
+      return this;
+    },
+
+    build: function() {
+      var el = this.$element;
+      var multiple = (el.tagName.toLowerCase() === 'gui-select-list');
+      createSelectInput(el, multiple);
+
+      return this;
+    }
+  };
 
   /**
    * Element: 'gui-select-list'
@@ -735,11 +771,11 @@
    *   action    remove                  Removes element => fn(arg)
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor SelectList
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-select-list
    */
-  GUI.Elements['gui-select-list'] = guiSelect;
+  var GUISelectList = GUISelect;
 
   /**
    * Element: 'gui-slider'
@@ -758,21 +794,25 @@
    *   event     change                  When input has changed => fn(ev)
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor Slider
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-slider
    */
-  GUI.Elements['gui-slider'] = {
-    bind: bindInputEvents,
-    get: function(el, param) {
-      var val = GUI.Helpers.getProperty(el, param);
+  var GUISlider = {
+    on: bindInputEvents,
+
+    get: function(param) {
+      var val = GUI.Helpers.getProperty(this.$element, param);
       if ( param === 'value' ) {
         return parseInt(val, 10);
       }
       return val;
     },
-    build: function(el) {
-      createInputOfType(el, 'range');
+
+    build: function() {
+      createInputOfType(this.$element, 'range');
+
+      return this;
     }
   };
 
@@ -787,37 +827,42 @@
    *   event     open                    When button was pressed => fn(ev)
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor InputModal
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-input-modal
    */
-  GUI.Elements['gui-input-modal'] = {
-    bind: function(el, evName, callback, params) {
+  var GUIInputModal = {
+    on: function(evName, callback, params) {
       if ( evName === 'open' ) {
         evName = '_open';
       }
-      Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
+      Utils.$bind(this.$element, evName, callback.bind(this), params);
+      return this;
     },
-    get: function(el, param) {
+
+    get: function(param) {
       if ( param === 'value' ) {
-        var input = el.querySelector('input');
+        var input = this.$element.querySelector('input');
         return input.value;
       }
-      return false;
+      return GUI.Element.prototype.get.apply(this, arguments);
     },
-    set: function(el, param, value) {
+
+    set: function(param, value) {
       if ( param === 'value' ) {
-        var input = el.querySelector('input');
+        var input = this.$element.querySelector('input');
         input.removeAttribute('disabled');
         input.value = value;
         input.setAttribute('disabled', 'disabled');
         input.setAttribute('aria-disabled', 'true');
 
-        return true;
+        return this;
       }
-      return false;
+      return GUI.Element.prototype.set.apply(this, arguments);
     },
-    build: function(el) {
+
+    build: function() {
+      var el = this.$element;
       var container = document.createElement('div');
 
       var input = document.createElement('input');
@@ -834,7 +879,65 @@
       container.appendChild(input);
       container.appendChild(button);
       el.appendChild(container);
+
+      return this;
     }
   };
+
+  /////////////////////////////////////////////////////////////////////////////
+  // REGISTRATION
+  /////////////////////////////////////////////////////////////////////////////
+
+  GUI.Element.register({
+    tagName: 'gui-label'
+  }, GUILabel);
+
+  GUI.Element.register({
+    tagName: 'gui-textarea'
+  }, GUITextarea);
+
+  GUI.Element.register({
+    tagName: 'gui-text'
+  }, GUIText);
+
+  GUI.Element.register({
+    tagName: 'gui-password'
+  }, GUIPassword);
+
+  GUI.Element.register({
+    tagName: 'gui-file-upload'
+  }, GUIFileUpload);
+
+  GUI.Element.register({
+    tagName: 'gui-radio'
+  }, GUIRadio);
+
+  GUI.Element.register({
+    tagName: 'gui-checkbox'
+  }, GUICheckbox);
+
+  GUI.Element.register({
+    tagName: 'gui-switch'
+  }, GUISwitch);
+
+  GUI.Element.register({
+    tagName: 'gui-button'
+  }, GUIButton);
+
+  GUI.Element.register({
+    tagName: 'gui-select'
+  }, GUISelect);
+
+  GUI.Element.register({
+    tagName: 'gui-select-list'
+  }, GUISelectList);
+
+  GUI.Element.register({
+    tagName: 'gui-slider'
+  }, GUISlider);
+
+  GUI.Element.register({
+    tagName: 'gui-input-modal'
+  }, GUIInputModal);
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

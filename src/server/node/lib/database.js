@@ -31,7 +31,7 @@
 'use strict';
 
 /**
- * @namespace core.database
+ * @namespace .database
  */
 
 let instances = {};
@@ -173,7 +173,7 @@ DatabaseInstance.prototype.queryAll = function(q, a, cb) {
  * @param   {Mixed}       [opts]    Connection Options
  *
  * @function instance
- * @memberof core.database
+ * @memberof lib.database
  * @return {Promise}
  */
 module.exports.instance = function(name, type, opts) {
@@ -200,7 +200,7 @@ module.exports.instance = function(name, type, opts) {
  * @param {String}    name    Instance name
  *
  * @function destroy
- * @memberof core.database
+ * @memberof lib.database
  */
 module.exports.destroy = function(name) {
   if ( name ) {

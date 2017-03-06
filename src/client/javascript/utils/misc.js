@@ -302,6 +302,10 @@
    * @return {Object}
    */
   OSjs.Utils.inherit = function Utils_inherit(to, from, extend) {
+    from = from || function() {
+      to.apply(this, arguments);
+    };
+
     from.prototype = Object.create(to.prototype);
     from.constructor = to;
 

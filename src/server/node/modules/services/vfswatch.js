@@ -32,7 +32,7 @@
 
 const _vfs = require('./../../core/vfs.js');
 const _http = require('./../../core/http.js');
-const _logger = require('./../../core/logger.js');
+const _logger = require('./../../lib/logger.js');
 
 /*
  * Unloads the VFS watching

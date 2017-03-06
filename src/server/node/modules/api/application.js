@@ -39,7 +39,7 @@ const _path = require('path');
 const _env = require('./../../core/env.js');
 const _metadata = require('./../../core/metadata.js');
 const _settings = require('./../../core/settings.js');
-const _logger = require('./../../core/logger.js');
+const _logger = require('./../../lib/logger.js');
 
 /**
  * Sends a request to an application

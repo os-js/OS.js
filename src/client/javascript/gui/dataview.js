@@ -109,11 +109,7 @@
     return selected;
   }
 
-  function getSelected(el) {
-    return GUI.Elements[el.tagName.toLowerCase()].values(el);
-  }
-
-  function handleKeyPress(el, ev) {
+  function handleKeyPress(cls, el, ev) {
     var map = {};
     var key = ev.keyCode;
     var type = el.tagName.toLowerCase();
@@ -127,13 +123,13 @@
     }
 
     if ( key === Utils.Keys.ENTER ) {
-      el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected(el)}}));
+      el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: cls.values()}}));
       return;
     }
 
     map[Utils.Keys.C] = function(ev) {
       if ( ev.ctrlKey ) {
-        var selected = getSelected(el);
+        var selected = cls.values();
         if ( selected && selected.length ) {
           var data = [];
 
@@ -157,7 +153,7 @@
       var item = entries[current];
       if ( item ) {
         el._selected = handleItemSelection(ev, item, current, className, selected, root, ev.shiftKey);
-        GUI.Elements._dataview.scrollIntoView(el, item);
+        cls.scrollIntoView(item);
       }
     }
 
@@ -271,14 +267,26 @@
    *   action    clear                   Clear elements => fn()
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   * @var DataView
+   * @constructor DataView
+   * @memberof OSjs.GUI
+   * @extends OSjs.GUI.Element
    * @abstract
    */
-  GUI.Elements._dataview = {
-    clear: function(el, body) {
-      body = body || el;
+  var UIDataView = Utils.inherit(GUI.Element, null, {
+    /**
+     * Clears the view
+     *
+     * @param {Node} [body] The body to clear
+     *
+     * @function clear
+     * @memberof OSjs.GUI.DataView#
+     * @return {OSjs.GUI.Element} this
+     */
+    clear: function(body) {
+      var el = this.$element;
+      if ( !arguments.length ) {
+        body = el;
+      }
 
       el.querySelectorAll(getEntryTagName(el)).forEach(function(row) {
         Utils.$unbind(row);
@@ -287,22 +295,52 @@
       Utils.$empty(body);
       body.scrollTop = 0;
       el._selected = [];
-    },
-
-    add: function(el, args, oncreate) {
-      var entries = args[0];
-      if ( !(entries instanceof Array) ) {
-        entries = [entries];
-      }
-      entries.forEach(oncreate);
 
       return this;
     },
 
-    patch: function(el, args, className, body, oncreate, oninit) {
+    /**
+     * Adds one or more elements
+     *
+     * @param {Array|Object}  entries       Entry list, or a single entry
+     * @param {Function}      [oncreate]    Callback on creation => fn(this, node)
+     *
+     * @function add
+     * @memberof OSjs.GUI.DataView#
+     * @return {OSjs.GUI.Element} this
+     */
+    add: function(entries, oncreate) {
+      oncreate = oncreate || function() {};
+
+      if ( !(entries instanceof Array) ) {
+        entries = [entries];
+      }
+
       var self = this;
-      var entries = args[0];
+      entries.forEach(function(el) {
+        oncreate(self, el);
+      });
+
+      return this;
+    },
+
+    /**
+     * Do a diffed render
+     *
+     * @param {Array|Object}  entries       Entry list, or a single entry
+     * @param {String}        className     Classname of entry
+     * @param {Node}          body          The body container
+     * @param {Function}      [oncreate]    Callback on creation => fn(this, node)
+     * @param {Function}      [oninit]      Callback on init => fn(this, node)
+     *
+     * @function patch
+     * @memberof OSjs.GUI.DataView#
+     * @return {OSjs.GUI.Element} this
+     */
+    patch: function(entries, className, body, oncreate, oninit) {
+      var self = this;
       var single = false;
+      var remove = GUI.DataView.prototype.remove;
 
       if ( !(entries instanceof Array) ) {
         entries = [entries];
@@ -325,7 +363,7 @@
             delete inView[entry.id];
           }
 
-          var row = oncreate(entry);
+          var row = oncreate(self, entry);
           if ( row ) {
             if ( insertBefore ) {
               if ( Utils.$hasClass(insertBefore, 'gui-active') ) {
@@ -333,61 +371,77 @@
               }
 
               body.insertBefore(row, insertBefore);
-              self.remove(el, null, className, insertBefore);
+              remove.call(self, null, className, insertBefore, body);
             } else {
               body.appendChild(row);
             }
-            oninit(el, row);
+            oninit(self, row);
           }
         }
       });
 
       if ( !single ) {
         Object.keys(inView).forEach(function(k) {
-          self.remove(el, null, className, inView[k]);
+          remove.call(self, null, className, inView[k]);
         });
       }
 
       inView = {};
-      this.updateActiveSelection(el, className);
+      this.updateActiveSelection(className);
 
       return this;
     },
 
-    remove: function(el, args, className, target, parentEl) {
-      function remove(cel) {
-        Utils.$remove(cel);
-      }
+    /**
+     * Remove element
+     *
+     * @param {Array}     [args]      id, key pair
+     * @param {String}    [className] Classname of entry
+     * @param {Node}      [target]    Remove this target instead of using args
+     * @param {Node}      [parentEl]  Entry parent node
+     *
+     * @function remove
+     * @memberof OSjs.GUI.DataView#
+     * @return {OSjs.GUI.Element} this
+     */
+    remove: function(args, className, target, parentEl) {
 
-      parentEl = parentEl || el;
+      args = args || [];
+      parentEl = parentEl || this.$element;
 
       if ( target ) {
-        remove(target);
-        return;
-      }
-      if ( typeof args[1] === 'undefined' && typeof args[0] === 'number' ) {
-        remove(parentEl.querySelectorAll(className)[args[0]]);
+        Utils.$remove(target);
+      } else if ( typeof args[1] === 'undefined' && typeof args[0] === 'number' ) {
+        Utils.$remove(parentEl.querySelectorAll(className)[args[0]]);
       } else {
         var findId = args[0];
         var findKey = args[1] || 'id';
         var q = 'data-' + findKey + '="' + findId + '"';
-        parentEl.querySelectorAll(className + '[' + q + ']').forEach(remove);
+        parentEl.querySelectorAll(className + '[' + q + ']').forEach(Utils.$remove);
       }
 
-      this.updateActiveSelection(el, className);
+      this.updateActiveSelection(className);
 
       return this;
     },
 
-    updateActiveSelection: function(el, className) {
+    /*
+     * Update active selection
+     */
+    updateActiveSelection: function(className) {
       var active = [];
-      el.querySelectorAll(className + '.gui-active').forEach(function(cel) {
+      this.$element.querySelectorAll(className + '.gui-active').forEach(function(cel) {
         active.push(Utils.$index(cel));
       });
-      el._active = active;
+      this.$element._active = active;
     },
 
-    scrollIntoView: function(el, element) {
+    /*
+     * Scroll given element into view
+     * TODO: Use native method ?
+     */
+    scrollIntoView: function(element) {
+      var el = this.$element;
       var pos = Utils.$position(element, el);
       var marginTop = 0;
       if ( el.tagName.toLowerCase() === 'gui-list-view' ) {
@@ -409,7 +463,11 @@
       return false;
     },
 
-    bindEntryEvents: function(el, row, className) {
+    /*
+     * Binds events and such for an entry
+     */
+    bindEntryEvents: function(row, className) {
+      var el = this.$element;
 
       function createDraggable() {
         var value = row.getAttribute('data-value');
@@ -449,7 +507,10 @@
       }
     },
 
-    getSelected: function(el, entries) {
+    /*
+     * Get selected from array of nodes
+     */
+    getSelected: function(entries) {
       var selected = [];
       entries.forEach(function(iter, idx) {
         if ( Utils.$hasClass(iter, 'gui-active') ) {
@@ -462,7 +523,10 @@
       return selected;
     },
 
-    getEntry: function(el, entries, val, key, asValue) {
+    /*
+     * Get entry from an array of nodes
+     */
+    getEntry: function(entries, val, key, asValue) {
       if ( val ) {
         var result = null;
         entries.forEach(function(r, idx) {
@@ -479,10 +543,15 @@
       });
     },
 
-    setSelected: function(el, body, entries, val, key, opts) {
+    /*
+     * Set selected from array of nodes
+     */
+    setSelected: function(body, entries, val, key, opts) {
       var self = this;
       var select = [];
       var scrollIntoView = false;
+      var el = this.$element;
+
       if ( typeof opts === 'object' ) {
         scrollIntoView = opts.scroll === true;
       }
@@ -491,7 +560,7 @@
         select.push(idx);
         Utils.$addClass(r, 'gui-active');
         if ( scrollIntoView ) {
-          self.scrollIntoView(el, r);
+          self.scrollIntoView(r);
         }
       }
 
@@ -505,7 +574,12 @@
       el._selected = select;
     },
 
-    build: function(el, applyArgs) {
+    /*
+     * Builds element
+     */
+    build: function(applyArgs) {
+      var self = this;
+      var el = this.$element;
       el._selected = [];
       el.scrollTop = 0;
 
@@ -555,13 +629,16 @@
         }
 
         if ( className === 'gui-tree-view-expander' ) {
-          OSjs.GUI.Elements[el.tagName.toLowerCase()].call(el, 'expand', {ev: ev, entry: row.parentNode});
+          self.expand({
+            ev: ev,
+            entry: row.parentNode
+          });
           return;
         }
 
         var idx = Utils.$index(row);
         el._selected = handleItemSelection(ev, row, idx, className, el._selected, el, multipleSelect);
-        el.dispatchEvent(new CustomEvent('_select', {detail: {entries: getSelected(el)}}));
+        el.dispatchEvent(new CustomEvent('_select', {detail: {entries: self.values()}}));
       }
 
       function activate(ev) {
@@ -582,7 +659,7 @@
           }
         }
 
-        el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: getSelected(el)}}));
+        el.dispatchEvent(new CustomEvent('_activate', {detail: {entries: self.values()}}));
       }
 
       function context(ev) {
@@ -591,7 +668,7 @@
         }
 
         select(ev);
-        el.dispatchEvent(new CustomEvent('_contextmenu', {detail: {entries: getSelected(el), x: ev.clientX, y: ev.clientY}}));
+        el.dispatchEvent(new CustomEvent('_contextmenu', {detail: {entries: self.values(), x: ev.clientX, y: ev.clientY}}));
       }
 
       if ( !el.querySelector('textarea.gui-focus-element') && !el.getAttribute('no-selection') ) {
@@ -610,7 +687,7 @@
         });
         Utils.$bind(underlay, 'keydown', function(ev) {
           ev.preventDefault();
-          handleKeyPress(el, ev);
+          handleKeyPress(self, el, ev);
         });
         Utils.$bind(underlay, 'keypress', function(ev) {
           ev.preventDefault();
@@ -629,7 +706,7 @@
           return false;
         }, true);
 
-        this.bind(el, 'select', function(ev) {
+        this.on('select', function(ev) {
           if ( Utils.$hasClass(el, 'gui-element-focused') ) {
             return;
           }
@@ -647,31 +724,50 @@
       }
     },
 
-    focus: function(el) {
+    /*
+     * Focuses element
+     */
+    focus: function() {
       try {
-        var underlay = el.querySelector('.gui-focus-element');
+        var underlay = this.$element.querySelector('.gui-focus-element');
         underlay.focus();
       } catch ( e ) {
         console.warn(e, e.stack);
       }
     },
 
-    blur: function(el) {
+    /*
+     * Blurs element
+     */
+    blur: function() {
       try {
-        var underlay = el.querySelector('.gui-focus-element');
+        var underlay = this.$element.querySelector('.gui-focus-element');
         underlay.blur();
       } catch ( e ) {
         console.warn(e, e.stack);
       }
     },
 
-    bind: function(el, evName, callback, params) {
+    /*
+     * Gets values from selected entries
+     */
+    values: function() {
+      return [];
+    },
+
+    /*
+     * Binds an event
+     */
+    on: function(evName, callback, params) {
       if ( (['activate', 'select', 'expand', 'contextmenu', 'render', 'drop', 'sort']).indexOf(evName) !== -1 ) {
         evName = '_' + evName;
       }
-      Utils.$bind(el, evName, callback.bind(new GUI.Element(el)), params);
+      Utils.$bind(this.$element, evName, callback.bind(this), params);
+      return this;
     }
 
-  };
+  });
+
+  GUI.DataView = Object.seal(UIDataView);
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

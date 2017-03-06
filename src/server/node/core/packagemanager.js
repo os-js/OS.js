@@ -34,8 +34,8 @@ const _path = require('path');
 const _fs = require('fs-extra');
 const _unzip = require('unzip');
 const _vfs = require('./vfs.js');
-const _utils = require('./utils.js');
 const _env = require('./env.js');
+const _utils = require('./../lib/utils.js');
 
 /**
  * @namespace core.packagemanager

@@ -34,8 +34,8 @@ const _path = require('path');
 const _glob = require('glob-promise');
 
 const _env = require('./env.js');
-const _logger = require('./logger.js');
 const _settings = require('./settings.js');
+const _logger = require('./../lib/logger.js');
 
 /**
  * @namespace core.api

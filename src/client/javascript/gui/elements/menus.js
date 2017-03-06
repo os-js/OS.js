@@ -30,42 +30,9 @@
 (function(API, Utils, VFS, GUI) {
   'use strict';
 
-  var lastMenu;
-
   /////////////////////////////////////////////////////////////////////////////
   // HELPERS
   /////////////////////////////////////////////////////////////////////////////
-
-  function blurMenu(ev) {
-    if ( lastMenu ) {
-      lastMenu(ev);
-    }
-    lastMenu = null;
-
-    API.triggerHook('onBlurMenu');
-  }
-
-  function bindIngores(el) {
-    Utils.$bind(el, 'touchstart', function(ev) {
-      ev.preventDefault();
-    }, true);
-  }
-
-  function clickWrapper(ev, pos, onclick, original) {
-    var t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
-
-    ev.preventDefault();
-    if ( t && t.tagName === 'GUI-MENU-ENTRY' ) {
-      var isExpander = !!t.querySelector('gui-menu');
-      var hasInput = t.querySelector('input');
-
-      if ( hasInput || isExpander ) {
-        ev.stopPropagation();
-      }
-
-      onclick(ev, pos, t, original);
-    }
-  }
 
   function getSelectionEventAttribs(mel, didx) {
     var id = mel.getAttribute('data-id');
@@ -86,69 +53,6 @@
     });
 
     return result;
-  }
-
-  function onEntryClick(ev, pos, target, original) {
-    var isExpander = !!target.querySelector('gui-menu');
-
-    if ( !isExpander ) {
-      blurMenu(ev);
-
-      var hasInput = target.querySelector('input');
-      if ( hasInput ) {
-        if ( !Utils.isIE() && window.MouseEvent ) {
-          hasInput.dispatchEvent(new MouseEvent('click', {
-            clientX: pos.x,
-            clientY: pos.y
-          }));
-        } else {
-          var nev = document.createEvent('MouseEvent');
-          nev.initMouseEvent('click', true, true, window, 0, 0, 0, pos.x, pos.y, ev.ctrlKey, ev.altKey, ev.shiftKey, ev.metaKey, ev.button, hasInput);
-        }
-      }
-
-      var dispatcher = (original || target).querySelector('label');
-      dispatcher.dispatchEvent(new CustomEvent('_select', {detail: getSelectionEventAttribs(target, true)}));
-    }
-  }
-
-  /*
-   * This function makes menus pop out to the left instead of right
-   *
-   * Does not work for gui-menu-bar atm
-   */
-  function clampSubmenuPositions(r) {
-    function _clamp(rm) {
-      rm.querySelectorAll('gui-menu-entry').forEach(function(srm) {
-        var sm = srm.querySelector('gui-menu');
-        if ( sm ) {
-          sm.style.left = String(-parseInt(sm.offsetWidth, 10)) + 'px';
-          _clamp(sm);
-        }
-      });
-    }
-
-    var pos = Utils.$position(r);
-    if ( pos && (window.innerWidth - pos.right) < r.offsetWidth ) {
-      Utils.$addClass(r, 'gui-overflowing');
-      _clamp(r);
-    }
-
-    // this class is used in caclulations (DOM needs to be visible for that)
-    Utils.$addClass(r, 'gui-showing');
-  }
-
-  function runChildren(pel, level, winRef, cb) {
-    level = level || 0;
-    cb = cb || function() {};
-
-    (pel.children || []).forEach(function(child, i) {
-      if ( child && child.tagName.toLowerCase() === 'gui-menu-entry') {
-        GUI.Elements['gui-menu-entry'].build(child, null, winRef);
-
-        cb(child, level);
-      }
-    });
   }
 
   function getEventName(evName) {
@@ -172,11 +76,11 @@
    *    select        When an entry was selected (click) => fn(ev)
    * <pre><code>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor MenuEntry
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-menu-entry
    */
-  GUI.Elements['gui-menu-entry'] = (function() {
+  (function() {
 
     function createTyped(child, par) {
       var type = child.getAttribute('data-type');
@@ -196,14 +100,19 @@
       }
     }
 
-    return {
-      bind: function(el, evName, callback, params) {
+    GUI.Element.register({
+      tagName: 'gui-menu-entry'
+    }, {
+      on: function(evName, callback, params) {
         evName = getEventName(evName);
-        var target = el.querySelector('gui-menu-entry > label');
-        Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
+        var target = this.$element.querySelector('gui-menu-entry > label');
+        Utils.$bind(target, evName, callback.bind(this), params);
+        return this;
       },
-      build: function(child, arg, winRef) {
-        if ( arguments.length < 3 ) {
+
+      build: function(arg, winRef) {
+        var child = this.$element;
+        if ( arguments.length < 2 ) {
           return;
         }
         child.setAttribute('role', 'menuitem' + (child.getAttribute('data-type') || ''));
@@ -233,8 +142,10 @@
         } else {
           child.setAttribute('aria-haspopup', 'false');
         }
+
+        return this;
       }
-    };
+    });
   })();
 
   /**
@@ -250,72 +161,123 @@
    *    checked       Set checkbox/option checked value
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor Menu
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-menu
    */
-  GUI.Elements['gui-menu'] = {
-    bind: function(el, evName, callback, params) {
-      evName = getEventName(evName);
-      Utils.$bind(el, evName, function(ev) {
-        var t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
-        if ( t.tagName === 'LABEL' ) {
-          callback.apply(new GUI.Element(t.parentNode), arguments);
-        }
-      }, true);
-    },
-    show: function(ev) {
-      ev.stopPropagation();
-      ev.preventDefault();
+  (function() {
 
-      // This is to use a menu-bar > menu as a contextmenu
-      var newNode = this.$element.cloneNode(true);
-      var el = this.$element;
-      OSjs.GUI.Helpers.createMenu(null, ev, newNode);
+    function runChildren(pel, level, winRef, cb) {
+      level = level || 0;
+      cb = cb || function() {};
 
-      Utils.$bind(newNode, 'click', function(ev, pos) {
-        clickWrapper(ev, pos, onEntryClick, el);
-      }, true);
-    },
-    set: function(el, param, value, arg) {
-      if ( param === 'checked' ) {
-        var found = el.querySelector('gui-menu-entry[data-id="' + value + '"]');
-        if ( found ) {
-          var input = found.querySelector('input');
-          if ( input ) {
-            if ( arg ) {
-              input.setAttribute('checked', 'checked');
-            } else {
-              input.removeAttribute('checked');
-            }
-          }
-        }
-        return true;
-      }
-      return false;
-    },
-    build: function(el, customMenu, winRef) {
-      el.setAttribute('role', 'menu');
+      (pel.children || []).forEach(function(child, i) {
+        if ( child && child.tagName.toLowerCase() === 'gui-menu-entry') {
+          GUI.Element.createFromNode(child).build(null, winRef);
 
-      runChildren(el, 0, winRef, function(child, level) {
-        if ( customMenu ) {
-          if ( child ) {
-            child.getElementsByTagName('gui-menu').forEach(function(sub) {
-              if ( sub ) {
-                runChildren(sub, level + 1, winRef);
-              }
-            });
-          }
+          cb(child, level);
         }
       });
+    }
 
-      if ( !customMenu ) {
-        Utils.$bind(el, 'click', function(ev, pos) {
-          clickWrapper(ev, pos, onEntryClick);
-        }, true);
+    function onEntryClick(ev, pos, target, original) {
+      var isExpander = !!target.querySelector('gui-menu');
+
+      if ( !isExpander ) {
+        OSjs.GUI.Helpers.blurMenu(ev);
+
+        var hasInput = target.querySelector('input');
+        if ( hasInput ) {
+          if ( !Utils.isIE() && window.MouseEvent ) {
+            hasInput.dispatchEvent(new MouseEvent('click', {
+              clientX: pos.x,
+              clientY: pos.y
+            }));
+          } else {
+            var nev = document.createEvent('MouseEvent');
+            nev.initMouseEvent('click', true, true, window, 0, 0, 0, pos.x, pos.y, ev.ctrlKey, ev.altKey, ev.shiftKey, ev.metaKey, ev.button, hasInput);
+          }
+        }
+
+        var dispatcher = (original || target).querySelector('label');
+        dispatcher.dispatchEvent(new CustomEvent('_select', {detail: getSelectionEventAttribs(target, true)}));
       }
     }
-  };
+
+    GUI.Element.register({
+      tagName: 'gui-menu'
+    }, {
+      on: function(evName, callback, params) {
+        evName = getEventName(evName);
+
+        Utils.$bind(this.$element, evName, function(ev) {
+          var t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
+          if ( t.tagName === 'LABEL' ) {
+            callback.apply(new GUI.Element(t.parentNode), arguments);
+          }
+        }, true);
+
+        return this;
+      },
+
+      show: function(ev) {
+        ev.stopPropagation();
+        ev.preventDefault();
+
+        // This is to use a menu-bar > menu as a contextmenu
+        var newNode = this.$element.cloneNode(true);
+        var el = this.$element;
+        OSjs.GUI.Helpers.createMenu(null, ev, newNode);
+
+        Utils.$bind(newNode, 'click', function(ev, pos) {
+          OSjs.GUI.Helpers._menuClickWrapper(ev, pos, onEntryClick, el);
+        }, true);
+      },
+
+      set: function(param, value, arg) {
+        if ( param === 'checked' ) {
+          var found = this.$element.querySelector('gui-menu-entry[data-id="' + value + '"]');
+          if ( found ) {
+            var input = found.querySelector('input');
+            if ( input ) {
+              if ( arg ) {
+                input.setAttribute('checked', 'checked');
+              } else {
+                input.removeAttribute('checked');
+              }
+            }
+          }
+          return this;
+        }
+        return GUI.Element.prototype.set.apply(this, arguments);
+      },
+
+      build: function(customMenu, winRef) {
+        var el = this.$element;
+        el.setAttribute('role', 'menu');
+
+        runChildren(el, 0, winRef, function(child, level) {
+          if ( customMenu ) {
+            if ( child ) {
+              child.getElementsByTagName('gui-menu').forEach(function(sub) {
+                if ( sub ) {
+                  runChildren(sub, level + 1, winRef);
+                }
+              });
+            }
+          }
+        });
+
+        if ( !customMenu ) {
+          Utils.$bind(el, 'click', function(ev, pos) {
+            OSjs.GUI.Helpers._menuClickWrapper(ev, pos, onEntryClick);
+          }, true);
+        }
+
+        return this;
+      }
+    });
+  })();
 
   /**
    * Element: 'gui-menu-bar'
@@ -326,18 +288,24 @@
    *   event     select               When an entry was selected (click) => fn(ev)
    * </code></pre>
    *
-   * @constructs OSjs.GUI.Element
+   * @constructor MenuBar
+   * @extends OSjs.GUI.Element
    * @memberof OSjs.GUI.Elements
-   * @var gui-menu-bar
    */
-  GUI.Elements['gui-menu-bar'] = {
-    bind: function(el, evName, callback, params) {
+  GUI.Element.register({
+    tagName: 'gui-menu-bar'
+  }, {
+    on: function(evName, callback, params) {
       evName = getEventName(evName);
-      el.querySelectorAll('gui-menu-bar-entry').forEach(function(target) {
-        Utils.$bind(target, evName, callback.bind(new GUI.Element(el)), params);
+      this.$element.querySelectorAll('gui-menu-bar-entry').forEach(function(target) {
+        Utils.$bind(target, evName, callback.bind(this), params);
       });
+
+      return this;
     },
-    build: function(el) {
+
+    build: function() {
+      var el = this.$element;
       el.setAttribute('role', 'menubar');
 
       function updateChildren(sm, level) {
@@ -355,7 +323,7 @@
       }
 
       function _onClick(ev, mel) {
-        blurMenu();
+        OSjs.GUI.Helpers.blurMenu(ev);
 
         ev.preventDefault();
         ev.stopPropagation();
@@ -371,12 +339,12 @@
         });
 
         if ( submenu ) {
-          lastMenu = function(ev) {
+          OSjs.GUI.Helpers._menuSetActive(function(ev) {
             if ( ev ) {
               ev.stopPropagation();
             }
             Utils.$removeClass(mel, 'gui-active');
-          };
+          });
         }
 
         if ( Utils.$hasClass(mel, 'gui-active') ) {
@@ -404,7 +372,7 @@
 
         var submenu = mel.querySelector('gui-menu');
 
-        clampSubmenuPositions(submenu);
+        OSjs.GUI.Helpers._menuClamp(submenu);
 
         mel.setAttribute('aria-haspopup', String(!!submenu));
         mel.setAttribute('data-index', String(idx));
@@ -419,121 +387,12 @@
         }
       }, true);
 
-      bindIngores(el);
-    }
-  };
-
-  /**
-   * Blur the currently open menu (aka hiding)
-   *
-   * @function blurMenu
-   * @memberof OSjs.GUI.Helpers
-   */
-  OSjs.GUI.Helpers.blurMenu = blurMenu;
-
-  /**
-   * Create and show a new menu
-   *
-   * @example
-   * createMenu([
-   *    {
-   *      title: "Title",
-   *      icon: "Icon",
-   *      onClick: function() {}, // Callback
-   *      menu: [] // Recurse :)
-   *    }
-   * ])
-   *
-   * @param   {Array}                items             Array of items
-   * @param   {(Event|Object)}       ev                DOM Event or dict with x/y
-   * @param   {Mixed}                [customInstance]  Show a custom created menu
-   *
-   * @function createMenu
-   * @memberof OSjs.GUI.Helpers
-   */
-  OSjs.GUI.Helpers.createMenu = function createMenu(items, ev, customInstance) {
-    items = items || [];
-    blurMenu();
-
-    var root = customInstance;
-    var callbackMap = [];
-
-    function resolveItems(arr, par) {
-      arr.forEach(function(iter) {
-        var props = {label: iter.title, icon: iter.icon, disabled: iter.disabled, labelHTML: iter.titleHTML, type: iter.type, checked: iter.checked};
-        var entry = GUI.Helpers.createElement('gui-menu-entry', props);
-        if ( iter.menu ) {
-          var nroot = GUI.Helpers.createElement('gui-menu', {});
-          resolveItems(iter.menu, nroot);
-          entry.appendChild(nroot);
-        }
-        if ( iter.onClick ) {
-          var index = callbackMap.push(iter.onClick);
-          entry.setAttribute('data-callback-id', String(index - 1));
-        }
-        par.appendChild(entry);
-      });
-    }
-
-    if ( !root ) {
-      root = GUI.Helpers.createElement('gui-menu', {});
-      resolveItems(items || [], root);
-      GUI.Elements['gui-menu'].build(root, true);
-
-      Utils.$bind(root, 'click', function(ev, pos) {
-        clickWrapper(ev, pos, function(ev, pos, t) {
-          var index = parseInt(t.getAttribute('data-callback-id'), 10);
-          if ( callbackMap[index] ) {
-            callbackMap[index](ev, pos);
-
-            blurMenu(ev); // !last!
-          }
-        });
+      Utils.$bind(el, 'touchstart', function(ev) {
+        ev.preventDefault();
       }, true);
 
-      bindIngores(root);
+      return this;
     }
-
-    if ( root.$element ) {
-      root = root.$element;
-    }
-
-    var wm = OSjs.Core.getWindowManager();
-    var space = wm.getWindowSpace(true);
-    var pos = Utils.mousePosition(ev);
-
-    Utils.$addClass(root, 'gui-root-menu');
-    root.style.left = pos.x + 'px';
-    root.style.top  = pos.y + 'px';
-    document.body.appendChild(root);
-
-    // Make sure it stays within viewport
-    setTimeout(function() {
-      var pos = Utils.$position(root);
-      if ( pos ) {
-        if ( pos.right > space.width ) {
-          var newLeft = Math.round(space.width - pos.width);
-          root.style.left = Math.max(0, newLeft) + 'px';
-        }
-        if ( pos.bottom > space.height ) {
-          var newTop = Math.round(space.height - pos.height);
-          root.style.top = Math.max(0, newTop) + 'px';
-        }
-      }
-
-      clampSubmenuPositions(root);
-    }, 1);
-
-    lastMenu = function() {
-      callbackMap = null;
-      if ( root ) {
-        root.querySelectorAll('gui-menu-entry').forEach(function(el) {
-          Utils.$unbind(el);
-        });
-        Utils.$unbind(root);
-      }
-      root = Utils.$remove(root);
-    };
-  };
+  });
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

@@ -30,7 +30,7 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
-const _logger = require('./../../core/logger.js');
+const _logger = require('./../../lib/logger.js');
 const _spawn = require('child_process').spawn;
 const _ws = require('ws').Server;
 

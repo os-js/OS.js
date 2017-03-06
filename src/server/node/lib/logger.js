@@ -32,7 +32,7 @@
 
 /*
  * You can reach these methods via `instance.logger`
- * @namespace core.logger
+ * @namespace lib.logger
  */
 
 /*
@@ -128,7 +128,7 @@ module.exports = (function() {
      *
      * @param {Number}          lvl     Log level
      *
-     * @memberof core.logger
+     * @memberof lib.logger
      * @function init
      */
     init: function(lvl) {
@@ -149,7 +149,7 @@ module.exports = (function() {
      * @param {Number}          lvl     Log level
      * @param {String|Array}    msg     Log message (as a series of string or an array)
      *
-     * @memberof core.logger
+     * @memberof lib.logger
      * @function log
      */
     log: function() {
@@ -162,7 +162,7 @@ module.exports = (function() {
      * @param {Number}          lvl     Log level
      * @param {String|Array}    msg     Log message (as a series of string or an array)
      *
-     * @memberof core.logger
+     * @memberof lib.logger
      * @function lognt
      */
     lognt: function() {
@@ -172,7 +172,7 @@ module.exports = (function() {
     /**
      * Colors the given string
      *
-     * @memberof core.logger
+     * @memberof lib.logger
      * @function colored
      */
     colored: (() => {
@@ -201,7 +201,7 @@ module.exports = (function() {
     /**
      * Gets the log level
      *
-     * @memberof core.logger
+     * @memberof lib.logger
      * @function getLevel
      * @return Number
      */
@@ -214,7 +214,7 @@ module.exports = (function() {
      *
      * @param {Number}      lvl     Log level
      *
-     * @memberof core.logger
+     * @memberof lib.logger
      * @function setLevel
      */
     setLevel: function(lvl) {

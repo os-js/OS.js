@@ -1140,12 +1140,12 @@
     var el;
     if ( all ) {
       el = root.querySelectorAll(query).map(function(e) {
-        return GUI.Element.createInstance(e, query);
+        return GUI.Element.createFromNode(e, query);
       });
     }
 
     el = root.querySelector(query);
-    return GUI.Element.createInstance(el, query);
+    return GUI.Element.createFromNode(el, query);
   };
 
   /**
@@ -1969,7 +1969,7 @@
     var nextElement = OSjs.GUI.Helpers.getNextElement(ev.shiftKey, document.activeElement, this._$root);
     if ( nextElement ) {
       if ( Utils.$hasClass(nextElement, 'gui-data-view') ) {
-        new OSjs.GUI.ElementDataView(nextElement)._call('focus');
+        OSjs.GUI.Element.createFromNode(nextElement).focus();
       } else {
         try {
           nextElement.focus();
