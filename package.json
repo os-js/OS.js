@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "chokidar": "^1.6.1",
+    "clean-css": "^4.0.8",
     "colors": "^1.1.2",
     "compression": "^1.6.2",
     "cookie": "^0.3.1",
@@ -42,10 +43,11 @@
     "http-proxy": "^1.16.2",
     "less": ">=2.7.1",
     "minimist": "^1.2.0",
-    "request": ">=2.79.0",
+    "request": "^2.80.0",
     "simplejsonconf": "^1.0.5",
+    "uglify-js": "^2.8.7",
     "unzip": "^0.1.11",
-    "ws": "^2.0.3",
+    "ws": "^2.2.0",
     "zlibjs": "^0.2.0"
   },
   "devDependencies": {
