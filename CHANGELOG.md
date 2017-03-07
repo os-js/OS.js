@@ -1,3 +1,45 @@
+# 2.0.0-alpha84
+
+Updates to mobile UI and handling, VFS improvements, bugfixes and a new 'osjs watch' command.
+
+Relevant:
+
+* http://community.os.js.org/t/update-version-bump-alpha84/118
+* https://www.os-js.org/manual/gui/elements/#create-javascript
+
+Digest:
+
+* FileManager: Updated to context menus
+* FileManager: Better mobile layout
+* FileManager: Bugfixes
+* WindowManager: Cleanups and improvements to API
+* UI: Updated touch input behaviour
+* UI: Updated media queries
+* UI: Added GUI Element registration API
+* UI: Did a passover of elements and solved some issues
+* VFS: Changed the 'read' endpoint
+* VFS: File writes now use upload method for better performance future resume support
+* VFS: Cleanups
+* API: Remove loading spinner on failed requests
+* Core: Added Bootstrap routine
+* Themes: Updated base CSS
+* Connection: Updated websocket connection layer
+* Connection: Removed some deprecated code
+* GoogleDrive. Bugfixes
+* server-node: Fixed fs watch problems
+* server-node: Detached lots of stuff for a more modular design
+* server-node: Bugfixes and some crash fixes
+* server-node: Cleanups
+* build: Added '--import' to config task
+* build: Added 'watch' task
+* misc: Removed some deprecated dependencies
+* misc: Moved some source files in the tree
+* misc: Updated dependencies
+* misc: Updated documentation
+* misc: Updated eslint rules
+* misc: Updated travis build
+
+
 # 2.0.0-alpha83
 
 This release brings a new Session Management system for the node server and a
