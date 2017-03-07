@@ -30,105 +30,95 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
-// TODO: Windows support
-
 const _index = require('./index.js');
+const _utils = require('./utils.js');
+
 const _chokidar = require('chokidar');
 const _path = require('path');
 
-function completed() {
-  console.log('... done ...');
+///////////////////////////////////////////////////////////////////////////////
+// HELPERS
+///////////////////////////////////////////////////////////////////////////////
+
+function getBasedDirectory(path, watchdir) {
+  const basedir = _utils.fixWinPath(watchdir).replace(/\*+\/?/g, '');
+  return _utils.fixWinPath(path).replace(basedir, '');
 }
 
-function failed(task, error) {
-  console.error('Something went wrong with %s: %s', task, error);
+function getPackageFromPath(path, watchdir) {
+  const rdir = getBasedDirectory(path, watchdir);
+  const temp = rdir.split('/', 3);
+  const repository = temp[0];
+  const packageName = temp[1];
+  return repository + '/' + packageName;
 }
+
+function runTask(t, ik, iv) {
+  function completed() {
+    console.log('... done ...');
+  }
+
+  function failed(error) {
+    console.error('Something went wrong: %s', error);
+  }
+
+  _index.build({
+    option: (k) => {
+      return ik === null ? null : (k === ik ? iv : null);
+    }
+  }, t).then(completed).catch(failed);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// TASKS
+///////////////////////////////////////////////////////////////////////////////
 
 function watchCore(path, stats) {
-  _index.build({
-    option: () => {
-      return null;
-    }
-  }, 'core')
-    .then((res) => completed('core', res))
-    .catch((err) => failed('core', err));
+  console.log('<<< Core files changed');
+  runTask('core', null);
 }
 
 function watchThemes(path, stats, watchdir) {
-  const basedir = watchdir.replace(/\*+\/?/g, '');
-  const rdir = path.replace(basedir, '');
+  const rdir = getBasedDirectory(path, watchdir);
+  const name = rdir.split('/', 2)[1];
 
-  let promise = new Promise(() => {});
   if ( path.match(/metadata\.json$/) ) {
-    _index.build({
-      option: () => {
-        return null;
-      }
-    }, 'config');
+    console.log('<<< Theme metadata changed');
+    runTask('config', null);
   } else if ( rdir.match(/^icons/) ) {
-    promise = _index.build({
-      option: (k) => {
-        return k === 'icons' ? rdir.split('/', 2)[1] : null;
-      }
-    }, 'theme');
+    console.log('<<< Icon theme changed', name);
+    runTask('theme', 'icons', name);
   } else if ( rdir.match(/^wallpapers|sounds/) ) {
-    promise = _index.build({
-      option: (k) => {
-        return k === 'static' ? true : null;
-      }
-    }, 'theme');
+    console.log('<<< Theme files changed');
+    runTask('theme', 'static', true);
   } else if ( rdir.match(/^font/) ) {
-    promise = _index.build({
-      option: (k) => {
-        return k === 'fonts' ? true : null;
-      }
-    }, 'theme');
+    console.log('<<< Fonts changed');
+    runTask('theme', 'fonts', true);
   } else if ( rdir.match(/^styles/) ) {
-    promise = _index.build({
-      option: (k) => {
-        return k === 'style' ? rdir.split('/', 2)[1] : null;
-      }
-    }, 'theme');
+    console.log('<<< Style theme changed', name);
+    runTask('theme', 'style', name);
   }
-
-  promise
-    .then((res) => completed('config', res))
-    .catch((err) => failed('config', err));
 }
 
 function watchConfig(path, stats) {
-  _index.build({
-    option: () => {
-      return null;
-    }
-  }, 'config')
-    .then((res) => completed('config', res))
-    .catch((err) => failed('config', err));
+  console.log('<<< Configuration has changed');
+  runTask('config', null);
 }
 
 function watchPackages(path, stats, watchdir) {
-  const basedir = watchdir.replace(/\*+\/?/g, '');
-  const temp = path.replace(basedir, '').split('/', 3);
-  const repository = temp[0];
-  const packageName = temp[1];
-  const fileName = temp[2];
-  const fullName = repository + '/' + packageName;
-
-  let promise;
-  if ( fileName === 'metadata.json' ) {
-    promise = _index.build({option: (opt) => {
-      return null;
-    }}, 'manifest');
+  const fullName = getPackageFromPath(path, watchdir);
+  if ( _path.basename(path) === 'metadata.json' ) {
+    console.log('<<< Package manifest changed for', fullName);
+    runTask('manifest', null);
   } else {
-    promise = _index.build({option: (opt) => {
-      return opt === 'name' ? fullName : null;
-    }}, 'package');
+    console.log('<<< Package sources changed for', fullName);
+    runTask('package', 'name', fullName);
   }
-
-  promise
-    .then((res) => completed('package', res))
-    .catch((err) => failed('package', err));
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// EXPORTS
+///////////////////////////////////////////////////////////////////////////////
 
 /*
  * Watch for changes
