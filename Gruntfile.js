@@ -37,7 +37,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-mocha');
   grunt.loadNpmTasks('grunt-contrib-csslint');
   grunt.loadNpmTasks('grunt-contrib-validate-xml');
-  grunt.loadNpmTasks('grunt-contrib-watch');
 
   grunt.registerTask('testBuild', 'Tests the build', function() {
     var files = [
@@ -120,37 +119,6 @@ module.exports = function(grunt) {
         options: {
           urls: ['http://localhost:8000/test.html']
         }
-      }
-    },
-    watch: {
-      core: {
-        files: [
-          'src/client/stylesheets/*.css',
-          'src/client/javascript/*.js',
-          'src/client/javascript/*/*.js'
-        ],
-        tasks: ['build:core']
-      },
-      themes: {
-        files: [
-          'src/client/stylesheets/*.less',
-          'src/client/themes/styles/*/*.less',
-          'src/client/themes/fonts/*/*.css'
-        ],
-        tasks: ['build:themes']
-      },
-      configs: {
-        files: ['src/conf/*.json'],
-        tasks: ['build:config', 'build:core']
-      },
-      metadata: {
-        files: [
-          'src/client/themes/styles/*/metadata.json',
-          'src/client/themes/sounds/*/metadata.json',
-          'src/client/themes/icons/*/metadata.json',
-          'src/packages/*/*/metadata.json'
-        ],
-        tasks: ['build:config', 'build:manifest']
       }
     },
     validate_xml: {

@@ -56,7 +56,6 @@
     "grunt": ">=1.0.1",
     "grunt-contrib-csslint": "2.0.0",
     "grunt-contrib-validate-xml": ">=0.0.1",
-    "grunt-contrib-watch": ">=1.0.0",
     "grunt-eslint": ">=19.0.0",
     "grunt-mocha": "^1.0.2",
     "grunt-mocha-test": ">=0.13.2",

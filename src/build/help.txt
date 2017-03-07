@@ -39,6 +39,7 @@ Generators:
 
 Misc:
   run --target=DIR [--port=N] [--loglevel=N]             Runs OS.js on given dist
+  watch                                                  Watch and automatically build changes
 
 Use the --verbose argument to get detailed information in build output. Loglevels:
 INFO: 1, WARN: 2, WARNING: 2, ERROR: 3, VERBOSE: 8 (default: 7)

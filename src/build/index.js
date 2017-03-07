@@ -41,6 +41,7 @@ const _packages = require('./packages.js');
 const _core = require('./core.js');
 const _generate = require('./generate.js');
 const _utils = require('./utils.js');
+const _watcher = require('./watcher.js');
 const _logger = _utils.logger;
 
 const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
@@ -289,6 +290,13 @@ module.exports.config = function(cli, arg) {
       reject('Invalid action: ' + arg);
     }
   });
+};
+
+/*
+ * Task: `watch`
+ */
+module.exports.watch = function(cli, args) {
+  return _watcher.watch();
 };
 
 /*
