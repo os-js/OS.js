@@ -387,7 +387,7 @@
    * @return {Mixed} Result (last) from bound function(s)
    */
   Process.prototype._emit = function(k, args) {
-    return this.__evHandler.emit(k, args);
+    return this.__evHandler ? this.__evHandler.emit(k, args) : null;
   };
 
   /**
@@ -403,7 +403,7 @@
    * @return  {Number}
    */
   Process.prototype._on = function(k, func) {
-    return this.__evHandler.on(k, func, this);
+    return this.__evHandler ? this.__evHandler.on(k, func, this) : null;
   };
 
   /**
@@ -418,7 +418,9 @@
    * @param   {Number}          idx     The hook index returned from _on()
    */
   Process.prototype._off = function(k, idx) {
-    this.__evHandler.off(k, idx);
+    if ( this.__evHandler ) {
+      this.__evHandler.off(k, idx);
+    }
   };
 
   /**

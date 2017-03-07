@@ -214,7 +214,7 @@
     this.__settings = {};
     this.__windows = [];
 
-    if ( this.__scheme ) {
+    if ( this.__scheme && typeof this.__scheme.destroy === 'function' ) {
       this.__scheme.destroy();
     }
     this.__scheme = null;

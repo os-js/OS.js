@@ -114,15 +114,19 @@
     },
 
     fullscreen: function(ev) {
-      var notif = OSjs.Core.getWindowManager().getNotificationIcon('_FullscreenNotification');
-      if ( notif ) {
-        if ( !document.fullScreen && !document.mozFullScreen && !document.webkitIsFullScreen && !document.msFullscreenElement ) {
-          notif.opts._isFullscreen = false;
-          notif.setImage(OSjs.API.getIcon('actions/gtk-fullscreen.png', '16x16'));
-        } else {
-          notif.opts._isFullscreen = true;
-          notif.setImage(OSjs.API.getIcon('actions/gtk-leave-fullscreen.png', '16x16'));
+      try {
+        var notif = OSjs.Core.getWindowManager().getNotificationIcon('_FullscreenNotification');
+        if ( notif ) {
+          if ( !document.fullScreen && !document.mozFullScreen && !document.webkitIsFullScreen && !document.msFullscreenElement ) {
+            notif.opts._isFullscreen = false;
+            notif.setImage(OSjs.API.getIcon('actions/gtk-fullscreen.png', '16x16'));
+          } else {
+            notif.opts._isFullscreen = true;
+            notif.setImage(OSjs.API.getIcon('actions/gtk-leave-fullscreen.png', '16x16'));
+          }
         }
+      } catch ( e ) {
+        console.warn(e.stack, e);
       }
     },
 
