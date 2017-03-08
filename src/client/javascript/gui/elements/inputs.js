@@ -893,51 +893,63 @@
   }, GUILabel);
 
   GUI.Element.register({
-    tagName: 'gui-textarea'
+    tagName: 'gui-textarea',
+    type: 'input'
   }, GUITextarea);
 
   GUI.Element.register({
-    tagName: 'gui-text'
+    tagName: 'gui-text',
+    type: 'input'
   }, GUIText);
 
   GUI.Element.register({
-    tagName: 'gui-password'
+    tagName: 'gui-password',
+    type: 'input'
   }, GUIPassword);
 
   GUI.Element.register({
-    tagName: 'gui-file-upload'
+    tagName: 'gui-file-upload',
+    type: 'input'
   }, GUIFileUpload);
 
   GUI.Element.register({
-    tagName: 'gui-radio'
+    tagName: 'gui-radio',
+    type: 'input'
   }, GUIRadio);
 
   GUI.Element.register({
-    tagName: 'gui-checkbox'
+    tagName: 'gui-checkbox',
+    type: 'input'
   }, GUICheckbox);
 
   GUI.Element.register({
-    tagName: 'gui-switch'
+    tagName: 'gui-switch',
+    type: 'input'
   }, GUISwitch);
 
   GUI.Element.register({
-    tagName: 'gui-button'
+    tagName: 'gui-button',
+    type: 'input'
   }, GUIButton);
 
   GUI.Element.register({
-    tagName: 'gui-select'
+    tagName: 'gui-select',
+    type: 'input'
   }, GUISelect);
 
   GUI.Element.register({
-    tagName: 'gui-select-list'
+    tagName: 'gui-select-list',
+    type: 'input'
   }, GUISelectList);
 
   GUI.Element.register({
-    tagName: 'gui-slider'
+    tagName: 'gui-slider',
+    type: 'input'
   }, GUISlider);
 
   GUI.Element.register({
-    tagName: 'gui-input-modal'
+    tagName: 'gui-input-modal',
+    type: 'input'
   }, GUIInputModal);
 
 })(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

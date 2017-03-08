@@ -228,13 +228,45 @@
   /*
    * Content loading wrapper
    */
-  UIScheme.prototype._load = function(html) {
+  UIScheme.prototype._load = function(html, src) {
     var doc = document.createDocumentFragment();
     var wrapper = document.createElement('div');
     wrapper.innerHTML = html;
     doc.appendChild(wrapper);
 
     this.scheme = doc.cloneNode(true);
+
+    if ( API.getConfig('DebugScheme') ) {
+      console.group('Scheme::_load() validation', src);
+      this.scheme.querySelectorAll('*').forEach(function(node) {
+        var tagName = node.tagName.toLowerCase();
+        var gelData = GUI.Element.getRegisteredElement(tagName);
+        if ( gelData ) {
+          var ac = gelData.metadata.allowedChildren;
+          if ( ac instanceof Array && ac.length ) {
+            var childrenTagNames = node.children.map(function(sNode) {
+              return sNode.tagName.toLowerCase();
+            });
+
+            childrenTagNames.forEach(function(chk, idx) {
+              var found = ac.indexOf(chk);
+              if ( found === -1 ) {
+                console.warn(chk, node.children[idx], 'is not a valid child of type', tagName);
+              }
+            });
+          }
+
+          var ap = gelData.metadata.allowedParents;
+          if ( ap instanceof Array && ap.length ) {
+            var parentTagName = node.parentNode.tagName.toLowerCase();
+            if ( ap.indexOf(parentTagName) === -1 ) {
+              console.warn(parentTagName, node.parentNode, 'is in an invalid parent of type', tagName);
+            }
+          }
+        }
+      });
+      console.groupEnd();
+    }
 
     wrapper = null;
     doc = null;
@@ -251,7 +283,7 @@
    */
   UIScheme.prototype.loadString = function(html, cb) {
     console.debug('UIScheme::loadString()');
-    this._load(cleanScheme(html));
+    this._load(cleanScheme(html), '<html>');
     if ( cb ) {
       cb(false, this.scheme);
     }
@@ -288,7 +320,7 @@
           cbxhr(false, result);
 
           // Then we run some manipulations
-          self._load(result);
+          self._load(result, src);
 
           // And finally, finish
           cb(false, self.scheme);

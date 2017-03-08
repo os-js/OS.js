@@ -677,23 +677,20 @@
     var target = Utils.inherit(base, null, classRef);
 
     REGISTRY[name] = (function() {
-      var metadata = Utils.argumentDefaults({
+      var metadata = Utils.argumentDefaults(Utils.cloneObject(data, true), {
         type: 'element',
         allowedChildren: [],
         allowedParents: []
-      }, Utils.cloneObject(data, true));
+      });
 
       if ( metadata.parent ) {
         delete metadata.parent;
       }
 
-      if ( metadata.type !== 'container' ) {
-        var ac = metadata.allowedChildren;
-        if ( (ac instanceof Array && !ac.length) ) {
-          metadata.allowedChildren = true;
-        } else {
-          metadata.allowedChildren = false;
-        }
+      if ( metadata.type === 'input' ) {
+        metadata.allowedChildren = true;
+      } else if ( metadata.type !== 'container' ) {
+        metadata.allowedChildren = false;
       }
 
       return {
@@ -701,6 +698,10 @@
         component: target
       };
     })();
+  };
+
+  UIElement.getRegisteredElement = function(tagName) {
+    return REGISTRY[tagName];
   };
 
   /////////////////////////////////////////////////////////////////////////////
