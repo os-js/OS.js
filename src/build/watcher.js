@@ -40,6 +40,12 @@ const _path = require('path');
 // HELPERS
 ///////////////////////////////////////////////////////////////////////////////
 
+function log() {
+  var args = Array.prototype.slice.call(arguments);
+  args.unshift(new Date());
+  console.log(args.join(' '));
+}
+
 function getBasedDirectory(path, watchdir) {
   const basedir = _utils.fixWinPath(watchdir).replace(/\*+\/?/g, '');
   return _utils.fixWinPath(path).replace(basedir, '');
@@ -55,13 +61,15 @@ function getPackageFromPath(path, watchdir) {
 
 function runTask(t, ik, iv) {
   function completed() {
-    console.log('... done ...');
+    console.log('\n');
+    log('... done ...');
   }
 
   function failed(error) {
-    console.error('Something went wrong: %s', error);
+    console.error('Something went wrong', error);
   }
 
+  console.log('\n');
   _index.build({
     option: (k) => {
       return ik === null ? null : (k === ik ? iv : null);
@@ -74,7 +82,7 @@ function runTask(t, ik, iv) {
 ///////////////////////////////////////////////////////////////////////////////
 
 function watchCore(path, stats) {
-  console.log('<<< Core files changed');
+  log('Core files changed');
   runTask('core', null);
 }
 
@@ -83,35 +91,35 @@ function watchThemes(path, stats, watchdir) {
   const name = rdir.split('/', 2)[1];
 
   if ( path.match(/metadata\.json$/) ) {
-    console.log('<<< Theme metadata changed');
+    log('Theme metadata changed');
     runTask('config', null);
   } else if ( rdir.match(/^icons/) ) {
-    console.log('<<< Icon theme changed', name);
+    log('Icon theme changed', name);
     runTask('theme', 'icons', name);
   } else if ( rdir.match(/^wallpapers|sounds/) ) {
-    console.log('<<< Theme files changed');
+    log('Theme files changed');
     runTask('theme', 'static', true);
   } else if ( rdir.match(/^font/) ) {
-    console.log('<<< Fonts changed');
+    log('Fonts changed');
     runTask('theme', 'fonts', true);
   } else if ( rdir.match(/^styles/) ) {
-    console.log('<<< Style theme changed', name);
+    log('Style theme changed', name);
     runTask('theme', 'style', name);
   }
 }
 
 function watchConfig(path, stats) {
-  console.log('<<< Configuration has changed');
+  log('Configuration has changed');
   runTask('config', null);
 }
 
 function watchPackages(path, stats, watchdir) {
   const fullName = getPackageFromPath(path, watchdir);
   if ( _path.basename(path) === 'metadata.json' ) {
-    console.log('<<< Package manifest changed for', fullName);
+    log('Package manifest changed for', fullName);
     runTask('manifest', null);
   } else {
-    console.log('<<< Package sources changed for', fullName);
+    log('Package sources changed for', fullName);
     runTask('package', 'name', fullName);
   }
 }
@@ -139,11 +147,14 @@ module.exports.watch = function watch() {
         paths[p](res, stats, path);
       };
 
+      log('Watching', p);
+
       _chokidar.watch(path, {
         ignored: /node_modules|\.git/,
         ignoreInitial: true,
         persistent: true
       }).on('add', fn).on('change', fn);
+
     });
   });
 };
