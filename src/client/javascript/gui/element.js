@@ -688,7 +688,12 @@
       }
 
       if ( metadata.type !== 'container' ) {
-        metadata.allowedChildren = false;
+        var ac = metadata.allowedChildren;
+        if ( (ac instanceof Array && !ac.length) ) {
+          metadata.allowedChildren = true;
+        } else {
+          metadata.allowedChildren = false;
+        }
       }
 
       return {
@@ -696,8 +701,6 @@
         component: target
       };
     })();
-
-    window.REGISTRY = REGISTRY;
   };
 
   /////////////////////////////////////////////////////////////////////////////
