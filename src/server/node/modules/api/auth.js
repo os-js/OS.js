@@ -88,16 +88,15 @@ module.exports.login = function(http, data) {
  * Send a logout attempt
  *
  * @param   {ServerRequest}    http          OS.js Server Request
- * @param   {Function}         resolve       Resolves the Promise
- * @param   {Function}         reject        Rejects the Promise
+ * @param   {Object}           data          Request data
  *
  * @function logout
  * @memberof modules.api
  * @return {Promise}
  */
-module.exports.logout = function(http, resolve, reject) {
+module.exports.logout = function(http, data) {
   return new Promise((resolve, reject) => {
-    _auth.get().logout(http).then((arg) => {
+    _auth.get().logout(http, data).then((arg) => {
       http.session.destroy(() => {
         resolve(arg);
       });

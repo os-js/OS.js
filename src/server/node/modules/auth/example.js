@@ -52,10 +52,11 @@ module.exports.login = function(http, data) {
  * Handles user logout attempts
  *
  * @param   {ServerRequest}    http          OS.js Server Request
+ * @param   {Object}           data          Request data
  *
  * @return {Promise}
  */
-module.exports.logout = function(http) {
+module.exports.logout = function(http, data) {
   return new Promise((resolve) => {
     resolve(true);
   });
