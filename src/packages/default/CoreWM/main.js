@@ -378,14 +378,6 @@
         self.onDropFile(ev, el, files, args);
       }
     });
-
-    document.addEventListener('contextmenu', function(ev) {
-      return self.onContextMenu(ev);
-    }, true);
-
-    document.addEventListener('click', function(ev) {
-      return self.onGlobalClick(ev);
-    }, true);
   };
 
   CoreWM.prototype.initPanels = function(applySettings) {

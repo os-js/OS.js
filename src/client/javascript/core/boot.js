@@ -75,22 +75,33 @@
   var events = {
     body_contextmenu: function(ev) {
       ev.stopPropagation();
+
+      var wm = OSjs.Core.getWindowManager();
+      if ( wm ) {
+        wm.onContextMenu(ev);
+      }
+
       if ( !OSjs.Utils.$isFormElement(ev) ) {
         ev.preventDefault();
         return false;
       }
+
       return true;
     },
 
     body_click: function(ev) {
       OSjs.API.blurMenu();
 
+      var wm = OSjs.Core.getWindowManager();
       if ( ev.target === document.body ) {
-        var wm = OSjs.Core.getWindowManager();
         var win = wm ? wm.getCurrentWindow() : null;
         if ( win ) {
           win._blur();
         }
+      }
+
+      if ( wm ) {
+        wm.onGlobalClick(ev);
       }
     },
 
@@ -735,6 +746,10 @@
       window.removeEventListener('hashchange', events.hashchange, false);
       window.removeEventListener('resize', events.resize, false);
       window.removeEventListener('scroll', events.scroll, false);
+      window.removeEventListener('fullscreenchange', events.fullscreen, false);
+      window.removeEventListener('mozfullscreenchange', events.fullscreen, false);
+      window.removeEventListener('webkitfullscreenchange', events.fullscreen, false);
+      window.removeEventListener('msfullscreenchange', events.fullscreen, false);
       window.removeEventListener('message', events.message, false);
 
       window.onerror = null;
