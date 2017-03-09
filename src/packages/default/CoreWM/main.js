@@ -49,6 +49,14 @@
     return cfg;
   }
 
+  function translate() {
+    var _ = OSjs.Applications.CoreWM._;
+    if ( typeof _ !== 'function' ) {
+      _ = API._;
+    }
+    return _.apply(_, arguments);
+  }
+
   /////////////////////////////////////////////////////////////////////////////
   // APPLICATION
   /////////////////////////////////////////////////////////////////////////////
@@ -271,7 +279,7 @@
   CoreWM.prototype.destroy = function(force) {
     /*eslint new-cap: "warn"*/
 
-    if ( !force && !window.confirm(OSjs.Applications.CoreWM._('Killing this process will stop things from working!')) ) {
+    if ( !force && !window.confirm(translate('Killing this process will stop things from working!')) ) {
       return false;
     }
 
@@ -422,7 +430,7 @@
             self.notification({
               icon: 'status/important.png',
               title: 'CoreWM',
-              message: OSjs.Applications.CoreWM._('An error occured while creating PanelItem: {0}', e)
+              message: translate('An error occured while creating PanelItem: {0}', e)
             });
           }
         });
@@ -436,7 +444,7 @@
         timeout : 0,
         icon: 'status/important.png',
         title: 'CoreWM',
-        message: OSjs.Applications.CoreWM._('Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)')
+        message: translate('Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)')
       });
     }
 
@@ -605,19 +613,19 @@
 
     var _openMenu = function(data) {
       OSjs.API.createMenu([{
-        title: OSjs.Applications.CoreWM._('LBL_COPY'),
+        title: translate('LBL_COPY'),
         onClick: function() {
           var dst = Utils.pathJoin(OSjs.Core.getWindowManager().getSetting('desktopPath'), data.filename);
           VFS.copy(data, dst, function() {});
         }
       /*}, {
-        title: OSjs.Applications.CoreWM._('Create shortcut'),
+        title: translate('Create shortcut'),
         onClick: function() {
           _createShortcut.call(self, data);
         }
         */
       }, {
-        title: OSjs.Applications.CoreWM._('Set as wallpaper'),
+        title: translate('Set as wallpaper'),
         onClick: function() {
           _applyWallpaper.call(self, data);
         }
@@ -908,7 +916,7 @@
     }
 
     menu.push({
-      title: OSjs.Applications.CoreWM._('Open settings'),
+      title: translate('Open settings'),
       onClick: function(ev) {
         self.showSettings();
       }
@@ -916,14 +924,14 @@
 
     if ( this.getSetting('enableIconView') === true ) {
       menu.push({
-        title: OSjs.Applications.CoreWM._('Hide Icons'),
+        title: translate('Hide Icons'),
         onClick: function(ev) {
           self.applySettings({enableIconView: false}, false, true);
         }
       });
     } else {
       menu.push({
-        title: OSjs.Applications.CoreWM._('Show Icons'),
+        title: translate('Show Icons'),
         onClick: function(ev) {
           self.applySettings({enableIconView: true}, false, true);
         }

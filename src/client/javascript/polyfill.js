@@ -76,7 +76,7 @@
   // MouseEvent
   //
   (function() {
-    /*eslint no-new: false*/
+    /*eslint no-new: 0*/
     try {
       new CustomEvent('test');
     } catch (e) {
