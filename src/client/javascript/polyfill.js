@@ -60,8 +60,9 @@
   (function() {
     function CustomEvent(event, params) {
       params = params || {bubbles: false, cancelable: false, detail: undefined};
+
       var evt = document.createEvent( 'CustomEvent' );
-      evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+      evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
       return evt;
     }
 
@@ -69,6 +70,29 @@
       CustomEvent.prototype = window.Event.prototype;
       window.CustomEvent = CustomEvent;
     }
+  })();
+
+  //
+  // MouseEvent
+  //
+  (function() {
+    /*eslint no-new: false*/
+    try {
+      new CustomEvent('test');
+    } catch (e) {
+      return false; // No need to polyfill
+    }
+
+    function MouseEvent(eventType, params) {
+      params = params || {bubbles: false, cancelable: false};
+
+      var mouseEvent = document.createEvent('MouseEvent');
+      mouseEvent.initMouseEvent(eventType, params.bubbles, params.cancelable, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+      return mouseEvent;
+    }
+
+    MouseEvent.prototype = Event.prototype;
+    window.MouseEvent = MouseEvent;
   })();
 
 })();
