@@ -63,6 +63,10 @@
     var packages = {};
 
     return Object.seal({
+      destroy: function() {
+        blacklist = [];
+        packages = {};
+      },
 
       /**
        * Load Metadata from server and set packages
@@ -470,6 +474,7 @@
         }
 
         packages[n] = Object.seal({
+          _dummy: true,
           type: 'application',
           className: n,
           description: title,

@@ -239,6 +239,7 @@
 
         modules = [];
         settings = {};
+        inited = false;
       },
 
       /**
