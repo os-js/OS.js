@@ -5,7 +5,7 @@ Available targets are `dist` and `dist-dev` (with exception of manifest and conf
 More information: https://os.js.org/manual/build/cli/
 
 Building:
-  build [--target=]                                      Builds everything
+  build [--target=] [--compress]                         Builds everything
   build:config [--target=]                               Builds configuration files
   build:manifest [--target=]                             Builds package manifest files
   build:core [--target=]                                 Builds core files
