@@ -276,7 +276,6 @@
     },
 
     add: function(entries) {
-      var el = this.$element;
       var body = this.$element.querySelector('gui-list-view-body');
       var self = this;
 
