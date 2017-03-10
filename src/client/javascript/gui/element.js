@@ -152,7 +152,7 @@
     this.oldDisplay = null;
 
     if ( !el ) {
-      console.error('UIElement() was constructed without a DOM element', q);
+      console.warn('UIElement() was constructed without a DOM element', q);
     }
   }
 
