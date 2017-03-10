@@ -163,7 +163,11 @@ function getConfigPath(config, path, defaultValue) {
  */
 function setConfigPath(key, value, isTree) {
   const path = _path.join(ROOT, 'src', 'conf', '900-custom.json');
-  const conf = _fs.readJsonSync(path);
+
+  let conf = {};
+  try {
+    conf = _fs.readJsonSync(path);
+  } catch ( e ) {}
 
   const result = _sjc.setJSON(conf, isTree ? null : key, value, {
     prune: true,
