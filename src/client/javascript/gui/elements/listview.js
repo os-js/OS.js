@@ -285,7 +285,7 @@
         var row = createRow(self, e);
         if ( row ) {
           body.appendChild(row);
-          initRow(self, el, row);
+          initRow(self, row);
         }
 
         cbCreated(row);
