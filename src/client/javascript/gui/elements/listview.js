@@ -130,7 +130,7 @@
   /*
    * Creates a new `gui-list-view-column`
    */
-  function createEntry(v, head) {
+  function createEntry(cls, v, head) {
     var label = v.label || '';
 
     if ( v.label ) {
@@ -166,7 +166,7 @@
       var row = GUI.Helpers.createElement('gui-list-view-row', e, ['columns']);
 
       e.columns.forEach(function(se) {
-        row.appendChild(createEntry(se));
+        row.appendChild(createEntry(cls, se));
       });
 
       return row;
@@ -240,6 +240,7 @@
 
     set: function(param, value, arg, arg2) {
       var el = this.$element;
+      var self = this;
 
       if ( param === 'columns' ) {
         var head = el.querySelector('gui-list-view-head');
@@ -251,7 +252,7 @@
         value.forEach(function(v) {
           v.visible = (typeof v.visible === 'undefined') || v.visible === true;
 
-          var nel = createEntry(v, true);
+          var nel = createEntry(self, v, true);
 
           el._columns.push(v);
 

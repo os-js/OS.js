@@ -95,7 +95,7 @@
     return stamp;
   }
 
-  function getListViewColumns(iter, opts) {
+  function getListViewColumns(cls, iter, opts) {
     opts = opts || {};
 
     var columnMapping = {
@@ -160,6 +160,8 @@
     }
 
     var columns = [];
+    var sortBy = cls.$element.getAttribute('data-sortby');
+    var sortDir = cls.$element.getAttribute('data-sortdir');
 
     useColumns.forEach(function(key, idx) {
       var map = columnMapping[key];
@@ -174,6 +176,7 @@
       } else {
         columns.push({
           sortBy: key,
+          sortDir: key === sortBy ? sortDir : null,
           label: API._(map.label),
           size: map.size || '',
           resizable: idx > 0,
@@ -284,7 +287,7 @@
       if ( tagName === 'gui-list-view' ) {
         cls.getChildView().set('zebra', true);
         if ( sopts.headers !== false ) {
-          cls.getChildView().set('columns', getListViewColumns(null, opts));
+          cls.getChildView().set('columns', getListViewColumns(cls, null, opts));
         }
       }
 
@@ -321,7 +324,7 @@
         value: iter,
         id: iter.id || iter.filename,
         tooltip: tooltip,
-        columns: getListViewColumns(iter, opts)
+        columns: getListViewColumns(cls, iter, opts)
       };
     });
   }

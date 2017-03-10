@@ -608,16 +608,13 @@
           var col = getEntryFromEvent(ev, true);
           if ( col ) {
             var idx = Utils.$index(col);
-            col.parentNode.querySelectorAll('gui-list-view-column').forEach(function(e, i) {
-              if ( idx !== i ) {
-                e.removeAttribute('data-sortdir');
-              }
-            });
 
             var sortBy = col.getAttribute('data-sortby');
             if ( sortBy ) {
               var sortDir = col.getAttribute('data-sortdir');
-              sortDir = sortDir === 'asc' ? 'desc' : (sortDir === 'desc' ? null : 'asc');
+              var resetDir = sortDir === 'desc';
+              sortDir = sortDir === 'asc' ? 'desc' : (resetDir ? null : 'asc');
+              sortBy = resetDir ? null : sortBy;
 
               col.setAttribute('data-sortdir', sortDir);
 
