@@ -59,7 +59,9 @@ function getPackageFromPath(path, watchdir) {
   return repository + '/' + packageName;
 }
 
-function runTask(t, ik, iv) {
+const runTask = (() => {
+  const timeouts = {};
+
   function completed() {
     console.log('\n');
     log('... done ...');
@@ -69,13 +71,22 @@ function runTask(t, ik, iv) {
     console.error('Something went wrong', error);
   }
 
-  console.log('\n');
-  _index.build({
-    option: (k) => {
-      return ik === null ? null : (k === ik ? iv : null);
+  return (t, ik, iv) => {
+    const hash = [t, ik, iv].join(' ');
+    if ( timeouts[hash] ) {
+      clearTimeout(timeouts[hash]);
     }
-  }, t).then(completed).catch(failed);
-}
+
+    timeouts[hash] = setTimeout(function() {
+      console.log('\n');
+      _index.build({
+        option: (k) => {
+          return ik === null ? null : (k === ik ? iv : null);
+        }
+      }, t).then(completed).catch(failed);
+    }, 250);
+  };
+})();
 
 ///////////////////////////////////////////////////////////////////////////////
 // TASKS
