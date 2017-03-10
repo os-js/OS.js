@@ -221,7 +221,7 @@ const TASKS = {
           if ( out ) {
             _fs.writeFileSync(out, String(arg));
             return resolve();
-          } else {
+          } else if ( arg ) {
             _logger.log(arg);
           }
 
