@@ -38,6 +38,7 @@
 }
 .ApplicationMusicPlayerWindow gui-vbox[data-id="Metadata"] {
   margin : 4px;
+  overflow : hidden;
 }
 .ApplicationMusicPlayerWindow gui-audio {
   display : none;
