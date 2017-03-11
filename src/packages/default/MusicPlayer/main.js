@@ -263,6 +263,15 @@
     this._addWindow(new ApplicationMusicPlayerWindow(this, metadata, scheme, file));
   };
 
+  ApplicationMusicPlayer.prototype._onMessage = function(msg, obj, args) {
+    Application.prototype._onMessage.apply(this, arguments);
+
+    if ( msg === 'attention' && obj && obj.file ) {
+      var win = this._getMainWindow();
+      this.openFile(new VFS.File(obj.file), win);
+    }
+  };
+
   /////////////////////////////////////////////////////////////////////////////
   // EXPORTS
   /////////////////////////////////////////////////////////////////////////////

@@ -74,7 +74,7 @@
   /*
    * On Message
    */
-  DefaultApplication.prototype._onMessage = function(obj, msg, args) {
+  DefaultApplication.prototype._onMessage = function(msg, obj, args) {
     Application.prototype._onMessage.apply(this, arguments);
 
     var self = this;
