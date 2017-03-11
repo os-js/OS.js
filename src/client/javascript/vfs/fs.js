@@ -1021,9 +1021,11 @@
    *
    * @param   {OSjs.VFS.File}   item      File Metadata (you can also provide a string)
    * @param   {CallbackVFS}     callback  Callback function
+   * @param   {Object}          [options] Set of options
    */
-  VFS.url = function VFS_url(item, callback) {
+  VFS.url = function VFS_url(item, callback, options) {
     callback = callback || noop;
+    options = options || {};
 
     console.debug('VFS::url()', item);
     if ( arguments.length < 2 ) {
@@ -1040,7 +1042,7 @@
 
     requestWrapper([item.path, 'url', [item]], 'ERR_VFSMODULE_URL_FMT', callback, function(error, response) {
       return error ? false : response;
-    });
+    }, options);
   };
 
   /**

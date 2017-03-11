@@ -132,20 +132,37 @@
    * @memberof OSjs.Core.Connection#
    *
    * @param   {OSjs.VFS.File}       item      The File Object
+   * @param   {Object}              [options] Options. These are added to the URL
    *
    * @return  {String}
    */
-  Connection.prototype.getVFSPath = function(item) {
+  Connection.prototype.getVFSPath = function(item, options) {
+    options = options || {};
+
     var base = API.getConfig('Connection.RootURI', '/');
     if ( window.location.protocol === 'file:' ) {
       return base + item.path.replace(/^osjs:\/\/\//, '');
     }
 
-    base = API.getConfig('Connection.FSURI', '/');
+    var url = API.getConfig('Connection.FSURI', '/');
     if ( item ) {
-      return base + '/read?path=' + encodeURIComponent(item.path);
+      url += '/read';
+      options.path = item.path;
+    } else {
+      url += '/upload';
     }
-    return base + '/upload';
+
+    if ( options ) {
+      var q = Object.keys(options).map(function(k) {
+        return k + '=' + encodeURIComponent(options[k]);
+      });
+
+      if ( q.length ) {
+        url += '?' + q.join('&');
+      }
+    }
+
+    return url;
   };
 
   /**

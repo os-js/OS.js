@@ -43,17 +43,18 @@
    * Make a OS.js Server HTTP URL for VFS
    *
    * @param   {(String|OSjs.VFS.File)}    item        VFS File
+   * @param   {Object}                    [options]   Options
    *
    * @return  {String}                  URL based on input
    *
    * @function path
    * @memberof OSjs.VFS.Transports.OSjs
    */
-  function makePath(item) {
+  function makePath(item, options) {
     if ( typeof item === 'string' ) {
       item = new VFS.File(item);
     }
-    return OSjs.Core.getConnection().getVFSPath(item);
+    return OSjs.Core.getConnection().getVFSPath(item, options);
   }
 
   /**
@@ -282,8 +283,8 @@
       internalRequest('find', {path: item.path, args: args}, callback);
     },
 
-    url: function(item, callback) {
-      callback(false, VFS.Transports.OSjs.path(item));
+    url: function(item, callback, options) {
+      callback(false, VFS.Transports.OSjs.path(item, options));
     },
 
     freeSpace: function(root, callback) {
