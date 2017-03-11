@@ -31,6 +31,8 @@
 'use strict';
 
 const _fs = require('fs-extra');
+const _path = require('path');
+
 const _vfs = require('./vfs.js');
 const _env = require('./env.js');
 const _settings = require('./settings.js');
@@ -102,11 +104,15 @@ module.exports.createFromHttp = function(servers, request, response) {
           return /*reject()*/;
         }
 
-        const range = request.headers.range;
+        const range = options.download ? false : request.headers.range;
         const headers = {
           'Content-Type': mime || _vfs.getMime(path) || 'text/plain',
           'Content-Length': stats.size
         };
+
+        if ( options.download ) {
+          headers['Content-Disposition'] = 'attachment; filename=' + _path.basename(path);
+        }
 
         if ( stream === true ) {
           const opts = {

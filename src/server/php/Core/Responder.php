@@ -95,15 +95,16 @@ class Responder
     /**
      * Respond with buffered file output
      *
-     * @param String  $path   Path to file
-     * @param String  $mime   MIME type
-     * @param boolean $error  Trigger error on failure
-     * @param String  $cached Cache identifier
+     * @param String  $path     Path to file
+     * @param String  $mime     MIME type
+     * @param boolean $error    Trigger error on failure
+     * @param String  $cached   Cache identifier
+     * @param boolean $download Downloads the file
      *
      * @access public
      * @return void
      */
-    public function file($path, $mime = null, $error = true, $cached = false)
+    public function file($path, $mime = null, $error = true, $cached = false, $download = false)
     {
         session_write_close();
 
@@ -119,7 +120,7 @@ class Responder
 
             header("Content-type: {$mime}");
 
-            if (isset($_SERVER['HTTP_RANGE']) && ($range = $_SERVER['HTTP_RANGE'])) {
+            if (!$download && isset($_SERVER['HTTP_RANGE']) && ($range = $_SERVER['HTTP_RANGE'])) {
                 $positions = explode('-', preg_replace('/bytes=/', '', $range));
                 $start = (int) $positions[0];
                 $end = isset($positions[1]) && $positions[1] ? (int) $positions[1] : $size - 1;
@@ -150,6 +151,10 @@ class Responder
 
                     $etag = md5(serialize(fstat($handle)));
                     header("Etag: {$etag}");
+                }
+
+                if ( $download ) {
+                    header('Content-Disposition: attachment; filename=' . basename($path));
                 }
 
                 header("Content-length: {$size}");

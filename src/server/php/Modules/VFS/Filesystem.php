@@ -136,6 +136,7 @@ abstract class Filesystem
     {
         $path = self::_getRealPath($arguments['path']);
         $mime = Utils::getMIME($path);
+        $download = !empty($arguments['download']);
 
         if (!isset($arguments["raw"])) {
             print "data:{$mime};base64,";
@@ -148,7 +149,7 @@ abstract class Filesystem
                 flush();
             }
         } else {
-            $request->respond()->file($path, $mime);
+            $request->respond()->file($path, $mime, true, false, $download);
         }
     }
 

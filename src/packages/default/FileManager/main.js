@@ -724,7 +724,7 @@
     items.forEach(function(item) {
       VFS.url(new VFS.File(item), function(error, result) {
         if ( result ) {
-          window.open(result);
+          window.open(result + '&download=true');
         }
       });
     });

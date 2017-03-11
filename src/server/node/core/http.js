@@ -251,7 +251,12 @@ function handleRequest(http, onend) {
       let args = http.data;
 
       if ( func === 'read' && http.method === 'GET' ) {
-        args = {path: http.query.path};
+        args = {
+          path: http.query.path,
+          options: {
+            download: http.query.download
+          }
+        };
       }
 
       _evhandler.emit('api:request', ['vfs', func]);

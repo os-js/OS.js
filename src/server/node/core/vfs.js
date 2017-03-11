@@ -187,7 +187,9 @@ module.exports.request = function(http, method, args, cb) {
 
       if ( method === 'read' && opts.stream !== false ) {
         if ( typeof data === 'string' ) {
-          return http.respond.stream(data, true);
+          return http.respond.stream(data, true, null, null, {
+            download: opts.download
+          });
         }
         return http.respond.stream(data.path, data);
       }

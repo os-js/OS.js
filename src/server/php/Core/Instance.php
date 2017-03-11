@@ -314,6 +314,7 @@ class Instance
                 $endpoint = 'read';
                 $args = [
                     'path' => isset($request->data['path']) ? rawurldecode($request->data['path']) : null,
+                    'download' => !empty($request->data['download']),
                     'raw' => true
                 ];
             } else {
