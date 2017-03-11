@@ -195,8 +195,9 @@
     var s = arguments[0];
     var a = arguments;
 
-    if ( OSjs.Locales[CurrentLocale][s] ) {
-      a[0] = OSjs.Locales[CurrentLocale][s];
+    var cl = OSjs.Locales[CurrentLocale];
+    if ( cl && cl[s] ) {
+      a[0] = cl[s];
     } else {
       a[0] = OSjs.Locales[DefaultLocale][s] || s;
     }
