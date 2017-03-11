@@ -66,6 +66,7 @@
     }, app, scheme, file]);
 
     this.updated = false;
+    this.seeking = false;
   }
 
   ApplicationMusicPlayerWindow.prototype = Object.create(DefaultApplicationWindow.prototype);
@@ -96,6 +97,7 @@
     this._find('ButtonEnd').set('disabled', true);
 
     seeker.on('change', function(ev) {
+      self.seeking = false;
       if ( audio && !audio.paused ) {
         try {
           audio.pause();
@@ -172,6 +174,13 @@
     var seeker = this._find('Seek');
     var audio = player.$element.firstChild;
 
+    seeker.on('mousedown', function() {
+      self.seeking = true;
+    });
+    seeker.on('mouseup', function() {
+      self.seeking = false;
+    });
+
     var artist = file ? file.filename : '';
     var album = file ? Utils.dirname(file.path) : '';
 
@@ -184,6 +193,7 @@
     seeker.set('value', 0);
 
     this.updated = false;
+    this.seeking = false;
 
     function getInfo() {
       self._app._api('info', {filename: file.path}, function(err, info) {
@@ -235,7 +245,9 @@
     }
 
     label.set('value', time);
-    seeker.set('value', current);
+    if ( !this.seeking ) {
+      seeker.set('value', current);
+    }
 
     this.updated = true;
   };
