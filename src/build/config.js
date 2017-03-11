@@ -161,24 +161,32 @@ function getConfigPath(config, path, defaultValue) {
 /*
  * Sets a config value
  */
-function setConfigPath(key, value, isTree) {
-  const path = _path.join(ROOT, 'src', 'conf', '900-custom.json');
+function setConfigPath(key, value, isTree, outputFile) {
+  let path = _path.join(ROOT, 'src', 'conf', '900-custom.json');
+  if ( outputFile ) {
+    const confDir = _path.join(ROOT, 'src', 'conf');
+    path = _path.resolve(confDir, outputFile);
+  }
 
   let conf = {};
   try {
     conf = _fs.readJsonSync(path);
   } catch ( e ) {}
 
-  const result = _sjc.setJSON(conf, isTree ? null : key, value, {
-    prune: true,
-    guess: true
-  });
+  try {
+    const result = _sjc.setJSON(conf, isTree ? null : key, value, {
+      prune: true,
+      guess: true
+    });
 
-  _fs.writeFileSync(path, JSON.stringify(result, null, 2));
+    _fs.writeFileSync(path, JSON.stringify(result, null, 2));
+  } catch ( e ) {
+    console.error(e.stack, e);
+    return;
+  }
 
+  _logger.info('Changes written to: ' + path.replace(ROOT, ''));
   _logger.warn(_logger.color('Remember to run \'osjs build:config\' to update your build(s)...', 'green'));
-
-  return result;
 }
 
 /*
@@ -338,7 +346,7 @@ function getConfig(config, key) {
 /*
  * Sets a configuration option
  */
-function setConfig(config, key, value, importFile) {
+function setConfig(config, key, value, importFile, outputFile) {
   key = key || '';
 
   function getNewTree(k, v) {
@@ -372,7 +380,7 @@ function setConfig(config, key, value, importFile) {
     return Promise.resolve(value);
   }
 
-  return Promise.resolve(setConfigPath(key, value));
+  return Promise.resolve(setConfigPath(key, value, false, outputFile));
 }
 
 /*

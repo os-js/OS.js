@@ -15,7 +15,7 @@ Building:
 
 Configuration:
   config:get --name=KEY                                  Gets a configuration value
-  config:set --name=KEY --value=VALUE                    Sets a configuration entry
+  config:set --name=KEY --value=VALUE [--out=FILE]       Sets a configuration entry
   config:set [--name=KEY] --import=FILE                  Imports a configuration entry (or tree)
   config:add-repository --name=NAME                      Adds a repository directory
   config:remove-repository --name=NAME                   Removes a repository directory
