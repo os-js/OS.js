@@ -554,7 +554,7 @@
       });
       nel.on('contextmenu', function(ev) {
         if ( !el.hasAttribute('data-has-contextmenu') || el.hasAttribute('data-has-contextmenu') === 'false' ) {
-          nel.contextmenu(ev);
+          self.contextmenu(ev);
         }
         el.dispatchEvent(new CustomEvent('_contextmenu', {detail: ev.detail}));
       });
