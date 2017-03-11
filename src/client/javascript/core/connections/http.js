@@ -60,8 +60,8 @@
       // Emit a VFS event when a change occures
       if ( ['write', 'mkdir', 'copy', 'move', 'unlink'].indexOf(method) !== -1 ) {
         var arg = method === 'move' ? {
-          source: args[0],
-          destination: args[1]
+          source: args[0] instanceof VFS.File ? args[0] : null,
+          destination: args[1] instanceof VFS.File ? args[1] : null
         } : args[method === 'copy' ? 1 : 0];
 
         VFS.Helpers.triggerWatch(method, arg, appRef);

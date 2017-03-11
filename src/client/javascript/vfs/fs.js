@@ -1094,7 +1094,7 @@
 
     args.files.forEach(function(f, i) {
       var filename = (f instanceof window.File) ? f.name : f.filename;
-      var dest = new VFS.File(args.destination + '/' + filename);
+      var dest = new VFS.File(Utils.pathJoin(args.destination, filename));
 
       existsWrapper(dest, function(error) {
         if ( error ) {
@@ -1119,6 +1119,8 @@
               }
             } else {
               var file = VFS.Helpers.createFileFromUpload(args.destination, f);
+              file = checkMetadataArgument(file);
+
               broadcastMessage('vfs:upload', file, args.app, appRef);
               callback(false, file, ev);
             }
