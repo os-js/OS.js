@@ -1,3 +1,34 @@
+# 2.0.0-alpha85
+
+An early release containing mainly bugfixes. UI is now completely scalable and touch
+handling has been updated.
+
+Relevant:
+
+* http://community.os.js.org/t/update-version-bump-alpha85/
+
+Digest:
+
+* UI: Using 'ems' for everything in styles
+* UI: Added font-size related to device screen size
+* UI: Fully scalable interface
+* UI: Improved touch handling
+* Misc: Added MouseEvent polyfill
+* VFS: Download now actually downloads instead if inline
+* VFS: Added options argument to url()
+* GUI: Added debugging support to Scheme
+* GUI: Fixed ListView sorting
+* GUI: Fixed dnd in ListView
+* GUI: Fixed contextmenu triggering in wrong element for dataview
+* GUI: Changed some errors to warnings
+* CoreWM: Updated translations
+* MusicPlayer: Fixed slider bugging out when holding for to long
+* MusicPlayer: Now triggers on attention signal
+* build: Added '--out' to config:set
+* build: Prevent spammy behaviour in watcher
+* build: Bugfixes for config:set
+* build: Updated help
+
 # 2.0.0-alpha84
 
 Updates to mobile UI and handling, VFS improvements, bugfixes and a new 'osjs watch' command.
