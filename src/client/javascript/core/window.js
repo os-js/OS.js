@@ -2219,7 +2219,7 @@
 
     var wm = OSjs.Core.getWindowManager();
     if ( wm ) {
-      var theme = wm.getStyleTheme(true);
+      var theme = wm.getStyleTheme(true, true);
       if ( theme && theme.style && theme.style.window ) {
         topMargin = theme.style.window.margin;
         borderSize = theme.style.window.border;

@@ -3,8 +3,8 @@
   "title": "Glass",
   "style": {
     "window": {
-      "margin": 30,
-      "border": 5
+      "margin": "3em",
+      "border": ".4em"
     }
   }
 }

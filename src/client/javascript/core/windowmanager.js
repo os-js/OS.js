@@ -57,13 +57,13 @@
       b: win._dimension.h + win._position.y
     };
 
-    var theme = _WM.getStyleTheme(true);
+    var theme = Utils.cloneObject(_WM.getStyleTheme(true, true));
     if ( !theme.style ) {
       theme.style = {'window': {margin: 0, border: 0}};
     }
 
     this.theme = {
-      topMargin : theme.style.window.margin || 0,
+      topMargin : theme.style.window.margin || 0, // FIXME
       borderSize: theme.style.window.border || 0
     };
 
@@ -946,6 +946,7 @@
    * @memberof OSjs.Core.WindowManager#
    *
    * @param   {Boolean}    returnMetadata      Return theme metadata instead of name
+   * @param   {Boolean}    [convert=false]     Converts the measures into px
    *
    * @return  {String}                      Or JSON
    */

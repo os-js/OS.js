@@ -3,8 +3,8 @@
   "title": "Material Design",
   "style": {
     "window": {
-      "margin": 34,
-      "border": 0
+      "margin": "2.833em",
+      "border": ".25em"
     }
   }
 }

@@ -1124,10 +1124,10 @@
       borderSize = theme.style.window.border;
     }
 
-    raw += 'top:' + String(space.top + borderSize) + 'px !important;\n';
-    raw += 'left:' + String(space.left + borderSize) + 'px !important;\n';
-    raw += 'right:' + String(borderSize) + 'px !important;\n';
-    raw += 'bottom:' + String(space.bottom + borderSize) + 'px !important;\n';
+    raw += 'top: calc(' + String(space.top) + 'px + ' + borderSize + ') !important;\n';
+    raw += 'left: calc(' + String(space.left) + 'px + ' + borderSize + ') !important;\n';
+    raw += 'right: calc(' + String(borderSize) + ') !important;\n';
+    raw += 'bottom: calc(' + String(space.bottom) + 'px + ' + borderSize + ') !important;\n';
     raw += '\n}';
     raw += '\n}';
 
@@ -1254,7 +1254,7 @@
     return this.panels[(idx || 0)];
   };
 
-  CoreWM.prototype.getStyleTheme = function(returnMetadata) {
+  CoreWM.prototype.getStyleTheme = function(returnMetadata, convert) {
     var name = this.getSetting('styleTheme') || null;
     if ( returnMetadata ) {
       var found = null;
@@ -1265,8 +1265,35 @@
           }
         });
       }
+
+      // FIXME: Optimize
+      if ( found && convert === true ) {
+        var tmpEl = document.createElement('div');
+        tmpEl.style.visibility = 'hidden';
+        tmpEl.style.position = 'fixed';
+        tmpEl.style.top = '-10000px';
+        tmpEl.style.left = '-10000px';
+        tmpEl.style.width = '1em';
+        tmpEl.style.height = '1em';
+
+        document.body.appendChild(tmpEl);
+        var wd = tmpEl.offsetWidth;
+        tmpEl.parentNode.removeChild(tmpEl);
+
+        if ( typeof found.style.window.margin === 'string' && found.style.window.margin.match(/em$/) ) {
+          var marginf = parseFloat(found.style.window.margin);
+          found.style.window.margin = marginf * wd;
+        }
+
+        if ( typeof found.style.window.border === 'string' && found.style.window.border.match(/em$/) ) {
+          var borderf = parseFloat(found.style.window.border);
+          found.style.window.border = borderf * wd;
+        }
+      }
+
       return found;
     }
+
     return name;
   };
 
