@@ -1127,7 +1127,7 @@
     raw += 'top: calc(' + String(space.top) + 'px + ' + borderSize + ') !important;\n';
     raw += 'left: calc(' + String(space.left) + 'px + ' + borderSize + ') !important;\n';
     raw += 'right: calc(' + String(borderSize) + ') !important;\n';
-    raw += 'bottom: calc(' + String(space.bottom) + 'px + ' + borderSize + ') !important;\n';
+    raw += 'bottom: calc(' + (space.bottom ? String(space.bottom) + 'px + ' : '') + borderSize + ') !important;\n';
     raw += '\n}';
     raw += '\n}';
 

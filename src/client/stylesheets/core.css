@@ -454,6 +454,11 @@ application-window[data-focused="false"] iframe {
  *                               RESPONSIVE
  * ===========================================================================
  */
+@media all and (max-width: 1280px) {
+  html, body {
+    height : 100%;
+  }
+}
 
 @media all and (max-width: 800px) {
 
