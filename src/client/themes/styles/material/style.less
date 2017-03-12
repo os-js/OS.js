@@ -9,7 +9,7 @@
 @scrollbar_button_foreground : #f0f0f0;
 @scrollbar_track_background  : #f0f0f0;
 
-@window_top_height  : 34px;
+@window_top_height  : 2.833em;
 @window_border_size : 0;
 
 @menu_background_color : #fff;
@@ -78,7 +78,7 @@ application-window{
       color: #fff;
 
       gui-menu-bar-entry{
-        padding: 8px 6px;
+        padding: .666em .5em;
       }
       gui-menu-bar-entry:hover,
       .gui-active {
@@ -96,7 +96,7 @@ application-window{
             color: #fff;
           }
           label{
-            padding: 6px;
+            padding: .5em;
           }
           &[data-disabled="true"] > * {
             color: rgba(255, 255, 255, 0.5) !important;
@@ -110,7 +110,7 @@ application-window{
       width: 30px;
     }
     application-window-title {
-      font-size: 14px;
+      font-size: 1.2em;
       font-weight: 300;
       color: rgba(255, 255, 255, 0.9);
     }
@@ -121,7 +121,7 @@ application-window{
       line-height: 20px;
       text-align: center;
       font-family: Arial;
-      font-size: 10px;
+      font-size: .833em;
       z-index: 0;
 
       &:hover {
@@ -222,10 +222,10 @@ gui-menu {
   }
 }
 gui-tabs > ul {
-  height : 32px;
+  height : 2.666em;
 }
 gui-tabs > ul > li {
-  padding: 3px 6px;
+  padding: 0.25em .5em;
 }
 gui-tabs .gui-active:after {
   border: 1px solid @clr-pink-500 !important;
@@ -240,7 +240,7 @@ gui-icon-view-entry.gui-active {
   }
 }
 gui-switch > div {
-  width : 64px;
+  width : 5.333em;
 }
 gui-switch button.gui-active {
   margin-left: calc(50% - 1px);
@@ -249,18 +249,18 @@ gui-switch button.gui-active {
 gui-select,
 gui-password,
 gui-text {
-  height: 36px;
+  height: 3em;
 }
 
 gui-input-modal,
 gui-switch,
 gui-button {
-  height: 36px;
+  height: 3em;
 
   button {
     position: relative;
-    font-size: 16px;
-    padding: 5px 16px;
+    font-size: 1.333em;
+    padding: 0.416em 1.333em;
     color: rgba(0, 0, 0, 0.9);
     border-radius: 3px;
     border: 0;
