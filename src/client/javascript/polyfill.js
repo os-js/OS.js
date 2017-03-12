@@ -78,9 +78,9 @@
   (function() {
     /*eslint no-new: 0*/
     try {
-      new CustomEvent('test');
+      new window.MouseEvent('test');
+      return;
     } catch (e) {
-      return false; // No need to polyfill
     }
 
     function MouseEvent(eventType, params) {
