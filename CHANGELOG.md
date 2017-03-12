@@ -1,4 +1,4 @@
-# 2.0.0-alpha85
+# 2.0.0.85
 
 An early release containing mainly bugfixes. UI is now completely scalable and touch
 handling has been updated.
@@ -29,7 +29,7 @@ Digest:
 * build: Bugfixes for config:set
 * build: Updated help
 
-# 2.0.0-alpha84
+# 2.0.0.84
 
 Updates to mobile UI and handling, VFS improvements, bugfixes and a new 'osjs watch' command.
 
@@ -71,7 +71,7 @@ Digest:
 * misc: Updated travis build
 
 
-# 2.0.0-alpha83
+# 2.0.0.83
 
 This release brings a new Session Management system for the node server and a
 bunch of bugfixes and compability updates.
@@ -119,7 +119,7 @@ Digest:
 * misc: Updated documentation
 * misc: Cleaned up filetree
 
-# 2.0.0-alpha82
+# 2.0.0.82
 
 This release brings new Broadway implementation, Support for HTTP middleware,
 server and build system improvements and lots of bugfixes.
@@ -179,7 +179,7 @@ Digest:
 * misc: Updated Vagrantfile
 * misc: Updated INSTALL
 
-# 2.0.0-alpha81
+# 2.0.0.81
 
 This release brings Widgets, rewritten servers(s), connection/authenticator/storage replaces 'handler', bugfixes and improvements.
 
@@ -259,7 +259,7 @@ Digest:
 - misc: Cleaned up some CSS
 - misc: Updated unit tests
 
-# 2.0.0-alpha80
+# 2.0.0.80
 
 New Settings application, package management and user management subsystem, developer features and build system. Improvements and bugfixes.
 
@@ -316,7 +316,7 @@ Digest:
 - build: Rewritten build system
 - build: Standalone build updates
 
-# 2.0.0-alpha79
+# 2.0.0.79
 
 Core API WebSocket support, Desktop now uses VFS mount, New touch menu, Bugfixes, Improvements and optimizations.
 
@@ -364,7 +364,7 @@ Digest:
 * misc: Updated documentation
 * misc: Updated dependencies
 
-# 2.0.0-alpha78
+# 2.0.0.78
 
 New event handling and touch system, VFS improvements, bugfixes and entire codebase now uses JSDoc.
 
@@ -411,7 +411,7 @@ Digest:
 * doc: Entire codebase now uses JSDoc
 * doc: Added examples
 
-# 2.0.0-alpha77
+# 2.0.0.77
 
 A ton of new features, massive amount of cleanups. General bugfixes and improvements
 to documentation and developer features.
@@ -482,7 +482,7 @@ Digest:
 * misc: Fixed typos in documentation
 * misc: Updated docs
 
-# 2.0.0-alpha76
+# 2.0.0.76
 
 Search Engine, HTTP/2 support, bugfixes, improvements
 
@@ -521,7 +521,7 @@ and general impreovements. Also a new HTML Viewer application.
 * doc: Updated handler docs
 * doc: Updated API docs
 
-# 2.0.0-alpha75
+# 2.0.0.75
 
 Bugfixes, Locale updates, Security and general improvements.
 
@@ -575,7 +575,7 @@ Bugfixes, Locale updates, Security and general improvements.
 * doc: New Screenshot in README
 * misc: Updated dependencies
 
-# 2.0.0-alpha74
+# 2.0.0.74
 
 New wallpaper, UI improvements, bugfixes and many improvements to the build system(s). Also new developer features!
 
@@ -651,7 +651,7 @@ New wallpaper, UI improvements, bugfixes and many improvements to the build syst
 * doc: Updated homepage
 * doc: Updated docs
 
-# 2.0.0-alpha73
+# 2.0.0.73
 
 A ton of fixes, improvements and developer support updates!
 
@@ -728,7 +728,7 @@ Now also supports Intel Edison platforms.
 * misc: Fixed some possible vulnerabilities
 * platform: Now fully supports Intel Edison
 
-# 2.0.0-alpha72
+# 2.0.0.72
 
 New Logo, Moved repo to organization, Better privilege and group support, a ton of bugfixes and improvements!
 
@@ -819,7 +819,7 @@ New Logo, Moved repo to organization, Better privilege and group support, a ton 
 * doc: Updated package.json
 * doc: Updated badges
 
-# 2.0.0-alpha71
+# 2.0.0.71
 
 OS.js exploded on social media and there was a lot of activity. This is just a digest of all the changes.
 
@@ -884,7 +884,7 @@ Thanks to everyone for helping out :-)
 * doc: Updated doc/X11.md
 * doc: Updated doc/*-handler.md
 
-# 2.0.0-alpha70
+# 2.0.0.70
 
 Tons of improvments to build system, bugfixes and general improvements.
 
@@ -929,7 +929,7 @@ Remember: Run `grunt` after updating
 * doc: Updated INSTALL
 * misc: jshint
 
-# 2.0.0-alpha69
+# 2.0.0.69
 
 * CoreWM: Notification Icon improvments
 * GUI: Button now supports `tooltip` property
@@ -973,7 +973,7 @@ Remember: Run `grunt` after updating
 * Misc: Updated documentation
 * Misc: Updated .bithoundrc
 
-# 2.0.0-alpha68
+# 2.0.0.68
 
 * VFS: Small fixes to mounting
 * CoreWM: Force merging of default settings to prevent errors when loading old user settings
@@ -995,7 +995,7 @@ Remember: Run `grunt` after updating
 * Misc: Github bugreport improvments
 * Misc: Fixed typo in readme
 
-# 2.0.0-alpha67
+# 2.0.0.67
 
 * Utils: ajax() fixes for IE
 * Utils: ajax() now assumes json content-type on object data
@@ -1028,7 +1028,7 @@ Remember: Run `grunt` after updating
 * Misc: Updated some stamps
 * Misc: Started on an official Arduino build
 
-# 2.0.0-alpha66
+# 2.0.0.66
 
 * Core: Now showing application splash screens by default
 * Core: Better Event unbinding
@@ -1067,7 +1067,7 @@ Remember: Run `grunt` after updating
 * Misc: Updated README
 * Misc: Update homepage
 
-# 2.0.0-alpha65
+# 2.0.0.65
 
 Massive cleanups and refactors. This brings us a lot closer to a Beta release!
 
@@ -1115,7 +1115,7 @@ A special shout-out to @RyanRiffle for helping out with the development and maki
 * Misc: Updated README
 * Misc: Linting
 
-# 2.0.0-alpha64
+# 2.0.0.64
 
 A bunch of updates, new building system and bufixes.
 
@@ -1154,7 +1154,7 @@ A bunch of updates, new building system and bufixes.
 * Misc: Better splitting of codebase in `src/`
 * Misc: Removed some unused files
 
-# 2.0.0-alpha63
+# 2.0.0.63
 
 New features, bugfixes and other improvments.
 
@@ -1185,7 +1185,7 @@ New features, bugfixes and other improvments.
 * Misc: Moved 'gendoc' to the gh-pages branch
 * Misc: Removed a npm dependency
 
-# 2.0.0-alpha62
+# 2.0.0.62
 
 **BIG CHANGES TO THE API. THIS WILL BREAK YOUR APPS**
 
@@ -1209,7 +1209,7 @@ New features, bugfixes and other improvments.
 
 *300+ commits, 5 issues closed and 10 user requests also in this update*
 
-# 2.0.0-alpha61
+# 2.0.0.61
 
 Bugfixes, Date library and improvments to Windows deployment.
 
@@ -1236,7 +1236,7 @@ Bugfixes, Date library and improvments to Windows deployment.
 * Misc: Updated javascript code documentation headers
 * Misc: Updated bithoundrc and gitignore
 
-# 2.0.0-alpha60
+# 2.0.0.60
 
 Bugfixes, build system updates, size reduction, new API helpers, touch event compabiltiy.
 
@@ -1273,7 +1273,7 @@ https://os.js.org/doc/tutorials/iframe-application.html
 * Updated package.json
 * Updated gitignore
 
-# 2.0.0-alpha59
+# 2.0.0.59
 
 Thanks to the community this release contains a lot of bugfixes and useful additions.
 
@@ -1313,7 +1313,7 @@ Also done some effort in reducing the complexity of the code.
 * misc: Updated README
 * misc: Updated docs
 
-# 2.0.0-alpha58
+# 2.0.0.58
 
 * API: Introduced group permissions for API/FS calls
 * Session: Added config for showing warning message when closing tab
@@ -1327,7 +1327,7 @@ Also done some effort in reducing the complexity of the code.
 * Doc: Updated docs
 * grunt: Added nginx config generation
 
-# 2.0.0-alpha57
+# 2.0.0.57
 
 Standalone support (file://). Firefox Marketplace support :)
 
@@ -1348,7 +1348,7 @@ I now also started providing nightly builds
 * Build: Added nightly generator
 * Misc: jshint
 
-# 2.0.0-alpha56
+# 2.0.0.56
 
 Grunt is now used as build system.
 
@@ -1371,7 +1371,7 @@ Widows support :)
 * FileManager: Columns now toggleable in list view
 
 
-# 2.0.0-alpha55
+# 2.0.0.55
 
 Now features installable packages via zip or App Store in the Settings application.
 
@@ -1396,7 +1396,7 @@ on how to set up.
 * Misc: Added some missing translation calls
 * Misc: Updated documentation
 
-# 2.0.0-alpha54
+# 2.0.0.54
 
 * Core: New core settings generation in src/conf for much easier managment (no more build.json)
 * Themes: New folder structure
@@ -1414,7 +1414,7 @@ on how to set up.
 * Misc: jslint for window.WL
 * Misc: Added installer.sh script to source
 
-# 2.0.0-alpha53
+# 2.0.0.53
 
 * Locales: Updated russian locales (Thanks @vlad008)
 * Locales: Added chinese locale (Thanks @zqqq)
@@ -1438,7 +1438,7 @@ on how to set up.
 * Misc: Cross-platform CSS update
 * Misc: Some minor improvments to default sizes of GUIElements
 
-# 2.0.0-alpha52
+# 2.0.0.52
 
 WARNING: API Changes
 
@@ -1468,7 +1468,7 @@ WARNING: API Changes
 * obt: Added max file size setting to server-php
 * obt: Now strips all comments and wasted newlines on dist
 
-# 2.0.0-alpha51
+# 2.0.0.51
 
 WARNING: API Changes
 
@@ -1486,7 +1486,7 @@ References: #12, #13, #55, #59
 * Misc: Moved API functions around again (no issue)
 * Misc: Removed a lot of "global" variables
 
-# 2.0.0-alpha50
+# 2.0.0.50
 
 New Logo and Homepage :) Documentation update and some fixes
 
@@ -1502,7 +1502,7 @@ References: #12
 * New logo
 * jslinted
 
-# 2.0.0-alpha49
+# 2.0.0.49
 
 WARNING: API CHANGES. All helper functions have been moved into `OSjs.API`
 
@@ -1534,7 +1534,7 @@ References: #45, #44, #50, #51, #53
 * Docs: Full documentation of 'core.js'
 * Misc: Cleanups
 
-# 2.0.0-alpha48
+# 2.0.0.48
 
 NOTE: Run 'npm update' for node server :)
 
@@ -1553,7 +1553,7 @@ NOTE: Run 'npm update' for node server :)
 * VFS: Added remoteRead()
 * GUI - FileView: Improved error handling
 
-# 2.0.0-alpha47
+# 2.0.0.47
 
 WARNING: This release will require you to refactor applications to use Utils.ajax()
 instead of old Utils.Ajax*() methods
@@ -1570,7 +1570,7 @@ instead of old Utils.Ajax*() methods
 * Misc: jslint update
 * Misc: cleanups
 
-# 2.0.0-alpha46
+# 2.0.0.46
 
 This release fixes all the encoding problems in VFS.I should have thought of
 this sooner, but using ArrayBuffer to pass around is pretty much fool-proof.
@@ -1587,7 +1587,7 @@ this sooner, but using ArrayBuffer to pass around is pretty much fool-proof.
 * Core: Added 'ServiceRing'. NotificationIcon for managing API services
 * Misc: jslinted
 
-# 2.0.0-alpha45
+# 2.0.0.45
 
 * VFS: Cleanups
 * VFS: Removed some redundant code
@@ -1602,7 +1602,7 @@ this sooner, but using ArrayBuffer to pass around is pretty much fool-proof.
 * VFS: dropbox - Added parent directory in scandir() (I forgot this somehow)
 * VFS: dropbox - Now uses popup auth driver
 
-# 2.0.0-alpha44
+# 2.0.0.44
 
 NOTE: There is a bug in VFS causing copy of cleartext to OS.js not working properly
 
@@ -1616,7 +1616,7 @@ NOTE: There is a bug in VFS causing copy of cleartext to OS.js not working prope
 * CoreWM: Fixed contextmenu on panel
 * CoreWM: Added option to invert IconView colors (uses background color)
 
-# 2.0.0-alpha43
+# 2.0.0.43
 
 * CoreWM: Split lib.js into separate files (finally)
 * CoreWM: Better WindowSwitcher behavior
@@ -1629,7 +1629,7 @@ NOTE: There is a bug in VFS causing copy of cleartext to OS.js not working prope
 * Misc: Added Vargantfile and docs (Thanks, @CtrlC-Root)
 * Misc: Updated INSTALL.md
 
-# 2.0.0-alpha42
+# 2.0.0.42
 
 * Added Core de_DE translations (Thanks @danielang)
 * Added Application de_DE translations (Thanks @danielang)
@@ -1647,7 +1647,7 @@ NOTE: There is a bug in VFS causing copy of cleartext to OS.js not working prope
 * Updated AUTHORS
 * Updated INSTALL
 
-# 2.0.0-alpha41
+# 2.0.0.41
 
 * Themes: Added 'Dark' Theme
 * CSS: Added GPU rendering to windows
@@ -1665,7 +1665,7 @@ NOTE: There is a bug in VFS causing copy of cleartext to OS.js not working prope
 * server-node: Better extendability
 * locales: Updated nb_NO
 
-# 2.0.0-alpha40
+# 2.0.0.40
 
 * Misc: Fixed loading problems in Firefox - #32
 * Core: Autodetection of language - #23
@@ -1680,7 +1680,7 @@ NOTE: There is a bug in VFS causing copy of cleartext to OS.js not working prope
 * FileManager: Added opacity for unmounted volumes
 * server-node: Removed old error message
 
-# 2.0.0-alpha39
+# 2.0.0.39
 
 * WM: Added getWindow(name)
 * Core: Extended keyboard handling support in windows etc.
@@ -1701,7 +1701,7 @@ NOTE: There is a bug in VFS causing copy of cleartext to OS.js not working prope
 * Misc: added utf-8 to apache configs when serving JS
 * Misc: jslint
 
-# 2.0.0-alpha38
+# 2.0.0.38
 
 * Updated README
 * Updated AUTHORS
@@ -1714,7 +1714,7 @@ NOTE: There is a bug in VFS causing copy of cleartext to OS.js not working prope
 * FileManager: Label bugfix
 * Core: Added AutoStart config support
 
-# 2.0.0-alpha37
+# 2.0.0.37
 
 * Locales: Added formatting string for entire OS.js, so now translations should be a breeze :)
 * Locales: Entirely new en_EN
@@ -1727,7 +1727,7 @@ NOTE: There is a bug in VFS causing copy of cleartext to OS.js not working prope
 * VFS: Removed _opts entirely from API (finally)
 * DefaultApplication: Removed static paths
 
-# 2.0.0-alpha36
+# 2.0.0.36
 
 * server-php: Now blocks all VFS write request on osjs://
 * server-node: Fix for upload
@@ -1742,7 +1742,7 @@ NOTE: There is a bug in VFS causing copy of cleartext to OS.js not working prope
 * New README
 * New Logo!
 
-# 2.0.0-alpha35
+# 2.0.0.35
 
 * VFS: Fixed download() across all modules
 * VFS: Better error handling for file uploads
@@ -1759,7 +1759,7 @@ NOTE: There is a bug in VFS causing copy of cleartext to OS.js not working prope
 * locales: Moved some more strings
 * locales: Updated locales
 
-# 2.0.0-alpha34
+# 2.0.0.34
 
 WARNING: API Change
 
@@ -1772,7 +1772,7 @@ WARNING: API Change
 * Core: Moved locale functions to OSjs.API.*
 * Misc: Moved version stamp into build.json
 
-# 2.0.0-alpha33
+# 2.0.0.33
 
 * Themes: Custom WebKit scrollbar styles
 * Themes: Small fixes for custom input element styles
@@ -1789,7 +1789,7 @@ WARNING: API Change
 * jslint and small cleanups
 * DefaultApplication: Fixed save dialog default path
 
-# 2.0.0-alpha32
+# 2.0.0.32
 
 * Added reverted version of repositories.json file
 * Core: Updated manifest support for Extension type packages
@@ -1812,7 +1812,7 @@ WARNING: API Change
 * GUI: Custom styling for CHECKBOX
 * GUI: Custom styling for RADIO
 
-# 2.0.0-alpha31
+# 2.0.0.31
 
 * Application - FileManager: Now displays notification about login to external services
 * Application - FileManager: Rename dialog now automatically highlight filename-ext
@@ -1828,7 +1828,7 @@ WARNING: API Change
 * obt: Bugfix for 'make core' with extension
 * General: Linting after all changes
 
-# 2.0.0-alpha30
+# 2.0.0.30
 
 * VFS: Split User/Public modules into separate files
 * VFS: Added 'internal' property to modules
@@ -1841,7 +1841,7 @@ WARNING: API Change
 * DefaultApplication: Now checks if filetype is valid on save() and replaces extension if nesecary
 * Windows: Added 1ms to getAnimDuration(). Fixes Chrome bug where resized hook triggers too soon
 
-# 2.0.0-alpha29
+# 2.0.0.29
 
 * VFS: Bugfixes for upload
 * VFS: Bugfixes for copying between sources
@@ -1849,21 +1849,21 @@ WARNING: API Change
 * VFS: Better upload handling
 * server-node: Added a temporary fix for default home path
 
-# 2.0.0-alpha28
+# 2.0.0.28
 
 * VFS: Now fully supports home directories pr user
 * VFS: Now has a "public" directory for general file sharing
 * VFS: Changed default path to home://
 * API: Moved Google API to handlers/
 
-# 2.0.0-alpha27
+# 2.0.0.27
 
 * VFS: Added support for osjs://
 * VFS: Rewrote scandir()
 * obt: Added support for extending core via packages of type "extension"
 * Application - Textpad: Added more mime types
 
-# 2.0.0-alpha26
+# 2.0.0.26
 
 * Templates: Removed some deprecated stuff
 * VFS: Fix for empty File construct
@@ -1875,7 +1875,7 @@ WARNING: API Change
 * Dialogs: Fixed directory listing bug in File dialog
 * Core: Better error/exception handling
 
-# 2.0.0-alpha25
+# 2.0.0.25
 
 * VFS: Moved server-side code into client
 * VFS: GoogleDrive improvments
@@ -1887,7 +1887,7 @@ WARNING: API Change
 * obt: Added support for custom build.json files
 * obt: Prevent crash on repo dir non existent
 
-# 2.0.0-alpha24
+# 2.0.0.24
 
 WARNING: API Change
 
@@ -1902,7 +1902,7 @@ WARNING: API Change
 * Themes: Removed deprecated loading GIFs
 * GUI: Finished PanedView
 
-# 2.0.0-alpha23
+# 2.0.0.23
 
 * Version stamp now created on startup
 * Application - Draw: Now uses extended namespaces
@@ -1910,7 +1910,7 @@ WARNING: API Change
 * Application - FileManager: Sidebar bugfix after previous bump
 * GUI - FileView: Fixed filesize sorting
 
-# 2.0.0-alpha22
+# 2.0.0.22
 
 * Added automated installer
 * Updated INSTALL instructions entirely
@@ -1918,7 +1918,7 @@ WARNING: API Change
 * GUI: FileView bugfixes for iconview and treeview
 * Dialogs: File dialog bugfixes relating to GUIFileView
 
-# 2.0.0-alpha21
+# 2.0.0.21
 
 WARNING: API Change
 
@@ -1940,7 +1940,7 @@ WARNING: API Change
 * Added package.json for npm
 * Updated install instructions -- simplified
 
-# 2.0.0-alpha20
+# 2.0.0.20
 
 * Core: Split Widow and WindowManager etc. into src/javascript/windows.js
 * Core: Split init code into src/javascript/main.js
@@ -1951,7 +1951,7 @@ WARNING: API Change
 * obt: Can now generate dist-dev/index.html
 * Updated lint and some docs
 
-# 2.0.0-alpha19
+# 2.0.0.19
 
 * Completely new build tools: 'obt' aka 'OS.js Build Tools'
 * New build tool replaces all bin/ scripts
@@ -1961,7 +1961,7 @@ WARNING: API Change
 * Prepared for WebSockets
 * New INSTALL instructions
 
-# 2.0.0-alpha18
+# 2.0.0.18
 
 * New build tools (replaces all bin/ scripts)
 * GUI: Bugfix for multiple events firing in IconView and ListView
@@ -1972,7 +1972,7 @@ WARNING: API Change
 * Application - Bugreport: Increased sizes of fields
 * Updated docs
 
-# 2.0.0-alpha17
+# 2.0.0.17
 
 * Locales: Now falls back to system default language when not found in dict
 * Core: Added lots of hooks for custom custom integration stuff
@@ -1983,7 +1983,7 @@ WARNING: API Change
 * Misc: Console messages now removed from dist builds
 * Misc: Google Closure Compiler now default for Core
 
-# 2.0.0-alpha16
+# 2.0.0.16
 
 * jslint: Core code is now acceptable
 * php-webserver: Fixed for internal server bugs remaining from refactors
@@ -1994,7 +1994,7 @@ WARNING: API Change
 * DefaultApplication: Small fixes for error handling
 * CoreWM: Updated status notification colors
 
-# 2.0.0-alpha15
+# 2.0.0.15
 
 * Utils: Added $createCSS
 * Utils: Added $createJS
@@ -2006,7 +2006,7 @@ WARNING: API Change
 * Themes: New panel style (default)
 * Tonnes of jslint updates
 
-# 2.0.0-alpha14
+# 2.0.0.14
 
 * Code syntax fix for compressed/combined dist
 * New DefaultApplication class
@@ -2017,7 +2017,7 @@ WARNING: API Change
 * Application - Calculator: Cross-browser fixes
 * Fixed IE CSS loading for WM (seriously IE....seriously?!)
 
-# 2.0.0-alpha13
+# 2.0.0.13
 
 * Themes: Refactored theming
 * Windows: The given dimensions will now work correctly
@@ -2028,7 +2028,7 @@ WARNING: API Change
 * Helpers: New DefaultApplication
 * Helpers: New DefaultApplicationWindow
 
-# 2.0.0-alpha12
+# 2.0.0.12
 
 * Node.js backend refactor and cleanup
 * Node.js file upload support
@@ -2039,7 +2039,7 @@ WARNING: API Change
 * Applications: Added Calculator
 * GUI: Added more input events to the GUIInput type
 
-# 2.0.0-alpha11
+# 2.0.0.11
 
 * Added window property "start_focused"
 * Updated .gitignore
@@ -2053,7 +2053,7 @@ WARNING: API Change
 * OS.js now has a logo (temporary)!
 * New loading screen!
 
-# 2.0.0-alpha10
+# 2.0.0.10
 
 * Updated some documentation
 * New README file for repo
@@ -2067,7 +2067,7 @@ WARNING: API Change
 * Themes: Now uses manifest file like packages
 * Makefile: Updated colors
 
-# 2.0.0-alpha9
+# 2.0.0.9
 
 * Application - Draw: Small updates
 * Build-system: Update compression script
@@ -2080,7 +2080,7 @@ WARNING: API Change
 * CGI: Update .htaccess rules for builds
 
 
-# 2.0.0-alpha7 to 2.0.0-alpha8
+# 2.0.0.7 to 2.0.0.8
 
 * Cleaned up some old code
 * Updated translations
@@ -2091,18 +2091,18 @@ WARNING: API Change
 * Application - Draw: Many updates
 * Updated documentation
 
-# 2.0.0-alpha4 to 2.0.0-alpha6
+# 2.0.0.4 to 2.0.0.6
 
 Build system improvments, cleanups, bugfixes and documentation updates.
 
 Also removed the default submodules and added them to the master filetree.
 
-# 2.0.0-alpha3
+# 2.0.0.3
 
 A bit more modular design for the filetree. Created a Makefile for doing all build stuff.
 Some cleanups and documentation updates
 
-# 2.0.0-alpha1
+# 2.0.0.1
 
 Rewritten from scratch!
 
