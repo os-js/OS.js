@@ -459,6 +459,7 @@ application-window[data-focused="false"] iframe {
 
   body {
     overflow : hidden;
+    font-size : 10px;
   }
 
   application-window {
