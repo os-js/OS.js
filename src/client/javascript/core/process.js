@@ -433,15 +433,24 @@
    * @function _api
    * @memberof OSjs.Core.Process#
    *
-   * @param   {String}      method              Name of method
-   * @param   {Object}      args                Arguments in JSON
-   * @param   {Function}    callback            Callback method => fn(error, result)
-   * @param   {Boolean}     [showLoading=true]  Show loading indication
-   *
-   * @return  {boolean}
+   * @param   {String}      method                      Name of method
+   * @param   {Object}      args                        Arguments in JSON
+   * @param   {Function}    callback                    Callback method => fn(error, result)
+   * @param   {Boolean}     [showLoading=true]          Show loading indication
+   * @param   {Object}      [options]                   Options (See API::call)
+   * @return  {Boolean}
    */
-  Process.prototype._api = function(method, args, callback, showLoading) {
+  Process.prototype._api = function(method, args, callback, options) {
     var self = this;
+
+    // NOTE: Backward compability
+    if ( typeof options === 'boolean' ) {
+      options = {
+        indicator: options
+      };
+    } else if ( typeof options !== 'object' ) {
+      options = {};
+    }
 
     function cb(err, res) {
       if ( self.__destroyed ) {
@@ -457,9 +466,8 @@
       application: this.__iter,
       path: this.__path,
       method: method,
-      args: args,
-      __loading: showLoading
-    }, cb);
+      args: args
+    }, cb, options);
   };
 
   /**

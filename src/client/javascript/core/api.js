@@ -313,20 +313,19 @@
    * @see OSjs.Utils.ajax
    * @throws {Error} On invalid arguments
    *
-   * @param   {String}    m         Method name
-   * @param   {Object}    a         Method arguments
-   * @param   {Function}  cb        Callback on success => fn(err, res)
-   * @param   {Object}    [options] Options to send to the XHR request
+   * @param   {String}    m                           Method name
+   * @param   {Object}    a                           Method arguments
+   * @param   {Function}  cb                          Callback on success => fn(err, res)
+   * @param   {Object}    [options]                   Options (all options except the ones listed below are sent to Connection)
+   * @param   {Boolean}   [options.indicator=true]    Show loading indicator
    */
   var _CALL_INDEX = 1;
   API.call = function API_call(m, a, cb, options) {
     a = a || {};
+    options = options || {};
 
+    console.warn(options)
     var lname = 'APICall_' + _CALL_INDEX;
-
-    if ( typeof a.__loading === 'undefined' || a.__loading === true ) {
-      API.createLoading(lname, {className: 'BusyNotification', tooltip: 'API Call'});
-    }
 
     if ( typeof cb !== 'function' ) {
       throw new TypeError('call() expects a function as callback');
@@ -334,6 +333,14 @@
 
     if ( options && typeof options !== 'object' ) {
       throw new TypeError('call() expects an object as options');
+    }
+
+    if ( options.indicator !== false ) {
+      API.createLoading(lname, {className: 'BusyNotification', tooltip: 'API Call'});
+    }
+
+    if ( typeof options.indicator !== 'undefined' ) {
+      delete options.indicator;
     }
 
     _CALL_INDEX++;
