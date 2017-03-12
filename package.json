@@ -1,8 +1,8 @@
 {
   "name": "OS.js",
-  "version": "2.0.0.85",
+  "version": "2.0.0-85",
   "description": "JavaScript Cloud/Web Desktop Platform",
-  "url": "http://os-js.org",
+  "url": "https://www.os-js.org",
   "email": "andersevenrud@gmail.com",
   "license": "BSD-2-Clause",
   "contributors": [
@@ -43,9 +43,9 @@
     "http-proxy": "^1.16.2",
     "less": ">=2.7.1",
     "minimist": "^1.2.0",
-    "request": "^2.80.0",
+    "request": "^2.81.0",
     "simplejsonconf": "^1.0.5",
-    "uglify-js": "^2.8.7",
+    "uglify-js": "^2.8.12",
     "unzip": "^0.1.11",
     "ws": "^2.2.0",
     "zlibjs": "^0.2.0"
