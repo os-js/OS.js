@@ -90,10 +90,13 @@
     },
 
     body_click: function(ev) {
-      OSjs.API.blurMenu();
+      var t = ev.target;
+      if ( !t || t.tagName !== 'GUI-MENU-BAR-ENTRY' ) {
+        OSjs.API.blurMenu();
+      }
 
       var wm = OSjs.Core.getWindowManager();
-      if ( ev.target === document.body ) {
+      if ( t === document.body ) {
         var win = wm ? wm.getCurrentWindow() : null;
         if ( win ) {
           win._blur();

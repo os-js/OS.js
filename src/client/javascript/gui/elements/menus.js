@@ -298,8 +298,10 @@
   }, {
     on: function(evName, callback, params) {
       evName = getEventName(evName);
+      var self = this;
+
       this.$element.querySelectorAll('gui-menu-bar-entry').forEach(function(target) {
-        Utils.$bind(target, evName, callback.bind(this), params);
+        Utils.$bind(target, evName, callback.bind(self), params);
       });
 
       return this;
