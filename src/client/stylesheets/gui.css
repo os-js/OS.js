@@ -455,20 +455,20 @@ gui-paned-view[data-orientation='vertical'] {
             flex: 0 1 auto;
   }
   gui-paned-view > gui-paned-view-container {
-    min-width : 16px;
+    min-width : 1em;
     min-height : auto;
   }
   gui-paned-view[data-orientation='vertical'] > gui-paned-view-container {
     min-width : auto;
-    min-height : 16px;
+    min-height : 1em;
   }
 
 /* IFrame */
 gui-iframe {
   display : inline-block;
   position : relative;
-  min-width : 16px;
-  min-height : 16px;
+  min-width : 1em;
+  min-height : 1em;
 }
   gui-iframe > iframe {
     display : block;
@@ -487,10 +487,8 @@ gui-button-bar {
   display : block;
   position : relative;
   overflow : hidden;
-  /* NOTE: Fixes spacing errors in FF */
-  font-size : 0;
-  min-width : 16px;
-  min-height : 16px;
+  min-width : 1em;
+  min-height : 1em;
 }
 gui-button-bar {
   white-space: nowrap;
@@ -641,6 +639,7 @@ gui-grid {
 gui-label {
   display : inline-block;
   position : relative;
+  min-height : 1em;
 }
   gui-label > label {
     display : inline;
@@ -652,6 +651,8 @@ gui-button {
   position : relative;
   display : inline-block;
   box-sizing : content-box;
+  min-height : 1em;
+  min-width : 1em;
 }
   gui-button button {
     display : block;
@@ -659,22 +660,25 @@ gui-button {
     padding : 0;
     outline : 0 none;
     white-space: nowrap;
-    min-width : 16px;
-    min-height : 16px;
+    min-width : 1em;
+    min-height : 1em;
     width : 100%;
     height : 100%;
+    overflow : hidden;
   }
   gui-button button::-moz-focus-inner {
     border : 0;
     padding : 0;
   }
-  gui-button[data-icon-size="32"] {
+  gui-button[data-icon-size="32"] img {
     min-width : 32px;
     min-height : 32px;
   }
 
   gui-button.gui-has-image img {
     vertical-align : middle;
+    height : 100%;
+    max-height : 16px;
   }
   gui-button.gui-has-image.gui-has-label img {
     position : absolute;
@@ -747,6 +751,8 @@ gui-radio {
 gui-select {
   display : inline-block;
   position : relative;
+  min-height : 1em;
+  min-width : 1em;
 }
   gui-select select {
     -webkit-appearance: none;
@@ -789,7 +795,8 @@ gui-select {
 gui-select-list {
   display : inline-block;
   position : relative;
-  min-height : 32px;
+  min-height : 2em;
+  min-width : 1em;
 }
   gui-select-list select {
     -webkit-appearance: none;
@@ -819,11 +826,14 @@ gui-select-list {
 gui-slider {
   display : inline-block;
   position : relative;
+  min-height : 1em;
+  min-width : 1em;
 }
   gui-slider input {
     display : inline-block;
     position : relative;
     width : 100%;
+    height : 100%;
     padding : 0;
     margin : 0;
     vertical-align : middle;
@@ -924,16 +934,16 @@ gui-slider {
 gui-switch {
   display : inline-block;
   position : relative;
-
+  min-height : 1em;
+  min-width : 1em;
 }
 
   gui-switch div {
-    display : inline-block;
     position : relative;
   }
 
   gui-switch button {
-    display : inline-block;
+    display : block;
     outline : 0 none;
     margin : 0;
     width : 50%;
@@ -964,6 +974,8 @@ gui-password,
 gui-text {
   display : inline-block;
   position : relative;
+  min-height : 1em;
+  min-width : 1em;
 }
   gui-password input,
   gui-text input {
@@ -997,6 +1009,8 @@ gui-text {
 gui-textarea {
   display : inline-block;
   position : relative;
+  min-height : 1em;
+  min-width : 1em;
 }
   gui-textarea textarea {
     display : block;
@@ -1043,7 +1057,8 @@ gui-file-upload {
 gui-input-modal {
   position : relative;
   display : inline-block;
-
+  min-height : 1em;
+  min-width : 1em;
 }
   gui-input-modal > div {
     display: -webkit-box;
@@ -1053,7 +1068,7 @@ gui-input-modal {
     display: flex;
   }
     gui-input-modal input {
-      display : inline-block;
+      display : block;
       padding : 0;
       margin : 0;
       border : 0 none;
@@ -1071,7 +1086,7 @@ gui-input-modal {
               flex: 1 0 auto;
     }
     gui-input-modal button {
-      display : inline-block;
+      display : block;
 
       -webkit-box-flex: 0 1 auto;
          -moz-box-flex: 0 1 auto;
@@ -1101,8 +1116,8 @@ gui-audio {
 gui-video {
   display : inline-block;
   position : relative;
-  min-width : 16px;
-  min-height : 16px;
+  min-width : 1em;
+  min-height : 1em;
 }
   /*gui-video > video {
   }*/
@@ -1122,8 +1137,8 @@ gui-image {
 gui-canvas {
   display : inline-block;
   position : relative;
-  min-width : 16px;
-  min-height : 16px;
+  min-width : 1em;
+  min-height : 1em;
 }
 
 /* Color Swatch */
@@ -1242,7 +1257,7 @@ gui-menu.gui-root-menu {
 gui-menu-bar {
   position : relative;
   display : block;
-  min-height : 16px;
+  min-height : 1em;
 }
   gui-menu-bar-entry {
     position : relative;
@@ -1298,15 +1313,15 @@ gui-progress-bar {
     left : 0;
     right : 0;
     bottom : 0;
-    height : 16px;
-    margin-top : -8px;
+    height : 1em;
+    margin-top : -.5em;
   }
 
 /* Statusbar */
 gui-statusbar {
   position : relative;
   display : block;
-  min-height : 16px;
+  min-height : 1em;
   overflow : hidden;
   white-space : nowrap;
 
@@ -1343,8 +1358,8 @@ gui-icon-view {
   position : relative;
   display : inline-block;
   overflow : auto;
-  min-width : 16px;
-  min-height : 16px;
+  min-width : 1em;
+  min-height : 1em;
   box-sizing : border-box;
 }
   gui-icon-view-body {
@@ -1408,8 +1423,8 @@ gui-list-view {
   position : relative;
   display : inline-block;
   overflow : auto;
-  min-width : 16px;
-  min-height : 16px;
+  min-width : 1em;
+  min-height : 1em;
   box-sizing : border-box;
 }
   gui-list-view-inner {
@@ -1443,12 +1458,12 @@ gui-list-view {
       display : table-cell;
       background-repeat : no-repeat;
       background-position : left center;
-      background-size : 16px;
-      line-height : 16px;
+      background-size : 1.2em;
+      line-height : 1.4;
     }
-    gui-list-view[data-icon-size="32"] gui-list-view-column {
-      line-height : 32px;
-      background-size : 32px;
+    gui-list-view[data-icon-size="32"] gui-list-view-body gui-list-view-column {
+      line-height : 2.8;
+      background-size : 2.4em;
     }
       gui-list-view-column > span {
         pointer-events: none;
@@ -1505,8 +1520,8 @@ gui-tree-view {
   position : relative;
   display : inline-block;
   overflow : auto;
-  min-width : 16px;
-  min-height : 16px;
+  min-width : 1em;
+  min-height : 1em;
   box-sizing : border-box;
 }
   gui-tree-view-body {

@@ -47,7 +47,7 @@
 @scrollbar_button_foreground : @gui_background_color;
 @scrollbar_track_background  : @base_background_color;
 
-@gui_base_padding : 4px;
+@gui_base_padding : .33em;
 
 @gui_selected_background_color       : rgb(45, 115, 210);
 @gui_selected_blur_background_color  : rgba(45, 115, 210, .2);
@@ -155,8 +155,9 @@
 
 .gui-has-emblem {
   background-repeat : no-repeat;
-  background-position : calc(100% - @gui_base_padding) center;
-  padding-right : calc(16px + @gui_base_padding);
+  background-position : calc(~"100% - "@gui_base_padding) center;
+  background-size : 1em;
+  padding-right : (1em + @gui_base_padding);
 }
 
 
@@ -242,7 +243,6 @@ body[data-attention="true"]:after {
 
 corewm-panel {
   color : #ffffff; /* Window Manager manages this */
-  font-size : 0;
   padding : @gui_base_padding;
 }
 corewm-panel:before {
@@ -263,7 +263,6 @@ corewm-panel[data-orientation="vertical"] corewm-panel-container {
 
   corewm-panel corewm-panel-item .corewm-panel-buttons > li {
     cursor : pointer;
-    font-size : @base_font_size;
   }
   corewm-panel[data-orientation="horizontal"] corewm-panel-item .corewm-panel-buttons > li {
     margin-right : @gui_base_padding;
@@ -617,15 +616,15 @@ gui-container[data-borders="true"] {
 
 /* Paned View */
 gui-paned-view > gui-paned-view-handle {
-  min-width : 8px;
-  width : 8px;
+  min-width : (@gui_base_padding * 2);
+  width : (@gui_base_padding * 2);
   cursor : ew-resize;
 }
 gui-paned-view[data-orientation='vertical'] > gui-paned-view-handle {
   min-width : auto;
   width : auto;
-  min-height : 8px;
-  height : 8px;
+  min-height : (@gui_base_padding * 2);
+  height : (@gui_base_padding * 2);
   cursor : ns-resize;
 }
 
@@ -662,7 +661,6 @@ gui-toolbar[data-orientation="vertical"] {
 
 /* Expander */
 gui-expander {
-  font-size : @base_font_size;
 }
   gui-expander-label {
     cursor : pointer;
@@ -684,8 +682,8 @@ gui-expander {
     height : 25px;
   }
     gui-tabs > ul > li {
-      padding-left : 8px;
-      padding-right : 8px;
+      padding-left : .5em;
+      padding-right : .5em;
       cursor : pointer;
       background-color : @gui_background_color;
       border : 1px solid transparent;
@@ -716,19 +714,16 @@ gui-expander {
 
 /* Label */
 gui-label {
-  height : 26px;
-  line-height : 26px;
+  min-height : 1em;
+  line-height : 1.5;
 }
-gui-hbox-container > gui-label,
-gui-vbox-container > gui-label {
-  height : 16px;
-  line-height : 16px;
-  min-height : 16px;
-}
+  gui-label > label {
+    line-height : 1.2;
+  }
 
 /* Button */
 gui-button {
-  height : 26px;
+  height : 2.2em;
 }
 gui-button[data-icon-size="32"] {
   height : 42px;
@@ -759,17 +754,17 @@ gui-button[data-icon-size="32"] {
     padding-right : @gui_base_padding;
   }
   gui-button.gui-has-image.gui-has-label button {
-    padding-left : 28px;
+    padding-left : ~"calc(16px + 1em)";
   }
   gui-button[data-icon-size="32"].gui-has-image.gui-has-label button {
-    padding-left : 44px;
+    padding-left : ~"calc(32px + 1em)";
   }
 
 /* Checkbox Button */
 /* Radio Button */
 gui-radio,
 gui-checkbox {
-  height : 26px;
+  height : 2.2em;
 }
   gui-radio input,
   gui-checkbox input {
@@ -817,7 +812,7 @@ gui-checkbox {
 
   gui-radio > label,
   gui-checkbox > label {
-    line-height : 26px;
+    line-height : 1;
   }
   gui-radio > label > span,
   gui-checkbox > label > span {
@@ -826,7 +821,7 @@ gui-checkbox {
 
 /* Select Dropdown */
 gui-select {
-  height : 26px;
+  height : 2.2em;
 }
   gui-select select {
     .theme_text_input();
@@ -850,7 +845,7 @@ gui-select {
     content: '<>';
     font: 11px "Consolas", monospace;
     color: @gui_input_border_color;
-    right: 2px;
+    right: 4px;
     top: 5px;
     padding: 0 0 2px;
     border-bottom: 1px solid @gui_input_border_color;
@@ -877,12 +872,11 @@ gui-select-list select:disabled {
 
 /* Slider */
 gui-slider {
-  height : 26px;
+  height : 2.2em;
 }
   gui-slider input {
     background : transparent;
     border : 0 none;
-    height : 26px;
   }
 
   /*
@@ -956,7 +950,7 @@ gui-slider {
 
 /* Switch */
 gui-switch {
-  height : 26px;
+  height : 2.2em;
 }
   gui-switch div {
     width : 48px;
@@ -994,13 +988,13 @@ gui-switch {
 /* Password Field */
 gui-password,
 gui-text {
-  height : 26px;
+  height : 2.2em;
 }
   gui-password input,
   gui-text input {
     .theme_text_input();
-    padding-left : 8px;
-    padding-right : 8px;
+    padding-left : .5em;
+    padding-right : .5em;
   }
 
   gui-password > label > input,
@@ -1061,8 +1055,8 @@ gui-input-modal input {
 gui-input-modal button {
   margin-left : @gui_base_padding;
   .theme_button();
-  padding-left : 8px;
-  padding-right : 8px;
+  padding-left : .5em;
+  padding-right : .5em;
 }
   gui-input-modal button:focus {
     outline: @gui_focus_outline;
@@ -1105,7 +1099,7 @@ gui-menu {
   }
   gui-menu > gui-menu-entry > label {
     cursor : pointer;
-    line-height : 18px;
+    line-height : 1.5;
     padding : @gui_base_padding;
   }
 
@@ -1168,7 +1162,7 @@ gui-menu-bar {
 /* Progressbar */
 gui-progress-bar {
   display : block;
-  height : 26px;
+  height : 2.2em;
 }
   gui-progress-bar:before {
     background-color : @gui_background_color;
@@ -1185,7 +1179,7 @@ gui-progress-bar {
 /* Statusbar */
 gui-statusbar {
   margin : @gui_base_padding;
-  padding-bottom : @gui_base_padding;
+  line-height : 1;
 }
 
 /**
@@ -1248,7 +1242,7 @@ gui-list-view {
       }
       gui-list-view-head gui-list-view-column[data-sortdir="desc"] span,
       gui-list-view-head gui-list-view-column[data-sortdir="asc"] span {
-        padding-right : calc(12px + @gui_base_padding);
+        padding-right : 1em;
       }
       gui-list-view-head gui-list-view-column[data-sortdir="desc"]:after,
       gui-list-view-head gui-list-view-column[data-sortdir="asc"]:after {
@@ -1260,8 +1254,8 @@ gui-list-view {
         text-align : left;
         font-family : monospace;
         font-size : 12px;
-        width : 12px;
-        height : 12px;
+        width : 1em;
+        height : 1em;
         transform : rotate(90deg);
       }
       gui-list-view-head gui-list-view-column[data-sortdir="asc"]:after {
@@ -1271,21 +1265,21 @@ gui-list-view {
         content : '<';
       }
       gui-list-view-column.gui-has-image {
-        padding-left : 24px;
+        padding-left : 1.85em;
         background-position : @gui_base_padding;
       }
       html[dir="rtl"] gui-list-view gui-list-view-column.gui-has-image {
         padding-left : 0;
-        padding-right : 24px;
+        padding-right : 1.85em;
         background-position : right @gui_base_padding center;
       }
 
       gui-list-view[data-icon-size="32"] gui-list-view-column.gui-has-image {
-        padding-left : 40px;
+        padding-left : 3.05em;
       }
       html[dir="rtl"] gui-list-view[data-icon-size="32"] gui-list-view-column.gui-has-image {
         padding-left : 0;
-        padding-right : 40px;
+        padding-right : 3.05em;
       }
 
     gui-list-view-row.gui-active {

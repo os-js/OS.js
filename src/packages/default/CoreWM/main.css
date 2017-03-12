@@ -595,7 +595,7 @@ corewm-search[data-visible=true] {
  */
 
 corewm-panel .PanelItemClock {
-  flex : 0 0 55px;
+  flex : 0 0 5.5em;
 }
 corewm-panel .PanelItemClock li {
   cursor : default;
