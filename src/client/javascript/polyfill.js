@@ -87,7 +87,7 @@
       params = params || {bubbles: false, cancelable: false};
 
       var mouseEvent = document.createEvent('MouseEvent');
-      mouseEvent.initMouseEvent(eventType, params.bubbles, params.cancelable, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+      mouseEvent.initMouseEvent(eventType, params.bubbles, params.cancelable, window, 0, 0, 0, 0, 0, false, false, false, false, 0, params.relatedTarget);
       return mouseEvent;
     }
 

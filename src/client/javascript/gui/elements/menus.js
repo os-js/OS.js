@@ -259,7 +259,8 @@
         runChildren(el, 0, winRef, function(child, level) {
           if ( customMenu ) {
             if ( child ) {
-              child.getElementsByTagName('gui-menu').forEach(function(sub) {
+              var submenus = child.getElementsByTagName('gui-menu');
+              submenus.forEach(function(sub) {
                 if ( sub ) {
                   runChildren(sub, level + 1, winRef);
                 }
@@ -380,15 +381,12 @@
         updateChildren(submenu, 2);
       });
 
-      Utils.$bind(el, 'click', function(ev) {
+      Utils.$bind(el, 'mousedown', function(ev) {
+        ev.preventDefault();
         var t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
         if ( t && t.tagName === 'GUI-MENU-BAR-ENTRY' ) {
           _onClick(ev, t);
         }
-      }, true);
-
-      Utils.$bind(el, 'touchstart', function(ev) {
-        ev.preventDefault();
       }, true);
 
       return this;

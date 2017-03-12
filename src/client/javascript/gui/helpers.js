@@ -834,11 +834,24 @@
 
     ev.preventDefault();
     if ( t && t.tagName === 'GUI-MENU-ENTRY' ) {
-      var isExpander = !!t.querySelector('gui-menu');
+      var subMenu = t.querySelector('gui-menu');
+      var isExpander = !!subMenu;
       var hasInput = t.querySelector('input');
 
       if ( hasInput || isExpander ) {
         ev.stopPropagation();
+      }
+
+      try {
+        if ( isExpander ) {
+          t.parentNode.querySelectorAll('gui-menu-entry').forEach(function(pn) {
+            Utils.$removeClass(pn, 'active');
+          });
+
+          Utils.$addClass(t, 'active');
+        }
+      } catch ( e ) {
+        console.warn(e);
       }
 
       onclick(ev, pos, t, original);
@@ -933,7 +946,7 @@
 
       GUI.Element.createFromNode(root, null, 'gui-menu').build(true);
 
-      Utils.$bind(root, 'click', function(ev, pos) {
+      Utils.$bind(root, 'mousedown', function(ev, pos) {
         OSjs.GUI.Helpers._menuClickWrapper(ev, pos, function(ev, pos, t) {
           var index = parseInt(t.getAttribute('data-callback-id'), 10);
           if ( callbackMap[index] ) {

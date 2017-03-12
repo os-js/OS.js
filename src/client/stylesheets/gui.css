@@ -1237,18 +1237,26 @@ gui-menu.gui-root-menu {
   }
 
   gui-menu > .gui-hover > gui-menu,
+  gui-menu > gui-menu-entry.active > gui-menu,
+  gui-menu > gui-menu-entry:active > gui-menu,
   gui-menu > gui-menu-entry:hover > gui-menu {
     display : inline-block;
     left : 100%;
     top : 0;
   }
+  .gui-overflowing > gui-menu-entry.active > gui-menu,
+  .gui-overflowing > gui-menu-entry:active > gui-menu,
   .gui-overflowing > gui-menu-entry:hover > gui-menu {
     left : auto;
     top : 0;
   }
+  gui-menu.gui-root-menu > gui-menu-entry.active > gui-menu,
+  gui-menu.gui-root-menu > gui-menu-entry:active > gui-menu,
   gui-menu.gui-root-menu > gui-menu-entry:hover > gui-menu {
     display : block;
   }
+  gui-menu.gui-root-menu > gui-menu-entry[data-disabled="true"].active > gui-menu,
+  gui-menu.gui-root-menu > gui-menu-entry[data-disabled="true"]:active > gui-menu,
   gui-menu.gui-root-menu > gui-menu-entry[data-disabled="true"]:hover > gui-menu {
     display : none;
   }
