@@ -158,8 +158,29 @@ abstract class Core
             throw new Exception('Failed to initialize cURL');
         }
 
+        $headers = [];
+
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+
+        curl_setopt($ch, CURLOPT_HEADERFUNCTION,
+          function($curl, $header) use(&$headers)
+        {
+            $len = strlen($header);
+            $header = explode(':', $header, 2);
+
+            if (count($header) < 2) {
+                return $len;
+            }
+
+            $headers[strtolower(trim($header[0]))] = trim($header[1]);
+
+            return $len;
+          }
+        );
+
+
         if ($timeout) {
             curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
         }
@@ -176,11 +197,10 @@ abstract class Core
         }
 
         $result = Array(
-        "httpCode" => $httpcode,
-        "body"     => $response
+            "httpCode" => $httpcode,
+            "headers"  => $headers,
+            "body"     => $response
         );
-
-        curl_close($ch);
 
         return $result;
     }
