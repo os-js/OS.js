@@ -324,7 +324,6 @@
     a = a || {};
     options = options || {};
 
-    console.warn(options)
     var lname = 'APICall_' + _CALL_INDEX;
 
     if ( typeof cb !== 'function' ) {
@@ -1256,26 +1255,42 @@
    * @function createDialog
    * @memberof OSjs.API
    *
-   * @param   {String}         className       Dialog Namespace Class Name
-   * @param   {Object}         args            Arguments you want to send to dialog
-   * @param   {CallbackDialog} callback        Callback on dialog action (close/ok etc) => fn(ev, button, result)
-   * @param   {Mixed}          [parentObj]     A window or app (to make it a child window)
+   * @param   {String}                                 className             Dialog Namespace Class Name
+   * @param   {Object}                                 args                  Arguments you want to send to dialog
+   * @param   {CallbackDialog}                         callback              Callback on dialog action (close/ok etc) => fn(ev, button, result)
+   * @param   {Mixed}                                  [options]             A window or app (to make it a child window) or a set of options:
+   * @param   {OSjs.Core.Window|OSjs.Core.Application} [options.parent]      Same as above argument (without options context)
+   * @param   {Boolean}                                [options.modal=false] If you provide a parent you can toggle "modal" mode.
    *
    * @return  {OSjs.Core.Window}
    */
-  API.createDialog = function API_createDialog(className, args, callback, parentObj) {
+  API.createDialog = function API_createDialog(className, args, callback, options) {
     callback = callback || function() {};
+    options = options || {};
+
+    var parentObj = options;
+    var parentIsWindow = (parentObj instanceof OSjs.Core.Window);
+    var parentIsProcess = (parentObj instanceof OSjs.Core.Process);
+    if ( parentObj && !(parentIsWindow && parentIsProcess) ) {
+      parentObj = options.parent;
+      parentIsWindow = (parentObj instanceof OSjs.Core.Window);
+      parentIsProcess = (parentObj instanceof OSjs.Core.Process);
+    }
 
     function cb() {
       if ( parentObj ) {
-        if ( (parentObj instanceof OSjs.Core.Window) && parentObj._destroyed ) {
+        if ( parentIsWindow && parentObj._destroyed ) {
           console.warn('API::createDialog()', 'INGORED EVENT: Window was destroyed');
           return;
         }
-        if ( (parentObj instanceof OSjs.Core.Process) && parentObj.__destroyed ) {
+        if ( parentIsProcess && parentObj.__destroyed ) {
           console.warn('API::createDialog()', 'INGORED EVENT: Process was destroyed');
           return;
         }
+      }
+
+      if ( options.modal && parentIsWindow ) {
+        parentObj._toggleDisabled(false);
       }
 
       callback.apply(null, arguments);
@@ -1295,6 +1310,10 @@
       parentObj._addChild(win, true);
     } else if ( parentObj instanceof OSjs.Core.Application ) {
       parentObj._addWindow(win);
+    }
+
+    if ( options.modal && parentIsWindow ) {
+      parentObj._toggleDisabled(true);
     }
 
     setTimeout(function() {
