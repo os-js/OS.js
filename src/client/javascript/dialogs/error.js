@@ -69,7 +69,7 @@
     }
 
     DialogWindow.apply(this, ['ErrorDialog', {
-      title: args.title || API._('DIALOG_CONFIRM_TITLE'),
+      title: args.title || API._('DIALOG_ERROR_TITLE'),
       icon: 'status/dialog-error.png',
       width: 400,
       height: error ? 400 : 200

@@ -123,6 +123,7 @@
 
     'DIALOG_CONFIRM_TITLE' : 'Confirm Dialog',
 
+    'DIALOG_ERROR_TITLE'     : 'Error',
     'DIALOG_ERROR_MESSAGE'   : 'Message',
     'DIALOG_ERROR_SUMMARY'   : 'Summary',
     'DIALOG_ERROR_TRACE'     : 'Trace',
