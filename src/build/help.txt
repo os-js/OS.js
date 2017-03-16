@@ -28,7 +28,7 @@ Configuration:
   config:add-mount --name=NAME --desc=DESC --path=PATH   Adds a mountpoint
 
 Generators:
-  generate:apache-htaccess                               Generates apache htaccess file (PHP)
+  generate:apache-htaccess [--debug]                     Generates apache htaccess file (PHP)
   generate:apache-vhost --out=FILENAME                   Generates apache vhost file (PHP)
   generate:apache-proxy --out=FILENAME                   Generates apache reverse-proxy (Node)
   generate:nginx-config --out=FILENAME                   Generates nginx config (PHP)
@@ -37,8 +37,11 @@ Generators:
   generate:package --name=REPO/NAME --type=TYPE          Generates a new package
 
 Misc:
-  run [--port=N] [--loglevel=N]                          Runs OS.js on given dist
-  watch                                                  Watch and automatically build changes
+  run [--port=N] [--loglevel=N] [--debug]                Runs OS.js on given dist
+  watch [--debug]                                        Watch and automatically build changes
 
 Use the --verbose argument to get detailed information in build output. Loglevels:
 INFO: 1, WARN: 2, WARNING: 2, ERROR: 3, VERBOSE: 8 (default: 7)
+
+The --debug flag enables full source map (inline) support in build files. For the server,
+this disables any HTTP caching etc.
