@@ -56,5 +56,15 @@
 
 %LOGIN%
 
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        OSjs.Bootstrap.run({
+        });
+      });
+      document.addEventListener('unload', function() {
+        OSjs.Bootstrap.stop();
+      });
+    </script>
+
   </body>
 </html>

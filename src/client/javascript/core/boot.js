@@ -623,7 +623,11 @@
   function init(opts) {
     console.group('init()');
 
-    instanceOptions = opts || {};
+    instanceOptions = OSjs.Utils.argumentDefaults(opts || {}, {
+      mocha: false,
+      onInit: function() {},
+      onInited: function() {}
+    });
 
     var config = OSjs.Core.getConfig();
     var splash = document.getElementById('LoadingScreen');
@@ -654,6 +658,12 @@
 
       OSjs.API.triggerHook('onWMInited');
 
+      try {
+        instanceOptions.onInited();
+      } catch ( e ) {
+        console.warn(e);
+      }
+
       console.groupEnd();
     }
 
@@ -664,6 +674,11 @@
 
     function _done() {
       OSjs.API.triggerHook('onInited');
+      try {
+        instanceOptions.onInit();
+      } catch ( e ) {
+        console.warn(e);
+      }
 
       loading.update(queue.length, queue.length);
 

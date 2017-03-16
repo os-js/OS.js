@@ -12,6 +12,8 @@
 
     <script type="text/javascript" charset="utf-8" src="settings.js"></script>
 %SCRIPTS%
+    <script type="text/javascript" charset="utf-8" src="vendor/mocha.js"></script>
+    <script type="text/javascript" charset="utf-8" src="vendor/chai.js"></script>
 
   </head>
   <body data-mocha="true">
@@ -20,37 +22,43 @@
 
 %LOGIN%
 
-    <script type="text/javascript" charset="utf-8" src="vendor/mocha.js"></script>
-    <script type="text/javascript" charset="utf-8" src="vendor/chai.js"></script>
     <script>
-mocha.ui('bdd');
-mocha.reporter('html');
+      mocha.ui('bdd');
+      mocha.reporter('html');
 
-OSjs.API.addHook('onInited', function() {
-  var h1 = document.createElement('h1');
-  h1.style.margin = '20px';
-  h1.appendChild(document.createTextNode('OS.js Mocha Client Test Suite'));
-  document.body.appendChild(h1);
+      document.addEventListener('DOMContentLoaded', function() {
+        OSjs.Bootstrap.run({
+          mocha: true,
+          onInit: function() {
+            var h1 = document.createElement('h1');
+            h1.style.margin = '20px';
+            h1.appendChild(document.createTextNode('OS.js Mocha Client Test Suite'));
+            document.body.appendChild(h1);
 
-  var el = document.createElement('div');
-  el.id = 'mocha';
-  document.body.appendChild(el);
+            var el = document.createElement('div');
+            el.id = 'mocha';
+            document.body.appendChild(el);
 
-  // Reset certain styles
-  document.body.style.background = '#fff';
-  document.body.style.overflow = 'auto';
+            // Reset certain styles
+            document.body.style.background = '#fff';
+            document.body.style.overflow = 'auto';
 
-  // Create mock Window Manager
-  (new OSjs.Core.WindowManager('MochaWM', null, {}, {}, {})).init();
+            // Create mock Window Manager
+            (new OSjs.Core.WindowManager('MochaWM', null, {}, {}, {})).init();
 
-  // Load default themes
-  OSjs.Utils.$createCSS(OSjs.API.getThemeCSS('default'));
-});
-
-OSjs.API.addHook('onWMInited', function() {
-  mocha.run();
-});
+            // Load default themes
+            OSjs.Utils.$createCSS(OSjs.API.getThemeCSS('default'));
+          },
+          onInited: function() {
+            mocha.run();
+          }
+        });
+      });
+      document.addEventListener('unload', function() {
+        OSjs.Bootstrap.stop();
+      });
     </script>
+
     <script type="text/javascript" charset="utf-8" src="test.js"></script>
 
   </body>

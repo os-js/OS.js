@@ -112,8 +112,7 @@
       "src/client/javascript/helpers/google-api.js",
       "src/client/javascript/helpers/windows-live-api.js",
       "src/client/javascript/helpers/zip-archiver.js",
-      "src/client/javascript/helpers/settings-fragment.js",
-      "src/client/javascript/init.js"
+      "src/client/javascript/helpers/settings-fragment.js"
     ],
     "stylesheets": [
       "src/client/stylesheets/core.css",
