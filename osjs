@@ -3,7 +3,7 @@
 
   var ver = process.version.substr(1).split(/\./g);
   if ( parseInt(ver[0], 10) < 4 ) {
-    console.warn(String.color('You need Node v4 or above to run OS.js', 'yellow'));
+    console.warn('You need Node v4 or above to run OS.js', 'yellow');
   }
 
   require(_path.join(__dirname, 'src/build/cli.js')).run(process.argv.slice(2), function(err) {
