@@ -149,6 +149,7 @@ module.exports.watch = function watch(cli) {
   const debug = cli.option('debug');
   const root = _path.dirname(_path.dirname(_path.join(__dirname)));
   const paths = {
+    'src/templates/dist/**/*': watchCore,
     'src/client/javascript/**/*': watchCore,
     'src/client/themes/**/*': watchThemes,
     'src/conf/*': watchConfig,
