@@ -42,20 +42,19 @@ let PACKAGES = {};
  * Loads the package metadata
  *
  * @param {String}   dirname  Path to packages
- * @param {String}   dist     What dist is used
  *
  * @function load
  * @memberof core.metadata
  * @return {Promise}
  */
-module.exports.load = function(dirname, dist) {
+module.exports.load = function(dirname) {
   return new Promise((resolve, reject) => {
     _fs.readJson(dirname, (err, manifest) => {
       if ( err ) {
         return reject(err);
       }
 
-      PACKAGES = manifest[dist];
+      PACKAGES = manifest;
 
       return resolve(PACKAGES);
     });

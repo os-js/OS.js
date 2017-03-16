@@ -51,25 +51,6 @@ const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
 ///////////////////////////////////////////////////////////////////////////////
 
 /*
- * Parses targets from cli input
- */
-function _getTargets(cli, defaults, strict) {
-  const target = cli.option('target');
-
-  let result = defaults;
-  if ( target ) {
-    result = target.split(',').map((iter) => {
-      const val = iter.trim();
-      return strict ? (defaults.indexOf(val) === -1 ? null : val) : val;
-    }).filter((iter) => {
-      return !!iter;
-    });
-  }
-
-  return strict ? (!result.length ? defaults : result) : result;
-}
-
-/*
  * Iterates all given tasks
  */
 function _eachTask(cli, args, taskName, namespace) {
@@ -105,19 +86,11 @@ function _eachTask(cli, args, taskName, namespace) {
 const TASKS = {
   build: {
     config: function(cli, cfg) {
-      const list = _getTargets(cli, ['client', 'server'], true);
-
-      return Promise.all(list.map((target) => {
-        return _config.writeConfiguration(target, cli, cfg);
-      }));
+      return _config.writeConfiguration(cli, cfg);
     },
 
     core: function(cli, cfg) {
-      const list = _getTargets(cli, ['dist', 'dist-dev']);
-
-      return Promise.all(list.map((target) => {
-        return _core.buildFiles(target, cli, cfg);
-      }));
+      return _core.buildFiles(cli, cfg);
     },
 
     theme: function(cli, cfg) {
@@ -142,34 +115,20 @@ const TASKS = {
     },
 
     manifest: function(cli, cfg) {
-      const list = _getTargets(cli, ['dist', 'dist-dev']);
-      list.push('server');
-
-      return Promise.all(list.map((target) => {
-        return _manifest.writeManifest(target, cli, cfg);
-      }));
+      return _manifest.writeManifest(cli, cfg);
     },
 
     package: function(cli, cfg) {
-      const list = _getTargets(cli, ['dist', 'dist-dev']);
-
       const name = cli.option('name');
       if ( !name || name.indexOf('/') === -1 ) {
         throw new Error('Invalid package name');
       }
 
-      return Promise.all(list.map((target) => {
-        return _packages.buildPackage(target, cli, cfg, name);
-      }));
+      return _packages.buildPackage(cli, cfg, name);
     },
 
     packages: function(cli, cfg) {
-      const list = _getTargets(cli, ['dist', 'dist-dev']);
-      return _utils.eachp(list.map((target) => {
-        return function() {
-          return _packages.buildPackages(target, cli, cfg);
-        };
-      }));
+      return _packages.buildPackages(cli, cfg);
     }
   },
 
@@ -296,7 +255,7 @@ module.exports.config = function(cli, arg) {
  * Task: `watch`
  */
 module.exports.watch = function(cli, args) {
-  return _watcher.watch();
+  return _watcher.watch(cli);
 };
 
 /*
@@ -314,9 +273,9 @@ module.exports.run = function(cli, args) {
   const settings = require(_path.join(ROOT, 'src/server/node/core/settings.js'));
 
   const opts = {
+    DEBUG: cli.option('debug'),
     PORT: cli.option('port'),
-    LOGLEVEL: cli.option('loglevel'),
-    DIST: cli.option('target') || 'dist-dev'
+    LOGLEVEL: cli.option('loglevel')
   };
 
   instance.init(opts).then((env) => {

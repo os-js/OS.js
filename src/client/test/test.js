@@ -267,7 +267,7 @@
       describe('preload', function() {
         it('should load files correctly', function(done) {
           OSjs.Utils.preload([
-            '/packages/default/FileManager/main.js',
+            '/packages/default/FileManager/_app.min.js',
             '/invalid/file.foo'
           ], function(total, failed, successes) {
             expect(failed.length).to.be.equal(1);

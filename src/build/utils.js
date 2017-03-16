@@ -34,11 +34,28 @@
 const _path = require('path');
 const _less = require('less');
 const _fs = require('fs-extra');
+const _os = require('os');
 
 const ISWIN = /^win/.test(process.platform);
 const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
 
+const _ugly = require('uglify-js');
+const Cleancss = require('clean-css');
+
 require('colors');
+
+/*
+ * Filter a file reference by string
+ */
+function _filter(i, debug) {
+  if ( i.match(/^dev:/) && !debug ) {
+    return false;
+  }
+  if ( i.match(/^prod:/) && debug ) {
+    return false;
+  }
+  return true;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // EXPORTS
@@ -138,7 +155,7 @@ module.exports.mergeObject = function mergeObject(into, from) {
 /*
  * Compiles given less file
  */
-module.exports.compileLess = function compileLess(src, dest, opts, cb, onRead) {
+module.exports.compileLess = function compileLess(debug, src, dest, opts, cb, onRead) {
   console.log('$ less', src.replace(ROOT + '/', ''), dest.replace(ROOT + '/', ''));
   try {
     let css = _fs.readFileSync(src).toString();
@@ -149,6 +166,24 @@ module.exports.compileLess = function compileLess(src, dest, opts, cb, onRead) {
     _less.render(css, opts).then((result) => {
       _fs.writeFileSync(dest, result.css);
       _fs.writeFileSync(dest + '.map', result.map);
+
+      const footer = '\n/*# sourceMappingURL=' + _path.basename(dest.replace(/\.css$/, '.min.css.map')) + ' */';
+
+      try {
+        const minified = new Cleancss({
+          sourceMapInlineSources: debug,
+          sourceMap: true
+        }).minify(_fs.readFileSync(dest), _fs.readJsonSync(dest + '.map'));
+
+        _fs.writeFileSync(dest.replace(/\.css$/, '.min.css'), minified.styles + footer);
+        _fs.writeFileSync(dest.replace(/\.css$/, '.min.css.map'), minified.sourceMap);
+      } catch ( e ) {
+        console.warn(e);
+      }
+
+      _fs.unlinkSync(dest, result.css);
+      _fs.unlinkSync(dest + '.map', result.map);
+
       cb(false, true);
     }, (error) => {
       console.warn(error);
@@ -226,3 +261,67 @@ module.exports.logger = {
   }
 };
 
+/*
+ * Helper for compiling scripts
+ */
+module.exports.writeScripts = function writeScripts(out, list, debug, verbose) {
+  const outm = out.replace(/\.min\.js$/, '.min.js.map');
+  const header = module.exports.readTemplate('dist/header.js');
+  const headerFile = _path.join(_os.tmpdir(), '__header.js');
+  const finalList = [headerFile].concat(list.filter((i) => {
+    return _filter(i, debug);
+  }).map((i) => {
+    if ( verbose ) {
+      console.log(i);
+    }
+    return i.substr(0, 1) === '/' ? i : _path.join(ROOT, i.replace(/^(dev|prod):/, ''));
+  }));
+
+  _fs.writeFileSync(headerFile, header);
+
+  const pureFuncs = debug ? [] : ['console.log', 'console.group', 'console.groupEnd', 'console.warn', 'console.info', 'console.dir'];
+
+  const minified = _ugly.minify(finalList, {
+    sourceMapIncludeSources: debug,
+    outSourceMap: _path.basename(outm),
+    compress: {
+      pure_funcs: pureFuncs
+    },
+    output: {
+      comments: /\*!/
+    }
+  });
+
+  _fs.writeFileSync(out, minified.code);
+  _fs.writeFileSync(outm, minified.map);
+  _fs.unlinkSync(headerFile);
+};
+
+/*
+ * Helper for compiling stylesheets
+ */
+module.exports.writeStyles = function writeStyles(out, list, debug, verbose) {
+  const outm = out.replace(/\.min\.css$/, '.min.css.map');
+  const header = module.exports.readTemplate('dist/header.css');
+  const headerFile = _path.join(_os.tmpdir(), '__header.css');
+  const finalList = [headerFile].concat(list.filter((i) => {
+    return _filter(i, debug);
+  }).map((i) => {
+    if ( verbose ) {
+      console.log(i);
+    }
+    return i.substr(0, 1) === '/' ? i : _path.join(ROOT, i.replace(/^(dev|prod):/, ''));
+  }));
+
+  _fs.writeFileSync(headerFile, header);
+
+  const minified = new Cleancss({
+    sourceMapInlineSources: debug,
+    sourceMap: true
+  }).minify(finalList);
+
+  const footer = '\n/*# sourceMappingURL=' + _path.basename(outm) + ' */';
+  _fs.writeFileSync(out, minified.styles + footer);
+  _fs.writeFileSync(outm, minified.sourceMap);
+  _fs.unlinkSync(headerFile);
+};

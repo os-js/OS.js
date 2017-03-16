@@ -223,6 +223,7 @@ function buildIcon(cli, cfg, name) {
  * Builds styles
  */
 function buildStyle(cli, cfg, name) {
+  const debug = cli.option('debug');
 
   function _buildStyle(n) {
     return new Promise((resolve) => {
@@ -242,7 +243,7 @@ function buildStyle(cli, cfg, name) {
         base = cfg.themes.styleBase;
       } catch ( e ) {}
 
-      _utils.compileLess(from, to, {
+      _utils.compileLess(debug, from, to, {
         sourceMap: {},
         paths: [
           '.',

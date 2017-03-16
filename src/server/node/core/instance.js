@@ -36,7 +36,6 @@
 
 /**
  * An object with information about the current environment
- * @property  {String}      [dist=dist]     Which dist to use
  * @property  {Number}      [port=AUTO]     Which port to start on
  * @property  {String}      [AUTH]          Authentication module name
  * @property  {String}      [STORAGE]       Storage module name
@@ -46,7 +45,6 @@
 
 /**
  * An object with information about the current environment
- * @property  {String}        DIST        The dist environment name
  * @property  {Number}        PORT        Current port
  * @property  {Number}        LOGLEVEL    Current loglevel
  * @property  {String}        ROOTDIR     Root directory of OS.js
@@ -160,7 +158,7 @@ function registerPackages(servers) {
   }
 
   function _load(resolve, reject) {
-    _metadata.load(path, ENV.DIST).then((packages) => {
+    _metadata.load(path).then((packages) => {
       Object.keys(packages).forEach((p) => {
         const metadata = packages[p];
 
@@ -374,13 +372,18 @@ module.exports.run = function run(port) {
   const httpConfig = Object.assign({ws: {}}, CONFIG.http || {});
 
   _logger.log('INFO', _logger.colored('Starting OS.js server', 'green'));
-  _logger.log('INFO', _logger.colored(['Using', ENV.DIST].join(' '), 'green'));
   _logger.log('INFO', _logger.colored(['Running', httpConfig.mode, 'on localhost:' + ENV.PORT].join(' '), 'green'));
 
   if ( httpConfig.connection === 'ws' ) {
     const wsp = httpConfig.ws.port === 'upgrade' ? ENV.PORT : httpConfig.ws.port;
     const msg = ['Running ws', 'on localhost:' + wsp + (httpConfig.ws.path || '')];
     _logger.log('INFO', _logger.colored(msg.join(' '), 'green'));
+  }
+
+  if ( ENV.DEBUG ) {
+    _logger.log('INFO', _logger.colored('Running in debug mode', 'blue'));
+  } else {
+    _logger.log('INFO', _logger.colored('Running in production mode', 'yellow'));
   }
 
   const result = _http.run(ENV.PORT);

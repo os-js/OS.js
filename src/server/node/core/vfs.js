@@ -376,9 +376,6 @@ module.exports.resolvePathArguments = function(path, options) {
 
   const env = _env.get();
   const rmap = {
-    '%DIST%': function() {
-      return env.DIST;
-    },
     '%UID%': function() {
       return options.username;
     },

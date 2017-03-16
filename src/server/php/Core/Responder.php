@@ -141,7 +141,7 @@ class Responder
                     flush();
                 }
             } else {
-                if ($cached && Instance::GetDist() != 'dist-dev') {
+                if ($cached && !getenv('OSJS_DEBUG')) {
                     $cacheSettings = Instance::GetConfig()->http->cache;
                     if (isset($cacheSettings->$cached)) {
                         foreach ( $cacheSettings->$cached as $k => $v) {

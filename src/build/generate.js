@@ -46,11 +46,11 @@ const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
 /*
  * Reads given config template and replaces any required strings
  */
-function _createWebserverConfig(cfg, target, src, mimecb) {
+function _createWebserverConfig(cfg, src, mimecb) {
   const mimes = mimecb(cfg.mime);
 
   let tpl = _fs.readFileSync(src).toString();
-  tpl = tpl.replace(/%DISTDIR%/, _path.join(ROOT, target));
+  tpl = tpl.replace(/%DISTDIR%/, _path.join(ROOT, 'dist'));
   tpl = tpl.replace(/%MIMES%/, mimes);
   tpl = tpl.replace(/%PORT%/, cfg.server.http.port);
   return tpl;
@@ -74,16 +74,13 @@ function _replaceInExample(name, file, dest) {
 const TASKS = {
   'apache_vhost': function(cli, cfg) {
     const src = _path.join(ROOT, 'src', 'templates', 'webserver', 'apache_vhost.conf');
-    const target = cli.option('target', 'dist');
 
-    return Promise.resolve(_createWebserverConfig(cfg, target, src, (mime) => {
+    return Promise.resolve(_createWebserverConfig(cfg, src, (mime) => {
       return '';
     }));
   },
 
   'apache_htaccess': function(cli, cfg) {
-    const target = cli.option('target', 'dist');
-
     const mimes = [];
     const proxies = [];
 
@@ -99,9 +96,9 @@ const TASKS = {
       }
     });
 
-    function generate_htaccess(t, d) {
+    function generate_htaccess(t) {
       const src = _path.join(ROOT, 'src', 'templates', t);
-      const dst = _path.join(ROOT, d, '.htaccess');
+      const dst = _path.join(ROOT, 'dist', '.htaccess');
 
       let tpl = _fs.readFileSync(src).toString();
       tpl = tpl.replace(/%MIMES%/, mimes.join('\n'));
@@ -109,11 +106,10 @@ const TASKS = {
       _fs.writeFileSync(dst, tpl);
     }
 
-    if ( target === 'dist' ) {
-      generate_htaccess('webserver/prod-htaccess.conf', target);
+    if ( cli.option('debug') ) {
+      generate_htaccess('webserver/dev-htaccess.conf');
     } else {
-      generate_htaccess('webserver/prod-htaccess.conf', 'dist');
-      generate_htaccess('webserver/dev-htaccess.conf', 'dist-dev');
+      generate_htaccess('webserver/prod-htaccess.conf');
     }
 
     return Promise.resolve();
@@ -126,11 +122,9 @@ const TASKS = {
   },
 
   'lighttpd_config': function(cli, cfg) {
-    const target = cli.option('target', 'dist');
-
     const src = _path.join(ROOT, 'src', 'templates', 'webserver', 'lighttpd.conf');
 
-    return Promise.resolve(_createWebserverConfig(cfg, target, src, (mime) => {
+    return Promise.resolve(_createWebserverConfig(cfg, src, (mime) => {
       return Object.keys(mime.mapping).map((i) => {
         return i.match(/^\./) ? '  "' + i + '" => "' + mime.mapping[i] + '"' : null;
       }).filter((i) => {
@@ -140,11 +134,9 @@ const TASKS = {
   },
 
   'nginx_config': function(cli, cfg) {
-    const target = cli.option('target', 'dist');
-
     const src = _path.join(ROOT, 'src', 'templates', 'webserver', 'nginx.conf');
 
-    return Promise.resolve(_createWebserverConfig(cfg, target, src, (mime) => {
+    return Promise.resolve(_createWebserverConfig(cfg, src, (mime) => {
       return Object.keys(mime.mapping).map((i) => {
         return i.match(/^\./) ? ('        ' + mime.mapping[i] + ' ' + i.replace(/^\./, '') + ';') : null;
       }).filter((i) => {
@@ -156,7 +148,7 @@ const TASKS = {
   'nginx_proxy': function(cli, cfg) {
     const src = _path.join(ROOT, 'src', 'templates', 'webserver', 'nginx-proxy.conf');
 
-    return Promise.resolve(_createWebserverConfig(cfg, '', src, function() {}));
+    return Promise.resolve(_createWebserverConfig(cfg, src, function() {}));
   },
 
   'package': function(cli, cfg) {

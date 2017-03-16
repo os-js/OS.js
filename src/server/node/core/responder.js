@@ -76,7 +76,6 @@ function endResponse(response) {
  */
 module.exports.createFromHttp = function(servers, request, response) {
   const config = _settings.get();
-  const env = _env.get();
 
   function _raw(data, code, headers) {
     code = code || 200;
@@ -135,7 +134,7 @@ module.exports.createFromHttp = function(servers, request, response) {
             headers['Accept-Ranges'] = 'bytes';
           } else {
             try {
-              const cacheEnabled = env.DIST !== 'dist-dev';
+              const cacheEnabled = !_env.get('DEBUG');
               if ( cacheEnabled && options.cache ) {
                 const cacheConfig = config.http.cache[options.cache];
                 if ( typeof cacheConfig === 'object' ) {

@@ -50,7 +50,7 @@ const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
 /*
  * Generates a client-side config file
  */
-function generateClientConfiguration(target, cli, cfg) {
+function generateClientConfiguration(cli, cfg) {
   return new Promise((resolve, reject) => {
     let settings = Object.assign({}, cfg.client);
 
@@ -62,7 +62,7 @@ function generateClientConfiguration(target, cli, cfg) {
       settings.AutoStart = [];
     }
 
-    if ( cli.option('standalone') && target === 'dist' ) {
+    if ( cli.option('standalone') ) {
       settings.Connection.Type = 'standalone';
       settings.VFS.GoogleDrive.Enabled = false;
       settings.VFS.OneDrive.Enabled = false;
@@ -104,7 +104,6 @@ function generateClientConfiguration(target, cli, cfg) {
         }));
         settings.MIME = cfg.mime;
         settings.Preloads = preloads;
-        settings.Connection.Dist = target;
 
         resolve(settings);
       });
@@ -288,47 +287,38 @@ function getConfiguration() {
 // TASKS
 ///////////////////////////////////////////////////////////////////////////////
 
-const TARGETS = {
-  client: function(cli, cfg) {
-    return _utils.eachp(['dist', 'dist-dev'].map((dist) => {
-      return function() {
-        return new Promise((resolve, reject) => {
-          const src = _path.join(ROOT, 'src', 'templates', 'dist', 'settings.js');
-          const tpl = _fs.readFileSync(src).toString();
-          const dest = _path.join(ROOT, dist, 'settings.js');
+function _writeClientConfig(cli, cfg) {
+  return new Promise((resolve, reject) => {
+    const src = _path.join(ROOT, 'src', 'templates', 'dist', 'settings.js');
+    const tpl = _fs.readFileSync(src).toString();
+    const dest = _path.join(ROOT, 'dist', 'settings.js');
 
-          generateClientConfiguration(dist, cli, cfg).then((settings) => {
-            const data = tpl.replace('%CONFIG%', JSON.stringify(settings, null, 4));
-            resolve(_fs.writeFileSync(dest, data));
-          }).catch(reject);
-        });
-      };
-    }));
-  },
+    generateClientConfiguration(cli, cfg).then((settings) => {
+      const data = tpl.replace('%CONFIG%', JSON.stringify(settings, null, 4));
+      resolve(_fs.writeFileSync(dest, data));
+    }).catch(reject);
+  });
+}
 
-  server: function(cli, cfg) {
-    return new Promise((resolve, reject) => {
-      const dest = _path.join(ROOT, 'src', 'server', 'settings.json');
+function _writeServerConfig(cli, cfg) {
+  return new Promise((resolve, reject) => {
+    const dest = _path.join(ROOT, 'src', 'server', 'settings.json');
 
-      generateServerConfiguration(cli, cfg).then((settings) => {
-        const data = JSON.stringify(settings, null, 4);
-        resolve(_fs.writeFileSync(dest, data));
-      }).catch(reject);
-    });
-  }
-};
+    generateServerConfiguration(cli, cfg).then((settings) => {
+      const data = JSON.stringify(settings, null, 4);
+      resolve(_fs.writeFileSync(dest, data));
+    }).catch(reject);
+  });
+}
 
 /*
  * Writes given configuration file(s)
  */
-function writeConfiguration(target, cli, cfg) {
+function writeConfiguration(cli, cfg) {
   return new Promise((resolve, reject) => {
-    if ( TARGETS[target] ) {
-      _logger.log('Generating configuration for', target);
-      TARGETS[target](cli, cfg).then(resolve).catch(reject);
-    } else {
-      reject('Invalid target ' + target);
-    }
+    _writeClientConfig(cli, cfg).then(() => {
+      _writeServerConfig(cli, cfg).then(resolve).catch(reject);
+    }).catch(reject);
   });
 }
 

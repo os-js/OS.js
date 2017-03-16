@@ -50,7 +50,6 @@ function read(opts) {
 
   const safeWords = [
     '%VERSION%',
-    '%DIST%',
     '%DROOT%',
     '%UID%',
     '%USERNAME%'

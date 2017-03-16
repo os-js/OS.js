@@ -37,8 +37,8 @@ const _path = require('path');
  */
 
 const ENV = {
+  DEBUG: false,
   PORT: null,
-  DIST: 'dist',
   LOGLEVEL: -2,
   NODEDIR: _path.resolve(__dirname + '/../'),
   ROOTDIR: _path.resolve(__dirname + '/../../../../'),

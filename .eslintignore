@@ -9,7 +9,6 @@ src/server/test/**
 src/client/test/**
 src/conf/**
 src/x11-launcher/**
-dist-dev/**
 vendor/*
 dist/**
 vfs/**

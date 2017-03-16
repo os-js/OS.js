@@ -52,7 +52,7 @@ function getSystemMetadata(http, resolve, reject, args) {
     if ( e ) {
       reject(e);
     } else {
-      let meta = JSON.parse(data)[env.DIST];
+      let meta = JSON.parse(data);
       Object.keys(meta).forEach((k) => {
         meta[k].scope = 'system';
       });

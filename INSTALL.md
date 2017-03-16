@@ -19,5 +19,5 @@ For full instructions: https://os-js.org/manual/installation/
 ```
 $ npm install --production
 $ node osjs build
-$ node osjs run --target=dist
+$ node osjs run
 ```

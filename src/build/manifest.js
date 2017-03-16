@@ -37,7 +37,6 @@ const _fs = require('fs-extra');
 
 const _config = require('./config.js');
 const _utils = require('./utils.js');
-const _logger = _utils.logger;
 
 const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
 
@@ -185,9 +184,9 @@ function getPackages(repos, filter, all) {
 /*
  * Generates a client-side manifest file
  */
-function generateClientManifest(target, manifest) {
+function generateClientManifest(manifest) {
   return new Promise((resolve, reject) => {
-    const dest = _path.join(ROOT, target, 'packages.js');
+    const dest = _path.join(ROOT, 'dist', 'packages.js');
 
     let tpl = _fs.readFileSync(_path.join(ROOT, 'src/templates/dist/packages.js'));
     tpl = tpl.toString().replace('%PACKAGES%', JSON.stringify(manifest, null, 4));
@@ -228,12 +227,12 @@ function combinePreloads(manifest) {
 
     if ( p.type === 'javascript' ) {
       if ( !pjs ) {
-        preload.push({type: 'javascript', src: 'combined.js'});
+        preload.push({type: 'javascript', src: '_app.min.js'});
       }
       pjs = true;
     } else if ( p.type === 'stylesheet' ) {
       if ( !pcss ) {
-        preload.push({type: 'stylesheet', src: 'combined.css'});
+        preload.push({type: 'stylesheet', src: '_app.min.css'});
       }
       pcss = true;
     } else {
@@ -274,74 +273,39 @@ function mutateClientManifest(packages) {
 // TASKS
 ///////////////////////////////////////////////////////////////////////////////
 
-const TARGETS = {
-  'dist': function(cli, cfg) {
-    return new Promise((resolve, reject) => {
-      getPackages(cfg.repositories).then((packages) => {
-        packages = mutateClientManifest(packages);
+function createClientManifest(cli, cfg) {
+  return new Promise((resolve, reject) => {
+    getPackages(cfg.repositories).then((packages) => {
+      packages = mutateClientManifest(packages);
 
-        generateClientManifest('dist', packages).then(resolve).catch(reject);
+      generateClientManifest(packages).then(resolve).catch(reject);
+    });
+  });
+}
+
+function createServerManifest(cli, cfg) {
+  return new Promise((resolve, reject) => {
+    const dest = _path.join(ROOT, 'src', 'server', 'packages.json');
+
+    getPackages(cfg.repositories).then((packages) => {
+      const meta = mutateClientManifest(packages);
+
+      _fs.writeFile(dest, JSON.stringify(meta, null, 4), (err) => {
+        err ? reject(err) : resolve();
       });
     });
-  },
-
-  'dist-dev': function(cli, cfg) {
-    return new Promise((resolve, reject) => {
-      getPackages(cfg.repositories).then((packages) => {
-        packages = JSON.parse(JSON.stringify(packages));
-
-        Object.keys(packages).forEach((p) => {
-          let pkg = packages[p];
-
-          if ( pkg.preload ) {
-            pkg.preload = pkg.preload.map((iter) => {
-              if ( !iter.src.match(/^(ftp|https?):/) ) {
-                try {
-                  const asrc = _path.join(ROOT, 'src/packages', pkg.path, iter.src);
-                  const stat = _fs.statSync(asrc);
-
-                  iter.mtime = (new Date(stat.mtime)).getTime();
-                } catch ( e ) {}
-              }
-              return iter;
-            });
-          }
-        });
-
-        generateClientManifest('dist-dev', packages).then(resolve).catch(reject);
-      });
-    });
-  },
-
-  'server': function(cli, cfg) {
-    return new Promise((resolve, reject) => {
-      const dest = _path.join(ROOT, 'src', 'server', 'packages.json');
-
-      getPackages(cfg.repositories).then((packages) => {
-        const meta = {
-          'dist': mutateClientManifest(packages),
-          'dist-dev': packages
-        };
-
-        _fs.writeFile(dest, JSON.stringify(meta, null, 4), (err) => {
-          err ? reject(err) : resolve();
-        });
-      });
-    });
-  }
-};
+  });
+}
 
 /*
  * Writes the given manifest file(s)
  */
-function writeManifest(target, cli, cfg) {
+function writeManifest(cli, cfg) {
   return new Promise((resolve, reject) => {
-    if ( TARGETS[target] ) {
-      _logger.log('Generating manifest for', target);
-      TARGETS[target](cli, cfg).then(resolve).catch(reject);
-    } else {
-      reject('Invalid target ' + target);
-    }
+
+    createClientManifest(cli, cfg).then(() => {
+      createServerManifest(cli, cfg).then(resolve).catch(reject);
+    }).catch(reject);
   });
 }
 

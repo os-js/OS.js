@@ -204,7 +204,7 @@ function handleRequest(http, onend) {
 
   function _staticResponse(method, finished) {
     const env = _env.get();
-    const path = _path.join(env.ROOTDIR, env.DIST, _path.normalize(http.path));
+    const path = _path.join(env.ROOTDIR, 'dist', _path.normalize(http.path));
 
     function _serve() {
       _evhandler.emit('request:end', []);

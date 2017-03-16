@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Mocha - OS.js</title>
 
-    <link type="text/css" rel="stylesheet" href="/vendor/mocha.css" />
+    <link type="text/css" rel="stylesheet" href="vendor/mocha.css" />
     <link type="text/css" rel="stylesheet" href="themes/fonts.css" />
 %STYLES%
 
@@ -20,8 +20,8 @@
 
 %LOGIN%
 
-    <script type="text/javascript" charset="utf-8" src="/vendor/mocha.js"></script>
-    <script type="text/javascript" charset="utf-8" src="/vendor/chai.js"></script>
+    <script type="text/javascript" charset="utf-8" src="vendor/mocha.js"></script>
+    <script type="text/javascript" charset="utf-8" src="vendor/chai.js"></script>
     <script>
 mocha.ui('bdd');
 mocha.reporter('html');
@@ -51,7 +51,7 @@ OSjs.API.addHook('onWMInited', function() {
   mocha.run();
 });
     </script>
-    <script type="text/javascript" charset="utf-8" src="/client/test/test.js"></script>
+    <script type="text/javascript" charset="utf-8" src="test.js"></script>
 
   </body>
 </html>

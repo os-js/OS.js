@@ -555,10 +555,7 @@
         }
 
         var root = API.getConfig('Connection.RootURI');
-        var url = root + 'client/dialogs.html';
-        if ( API.getConfig('Connection.Dist') === 'dist' ) {
-          url = root + 'dialogs.html';
-        }
+        var url = root + 'dialogs.html';
 
         dialogScheme = GUI.createScheme(url);
         dialogScheme.load(function(error) {

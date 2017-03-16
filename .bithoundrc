@@ -21,8 +21,6 @@
     "vendor/*",
     "dist/**",
     "vfs/**",
-    "doc/**",
-
-    "dist-dev/**"
+    "doc/**"
   ]
 }

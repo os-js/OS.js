@@ -974,7 +974,7 @@
     }
 
     root = API.getConfig('Connection.ThemeURI');
-    return root + '/' + name + '.css';
+    return root + '/' + name + '.min.css';
   };
 
   /**

@@ -1,6 +1,5 @@
-window.OSjs = window.OSjs || {};
-/**
- * @preserve OS.js - JavaScript Cloud/Web Desktop Platform
+/**!
+ * OS.js - JavaScript Cloud/Web Desktop Platform
  *
  * Copyright (c) 2011-2017, Anders Evenrud <andersevenrud@gmail.com>
  * All rights reserved.
@@ -28,4 +27,6 @@ window.OSjs = window.OSjs || {};
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
+
+window.OSjs = window.OSjs || {};
 

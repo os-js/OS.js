@@ -71,7 +71,7 @@ const runTask = (() => {
     console.error('Something went wrong', error);
   }
 
-  return (t, ik, iv) => {
+  return (t, ik, iv, debug) => {
     const hash = [t, ik, iv].join(' ');
     if ( timeouts[hash] ) {
       clearTimeout(timeouts[hash]);
@@ -81,6 +81,9 @@ const runTask = (() => {
       console.log('\n');
       _index.build({
         option: (k) => {
+          if ( k === 'debug' ) {
+            return debug;
+          }
           return ik === null ? null : (k === ik ? iv : null);
         }
       }, t).then(completed).catch(failed);
@@ -92,46 +95,46 @@ const runTask = (() => {
 // TASKS
 ///////////////////////////////////////////////////////////////////////////////
 
-function watchCore(path, stats) {
+function watchCore(path, stats, watchdir, debug) {
   log('Core files changed');
-  runTask('core', null);
+  runTask('core', null, null, debug);
 }
 
-function watchThemes(path, stats, watchdir) {
+function watchThemes(path, stats, watchdir, debug) {
   const rdir = getBasedDirectory(path, watchdir);
   const name = rdir.split('/', 2)[1];
 
   if ( path.match(/metadata\.json$/) ) {
     log('Theme metadata changed');
-    runTask('config', null);
+    runTask('config', null, null, debug);
   } else if ( rdir.match(/^icons/) ) {
     log('Icon theme changed', name);
-    runTask('theme', 'icons', name);
+    runTask('theme', 'icons', name, debug);
   } else if ( rdir.match(/^wallpapers|sounds/) ) {
     log('Theme files changed');
-    runTask('theme', 'static', true);
+    runTask('theme', 'static', true, debug);
   } else if ( rdir.match(/^font/) ) {
     log('Fonts changed');
-    runTask('theme', 'fonts', true);
+    runTask('theme', 'fonts', true, debug);
   } else if ( rdir.match(/^styles/) ) {
-    log('Style theme changed', name);
-    runTask('theme', 'style', name);
+    log('Style theme changed', name, debug);
+    runTask('theme', 'style', name, debug);
   }
 }
 
-function watchConfig(path, stats) {
+function watchConfig(path, stats, watchdir, debug) {
   log('Configuration has changed');
-  runTask('config', null);
+  runTask('config', null, null, debug);
 }
 
-function watchPackages(path, stats, watchdir) {
+function watchPackages(path, stats, watchdir, debug) {
   const fullName = getPackageFromPath(path, watchdir);
   if ( _path.basename(path) === 'metadata.json' ) {
     log('Package manifest changed for', fullName);
-    runTask('manifest', null);
+    runTask('manifest', null, null, debug);
   } else {
     log('Package sources changed for', fullName);
-    runTask('package', 'name', fullName);
+    runTask('package', 'name', fullName, debug);
   }
 }
 
@@ -142,7 +145,8 @@ function watchPackages(path, stats, watchdir) {
 /*
  * Watch for changes
  */
-module.exports.watch = function watch() {
+module.exports.watch = function watch(cli) {
+  const debug = cli.option('debug');
   const root = _path.dirname(_path.dirname(_path.join(__dirname)));
   const paths = {
     'src/client/javascript/**/*': watchCore,
@@ -155,7 +159,7 @@ module.exports.watch = function watch() {
     Object.keys(paths).forEach((p) => {
       const path = _path.join(root, p);
       const fn = (res, stats) => {
-        paths[p](res, stats, path);
+        paths[p](res, stats, path, debug);
       };
 
       log('Watching', p);

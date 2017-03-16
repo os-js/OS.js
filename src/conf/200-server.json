@@ -6,7 +6,7 @@
         "home": "%DROOT%/vfs/home/%USERNAME%",
         "osjs": {
           "ro": true,
-          "destination": "%DROOT%/%DIST%"
+          "destination": "%DROOT%/dist"
         },
         "shared": "%DROOT%/vfs/public"
       },

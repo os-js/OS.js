@@ -67,7 +67,6 @@
       _osjs.init({
         LOGLEVEL: 0,
         PORT: 8008,
-        DIST: 'dist-dev',
         AUTH: 'test',
         STORAGE: 'test',
         CONNECTION: 'http'
@@ -556,7 +555,7 @@
         });
 
         it('should return 200 on success', function(done) {
-          get(url + '/packages/default/Calculator/main.js', function(err, res, body) {
+          get(url + '/packages/default/Calculator/_app.min.js', function(err, res, body) {
             assert.equal(200, res.statusCode);
             done();
           });

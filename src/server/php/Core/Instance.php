@@ -44,7 +44,6 @@ use Exception;
  */
 class Instance
 {
-    protected static $DIST = 'dist-dev';
     protected static $CONFIG = [];
     protected static $PACKAGES = [];
     protected static $API = [];
@@ -169,18 +168,7 @@ class Instance
      */
     final public static function GetPackages()
     {
-        return self::$PACKAGES[self::$DIST];
-    }
-
-    /**
-     * Get current dist
-     *
-     * @access public
-     * @return string
-     */
-    final public static function GetDist()
-    {
-        return self::$DIST;
+        return self::$PACKAGES;
     }
 
     /**
@@ -280,9 +268,6 @@ class Instance
     final public static function run()
     {
         $root = basename(getcwd());
-        if (in_array($root, ['dist', 'dist-dev'])) {
-            self::$DIST = $root;
-        }
 
         register_shutdown_function([__CLASS__, 'shutdown']);
         set_error_handler([__CLASS__, 'handle']);
@@ -301,7 +286,7 @@ class Instance
         }
 
         if (!defined('DIR_DIST') ) {
-            define('DIR_DIST', DIR_ROOT . '/' . self::$DIST);
+            define('DIR_DIST', DIR_ROOT . '/dist');
         }
         define('DIR_PACKAGES', DIR_ROOT . '/src/packages');
 

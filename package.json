@@ -48,17 +48,17 @@
     "uglify-js": "^2.8.12",
     "unzip": "^0.1.11",
     "ws": "^2.2.0",
-    "zlibjs": "^0.2.0"
+    "zlibjs": "^0.2.0",
+    "uglify-js": ">=2.7.5",
+    "clean-css": "^4.0.6"
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "clean-css": "^4.0.6",
     "grunt": ">=1.0.1",
     "grunt-contrib-csslint": "2.0.0",
     "grunt-contrib-validate-xml": ">=0.0.1",
     "grunt-eslint": ">=19.0.0",
     "grunt-mocha": "^1.0.2",
-    "grunt-mocha-test": ">=0.13.2",
-    "uglify-js": ">=2.7.5"
+    "grunt-mocha-test": ">=0.13.2"
   }
 }

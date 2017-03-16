@@ -1,16 +1,15 @@
 === OS.js Task Runner ===
 
 Below is the list of common tasks.
-Available targets are `dist` and `dist-dev` (with exception of manifest and config with `server` and `client`)
 More information: https://os.js.org/manual/build/cli/
 
 Building:
-  build [--target=] [--compress]                         Builds everything
-  build:config [--target=]                               Builds configuration files
-  build:manifest [--target=]                             Builds package manifest files
-  build:core [--target=]                                 Builds core files
-  build:package --name=REPO/NAME [--target=]             Builds given package
-  build:packages [--target=]                             Builds all packages
+  build [--debug]                                        Builds everything
+  build:config                                           Builds configuration files
+  build:manifest                                         Builds package manifest files
+  build:core [--debug]                                   Builds core files
+  build:package --name=REPO/NAME [--debug]               Builds given package
+  build:packages [--debug]                               Builds all packages
   build:themes                                           Builds all themes
 
 Configuration:
@@ -29,16 +28,16 @@ Configuration:
   config:add-mount --name=NAME --desc=DESC --path=PATH   Adds a mountpoint
 
 Generators:
-  generate:apache-htaccess [--target=]                   Generates apache htaccess file (PHP)
-  generate:apache-vhost --out=FILENAME [--target=]       Generates apache vhost file (PHP)
+  generate:apache-htaccess                               Generates apache htaccess file (PHP)
+  generate:apache-vhost --out=FILENAME                   Generates apache vhost file (PHP)
   generate:apache-proxy --out=FILENAME                   Generates apache reverse-proxy (Node)
-  generate:nginx-config --out=FILENAME [--target=]       Generates nginx config (PHP)
+  generate:nginx-config --out=FILENAME                   Generates nginx config (PHP)
   generate:nginx-proxy --out=FILENAME                    Generates nginx reverse-proxy (Node)
-  generate:lighttpd-config --out=FILENAME [--target=]    Generates lighttpd config (PHP)
+  generate:lighttpd-config --out=FILENAME                Generates lighttpd config (PHP)
   generate:package --name=REPO/NAME --type=TYPE          Generates a new package
 
 Misc:
-  run --target=DIR [--port=N] [--loglevel=N]             Runs OS.js on given dist
+  run [--port=N] [--loglevel=N]                          Runs OS.js on given dist
   watch                                                  Watch and automatically build changes
 
 Use the --verbose argument to get detailed information in build output. Loglevels:
