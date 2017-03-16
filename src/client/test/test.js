@@ -1048,7 +1048,7 @@
 
       describe('getThemeCSS()', function() {
         it('should return correct string', function() {
-          expect(OSjs.API.getThemeCSS('foo')).to.contain('styles/foo.css');
+          expect(OSjs.API.getThemeCSS('foo')).to.contain('styles/foo.min.css');
         });
       });
 
