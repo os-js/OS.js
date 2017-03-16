@@ -314,9 +314,18 @@ function buildPackages(cli, cfg) {
   });
 }
 
+/*
+ * Cleans up build files
+ */
+function cleanFiles() {
+  _utils.removeSilent(_path.join(ROOT, 'dist', 'packages'));
+  return Promise.resolve();
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // EXPORTS
 ///////////////////////////////////////////////////////////////////////////////
 
 module.exports.buildPackages = buildPackages;
 module.exports.buildPackage = buildPackage;
+module.exports.clean = cleanFiles;

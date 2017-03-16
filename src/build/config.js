@@ -546,6 +546,15 @@ function listPackages(config) {
   });
 }
 
+/*
+ * Cleans up build files
+ */
+function cleanFiles() {
+  _utils.removeSilent(_path.join(ROOT, 'dist', 'settings.js'));
+  _utils.removeSilent(_path.join(ROOT, 'src', 'server', 'settings.json'));
+  return Promise.resolve();
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // EXPORTS
 ///////////////////////////////////////////////////////////////////////////////
@@ -564,3 +573,4 @@ module.exports.listPackages = listPackages;
 module.exports.get = getConfig;
 module.exports.set = setConfig;
 module.exports._set = setConfigPath;
+module.exports.clean = cleanFiles;

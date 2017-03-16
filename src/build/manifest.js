@@ -309,6 +309,15 @@ function writeManifest(cli, cfg) {
   });
 }
 
+/*
+ * Cleans up build files
+ */
+function cleanFiles() {
+  _utils.removeSilent(_path.join(ROOT, 'dist', 'packages.js'));
+  _utils.removeSilent(_path.join(ROOT, 'src', 'server', 'packages.json'));
+  return Promise.resolve();
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // EXPORTS
 ///////////////////////////////////////////////////////////////////////////////
@@ -318,3 +327,4 @@ module.exports.getPackage = getPackage;
 module.exports.writeManifest = writeManifest;
 module.exports.combinePreloads = combinePreloads;
 module.exports.checkEnabledState = checkEnabledState;
+module.exports.clean = cleanFiles;

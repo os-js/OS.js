@@ -181,8 +181,8 @@ module.exports.compileLess = function compileLess(debug, src, dest, opts, cb, on
         console.warn(e);
       }
 
-      _fs.unlinkSync(dest, result.css);
-      _fs.unlinkSync(dest + '.map', result.map);
+      module.exports.removeSilent(dest, result.css);
+      module.exports.removeSilent(dest + '.map', result.map);
 
       cb(false, true);
     }, (error) => {
@@ -294,7 +294,7 @@ module.exports.writeScripts = function writeScripts(out, list, debug, verbose) {
 
   _fs.writeFileSync(out, minified.code);
   _fs.writeFileSync(outm, minified.map);
-  _fs.unlinkSync(headerFile);
+  module.exports.removeSilent(headerFile);
 };
 
 /*
@@ -323,5 +323,5 @@ module.exports.writeStyles = function writeStyles(out, list, debug, verbose) {
   const footer = '\n/*# sourceMappingURL=' + _path.basename(outm) + ' */';
   _fs.writeFileSync(out, minified.styles + footer);
   _fs.writeFileSync(outm, minified.sourceMap);
-  _fs.unlinkSync(headerFile);
+  module.exports.removeSilent(headerFile);
 };

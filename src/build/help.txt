@@ -37,6 +37,7 @@ Generators:
   generate:package --name=REPO/NAME --type=TYPE          Generates a new package
 
 Misc:
+  clean                                                  Cleans up 'dist' build files
   run [--port=N] [--loglevel=N] [--debug]                Runs OS.js on given dist
   watch [--debug]                                        Watch and automatically build changes
 

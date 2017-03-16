@@ -282,6 +282,14 @@ function buildAll(cli, cfg) {
   ]);
 }
 
+/*
+ * Cleans up build files
+ */
+function cleanFiles() {
+  _utils.removeSilent(_path.join(ROOT, 'dist', 'themes'));
+  return Promise.resolve();
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // EXPORTS
 ///////////////////////////////////////////////////////////////////////////////
@@ -292,3 +300,4 @@ module.exports.buildStyle = buildStyle;
 module.exports.buildIcon = buildIcon;
 module.exports.buildStatic = buildStatic;
 module.exports.buildFonts = buildFonts;
+module.exports.clean = cleanFiles;

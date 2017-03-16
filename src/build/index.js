@@ -67,7 +67,13 @@ function _eachTask(cli, args, taskName, namespace) {
             return namespace(cli, cfg, iter);
           } else {
             if ( namespace[iter] ) {
-              _logger.log(_logger.color('Running task:', 'bold'), _logger.color([taskName, iter].join(':'), 'green'));
+              let msg = _logger.color([taskName, iter].join(':'), 'green');
+              if ( cli.option('debug') ) {
+                msg += ' (' + _logger.color('debug mode', 'blue') + ')';
+              }
+
+              _logger.log(_logger.color('Running task:', 'bold'), msg);
+
               return namespace[iter](cli, cfg);
             }
           }
@@ -263,6 +269,25 @@ module.exports.watch = function(cli, args) {
  */
 module.exports.generate = function(cli, args) {
   return _eachTask(cli, args, 'generate', TASKS.generate);
+};
+
+/*
+ * Task: `clean`
+ */
+module.exports.clean = function(cli, args) {
+  return new Promise((resolve, reject) => {
+    _logger.log(_logger.color('Running task:', 'bold'), _logger.color('clean', 'green'));
+
+    _config.getConfiguration().then((cfg) => {
+      Promise.all([
+        _config.clean(cli, cfg),
+        _core.clean(cli, cfg),
+        _manifest.clean(cli, cfg),
+        _themes.clean(cli, cfg),
+        _packages.clean(cli, cfg)
+      ]).then(resolve).catch(reject);
+    });
+  });
 };
 
 /*

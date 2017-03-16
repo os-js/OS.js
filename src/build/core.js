@@ -197,6 +197,38 @@ function copyResources(verbose, cfg) {
 ///////////////////////////////////////////////////////////////////////////////
 
 /*
+ * Cleans core build files
+ */
+function cleanFiles(cli, cfg) {
+  return new Promise((done, errored) => {
+    let globs = [
+      'dist/dialogs.html',
+      'dist/_dialogs.js',
+      'dist/locales.js',
+      'dist/test.js',
+      'dist/osjs.*',
+      'dist/*.min.*'
+    ];
+
+    const tpldir = _path.join(ROOT, 'src', 'templates', 'dist', cfg.build.dist.template);
+    globs = globs.concat(_fs.readdirSync(tpldir).map((f) => {
+      return 'dist/' + f;
+    }));
+
+    Promise.all(globs.map((g) => {
+      return new Promise((ok) => {
+        _glob(g).then((list) => {
+          list.forEach((file) => {
+            _utils.removeSilent(file);
+          });
+          ok();
+        }).catch(ok);
+      });
+    })).then(done).catch(errored);
+  });
+}
+
+/*
  * Builds core files
  */
 function buildFiles(cli, cfg) {
@@ -205,48 +237,24 @@ function buildFiles(cli, cfg) {
     const standalone = cli.option('standalone', false);
     const debug = cli.option('debug', false);
 
-    function _cleanup() {
-      /*
-      return new Promise((resolve) => {
-        _glob(_path.join(ROOT, 'dist/*.*')).then((list) => {
-          list.forEach((file) => {
-            if ( ['settings.js', 'packages.js'].indexOf(_path.basename(file)) !== -1 ) {
-              _utils.removeSilent(file);
-            }
-          });
-          resolve();
-        })
-      });
-      */
-      return Promise.resolve();
+    const build = getBuildFiles(cfg.build);
+
+    _utils.writeScripts(_path.join(ROOT, 'dist', 'osjs.min.js'), build.javascript, debug, verbose);
+    _utils.writeScripts(_path.join(ROOT, 'dist', 'locales.min.js'), build.locales, debug, verbose);
+    _utils.writeStyles(_path.join(ROOT, 'dist', 'osjs.min.css'), build.stylesheets, debug, verbose);
+
+    createIndex(debug, verbose, standalone, cfg);
+
+    if ( debug ) {
+      _fs.copySync(_path.join(ROOT, 'src/client/test/test.js'), _path.join(ROOT, 'dist', 'test.js'));
     }
 
-    function _build() {
-      return new Promise((resolve, reject) => {
-        const build = getBuildFiles(cfg.build);
-
-        _utils.writeScripts(_path.join(ROOT, 'dist', 'osjs.min.js'), build.javascript, debug, verbose);
-        _utils.writeScripts(_path.join(ROOT, 'dist', 'locales.min.js'), build.locales, debug, verbose);
-        _utils.writeStyles(_path.join(ROOT, 'dist', 'osjs.min.css'), build.stylesheets, debug, verbose);
-
-        createIndex(debug, verbose, standalone, cfg);
-
-        if ( debug ) {
-          _fs.copySync(_path.join(ROOT, 'src/client/test/test.js'), _path.join(ROOT, 'dist', 'test.js'));
-        }
-
-        if ( standalone ) {
-          const src = _path.join(ROOT, 'src', 'client', 'dialogs.html');
-          _utils.createStandaloneScheme(src, '/dialogs.html', _path.join(ROOT, 'dist', '_dialogs.js'));
-        }
-
-        resolve();
-      });
+    if ( standalone ) {
+      const src = _path.join(ROOT, 'src', 'client', 'dialogs.html');
+      _utils.createStandaloneScheme(src, '/dialogs.html', _path.join(ROOT, 'dist', '_dialogs.js'));
     }
 
-    _cleanup().then(_build).then(() => {
-      copyResources(verbose, cfg).then(resolve).catch(reject);
-    }).catch(reject);
+    copyResources(verbose, cfg).then(resolve).catch(reject);
   });
 }
 
@@ -254,4 +262,5 @@ function buildFiles(cli, cfg) {
 // EXPORTS
 ///////////////////////////////////////////////////////////////////////////////
 
+module.exports.clean = cleanFiles;
 module.exports.buildFiles = buildFiles;
