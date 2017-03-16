@@ -87,12 +87,18 @@ function createIndex(debug, verbose, standalone, cfg) {
     const splashFile = _path.join(ROOT, 'src', 'templates', 'dist', 'splash', splashName + '.html');
     const splashHTML = _fs.readFileSync(splashFile).toString();
 
-    let tpl = _fs.readFileSync(_path.join(tpldir, fileName)).toString();
-    tpl = _utils.replaceAll(tpl, '%STYLES%', styles.join('\n'));
-    tpl = _utils.replaceAll(tpl, '%SCRIPTS%', scripts.join('\n'));
-    tpl = _utils.replaceAll(tpl, '%LOGIN%', loginHTML);
-    tpl = _utils.replaceAll(tpl, '%SPLASH%', splashHTML);
-    tpl = _utils.replaceAll(tpl, '%VERSION%', cfg.client.Version);
+    const replace = {
+      '%STYLES%': styles.join('\n'),
+      '%SCRIPTS%': scripts.join('\n'),
+      '%LOGIN%': loginHTML,
+      '%SPLASH%': splashHTML,
+      '%VERSION%': cfg.client.Version
+    };
+
+    let tpl = _fs.readFileSync(_path.join(tpldir, fileName), 'utf8');
+    Object.keys(replace).forEach((s) => {
+      tpl = _utils.replaceAll(tpl, s, replace[s]);
+    });
 
     _fs.writeFileSync(_path.join(outdir, fileName), tpl);
   }
@@ -246,7 +252,11 @@ function buildFiles(cli, cfg) {
     createIndex(debug, verbose, standalone, cfg);
 
     if ( debug ) {
-      _fs.copySync(_path.join(ROOT, 'src/client/test/test.js'), _path.join(ROOT, 'dist', 'test.js'));
+      try {
+        const s = _path.join(ROOT, 'src/client/test/test.js');
+        const d = _path.join(ROOT, 'dist', 'test.js');
+        _fs.symlinkSync(s, d, 'file');
+      } catch ( e ) {}
     }
 
     if ( standalone ) {
