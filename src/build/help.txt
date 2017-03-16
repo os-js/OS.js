@@ -38,7 +38,7 @@ Generators:
 
 Misc:
   clean                                                  Cleans up 'dist' build files
-  run [--port=N] [--loglevel=N] [--debug]                Runs OS.js on given dist
+  run [--port=N] [--loglevel=N] [--debug]                Runs OS.js server
   watch [--debug]                                        Watch and automatically build changes
 
 Use the --verbose argument to get detailed information in build output. Loglevels:
