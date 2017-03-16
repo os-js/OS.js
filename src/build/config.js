@@ -77,6 +77,7 @@ function generateClientConfiguration(cli, cfg) {
       });
     }
 
+    settings.Debug = cli.option('debug') === true;
     settings.Broadway = cfg.broadway;
 
     if ( cfg.broadway.enabled ) {
