@@ -30,7 +30,7 @@ Vagrant.configure(2) do |config|
     # Install dependencies
     echo "Installing apt dependencies"
     apt-get install -y git nodejs npm nodejs-legacy >/dev/null
-    npm install --silent --quiet -g grunt-cli supervisor >/dev/null
+    npm install --silent --quiet -g supervisor >/dev/null
 
     # Install OS.js
     echo "Installing OS.js"
