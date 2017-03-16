@@ -43,9 +43,9 @@ module.exports = function(grunt) {
       'dist/index.html',
       'dist/favicon.ico',
       'dist/dialogs.html',
-      'dist/locales.js',
-      'dist/osjs.js',
-      'dist/osjs.css',
+      'dist/locales.min.js',
+      'dist/osjs.min.js',
+      'dist/osjs.min.css',
       'dist/packages.js',
       'dist/settings.js',
       'dist/splash.png'
