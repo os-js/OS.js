@@ -45,5 +45,5 @@ RUN npm install --production
 RUN node osjs build
 
 # Run OS.js
-CMD ./bin/start-dev.sh
+CMD ./bin/start.sh
 EXPOSE 8000
