@@ -39,6 +39,7 @@ const _manifest = require('./manifest.js');
 const _themes = require('./themes.js');
 const _packages = require('./packages.js');
 const _core = require('./core.js');
+const _dist = require('./dist.js');
 const _generate = require('./generate.js');
 const _utils = require('./utils.js');
 const _watcher = require('./watcher.js');
@@ -97,6 +98,10 @@ const TASKS = {
 
     core: function(cli, cfg) {
       return _core.buildFiles(cli, cfg);
+    },
+
+    dist: function(cli, cfg) {
+      return _dist.buildFiles(cli, cfg);
     },
 
     theme: function(cli, cfg) {
@@ -225,7 +230,7 @@ module.exports._init = function() {
  */
 module.exports.build = function(cli, args) {
   if ( !args ) {
-    args = ['config', 'core', 'themes', 'manifest', 'packages'];
+    args = ['config', 'dist', 'core', 'themes', 'manifest', 'packages'];
 
     args = args.concat(Object.keys(TASKS.build).filter(function(i) {
       return ORIGINAL_TASKS.build.indexOf(i) === -1 && args.indexOf(i) === -1;
@@ -281,6 +286,7 @@ module.exports.clean = function(cli, args) {
     _config.getConfiguration().then((cfg) => {
       Promise.all([
         _config.clean(cli, cfg),
+        _dist.clean(cli, cfg),
         _core.clean(cli, cfg),
         _manifest.clean(cli, cfg),
         _themes.clean(cli, cfg),

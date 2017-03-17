@@ -253,7 +253,7 @@ function _buildPackage(cli, cfg, name, metadata) {
 
     _utils.eachp([
       function() {
-        _logger.log('Building', _logger.color('dist:', 'bold') + _logger.color(name, 'blue,bold'));
+        _logger.log('Building', _logger.color(name, 'blue,bold'));
 
         _utils.removeSilent(dest);
         _utils.mkdirSilent(dest);
