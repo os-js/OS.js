@@ -1,3 +1,54 @@
+# 2.0.0-86
+
+An early release again. This time "dist-dev" has been removed entirely.
+
+You can use "osjs watch" to automatically build changes. Use the "--debug"
+flag on "build" and "run" task(s) to enable full debugging (and to disable
+some caching, etc.)
+
+This does not change or break anything, but if you used "dist-dev" in a
+webserver configuration or a script (etc), you'll have to make some updates.
+
+These changes brings a good speed improvement to the client (especially
+loading times), reduces a lot of complexity in the build system and makes
+things less confusing.
+
+The "boot" code has now also moved to the index.html, wich is contained
+within the dist template(s). So if you use a custom one, you'll have to
+add a small snippet in the bottom of your file(s)
+
+Relevant:
+
+* http://community.os.js.org/t/update-version-bump-alpha86/122
+
+Digest:
+
+
+* Bootstrap: Added 'restart' method
+* Dialogs: Updated locales
+* API: Added 'modal' option for createDialog() options
+* API: Added options to api call method to control indicators etc
+* Themes: Updated resize handles
+* client: Removed 'init.js'
+* server-php: Added 'headers' from curl response
+* build: Retired 'dist-dev' directory
+* build: Removed --target from build system
+* build: Added --debug to 'build' task
+* build: Added --debug to 'run' task
+* build: Added 'clean' task
+* build: Now always makes sourcemaps
+* build: Now always compresses
+* build: Added bootstrap to index.html
+* build: Updated watcher
+* build: Updated help
+* misc: Updated tests
+* misc: Updated Windows install script
+* misc: Updated 'osjs' script
+* misc: Updated travis
+* misc: Updated Dockerfile
+* misc: Updated Vagrantfile
+* misc: Updated package.json dependencies
+
 # 2.0.0-85
 
 An early release containing mainly bugfixes. UI is now completely scalable and touch
