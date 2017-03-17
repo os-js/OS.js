@@ -274,6 +274,10 @@ function mutateClientManifest(packages) {
 ///////////////////////////////////////////////////////////////////////////////
 
 function createClientManifest(cli, cfg) {
+  if ( !cli.option('standalone') ) {
+    return Promise.resolve();
+  }
+
   return new Promise((resolve, reject) => {
     getPackages(cfg.repositories).then((packages) => {
       packages = mutateClientManifest(packages);

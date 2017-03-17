@@ -168,7 +168,7 @@
           return iter;
         }
 
-        if ( API.isStandalone() || API.getConfig('PackageManager.UseStaticManifest') === true ) {
+        if ( API.isStandalone() ) {
           var uri = API.getConfig('Connection.MetadataURI');
           Utils.preload([uri], function(total, failed) {
             if ( failed.length ) {
