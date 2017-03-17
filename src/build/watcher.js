@@ -97,7 +97,7 @@ const runTask = (() => {
 
 function watchDist(path, stats, watchdir, debug) {
   log('Dist files changed');
-  runTask('core', 'dist', true, debug);
+  runTask('dist', null, null, debug);
 }
 
 function watchCore(path, stats, watchdir, debug) {
