@@ -11,7 +11,7 @@ Building:
   build:core [--debug]                                   Builds client core files
   build:package --name=REPO/NAME [--debug]               Builds given package
   build:packages [--debug]                               Builds all packages
-  build:themes                                           Builds all themes
+  build:themes  [--debug]                                Builds all themes
 
 Configuration:
   config:get --name=KEY                                  Gets a configuration value
