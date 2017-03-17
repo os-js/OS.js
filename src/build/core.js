@@ -245,9 +245,11 @@ function buildFiles(cli, cfg) {
 
     const build = getBuildFiles(cfg.build);
 
-    _utils.writeScripts(_path.join(ROOT, 'dist', 'osjs.min.js'), build.javascript, debug, verbose);
-    _utils.writeScripts(_path.join(ROOT, 'dist', 'locales.min.js'), build.locales, debug, verbose);
-    _utils.writeStyles(_path.join(ROOT, 'dist', 'osjs.min.css'), build.stylesheets, debug, verbose);
+    if ( !cli.option('dist') ) {
+      _utils.writeScripts(_path.join(ROOT, 'dist', 'osjs.min.js'), build.javascript, debug, verbose);
+      _utils.writeScripts(_path.join(ROOT, 'dist', 'locales.min.js'), build.locales, debug, verbose);
+      _utils.writeStyles(_path.join(ROOT, 'dist', 'osjs.min.css'), build.stylesheets, debug, verbose);
+    }
 
     createIndex(debug, verbose, standalone, cfg);
 

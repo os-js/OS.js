@@ -95,6 +95,11 @@ const runTask = (() => {
 // TASKS
 ///////////////////////////////////////////////////////////////////////////////
 
+function watchDist(path, stats, watchdir, debug) {
+  log('Dist files changed');
+  runTask('core', 'dist', true, debug);
+}
+
 function watchCore(path, stats, watchdir, debug) {
   log('Core files changed');
   runTask('core', null, null, debug);
@@ -149,7 +154,7 @@ module.exports.watch = function watch(cli) {
   const debug = cli.option('debug');
   const root = _path.dirname(_path.dirname(_path.join(__dirname)));
   const paths = {
-    'src/templates/dist/**/*': watchCore,
+    'src/templates/dist/**/*': watchDist,
     'src/client/javascript/**/*': watchCore,
     'src/client/themes/**/*': watchThemes,
     'src/conf/*': watchConfig,
