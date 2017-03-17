@@ -40,13 +40,14 @@ module.exports = function(grunt) {
 
   grunt.registerTask('testBuild', 'Tests the build', function() {
     var files = [
+      'src/server/settings.json',
+      'src/server/packages.json',
       'dist/index.html',
       'dist/favicon.ico',
       'dist/dialogs.html',
       'dist/locales.min.js',
       'dist/osjs.min.js',
       'dist/osjs.min.css',
-      'dist/packages.js',
       'dist/settings.js',
       'dist/splash.png'
     ];
