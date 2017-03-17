@@ -436,7 +436,6 @@
    * @param   {String}      method                      Name of method
    * @param   {Object}      args                        Arguments in JSON
    * @param   {Function}    callback                    Callback method => fn(error, result)
-   * @param   {Boolean}     [showLoading=true]          Show loading indication
    * @param   {Object}      [options]                   Options (See API::call)
    * @return  {Boolean}
    */
