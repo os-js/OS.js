@@ -132,7 +132,7 @@ function buildFonts(cli, cfg) {
 
     let rep = cfg.client.Connection.FontURI;
     if ( !rep.match(/^\//) ) { // Fix for relative paths (CSS)
-      rep = rep.replace(/^\w+\//, '');
+      rep = '/' + rep;
     }
 
     const concated = cfg.themes.fonts.map((iter) => {
