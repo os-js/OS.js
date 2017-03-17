@@ -321,6 +321,7 @@ module.exports.writeStyles = function writeStyles(out, list, debug, verbose) {
   _fs.writeFileSync(headerFile, header);
 
   const minified = new Cleancss({
+    rebase: false,
     sourceMapInlineSources: debug,
     sourceMap: true
   }).minify(finalList);
