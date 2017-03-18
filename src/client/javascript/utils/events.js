@@ -473,6 +473,10 @@
 
       function addEvent(nsType, type) {
         addEventHandler(el, nsType, type, callback, function mouseEventHandler(ev) {
+          if ( !OSjs || !OSjs.Utils ) { // Probably shut down
+            return;
+          }
+
           if ( noBind ) {
             return callback(ev, OSjs.Utils.mousePosition(ev));
           }
