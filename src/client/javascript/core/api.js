@@ -195,14 +195,20 @@
     var s = arguments[0];
     var a = arguments;
 
-    var cl = OSjs.Locales[CurrentLocale];
-    if ( cl && cl[s] ) {
-      a[0] = cl[s];
-    } else {
-      a[0] = OSjs.Locales[DefaultLocale][s] || s;
+    try {
+      var cl = OSjs.Locales[CurrentLocale];
+      if ( cl && cl[s] ) {
+        a[0] = cl[s];
+      } else {
+        a[0] = OSjs.Locales[DefaultLocale][s] || s;
+      }
+
+      return a.length > 1 ? Utils.format.apply(null, a) : a[0];
+    } catch ( e ) {
+      console.warn(e.stack, e);
     }
 
-    return a.length > 1 ? Utils.format.apply(null, a) : a[0];
+    return s;
   };
 
   /**
