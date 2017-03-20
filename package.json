@@ -33,7 +33,7 @@
     "compression": "^1.6.2",
     "cookie": "^0.3.1",
     "cookie-parser": "^1.4.3",
-    "diskspace": ">=1.0.3",
+    "diskspace": "^2.0.0",
     "express-session": "^1.15.1",
     "findit": ">=2.0.0",
     "formidable": ">=1.0.17",
@@ -45,7 +45,7 @@
     "minimist": "^1.2.0",
     "request": "^2.81.0",
     "simplejsonconf": "^1.0.5",
-    "uglify-js": "^2.8.13",
+    "uglify-js": "^2.8.14",
     "unzip": "^0.1.11",
     "ws": "^2.2.1",
     "zlibjs": "^0.2.0"
