@@ -1027,6 +1027,13 @@
 
     document.body.setAttribute('data-background-style', className);
 
+    var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+    if ( isFirefox ) {
+      document.body.style.backgroundAttachment = 'fixed';
+    } else {
+      document.body.style.backgroundAttachment = 'scroll';
+    }
+
     if ( back !== 'none' ) {
       try {
         VFS.url(back, function(error, result) {
