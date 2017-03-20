@@ -1,3 +1,25 @@
+# 2.0.0-87
+
+This is just a minor release with some minor fixes and additions.
+
+Digest:
+
+* Locales: Updated en_EN
+* Settings: Fixed some CoreWM changes not getting updated
+* CoreWM: Some improvements to panel init and CSS
+* CoreWM: Firefox Compability issue updates (backgrounds)
+* Theme: Added scalable window top buttons
+* client: Prevent errors in event handlers after shutdown
+* build: packages.js only for standalone build
+* build: Updated watcher
+* build: Separated some 'core' task stuff into 'dist'
+* build: Updated font CSS
+* build: Disabled rebase in clean-css
+* build: Fixed an issue on Windows with task 'build:core'
+* misc: Updated jsdoc for Process::_api()
+* misc: Added a try/catch in API._()
+* misc: Updated grunt tests
+
 # 2.0.0-86
 
 An early release again. This time "dist-dev" has been removed entirely.
