@@ -172,7 +172,6 @@
     });
 
     this._refresh();
-    this.resize(wm);
   }
 
   DesktopIconView.prototype.destroy = function() {

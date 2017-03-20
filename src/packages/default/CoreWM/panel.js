@@ -253,6 +253,14 @@
     this._$container.appendChild(item.init());
   };
 
+  Panel.prototype.isAutoHidden = function() {
+    if ( this._$element ) {
+      return this._$element.getAttribute('data-autohide') === 'true';
+    }
+
+    return false;
+  };
+
   Panel.prototype.getItemByType = function(type) {
     return this.getItem(type);
   };

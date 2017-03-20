@@ -462,7 +462,7 @@
 
     setTimeout(function() {
       self.setStyles(self._settings.get());
-    }, 1000);
+    }, 250);
   };
 
   CoreWM.prototype.initWidgets = function(applySettings) {
@@ -510,7 +510,7 @@
       if ( self.iconView ) {
         self.iconView.resize(self);
       }
-    }, 1000);
+    }, 250);
   };
 
   //
@@ -1181,7 +1181,7 @@
     this.panels.forEach(function(p) {
       if ( p && p.getOntop() ) {
         var ph = p.getHeight();
-        if ( p.getAutohide() ) {
+        if ( p.getAutohide() && p.isAutoHidden() ) {
           s.top    += PADDING_PANEL_AUTOHIDE;
           s.height -= PADDING_PANEL_AUTOHIDE;
         } else if ( p.getPosition('top') ) {

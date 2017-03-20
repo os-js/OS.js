@@ -385,7 +385,7 @@ corewm-panel[data-position="bottom"] {
   bottom : 0;
 }
 corewm-panel[data-autohide="true"] {
-  height : 0;
+  transform : translateY(-90%);
 }
 corewm-panel[data-autohide="true"] > * {
   visibility : hidden;

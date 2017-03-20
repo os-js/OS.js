@@ -187,11 +187,11 @@ body[data-attention="true"]:after {
 
 /* Panel */
 corewm-panel {
-  -webkit-transition: all .3s ease-in-out;
-     -moz-transition: all .3s ease-in-out;
-      -ms-transition: all .3s ease-in-out;
-       -o-transition: all .3s ease-in-out;
-          transition: all .3s ease-in-out;
+  -webkit-transition: translate .3s ease-in-out;
+     -moz-transition: translate .3s ease-in-out;
+      -ms-transition: translate .3s ease-in-out;
+       -o-transition: translate .3s ease-in-out;
+          transition: translate .3s ease-in-out;
 }
 
 corewm-panel .Button.Attention {
