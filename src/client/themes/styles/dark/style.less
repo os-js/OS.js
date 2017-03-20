@@ -27,85 +27,75 @@
 @gui_button_active_border_color      : #333333;
 @gui_button_active_foreground_color  : @gui_button_foreground_color;
 
-/* Max */
-application-window-button-maximize {
-  background : url('dark/wm/maximize_unfocused.png') no-repeat center center,
-               url('dark/wm/maximize.png') no-repeat center center !important;
-}
-application-window-button-maximize:hover {
-  background : url('dark/wm/maximize_unfocused_prelight.png') no-repeat center center,
-               url('dark/wm/maximize.png') no-repeat center center !important;
-}
-application-window-button-maximize:active {
-  background : url('dark/wm/maximize_unfocused_pressed.png') no-repeat center center,
-               url('dark/wm/maximize.png') no-repeat center center !important;
-}
-
-application-window[data-focused="true"] application-window-button-maximize {
-  background : url('dark/wm/maximize_focused_normal.png') no-repeat center center,
-               url('dark/wm/maximize.png') no-repeat center center !important;
-}
-application-window[data-focused="true"] application-window-button-maximize:hover {
-  background : url('dark/wm/maximize_focused_prelight.png') no-repeat center center,
-               url('dark/wm/maximize.png') no-repeat center center !important;
-}
-application-window[data-focused="true"] application-window-button-maximize:active {
-  background : url('dark/wm/maximize_focused_pressed.png') no-repeat center center,
-               url('dark/wm/maximize.png') no-repeat center center !important;
+.application-window-button-entry::after,
+.application-window-button-entry::before {
+  content : '';
+  position : absolute;
+  top : 50%;
+  left : 50%;
+  margin-top : -.5em;
+  margin-left : -.5em;
+  display : block;
+  width : 1em;
+  height : 1em;
+  border-radius : 100%;
+  box-sizing : border-box;
 }
 
-/* Min */
-application-window-button-minimize {
-  background : url('dark/wm/minimize_unfocused.png') no-repeat center center,
-               url('dark/wm/minimize.png') no-repeat center center !important;
-}
-application-window-button-minimize:hover {
-  background : url('dark/wm/minimize_unfocused_prelight.png') no-repeat center center,
-               url('dark/wm/minimize.png') no-repeat center center !important;
-}
-application-window-button-minimize:active {
-  background : url('dark/wm/minimize_unfocused_pressed.png') no-repeat center center,
-               url('dark/wm/minimize.png') no-repeat center center !important;
+application-window-top > .application-window-button-entry::before {
+  background-color : #bababa;
+  background : linear-gradient(to bottom, #bababa 0%,#d9d9d9 100%);
+  z-index : 1;
 }
 
-application-window[data-focused="true"] application-window-button-minimize {
-  background : url('dark/wm/minimize_focused_normal.png') no-repeat center center,
-               url('dark/wm/minimize.png') no-repeat center center !important;
-}
-application-window[data-focused="true"] application-window-button-minimize:hover {
-  background : url('dark/wm/minimize_focused_prelight.png') no-repeat center center,
-               url('dark/wm/minimize.png') no-repeat center center !important;
-}
-application-window[data-focused="true"] application-window-button-minimize:active {
-  background : url('dark/wm/minimize_focused_pressed.png') no-repeat center center,
-               url('dark/wm/minimize.png') no-repeat center center !important;
+application-window-top > .application-window-button-entry::after {
+  border : 1px solid rgba(102, 102, 102, 0.5);
+  z-index : 2;
 }
 
-/* Close */
-application-window-button-close {
-  background : url('dark/wm/close_unfocused.png') no-repeat center center,
-               url('dark/wm/close.png') no-repeat center center !important;
-}
-application-window-button-close:hover {
-  background : url('dark/wm/close_unfocused_prelight.png') no-repeat center center,
-               url('dark/wm/close.png') no-repeat center center !important;
-}
-application-window-button-close:active {
-  background : url('dark/wm/close_unfocused_pressed.png') no-repeat center center,
-               url('dark/wm/close.png') no-repeat center center !important;
+application-window-top > .application-window-button-entry:active::after {
+  box-shadow: inset 0 0 .2em rgba(0, 0, 0, .2);
 }
 
-application-window[data-focused="true"] application-window-button-close {
-  background : url('dark/wm/close_focused_normal.png') no-repeat center center,
-               url('dark/wm/close.png') no-repeat center center !important;
+application-window[data-focused="true"] > application-window-top > application-window-button-maximize.application-window-button-entry:active::before,
+application-window[data-focused="true"] > application-window-top > application-window-button-maximize.application-window-button-entry::before {
+  background: #8dd22b;
+  background: -moz-linear-gradient(top, #8dd22b 0%, #b1ec70 100%);
+  background: -webkit-linear-gradient(top, #8dd22b 0%,#b1ec70 100%);
+  background: linear-gradient(to bottom, #8dd22b 0%,#b1ec70 100%);
 }
-application-window[data-focused="true"] application-window-button-close:hover {
-  background : url('dark/wm/close_focused_prelight.png') no-repeat center center,
-               url('dark/wm/close.png') no-repeat center center !important;
+application-window[data-focused="true"] > application-window-top > application-window-button-minimize.application-window-button-entry:active::before,
+application-window[data-focused="true"] > application-window-top > application-window-button-minimize.application-window-button-entry::before {
+  background: #f9c435;
+  background: -moz-linear-gradient(top, #f9c435 0%, #fdd675 100%);
+  background: -webkit-linear-gradient(top, #f9c435 0%,#fdd675 100%);
+  background: linear-gradient(to bottom, #f9c435 0%,#fdd675 100%);
 }
-application-window[data-focused="true"] application-window-button-close:active {
-  background : url('dark/wm/close_focused_pressed.png') no-repeat center center,
-               url('dark/wm/close.png') no-repeat center center !important;
+application-window[data-focused="true"] > application-window-top > application-window-button-close.application-window-button-entry:active::before,
+application-window[data-focused="true"] > application-window-top > application-window-button-close.application-window-button-entry::before {
+  background: #e56c5c;
+  background: -moz-linear-gradient(top, #e56c5c 0%, #f09c8d 100%);
+  background: -webkit-linear-gradient(top, #e56c5c 0%,#f09c8d 100%);
+  background: linear-gradient(to bottom, #e56c5c 0%,#f09c8d 100%);
+}
+
+application-window[data-focused="true"] > application-window-top > application-window-button-maximize:hover::before {
+  background: #b1ec70;
+  background: -moz-linear-gradient(top, #b1ec70 0%, #8dd22b 100%);
+  background: -webkit-linear-gradient(top, #b1ec70 0%,#8dd22b 100%);
+  background: linear-gradient(to bottom, #b1ec70 0%,#8dd22b 100%);
+}
+application-window[data-focused="true"] > application-window-top > application-window-button-minimize:hover::before {
+  background: #fdd675;
+  background: -moz-linear-gradient(top, #fdd675 0%, #f9c435 100%);
+  background: -webkit-linear-gradient(top, #fdd675 0%,#f9c435 100%);
+  background: linear-gradient(to bottom, #fdd675 0%,#f9c435 100%);
+}
+application-window[data-focused="true"] > application-window-top > application-window-button-close:hover::before {
+  background: #f09c8d;
+  background: -moz-linear-gradient(top, #f09c8d 0%, #e56c5c 100%);
+  background: -webkit-linear-gradient(top, #f09c8d 0%,#e56c5c 100%);
+  background: linear-gradient(to bottom, #f09c8d 0%,#e56c5c 100%);
 }
 
 @gui_progress_bar_background : @gui_selected_background_color url('/themes/styles/dark/gui/progressbar.png') repeat-x center;
