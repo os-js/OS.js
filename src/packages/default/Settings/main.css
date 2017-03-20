@@ -33,7 +33,7 @@
 }
 
 .ApplicationSettingsWindow application-window-content gui-expander {
-  margin-bottom : 5px;
+  margin-bottom : 0.41666em;
 }
 
 .ApplicationSettingsWindow application-window-content [data-id="ContainerButtons"],
@@ -43,14 +43,14 @@
 }
 
 .ApplicationSettingsWindow application-window-content [data-id="SoundsList"] {
-  height : 150px;
+  height : 12.5em;
 }
 
 .ApplicationSettingsWindow application-window-content [data-id="WidgetItems"] {
-  height : 100px;
+  height : 8.333em;
 }
 .ApplicationSettingsWindow application-window-content [data-id="HotkeysList"] {
-  height : 200px;
+  height : 16.666em;
 }
 
 .ApplicationSettingsWindow application-window-content [data-id="UsersList"],
@@ -59,7 +59,7 @@
 .ApplicationSettingsWindow application-window-content [data-id="PanelItems"],
 .ApplicationSettingsWindow application-window-content [data-id="MountList"],
 .ApplicationSettingsWindow application-window-content [data-id="SearchPaths"] {
-  height : 140px;
+  height : 11.666;
 }
 
 .ApplicationSettingsWindow application-window-content [data-id="ContainerContent"] > div {
@@ -78,7 +78,7 @@
   width : 100%;
 }
   .ApplicationSettingsWindow application-window-content .ListView > div {
-    min-height : 32px;
+    min-height : 2.666em;
   }
     .ApplicationSettingsWindow application-window-content .ListView > div > ul {
       list-style : none;
@@ -90,7 +90,7 @@
         box-sizing : border-box;
         display : inline-block;
         margin : 0;
-        padding : 10px;
+        padding : 0.8333em;
         text-align : center;
         cursor : pointer;
         width : 90px;
@@ -107,6 +107,6 @@
     .ApplicationSettingsWindow application-window-content .ListView > div > span {
       display : block;
       font-weight : bold;
-      margin-bottom : 5px;
+      margin-bottom : 0.41666em;
       pointer-events: none;
     }
