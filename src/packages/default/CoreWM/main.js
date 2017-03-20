@@ -462,7 +462,7 @@
 
     setTimeout(function() {
       self.setStyles(self._settings.get());
-    }, 250);
+    }, 20);
   };
 
   CoreWM.prototype.initWidgets = function(applySettings) {
@@ -510,7 +510,7 @@
       if ( self.iconView ) {
         self.iconView.resize(self);
       }
-    }, 250);
+    }, 280);
   };
 
   //
