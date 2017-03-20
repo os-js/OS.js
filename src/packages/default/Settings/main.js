@@ -408,7 +408,7 @@
 
   ApplicationSettings.prototype.saveSettings = function(settings, cb) {
     var wm = OSjs.Core.getWindowManager();
-    wm.applySettings(settings);
+    wm.applySettings(settings, false, 1);
     OSjs.Core.getSettingsManager().save(null, cb);
   };
 

@@ -959,7 +959,7 @@
       this.initPanels(true);
       this.initWidgets(true);
 
-      if ( settings ) {
+      if ( settings && save === true ) {
         if ( settings.language ) {
           OSjs.Core.getSettingsManager().set('Core', 'Locale', settings.language, triggerWatch);
           API.setLocale(settings.language);
