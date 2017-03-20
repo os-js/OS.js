@@ -93,8 +93,8 @@
         padding : 0.8333em;
         text-align : center;
         cursor : pointer;
-        width : 90px;
-        height : 70px;
+        width : 7.5em;
+        height : 5.8333em;
         pointer-events: all;
       }
         .ApplicationSettingsWindow application-window-content .ListView > div > ul > li * {
