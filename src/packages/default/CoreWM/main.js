@@ -462,7 +462,7 @@
 
     setTimeout(function() {
       self.setStyles(self._settings.get());
-    }, 20);
+    }, 250);
   };
 
   CoreWM.prototype.initWidgets = function(applySettings) {
