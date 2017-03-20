@@ -478,7 +478,12 @@
     'LBL_LOCK': 'Lock',
     'LBL_UNLOCK': 'Unlock',
     'LBL_WARNING': 'Warning',
-    'LBL_INFO': 'Info'
+    'LBL_INFO': 'Info',
+    'LBL_POSITION': 'Position',
+    'LBL_OPACITY': 'Opactiy',
+    'LBL_ITEMS': 'Items',
+    'LBL_ONTOP': 'On top',
+    'LBL_BACKGROUND': 'Background'
   };
 
 })();
