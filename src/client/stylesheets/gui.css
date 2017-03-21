@@ -591,7 +591,7 @@ gui-grid {
   }
 
     gui-grid > gui-grid-row > gui-grid-entry { /* li */
-      margin: 5px;
+      margin: 0.41666;
 
       -webkit-box-flex: 1 0 auto;
          -moz-box-flex: 1 0 auto;
@@ -1569,7 +1569,7 @@ gui-tree-view {
     }*/
 
   gui-tree-view-entry.gui-expandable {
-    padding-left : 16px;
+    padding-left : 1.333em;
   }
   gui-tree-view-entry.gui-expandable gui-tree-view-expander {
     display : block;
