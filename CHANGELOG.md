@@ -1,3 +1,33 @@
+# 2.0.0-88
+
+This minor release update brings mostly scalability updates for GUI
+and applications.
+
+
+Digest:
+
+* Theme: Updated scalability and responsiveness
+* GUI: Updated gui-tabs for scalability
+* GUI: Removed overflow for gui-tabs header
+* GUI: Updated gui-icon-view scalability
+* GUI: Updated gui-select scalability
+* GUI: Bugfix for gui-tree-view expansion
+* GUI: Some fixes for small display devices
+* CoreWM: Updated some timeouts for better responsiveness
+* CoreWM: Updated scalability and responsiveness
+* FileManager: Updated scalability and responsiveness
+* Calculator: Updated scalability and responsiveness
+* MusicPlayer: Updated scalability and responsiveness
+* Settings: Updated scalability and responsiveness
+* Draw: Updated scalability and responsiveness
+* About: Updated scalability and responsiveness
+* misc: Updated 'API.createDialog()' usage in some places
+* misc: Updated some event destruction
+* build: Updated watcher
+* build: Updated core task
+* build: Added 'only' option to 'core' task
+* build: Added 'only' option to 'themes' task
+
 # 2.0.0-87
 
 This is just a minor release with some minor fixes and additions.
