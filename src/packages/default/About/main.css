@@ -34,11 +34,11 @@
   text-align : center;
 }
 .ApplicationAboutWindow application-window-content > div > div {
-  padding : 10px;
+  padding : 0.8333em;
 }
 .ApplicationAboutWindow h1 {
   margin : 0;
-  padding : 10px;
-  font-size : 40px;
+  padding : 0.8333em;
+  font-size : 3.333em;
 }
 
