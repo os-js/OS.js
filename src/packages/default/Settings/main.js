@@ -200,6 +200,8 @@
 
     Utils.$bind(container, 'click', function(ev) {
       var t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
+      GUI.Helpers.blurMenu();
+
       if ( t && t.tagName === 'LI' && t.hasAttribute('data-module') ) {
         ev.preventDefault();
         var m = t.getAttribute('data-module');
