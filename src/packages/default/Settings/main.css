@@ -73,7 +73,7 @@
 }
 
 .ApplicationSettingsWindow application-window-content .ListView {
-  overflow : hidden;
+  overflow : auto;
   height : 100%;
   width : 100%;
 }
