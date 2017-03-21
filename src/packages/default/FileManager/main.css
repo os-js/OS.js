@@ -38,6 +38,7 @@
   display : none;
 }
 
+body[data-responsive="false"] .ApplicationFileManagerWindow gui-button[data-id="ToggleSideview"],
 body[data-responsive="true"] .ApplicationFileManagerWindow:not([data-media="mobile"]) gui-button[data-id="ToggleSideview"] {
   display : none;
 }
