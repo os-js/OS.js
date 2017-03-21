@@ -32,12 +32,12 @@
 }*/
 
 .ApplicationMusicPlayerWindow gui-slider {
-  margin : 4px;
-  margin-top : 10px;
-  margin-bottom : 10px;
+  margin : 0.333em;
+  margin-top : 0.8333em;
+  margin-bottom : 0.8333em;
 }
 .ApplicationMusicPlayerWindow gui-vbox[data-id="Metadata"] {
-  margin : 4px;
+  margin : 0.333em;
   overflow : hidden;
 }
 .ApplicationMusicPlayerWindow gui-audio {
