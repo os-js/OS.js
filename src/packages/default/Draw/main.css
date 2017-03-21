@@ -38,4 +38,7 @@
 .ApplicationDrawWindow gui-vbox-container[data-id="ScrollContainer"] {
   background : #DADADA;
 }
+.ApplicationDrawWindow gui-hbox-container[data-id="Toolbar"] {
+  flex : 0 1 6em !important;
+}
 
