@@ -23,8 +23,6 @@ Visit the [official demo](https://demo.os-js.org) for a preview version. Please 
 
 You can find the quick setup guide in the [INSTALL.md file](https://github.com/os-js/OS.js/blob/master/INSTALL.md).
 
-Head over to the [installation manual page](https://os-js.org/manual/installation) for more detailed instructions.
-
 ## Documentation
 
 * [Manuals](https://os-js.org/manual/)
