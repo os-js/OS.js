@@ -83,16 +83,14 @@
 
     if ( msg === 'vfs' && args.source !== null && args.source !== this.__pid && args.file ) {
       if ( win && current && current.path === args.file.path ) {
-        win._toggleDisabled(true);
         API.createDialog('Confirm', {
           buttons: ['yes', 'no'],
           message: API._('MSG_FILE_CHANGED')
         }, function(ev, button) {
-          win._toggleDisabled(false);
           if ( button === 'ok' || button === 'yes' ) {
             self.openFile(new VFS.File(args.file), win);
           }
-        }, win);
+        }, {parent: win, modal: true});
       }
     }
   };
@@ -210,7 +208,6 @@
       return;
     }
 
-    win._toggleDisabled(true);
     API.createDialog('File', {
       file: file,
       filename: file ? file.filename : this.defaultOptions.filename,
@@ -220,14 +217,13 @@
       mime: this.defaultOptions.mime,
       type: 'save'
     }, function(ev, button, result) {
-      win._toggleDisabled(false);
       if ( button === 'ok' ) {
         self.saveFile(result, value, win);
       }
       if (typeof cb === 'function') {
         cb(ev, button, result);
       }
-    }, win);
+    }, {parent: win, modal: true});
   };
 
   /**
@@ -243,16 +239,14 @@
     var self = this;
 
     function openDialog() {
-      win._toggleDisabled(true);
       API.createDialog('File', {
         file: file,
         filter: self.__metadata.mime
       }, function(ev, button, result) {
-        win._toggleDisabled(false);
         if ( button === 'ok' && result ) {
           self.openFile(new VFS.File(result), win);
         }
-      }, win);
+      }, {parent: win, modal: true});
     }
 
     win.checkHasChanged(function(discard) {
