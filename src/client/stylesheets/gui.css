@@ -521,6 +521,7 @@ gui-tabs {
   display : block;
   position : relative;
   box-sizing : border-box;
+  overflow : hidden;
 }
   gui-tabs > ul {
     display : block;
