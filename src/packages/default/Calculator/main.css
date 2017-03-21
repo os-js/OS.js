@@ -33,14 +33,14 @@
 
 .ApplicationCalculatorWindow gui-text {
   display : block;
-  margin : 8px;
-  height : 50px;
+  margin : 0.666em;
+  height : 4.1666em;
 }
 
 .ApplicationCalculatorWindow gui-text > input {
-  font-size : 30px;
+  font-size : 2.5em;
   font-family : Monospace;
-  line-height : 50px;
+  line-height : 4.1666;
   text-align : right;
 }
 
