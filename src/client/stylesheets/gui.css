@@ -1381,8 +1381,8 @@ gui-icon-view {
   }
   gui-icon-view-entry {
     float : left;
-    width : 34px;
-    width : 54px;
+    width : 2.8333em;
+    width : 4.5em;
   }
 
     gui-icon-view-entry > div {
@@ -1392,18 +1392,18 @@ gui-icon-view {
 
     gui-icon-view-entry > div > img {
       pointer-events: none;
-      width : 32px;
-      height : 32px;
+      width : 2.666em;
+      height : 2.666em;
     }
 
     gui-icon-view-entry > div > span {
       pointer-events: none;
       position : absolute;
       display : block;
-      left : -2px;
-      right : -2px;
+      left : -0.1666em;
+      right : -0.1666em;
       top : 0;
-      padding : 2px;
+      padding : 0.1666em;
       z-index : 9999;
 
       white-space : nowrap;
