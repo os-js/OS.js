@@ -205,14 +205,14 @@ body, input, button, textarea, label, select {
 }
 
 ::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
+  width: 1em;
+  height: 1em;
 }
 ::-webkit-scrollbar-button {
   background : @scrollbar_button_background;
   color : @scrollbar_button_foreground;
-  width : 12px;
-  height : 12px;
+  width : 1em;
+  height : 1em;
   display : none;
 }
 ::-webkit-scrollbar-track {
@@ -307,8 +307,8 @@ application-splash {
 }
 
 corewm-notifications {
-  top : 10px;
-  right : 10px;
+  top : 1em;
+  right : 1em;
 }
 
 corewm-notification {
@@ -335,7 +335,7 @@ corewm-notification {
   .custom-notification .Message,
   corewm-notification .Title,
   corewm-notification .Message {
-    line-height : 16px;
+    line-height : 1.333;
   }
 
   /* Desktop drop wallpaper effect */
@@ -359,8 +359,8 @@ corewm-search {
   padding : @gui_base_padding;
   min-width : 200px;
   max-width : 40%;
-  right : 10px;
-  top : 10px;
+  right : 1em;
+  top : 1em;
 }
   corewm-search > div {
     margin-top : @gui_base_padding;
@@ -679,7 +679,7 @@ gui-expander {
 
 /* Tabs */
   gui-tabs > ul {
-    height : 25px;
+    height : 2.08333em;
   }
     gui-tabs > ul > li {
       padding-left : .5em;
@@ -688,7 +688,7 @@ gui-expander {
       background-color : @gui_background_color;
       border : 1px solid transparent;
       border-bottom : 0 none;
-      line-height : 25px;
+      line-height : 2.08333em;
     }
     gui-tabs > ul > li.gui-active {
       background-color : transparent;
@@ -884,17 +884,17 @@ gui-slider {
    */
 
   gui-slider input::-moz-range-track {
-    height : 4px;
+    height : .333em;
     background-color : @gui_background_color;
   }
 
   gui-slider input::-webkit-slider-runnable-track {
-    height : 4px;
+    height : .333em;
     background-color : @gui_background_color;
   }
 
   gui-slider input::-ms-track {
-    height : 4px;
+    height : .333em;
     background-color : @gui_background_color;
   }
 
@@ -904,8 +904,8 @@ gui-slider {
 
   gui-slider input::-moz-range-thumb {
     .theme_button();
-    height : 18px;
-    width : 10px;
+    height : 1.5em;
+    width : 0.8333em;
   }
   gui-slider input:disabled::-moz-range-thumb {
     .theme_button_disabled();
@@ -913,9 +913,9 @@ gui-slider {
 
   gui-slider input::-webkit-slider-thumb {
     .theme_button();
-    height : 24px;
-    width : 16px;
-    margin-top : -10px;
+    height : 2em;
+    width : 1.333em;
+    margin-top : -0.8333em;
   }
   gui-slider input:disabled::-webkit-range-thumb {
     .theme_button_disabled();
@@ -923,8 +923,8 @@ gui-slider {
 
   gui-slider input::-ms-thumb {
     .theme_button();
-    height : 24px;
-    width : 16px;
+    height : 2em;
+    width : 1.333em;
   }
   gui-slider input:disabled::-ms-thumb {
     .theme_button_disabled();
@@ -953,7 +953,7 @@ gui-switch {
   height : 2.2em;
 }
   gui-switch div {
-    width : 48px;
+    width : 4em;
 
     .theme_text_input();
     cursor : pointer;
@@ -1199,8 +1199,8 @@ gui-icon-view {
   }
   gui-icon-view-entry {
     cursor : pointer;
-    margin : 2px;
-    padding : 2px;
+    margin : .1666em;
+    padding : .1666em;
     text-align : center;
     min-width : 60px !important;
     min-height : 60px !important;
@@ -1317,7 +1317,7 @@ gui-tree-view {
     }
     gui-tree-view-entry > div > span {
       cursor : pointer;
-      padding : 2px;
+      padding : 0.1666em;
     }
     gui-tree-view-entry > div > span.gui-has-image {
       padding-left : 20px;
@@ -1326,7 +1326,7 @@ gui-tree-view {
       margin-left : 16px;
     }
     gui-tree-view-entry > gui-tree-view-entry.gui-expandable {
-      margin-left : 2px;
+      margin-left : 0.1666em;
     }
     gui-tree-view-entry.gui-active > div {
       background-color: @gui_selected_blur_background_color;
