@@ -169,8 +169,6 @@
    * @param   {Function}      cb        Callback => fn(discard_changes)
    */
   DefaultApplicationWindow.prototype.checkHasChanged = function(cb) {
-    var self = this;
-
     if ( this.hasChanged ) {
       API.createDialog('Confirm', {
         buttons: ['yes', 'no'],
