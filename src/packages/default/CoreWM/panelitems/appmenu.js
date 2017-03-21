@@ -41,7 +41,6 @@
    */
   function PanelItemAppMenu(settings) {
     PanelItem.apply(this, ['PanelItemAppMenu', 'AppMenu', settings, {}]);
-    this.$container = null;
   }
 
   PanelItemAppMenu.prototype = Object.create(PanelItem.prototype);
@@ -70,7 +69,9 @@
   };
 
   PanelItemAppMenu.prototype.destroy = function() {
-    this.$container = null;
+    if ( this._$container ) {
+      Utils.$unbind(this._$container.querySelector('li'), 'click');
+    }
     PanelItem.prototype.destroy.apply(this, arguments);
   };
 

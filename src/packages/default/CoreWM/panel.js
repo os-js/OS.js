@@ -167,7 +167,9 @@
 
   Panel.prototype.destroy = function() {
     this._clearTimeouts();
+
     Utils.$unbind(document, 'mouseout:panelmouseleave');
+    Utils.$unbind(this._$element);
 
     this._items.forEach(function(item) {
       item.destroy();
@@ -364,6 +366,9 @@
     if ( this._settingsDialog ) {
       this._settingsDialog.destroy();
     }
+
+    Utils.$unbind(this._$root, 'contextmenu');
+
     this._settingsDialog = null;
     this._$root = Utils.$remove(this._$root);
     this._$container = Utils.$remove(this._$container);

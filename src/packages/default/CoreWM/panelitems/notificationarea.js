@@ -132,6 +132,7 @@
   NotificationAreaItem.prototype.destroy = function() {
     if ( this.$container ) {
       Utils.$unbind(this.$container, 'click');
+      Utils.$unbind(this.$container, 'mousedown');
       Utils.$unbind(this.$container, 'contextmenu');
     }
     this.onDestroy.call(this);

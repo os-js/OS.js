@@ -283,6 +283,8 @@
       return false;
     }
 
+    Utils.$unbind(document.body, 'dragenter, dragleave, dragover, drop');
+
     this.removeNotificationIcon('_HandlerUserNotification');
 
     if ( this.iconView ) {

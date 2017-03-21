@@ -74,6 +74,7 @@
   };
 
   PanelItemWeather.prototype.destroy = function() {
+    Utils.$unbind(this._$root, 'click');
     this.interval = clearInterval(this.interval);
     this.$image = Utils.$remove(this.$image);
     this.$element = Utils.$remove(this.$element);

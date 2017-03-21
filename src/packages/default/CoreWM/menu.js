@@ -140,8 +140,12 @@
   }
 
   ApplicationMenu.prototype.destroy = function() {
-    if ( this.$element && this.$element.parentNode ) {
-      this.$element.parentNode.removeChild(this.$element);
+
+    if ( this.$element ) {
+      this.$element.querySelectorAll('gui-menu-entry').forEach(function(el) {
+        Utils.$unbind(el, 'click');
+      });
+      Utils.$remove(this.$element);
     }
     this.$element = null;
   };
