@@ -124,6 +124,14 @@ function watchThemes(path, stats, watchdir, debug) {
   } else if ( rdir.match(/^styles/) ) {
     log('Style theme changed', name, debug);
     runTask('theme', 'style', name, debug);
+  } else {
+    if ( path.match(/\.less$/) ) {
+      log('Base theme changed', name, debug);
+      runTask('themes', 'only', 'styles', debug);
+    } else {
+      log('Base styles changed', name, debug);
+      runTask('core', null, null, debug);
+    }
   }
 }
 
@@ -156,6 +164,7 @@ module.exports.watch = function watch(cli) {
   const paths = {
     'src/templates/dist/**/*': watchDist,
     'src/client/javascript/**/*': watchCore,
+    'src/client/stylesheets/*': watchThemes,
     'src/client/themes/**/*': watchThemes,
     'src/conf/*': watchConfig,
     'src/packages/*/**': watchPackages

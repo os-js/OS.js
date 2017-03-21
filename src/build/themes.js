@@ -277,11 +277,13 @@ function buildStyle(cli, cfg, name) {
  * Builds everything
  */
 function buildAll(cli, cfg) {
+  const only = cli.option('only');
+
   return Promise.all([
-    buildFonts(cli, cfg),
-    buildStatic(cli, cfg),
-    buildIcon(cli, cfg),
-    buildStyle(cli, cfg)
+    !only || only === 'fonts' ? buildFonts(cli, cfg) : Promise.resolve(),
+    !only || only === 'static' ? buildStatic(cli, cfg) : Promise.resolve(),
+    !only || only === 'icons' ? buildIcon(cli, cfg) : Promise.resolve(),
+    !only || only === 'styles' ? buildStyle(cli, cfg) : Promise.resolve()
   ]);
 }
 
