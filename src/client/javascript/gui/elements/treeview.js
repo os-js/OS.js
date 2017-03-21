@@ -264,8 +264,8 @@
       }
 
       if ( typeof entries === 'object' && !(entries instanceof Array) && Object.keys(entries).length ) {
-        entries = entries.entries || [];
         parentNode = entries.parentNode || body;
+        entries = entries.entries || [];
       }
 
       recurse(entries, parentNode, 0);
