@@ -119,9 +119,17 @@ function buildFiles(cli, cfg) {
   const debug = cli.option('debug', false);
   const build = getBuildFiles(cfg.build);
 
-  _utils.writeScripts(_path.join(ROOT, 'dist', 'osjs.min.js'), build.javascript, debug, verbose);
-  _utils.writeScripts(_path.join(ROOT, 'dist', 'locales.min.js'), build.locales, debug, verbose);
-  _utils.writeStyles(_path.join(ROOT, 'dist', 'osjs.min.css'), build.stylesheets, debug, verbose);
+  const only = cli.option('only');
+
+  if ( !only || only === 'javascript' ) {
+    _utils.writeScripts(_path.join(ROOT, 'dist', 'osjs.min.js'), build.javascript, debug, verbose);
+  }
+  if ( !only || only === 'locale' ) {
+    _utils.writeScripts(_path.join(ROOT, 'dist', 'locales.min.js'), build.locales, debug, verbose);
+  }
+  if ( !only || only === 'css' ) {
+    _utils.writeStyles(_path.join(ROOT, 'dist', 'osjs.min.css'), build.stylesheets, debug, verbose);
+  }
 
   return Promise.resolve();
 }
