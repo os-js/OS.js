@@ -251,7 +251,7 @@ class Authenticator
     public static function getInstance()
     {
         if (!self::$INSTANCE ) {
-            $name = Instance::GetConfig()->http->authenticator;
+            $name = Instance::GetConfig()->authenticator;
             $name = 'OSjs\\Modules\\Auth\\' . ucfirst($name);
             self::$INSTANCE = new $name();
         }

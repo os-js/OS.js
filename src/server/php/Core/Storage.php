@@ -110,7 +110,7 @@ abstract class Storage
     public static function getInstance()
     {
         if (!self::$INSTANCE) {
-            $name = Instance::GetConfig()->http->storage;
+            $name = Instance::GetConfig()->storage;
             $name = 'OSjs\\Modules\\Storage\\' . ucfirst($name);
             self::$INSTANCE = new $name();
         }

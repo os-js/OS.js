@@ -55,7 +55,7 @@ let MODULE;
 module.exports.load = function(opts) {
   return new Promise((resolve, reject) => {
     const config = _settings.get();
-    const name = opts.AUTH || (config.http.authenticator || 'demo');
+    const name = opts.AUTH || (config.authenticator || 'demo');
     const ok = () => resolve(opts);
 
     _utils.loadModule(_env.get('MODULEDIR'), 'auth', name).then((path) => {

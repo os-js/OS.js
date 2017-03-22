@@ -1,5 +1,7 @@
 {
   "server" : {
+    "authenticator": "%authenticator%",
+    "storage": "%storage%",
     "tz": "",
     "vfs": {
       "mounts": {
@@ -28,8 +30,6 @@
     },
     "http": {
       "mode": "http",
-      "authenticator": "%authenticator%",
-      "storage": "%storage%",
       "connection": "%connection%",
       "port" : 8000,
       "compression": {

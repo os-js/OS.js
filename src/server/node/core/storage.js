@@ -54,7 +54,7 @@ let MODULE;
 module.exports.load = function(opts) {
   return new Promise((resolve, reject) => {
     const config = _settings.get();
-    const name = opts.STORAGE || (config.http.storage || 'demo');
+    const name = opts.STORAGE || (config.storage || 'demo');
     const ok = () => resolve(opts);
 
     _utils.loadModule(_env.get('MODULEDIR'), 'storage', name).then((path) => {
