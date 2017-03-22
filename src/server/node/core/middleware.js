@@ -30,9 +30,6 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
-const _path = require('path');
-const _glob = require('glob-promise');
-
 const _env = require('./env.js');
 const _logger = require('./../lib/logger.js');
 const _utils = require('./../lib/utils.js');
@@ -57,22 +54,16 @@ module.exports.load = function(dirname, cb) {
   cb = cb || function() {};
 
   return new Promise((resolve, reject) => {
-    const dirname = _path.join(_env.get('MODULEDIR'), 'middleware');
+    _utils.loadModules(_env.get('MODULEDIR'), 'middleware', (path) => {
+      _logger.lognt('INFO', 'Loading:', _logger.colored('Middleware', 'bold'), path.replace(_env.get('ROOTDIR'), ''));
 
-    _glob(_path.join(dirname, '*.js')).then((list) => {
-      Promise.all(list.map((path) => {
-        _logger.lognt('INFO', 'Loading:', _logger.colored('Middleware', 'bold'), path.replace(_env.get('ROOTDIR'), ''));
-
-        try {
-          MODULES.push(require(path));
-        } catch ( e ) {
-          _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
-          console.warn(e.stack);
-        }
-
-        return Promise.resolve();
-      })).then(resolve).catch(reject);
-    }).catch(reject);
+      try {
+        MODULES.push(require(path));
+      } catch ( e ) {
+        _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
+        console.warn(e.stack);
+      }
+    }).then(resolve).catch(reject);
   });
 };
 

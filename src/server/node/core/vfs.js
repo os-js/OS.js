@@ -30,7 +30,6 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
-const _fs = require('fs');
 const _path = require('path');
 const _env = require('./env.js');
 const _settings = require('./settings.js');
@@ -115,28 +114,16 @@ function getTransportName(query, mount) {
  */
 module.exports.load = function(opts) {
   return new Promise((resolve, reject) => {
-    const dirname = _path.join(_env.get('MODULEDIR'), 'vfs');
-    _fs.readdir(dirname, (err, list) => {
-      if ( err ) {
-        return reject(err);
+    _utils.loadModules(_env.get('MODULEDIR'), 'vfs', (path) => {
+      _logger.lognt('INFO', 'Loading:', _logger.colored('VFS Transport', 'bold'), path.replace(_env.get('ROOTDIR'), ''));
+
+      try {
+        MODULES.push(require(path));
+      } catch ( e ) {
+        _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
+        console.warn(e.stack);
       }
-
-      _utils.iterate(list, (filename, index, next) => {
-        if ( ['.', '_'].indexOf(filename.substr(0, 1)) === -1 ) {
-          const path = _path.join(dirname, filename);
-
-          _logger.lognt('INFO', 'Loading:', _logger.colored('VFS Transport', 'bold'), path.replace(_env.get('ROOTDIR'), ''));
-
-          try {
-            MODULES.push(require(path));
-          } catch ( e ) {
-            _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
-            console.warn(e.stack);
-          }
-        }
-        next();
-      }, resolve);
-    });
+    }).then(() => resolve(opts)).catch(reject);
   });
 };
 

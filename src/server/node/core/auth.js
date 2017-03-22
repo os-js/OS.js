@@ -30,13 +30,12 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
-const _path = require('path');
-
 const _settings = require('./settings.js');
 const _storage = require('./storage.js');
 const _vfs = require('./vfs.js');
 const _env = require('./env.js');
 const _logger = require('./../lib/logger.js');
+const _utils = require('./../lib/utils.js');
 
 /**
  * @namespace core.auth
@@ -56,30 +55,30 @@ let MODULE;
 module.exports.load = function(opts) {
   return new Promise((resolve, reject) => {
     const config = _settings.get();
-    const dirname = _path.join(_env.get('MODULEDIR'), 'auth');
     const name = opts.AUTH || (config.http.authenticator || 'demo');
-    const path = _path.join(dirname, name + '.js');
     const ok = () => resolve(opts);
 
-    _logger.lognt('INFO', 'Loading:', _logger.colored('Authenticator', 'bold'), path.replace(_env.get('ROOTDIR'), ''));
+    _utils.loadModule(_env.get('MODULEDIR'), 'auth', name).then((path) => {
+      _logger.lognt('INFO', 'Loading:', _logger.colored('Authenticator', 'bold'), path.replace(_env.get('ROOTDIR'), ''));
 
-    try {
-      const a = require(path);
-      const c = _settings.get('modules.auth')[name] || {};
-      const r = a.register(c);
+      try {
+        const a = require(path);
+        const c = _settings.get('modules.auth')[name] || {};
+        const r = a.register(c);
 
-      MODULE = a;
+        MODULE = a;
 
-      if ( r instanceof Promise ) {
-        r.then(ok).catch(reject);
-      } else {
-        ok();
+        if ( r instanceof Promise ) {
+          r.then(ok).catch(reject);
+        } else {
+          ok();
+        }
+      } catch ( e ) {
+        _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
+        console.warn(e.stack);
+        reject(e);
       }
-    } catch ( e ) {
-      _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
-      console.warn(e.stack);
-      reject(e);
-    }
+    }).catch(reject);
   });
 };
 

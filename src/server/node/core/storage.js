@@ -30,12 +30,11 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
-const _path = require('path');
-
 const _settings = require('./settings.js');
 const _env = require('./env.js');
 
 const _logger = require('./../lib/logger.js');
+const _utils = require('./../lib/utils.js');
 
 /**
  * @namespace core.storage
@@ -54,30 +53,30 @@ let MODULE;
  */
 module.exports.load = function(opts) {
   return new Promise((resolve, reject) => {
-    const ok = () => resolve(opts);
-
     const config = _settings.get();
     const name = opts.STORAGE || (config.http.storage || 'demo');
-    const path = _path.join(_env.get('MODULEDIR'), 'storage', name + '.js');
+    const ok = () => resolve(opts);
 
-    _logger.lognt('INFO', 'Loading:', _logger.colored('Storage', 'bold'), path.replace(_env.get('ROOTDIR'), ''));
+    _utils.loadModule(_env.get('MODULEDIR'), 'storage', name).then((path) => {
+      _logger.lognt('INFO', 'Loading:', _logger.colored('Storage', 'bold'), path.replace(_env.get('ROOTDIR'), ''));
 
-    try {
-      const a = require(path);
-      const c = _settings.get('modules.storage')[name] || {};
-      const r = a.register(c);
-      MODULE = a;
+      try {
+        const a = require(path);
+        const c = _settings.get('modules.storage')[name] || {};
+        const r = a.register(c);
+        MODULE = a;
 
-      if ( r instanceof Promise ) {
-        r.then(ok).catch(reject);
-      } else {
-        ok();
+        if ( r instanceof Promise ) {
+          r.then(ok).catch(reject);
+        } else {
+          ok();
+        }
+      } catch ( e ) {
+        _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
+        console.warn(e.stack);
+        reject(e);
       }
-    } catch ( e ) {
-      _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
-      console.warn(e.stack);
-      reject(e);
-    }
+    }).catch(reject);
   });
 };
 

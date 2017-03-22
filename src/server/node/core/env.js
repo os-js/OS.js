@@ -42,7 +42,9 @@ const ENV = {
   LOGLEVEL: -2,
   NODEDIR: _path.resolve(__dirname + '/../'),
   ROOTDIR: _path.resolve(__dirname + '/../../../../'),
-  MODULEDIR: _path.resolve(__dirname + '/../modules'),
+  MODULEDIR: [
+    _path.resolve(__dirname + '/../modules')
+  ],
   SERVERDIR: _path.resolve(__dirname + '/../../'),
   PKGDIR: _path.resolve(__dirname + '/../../../../src/packages')
 };

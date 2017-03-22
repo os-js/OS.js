@@ -72,6 +72,7 @@ const _metadata = require('./metadata.js');
 const _middleware = require('./middleware.js');
 
 const _logger = require('./../lib/logger.js');
+const _utils = require('./../lib/utils.js');
 
 ///////////////////////////////////////////////////////////////////////////////
 // GLOBALS
@@ -200,24 +201,17 @@ function registerPackages(servers) {
  * Registers Services
  */
 function registerServices(servers) {
-  const dirname = _path.join(ENV.MODULEDIR, 'services');
-
-  return new Promise((resolve, reject) => {
-    _glob(_path.join(dirname, '*.js')).then((list) => {
-      Promise.all(list.map((path) => {
-        _logger.lognt('INFO', 'Loading:', _logger.colored('Service', 'bold'), path.replace(ENV.ROOTDIR, ''));
-        try {
-          const p = require(path).register(ENV, CONFIG, servers);
-          if ( p instanceof Promise ) {
-            return p;
-          }
-        } catch ( e ) {
-          _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
-          console.warn(e.stack);
-        }
-        return Promise.resolve();
-      })).then(resolve).catch(reject);
-    }).catch(reject);
+  return _utils.loadModules(ENV.MODULEDIR, 'services', (path) => {
+    _logger.lognt('INFO', 'Loading:', _logger.colored('Service', 'bold'), path.replace(ENV.ROOTDIR, ''));
+    try {
+      const p = require(path).register(ENV, CONFIG, servers);
+      if ( p instanceof Promise ) {
+        return p;
+      }
+    } catch ( e ) {
+      _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
+      console.warn(e.stack);
+    }
   });
 }
 

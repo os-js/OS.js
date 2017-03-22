@@ -30,7 +30,6 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
-const _path = require('path');
 const _cookie = require('cookie');
 const _parser = require('cookie-parser');
 const _session = require('express-session');
@@ -38,6 +37,7 @@ const _session = require('express-session');
 const _env = require('./env.js');
 const _settings = require('./settings.js');
 const _logger = require('./../lib/logger.js');
+const _utils = require('./../lib/utils.js');
 
 /**
  * An object with session helpers
@@ -69,18 +69,17 @@ let MODULE;
  */
 module.exports.load = function(opts) {
   return new Promise((resolve, reject) => {
-    const ok = () => resolve(opts);
-
-    const dirname = _path.join(_env.get('MODULEDIR'), 'session');
     const config = _settings.get();
     const name = opts.SESSION || (config.http.session.module || 'memory');
-    const path = _path.join(dirname, name + '.js');
+    const ok = () => resolve(opts);
 
-    _logger.lognt('INFO', 'Loading:', _logger.colored('Session', 'bold'), path.replace(_env.get('ROOTDIR'), ''));
+    _utils.loadModule(_env.get('MODULEDIR'), 'session', name).then((path) => {
+      _logger.lognt('INFO', 'Loading:', _logger.colored('Session', 'bold'), path.replace(_env.get('ROOTDIR'), ''));
 
-    MODULE = require(path);
+      MODULE = require(path);
 
-    ok();
+      ok();
+    }).catch(reject);
   });
 };
 

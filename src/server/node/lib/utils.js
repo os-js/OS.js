@@ -30,6 +30,10 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
+const _path = require('path');
+const _glob = require('glob-promise');
+const _fs = require('fs');
+
 /**
  * @namespace lib.utils
  */
@@ -108,5 +112,70 @@ module.exports.permissionToString = function permissionToString(mode) {
   })();
 
   return str;
+};
+
+/**
+ * Helper for loading module from module directories
+ *
+ * @param {Array|String}  directories   List of base directories
+ * @param {String}        category      The "sub directory"
+ * @param {String}        name          The module name
+ *
+ * @return {Promise}
+ * @function loadModule
+ * @memberof lib.utils
+ */
+module.exports.loadModule = function loadModule(directories, category, name) {
+  if ( !(directories instanceof Array) ) {
+    directories = [directories];
+  }
+
+  return new Promise((resolve, reject) => {
+    directories.some((p) => {
+      const path = _path.join(p, category, name + '.js');
+
+      if ( _fs.existsSync(path) ) { // FIXME
+        resolve(path);
+        return true;
+      }
+
+      return false;
+    });
+
+    reject('No such module: ' + name);
+  });
+};
+
+/**
+ * Helper for loading modules from a directory
+ *
+ * @param {Array|String}  directories   List of base directories
+ * @param {String}        category      The "sub directory"
+ * @param {Function}      onentry       Callback on each entry => fn(path)
+ *
+ * @return {Promise}
+ * @function loadModules
+ * @memberof lib.utils
+ */
+module.exports.loadModules = function loadModules(directories, category, onentry) {
+  if ( !(directories instanceof Array) ) {
+    directories = [directories];
+  }
+
+  function onModuleDirectory(dirname) {
+    return new Promise((resolve, reject) => {
+      _glob(_path.join(dirname, '*.js')).then((list) => {
+        Promise.all(list.map((path) => {
+          onentry(path);
+
+          return Promise.resolve();
+        })).then(resolve).catch(reject);
+      }).catch(reject);
+    });
+  }
+
+  return Promise.all(directories.map((d) => {
+    return onModuleDirectory(_path.join(d, category));
+  }));
 };
 

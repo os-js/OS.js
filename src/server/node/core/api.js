@@ -30,12 +30,10 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
-const _path = require('path');
-const _glob = require('glob-promise');
-
 const _env = require('./env.js');
 const _settings = require('./settings.js');
 const _logger = require('./../lib/logger.js');
+const _utils = require('./../lib/utils.js');
 
 /**
  * @namespace core.api
@@ -54,22 +52,14 @@ const MODULES = {};
  */
 module.exports.load = function(opts) {
   return new Promise((resolve, reject) => {
-    const ok = () => resolve(opts);
+    _utils.loadModules(_env.get('MODULEDIR'), 'api', (path) => {
+      _logger.lognt('INFO', 'Loading:', _logger.colored('API', 'bold'), path.replace(_env.get('ROOTDIR'), ''));
 
-    const dirname = _path.join(_env.get('MODULEDIR'), 'api');
-
-    _glob(_path.join(dirname, '*.js')).then((list) => {
-      Promise.all(list.map((path) => {
-        _logger.lognt('INFO', 'Loading:', _logger.colored('API', 'bold'), path.replace(_env.get('ROOTDIR'), ''));
-
-        const methods = require(path);
-        Object.keys(methods).forEach((k) => {
-          MODULES[k] = methods[k];
-        });
-
-        return Promise.resolve();
-      })).then(ok).catch(reject);
-    }).catch(reject);
+      const methods = require(path);
+      Object.keys(methods).forEach((k) => {
+        MODULES[k] = methods[k];
+      });
+    }).then(() => resolve(opts)).catch(reject);
   });
 };
 
