@@ -1159,15 +1159,15 @@
         return;
       }
 
-      if ( !args.path ) {
-        callback(API._('ERR_VFS_DOWNLOAD_NO_FILE'));
-        return;
-      }
-
       try {
         args = checkMetadataArgument(args);
       } catch ( e ) {
         callback(e);
+        return;
+      }
+
+      if ( !args.path ) {
+        callback(API._('ERR_VFS_DOWNLOAD_NO_FILE'));
         return;
       }
 
