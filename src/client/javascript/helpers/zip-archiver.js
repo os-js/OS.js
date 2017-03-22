@@ -59,7 +59,7 @@
 
     VFS.download(file, function(error, data) {
       if ( error ) {
-        console.warning('An error while opening zip', error);
+        console.warn('An error while opening zip', error);
         done(error);
         return;
       }
