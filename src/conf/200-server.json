@@ -3,6 +3,7 @@
     "authenticator": "%authenticator%",
     "storage": "%storage%",
     "tz": "",
+    "overlays": {},
     "vfs": {
       "mounts": {
         "home": "%DROOT%/vfs/home/%USERNAME%",
