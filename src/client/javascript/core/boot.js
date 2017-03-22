@@ -623,11 +623,17 @@
   function init(opts) {
     console.group('init()');
 
-    instanceOptions = OSjs.Utils.argumentDefaults(opts || {}, {
-      mocha: false,
-      onInit: function() {},
-      onInited: function() {}
-    });
+    try {
+      opts = opts || {};
+
+      instanceOptions = OSjs.Utils.argumentDefaults(opts, {
+        mocha: false,
+        onInit: function() {},
+        onInited: function() {}
+      });
+    } catch ( e ) {
+      console.warn('Invalid options', opts);
+    }
 
     var config = OSjs.Core.getConfig();
     var splash = document.getElementById('LoadingScreen');
