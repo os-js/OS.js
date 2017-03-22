@@ -431,13 +431,12 @@
     }
 
     var style = flex.join(' ');
-    el.style.WebkitBoxFlex = style;
-    el.style.MozBoxFlex = style;
-
-    el.style.WebkitFlex = style;
-    el.style.MozFlex = style;
-    el.style.MSFlex = style;
-    el.style.OFlex = style;
+    el.style.webkitBoxFlex = style;
+    el.style.mozBoxFlex = style;
+    el.style.webkitFlex = style;
+    el.style.mozFlex = style;
+    el.style.msFlex = style;
+    el.style.oFlex = style;
     el.style.flex = style;
 
     var align = el.getAttribute('data-align');
@@ -831,6 +830,10 @@
 
   OSjs.GUI.Helpers._menuClickWrapper = function(ev, pos, onclick, original) {
     var t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
+
+    if ( t && t.tagName === 'LABEL' ) {
+      t = t.parentNode;
+    }
 
     ev.preventDefault();
     if ( t && t.tagName === 'GUI-MENU-ENTRY' ) {
