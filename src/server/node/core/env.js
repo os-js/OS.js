@@ -98,6 +98,18 @@ module.exports.update = function(config) {
     ENV.PORT = config.http.port;
   }
 
+  if ( config.overlays ) {
+    Object.keys(config.overlays).forEach((name) => {
+      const overlay = config.overlays[name];
+      if ( overlay.modules instanceof Array ) {
+        ENV.MODULEDIR = ENV.MODULEDIR.concat(overlay.modules.map((m) => {
+          const p = _path.resolve(m);
+          return _path.join(p, 'node', 'modules');
+        }));
+      }
+    });
+  }
+
   return ENV;
 };
 

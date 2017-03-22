@@ -136,7 +136,7 @@ module.exports.loadModule = function loadModule(directories, category, name) {
 
       if ( _fs.existsSync(path) ) { // FIXME
         resolve(path);
-        return true;
+        return false;
       }
 
       return false;
