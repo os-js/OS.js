@@ -267,8 +267,6 @@ class Instance
      */
     final public static function run()
     {
-        $root = basename(getcwd());
-
         register_shutdown_function([__CLASS__, 'shutdown']);
         set_error_handler([__CLASS__, 'handle']);
 

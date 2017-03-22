@@ -180,7 +180,6 @@ abstract class Core
           }
         );
 
-
         if ($timeout) {
             curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
         }
