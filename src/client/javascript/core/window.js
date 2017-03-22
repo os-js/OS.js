@@ -1137,14 +1137,17 @@
   Window.prototype._findByQuery = function(query, root, all) {
     root = root || this._getRoot();
 
-    var el;
+    if ( !(root instanceof window.Node) ) {
+      return all ? [] : null;
+    }
+
     if ( all ) {
-      el = root.querySelectorAll(query).map(function(e) {
-        return GUI.Element.createFromNode(e, query);
+      return root.querySelectorAll(query).map(function(el) {
+        return GUI.Element.createFromNode(el, query);
       });
     }
 
-    el = root.querySelector(query);
+    var el = root.querySelector(query);
     return GUI.Element.createFromNode(el, query);
   };
 
