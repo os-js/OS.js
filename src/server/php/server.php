@@ -46,7 +46,10 @@ spl_autoload_register(function($name) {
     if (substr($name, 0, 5) == 'OSjs/') {
         $name = substr($name, 5, strlen($name));
         $path = __DIR__ . '/' . $name . '.php';
-        require $path;
+
+        if ( file_exists($path) ) {
+            require $path;
+        }
     }
 });
 

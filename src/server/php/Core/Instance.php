@@ -74,6 +74,30 @@ class Instance
         if (!date_default_timezone_get()) {
             date_default_timezone_set('UTC');
         }
+
+        $overlays = self::$CONFIG->overlays;
+        $paths = [];
+
+        foreach ( $overlays as $oname => $overlay ) {
+            if ( !empty($overlay->modules) ) {
+                $paths = $paths + $overlay->modules;
+            }
+        }
+
+        if ( sizeof($paths) ) {
+            spl_autoload_register(function($name) use($paths) {
+                $name = str_replace('\\', '/', $name);
+                if (substr($name, 0, 5) == 'OSjs/') {
+                    foreach ( $paths as $dir ) {
+                        $name = substr($name, 5, strlen($name));
+                        $path = DIR_ROOT . '/' . $dir . '/php/' . $name . '.php';
+                        if ( file_exists($path) ) {
+                            require $path;
+                        }
+                    }
+                }
+            });
+        }
     }
 
     /**
@@ -84,13 +108,18 @@ class Instance
      */
     final protected static function _loadMiddleware()
     {
-        $path = DIR_SELF . '/Modules/Middleware/';
-        foreach ( scandir($path) as $file ) {
-            if (substr($file, 0, 1) !== '.') {
-                include $path . $file;
+        $paths = [
+            DIR_SELF . '/Modules/Middleware/'
+        ];
 
-                $className = 'OSjs\\Modules\\Middleware\\' . pathinfo($file, PATHINFO_FILENAME);
-                self::$MIDDLEWARE[] = $className;
+        foreach ( $paths as $path ) {
+            foreach ( scandir($path) as $file ) {
+                if (substr($file, 0, 1) !== '.') {
+                    include $path . $file;
+
+                    $className = 'OSjs\\Modules\\Middleware\\' . pathinfo($file, PATHINFO_FILENAME);
+                    self::$MIDDLEWARE[] = $className;
+                }
             }
         }
     }
@@ -103,13 +132,18 @@ class Instance
      */
     final protected static function _loadAPI()
     {
-        $path = DIR_SELF . '/Modules/API/';
-        foreach ( scandir($path) as $file ) {
-            if (substr($file, 0, 1) !== '.') {
-                include $path . $file;
+        $paths = [
+            DIR_SELF . '/Modules/API/'
+        ];
 
-                $className = 'OSjs\\Modules\\API\\' . pathinfo($file, PATHINFO_FILENAME);
-                self::registerAPIMethods($className);
+        foreach ( $paths as $path ) {
+            foreach ( scandir($path) as $file ) {
+                if (substr($file, 0, 1) !== '.') {
+                    include $path . $file;
+
+                    $className = 'OSjs\\Modules\\API\\' . pathinfo($file, PATHINFO_FILENAME);
+                    self::registerAPIMethods($className);
+                }
             }
         }
 
@@ -134,13 +168,18 @@ class Instance
      */
     final protected static function _loadVFS()
     {
-        $path = DIR_SELF . '/Modules/VFS/';
-        foreach ( scandir($path) as $file ) {
-            if (substr($file, 0, 1) !== '.') {
-                include $path . $file;
+        $paths = [
+            DIR_SELF . '/Modules/VFS/'
+        ];
 
-                $className = 'OSjs\\Modules\\VFS\\' . pathinfo($file, PATHINFO_FILENAME);
-                self::$VFS[] = $className;
+        foreach ( $paths as $path ) {
+            foreach ( scandir($path) as $file ) {
+                if (substr($file, 0, 1) !== '.') {
+                    include $path . $file;
+
+                    $className = 'OSjs\\Modules\\VFS\\' . pathinfo($file, PATHINFO_FILENAME);
+                    self::$VFS[] = $className;
+                }
             }
         }
     }
