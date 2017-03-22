@@ -49,6 +49,7 @@ class Instance
     protected static $API = [];
     protected static $VFS = [];
     protected static $MIDDLEWARE = [];
+    protected static $BASEDIRS = [];
 
     protected static $done = false;
 
@@ -67,6 +68,10 @@ class Instance
         self::$CONFIG = json_decode(file_get_contents(DIR_SERVER . '/settings.json'));
         self::$PACKAGES = json_decode(file_get_contents(DIR_SERVER . '/packages.json'), true);
 
+        self::$BASEDIRS = [
+            DIR_SELF
+        ];
+
         if (!empty(self::$CONFIG->tz)) {
             date_default_timezone_set(self::$CONFIG->tz);
         }
@@ -81,6 +86,9 @@ class Instance
         foreach ( $overlays as $oname => $overlay ) {
             if ( !empty($overlay->modules) ) {
                 $paths = $paths + $overlay->modules;
+                foreach ( $overlay->modules as $dir ) {
+                    self::$BASEDIRS[] = DIR_ROOT . '/' . $dir . '/php';
+                }
             }
         }
 
@@ -108,9 +116,7 @@ class Instance
      */
     final protected static function _loadMiddleware()
     {
-        $paths = [
-            DIR_SELF . '/Modules/Middleware/'
-        ];
+        $paths = self::GetModulePaths('/Modules/Middleware/');
 
         foreach ( $paths as $path ) {
             foreach ( scandir($path) as $file ) {
@@ -132,9 +138,7 @@ class Instance
      */
     final protected static function _loadAPI()
     {
-        $paths = [
-            DIR_SELF . '/Modules/API/'
-        ];
+        $paths = self::GetModulePaths('/Modules/API/');
 
         foreach ( $paths as $path ) {
             foreach ( scandir($path) as $file ) {
@@ -168,9 +172,7 @@ class Instance
      */
     final protected static function _loadVFS()
     {
-        $paths = [
-            DIR_SELF . '/Modules/VFS/'
-        ];
+        $paths = self::GetModulePaths('/Modules/VFS/');
 
         foreach ( $paths as $path ) {
             foreach ( scandir($path) as $file ) {
@@ -219,6 +221,19 @@ class Instance
     final public static function GetVFSModules()
     {
         return self::$VFS;
+    }
+
+    /**
+     * Gets module directories
+     *
+     * @param string $sub The sub directory
+     * @access public
+     * @return array
+     */
+    final public static function GetModulePaths($sub) {
+        return array_map(function($dir) use($sub) {
+            return $dir . $sub;
+        }, self::$BASEDIRS);
     }
 
     /////////////////////////////////////////////////////////////////////////////
