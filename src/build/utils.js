@@ -283,7 +283,7 @@ module.exports.writeScripts = function writeScripts(out, list, debug, verbose) {
 
   _fs.writeFileSync(headerFile, header);
 
-  const pureFuncs = debug ? [] : ['console.log', 'console.group', 'console.groupEnd', 'console.warn', 'console.info', 'console.dir'];
+  const pureFuncs = debug ? [] : ['console.log', 'console.group', 'console.groupEnd', 'console.warn', 'console.info', 'console.dir', 'console.debug'];
 
   const minified = _ugly.minify(finalList, {
     sourceMapIncludeSources: debug,
