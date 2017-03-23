@@ -42,11 +42,10 @@ const ENV = {
   LOGLEVEL: -2,
   NODEDIR: _path.resolve(__dirname + '/../'),
   ROOTDIR: _path.resolve(__dirname + '/../../../../'),
+  SERVERDIR: _path.resolve(__dirname + '/../../'),
   MODULEDIR: [
     _path.resolve(__dirname + '/../modules')
-  ],
-  SERVERDIR: _path.resolve(__dirname + '/../../'),
-  PKGDIR: _path.resolve(__dirname + '/../../../../src/packages')
+  ]
 };
 
 /**
@@ -67,10 +66,6 @@ module.exports.init = function(opts) {
 
   if ( opts.ROOT ) {
     ENV.ROOTDIR = opts.ROOT;
-  }
-
-  if ( opts.PKGDIR ) {
-    ENV.PKGDIR = opts.PKGDIR;
   }
 
   if ( typeof opts.LOGLEVEL === 'number' ) {

@@ -314,11 +314,6 @@ function mutateManifest(packages) {
     if ( packages[p].type === 'service' ) {
       packages[p].singular = true;
     }
-
-    if ( packages[p]._src ) {
-      delete packages[p]._src;
-    }
-
   });
 
   return packages;

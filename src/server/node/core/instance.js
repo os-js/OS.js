@@ -48,10 +48,9 @@
  * @property  {Number}        PORT        Current port
  * @property  {Number}        LOGLEVEL    Current loglevel
  * @property  {String}        ROOTDIR     Root directory of OS.js
- * @property  {String}        MODULEDIR   Directory of server modules
+ * @property  {String[]}      MODULEDIR   Directories of server modules
  * @property  {String}        SERVERDIR   Directory of the server root
  * @property  {String}        NODEDIR     Directory of the node server
- * @property  {String}        PKGDIR      Directory of packages
  * @typedef ServerEnvironment
  */
 
@@ -150,7 +149,7 @@ function registerPackages(servers) {
 
   function _launchSpawners(pn, module, metadata) {
     if ( metadata.spawn && metadata.spawn.enabled ) {
-      const spawner = _path.join(ENV.PKGDIR, pn, metadata.spawn.exec);
+      const spawner = _path.join(metadata._src, metadata.spawn.exec);
       _logger.lognt('INFO', 'Launching', _logger.colored('Spawner', 'bold'), spawner.replace(ENV.ROOTDIR, ''));
       CHILDREN.push(_child.fork(spawner, [], {
         stdio: 'pipe'
@@ -170,7 +169,7 @@ function registerPackages(servers) {
 
         metadata._indexFile = filename;
 
-        const check = _path.join(ENV.PKGDIR, p, filename);
+        const check = _path.join(metadata._src, filename);
         if ( metadata.enabled !== false && _fs.existsSync(check) ) {
           let deprecated = false;
           if ( metadata.type === 'extension' ) {
@@ -221,7 +220,8 @@ function registerServices(servers) {
 function destroyPackages() {
   return new Promise((resolve, reject) => {
     const queue = Object.keys(PACKAGES).map((path) => {
-      const check = _path.join(ENV.PKGDIR, path, 'api.js');
+      const metadata = PACKAGES[path];
+      const check = _path.join(metadata._src, 'api.js');
       if ( _fs.existsSync(check) ) {
         try {
           const mod = require(check);

@@ -66,9 +66,7 @@ module.exports.application = function(http, data) {
 
   const manifest = _metadata.get(apath) || {};
   const filename = manifest && manifest._indexFile ? manifest._indexFile : 'api.js';
-
-  const aroot = _path.join(env.PKGDIR, apath);
-  const fpath = _path.join(aroot, filename);
+  const fpath = _path.join(manifest._src, filename);
 
   return new Promise((resolve, reject) => {
     // NOTE: Deprecated for old node

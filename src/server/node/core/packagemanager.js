@@ -54,6 +54,9 @@ function getSystemMetadata(http, resolve, reject, args) {
     } else {
       let meta = JSON.parse(data);
       Object.keys(meta).forEach((k) => {
+        if ( meta[k]._src ) {
+          delete meta[k]._src;
+        }
         meta[k].scope = 'system';
       });
       resolve(meta);
