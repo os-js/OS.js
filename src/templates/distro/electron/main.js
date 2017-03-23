@@ -44,9 +44,7 @@ function createServer() {
   }
 
   const opts = {
-    DIST: 'dist-dev',
     ROOT: __dirname,
-    PKGDIR: path.join(__dirname, 'dist-dev', 'packages'),
     SERVERDIR: __dirname,
     PORT: 8000,
     //LOGLEVEL: 15,
