@@ -93,7 +93,7 @@ function copyResources(verbose, iter, src, dest) {
         }
 
         try {
-          if ( !_fs.existsSync ) {
+          if ( !_fs.existsSync(p) ) {
             _fs.mkdirSync(p);
           }
           if ( _fs.existsSync(d) ) {
@@ -115,7 +115,7 @@ function copyResources(verbose, iter, src, dest) {
       _utils.log('-', src, '->', dest);
     }
 
-    _fs.copy(_fs.realpathSync(src), dest, (err) => {
+    _fs.copy(_fs.realpathSync(_path.join(ROOT, src)), dest, (err) => {
       /*eslint no-unused-expressions: "off"*/
       err ? reject(err) : resolve();
     });
