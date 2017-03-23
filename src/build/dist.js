@@ -74,6 +74,10 @@ function createIndex(debug, verbose, standalone, cfg) {
       'locales.min.js'
     ];
 
+    if ( standalone ) {
+      inputScripts.push('_dialogs.js');
+    }
+
     const inputStylesheets = [
       'osjs.min.css'
     ];

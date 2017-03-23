@@ -11,8 +11,9 @@ rm -rf ${DIR}
 mkdir -p ${DIST}
 
 # OS.js client
+node osjs clean
 node osjs build
-cp -r dist/*.* ${DIST}
+cp -r dist/* ${DIST}
 
 # Electron base
 cp -r src/templates/distro/electron/*.* ${DIR}/
