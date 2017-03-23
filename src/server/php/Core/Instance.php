@@ -340,7 +340,6 @@ class Instance
         if (!defined('DIR_DIST') ) {
             define('DIR_DIST', DIR_ROOT . '/dist');
         }
-        define('DIR_PACKAGES', DIR_ROOT . '/src/packages');
 
         session_start();
 

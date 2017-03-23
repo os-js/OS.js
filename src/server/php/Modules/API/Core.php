@@ -84,9 +84,17 @@ abstract class Core
         $path = empty($request->data['path']) ? null : $request->data['path'];
         $an = empty($request->data['application']) ? null : $request->data['application'];
         $am = empty($request->data['method']) ? null : $request->data['method'];
-        $aa = empty($request->data['args']) ? Array() : $request->data['args'];
+        $aa = empty($request->data['args']) ? [] : $request->data['args'];
 
-        $apath = DIR_PACKAGES . '/' . $path . '/api.php';
+        $packages = Instance::GetPackages();
+        $apath = null;
+        if ( isset($packages[$path]) ) {
+            $apath = $packages[$path]['_src'] . '/api.php';
+        }
+
+        if ( $apath === null ) {
+            throw new Exception('No such package');
+        }
 
         if (!file_exists($apath)) {
             throw new Exception("No such application or API file not available ({$an})!");
@@ -113,10 +121,17 @@ abstract class Core
     public static function packages(Request $request)
     {
         if ($request->data['command'] === 'list') {
+            $packages = Instance::GetPackages();
+            foreach ( $packages as $name => &$manifest ) {
+                if ( isset($manifest['_src']) ) {
+                    unset($manifest['_src']);
+                }
+            }
+
             $request->respond()->json(
                 [
                 'error' => null,
-                'result' => Instance::GetPackages()
+                'result' => $packages
                 ]
             );
         }
