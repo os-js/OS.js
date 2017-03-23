@@ -238,10 +238,10 @@ function getPackage(name) {
 
   function _getPackage(cfg) {
     const paths = getPackagePaths(cfg, repo);
-    const found = null;
 
+    let found = null;
     paths.some((p) => {
-      const file = _path.join(p, name, 'metadata.json');
+      const file = _path.join(p, name.split('/')[1], 'metadata.json');
       if ( _fs.existsSync(file) ) { // FIXME
         found = file;
       }

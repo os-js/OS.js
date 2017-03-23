@@ -32,6 +32,7 @@
 
 const _index = require('./index.js');
 const _utils = require('./utils.js');
+const _config = require('./config.js');
 
 const _chokidar = require('chokidar');
 const _path = require('path');
@@ -180,22 +181,47 @@ module.exports.watch = function watch(cli) {
   };
 
   return new Promise((resolve, reject) => {
-    Object.keys(paths).forEach((p) => {
-      const path = _path.join(root, p);
-      const fn = (res, stats) => {
-        log('>>>', getBasedDirectory(res, path));
 
-        paths[p](res, stats, path, debug);
-      };
+    _config.getConfiguration().then((cfg) => {
+      if ( cfg.build.overlays ) {
+        Object.keys(cfg.build.overlays).forEach((name) => {
+          const overlay = cfg.build.overlays[name];
+          (overlay.packages || []).forEach((p) => {
+            paths[p + '/*/**'] = watchPackages;
+          });
+          (overlay.templates || []).forEach((p) => {
+            paths[p + '/dist/**/*'] = watchDist;
+          });
 
-      log('Watching', p);
+          (overlay.javascript || []).forEach((p) => {
+            paths[p] = watchCore;
+          });
+          (overlay.locales || []).forEach((p) => {
+            paths[p] = watchCore;
+          });
+          (overlay.stylesheets || []).forEach((p) => {
+            paths[p] = watchCore;
+          });
+        });
+      }
 
-      _chokidar.watch(path, {
-        ignored: /node_modules|\.git/,
-        ignoreInitial: true,
-        persistent: true
-      }).on('add', fn).on('change', fn);
+      Object.keys(paths).forEach((p) => {
+        const path = _path.join(root, p);
+        const fn = (res, stats) => {
+          log('>>>', getBasedDirectory(res, path));
 
+          paths[p](res, stats, path, debug);
+        };
+
+        log('Watching', p);
+
+        _chokidar.watch(path, {
+          ignored: /node_modules|\.git/,
+          ignoreInitial: true,
+          persistent: true
+        }).on('add', fn).on('change', fn);
+
+      });
     });
   });
 };
