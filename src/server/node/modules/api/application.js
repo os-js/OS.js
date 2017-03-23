@@ -64,7 +64,11 @@ module.exports.application = function(http, data) {
   const ameth = data.method || null;
   const aargs = data.args || {};
 
-  const manifest = _metadata.get(apath) || {};
+  const manifest = _metadata.get(apath);
+  if ( !manifest ) {
+    return Promise.reject('No such package');
+  }
+
   const filename = manifest && manifest._indexFile ? manifest._indexFile : 'api.js';
   const fpath = _path.join(manifest._src, filename);
 

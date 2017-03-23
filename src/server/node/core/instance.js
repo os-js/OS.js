@@ -248,23 +248,24 @@ function destroyPackages() {
  * Sends the destruction signal to all Services
  */
 function destroyServices() {
-  const dirname = _path.join(ENV.MODULEDIR, 'services');
-
-  return new Promise((resolve, reject) => {
-    _glob(_path.join(dirname, '*.js')).then((list) => {
-      Promise.all(list.map((path) => {
-        _logger.lognt('VERBOSE', 'Destroying:', _logger.colored('Service', 'bold'), path.replace(ENV.ROOTDIR, ''));
-        try {
-          const res = require(path).destroy();
-          return res instanceof Promise ? res : Promise.resolve();
-        } catch ( e ) {
-          _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
-          console.warn(e.stack);
-        }
-        return Promise.resolve();
-      })).then(resolve).catch(reject);
-    }).catch(reject);
-  });
+  return Promise.all(ENV.MODULEDIR.map((d) => {
+    return new Promise((resolve, reject) => {
+      const dirname = _path.join(d, 'services');
+      _glob(_path.join(dirname, '*.js')).then((list) => {
+        Promise.all(list.map((path) => {
+          _logger.lognt('VERBOSE', 'Destroying:', _logger.colored('Service', 'bold'), path.replace(ENV.ROOTDIR, ''));
+          try {
+            const res = require(path).destroy();
+            return res instanceof Promise ? res : Promise.resolve();
+          } catch ( e ) {
+            _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
+            console.warn(e.stack);
+          }
+          return Promise.resolve();
+        })).then(resolve).catch(reject);
+      }).catch(reject);
+    });
+  }));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
