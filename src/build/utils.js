@@ -156,7 +156,6 @@ module.exports.mergeObject = function mergeObject(into, from) {
  * Compiles given less file
  */
 module.exports.compileLess = function compileLess(debug, src, dest, opts, cb, onRead) {
-  console.log('$ less', src.replace(ROOT + '/', ''), dest.replace(ROOT + '/', ''));
   try {
     let css = _fs.readFileSync(src).toString();
     if ( typeof onRead === 'function' ) {

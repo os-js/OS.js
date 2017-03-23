@@ -246,6 +246,10 @@ function buildStyle(cli, cfg, name) {
         base = cfg.themes.styleBase;
       } catch ( e ) {}
 
+      if ( cli.option('verbose') ) {
+        console.log('$ less', from.replace(ROOT + '/', ''), to.replace(ROOT + '/', ''));
+      }
+
       _utils.compileLess(debug, from, to, {
         sourceMap: {},
         paths: [

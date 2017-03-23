@@ -133,6 +133,9 @@ function buildLess(debug, verbose, iter, src, dest) {
       const from = _path.join(src, f);
       const to = _path.join(dest, files[f]);
 
+      if ( verbose ) {
+        console.log('$ less', from.replace(ROOT + '/', ''), to.replace(ROOT + '/', ''));
+      }
       _utils.compileLess(debug, from, to, {
         sourceMap: {},
         paths: [
