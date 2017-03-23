@@ -57,7 +57,7 @@ function getTemplatePath(cfg, category) {
   });
 
   return paths.filter((p) => {
-    return _fs.existsSync(p); // FIXME
+    return _fs.existsSync(p);
   })[0];
 }
 

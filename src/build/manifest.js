@@ -242,7 +242,7 @@ function getPackage(name) {
     let found = null;
     paths.some((p) => {
       const file = _path.join(p, name.split('/')[1], 'metadata.json');
-      if ( _fs.existsSync(file) ) { // FIXME
+      if ( _fs.existsSync(file) ) {
         found = file;
       }
       return !!found;

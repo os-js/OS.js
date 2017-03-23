@@ -134,7 +134,7 @@ module.exports.loadModule = function loadModule(directories, category, name) {
     directories.some((p) => {
       const path = _path.join(p, category, name + '.js');
 
-      if ( _fs.existsSync(path) ) { // FIXME
+      if ( _fs.existsSync(path) ) {
         resolve(path);
         return false;
       }
