@@ -89,7 +89,7 @@ abstract class Core
         $packages = Instance::GetPackages();
         $apath = null;
         if ( isset($packages[$path]) ) {
-            $apath = $packages[$path]['_src'] . '/api.php';
+            $apath = DIR_ROOT . '/' . $packages[$path]['_src'] . '/api.php';
         }
 
         if ( $apath === null ) {

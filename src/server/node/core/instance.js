@@ -149,7 +149,7 @@ function registerPackages(servers) {
 
   function _launchSpawners(pn, module, metadata) {
     if ( metadata.spawn && metadata.spawn.enabled ) {
-      const spawner = _path.join(metadata._src, metadata.spawn.exec);
+      const spawner = _path.join(ENV.ROOTDIR, metadata._src, metadata.spawn.exec);
       _logger.lognt('INFO', 'Launching', _logger.colored('Spawner', 'bold'), spawner.replace(ENV.ROOTDIR, ''));
       CHILDREN.push(_child.fork(spawner, [], {
         stdio: 'pipe'
@@ -169,7 +169,7 @@ function registerPackages(servers) {
 
         metadata._indexFile = filename;
 
-        const check = _path.join(metadata._src, filename);
+        const check = _path.join(ENV.ROOTDIR, metadata._src, filename);
         if ( metadata.enabled !== false && _fs.existsSync(check) ) {
           let deprecated = false;
           if ( metadata.type === 'extension' ) {
@@ -221,7 +221,7 @@ function destroyPackages() {
   return new Promise((resolve, reject) => {
     const queue = Object.keys(PACKAGES).map((path) => {
       const metadata = PACKAGES[path];
-      const check = _path.join(metadata._src, 'api.js');
+      const check = _path.join(ENV.ROOTDIR, metadata._src, 'api.js');
       if ( _fs.existsSync(check) ) {
         try {
           const mod = require(check);

@@ -117,7 +117,7 @@ function getPackageMetadata(repo, file) {
     try {
       const meta = _fs.readJsonSync(file);
 
-      meta._src = _path.dirname(file);
+      meta._src = _path.dirname(file.replace(ROOT, ''));
 
       meta.type = meta.type || 'application';
       meta.path = name;

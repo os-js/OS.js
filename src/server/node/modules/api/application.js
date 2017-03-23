@@ -70,7 +70,7 @@ module.exports.application = function(http, data) {
   }
 
   const filename = manifest && manifest._indexFile ? manifest._indexFile : 'api.js';
-  const fpath = _path.join(manifest._src, filename);
+  const fpath = _path.join(env.ROOTDIR, manifest._src, filename);
 
   return new Promise((resolve, reject) => {
     // NOTE: Deprecated for old node
