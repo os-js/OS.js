@@ -223,7 +223,7 @@
         OSjs.API.createMenu(mnu, ev);
       }
 
-      if ( API.getConfig('Connection.Dist') !== 'dist' ) {
+      if ( API.getConfig('Debug') ) {
         self.createNotificationIcon('_DeveloperNotification', {
           image: API.getIcon('categories/gnome-devel.png', '16x16'),
           title: 'Developer Tools',
