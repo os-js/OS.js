@@ -1,8 +1,30 @@
+# 2.0.0-89
+
+This is a minor release update that brings support for overlays
+for server modules, as well as packages. Some improvements.
+
+Relevant:
+
+* https://github.com/andersevenrud/osjs-example-overlay
+
+Digest:
+
+* GUI: IE10 compability updates
+* VFS: Make sure 'download()' can take string as argument
+* Bootstrap: Added better error handling
+* zip-archiver: Bugfixes
+* server-node: Now supports overlays (module and packages)
+* server-php: Now supports overlays (modules and packages)
+* build: Now supports external overlays
+* build: Reduced verbosity in some places
+* misc: Removed DOCUMENTATION.md file
+* misc: Removed AUTHORS file
+* misc: Placed some licenses in themes 3p folders
+
 # 2.0.0-88
 
 This minor release update brings mostly scalability updates for GUI
 and applications.
-
 
 Digest:
 

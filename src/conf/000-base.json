@@ -4,7 +4,7 @@
   "storage": "demo",
 
   "client" : {
-    "Version" : "2.0.0-88",
+    "Version" : "2.0.0-89",
     "SettingsManager": {},
     "PackageManager": {},
     "Preloads": {},
