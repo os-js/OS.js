@@ -87,7 +87,11 @@ class Instance
             if ( !empty($overlay->modules) ) {
                 $paths = $paths + $overlay->modules;
                 foreach ( $overlay->modules as $dir ) {
-                    self::$BASEDIRS[] = DIR_ROOT . '/' . $dir . '/php';
+                    if ( preg_match('/^\/|([A-z]:\\\)/', $dir) ) {
+                        self::$BASEDIRS[] = $dir . '/php';
+                    } else {
+                        self::$BASEDIRS[] = DIR_ROOT . '/' . $dir . '/php';
+                    }
                 }
             }
         }
@@ -119,12 +123,14 @@ class Instance
         $paths = self::GetModulePaths('/Modules/Middleware/');
 
         foreach ( $paths as $path ) {
-            foreach ( scandir($path) as $file ) {
-                if (substr($file, 0, 1) !== '.') {
-                    include $path . $file;
+            if ( is_dir($path) ) {
+                foreach ( scandir($path) as $file ) {
+                    if (substr($file, 0, 1) !== '.') {
+                        include $path . $file;
 
-                    $className = 'OSjs\\Modules\\Middleware\\' . pathinfo($file, PATHINFO_FILENAME);
-                    self::$MIDDLEWARE[] = $className;
+                        $className = 'OSjs\\Modules\\Middleware\\' . pathinfo($file, PATHINFO_FILENAME);
+                        self::$MIDDLEWARE[] = $className;
+                    }
                 }
             }
         }
@@ -141,12 +147,14 @@ class Instance
         $paths = self::GetModulePaths('/Modules/API/');
 
         foreach ( $paths as $path ) {
-            foreach ( scandir($path) as $file ) {
-                if (substr($file, 0, 1) !== '.') {
-                    include $path . $file;
+            if ( is_dir($path) ) {
+                foreach ( scandir($path) as $file ) {
+                    if (substr($file, 0, 1) !== '.') {
+                        include $path . $file;
 
-                    $className = 'OSjs\\Modules\\API\\' . pathinfo($file, PATHINFO_FILENAME);
-                    self::registerAPIMethods($className);
+                        $className = 'OSjs\\Modules\\API\\' . pathinfo($file, PATHINFO_FILENAME);
+                        self::registerAPIMethods($className);
+                    }
                 }
             }
         }
@@ -175,12 +183,14 @@ class Instance
         $paths = self::GetModulePaths('/Modules/VFS/');
 
         foreach ( $paths as $path ) {
-            foreach ( scandir($path) as $file ) {
-                if (substr($file, 0, 1) !== '.') {
-                    include $path . $file;
+            if ( is_dir($path) ) {
+                foreach ( scandir($path) as $file ) {
+                    if (substr($file, 0, 1) !== '.') {
+                        include $path . $file;
 
-                    $className = 'OSjs\\Modules\\VFS\\' . pathinfo($file, PATHINFO_FILENAME);
-                    self::$VFS[] = $className;
+                        $className = 'OSjs\\Modules\\VFS\\' . pathinfo($file, PATHINFO_FILENAME);
+                        self::$VFS[] = $className;
+                    }
                 }
             }
         }

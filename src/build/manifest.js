@@ -77,7 +77,8 @@ function getPackagePaths(cfg, repo) {
   ];
 
   _utils.enumOverlayPaths(cfg, 'packages', (p) => {
-    paths.push(_path.join(ROOT, p, repo));
+    const rpath = _path.resolve(ROOT, p);
+    paths.push(_path.join(rpath, repo));
   });
 
   return paths;
@@ -117,7 +118,7 @@ function getPackageMetadata(repo, file) {
     try {
       const meta = _fs.readJsonSync(file);
 
-      meta._src = _path.dirname(file.replace(ROOT, ''));
+      meta._src = _path.dirname(file.replace(ROOT + '/', ''));
 
       meta.type = meta.type || 'application';
       meta.path = name;

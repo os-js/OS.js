@@ -115,7 +115,8 @@ function copyResources(verbose, iter, src, dest) {
       _utils.log('-', src, '->', dest);
     }
 
-    _fs.copy(_fs.realpathSync(_path.join(ROOT, src)), dest, (err) => {
+    const rpath = _path.resolve(ROOT, src);
+    _fs.copy(_fs.realpathSync(rpath), dest, (err) => {
       /*eslint no-unused-expressions: "off"*/
       err ? reject(err) : resolve();
     });
@@ -254,7 +255,7 @@ function _buildPackage(cli, cfg, name, metadata) {
   const debug = cli.option('debug');
 
   return new Promise((resolve, reject) => {
-    const src = metadata._src; //_path.join(ROOT, 'src', 'packages', name);
+    const src = _path.resolve(ROOT, metadata._src); //_path.join(ROOT, 'src', 'packages', name);
     const dest = _path.join(ROOT, 'dist', 'packages', name);
 
     _utils.eachp([
