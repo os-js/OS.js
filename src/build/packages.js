@@ -231,6 +231,9 @@ function combineResources(standalone, metadata, src, dest, debug) {
     }
 
     iter.preload = _manifest.combinePreloads(iter);
+    if ( iter._src ) {
+      delete iter._src;
+    }
 
     _fs.writeFileSync(_path.join(dest, 'metadata.json'), JSON.stringify(iter, null, 4));
 
@@ -248,7 +251,7 @@ function _buildPackage(cli, cfg, name, metadata) {
   const debug = cli.option('debug');
 
   return new Promise((resolve, reject) => {
-    const src = _path.join(ROOT, 'src', 'packages', name);
+    const src = metadata._src; //_path.join(ROOT, 'src', 'packages', name);
     const dest = _path.join(ROOT, 'dist', 'packages', name);
 
     _utils.eachp([

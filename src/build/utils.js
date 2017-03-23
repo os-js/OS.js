@@ -331,3 +331,22 @@ module.exports.writeStyles = function writeStyles(out, list, debug, verbose) {
   _fs.writeFileSync(outm, minified.sourceMap);
   module.exports.removeSilent(headerFile);
 };
+
+/*
+ * Helper for enumerating overlay paths
+ */
+module.exports.enumOverlayPaths = function enumOverlayPaths(cfg, key, onentry) {
+  const overlays = cfg.build.overlays;
+  const paths = [];
+
+  if ( overlays ) {
+    Object.keys(overlays).forEach((n) => {
+      const overlay = overlays[n];
+      if ( overlay[key] instanceof Array ) {
+        overlay[key].forEach(onentry);
+      }
+    });
+  }
+
+  return paths;
+};

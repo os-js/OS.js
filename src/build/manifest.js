@@ -68,6 +68,21 @@ function parsePreloads(iter) {
   return iter;
 }
 
+/*
+ * Gets package path(s)
+ */
+function getPackagePaths(cfg, repo) {
+  const paths = [
+    _path.join(ROOT, 'src/packages', repo)
+  ];
+
+  _utils.enumOverlayPaths(cfg, 'packages', (p) => {
+    paths.push(_path.join(ROOT, p, repo));
+  });
+
+  return paths;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // API
 ///////////////////////////////////////////////////////////////////////////////
@@ -102,6 +117,8 @@ function getPackageMetadata(repo, file) {
     try {
       const meta = _fs.readJsonSync(file);
 
+      meta._src = _path.dirname(file);
+
       meta.type = meta.type || 'application';
       meta.path = name;
       meta.build = meta.build || {};
@@ -123,30 +140,41 @@ function getPackageMetadata(repo, file) {
  * Get packages from repository
  */
 function getRepositoryPackages(repo, all) {
-  const path = _path.join(ROOT, 'src/packages', repo);
-  const result = {};
+
+  function enumPaths(cfg) {
+    const result = {};
+    const paths = getPackagePaths(cfg, repo);
+    const forceEnabled = _config.getConfigPath(cfg, 'packages.ForceEnable', []);
+    const forceDisabled = _config.getConfigPath(cfg, 'packages.ForceDisable', []);
+
+    function readDir(path) {
+      return new Promise((resolve, reject) => {
+        const glb = _path.join(path, '*', 'metadata.json');
+        _glob(glb).then((files) => {
+
+          Promise.all(files.map((file) => {
+            getPackageMetadata(repo, file).then((meta) => {
+              meta = Object.assign({}, meta);
+              if ( all || checkEnabledState(forceEnabled, forceDisabled, meta) ) {
+                result[meta.path] = meta;
+              }
+            }).catch(reject);
+          })).then(resolve).catch(reject);
+
+        }).catch(reject);
+      });
+    }
+
+    return new Promise((resolve, reject) => {
+      Promise.all(paths.map((p) => readDir(p))).then(() => {
+        resolve(result);
+      }).catch(reject);
+    });
+  }
 
   return new Promise((resolve, reject) => {
     _config.getConfiguration().then((cfg) => {
-      const forceEnabled = _config.getConfigPath(cfg, 'packages.ForceEnable', []);
-      const forceDisabled = _config.getConfigPath(cfg, 'packages.ForceDisable', []);
-
-      _glob(_path.join(path, '*', 'metadata.json')).then((files) => {
-
-        _utils.eachp(files.map((file) => {
-          return function() {
-            return getPackageMetadata(repo, file);
-          };
-        }), (meta) => {
-          meta = Object.assign({}, meta);
-          if ( all || checkEnabledState(forceEnabled, forceDisabled, meta) ) {
-            result[meta.path] = meta;
-          }
-        }).then(() => {
-          resolve(result);
-        }).catch(reject);
-
-      }).catch(reject);
+      enumPaths(cfg).then(resolve).catch(reject);
     }).catch(reject);
   });
 }
@@ -206,9 +234,32 @@ function generateClientManifest(manifest) {
  * Gets a package manifest by name
  */
 function getPackage(name) {
-  const file = _path.join(ROOT, 'src/packages', name, 'metadata.json');
-  const repo = file.split('/')[0];
-  return getPackageMetadata(repo, file);
+  const repo = name.split('/')[0];
+
+  function _getPackage(cfg) {
+    const paths = getPackagePaths(cfg, repo);
+    const found = null;
+
+    paths.some((p) => {
+      const file = _path.join(p, name, 'metadata.json');
+      if ( _fs.existsSync(file) ) { // FIXME
+        found = file;
+      }
+      return !!found;
+    });
+
+    if ( found ) {
+      return getPackageMetadata(repo, found);
+    }
+
+    return Promise.reject('No package found');
+  }
+
+  return new Promise((resolve, reject) => {
+    _config.getConfiguration().then((cfg) => {
+      _getPackage(cfg).then(resolve).catch(reject);
+    }).catch(reject);
+  });
 }
 
 /*
@@ -246,7 +297,7 @@ function combinePreloads(manifest) {
 /*
  * Parses a client manifest
  */
-function mutateClientManifest(packages) {
+function mutateManifest(packages) {
   packages = JSON.parse(JSON.stringify(packages));
 
   Object.keys(packages).forEach((p) => {
@@ -262,6 +313,10 @@ function mutateClientManifest(packages) {
 
     if ( packages[p].type === 'service' ) {
       packages[p].singular = true;
+    }
+
+    if ( packages[p]._src ) {
+      delete packages[p]._src;
     }
 
   });
@@ -280,7 +335,7 @@ function createClientManifest(cli, cfg) {
 
   return new Promise((resolve, reject) => {
     getPackages(cfg.repositories).then((packages) => {
-      packages = mutateClientManifest(packages);
+      packages = mutateManifest(packages);
 
       generateClientManifest(packages).then(resolve).catch(reject);
     });
@@ -292,7 +347,7 @@ function createServerManifest(cli, cfg) {
     const dest = _path.join(ROOT, 'src', 'server', 'packages.json');
 
     getPackages(cfg.repositories).then((packages) => {
-      const meta = mutateClientManifest(packages);
+      const meta = mutateManifest(packages);
 
       _fs.writeFile(dest, JSON.stringify(meta, null, 4), (err) => {
         err ? reject(err) : resolve();

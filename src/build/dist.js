@@ -52,18 +52,9 @@ function getTemplatePath(cfg, category) {
     _path.join.apply(_path.join, [ROOT, 'src', 'templates'].concat(category))
   ];
 
-  const overlays = cfg.build.overlays;
-  if ( overlays ) {
-    Object.keys(overlays).forEach((n) => {
-      const overlay = overlays[n];
-      if ( overlay.templates instanceof Array ) {
-        overlay.templates.forEach((p) => {
-          paths.push(_path.join.apply(_path.join, [ROOT, p].concat(category)));
-        });
-      }
-    })
-
-  }
+  _utils.enumOverlayPaths(cfg, 'templates', (p) => {
+    paths.push(_path.join.apply(_path.join, [ROOT, p].concat(category)));
+  });
 
   return paths.filter((p) => {
     return _fs.existsSync(p); // FIXME
