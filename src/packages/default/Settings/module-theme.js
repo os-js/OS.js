@@ -40,7 +40,7 @@
     group: 'personal',
     name: 'Theme',
     label: 'LBL_THEME',
-    icon: 'apps/background.png',
+    icon: 'apps/preferences-desktop-wallpaper.png',
     watch: ['CoreWM'],
 
     init: function() {

@@ -75,7 +75,7 @@
     group: 'system',
     name: 'Input',
     label: 'LBL_INPUT',
-    icon: 'apps/key_bindings.png',
+    icon: 'apps/preferences-desktop-keyboard-shortcuts.png',
 
     init: function() {
     },

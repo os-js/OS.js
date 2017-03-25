@@ -70,7 +70,7 @@
 
     DialogWindow.apply(this, ['ColorDialog', {
       title: args.title || API._('DIALOG_COLOR_TITLE'),
-      icon: 'apps/gnome-settings-theme.png',
+      icon: 'apps/preferences-desktop-theme.png',
       width: 400,
       height: rgb.a !== null ? 300  : 220
     }, args, callback]);

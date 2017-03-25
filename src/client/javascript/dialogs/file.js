@@ -89,7 +89,7 @@
     }
 
     var title     = API._(args.type === 'save' ? 'DIALOG_FILE_SAVE' : 'DIALOG_FILE_OPEN');
-    var icon      = args.type === 'open' ? 'actions/gtk-open.png' : 'actions/gtk-save-as.png';
+    var icon      = args.type === 'open' ? 'actions/document-open.png' : 'actions/documentsave-as.png';
 
     DialogWindow.apply(this, ['FileDialog', {
       title: title,

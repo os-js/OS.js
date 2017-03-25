@@ -42,6 +42,8 @@ module.exports = function(grunt) {
     var files = [
       'src/server/settings.json',
       'src/server/packages.json',
+      'dist/packages/default/CoreWM/_app.min.js',
+      'dist/packages/default/CoreWM/_app.min.css',
       'dist/index.html',
       'dist/favicon.ico',
       'dist/dialogs.html',

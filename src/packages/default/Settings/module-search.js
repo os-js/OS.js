@@ -40,7 +40,7 @@
     group: 'system',
     name: 'Search',
     label: 'LBL_SEARCH',
-    icon: 'actions/search.png',
+    icon: 'actions/system-search.png',
 
     init: function() {
     },

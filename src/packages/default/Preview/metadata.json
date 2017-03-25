@@ -35,7 +35,7 @@
     "^video"
   ],
   "category": "multimedia",
-  "icon": "mimetypes/image.png",
+  "icon": "mimetypes/image-x-generic.png",
   "preload": [
     {
       "src": "main.js",

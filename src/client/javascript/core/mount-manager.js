@@ -126,7 +126,7 @@
         root: sname + ':///',
         name: name,
         description: name,
-        icon: 'devices/harddrive.png',
+        icon: 'devices/drive-harddrive.png',
 
         request: function _request(n, a, callback, options) {
           MountManager._request(mount, n, a, callback, options);
@@ -334,7 +334,7 @@
           var isMounted = true;
 
           return Utils.argumentDefaults(Utils.cloneObject(opts, true), {
-            icon: 'places/server.png',
+            icon: 'places/network-server.png',
             searchable: false,
             unmount: function(done) {
               isMounted = false;

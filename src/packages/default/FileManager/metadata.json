@@ -31,7 +31,7 @@
     "vi_VN": "Trình quản lí file mặc định"
   },
   "category": "utilities",
-  "icon": "apps/file-manager.png",
+  "icon": "apps/system-file-manager.png",
   "preload": [
     {
       "src": "main.js",

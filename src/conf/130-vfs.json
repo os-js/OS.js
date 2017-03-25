@@ -40,7 +40,7 @@
 
         "desktop": {
           "enabled": true,
-          "icon": "places/desktop.png",
+          "icon": "places/user-desktop.png",
           "description": "Desktop",
           "options": {
             "alias": "home:///.desktop",
@@ -51,14 +51,14 @@
         "osjs": {
           "enabled": true,
           "transport": "Dist",
-          "icon": "devices/harddrive.png",
+          "icon": "devices/drive-harddisk.png",
           "description": "OS.js",
           "readOnly": true
         },
 
         "home": {
           "enabled": true,
-          "icon": "places/folder_home.png",
+          "icon": "places/user-home.png",
           "description": "Home"
         },
 

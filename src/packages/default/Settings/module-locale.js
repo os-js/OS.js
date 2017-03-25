@@ -40,7 +40,7 @@
     group: 'user',
     name: 'Locale',
     label: 'LBL_LOCALE',
-    icon: 'apps/locale.png',
+    icon: 'apps/accessories-character-map.png',
 
     init: function() {
     },

@@ -4,8 +4,8 @@ These are some of the ways you can contribute to OS.js:
 
 * **Open issues** You can post any issues/bugs/requests to [Github](https://github.com/os-js/OS.js/issues).
 * **Code** Create a [pull request](https://github.com/os-js/OS.js/pulls) to contribute to the codebase
-* **Translating** Language support is a bit lacking, so any help is appreciated! [Join the Translation team](https://github.com/os-js/OS.js/wiki/Join-the-translation-team)
-* **Testing** Things are always changing, and automated tests are not enough to ensure everything is working 100%. [Join the Testing team](https://github.com/os-js/OS.js/wiki/Join-the-testing-team)
+* **Translating** Language support is a bit lacking, so any help is appreciated!
+* **Testing** Things are always changing, and automated tests are not enough to ensure everything is working 100%.
 * **Documentation** Found something in the [homepage or documentation](https://github.com/andersevenrud/os-js.org) that does not seem right?
 * **Chat** Join in our [Gitter](https://gitter.im/os-js/OS.js) chat room for fun and tech talk!
 * **Community** Join our [community](http://community.os.js.org/) where you can post your ideas and questions etc (that does not fit into Github Issues)

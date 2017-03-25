@@ -32,7 +32,7 @@
   },
   "singular": true,
   "category": "system",
-  "icon": "apps/gnome-monitor.png",
+  "icon": "apps/utilities-system-monitor.png",
   "preload": [
     {
       "src": "main.js",

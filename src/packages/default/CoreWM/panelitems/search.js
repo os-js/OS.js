@@ -66,7 +66,7 @@
     var root = PanelItem.prototype.init.apply(this, arguments);
 
     var img = document.createElement('img');
-    img.src = API.getIcon('actions/search.png');
+    img.src = API.getIcon('actions/system-search.png');
 
     var input = document.createElement('input');
     input.setAttribute('type', 'text');

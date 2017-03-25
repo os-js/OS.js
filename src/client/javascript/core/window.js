@@ -2081,7 +2081,7 @@
       [this._properties.allow_minimize, function() {
         return {
           title: API._('WINDOW_MINIMIZE'),
-          icon: API.getIcon('actions/stock_up.png'),
+          icon: API.getIcon('actions/go-up.png'),
           onClick: function(name, iter) {
             self._minimize();
           }
@@ -2090,7 +2090,7 @@
       [this._properties.allow_maximize, function() {
         return {
           title: API._('WINDOW_MAXIMIZE'),
-          icon: API.getIcon('actions/window_fullscreen.png'),
+          icon: API.getIcon('actions/view-fullscreen.png'),
           onClick: function(name, iter) {
             self._maximize();
             self._focus();

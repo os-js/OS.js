@@ -31,7 +31,7 @@
   },
   "mime":       ["^image"],
   "category":   "graphics",
-  "icon":       "categories/gnome-graphics.png",
+  "icon":       "categories/applications-graphics.png",
   "compability":["canvas"],
   "preload":    [
     {"src": "locales.js", "type": "javascript"},

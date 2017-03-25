@@ -154,7 +154,7 @@
     group: 'system',
     name: 'VFS',
     label: 'VFS',
-    icon: 'devices/harddrive.png',
+    icon: 'devices/drive-harddisk.png',
     watch: ['VFS'],
 
     init: function(app) {

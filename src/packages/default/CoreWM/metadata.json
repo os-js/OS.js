@@ -110,14 +110,14 @@
     "AppMenu": {
       "Name": "AppMenu",
       "Description": "Application Menu",
-      "Icon": "actions/stock_about.png",
+      "Icon": "actions/system-run.png",
       "HasOptions": false
     },
 
     "Buttons": {
       "Name": "Buttons",
       "Description": "Button Bar",
-      "Icon": "actions/stock_about.png"
+      "Icon": "actions/window-new.png"
     },
 
     "Clock": {
@@ -136,7 +136,7 @@
     "Search": {
       "Name": "Search",
       "Description": "Perform searches",
-      "Icon": "actions/find.png",
+      "Icon": "actions/system-search.png",
       "HasOptions": true
     },
 
@@ -149,7 +149,7 @@
     "WindowList": {
       "Name": "Window List",
       "Description": "Toggle between open windows",
-      "Icon": "apps/xfwm4.png"
+      "Icon": "apps/preferences-system-windows.png"
     }
   }
 }

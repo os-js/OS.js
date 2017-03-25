@@ -55,7 +55,7 @@
 
     DialogWindow.apply(this, ['FileUploadDialog', {
       title: args.title || API._('DIALOG_UPLOAD_TITLE'),
-      icon: 'actions/filenew.png',
+      icon: 'actions/document-new.png',
       width: 400,
       height: 100
     }, args, callback]);

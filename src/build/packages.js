@@ -202,6 +202,10 @@ function combineResources(standalone, metadata, src, dest, debug) {
       }
     });
 
+    try {
+      _fs.mkdirsSync(dest);
+    } catch ( e ) {}
+
     _utils.writeScripts(_path.join(dest, '_app.min.js'), combined.javascript, debug);
     _utils.writeStyles(_path.join(dest, '_app.min.css'), combined.stylesheet, debug);
 

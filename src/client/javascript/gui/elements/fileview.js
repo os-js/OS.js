@@ -47,7 +47,7 @@
       return API.getIcon(iter.icon.filename, size, iter.icon.application);
     }
 
-    var icon = 'status/gtk-dialog-question.png';
+    var icon = 'status/dialog-question.png';
     return API.getFileIcon(iter, size, icon);
   }
 

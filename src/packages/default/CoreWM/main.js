@@ -225,7 +225,7 @@
 
       if ( API.getConfig('Debug') ) {
         self.createNotificationIcon('_DeveloperNotification', {
-          image: API.getIcon('categories/gnome-devel.png', '16x16'),
+          image: API.getIcon('categories/applications-development.png', '16x16'),
           title: 'Developer Tools',
           onContextMenu: displayDevMenu,
           onClick: displayDevMenu
@@ -234,7 +234,7 @@
 
       if ( self.getSetting('fullscreen') ) {
         self.createNotificationIcon('_FullscreenNotification', {
-          image: OSjs.API.getIcon('actions/gtk-fullscreen.png', '16x16'),
+          image: OSjs.API.getIcon('actions/view-fullscreen.png', '16x16'),
           title: 'Enter fullscreen',
           onClick: toggleFullscreen,
           _isFullscreen: false
@@ -422,7 +422,7 @@
             console.warn('stack', e.stack);
 
             self.notification({
-              icon: 'status/important.png',
+              icon: 'status/dialog-warning.png',
               title: 'CoreWM',
               message: translate('An error occured while creating PanelItem: {0}', e)
             });
@@ -436,7 +436,7 @@
     if ( !added ) {
       this.notification({
         timeout : 0,
-        icon: 'status/important.png',
+        icon: 'status/dialog-warning.png',
         title: 'CoreWM',
         message: translate('Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)')
       });

@@ -14,7 +14,7 @@
     "tr_TR": "Hesap Makinesi",
     "vi_VN": "Máy tính"
   },
-  "icon": "apps/calc.png",
+  "icon": "apps/accessories-calculator.png",
   "category": "office",
   "preload": ["main.js", "main.css", {
     "src": "scheme.html",

@@ -102,7 +102,7 @@
     group: 'personal',
     name: 'Desktop',
     label: 'LBL_DESKTOP',
-    icon: 'devices/display.png',
+    icon: 'devices/video-display.png',
     watch: ['CoreWM'],
 
     init: function(app) {

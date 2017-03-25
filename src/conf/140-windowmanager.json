@@ -89,7 +89,7 @@
         },
         "menu": {
           "development": {
-            "icon": "categories/package_development.png",
+            "icon": "categories/applications-development.png",
             "title": "Development"
           },
           "education": {
@@ -97,31 +97,31 @@
             "title": "Education"
           },
           "games": {
-            "icon": "categories/package_games.png",
+            "icon": "categories/applications-games.png",
             "title": "Games"
           },
           "graphics": {
-            "icon": "categories/package_graphics.png",
+            "icon": "categories/applications-graphics.png",
             "title": "Graphics"
           },
           "network": {
-            "icon": "categories/package_network.png",
+            "icon": "categories/applications-internet.png",
             "title": "Network"
           },
           "multimedia": {
-            "icon": "categories/package_multimedia.png",
+            "icon": "categories/applications-multimedia.png",
             "title": "Multimedia"
           },
           "office": {
-            "icon": "categories/package_office.png",
+            "icon": "categories/applications-office.png",
             "title": "Office"
           },
           "system": {
-            "icon": "categories/package_system.png",
+            "icon": "categories/applications-system.png",
             "title": "System"
           },
           "utilities": {
-            "icon": "categories/package_utilities.png",
+            "icon": "categories/applications-utilities.png",
             "title": "Utilities"
           },
           "unknown": {

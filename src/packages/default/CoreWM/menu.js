@@ -42,7 +42,7 @@
   function doBuildCategoryMenu(ev) {
     var apps = OSjs.Core.getPackageManager().getPackages();
     var wm = OSjs.Core.getWindowManager();
-    var cfgCategories = wm.getSetting('menu');
+    var cfgCategories = wm.getDefaultSetting('menu');
 
     function createEvent(iter) {
       return function(el) {

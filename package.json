@@ -1,6 +1,6 @@
 {
   "name": "OS.js",
-  "version": "2.0.0-89",
+  "version": "2.0.0-90",
   "description": "JavaScript Cloud/Web Desktop Platform",
   "url": "https://www.os-js.org",
   "email": "andersevenrud@gmail.com",
@@ -24,7 +24,9 @@
     "url": "https://github.com/os-js/OS.js.git"
   },
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test",
+    "build": "node osjs build",
+    "run": "node osjs run"
   },
   "dependencies": {
     "chokidar": "^1.6.1",
