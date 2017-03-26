@@ -125,6 +125,10 @@ const TASKS = {
       return _themes.buildAll(cli, cfg);
     },
 
+    sounds: function(cli, cfg) {
+      return _themes.buildSounds(cli, cfg);
+    },
+
     manifest: function(cli, cfg) {
       return _manifest.writeManifest(cli, cfg);
     },
@@ -230,7 +234,7 @@ module.exports._init = function() {
  */
 module.exports.build = function(cli, args) {
   if ( !args ) {
-    args = ['config', 'dist', 'core', 'themes', 'manifest', 'packages'];
+    args = ['config', 'dist', 'core', 'themes', 'sounds', 'manifest', 'packages'];
 
     args = args.concat(Object.keys(TASKS.build).filter(function(i) {
       return ORIGINAL_TASKS.build.indexOf(i) === -1 && args.indexOf(i) === -1;

@@ -158,6 +158,28 @@ function buildFonts(cli, cfg) {
 }
 
 /*
+ * Builds sound files
+ */
+function buildSounds(cli, cfg) {
+  return new Promise((resolve, reject) => {
+
+    const sdst = _path.join(ROOT, 'dist', 'themes', 'sounds');
+    _utils.mkdirSilent(sdst);
+
+    cfg.themes.sounds.forEach((i) => {
+      _logger.log('Building sound pack', _logger.color(i, 'blue,bold'));
+
+      const src = _path.join(ROOT, 'src', 'client', 'themes', 'sounds', i);
+      const dst = _path.join(ROOT, 'dist', 'themes', 'sounds', i);
+      _fs.copySync(src, dst);
+      _utils.removeSilent(_path.join(dst, 'metadata.json'));
+    });
+
+    resolve();
+  });
+}
+
+/*
  * Builds static files
  */
 function buildStatic(cli, cfg) {
@@ -167,16 +189,6 @@ function buildStatic(cli, cfg) {
     const src = _path.join(ROOT, 'src', 'client', 'themes', 'wallpapers');
     const dst = _path.join(ROOT, 'dist', 'themes', 'wallpapers');
     _fs.copySync(src, dst);
-
-    const sdst = _path.join(ROOT, 'dist', 'themes', 'sounds');
-    _utils.mkdirSilent(sdst);
-
-    cfg.themes.sounds.forEach((i) => {
-      const src = _path.join(ROOT, 'src', 'client', 'themes', 'sounds', i);
-      const dst = _path.join(ROOT, 'dist', 'themes', 'sounds', i);
-      _fs.copySync(src, dst);
-      _utils.removeSilent(_path.join(dst, 'metadata.json'));
-    });
 
     resolve();
   });
@@ -285,6 +297,7 @@ function buildAll(cli, cfg) {
 
   return Promise.all([
     !only || only === 'fonts' ? buildFonts(cli, cfg) : Promise.resolve(),
+    !only || only === 'sounds' ? buildSounds(cli, cfg) : Promise.resolve(),
     !only || only === 'static' ? buildStatic(cli, cfg) : Promise.resolve(),
     !only || only === 'icons' ? buildIcon(cli, cfg) : Promise.resolve(),
     !only || only === 'styles' ? buildStyle(cli, cfg) : Promise.resolve()
@@ -309,4 +322,5 @@ module.exports.buildStyle = buildStyle;
 module.exports.buildIcon = buildIcon;
 module.exports.buildStatic = buildStatic;
 module.exports.buildFonts = buildFonts;
+module.exports.buildSounds = buildSounds;
 module.exports.clean = cleanFiles;
