@@ -149,7 +149,6 @@ function readMetadata(cfg) {
  */
 function buildFonts(cli, cfg) {
   return new Promise((resolve, reject) => {
-    _logger.log('Building fonts');
     _utils.mkdirSilent(_path.join(ROOT, 'dist', 'themes', 'fonts'));
 
     let rep = cfg.client.Connection.FontURI;
@@ -158,6 +157,8 @@ function buildFonts(cli, cfg) {
     }
 
     const concated = cfg.themes.fonts.map((iter) => {
+      _logger.log('Building font pack', _logger.color(iter, 'blue,bold'));
+
       const src = getTemplatePath(cfg, 'fonts', iter);
       const dst = _path.join(ROOT, 'dist', 'themes', 'fonts', iter);
 
@@ -206,7 +207,7 @@ function buildSounds(cli, cfg) {
  */
 function buildStatic(cli, cfg) {
   return new Promise((resolve, reject) => {
-    _logger.log('Building statics');
+    _logger.log('Copying statics', _logger.color('wallpapers', 'blue,bold'));
 
     const dst = _path.join(ROOT, 'dist', 'themes', 'wallpapers');
 

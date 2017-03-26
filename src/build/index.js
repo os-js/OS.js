@@ -109,7 +109,8 @@ const TASKS = {
         [cli.option('style'), _themes.buildStyle],
         [cli.option('icons'), _themes.buildIcon],
         [cli.option('static'), _themes.buildStatic],
-        [cli.option('fonts'), _themes.buildFonts]
+        [cli.option('fonts'), _themes.buildFonts],
+        [cli.option('sounds'), _themes.buildSounds]
       ];
 
       const list = targets.filter((iter) => {
@@ -123,10 +124,6 @@ const TASKS = {
 
     themes: function(cli, cfg) {
       return _themes.buildAll(cli, cfg);
-    },
-
-    sounds: function(cli, cfg) {
-      return _themes.buildSounds(cli, cfg);
     },
 
     manifest: function(cli, cfg) {

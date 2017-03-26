@@ -1,50 +1,49 @@
-=== OS.js Task Runner ===
+OS.js build system and task runner
 
-Below is the list of common tasks.
 More information: https://os.js.org/manual/build/cli/
-
-Building:
-  build [--debug]                                        Builds everything
-  build:config                                           Builds configuration files
-  build:manifest                                         Builds package manifest files
-  build:dist [--debug]                                   Builds dist files
-  build:core [--debug]                                   Builds client core files
-  build:package --name=REPO/NAME [--debug]               Builds given package
-  build:packages [--debug]                               Builds all packages
-  build:themes [--debug]                                 Builds all style themes
-  build:sounds [--debug]                                 Builds all sound themes
-
-Configuration:
-  config:get --name=KEY                                  Gets a configuration value
-  config:set --name=KEY --value=VALUE [--out=FILE]       Sets a configuration entry
-  config:set [--name=KEY] --import=FILE                  Imports a configuration entry (or tree)
-  config:add-repository --name=NAME                      Adds a repository directory
-  config:remove-repository --name=NAME                   Removes a repository directory
-  config:list-packages                                   Lists all repositories and packages
-  config:enable-package --name=REPO/NAME                 Force-enable given package
-  config:disable-package --name=REPO/NAME                Force-disable given package
-  config:add-script --path=PATH [--overlay=NAME]         Add a script to overlay
-  config:add-style --path=PATH [--overlay=NAME]          Add a stylesheet to overlay
-  config:add-locale --path=PATH [--overlay=NAME]         Add a locale to overlay
-  config:add-preload --name=NAME --path=PATH             Adds a preload file
-  config:add-mount --name=NAME --desc=DESC --path=PATH   Adds a mountpoint
-
-Generators:
-  generate:apache-htaccess [--debug]                     Generates apache htaccess file (PHP)
-  generate:apache-vhost --out=FILENAME                   Generates apache vhost file (PHP)
-  generate:apache-proxy --out=FILENAME                   Generates apache reverse-proxy (Node)
-  generate:nginx-config --out=FILENAME                   Generates nginx config (PHP)
-  generate:nginx-proxy --out=FILENAME                    Generates nginx reverse-proxy (Node)
-  generate:lighttpd-config --out=FILENAME                Generates lighttpd config (PHP)
-  generate:package --name=REPO/NAME --type=TYPE          Generates a new package
-
-Misc:
-  clean                                                  Cleans up 'dist' build files
-  run [--port=N] [--loglevel=N] [--debug]                Runs OS.js server
-  watch [--debug]                                        Watch and automatically build changes
 
 Use the --verbose argument to get detailed information in build output. Loglevels:
 INFO: 1, WARN: 2, WARNING: 2, ERROR: 3, VERBOSE: 8 (default: 7)
 
 The --debug flag enables full source map (inline) support in build files. For the server,
 this disables any HTTP caching etc.
+
+Building:
+  clean
+  watch [--debug]
+  build [--debug]
+  build:config
+  build:manifest
+  build:dist [--debug]
+  build:core [--debug]
+  build:packages [--debug]
+  build:themes [--debug] [--only=]
+  build:package --name=REPO/NAME [--debug]
+  build:theme [--style] [--icons] [--fonts] [--static] [--sounds]
+
+Configuration:
+  config:get --name=KEY
+  config:set --name=KEY --value=VALUE [--out=FILE]
+  config:set [--name=KEY] --import=FILE
+  config:add-repository --name=NAME
+  config:remove-repository --name=NAME
+  config:list-packages
+  config:enable-package --name=REPO/NAME
+  config:disable-package --name=REPO/NAME
+  config:add-script --path=PATH [--overlay=NAME]
+  config:add-style --path=PATH [--overlay=NAME]
+  config:add-locale --path=PATH [--overlay=NAME]
+  config:add-preload --name=NAME --path=PATH
+  config:add-mount --name=NAME --desc=DESC --path=PATH
+
+Generators:
+  generate:apache-htaccess [--debug]
+  generate:apache-vhost [--out=FILENAME]
+  generate:apache-proxy [--out=FILENAME]
+  generate:nginx-config [--out=FILENAME]
+  generate:nginx-proxy [--out=FILENAME]
+  generate:lighttpd-config [--out=FILENAME]
+  generate:package --name=REPO/NAME [--type=TYPE]
+
+Server:
+  run [--port=N] [--loglevel=N] [--debug]
