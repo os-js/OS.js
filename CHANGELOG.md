@@ -1,3 +1,11 @@
+# 2.0.0-90
+
+This is a minor release that cleans up icon and sound themes.
+
+Paves the way for SVG icon themes as all duplicates has been eliminated.
+
+Also makes for a smaller total build size (and quicker builds.)
+
 # 2.0.0-89
 
 This is a minor release update that brings support for overlays
