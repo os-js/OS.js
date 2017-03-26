@@ -41,6 +41,28 @@ const _logger = _utils.logger;
 const ROOT = _path.dirname(_path.dirname(_path.join(__dirname)));
 
 ///////////////////////////////////////////////////////////////////////////////
+// HELPERS
+///////////////////////////////////////////////////////////////////////////////
+
+/*
+ * Gets the correct template directory
+ */
+function getTemplatePath(cfg, category, name) {
+  const paths = [
+    _path.join(ROOT, 'src', 'client', 'themes', category, name)
+  ];
+
+  _utils.enumOverlayPaths(cfg, 'themes', (p) => {
+    const rel = _path.resolve(ROOT, p);
+    paths.push(_path.join(rel, category, name));
+  });
+
+  return paths.filter((p) => {
+    return _fs.existsSync(p);
+  })[0];
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // API
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -136,7 +158,7 @@ function buildFonts(cli, cfg) {
     }
 
     const concated = cfg.themes.fonts.map((iter) => {
-      const src = _path.join(ROOT, 'src', 'client', 'themes', 'fonts', iter);
+      const src = getTemplatePath(cfg, 'fonts', iter);
       const dst = _path.join(ROOT, 'dist', 'themes', 'fonts', iter);
 
       _fs.copySync(src, dst);
@@ -169,7 +191,7 @@ function buildSounds(cli, cfg) {
     cfg.themes.sounds.forEach((i) => {
       _logger.log('Building sound pack', _logger.color(i, 'blue,bold'));
 
-      const src = _path.join(ROOT, 'src', 'client', 'themes', 'sounds', i);
+      const src = getTemplatePath(cfg, 'sounds', i);
       const dst = _path.join(ROOT, 'dist', 'themes', 'sounds', i);
       _fs.copySync(src, dst);
       _utils.removeSilent(_path.join(dst, 'metadata.json'));
@@ -186,9 +208,18 @@ function buildStatic(cli, cfg) {
   return new Promise((resolve, reject) => {
     _logger.log('Building statics');
 
-    const src = _path.join(ROOT, 'src', 'client', 'themes', 'wallpapers');
     const dst = _path.join(ROOT, 'dist', 'themes', 'wallpapers');
+
+    const src = _path.join(ROOT, 'src', 'client', 'themes', 'wallpapers');
     _fs.copySync(src, dst);
+
+    _utils.enumOverlayPaths(cfg, 'themes', (p) => {
+      const rel = _path.resolve(ROOT, p);
+      const dir = _path.join(rel, 'wallpapers');
+      if ( _fs.existsSync(dir) ) {
+        _fs.copySync(dir, dst);
+      }
+    });
 
     resolve();
   });
@@ -203,7 +234,7 @@ function buildIcon(cli, cfg, name) {
     return new Promise((resolve) => {
       _logger.log('Building icon pack', _logger.color(n, 'blue,bold'));
 
-      const src = _path.join(ROOT, 'src', 'client', 'themes', 'icons', n);
+      const src = getTemplatePath(cfg, 'icons', n);
       const dst = _path.join(ROOT, 'dist', 'themes', 'icons', n);
       _utils.mkdirSilent(dst);
 
@@ -244,7 +275,7 @@ function buildStyle(cli, cfg, name) {
     return new Promise((resolve) => {
       _logger.log('Building style', _logger.color(n, 'blue,bold'));
 
-      const src = _path.join(ROOT, 'src', 'client', 'themes', 'styles', n);
+      const src = getTemplatePath(cfg, 'styles', n);
       const dst = _path.join(ROOT, 'dist', 'themes', 'styles');
 
       _utils.mkdirSilent(dst);

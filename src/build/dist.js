@@ -53,7 +53,8 @@ function getTemplatePath(cfg, category) {
   ];
 
   _utils.enumOverlayPaths(cfg, 'templates', (p) => {
-    paths.push(_path.join.apply(_path.join, [ROOT, p].concat(category)));
+    const rel = _path.resolve(ROOT, p);
+    paths.push(_path.join.apply(_path.join, [rel].concat(category)));
   });
 
   return paths.filter((p) => {
