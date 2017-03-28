@@ -48,7 +48,7 @@
     "request": "^2.81.0",
     "simplejsonconf": "^1.0.5",
     "uglify-js": "^2.8.14",
-    "unzip": "^0.1.11",
+    "unzip-stream": "^0.1.2",
     "ws": "^2.2.1",
     "zlibjs": "^0.2.0"
   },

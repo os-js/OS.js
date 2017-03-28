@@ -32,7 +32,8 @@
 
 const _path = require('path');
 const _fs = require('fs-extra');
-const _unzip = require('unzip');
+//const _unzip = require('unzip');
+const _unzip = require('unzip-stream');
 const _vfs = require('./vfs.js');
 const _env = require('./env.js');
 const _utils = require('./../lib/utils.js');
@@ -183,9 +184,20 @@ module.exports.install = function(http, resolve, reject, args) {
       }).then(() => {
         _vfs.createReadStream(http, args.zip).then((zipStream) => {
           zipStream.pipe(_unzip.Parse()).on('entry', (entry) => {
-            _vfs.createWriteStream(http, [args.dest, entry.path].join('/')).then((s) => {
-              entry.pipe(s);
-            });
+            const p = [args.dest, entry.path].join('/');
+            const dirname = entry.type === 'Directory' ? p : _path.dirname(p);
+
+            function _pipe() {
+              _vfs.createWriteStream(http, p).then((s) => {
+                entry.pipe(s);
+              }).catch((error) => {
+                console.warn(error);
+                entry.autodrain();
+              });
+            }
+
+            _vfs._request(http, 'mkdir', {path: dirname}).then(_pipe).catch(_pipe);
+
           }).on('finish', () => {
             resolve(true);
           }).on('error', _onerror);

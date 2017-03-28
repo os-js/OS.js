@@ -241,9 +241,13 @@ module.exports._vrequest = function(method, args, options) {
  * @memberof core.vfs
  */
 module.exports.createReadStream = function(http, path) {
-  const transportName = getTransportName(path);
-  const transport = module.exports.getTransport(transportName);
-  return transport.createReadStream(http, path);
+  try {
+    const transportName = getTransportName(path);
+    const transport = module.exports.getTransport(transportName);
+    return transport.createReadStream(http, path);
+  } catch ( e ) {
+    return Promise.reject(e);
+  }
 };
 
 /**
@@ -258,9 +262,13 @@ module.exports.createReadStream = function(http, path) {
  * @memberof core.vfs
  */
 module.exports.createWriteStream = function(http, path) {
-  const transportName = getTransportName(path);
-  const transport = module.exports.getTransport(transportName);
-  return transport.createWriteStream(http, path);
+  try {
+    const transportName = getTransportName(path);
+    const transport = module.exports.getTransport(transportName);
+    return transport.createWriteStream(http, path);
+  } catch ( e ) {
+    return Promise.reject(e);
+  }
 };
 
 /**

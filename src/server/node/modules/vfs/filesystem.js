@@ -47,12 +47,23 @@ const _vfs = require('./../../core/vfs.js');
  * Create a read stream
  */
 function createReadStream(http, path) {
-  const resolved = _vfs.parseVirtualPath(path, http);
   return new Promise((resolve, reject) => {
     /*eslint new-cap: "off"*/
-    resolve(_fs.createReadStream(resolved.real, {
-      bufferSize: 64 * 1024
-    }));
+    try {
+      const resolved = _vfs.parseVirtualPath(path, http);
+      const stream = _fs.createReadStream(resolved.real, {
+        bufferSize: 64 * 1024
+      });
+
+      stream.on('error', (error) => {
+        reject(error);
+      });
+      stream.on('open', () => {
+        resolve(stream);
+      });
+    } catch ( e ) {
+      reject(e);
+    }
   });
 }
 
@@ -60,10 +71,21 @@ function createReadStream(http, path) {
  * Create a write stream
  */
 function createWriteStream(http, path) {
-  const resolved = _vfs.parseVirtualPath(path, http);
   return new Promise((resolve, reject) => {
     /*eslint new-cap: "off"*/
-    resolve(_fs.createWriteStream(resolved.real));
+    try {
+      const resolved = _vfs.parseVirtualPath(path, http);
+      const stream = _fs.createWriteStream(resolved.real);
+
+      stream.on('error', (error) => {
+        reject(error);
+      });
+      stream.on('open', () => {
+        resolve(stream);
+      });
+    } catch ( e ) {
+      reject(e);
+    }
   });
 }
 
