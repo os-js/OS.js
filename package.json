@@ -30,13 +30,13 @@
   },
   "dependencies": {
     "chokidar": "^1.6.1",
-    "clean-css": "^4.0.9",
+    "clean-css": "^4.0.10",
     "colors": "^1.1.2",
     "compression": "^1.6.2",
     "cookie": "^0.3.1",
     "cookie-parser": "^1.4.3",
     "diskspace": "^2.0.0",
-    "express-session": "^1.15.1",
+    "express-session": "^1.15.2",
     "findit": ">=2.0.0",
     "formidable": ">=1.0.17",
     "fs-extra": "^2.1.2",
@@ -47,9 +47,9 @@
     "minimist": "^1.2.0",
     "request": "^2.81.0",
     "simplejsonconf": "^1.0.5",
-    "uglify-js": "^2.8.14",
+    "uglify-js": "^2.8.17",
     "unzip-stream": "^0.1.2",
-    "ws": "^2.2.1",
+    "ws": "^2.2.2",
     "zlibjs": "^0.2.0"
   },
   "devDependencies": {
