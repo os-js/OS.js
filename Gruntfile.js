@@ -42,6 +42,11 @@ module.exports = function(grunt) {
     var files = [
       'src/server/settings.json',
       'src/server/packages.json',
+      'dist/themes/fonts.min.css',
+      'dist/themes/styles/default.min.css',
+      'dist/themes/sounds/default/message.mp3',
+      'dist/themes/sounds/default/message.oga',
+      'dist/themes/icons/default/metadata.json',
       'dist/packages/default/CoreWM/_app.min.js',
       'dist/packages/default/CoreWM/_app.min.css',
       'dist/index.html',
