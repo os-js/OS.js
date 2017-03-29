@@ -33,11 +33,11 @@
 const _vfs = require('./../../core/vfs.js');
 
 /*
- * Handles iframe application resources
+ * Handles user-package application resources
  */
 module.exports.request = function(http, next) {
-  if ( http.path.match(/^\/iframe\//) ) {
-    const resourcePath = http.path.replace(/^\/iframe\//, '');
+  if ( http.path.match(/^\/?user\-package\//) ) {
+    const resourcePath = http.path.replace(/^\/?user\-package\//, '');
     const packagePath = 'home:///.packages/' + resourcePath;
 
     _vfs.request(http, 'read', {

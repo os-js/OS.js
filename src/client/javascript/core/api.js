@@ -953,7 +953,7 @@
 
       if ( pkg ) {
         if ( pkg.scope === 'user' ) {
-          path = '/iframe/' + OSjs.Utils.filename(pkg.path) + '/' + name.replace(/^\//, '');
+          path = '/user-package/' + OSjs.Utils.filename(pkg.path) + '/' + name.replace(/^\//, '');
         } else {
           path = 'packages/' + pkg.path + '/' + name;
         }

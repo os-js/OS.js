@@ -33,12 +33,12 @@ use OSjs\Core\Request;
 use OSjs\Core\Middleware;
 use OSjs\Modules\VFS\Filesystem;
 
-class IframeApplication extends Middleware
+class UserPackage extends Middleware
 {
     final public static function request(Request $request)
     {
-        if ( preg_match('/^\/?iframe\//', $request->url) ) {
-            $resource = 'home:///.packages/' . preg_replace('/^\/?iframe\//', '', $request->url);
+        if ( preg_match('/^\/?user\-package\//', $request->url) ) {
+            $resource = 'home:///.packages/' . preg_replace('/^\/?user\-package\//', '', $request->url);
             Filesystem::read($request, ['path' => $resource, 'raw' => true]);
             return false;
         }
