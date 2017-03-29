@@ -241,7 +241,7 @@
       icon: '',
       title: 'IframeApplicationWindow'
     });
-    this.options.src = OSjs.API.getApplicationResource(this, this.options.src);
+    this.options.src = this._getResource(this.options.src);
   }
 
   IFrameApplication.prototype = Object.create(Application.prototype);

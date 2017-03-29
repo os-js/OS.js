@@ -953,7 +953,7 @@
 
       if ( pkg ) {
         if ( pkg.scope === 'user' ) {
-          path = API.getConfig('Connection.FSURI') + '/get/' + Utils.pathJoin(pkg.path, name);
+          path = OSjs.VFS.Transports.OSjs.path(Utils.pathJoin(pkg.path, name));
         } else {
           path = 'packages/' + pkg.path + '/' + name;
         }
