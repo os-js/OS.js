@@ -146,8 +146,12 @@ function handleRequest(http, onend) {
     cb(h, cb);
   };
 
-  function _final() {
+  function _final(nothingWasDone) {
     _evhandler.emit('request:end', []);
+
+    if ( nothingWasDone ) {
+      http.respond.error('File not found', 404);
+    }
   }
 
   // We use JSON as default responses, no matter what
@@ -288,7 +292,9 @@ function handleRequest(http, onend) {
     } else {
       // Assets and Middleware
       const isStatic = _staticResponse(method, () => {
-        _middleware.request(http).then(_final).catch((error) => {
+        _middleware.request(http).then(() => {
+          _final(true);
+        }).catch((error) => {
           _final();
 
           if ( error ) {
