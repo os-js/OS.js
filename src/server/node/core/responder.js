@@ -99,8 +99,12 @@ module.exports.createFromHttp = function(servers, request, response) {
     return new Promise((resolve, reject) => {
       _fs.stat(path, (err, stats) => {
         if ( err ) {
-          _error('File not found', 404);
-          return options.reject ? reject() : null;
+          if ( options.reject ) {
+            reject();
+          } else {
+            _error('File not found', 404);
+          }
+          return;
         }
 
         const range = options.download ? false : request.headers.range;
@@ -163,8 +167,10 @@ module.exports.createFromHttp = function(servers, request, response) {
           endResponse(response);
         });
 
-        response.writeHead(code, headers);
-        stream.pipe(response);
+        stream.on('open', () => {
+          response.writeHead(code, headers);
+          stream.pipe(response);
+        });
 
         return resolve();
       });
