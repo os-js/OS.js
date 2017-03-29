@@ -1,3 +1,7 @@
+# 2.0.0-92
+
+Adds new handling of user package resources.
+
 # 2.0.0-91
 
 Added theme overlay support. Updated zip handling in user-installable
