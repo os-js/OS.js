@@ -1,3 +1,19 @@
+# 2.0.0-91
+
+Added theme overlay support. Updated zip handling in user-installable
+packages.
+
+Digest:
+
+* server-node: Updated user-installable package handling
+* build: Updated help
+* build: Support for theme overlays
+* build: Separated sound theme build from main
+* misc: Updated bin/add-user.js
+* misc: Updated Grunt tests
+* misc: Changed from 'unzip' to 'unzip-stream' library
+* misc: Updated package.json dependencies
+
 # 2.0.0-90
 
 This is a minor release that cleans up icon and sound themes.
