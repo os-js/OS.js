@@ -32,14 +32,14 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
-const _bcrypt = require('bcryptjs');
+const _bcrypt = require('bcrypt');
 const _path = require('path');
 const _fs = require('fs');
 
 const ROOT = _path.join(__dirname, '/../');
 const ARGS = process.argv;
 
-const _db = require(_path.join(ROOT, 'src/server/node/core/database.js'));
+const _db = require(_path.join(ROOT, 'src/server/node/lib/database.js'));
 
 const config = JSON.parse(_fs.readFileSync(_path.join(ROOT, 'src', 'server', 'settings.json')));
 
@@ -47,7 +47,7 @@ const username = ARGS[3];
 const name = ARGS[3];
 const groups = String(ARGS[4] || 'admin').replace(/\s/g, '').split(',');
 
-const auther = config.http.authenticator;
+const auther = config.authenticator;
 const cfg = config.modules.auth[auther];
 
 function createPassword() {
@@ -95,7 +95,8 @@ function createPassword() {
 }
 
 if ( auther !== 'database' ) {
-  return Promise.reject('You have to add users via your system for this authenticator.');
+  console.error('You have to add users via your system for this authenticator.');
+  return;
 }
 
 if ( ARGS.length < 4 ) {
