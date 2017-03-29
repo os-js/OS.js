@@ -210,7 +210,8 @@ function handleRequest(http, onend) {
       _evhandler.emit('request:end', []);
 
       http.respond.file(path, {
-        cache: 'static'
+        cache: 'static',
+        reject: true
       }).catch(finished);
     }
 

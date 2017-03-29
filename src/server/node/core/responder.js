@@ -100,7 +100,7 @@ module.exports.createFromHttp = function(servers, request, response) {
       _fs.stat(path, (err, stats) => {
         if ( err ) {
           _error('File not found', 404);
-          return /*reject()*/;
+          return options.reject ? reject() : null;
         }
 
         const range = options.download ? false : request.headers.range;
