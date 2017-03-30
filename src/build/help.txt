@@ -2,11 +2,15 @@ OS.js build system and task runner
 
 More information: https://os.js.org/manual/build/cli/
 
-Use the --verbose argument to get detailed information in build output. Loglevels:
-INFO: 1, WARN: 2, WARNING: 2, ERROR: 3, VERBOSE: 8 (default: 7)
+Use the --verbose argument to get detailed information in build output.
 
 The --debug flag enables full source map (inline) support in build files. For the server,
 this disables any HTTP caching etc.
+
+You can also pass the --optimization= argument to change the optimization level,
+where 'all' is slower/smaller, 'none' is quick/big and any other value uses defaults.
+
+Loglevels: INFO: 1, WARN: 2, WARNING: 2, ERROR: 3, VERBOSE: 8 (default: 7)
 
 Building:
   clean

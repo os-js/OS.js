@@ -170,7 +170,7 @@ function createStandaloneScheme(iter, dest) {
 /*
  * Combines resources
  */
-function combineResources(standalone, metadata, src, dest, debug) {
+function combineResources(standalone, metadata, src, dest, debug, optimization) {
   const remove = [];
   const combined = {
     javascript: [],
@@ -206,8 +206,19 @@ function combineResources(standalone, metadata, src, dest, debug) {
       _fs.mkdirsSync(dest);
     } catch ( e ) {}
 
-    _utils.writeScripts(_path.join(dest, '_app.min.js'), combined.javascript, debug);
-    _utils.writeStyles(_path.join(dest, '_app.min.css'), combined.stylesheet, debug);
+    _utils.writeScripts({
+      sources: combined.javascript,
+      dest: _path.join(dest, '_app.min.js'),
+      debug: debug,
+      optimizations: optimization
+    }),
+
+    _utils.writeStyles({
+      dest: _path.join(dest, '_app.min.css'),
+      sources: combined.stylesheet,
+      debug: debug,
+      optimizations: optimization
+    });
 
     const sfile = _path.join(dest, 'scheme.html');
     if ( _fs.existsSync(sfile) ) {
@@ -257,6 +268,7 @@ function _buildPackage(cli, cfg, name, metadata) {
   const verbose = cli.option('verbose');
   const standalone = cli.option('standalone');
   const debug = cli.option('debug');
+  const optimization = cli.option('optimization', false);
 
   return new Promise((resolve, reject) => {
     const src = _path.resolve(ROOT, metadata._src); //_path.join(ROOT, 'src', 'packages', name);
@@ -279,7 +291,7 @@ function _buildPackage(cli, cfg, name, metadata) {
         return buildLess(debug, verbose, metadata, src, dest);
       }, () => {
         return new Promise((yes, no) => {
-          return combineResources(standalone, metadata, src, dest, debug).then((data) => {
+          return combineResources(standalone, metadata, src, dest, debug, optimization).then((data) => {
             metadata = data; // Make sure we set new metadata after changes
             yes();
           }).catch(no);

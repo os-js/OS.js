@@ -263,14 +263,14 @@ module.exports.logger = {
 /*
  * Helper for compiling scripts
  */
-module.exports.writeScripts = function writeScripts(out, list, debug, verbose) {
-  const outm = out.replace(/\.min\.js$/, '.min.js.map');
+module.exports.writeScripts = function writeScripts(write) {
+  const outm = write.dest.replace(/\.min\.js$/, '.min.js.map');
   const header = module.exports.readTemplate('dist/header.js');
   const headerFile = _path.join(_os.tmpdir(), '__header.js');
-  const finalList = [headerFile].concat(list.filter((i) => {
-    return _filter(i, debug);
+  const finalList = [headerFile].concat(write.sources.filter((i) => {
+    return _filter(i, write.debug);
   }).map((i) => {
-    if ( verbose ) {
+    if ( write.verbose ) {
       console.log(i);
     }
 
@@ -283,20 +283,27 @@ module.exports.writeScripts = function writeScripts(out, list, debug, verbose) {
 
   _fs.writeFileSync(headerFile, header);
 
-  const pureFuncs = debug ? [] : ['console.log', 'console.group', 'console.groupEnd', 'console.warn', 'console.info', 'console.dir', 'console.debug'];
+  const pureFuncs = write.debug ? [] : ['console.log', 'console.group', 'console.groupEnd', 'console.warn', 'console.info', 'console.dir', 'console.debug'];
+  let compression = {
+    pure_funcs: pureFuncs
+  };
+
+  if ( write.optimizations === 'none' ) {
+    compression = false;
+  } else if ( write.optimizations === 'all' ) {
+    compression.passes = 2;
+  }
 
   const minified = _ugly.minify(finalList, {
-    sourceMapIncludeSources: debug,
+    sourceMapIncludeSources: write.debug,
     outSourceMap: _path.basename(outm),
-    compress: {
-      pure_funcs: pureFuncs
-    },
+    compress: compression,
     output: {
       comments: /\*!/
     }
   });
 
-  _fs.writeFileSync(out, minified.code);
+  _fs.writeFileSync(write.dest, minified.code);
   _fs.writeFileSync(outm, minified.map);
   module.exports.removeSilent(headerFile);
 };
@@ -304,14 +311,14 @@ module.exports.writeScripts = function writeScripts(out, list, debug, verbose) {
 /*
  * Helper for compiling stylesheets
  */
-module.exports.writeStyles = function writeStyles(out, list, debug, verbose) {
-  const outm = out.replace(/\.min\.css$/, '.min.css.map');
+module.exports.writeStyles = function writeStyles(write) {
+  const outm = write.dest.replace(/\.min\.css$/, '.min.css.map');
   const header = module.exports.readTemplate('dist/header.css');
   const headerFile = _path.join(_os.tmpdir(), '__header.css');
-  const finalList = [headerFile].concat(list.filter((i) => {
-    return _filter(i, debug);
+  const finalList = [headerFile].concat(write.sources.filter((i) => {
+    return _filter(i, write.debug);
   }).map((i) => {
-    if ( verbose ) {
+    if ( write.verbose ) {
       console.log(i);
     }
     return i.substr(0, 1) === '/' ? i : _path.join(ROOT, i.replace(/^(dev|prod):/, ''));
@@ -319,14 +326,22 @@ module.exports.writeStyles = function writeStyles(out, list, debug, verbose) {
 
   _fs.writeFileSync(headerFile, header);
 
+  let compressionLevel = 1;
+  if ( write.optimizations === 'none' ) {
+    compressionLevel = 0;
+  } else if ( write.optimizations === 'all' ) {
+    compressionLevel = 2;
+  }
+
   const minified = new Cleancss({
+    level: compressionLevel,
     rebase: false,
-    sourceMapInlineSources: debug,
+    sourceMapInlineSources: write.debug,
     sourceMap: true
   }).minify(finalList);
 
   const footer = '\n/*# sourceMappingURL=' + _path.basename(outm) + ' */';
-  _fs.writeFileSync(out, minified.styles + footer);
+  _fs.writeFileSync(write.dest, minified.styles + footer);
   _fs.writeFileSync(outm, minified.sourceMap);
   module.exports.removeSilent(headerFile);
 };

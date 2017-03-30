@@ -117,18 +117,37 @@ function cleanFiles(cli, cfg) {
 function buildFiles(cli, cfg) {
   const verbose = cli.option('verbose', false);
   const debug = cli.option('debug', false);
+  const optimization = cli.option('optimization', false);
   const build = getBuildFiles(cfg.build);
 
   const only = cli.option('only');
 
   if ( !only || only === 'javascript' ) {
-    _utils.writeScripts(_path.join(ROOT, 'dist', 'osjs.min.js'), build.javascript, debug, verbose);
+    _utils.writeScripts({
+      dest: _path.join(ROOT, 'dist', 'osjs.min.js'),
+      sources: build.javascript,
+      debug: debug,
+      verbose: verbose,
+      optimizations: optimization
+    });
   }
   if ( !only || only === 'locale' ) {
-    _utils.writeScripts(_path.join(ROOT, 'dist', 'locales.min.js'), build.locales, debug, verbose);
+    _utils.writeScripts({
+      dest: _path.join(ROOT, 'dist', 'locales.min.js'),
+      sources: build.locales,
+      debug: debug,
+      verbose: verbose,
+      optimizations: optimization
+    });
   }
   if ( !only || only === 'css' ) {
-    _utils.writeStyles(_path.join(ROOT, 'dist', 'osjs.min.css'), build.stylesheets, debug, verbose);
+    _utils.writeStyles({
+      dest: _path.join(ROOT, 'dist', 'osjs.min.css'),
+      sources: build.stylesheets,
+      debug: debug,
+      verbose: verbose,
+      optimizations: optimization
+    });
   }
 
   return Promise.resolve();

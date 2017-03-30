@@ -173,7 +173,12 @@ function buildFonts(cli, cfg) {
     const src = _path.join(ROOT, 'dist', 'themes', 'fonts.css');
     const dest = _path.join(ROOT, 'dist', 'themes', 'fonts.min.css');
     _fs.writeFileSync(src, concated.join('\n'));
-    _utils.writeStyles(dest, [src], cli.option('debug'));
+    _utils.writeStyles({
+      dest: dest,
+      sources: [src],
+      debug: cli.option('debug'),
+      optimizations: cli.option('optimization', false)
+    });
     _utils.removeSilent(src);
 
     resolve();
