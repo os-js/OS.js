@@ -131,18 +131,22 @@ module.exports.loadModule = function loadModule(directories, category, name) {
   }
 
   return new Promise((resolve, reject) => {
+    let found = false;
+
     directories.some((p) => {
       const path = _path.join(p, category, name + '.js');
 
       if ( _fs.existsSync(path) ) {
+        found = true;
         resolve(path);
-        return false;
       }
 
-      return false;
+      return !found;
     });
 
-    reject('No such module: ' + name);
+    if ( !found ) {
+      reject('No such module: ' + name);
+    }
   });
 };
 
