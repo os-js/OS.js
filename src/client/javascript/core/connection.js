@@ -243,6 +243,10 @@
     if ( wm ) {
       wm.notification({title: API._('LBL_INFO'), message: API._('CONNECTION_RESTORED')});
     }
+
+    if ( this._evHandler ) {
+      this._evHandler.emit('online');
+    }
   };
 
   /**
@@ -255,6 +259,11 @@
    */
   Connection.prototype.onOffline = function(reconnecting) {
     console.warn('Connection::onOffline()', 'Going offline...');
+
+    if ( !this.offline && this._evHandler ) {
+      this._evHandler.emit('offline');
+    }
+
     this.offline = true;
 
     var wm = OSjs.Core.getWindowManager();
