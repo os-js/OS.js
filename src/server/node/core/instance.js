@@ -72,6 +72,7 @@ const _middleware = require('./middleware.js');
 
 const _logger = require('./../lib/logger.js');
 const _utils = require('./../lib/utils.js');
+const _evhandler = require('./../lib/evhandler.js');
 
 ///////////////////////////////////////////////////////////////////////////////
 // GLOBALS
@@ -295,6 +296,8 @@ module.exports.destroy = (() => {
 
     _logger.log('INFO', _logger.colored('Trying to shut down sanely...', 'bold'));
 
+    _evhandler.emit('server:destroy');
+
     function done() {
       CHILDREN.forEach((c) => {
         c.kill();
@@ -334,6 +337,8 @@ module.exports.destroy = (() => {
  */
 module.exports.init = function init(opts) {
   return new Promise((resolve, reject) => {
+    _evhandler.emit('server:init');
+
     loadConfiguration(opts)
       .then((opts) => {
         return new Promise((resolve, reject) => {
@@ -368,6 +373,8 @@ module.exports.init = function init(opts) {
  */
 module.exports.run = function run(port) {
   const httpConfig = Object.assign({ws: {}}, CONFIG.http || {});
+
+  _evhandler.emit('server:run');
 
   _logger.log('INFO', _logger.colored('Starting OS.js server', 'green'));
   _logger.log('INFO', _logger.colored(['Running', httpConfig.mode, 'on localhost:' + ENV.PORT].join(' '), 'green'));
