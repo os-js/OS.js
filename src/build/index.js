@@ -325,6 +325,15 @@ module.exports.run = function(cli, args) {
     process.on('uncaughtException', (error) => {
       _logger.log('UNCAUGHT EXCEPTION', error, error.stack);
     });
+
+    ['SIGTERM', 'SIGINT'].forEach((sig) => {
+      process.on(sig, () => {
+        console.log('\n');
+        instance.destroy((err) => {
+          process.exit(err ? 1 : 0);
+        });
+      });
+    });
   }).catch((error) => {
     _logger.log(error);
     process.exit(1);
