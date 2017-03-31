@@ -103,7 +103,7 @@ function createWatch(name, mount, callback) {
     uid: '%USERNAME%'
   });
 
-  const parseWatch = (function parseWatch() {
+  const parseWatch = (() => {
     const reps = (s) => s.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
 
     const tmpDir = configPath.replace(/\\/g, '/');
