@@ -4,6 +4,10 @@
   "name": "EXAMPLE",
   "mime": null,
   "icon": "categories/applications-system.png",
+  "main": {
+    "node": "api.js",
+    "php": "api.php"
+  },
   "preload": [
     {"src": "main.js", "type": "javascript"},
     {"src": "main.css", "type": "stylesheet"},

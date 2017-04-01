@@ -69,7 +69,15 @@ module.exports.application = function(http, data) {
     return Promise.reject('No such package');
   }
 
-  const filename = manifest && manifest._indexFile ? manifest._indexFile : 'api.js';
+  let filename = 'api.js';
+  if ( manifest.main ) {
+    if ( typeof manifest.main === 'string' ) {
+      filename = manifest.main;
+    } else {
+      filename = manifest.main.node;
+    }
+  }
+
   const rpath = _path.resolve(env.ROOTDIR, manifest._src);
   const fpath = _path.join(rpath, filename);
 

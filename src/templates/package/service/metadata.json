@@ -3,6 +3,10 @@
   "type": "service",
   "name": "EXAMPLEService",
   "icon": "categories/applications-system.png",
+  "main": {
+    "node": "api.js",
+    "php": "api.php"
+  },
   "preload": [
     {
       "src": "main.js",
