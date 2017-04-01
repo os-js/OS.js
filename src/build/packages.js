@@ -80,7 +80,7 @@ function runBuildScripts(verbose, section, iter, src, dest, cb) {
 /*
  * Copies package resources
  */
-function copyResources(verbose, iter, src, dest) {
+function copyResources(verbose, iter, src, dest, noclean) {
   const copy = iter.build.copy || [];
   if ( copy.length ) {
     return new Promise((resolve, reject) => {
@@ -115,9 +115,42 @@ function copyResources(verbose, iter, src, dest) {
       _utils.log('-', src, '->', dest);
     }
 
+    const removal = [];
+
+    if ( !noclean ) {
+      if ( iter.main ) {
+        if ( typeof iter.main === 'string' ) {
+          removal.push(iter.main);
+        } else {
+          Object.keys(iter.main).forEach((k) => {
+            removal.push(iter.main[k]);
+          });
+        }
+      } else {
+        if ( ['application', 'service', 'windowmanager'].indexOf(iter.type) !== -1 ) {
+          removal.push('api.js');
+          removal.push('api.php');
+        }
+      }
+    }
+
     const rpath = _path.resolve(ROOT, src);
     _fs.copy(_fs.realpathSync(rpath), dest, (err) => {
       /*eslint no-unused-expressions: "off"*/
+      const removed = removal.map((f) => {
+        let rem = _path.join(dest, f);
+        if ( _path.dirname(rem) !== _path.resolve(dest) ) {
+          rem = _path.dirname(rem);
+        }
+
+        return rem;
+      }).filter((f) => {
+        return _utils.removeSilent(f);
+      });
+
+      if ( removed.length ) {
+        _utils.log(_logger.color('Removed:', 'yellow'), removed.join(', ') + '.', 'Use the --noclean option to keep files.');
+      }
       err ? reject(err) : resolve();
     });
   });
@@ -269,6 +302,7 @@ function _buildPackage(cli, cfg, name, metadata) {
   const standalone = cli.option('standalone');
   const debug = cli.option('debug');
   const optimization = cli.option('optimization', false);
+  const noclean = cli.option('noclean', false);
 
   return new Promise((resolve, reject) => {
     const src = _path.resolve(ROOT, metadata._src); //_path.join(ROOT, 'src', 'packages', name);
@@ -286,7 +320,7 @@ function _buildPackage(cli, cfg, name, metadata) {
       function() {
         return runBuildScripts(verbose, 'before', metadata, src, dest);
       }, () => {
-        return copyResources(verbose, metadata, src, dest);
+        return copyResources(verbose, metadata, src, dest, noclean);
       }, () => {
         return buildLess(debug, verbose, metadata, src, dest);
       }, () => {

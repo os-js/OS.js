@@ -104,8 +104,14 @@ module.exports.replaceAll = function replaceAll(temp, stringToFind, stringToRepl
  */
 module.exports.removeSilent = function removeSilent(file) {
   try {
-    _fs.removeSync(file);
+    if ( _fs.existsSync(file) ) {
+      _fs.removeSync(file);
+
+      return true;
+    }
   } catch (e) {}
+
+  return false;
 };
 
 /*
