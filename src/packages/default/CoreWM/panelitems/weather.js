@@ -94,10 +94,16 @@
     var busy = false;
 
     function setImage(src) {
-      self.$image.src = src;
+      if ( self.$image ) {
+        self.$image.src = src;
+      }
     }
 
     function setWeather(name, weather, main) {
+      if ( !self.$image ) {
+        return;
+      }
+
       name = name || '<unknown location>';
       weather = weather || {};
       main = main || {};
