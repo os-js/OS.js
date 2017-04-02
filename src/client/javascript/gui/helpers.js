@@ -779,17 +779,14 @@
         }
       }
 
-      var data;
       try {
-        data = ev.dataTransfer.getData(args.mime);
-      } catch ( e ) {
-        console.warn('Failed to drop: ' + e);
-      }
-      if ( data ) {
+        var data = ev.dataTransfer.getData(args.mime);
         var item = JSON.parse(data);
         if ( args.accept === null || args.accept === item.type ) {
           return args.onItemDropped(ev, el, item, args);
         }
+      } catch ( e ) {
+        console.warn('Failed to drop: ' + e);
       }
 
       return false;
