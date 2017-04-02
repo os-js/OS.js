@@ -44,6 +44,10 @@
   }
 
   function renderInstalled(win, scheme) {
+    if ( !win || win._destroyed ) {
+      return;
+    }
+
     win._find('ButtonUninstall').set('disabled', true);
 
     updateEnabledStates();
@@ -89,6 +93,10 @@
   }
 
   function renderPaths(win, scheme) {
+    if ( !win || win._destroyed ) {
+      return;
+    }
+
     var sm = OSjs.Core.getSettingsManager();
     var paths = sm.instance('PackageManager').get('PackagePaths', []);
     win._find('PackagePaths').clear().add(paths.map(function(iter, idx) {

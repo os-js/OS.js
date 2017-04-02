@@ -186,8 +186,18 @@
         root.querySelector('[data-module="' + m.name +  '"]').className  = 'gui-generic-padded';
 
         var settings = Utils.cloneObject(wm.getSettings());
-        m.render(self, scheme, tmpcontent, settings, wm);
-        m.update(self, scheme, settings, wm);
+
+        try {
+          m.render(self, scheme, tmpcontent, settings, wm);
+        } catch ( e ) {
+          console.warn(e, e.stack);
+        }
+
+        try {
+          m.update(self, scheme, settings, wm);
+        } catch ( e ) {
+          console.warn(e, e.stack);
+        }
         m._inited = true;
       }
     });
@@ -266,7 +276,12 @@
       if ( mod ) {
         mod.style.display = 'block';
         var settings = Utils.cloneObject(wm.getSettings());
-        found.update(this, this._scheme, settings, wm, true);
+
+        try {
+          found.update(this, this._scheme, settings, wm, true);
+        } catch ( e ) {
+          console.warn(e, e.stack);
+        }
 
         _d(false);
         this._setTitle(_(found.name), true);
@@ -281,8 +296,12 @@
       if ( !name ) { // Resets values to original (or current)
         var settings = Utils.cloneObject(wm.getSettings());
         this._app.modules.forEach(function(m) {
-          if ( m._inited ) {
-            m.update(self, self._scheme, settings, wm);
+          try {
+            if ( m._inited ) {
+              m.update(self, self._scheme, settings, wm);
+            }
+          } catch ( e ) {
+            console.warn(e, e.stack);
           }
         });
       }
