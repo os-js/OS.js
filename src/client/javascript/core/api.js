@@ -1439,13 +1439,19 @@
     title.appendChild(titleText);
     title.appendChild(document.createTextNode('...'));
 
-    var progressBar = OSjs.GUI.Element.create('gui-progress-bar');
+    var progressBar;
 
     if ( img ) {
       splash.appendChild(img);
     }
     splash.appendChild(title);
-    splash.appendChild(progressBar.$element);
+
+    try {
+      progressBar = OSjs.GUI.Element.create('gui-progress-bar');
+      splash.appendChild(progressBar.$element);
+    } catch ( e ) {
+      console.warn(e, e.stack);
+    }
 
     parentEl.appendChild(splash);
 
