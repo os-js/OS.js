@@ -47,9 +47,9 @@
     "minimist": "^1.2.0",
     "request": "^2.81.0",
     "simplejsonconf": "^1.0.5",
-    "uglify-js": "^2.8.17",
+    "uglify-js": "^2.8.21",
     "unzip-stream": "^0.1.2",
-    "ws": "^2.2.2",
+    "ws": "^2.2.3",
     "zlibjs": "^0.2.0"
   },
   "devDependencies": {
