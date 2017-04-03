@@ -300,16 +300,18 @@ module.exports.destroy = (() => {
 
     function done() {
       CHILDREN.forEach((c) => {
-        c.kill();
+        if ( c && typeof c.kill === 'function' ) {
+          c.kill();
+        }
       });
 
       const auth = _auth.get();
-      if ( auth ) {
+      if ( auth && typeof auth.destroy === 'function' ) {
         auth.destroy();
       }
 
       const storage = _storage.get();
-      if ( storage ) {
+      if ( storage && typeof storage.destroy === 'function' ) {
         storage.destroy();
       }
 
