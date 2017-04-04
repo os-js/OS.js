@@ -36,40 +36,36 @@
   margin-bottom : 0.41666em;
 }
 
-.ApplicationSettingsWindow application-window-content [data-id="ContainerButtons"],
-.ApplicationSettingsWindow application-window-content [data-id="ContainerContent"] {
+.ApplicationSettingsWindow gui-vbox-container[data-id="ContainerButtons"],
+.ApplicationSettingsWindow gui-vbox-container[data-id="ContainerContent"] {
   overflow : hidden;
   display : none;
 }
 
-.ApplicationSettingsWindow application-window-content [data-id="SoundsList"] {
+.ApplicationSettingsWindow gui-list-view[data-id="SoundsList"] {
   height : 12.5em;
 }
-
-.ApplicationSettingsWindow application-window-content [data-id="WidgetItems"] {
+.ApplicationSettingsWindow gui-list-view[data-id="WidgetItems"] {
   height : 8.333em;
 }
-.ApplicationSettingsWindow application-window-content [data-id="HotkeysList"] {
+.ApplicationSettingsWindow gui-list-view[data-id="HotkeysList"] {
   height : 16.666em;
 }
 
-.ApplicationSettingsWindow application-window-content [data-id="UsersList"],
-.ApplicationSettingsWindow application-window-content [data-id="InstalledPackages"],
-.ApplicationSettingsWindow application-window-content [data-id="PackagePaths"],
-.ApplicationSettingsWindow application-window-content [data-id="PanelItems"],
-.ApplicationSettingsWindow application-window-content [data-id="MountList"],
-.ApplicationSettingsWindow application-window-content [data-id="SearchPaths"] {
-  height : 11.666;
+.ApplicationSettingsWindow gui-list-view[data-id="UsersList"],
+.ApplicationSettingsWindow gui-list-view[data-id="InstalledPackages"],
+.ApplicationSettingsWindow gui-list-view[data-id="PackagePaths"],
+.ApplicationSettingsWindow gui-list-view[data-id="PanelItems"],
+.ApplicationSettingsWindow gui-list-view[data-id="MountList"],
+.ApplicationSettingsWindow gui-list-view[data-id="SearchPaths"] {
+  height : 11.666em;
 }
 
-.ApplicationSettingsWindow application-window-content [data-id="ContainerContent"] > div {
+.ApplicationSettingsWindow gui-vbox-container[data-id="ContainerContent"] > div {
   overflow : auto;
   height : 100%;
   width : 100%;
   box-sizing : border-box;
-}
-
-.ApplicationSettingsWindow application-window-content [data-id="ContainerSelection"] {
 }
 
 .ApplicationSettingsWindow application-window-content .ListView {

@@ -416,7 +416,6 @@ corewm-panel-container {
      -moz-box-align: center;
       -ms-box-align: center;
        -o-box-align: center;
-          box-align: center;
 
   -webkit-flex-wrap: nowrap;
      -moz-flex-wrap: nowrap;
@@ -507,6 +506,8 @@ corewm-panel-container > .corewm-panel-right {
 
       -webkit-box-align: center;
          -moz-box-align: center;
+          -ms-box-align: center;
+           -o-box-align: center;
     }
     corewm-panel-item .corewm-panel-buttons:first-child {
       margin-right : 0;
@@ -615,7 +616,7 @@ corewm-panel[data-orientation="horizontal"] .PanelItemWindowList li {
           flex: 0 0 auto;
 }
 corewm-panel[data-orientation="vertical"] .PanelItemWindowList li {
-  -ms-flex-align: flex-start;
+  -ms-flex-align: start;
 
   -webkit-align-items: flex-start;
      -moz-align-items: flex-start;
@@ -729,16 +730,19 @@ corewm-panel .PanelItemNotificationArea .BusyNotification > div > div:after {
 @-webkit-keyframes NotificationSpinAnim {
   to {
     -webkit-transform: rotate( 360deg );
+    transform: rotate( 360deg );
   }
 }
 @-moz-keyframes notificationspinanim {
   to {
     -moz-transform: rotate( 360deg );
+    transform: rotate( 360deg );
   }
 }
 @-o-keyframes notificationspinanim {
   to {
     -o-transform: rotate( 360deg );
+    transform: rotate( 360deg );
   }
 }
 @keyframes NotificationSpinAnim {

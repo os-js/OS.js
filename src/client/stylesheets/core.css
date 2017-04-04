@@ -235,7 +235,6 @@ application-window-title {
   margin : 0;
   height : 100%;
   text-align : center;
-  display : inline-block;
   position : relative;
   display : none;
 }
