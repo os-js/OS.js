@@ -128,8 +128,7 @@ function copyResources(verbose, iter, src, dest, noclean) {
         }
       } else {
         if ( ['application', 'service', 'windowmanager'].indexOf(iter.type) !== -1 ) {
-          removal.push('api.js');
-          removal.push('api.php');
+          removal.push('server');
         }
       }
     }

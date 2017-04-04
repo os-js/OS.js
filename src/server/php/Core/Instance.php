@@ -33,6 +33,7 @@ use OSjs\Core\Request;
 use OSjs\Core\Responder;
 use OSjs\Core\Authenticator;
 use OSjs\Core\VFS;
+use OSjs\Lib\Utils;
 
 use Exception;
 
@@ -161,7 +162,8 @@ class Instance
 
         foreach ( self::getPackages() as $p => $pkg ) {
             if ($pkg['type'] == 'extension' ) {
-                $path = DIR_ROOT . '/src/packages/' . $p . '/api.php';
+                $main = Utils::getPackageMainFile($pkg);
+                $path = DIR_ROOT . '/src/packages/' . $p . '/' . $main;
                 if (file_exists($path)) {
                     $className = include $path;
                     if (is_string($className) && strlen($className) > 3) {

@@ -163,16 +163,10 @@ function registerPackages(servers) {
     _metadata.load(path).then((packages) => {
       Object.keys(packages).forEach((p) => {
         const metadata = packages[p];
-
-        let filename = 'api.js';
-        if ( metadata.build && metadata.build.index ) {
-          filename = _path.resolve(metadata.build.index);
-        }
-
-        metadata._indexFile = filename;
-
+        const filename = _utils.getPackageMainFile(metadata);
         const rpath = _path.resolve(ENV.ROOTDIR, metadata._src);
         const check = _path.join(rpath, filename);
+
         if ( metadata.enabled !== false && _fs.existsSync(check) ) {
           let deprecated = false;
           if ( metadata.type === 'extension' ) {

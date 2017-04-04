@@ -175,19 +175,19 @@ const TASKS = {
       },
       application: {
         src: 'application',
-        cpy: ['api.js', 'main.js', 'main.css', 'metadata.json', 'scheme.html']
+        cpy: ['server/main.php', 'server/main.js', 'main.js', 'main.css', 'metadata.json', 'scheme.html']
       },
       simple: {
         src: 'simple-application',
-        cpy: ['api.js', 'main.js', 'main.css', 'metadata.json', 'scheme.html']
+        cpy: ['server/main.php', 'server/main.js', 'main.js', 'main.css', 'metadata.json', 'scheme.html']
       },
       service: {
         src: 'service',
-        cpy: ['api.js', 'main.js', 'metadata.json']
+        cpy: ['server/main.php', 'server/main.js', 'main.js', 'metadata.json']
       },
       extension: {
         src: 'extension',
-        cpy: ['api.js', 'extension.js', 'metadata.json']
+        cpy: ['server/main.php', 'server/main.js', 'main.js', 'metadata.json']
       }
     };
 

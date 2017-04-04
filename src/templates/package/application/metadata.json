@@ -4,8 +4,8 @@
   "mime": null,
   "icon": "categories/applications-system.png",
   "main": {
-    "node": "api.js",
-    "php": "api.php"
+    "node": "server/main.js",
+    "php": "server/main.php"
   },
   "preload": [
     {"src": "main.js", "type": "javascript"},

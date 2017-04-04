@@ -183,3 +183,14 @@ module.exports.loadModules = function loadModules(directories, category, onentry
   }));
 };
 
+module.exports.getPackageMainFile = function getApplicationMainFile(manifest) {
+  let filename = 'api.js';
+  if ( manifest.main ) {
+    if ( typeof manifest.main === 'string' ) {
+      filename = manifest.main;
+    } else {
+      filename = manifest.main.node;
+    }
+  }
+  return filename;
+};
