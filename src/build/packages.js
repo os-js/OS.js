@@ -147,7 +147,7 @@ function copyResources(verbose, iter, src, dest, noclean) {
         return _utils.removeSilent(f);
       });
 
-      if ( removed.length ) {
+      if ( removed.length && verbose ) {
         _utils.log(_logger.color('Removed:', 'yellow'), removed.join(', ') + '.', 'Use the --noclean option to keep files.');
       }
       err ? reject(err) : resolve();
