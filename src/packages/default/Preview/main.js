@@ -88,10 +88,15 @@
               method: 'HEAD',
               url: value
             }, function(err, res) {
+              var contentType = res.headers['content-type'];
+              if ( !contentType ) {
+                err = API._('ERR_VFS_NO_MIME_DETECT');
+              }
+
               if ( err ) {
                 self._setWarning(API._('ERR_OPEN_LOCATION_FMT', err));
               } else {
-                self.showFile(new VFS.File(value, res.headers['content-type']), value);
+                self.showFile(new VFS.File(value, contentType), value);
               }
             });
           }

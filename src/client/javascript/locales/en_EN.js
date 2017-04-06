@@ -217,6 +217,7 @@
     'ERR_VFS_DOWNLOAD_NO_FILE' : 'Cannot download a path without a path',
     'ERR_VFS_DOWNLOAD_FAILED'  : 'An error occured while downloading: {0}',
     'ERR_VFS_REMOTEREAD_EMPTY' : 'Response was empty',
+    'ERR_VFS_NO_MIME_DETECT'   : 'No mime type detected',
 
     'ERR_VFSMODULE_INVALID'            : 'Invalid VFS Module',
     'ERR_VFSMODULE_INVALID_FMT'        : 'Invalid VFS Module: {0}',
