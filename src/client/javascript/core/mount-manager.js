@@ -126,7 +126,7 @@
         root: sname + ':///',
         name: name,
         description: name,
-        icon: 'devices/drive-harddrive.png',
+        icon: 'devices/drive-harddisk.png',
 
         request: function _request(n, a, callback, options) {
           MountManager._request(mount, n, a, callback, options);
