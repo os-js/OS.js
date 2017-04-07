@@ -1,3 +1,27 @@
+# 2.0.0-93
+
+Mostly bugfixes, but also added the '--optimization' build flag and changed
+package layout so server files are in a dedicated 'server' directory.
+
+If you want to use the new directory feature, use the 'main' setting in
+your package metadata file (see included).
+
+* Preview: Added error message when opening location without mime
+* Settings: Added some exception handling to certain async events
+* CoreWM: Prevent an error in weather panel item when destroyed
+* VFS: Fixed creation of empty files
+* GUI: Improved error handler in drop event
+* connection: Added 'offline' and 'online' event
+* server-node: Added some signals on instance start/stop
+* server-node: Updates to 'sane' shutdown
+* server-node: Prevent falsy error message when loading modules
+* server: Support custom main server file via manifest
+* build: Remove 'server' files automatically from dist packages
+* build: Added optimization option to build
+* misc: Updated package.json dependencies
+* misc: Some linting, fixed broken icons
+* misc: Packages now have dedicated 'server' folder for server-side code
+
 # 2.0.0-92
 
 Adds new handling of user package resources.
