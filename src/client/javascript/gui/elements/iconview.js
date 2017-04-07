@@ -129,7 +129,9 @@
     set: function(param, value, arg) {
       var body = this.$element.querySelector('gui-icon-view-body');
       if ( param === 'selected' || param === 'value' ) {
-        this.setSelected(body, body.querySelectorAll('gui-icon-view-entry'), value, arg);
+        if ( body ) {
+          this.setSelected(body, body.querySelectorAll('gui-icon-view-entry'), value, arg);
+        }
         return this;
       }
 
