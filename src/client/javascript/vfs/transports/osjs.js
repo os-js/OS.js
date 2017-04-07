@@ -79,15 +79,16 @@
   /**
    * Wrapper for internal file uploads
    *
-   * @param   {Object}      file        Upload object
-   * @param   {Object}      dest        Destination file info (VFS Object if possible)
-   * @param   {Function}    callback    Callback function
-   * @param   {Object}      options     Options
+   * @param   {Object}        file        Upload object
+   * @param   {Object}        dest        Destination file info (VFS Object if possible)
+   * @param   {Function}      callback    Callback function
+   * @param   {Object}        options     Options
+   * @param   {OSjs.VFS.File} [vfsfile]   Optional file metadata
    *
    * @function upload
    * @memberof OSjs.VFS.Transports.OSjs
    */
-  function internalUpload(file, dest, callback, options) {
+  function internalUpload(file, dest, callback, options, vfsfile) {
     options = options || {};
 
     if ( dest instanceof VFS.File ) {
@@ -108,6 +109,9 @@
 
     var fd  = new FormData();
     fd.append('path', dest);
+    if ( vfsfile ) {
+      fd.append('filename', vfsfile.filename);
+    }
 
     if ( options ) {
       Object.keys(options).forEach(function(key) {
@@ -248,7 +252,7 @@
       var parentItem = VFS.file(Utils.dirname(item.path), item.mime);
       internalUpload(data, parentItem, function() {
         callback(null, true);
-      }, options);
+      }, options, item);
     },
 
     read: function(item, callback, options) {
