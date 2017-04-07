@@ -37,8 +37,8 @@
     "vi_VN": "Cài đặt"
   },
   "main": {
-    "node": "api.js",
-    "php": "api.php"
+    "node": "server/main.js",
+    "php": "server/main.php"
   },
   "preload": [
     {"src": "locale.js", "type": "javascript"},

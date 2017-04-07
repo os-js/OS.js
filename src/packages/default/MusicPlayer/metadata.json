@@ -23,6 +23,10 @@
   "category": "multimedia",
   "icon": "status/audio-volume-high.png",
   "singular": true,
+  "main": {
+    "node": "server/main.js",
+    "php": "server/main.php"
+  },
   "compability": [
     "audio"
   ],
