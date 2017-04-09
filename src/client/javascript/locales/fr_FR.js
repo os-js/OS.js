@@ -27,6 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @author  Emersion <contact@emersion.fr>
  * @author  Emilien Raffaëlli <emilienraffaelli@hotmail.com>
+ * @author James <jameszemouri@gmail.com>
  * @licence Simplified BSD License
  */
 (function() {
@@ -70,6 +71,7 @@
     'ERR_OPERATION_TIMEOUT_FMT'   : 'Operation Expirée ({0})',
 
     'ERR_ARGUMENT_FMT'    : '\'{0}\' attends \'{1}\' d\'être \'{2}\', \'{3}\' fournie',
+    'ERR_INVALID_LOCATION': 'Location invalide',
 
     // Window
     'ERR_WIN_DUPLICATE_FMT' : 'Une autre fenêtre porte déjà le nom \'{0}\'',
@@ -83,17 +85,21 @@
     // Handler
     'TITLE_SIGN_OUT' : 'Déconnexion',
     'TITLE_SIGNED_IN_AS_FMT' : 'Connecté en tant que: {0}',
-    'ERR_LOGIN_FMT' : 'Erreur de connexion : {0}',
-    'ERR_LOGIN_INVALID' : 'Identification invalide',
+    'ERR_LOGIN_FMT' : 'Erreur d\'identification : {0}',
+    'ERR_LOGIN_INVALID' : 'Identifiant invalide',
 
     // SESSION
+    'ERR_NO_SESSION': 'Aucune session n\'a été crée par le serveur. Voulez-vous réessayer de vous connecter?',
     'MSG_SESSION_WARNING' : 'Êtes-vous sûr de vouloir quitter OS.js? Tous vos paramètres et vos données seront perdues!',
 
     // Service
-    'BUGREPORT_MSG' : 'Veuillez reporter cela si vous pensez que c\'est un bug.\n Incluez une brève description de comment cela est arrivé et si vous le pouvez; comment le reproduire',
+    'BUGREPORT_MSG' : 'Veuillez reporter ceci si vous pensez qu\'il s\'agit d\'un bug. \n Inclure une brève description de la façon dont l\'erreur s\'est produite, et si vous le pouvez; Comment le répliquer',
 
     // API
-    'SERVICENOTIFICATION_TOOLTIP' : 'Loggué dans un service externe: {0}',
+    'SERVICENOTIFICATION_TOOLTIP' : 'Connexion à des services externes: {0}',
+    'CONNECTION_LOST': 'La connexion au serveur a été perdue. Reconnexion ...',
+    'CONNECTION_RESTORED': 'La connexion au serveur a été restaurée',
+    'CONNECTION_RESTORE_FAILED': 'Impossible de rétablir la connexion. Essayer à nouveau.',
 
     // Utils
     'ERR_UTILS_XHR_FATAL' : 'Erreur Fatale',
@@ -112,7 +118,7 @@
 
     'DIALOG_ALERT_TITLE' : 'Fenêtre d\'alerte',
 
-    'DIALOG_COLOR_TITLE' : 'Fenêtre de couleur',
+    'DIALOG_COLOR_TITLE' : 'Fenêtre des couleur',
     'DIALOG_COLOR_R' : 'Rouge: {0}',
     'DIALOG_COLOR_G' : 'Vert: {0}',
     'DIALOG_COLOR_B' : 'Bleu: {0}',
@@ -120,6 +126,7 @@
 
     'DIALOG_CONFIRM_TITLE' : 'Fenêtre de confirmation',
 
+    'DIALOG_ERROR_TITLE'     : 'Erreur',
     'DIALOG_ERROR_MESSAGE'   : 'Message',
     'DIALOG_ERROR_SUMMARY'   : 'Résumé',
     'DIALOG_ERROR_TRACE'     : 'Trace',
@@ -136,6 +143,7 @@
     'DIALOG_FILE_MNU_ICONVIEW' : 'Vue en icônes',
     'DIALOG_FILE_ERROR'        : 'Erreur FileDialog',
     'DIALOG_FILE_ERROR_SCANDIR': 'Impossible de lister le contenu du dossier \'{0}\' car une erreur est survenue',
+    'DIALOG_FILE_ERROR_FIND': 'Impossible de recherche dans le répertoire  \'{0}\' car une erreur s\'est produite',
     'DIALOG_FILE_MISSING_FILENAME' : 'Vous devez sélectionner un fichier ou entrer un nouveau nom de fichier !',
     'DIALOG_FILE_MISSING_SELECTION': 'Vous devez sélectionner un fichier!',
 
@@ -143,7 +151,7 @@
     'DIALOG_FILEINFO_LOADING' : 'Chargement des informations sur le fichier: {0}',
     'DIALOG_FILEINFO_ERROR'   : 'Erreur FileInformationDialog',
     'DIALOG_FILEINFO_ERROR_LOOKUP'     : 'Impossible de récupérer les informations sur : **{0}**',
-    'DIALOG_FILEINFO_ERROR_LOOKUP_FMT' : 'FImpossible de récupérer les informations sur : {0}',
+    'DIALOG_FILEINFO_ERROR_LOOKUP_FMT' : 'Impossible de récupérer les informations sur : {0}',
 
     'DIALOG_INPUT_TITLE' : 'Fenêtre de saisie',
 
@@ -203,6 +211,7 @@
     'ERR_VFS_EXPECT_SRC_FILE' : 'Un objet "fichier source" est attendu',
     'ERR_VFS_EXPECT_DST_FILE' : 'Un objet "fichier destination" est attendu',
     'ERR_VFS_FILE_EXISTS'     : 'Le fichier destination existe déjà',
+    'ERR_VFS_TARGET_NOT_EXISTS': 'La cible n\'existe pas',
     'ERR_VFS_TRANSFER_FMT'    : 'Une erreur est survenu lors du transfert entre espaces de stockage : {0}',
     'ERR_VFS_UPLOAD_NO_DEST'  : 'Impossible d\'envoyer un fichier sans destination',
     'ERR_VFS_UPLOAD_NO_FILES' : 'Impossible d\'envoyer un fichier sans aucun fichier défini',
@@ -211,6 +220,7 @@
     'ERR_VFS_DOWNLOAD_NO_FILE': 'Impossible de télécharger un chemin sans chemin',
     'ERR_VFS_DOWNLOAD_FAILED' : 'Une erreur est survenue lors du téléchargement: {0}',
     'ERR_VFS_REMOTEREAD_EMPTY': 'La réponse est vide',
+    'ERR_VFS_NO_MIME_DETECT'   : 'Aucun type de mime détecté',
 
     'ERR_VFSMODULE_INVALID'            : 'Module VFS invalide',
     'ERR_VFSMODULE_INVALID_FMT'        : 'Module VFS invalide: {0}',
@@ -227,6 +237,8 @@
     'ERR_VFSMODULE_EXCEPTION'          : 'Exception du module VFS',
     'ERR_VFSMODULE_EXCEPTION_FMT'      : 'Exception du module VFS: {0}',
     'ERR_VFSMODULE_NOT_FOUND_FMT'      : 'Aucun Module VFS ne correspond {0}. Mauvais chemin ou Mauvais formats ?',
+    'ERR_VFSMODULE_READONLY'           : 'Ce module VFS est en lecture seule',
+    'ERR_VFSMODULE_READONLY_FMT'       : 'Ce module VFS est en lecture seule: {0}',
 
     'TOOLTIP_VFS_DOWNLOAD_NOTIFICATION': 'Téléchargement du fichier',
 
@@ -253,6 +265,8 @@
     'ERR_VFSMODULE_FILEINFO_FMT'   : 'Impossible de récuperer les informations du fichier: {0}',
     'ERR_VFSMODULE_MKDIR'          : 'Impossible de créer un répertoire',
     'ERR_VFSMODULE_MKDIR_FMT'      : 'Impossible de créer un répertoire: {0}',
+    'ERR_VFSMODULE_MKFILE'         : 'Impossible de créer le fichier',
+    'ERR_VFSMODULE_MKFILE_FMT'     : 'Impossible de créer le fichier: {0}',
     'ERR_VFSMODULE_URL'            : 'Impossible de récuperer l\'URL du fichier',
     'ERR_VFSMODULE_URL_FMT'        : 'Impossible de récuperer l\'URL du fichier: {0}',
     'ERR_VFSMODULE_TRASH'          : 'Impossible de déplacer le fichier dans la corbeille',
@@ -261,6 +275,12 @@
     'ERR_VFSMODULE_UNTRASH_FMT'    : 'Impossible de sortir le fichier de la corbeille: {0}',
     'ERR_VFSMODULE_EMPTYTRASH'     : 'Impossible de vider la corbeille',
     'ERR_VFSMODULE_EMPTYTRASH_FMT' : 'Impossible de vider la corbeille: {0}',
+    'ERR_VFSMODULE_FIND'           : 'Impossible de chercher',
+    'ERR_VFSMODULE_FIND_FMT'       : 'Impossible de chercher: {0}',
+    'ERR_VFSMODULE_FREESPACE'      : 'Impossible d\'obtenir de l\'espace libre',
+    'ERR_VFSMODULE_FREESPACE_FMT'  : 'Impossible d\'obtenir de l\'espace libre: {0}',
+    'ERR_VFSMODULE_EXISTS'         : 'Impossible de Vérifier s\'il existe',
+    'ERR_VFSMODULE_EXISTS_FMT'     : 'Impossible de Vérifier s\'il existe: {0}',
 
     // VFS -> Dropbox
     'DROPBOX_NOTIFICATION_TITLE' : 'Vous êtes connectés dans l\'API Dropbox',
@@ -274,6 +294,12 @@
     'ZIP_VENDOR_FAIL'   : 'La bibliothèque zip.js n\'a pas été trouvée. A-t-elle été chargée correctement?',
     'ZIP_NO_RESOURCE'   : 'Aucune archive zip n\'a été fournie',
     'ZIP_NO_PATH'       : 'Aucun chemin fourni',
+
+    //
+    // SearchEngine
+    //
+    'SEARCH_LOADING': 'Recherche...',
+    'SEARCH_NO_RESULTS': 'Aucun resulta trouver',
 
     //
     // PackageManager
@@ -297,6 +323,9 @@
     'MSG_FILE_CHANGED'          : 'Le fichier a été modifié. Le recharger ?',
     'MSG_APPLICATION_WARNING'   : 'Avertissement de l\'application',
     'MSG_MIME_OVERRIDE'         : 'Le type de fichier "{0}" n\'est pas supporté, utilisation de "{1}" à la place.',
+
+    'ERR_OPEN_LOCATION' : 'Échec de l\'ouverture de l\'emplacement',
+    'ERR_OPEN_LOCATION_FMT' : 'Échec de l\'ouverture de l\'emplacement: {0}',
 
     //
     // General
@@ -325,7 +354,7 @@
     'LBL_CHAT'         : 'Chat',
     'LBL_HELP'         : 'Aide',
     'LBL_ABOUT'        : 'À propos',
-    'LBL_PANELS'       : 'Panneaux',
+    'LBL_PANELS'       : 'Dock',
     'LBL_LOCALES'      : 'Langues',
     'LBL_THEME'        : 'Thème',
     'LBL_COLOR'        : 'Couleur',
@@ -367,7 +396,7 @@
     'LBL_REGULAR'      : 'Régulier',
     'LBL_STRIKE'       : 'Barré',
     'LBL_INDENT'       : 'Indentation',
-    'LBL_OUTDENT'      : 'Outdate',
+    'LBL_OUTDENT'      : 'Dépassé',
     'LBL_UNDO'         : 'Annuler',
     'LBL_REDO'         : 'Refaire',
     'LBL_CUT'          : 'Couper',
@@ -413,31 +442,52 @@
     'LBL_PASSWORD': 'Mot de passe',
     'LBL_HOST': 'Hôte',
     'LBL_NAMESPACE': 'Espace de nom',
-    'LBL_SOUNDS' : 'Sons',
+    'LBL_SEARCH': 'Recherche',
+    'LBL_BACK': 'Retour',
     'LBL_ICONS' : 'Icônes',
-    'LBL_BACKGROUND' : 'Fond d\'écran',
+    'LBL_ICON': 'Icône',
+    'LBL_UNINSTALL': 'Désinstaller',
+    'LBL_REGENERATE': 'Régénérer',
     'LBL_DESKTOP' : 'Bureau',
-    'LBL_PANEL' : 'Pannel',
-    'LBL_POSITION' : 'Position',
-    'LBL_ONTOP' : 'Premier plan',
-    'LBL_ITEMS' : 'Objets',
-    'LBL_GENERAL' : 'Général',
-    'LBL_DEBUG' : 'Déboguer',
-    'LBL_AUTOHIDE' : 'Masquage automatique',
-    'LBL_OPACITY' : 'Opacité',
-    'LBL_PACKAGES' : 'Paquets',
-    'LBL_GROUPS' : 'Groupes',
+    'LBL_WINDOWMANAGER' : 'Gestionnaire de fenêtre',
+    'LBL_HOTKEY': ' Raccourci clavier',
+    'LBL_HOTKEYS': ' raccourcis clavier',
+    'LBL_MOUNTS': 'Supports',
+    'LBL_ID': 'ID',
+    'LBL_APPLICATION' : 'Application',
+    'LBL_SCOPE' : 'portée',
+    'LBL_HIDE' : 'Cacher',
+    'LBL_REPOSITORY': 'Dépôt',
     'LBL_VERSION' : 'Version',
     'LBL_AUTHOR' : 'Auteur',
-    'LBL_HIDE' : 'Cacher',
-    'LBL_APPLICATION' : 'Application',
-    'LBL_SCOPE' : 'Gamme',
-    'LBL_SEARCH' : 'Recherche',
+    'LBL_GROUPS' : 'Groupes',
+    'LBL_AUTOHIDE' : 'Masquer automatiquement',
+    'LBL_PERSONAL': 'Personnel',
+    'LBL_SYSTEM': 'Système',
+    'LBL_STARTING': 'Démarage',
+    'LBL_SOUNDS': 'Son',
+    'LBL_STORE' : 'Centre d\'application',
+    'LBL_LOCALE': 'Langue',
+    'LBL_PACKAGE' : 'Paquet',
+    'LBL_PACKAGES' : 'Paquets',
     'LBL_INPUT' : 'Clavier',
+    'LBL_MISC': 'Divers',
+    'LBL_OTHER': 'Autre',
     'LBL_USERS' : 'Gestion des utilisateurs',
-    'LBL_STORE' : 'Magasin \n d\'application distante',
-    'LBL_WINDOWMANAGER' : 'Gestionnaire de fenêtre'
-
+    'LBL_FONTS': 'Polices',
+    'LBL_OPEN_LOCATION': 'Ouvrir l\'emplacement ',
+    'LBL_HOME': 'Accueil',
+    'LBL_WIDGET': 'Widget',
+    'LBL_WIDGETS': 'Widgets',
+    'LBL_LOCK': 'Verrouiller',
+    'LBL_UNLOCK': 'Déverrouiller',
+    'LBL_WARNING': 'Attention',
+    'LBL_INFO': 'Info',
+    'LBL_POSITION' : 'Position',
+    'LBL_OPACITY' : 'Opacité',
+    'LBL_ITEMS' : 'Objets',
+    'LBL_ONTOP' : 'Premier plan',
+    'LBL_BACKGROUND' : 'Fond d\'écran'
   };
 
 })();
