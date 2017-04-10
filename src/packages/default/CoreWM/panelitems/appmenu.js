@@ -57,10 +57,14 @@
     sel.setAttribute('role', 'button');
     sel.setAttribute('data-label', 'OS.js Application Menu');
 
-    Utils.$bind(sel, 'click', function(ev) {
+    Utils.$bind(sel, 'mousedown', function(ev) {
       ev.preventDefault();
       ev.stopPropagation();
       OSjs.Applications.CoreWM.showMenu(ev);
+    });
+    Utils.$bind(sel, 'click', function(ev) {
+      ev.stopPropagation();
+      ev.preventDefault();
     });
 
     this._$container.appendChild(sel);
