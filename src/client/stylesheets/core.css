@@ -42,6 +42,10 @@ body {
   background-color : #572a79;
 }
 
+html {
+  touch-action:none;
+}
+
 body, input, button, textarea, label, select {
   font-size : 12px;
   font-family : Sans-serif, Arial;
