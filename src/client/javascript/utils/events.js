@@ -254,7 +254,6 @@
    *
    * @function $bind
    * @memberof OSjs.Utils
-   * @TODO Implement MS Pointer events
    *
    * @param   {Node}            el            DOM Element to attach event to
    * @param   {String}          ev            DOM Event Name
@@ -272,7 +271,17 @@
      * This is the wrapper for using addEventListener
      */
     function addEventHandler(el, n, t, callback, handler, useCapture, realType) {
-      var args = [t, handler, useCapture];
+      var realName = t;
+      if ( t.match(/^mouse/) ) {
+        if ( window.PointerEvent ) {
+          realName = t.replace(/^mouse/, 'pointer');
+        } else if ( window.MSPointerEvent ) {
+          var tmpName = t.replace(/^mouse/, '');
+          realName = 'MSPointer' + tmpName.charAt(0).toUpperCase() + tmpName.slice(1).toLowerCase();
+        }
+      }
+
+      var args = [realName, handler, useCapture];
 
       el.addEventListener.apply(el, args);
 
