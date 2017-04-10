@@ -210,11 +210,15 @@
   };
 
   PanelItemButtons.prototype.addButton = function(title, icon, menu, callback) {
+    var img = document.createElement('img');
+    img.alt = '';
+    img.src = API.getIcon(icon);
+
     var sel = document.createElement('li');
     sel.title = title;
-    sel.innerHTML = '<img alt="" src="' + API.getIcon(icon) + '" />';
     sel.setAttribute('role', 'button');
     sel.setAttribute('aria-label', title);
+    sel.appendChild(img);
 
     Utils.$bind(sel, 'mousedown', function(ev) {
       ev.preventDefault();

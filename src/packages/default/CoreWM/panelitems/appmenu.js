@@ -50,21 +50,25 @@
     var root = PanelItem.prototype.init.apply(this, arguments);
     var wm = OSjs.Core.getWindowManager();
 
+    var img = document.createElement('img');
+    img.alt = '';
+    img.src = API.getIcon(wm.getSetting('icon') || 'osjs-white.png');
+
     var sel = document.createElement('li');
     sel.title = API._('LBL_APPLICATIONS');
-    sel.innerHTML = '<img alt="" src="' + API.getIcon(wm.getSetting('icon') || 'osjs-white.png') + '" />';
     sel.className = 'corewm-panel-button-centered';
     sel.setAttribute('role', 'button');
     sel.setAttribute('data-label', 'OS.js Application Menu');
+    sel.appendChild(img);
 
     Utils.$bind(sel, 'mousedown', function(ev) {
       ev.preventDefault();
       ev.stopPropagation();
-      OSjs.Applications.CoreWM.showMenu(ev);
     });
     Utils.$bind(sel, 'click', function(ev) {
       ev.stopPropagation();
       ev.preventDefault();
+      OSjs.Applications.CoreWM.showMenu(ev);
     });
 
     this._$container.appendChild(sel);
