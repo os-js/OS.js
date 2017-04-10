@@ -91,7 +91,8 @@
 
     body_click: function(ev) {
       var t = ev.target;
-      if ( !t || t.tagName !== 'GUI-MENU-BAR-ENTRY' ) {
+      var allowed = ['GUI-MENU-BAR-ENTRY', 'GUI-MENU-ENTRY'];
+      if ( !t || allowed.indexOf(t.tagName) === -1  ) {
         OSjs.API.blurMenu();
       }
 
