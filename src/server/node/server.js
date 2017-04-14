@@ -33,7 +33,7 @@
 var ver = process.version.substr(1).split(/\./g);
 if ( parseInt(ver[0], 10) < 4 ) {
   console.error('You need Node v4 or above to run OS.js');
-  return process.exit(2);
+  process.exit(2);
 }
 
 const _instance = require('./core/instance.js');
