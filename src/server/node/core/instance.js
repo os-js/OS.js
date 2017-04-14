@@ -88,6 +88,21 @@ let ENV = {};
 ///////////////////////////////////////////////////////////////////////////////
 
 /*
+ * Loads modules from a folder
+ */
+function _loadStandardModule(type, label, arg) {
+  return _utils.loadModules(ENV.MODULEDIR, type, (path) => {
+    _logger.lognt('INFO', 'Loading:', _logger.colored(label, 'bold'), path.replace(ENV.ROOTDIR, ''));
+    try {
+      return require(path).register(ENV, CONFIG, arg);
+    } catch ( e ) {
+      _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
+      console.warn(e.stack);
+    }
+  });
+}
+
+/*
  * Loads generated configuration file
  */
 function loadConfiguration(opts) {
@@ -197,17 +212,10 @@ function registerPackages(servers) {
  * Registers Services
  */
 function registerServices(servers) {
-  return _utils.loadModules(ENV.MODULEDIR, 'services', (path) => {
-    _logger.lognt('INFO', 'Loading:', _logger.colored('Service', 'bold'), path.replace(ENV.ROOTDIR, ''));
-    try {
-      const p = require(path).register(ENV, CONFIG, servers);
-      if ( p instanceof Promise ) {
-        return p;
-      }
-    } catch ( e ) {
-      _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
-      console.warn(e.stack);
-    }
+  return new Promise((resolve, reject) => {
+    _loadStandardModule('services', 'Service', servers).then(() => {
+      resolve(servers);
+    }).catch(reject);
   });
 }
 
@@ -264,6 +272,17 @@ function destroyServices() {
       }).catch(reject);
     });
   }));
+}
+
+/*
+ * Loads generic modules
+ */
+function loadGenerics(opts) {
+  return new Promise((resolve, reject) => {
+    _loadStandardModule('generic', 'Generic').then(() => {
+      resolve(opts);
+    }).catch(reject);
+  });
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -336,6 +355,7 @@ module.exports.init = function init(opts) {
     _evhandler.emit('server:init');
 
     loadConfiguration(opts)
+      .then(loadGenerics)
       .then((opts) => {
         return new Promise((resolve, reject) => {
           _middleware.load().then(() => {

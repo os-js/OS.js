@@ -170,9 +170,11 @@ module.exports.loadModules = function loadModules(directories, category, onentry
     return new Promise((resolve, reject) => {
       _glob(_path.join(dirname, '*.js')).then((list) => {
         Promise.all(list.map((path) => {
-          onentry(path);
-
-          return Promise.resolve();
+          const result = onentry(path);
+          if ( !(result instanceof Promise) ) {
+            return Promise.resolve();
+          }
+          return result;
         })).then(resolve).catch(reject);
       }).catch(reject);
     });
