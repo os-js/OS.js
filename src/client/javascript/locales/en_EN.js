@@ -97,6 +97,7 @@
     'CONNECTION_LOST': 'Connection to the server was lost. Reconnecting...',
     'CONNECTION_RESTORED': 'Connection to the server was restored',
     'CONNECTION_RESTORE_FAILED': 'Failed to re-establish connection. Trying again.',
+    'CONNECTION_ERROR': 'Connection error',
 
     // Utils
     'ERR_UTILS_XHR_FATAL' : 'Fatal Error',

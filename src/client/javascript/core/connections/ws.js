@@ -101,7 +101,7 @@
 
     this.ws.onclose = function(ev) {
       if ( !connected && ev.code !== 3001 ) {
-        callback('WebSocket connection error'); // FIXME: Locale
+        callback(API._('CONNECTION_ERROR'));
         return;
       }
       self._onclose();
