@@ -64,6 +64,7 @@
     'ERR_OPERATION_TIMEOUT_FMT'   : 'Tidsavbrudd i operasjon ({0})',
 
     'ERR_ARGUMENT_FMT'    : '\'{0}\' expects \'{1}\' to be a \'{2}\', \'{3}\' given',
+    'ERR_INVALID_LOCATION': 'Ugyldig plassering',
 
     // Window
     'ERR_WIN_DUPLICATE_FMT' : 'Du har allerede et Window med navnet \'{0}\'',
@@ -89,6 +90,10 @@
 
     // API
     'SERVICENOTIFICATION_TOOLTIP' : 'Innloget i eksterne tjenester: {0}',
+    'CONNECTION_LOST': 'Kobling til tjener ble brutt. Gjenoppretter...',
+    'CONNECTION_RESTORED': 'Kobling til tjener ble gjenopprettet',
+    'CONNECTION_RESTORE_FAILED': 'Klarte ikke koble til tjener. Prøver på nytt',
+    'CONNECTION_ERROR': 'Tilkoblingsfeil',
 
     // Utils
     'ERR_UTILS_XHR_FATAL' : 'Fatal Feil',
@@ -200,6 +205,7 @@
     'ERR_VFS_DOWNLOAD_NO_FILE': 'Kan ikke laste ned uten en sti',
     'ERR_VFS_DOWNLOAD_FAILED' : 'En feil oppstod under nedlasting: {0}',
     'ERR_VFS_REMOTEREAD_EMPTY' : 'Respons var tom',
+    'ERR_VFS_NO_MIME_DETECT'   : 'Ingen mime-type gjenkjent',
 
     'ERR_VFSMODULE_INVALID'            : 'Ugyldig VFS Modul',
     'ERR_VFSMODULE_INVALID_FMT'        : 'Ugyldig VFS Modul: {0}',
@@ -295,6 +301,9 @@
     'MSG_FILE_CHANGED'          : 'Filen har blitt endret. Last inn på nytt?',
     'MSG_APPLICATION_WARNING'   : 'Applikasjon-advarsel',
     'MSG_MIME_OVERRIDE'         : 'Filtypen "{0}" er ikke støttet, bruker "{1}" istedet.',
+
+    'ERR_OPEN_LOCATION' : 'Klarte ikke åpne sti',
+    'ERR_OPEN_LOCATION_FMT' : 'Klarte ikke åpne sti: {0}',
 
     // General
 
@@ -450,6 +459,12 @@
     'LBL_ITEMS' : 'Objekter',
     'LBL_GENERAL' : 'Generelt',
     'LBL_LOCK': 'Lås',
-    'LBL_UNLOCK': 'Lås opp'
+    'LBL_UNLOCK': 'Lås opp',
+    'LBL_OPEN_LOCATION': 'Åpne sti',
+    'LBL_HOME': 'Hjem',
+    'LBL_WIDGET': 'Widget',
+    'LBL_WIDGETS': 'Widgets',
+    'LBL_WARNING': 'Advarsel',
+    'LBL_INFO': 'Info'
   };
 })();
