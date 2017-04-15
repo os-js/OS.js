@@ -1,3 +1,7 @@
+# 2.0.0-95
+
+Forgot to merge a branch in the last release, so see previous release notes for information.
+
 # 2.0.0-94
 
 Added support for 'generic' node modules that loads on server start.
