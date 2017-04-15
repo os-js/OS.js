@@ -1,3 +1,27 @@
+# 2.0.0-94
+
+Added support for 'generic' node modules that loads on server start.
+Also updated mouse/pointer handling in some cases for better compability.
+
+Relevant:
+
+* http://community.os.js.org/t/update-version-bump-alpha94/129
+
+Digest:
+
+* UI: Added PointerEvent compability
+* UI: Added MSPointerEvent compability
+* UI: Prevent Windows 8.x+ gesture events from blocking interactions
+* Themes: Some corrections to paddings in CoreWM
+* CoreWM: Removed some innerHTML usage
+* package-manager: Replaced a static path definition
+* server-node: Added support for 'generic' modules
+* server-node: Updated compability check
+* locales: Updated fr_FR
+* locales: Updated no_NO
+* misc: Updated some locales
+* misc: Removed some temporary files from codebase
+
 # 2.0.0-93
 
 Mostly bugfixes, but also added the '--optimization' build flag and changed
@@ -5,6 +29,12 @@ package layout so server files are in a dedicated 'server' directory.
 
 If you want to use the new directory feature, use the 'main' setting in
 your package metadata file (see included).
+
+Relevant:
+
+* http://community.os.js.org/t/update-version-bump-alpha93/128
+
+Digest:
 
 * Preview: Added error message when opening location without mime
 * Settings: Added some exception handling to certain async events
