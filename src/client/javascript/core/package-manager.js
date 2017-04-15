@@ -142,7 +142,8 @@
        * @param  {Function} callback      callback
        */
       _loadMetadata: function(callback) {
-        var rootURI = API.getBrowserPath().replace(/\/$/, '/packages/'); // FIXME
+        var packageURI = API.getConfig('Connection.PackageURI').replace(/\/?$/, '/');
+        var rootURI = API.getBrowserPath().replace(/\/$/, packageURI);
 
         function checkEntry(key, iter, scope) {
           iter = Utils.cloneObject(iter);
