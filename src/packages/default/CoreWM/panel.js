@@ -137,9 +137,9 @@
     this._$element.setAttribute('data-orientation', 'horizontal');
     this._$element.setAttribute('role', 'toolbar');
 
-    Utils.$bind(this._$element, 'mousedown', function(ev) {
+    /*Utils.$bind(this._$element, 'mousedown', function(ev) {
       ev.preventDefault();
-    });
+    }); // This makes DnD not work in panel items*/
     Utils.$bind(this._$element, 'mouseover', function(ev) {
       self.onMouseOver(ev);
     });
