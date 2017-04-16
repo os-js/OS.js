@@ -91,7 +91,10 @@
 
       win._toggleLoading(false);
 
-      win._find('AppStorePackages').clear().add(rows);
+      var gelList = win._find('AppStorePackages');
+      if ( gelList ) {
+        gelList.clear().add(rows);
+      }
     });
   }
 
