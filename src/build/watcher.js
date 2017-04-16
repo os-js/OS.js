@@ -216,7 +216,7 @@ module.exports.watch = function watch(cli) {
         log('Watching', p);
 
         _chokidar.watch(path, {
-          ignored: /node_modules|\.git/,
+          ignored: /node_modules|\.git|\.swo|\.swp/,
           ignoreInitial: true,
           persistent: true
         }).on('add', fn).on('change', fn);
