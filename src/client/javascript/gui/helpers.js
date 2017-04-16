@@ -763,11 +763,7 @@
       return false;
     }
 
-    function _onDrop(ev, el) {
-      ev.stopPropagation();
-      ev.preventDefault();
-
-      args.onDrop(ev, el);
+    function _doDrop(ev, el) {
       if ( !ev.dataTransfer ) {
         return true;
       }
@@ -790,6 +786,15 @@
       }
 
       return false;
+    }
+
+    function _onDrop(ev, el) {
+      ev.stopPropagation();
+      ev.preventDefault();
+
+      var result = _doDrop(ev, el);
+      args.onDrop(ev, el);
+      return result;
     }
 
     el.setAttribute('aria-dropeffect', args.effect);
