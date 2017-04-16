@@ -127,15 +127,14 @@
         if ( item && item.data ) {
           var newPosition = 0;
           if ( Utils.$hasClass(ev.target, 'Ghost') ) {
-            newPosition = Math.max(0, Utils.$index(ev.target) - 1);
+            newPosition = Utils.$index(ev.target);
           }
 
           if ( typeof item.data.position !== 'undefined' ) {
-            self.moveButton(item.data.position, newPosition);
+            self.moveButton(item.data.position, newPosition - 1);
           } else if ( item.data.mime === 'osjs/application' ) {
-            // TODO: Create at correct position
             var appName = item.data.path.split('applications:///')[1];
-            self.createButton(appName);
+            self.createButton(appName, newPosition);
           }
         }
 
@@ -226,14 +225,21 @@
     });
   };
 
-  PanelItemButtons.prototype.createButton = function(appName) {
+  PanelItemButtons.prototype.createButton = function(appName, position) {
     var pkg = OSjs.Core.getPackageManager().getPackage(appName);
     var buttons = this._settings.get('buttons');
-    buttons.push({
+
+    var iter = {
       title: appName,
       icon: pkg.icon,
       launch: appName
-    });
+    };
+
+    if ( !buttons.length ) {
+      buttons.push(iter);
+    } else {
+      buttons.splice(position, 0, iter);
+    }
 
     this.renderButtons();
 
