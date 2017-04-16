@@ -527,7 +527,7 @@ corewm-panel-container > .corewm-panel-right {
       }
 
 corewm-panel-item .Ghost {
-  background-color : red !important;
+  background-color : rgba(200, 0, 0, .5) !important;
   min-width : 16px;
 }
 
