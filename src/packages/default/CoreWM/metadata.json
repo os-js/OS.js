@@ -18,7 +18,7 @@
   },
   "singular": true,
   "type": "windowmanager",
-  "icon": "apps/gnome-window-manager.png",
+  "icon": "apps/preferences-system-windows.png",
   "splash": false,
   "main": {
     "node": "server/main.js",
