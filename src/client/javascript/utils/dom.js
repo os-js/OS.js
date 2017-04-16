@@ -512,4 +512,63 @@
     });
   };
 
+  /**
+   * Gets the Xpath to a DOM Element
+   *
+   * @param {Node} el DOM Element
+   * @return {String}
+   *
+   * @function $path
+   * @memberof OSjs.Utils
+   */
+  OSjs.Utils.$path = function Utils_$path(el) {
+    function _path(e) {
+      if ( e === document.body ) {
+        return e.tagName;
+      } else if ( e === window ) {
+        return 'WINDOW';
+      } else if ( e === document ) {
+        return 'DOCUMENT';
+      }
+
+      if ( e.id !== '' ) {
+        return 'id("' + e.id + '")';
+      }
+
+      var ix = 0;
+      var siblings = e.parentNode ? e.parentNode.childNodes : [];
+
+      for ( var i = 0; i < siblings.length; i++ ) {
+        var sibling = siblings[i];
+        if ( sibling === e ) {
+          return _path(e.parentNode) + '/' + e.tagName + '[' + (ix + 1) + ']';
+        }
+
+        if ( sibling.nodeType === 1 && sibling.tagName === e.tagName ) {
+          ix++;
+        }
+      }
+    }
+
+    return _path(el);
+  };
+
+  /**
+   * Gets a DOM Element from Xpath
+   *
+   * @param {String} path The path
+   * @param {HTMLDocument} [doc] The document to resolve in
+   * @return {Node}
+   *
+   * @function $fromPath
+   * @memberof OSjs.Utils
+   */
+  OSjs.Utils.$fromPath = function Uitls_$fromPath(path, doc) {
+    doc = doc || document;
+
+    var evaluator = new XPathEvaluator();
+    var result = evaluator.evaluate(path, doc.documentElement, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+    return result.singleNodeValue;
+  };
+
 })();
