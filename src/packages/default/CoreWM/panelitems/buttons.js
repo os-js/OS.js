@@ -112,24 +112,33 @@
         }
       },
 
-      onLeave : function() {
+      onLeave: function() {
         clearTimeout(removeTimeout);
         removeTimeout = setTimeout(function() {
           clearGhost();
         }, 1000);
-
-        //        clearGhost();
       },
 
-      onDrop : function() {
+      onDrop: function() {
         clearGhost();
       },
 
       onItemDropped: function(ev, el, item, args) {
-        if ( item && item.data && item.data.mime === 'osjs/application' ) {
-          var appName = item.data.path.split('applications:///')[1];
-          self.createButton(appName);
+        if ( item && item.data ) {
+          var newPosition = 0;
+          if ( Utils.$hasClass(ev.target, 'Ghost') ) {
+            newPosition = Math.max(0, Utils.$index(ev.target) - 1);
+          }
+
+          if ( typeof item.data.position !== 'undefined' ) {
+            self.moveButton(item.data.position, newPosition);
+          } else if ( item.data.mime === 'osjs/application' ) {
+            // TODO: Create at correct position
+            var appName = item.data.path.split('applications:///')[1];
+            self.createButton(appName);
+          }
         }
+
         clearGhost();
       },
 
@@ -183,7 +192,7 @@
         };
       }
 
-      self.addButton(btn.title, btn.icon, menu, callback);
+      self.addButton(btn.title, btn.icon, menu, callback, idx);
     });
   };
 
@@ -193,6 +202,28 @@
     this.renderButtons();
 
     this._settings.save();
+  };
+
+  PanelItemButtons.prototype.moveButton = function(from, to) {
+    var self = this;
+    var buttons = this._settings.get('buttons');
+
+    if ( from === to || buttons.length <= 1 ) {
+      return;
+    }
+
+    if ( to >= buttons.length ) {
+      var k = to - buttons.length;
+      while ( (k--) + 1 ) {
+        buttons.push(undefined);
+      }
+    }
+
+    buttons.splice(to, 0, buttons.splice(from, 1)[0]);
+
+    this._settings.save(function() {
+      self.renderButtons();
+    });
   };
 
   PanelItemButtons.prototype.createButton = function(appName) {
@@ -209,7 +240,7 @@
     this._settings.save();
   };
 
-  PanelItemButtons.prototype.addButton = function(title, icon, menu, callback) {
+  PanelItemButtons.prototype.addButton = function(title, icon, menu, callback, idx) {
     var img = document.createElement('img');
     img.alt = '';
     img.src = API.getIcon(icon);
@@ -221,7 +252,6 @@
     sel.appendChild(img);
 
     Utils.$bind(sel, 'mousedown', function(ev) {
-      ev.preventDefault();
       ev.stopPropagation();
     });
     Utils.$bind(sel, 'click', callback, true);
@@ -230,6 +260,12 @@
       ev.stopPropagation();
       if ( menu ) {
         API.createMenu(menu, ev);
+      }
+    });
+
+    GUI.Helpers.createDraggable(sel, {
+      data: {
+        position: idx
       }
     });
 
