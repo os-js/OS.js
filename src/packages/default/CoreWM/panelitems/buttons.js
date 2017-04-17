@@ -62,64 +62,52 @@
 
     var ghost;
     var lastTarget;
-    var removeTimeout;
-    var lastPadding = null;
 
-    function clearGhost() {
-      removeTimeout = clearTimeout(removeTimeout);
+    function clearGhost(inner) {
       ghost = Utils.$remove(ghost);
-      lastTarget = null;
-      if ( lastPadding !== null ) {
-        self._$container.style.paddingRight = lastPadding;
+      if ( !inner ) {
+        lastTarget = null;
       }
     }
 
     function createGhost(target) {
-      if ( !target || !target.parentNode ) {
+      var isUl = target.tagName === 'UL';
+      if ( !target || lastTarget === target || isUl ) {
         return;
       }
-      if ( target.tagName !== 'LI' && target.tagName !== 'UL' ) {
-        return;
-      }
 
-      if ( lastPadding === null ) {
-        lastPadding = self._$container.style.paddingRight;
-      }
-
-      if ( target !== lastTarget ) {
-        clearGhost();
-
-        ghost = document.createElement('li');
-        ghost.className = 'Ghost';
-
-        if ( target.tagName === 'LI' ) {
-          try {
-            target.parentNode.insertBefore(ghost, target);
-          } catch ( e ) {}
-        } else {
-          target.appendChild(ghost);
-        }
-      }
+      var ul = target.parentNode;
       lastTarget = target;
 
-      self._$container.style.paddingRight = '16px';
+      clearGhost(true);
+
+      ghost = document.createElement('li');
+      ghost.className = 'Ghost';
+
+      ul.insertBefore(ghost, target);
     }
 
+    var counter = 0;
     GUI.Helpers.createDroppable(this._$container, {
       onOver: function(ev, el, args) {
-        if ( ev.target && !Utils.$hasClass(ev.target, 'Ghost') ) {
+        if ( ev.target ) {
           createGhost(ev.target);
         }
       },
 
-      onLeave: function() {
-        clearTimeout(removeTimeout);
-        removeTimeout = setTimeout(function() {
+      onEnter: function(ev) {
+        ev.preventDefault();
+        counter++;
+      },
+
+      onLeave: function(ev) {
+        if ( counter <= 0 ) {
           clearGhost();
-        }, 1000);
+        }
       },
 
       onDrop: function() {
+        counter = 0;
         clearGhost();
       },
 
@@ -137,12 +125,6 @@
             self.createButton(appName, newPosition);
           }
         }
-
-        clearGhost();
-      },
-
-      onFilesDropped: function(ev, el, files, args) {
-        clearGhost();
       }
     });
 
@@ -272,6 +254,14 @@
     GUI.Helpers.createDraggable(sel, {
       data: {
         position: idx
+      },
+      onStart: function(ev, el) {
+        setTimeout(function() {
+          Utils.$addClass(el, 'Ghosting');
+        }, 1);
+      },
+      onEnd: function(ev, el) {
+        Utils.$removeClass(el, 'Ghosting');
       }
     });
 

@@ -529,6 +529,10 @@ corewm-panel-container > .corewm-panel-right {
 corewm-panel-item .Ghost {
   background-color : rgba(200, 0, 0, .5) !important;
   min-width : 16px;
+  pointer-events: none;
+}
+corewm-panel-item .Ghosting {
+  display : none !important;
 }
 
 .corewm-panel-dummy {

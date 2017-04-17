@@ -718,26 +718,26 @@
    */
   GUI.Helpers.createDroppable = function createDroppable(el, args) {
     args = OSjs.Utils.argumentDefaults(args, {
-      accept         : null,
-      effect         : 'move',
-      mime           : 'application/json',
-      files          : true,
-      onFilesDropped : function() {
+      accept: null,
+      effect: 'move',
+      mime: 'application/json',
+      files: true,
+      onFilesDropped: function() {
         return true;
       },
-      onItemDropped  : function() {
+      onItemDropped: function() {
         return true;
       },
-      onEnter        : function() {
+      onEnter: function() {
         return true;
       },
-      onOver         : function() {
+      onOver: function() {
         return true;
       },
-      onLeave        : function() {
+      onLeave: function() {
         return true;
       },
-      onDrop         : function() {
+      onDrop: function() {
         return true;
       }
     });
