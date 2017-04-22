@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "chokidar": "^1.6.1",
-    "clean-css": "^4.0.10",
+    "clean-css": "^4.0.12",
     "colors": "^1.1.2",
     "compression": "^1.6.2",
     "cookie": "^0.3.1",
@@ -47,9 +47,9 @@
     "minimist": "^1.2.0",
     "request": "^2.81.0",
     "simplejsonconf": "^1.0.5",
-    "uglify-js": "^2.8.21",
+    "uglify-js": "^2.8.22",
     "unzip-stream": "^0.1.2",
-    "ws": "^2.2.3",
+    "ws": "^2.3.1",
     "zlibjs": "^0.2.0"
   },
   "devDependencies": {
