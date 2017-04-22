@@ -47,8 +47,8 @@
     function createEvent(iter) {
       return function(el) {
         OSjs.GUI.Helpers.createDraggable(el, {
-          type   : 'application',
-          data   : {
+          type: 'application',
+          data: {
             launch: iter.name
           }
         });
@@ -83,7 +83,7 @@
         submenu.push({
           title: iter.data.name,
           icon: _createIcon(iter.data, iter.name),
-          tooltip : iter.data.description,
+          tooltip: iter.data.description,
           onCreated: createEvent(iter),
           onClick: clickEvent(iter)
         });
@@ -92,8 +92,8 @@
       if ( submenu.length ) {
         list.push({
           title: OSjs.Applications.CoreWM._(cfgCategories[c].title),
-          icon:  API.getIcon(cfgCategories[c].icon, '16x16'),
-          menu:  submenu
+          icon: API.getIcon(cfgCategories[c].icon, '16x16'),
+          menu: submenu
         });
       }
     });

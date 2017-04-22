@@ -116,13 +116,14 @@
     function auth(cb) {
       self.authenticate(scope, function(error, result) {
         if ( error ) {
-          return cb(error);
+          cb(error);
+        } else {
+          if ( !self.authenticated ) {
+            cb(API._('GAPI_AUTH_FAILURE'));
+            return;
+          }
+          cb(false, result);
         }
-        if ( !self.authenticated ) {
-          return cb(API._('GAPI_AUTH_FAILURE'));
-        }
-
-        cb(false, result);
       });
     }
 
@@ -156,6 +157,7 @@
         args.push(function() {
           self.loaded.push(name);
 
+          /* eslint no-invalid-this: "off" */
           cb.apply(this, arguments);
         });
 

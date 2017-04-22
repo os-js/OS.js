@@ -364,11 +364,11 @@
         self.onDropOver(ev, el, args);
       },
 
-      onLeave : function() {
+      onLeave: function() {
         self.onDropLeave();
       },
 
-      onDrop : function() {
+      onDrop: function() {
         self.onDrop();
       },
 
@@ -435,7 +435,7 @@
 
     if ( !added ) {
       this.notification({
-        timeout : 0,
+        timeout: 0,
         icon: 'status/dialog-warning.png',
         title: 'CoreWM',
         message: translate('Your panel has no items. Go to settings to reset default or modify manually\n(This error may occur after upgrades of OS.js)')
@@ -596,12 +596,12 @@
     var self = this;
 
     var _applyWallpaper = function(data) {
-      this.applySettings({wallpaper: data.path}, false, true);
+      self.applySettings({wallpaper: data.path}, false, true);
     };
 
     var _createShortcut = function(data) {
-      if ( this.iconView ) {
-        this.iconView.addShortcut(data, this, true);
+      if ( self.iconView ) {
+        self.iconView.addShortcut(data, self, true);
       }
     };
 
@@ -621,7 +621,7 @@
       }, {
         title: translate('Set as wallpaper'),
         onClick: function() {
-          _applyWallpaper.call(self, data);
+          _applyWallpaper(data);
         }
       }], ev);
     };
@@ -634,14 +634,14 @@
             if ( this.iconView ) {
               _openMenu(data);
             } else {
-              _applyWallpaper.call(this, data);
+              _applyWallpaper(data);
             }
           } else {
-            _createShortcut.call(this, data);
+            _createShortcut(data);
           }
         }
       } else if ( item.type === 'application' ) {
-        _createShortcut.call(this, data);
+        _createShortcut(data);
       }
     }
   };

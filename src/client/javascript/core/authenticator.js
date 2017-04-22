@@ -55,10 +55,10 @@
      * }
      */
     this.userData = {
-      id      : 0,
+      id: 0,
       username: 'root',
-      name    : 'root user',
-      groups  : ['admin']
+      name: 'root user',
+      groups: ['admin']
     };
 
     /**
@@ -132,7 +132,7 @@
       if ( result ) {
         callback(false, result);
       } else {
-        var error = error || API._('ERR_LOGIN_INVALID');
+        error = error || API._('ERR_LOGIN_INVALID');
         callback(API._('ERR_LOGIN_FMT', error), false);
       }
     });

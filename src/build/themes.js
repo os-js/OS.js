@@ -255,7 +255,8 @@ function buildIcon(cli, cfg, name) {
       const metadata = _fs.readJsonSync(metafile);
 
       if ( !metadata.parent ) {
-        return _next();
+        _next();
+        return;
       }
 
       const psrc = _path.join(ROOT, 'src', 'client', 'themes', 'icons', metadata.parent);

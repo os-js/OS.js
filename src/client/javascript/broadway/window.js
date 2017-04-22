@@ -89,8 +89,8 @@
       var topMargin = theme ? (theme.style.window.margin) : 26;
 
       return {
-        x:ev.pageX - self._position.x,
-        y:ev.pageY - self._position.y - topMargin
+        x: ev.pageX - self._position.x,
+        y: ev.pageY - self._position.y - topMargin
       };
     }
 

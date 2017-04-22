@@ -107,7 +107,7 @@
   DefaultApplication.prototype.openFile = function(file, win) {
     var self = this;
     if ( !file ) {
-      return;
+      return false;
     }
 
     function onError(error) {

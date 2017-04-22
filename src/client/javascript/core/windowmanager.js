@@ -63,13 +63,13 @@
     }
 
     this.theme = {
-      topMargin : theme.style.window.margin || 0, // FIXME
+      topMargin: theme.style.window.margin || 0, // FIXME
       borderSize: theme.style.window.border || 0
     };
 
     this.snapping   = {
-      cornerSize : _WM.getSetting('windowCornerSnap') || 0,
-      windowSize : _WM.getSetting('windowSnap') || 0
+      cornerSize: _WM.getSetting('windowCornerSnap') || 0,
+      windowSize: _WM.getSetting('windowSnap') || 0
     };
 
     this.action     = action;
@@ -86,8 +86,8 @@
         var pos = w._position;
         var dim = w._dimension;
         var rect = {
-          left : pos.x - self.theme.borderSize,
-          top : pos.y - self.theme.borderSize,
+          left: pos.x - self.theme.borderSize,
+          top: pos.y - self.theme.borderSize,
           width: dim.w + (self.theme.borderSize * 2),
           height: dim.h + (self.theme.borderSize * 2) + self.theme.topMargin
         };
@@ -122,10 +122,10 @@
     var direction = 's';
     var checks = {
       nw: (dirX <= dirD) && (dirY <= dirD),
-      n:  (dirX > dirD) && (dirY <= dirD),
-      w:  (dirX <= dirD) && (dirY >= dirD),
+      n: (dirX > dirD) && (dirY <= dirD),
+      w: (dirX <= dirD) && (dirY >= dirD),
       ne: (dirX >= (dir.width - dirD)) && (dirY <= dirD),
-      e:  (dirX >= (dir.width - dirD)) && (dirY > dirD),
+      e: (dirX >= (dir.width - dirD)) && (dirY > dirD),
       se: (dirX >= (dir.width - dirD)) && (dirY >= (dir.height - dirD)),
       sw: (dirX <= dirD) && (dirY >= (dir.height - dirD))
     };
@@ -1073,7 +1073,7 @@
       if ( _LNEWX >= (window.innerWidth - 100) )  {
         _LNEWX = 0;
       }
-      return {x: _LNEWX += 10, y: _LNEWY += 10};
+      return {x: (_LNEWX += 10), y: (_LNEWY += 10)};
     };
   })();
 

@@ -147,10 +147,10 @@
     });
 
     var buttonMap = {
-      ButtonOK:     'ok',
+      ButtonOK: 'ok',
       ButtonCancel: 'cancel',
-      ButtonYes:    'yes',
-      ButtonNo:     'no'
+      ButtonYes: 'yes',
+      ButtonNo: 'no'
     };
 
     var focusButtons = ['ButtonCancel', 'ButtonNo'];

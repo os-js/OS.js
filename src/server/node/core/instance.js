@@ -99,6 +99,7 @@ function _loadStandardModule(type, label, arg) {
       _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
       console.warn(e.stack);
     }
+    return null;
   });
 }
 
@@ -304,7 +305,8 @@ module.exports.destroy = (() => {
     cb = cb || function() {};
 
     if ( destroyed ) {
-      return cb();
+      cb();
+      return;
     }
 
     _logger.log('INFO', _logger.colored('Trying to shut down sanely...', 'bold'));

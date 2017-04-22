@@ -129,11 +129,11 @@
         wm.onDropOver(ev, el, args);
       },
 
-      onLeave : function() {
+      onLeave: function() {
         wm.onDropLeave();
       },
 
-      onDrop : function() {
+      onDrop: function() {
         wm.onDrop();
       },
 

@@ -29,13 +29,39 @@
         "requireReturnDescription": false
       }
     ],
+    "block-spacing": 2,
     "brace-style": 2,
     "curly": [
       2,
       "all"
     ],
+    "array-callback-return": 2,
+    "block-scoped-var": 2,
+    "radix": 2,
+    "func-call-spacing": [1, "never"],
+    "key-spacing": [1, {"beforeColon": false}],
+    "new-parens": 1,
+    "no-whitespace-before-property": 1,
+    "no-array-constructor": 1,
+    "no-undefined": 1,
+    "no-useless-call": 2,
+    "no-sequences": 2,
+    "no-self-assign": 2,
+    "no-return-assign": 2,
+    "no-redeclare": 2,
+    "no-proto": 2,
+    "no-invalid-this": 1,
+    "no-implicit-globals": 2,
+    "no-implied-eval": 2,
+    "no-extra-bind": 2,
+    "no-eval": 2,
     "no-bitwise": 0,
     "no-dupe-args": 2,
+    "no-ex-assign": 2,
+    "no-func-assign": 2,
+    "no-unexpected-multiline": 2,
+    "no-unsafe-negation": 2,
+    "no-sparse-arrays": 2,
     "use-isnan": 2,
     "valid-typeof": [2, {
       "requireStringLiterals": true
@@ -126,6 +152,10 @@
       2,
       "last"
     ],
+    "comma-spacing": [
+      1,
+      { "before": false, "after": true  } 
+    ],
     "space-infix-ops": 2,
     "object-curly-spacing": [
       2,
@@ -139,6 +169,7 @@
         "after": true
       }
     ],
+    "consistent-return": 1,
     "consistent-this": [
       2,
       "self"

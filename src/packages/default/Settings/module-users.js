@@ -89,32 +89,31 @@
     });
 
     nwin._on('init', function(root) {
-      var self = this;
-
-      this._render(this._name);
+      nwin._render(nwin._name);
 
       if ( Object.keys(data).length ) {
-        self._find('UserUsername').set('value', data.username);
-        self._find('UserName').set('value', data.name);
-        self._find('UserGroups').set('value', JSON.stringify(data.groups));
+        nwin._find('UserUsername').set('value', data.username);
+        nwin._find('UserName').set('value', data.name);
+        nwin._find('UserGroups').set('value', JSON.stringify(data.groups));
       }
 
-      this._find('ButtonClose').on('click', function() {
-        self._close();
+      nwin._find('ButtonClose').on('click', function() {
+        nwin._close();
       });
 
-      this._find('ButtonOK').on('click', function() {
-        data.username = self._find('UserUsername').get('value');
-        data.name = self._find('UserName').get('value') || data.username;
+      nwin._find('ButtonOK').on('click', function() {
+        data.username = nwin._find('UserUsername').get('value');
+        data.name = nwin._find('UserName').get('value') || data.username;
         data.groups = [];
 
         try {
-          data.groups = JSON.parse(self._find('UserGroups').get('value'));
+          data.groups = JSON.parse(nwin._find('UserGroups').get('value'));
         } catch ( e ) {
         }
 
         if ( !data.username || !data.groups ) {
-          return self._close();
+          nwin._close();
+          return;
         }
 
         API.call('users', {command: action, user: data}, function(err, users) {
@@ -123,12 +122,12 @@
           }
           renderUsers(win, scheme);
 
-          self._close();
+          nwin._close();
         });
       });
     });
 
-    return win._addChild(nwin, true, true);
+    win._addChild(nwin, true, true);
   }
 
   function removeUser(win, scheme, data) {

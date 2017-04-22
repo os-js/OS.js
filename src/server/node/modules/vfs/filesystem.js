@@ -412,7 +412,8 @@ const VFS = {
   delete: function(http, args, resolve, reject) {
     const resolved = _vfs.parseVirtualPath(args.path, http);
     if ( ['', '.', '/'].indexOf() !== -1 ) {
-      return reject('Permission denied');
+      reject('Permission denied');
+      return;
     }
 
     existsWrapper(false, resolved.real, () => {
@@ -494,19 +495,22 @@ const VFS = {
     const resolved = _vfs.parseVirtualPath(args.path, http);
 
     if ( !qargs.recursive ) {
-      return readDir(resolved.path, resolved.real, (iter) => {
+      readDir(resolved.path, resolved.real, (iter) => {
         if (  ['.', '..'].indexOf(iter) === -1 ) {
           return iter.toLowerCase().indexOf(query) !== -1;
         }
         return false;
       }).then(resolve).catch(reject);
+
+      return;
     }
 
     let find;
     try {
       find = require('findit')(resolved.real);
     } catch ( e ) {
-      return reject('Failed to load findit node library: ' + e.toString());
+      reject('Failed to load findit node library: ' + e.toString());
+      return;
     }
 
     let list = [];

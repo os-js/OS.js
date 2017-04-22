@@ -162,7 +162,8 @@ module.exports.request = function(http, method, args, cb) {
 
   return new Promise((resolve, reject) => {
     if ( !transport ) {
-      return reject('Could not find any supported VFS module');
+      reject('Could not find any supported VFS module');
+      return;
     }
 
     transport.request(http, method, args).then((data) => {
@@ -180,7 +181,8 @@ module.exports.request = function(http, method, args, cb) {
         }
         return http.respond.stream(data.path, data);
       }
-      resolve(data);
+
+      return resolve(data);
     }).catch(reject);
   });
 };

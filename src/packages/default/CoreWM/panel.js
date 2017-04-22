@@ -396,6 +396,8 @@
 
       OSjs.Core.getWindowManager().addWindow(this._settingsDialog, true);
     }
+
+    return true;
   };
 
   PanelItem.prototype.getRoot = function() {

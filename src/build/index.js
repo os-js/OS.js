@@ -191,7 +191,8 @@ const TASKS = {
           const out = cli.option('out');
           if ( out ) {
             _fs.writeFileSync(out, String(arg));
-            return resolve();
+            resolve();
+            return;
           } else if ( arg ) {
             _logger.log(arg);
           }

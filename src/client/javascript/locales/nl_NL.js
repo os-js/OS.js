@@ -29,7 +29,7 @@
  * Dutch translation by Imre Biacsics
  */
 (function() {
-  // jscs:disable validateQuoteMarks
+  /*eslint key-spacing: "off"*/
   'use strict';
 
   OSjs.Locales.nl_NL = {

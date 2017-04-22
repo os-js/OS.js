@@ -50,7 +50,8 @@
     this.onContextMenu  = opts.onContextMenu || function() {};
 
     this._build(name);
-    this.onCreated.call(this);
+
+    this.onCreated();
   }
 
   NotificationAreaItem.prototype._build = function(name) {
@@ -104,7 +105,7 @@
     root.appendChild(this.$container);
 
     try {
-      this.onInited.call(this, this.$container, this.$image);
+      this.onInited(this.$container, this.$image);
     } catch ( e ) {
       console.warn('NotificationAreaItem', 'onInited error');
       console.warn(e, e.stack);
@@ -135,7 +136,7 @@
       Utils.$unbind(this.$container, 'mousedown');
       Utils.$unbind(this.$container, 'contextmenu');
     }
-    this.onDestroy.call(this);
+    this.onDestroy();
 
     this.$image     = Utils.$remove(this.$image);
     this.$container = Utils.$remove(this.$container);

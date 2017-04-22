@@ -140,6 +140,7 @@
   }
 
   function bindInputEvents(evName, callback, params) {
+    /* eslint no-invalid-this: "off" */
     if ( evName === 'enter' ) {
       evName = '_enter';
     } else if ( evName === 'change' ) {

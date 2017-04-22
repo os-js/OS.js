@@ -48,9 +48,9 @@
    */
   function FileUploadDialog(args, callback) {
     args = Utils.argumentDefaults(args, {
-      dest:     API.getDefaultPath(),
+      dest: API.getDefaultPath(),
       progress: {},
-      file:     null
+      file: null
     });
 
     DialogWindow.apply(this, ['FileUploadDialog', {

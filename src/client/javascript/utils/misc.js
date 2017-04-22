@@ -244,7 +244,7 @@
 
     return JSON.parse(JSON.stringify(o, function(key, value) {
       if ( value && typeof value === 'object' && value.tagName ) {
-        return undefined;
+        return window.undefined;
       }
       return value;
     }));
@@ -303,6 +303,7 @@
    */
   OSjs.Utils.inherit = function Utils_inherit(to, from, extend) {
     from = from || function() {
+      /* eslint no-invalid-this: "off" */
       to.apply(this, arguments);
     };
 
@@ -430,7 +431,8 @@
 
       if ( i >= queue.length ) {
         isdone = true;
-        return ondone();
+        ondone();
+        return;
       }
 
       try {
@@ -491,7 +493,8 @@
           return;
         }
         isdone = true;
-        return ondone();
+        ondone();
+        return;
       }
 
       var d = Math.min(qleft.length, max - running);

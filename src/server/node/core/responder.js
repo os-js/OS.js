@@ -172,7 +172,7 @@ module.exports.createFromHttp = function(servers, request, response) {
           stream.pipe(response);
         });
 
-        return resolve();
+        resolve();
       });
     });
   }

@@ -76,7 +76,7 @@
   function handleItemSelection(ev, item, idx, className, selected, root, multipleSelect) {
     root = root || item.parentNode;
     if ( isHeader(null, item) ) {
-      return;
+      return multipleSelect ? [] : null;
     }
 
     if ( idx === -1 ) {
@@ -486,9 +486,9 @@
         }
 
         GUI.Helpers.createDraggable(row, {
-          type   : el.getAttribute('data-draggable-type') || row.getAttribute('data-draggable-type'),
-          source : source,
-          data   : value
+          type: el.getAttribute('data-draggable-type') || row.getAttribute('data-draggable-type'),
+          source: source,
+          data: value
         });
 
         var tooltip = row.getAttribute('data-tooltip');
@@ -595,7 +595,7 @@
         API.blurMenu();
 
         if ( wasResized ) {
-          return;
+          return false;
         }
 
         var row = getEntryFromEvent(ev);
@@ -607,8 +607,6 @@
         if ( isHeader(null, row) ) {
           var col = getEntryFromEvent(ev, true);
           if ( col ) {
-            var idx = Utils.$index(col);
-
             var sortBy = col.getAttribute('data-sortby');
             if ( sortBy ) {
               var sortDir = col.getAttribute('data-sortdir');
@@ -635,12 +633,14 @@
             ev: ev,
             entry: row.parentNode
           });
-          return;
+          return true;
         }
 
         var idx = Utils.$index(row);
         el._selected = handleItemSelection(ev, row, idx, className, el._selected, el, multipleSelect);
         el.dispatchEvent(new CustomEvent('_select', {detail: {entries: self.values()}}));
+
+        return true;
       }
 
       function activate(ev) {

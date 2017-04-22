@@ -102,7 +102,7 @@ module.exports.login = function(http, data) {
           reject(err);
         } else if ( res === true ) {
           resolve({
-            id: parseInt(row.id),
+            id: parseInt(row.id, 10),
             username: row.username,
             name: row.name
           });

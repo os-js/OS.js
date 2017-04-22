@@ -312,7 +312,7 @@
       if ( !err && newDest ) {
         self.setData(newDest);
       }
-      callback.apply(this, arguments);
+      callback.apply(self, arguments);
     }, options, appRef);
   };
 

@@ -799,15 +799,15 @@
         OSjs.VFS.copy(src, dest, function(error, result) {
           if ( error ) {
             error = API._('ERR_VFS_TRANSFER_FMT', error);
-            return _finished(error);
+            _finished(error);
+          } else {
+            mm.getModule(msrc).request('unlink', [src], function(error, result) {
+              if ( error ) {
+                error = API._('ERR_VFS_TRANSFER_FMT', error);
+              }
+              _finished(error, result, dest);
+            }, options);
           }
-
-          mm.getModule(msrc).request('unlink', [src], function(error, result) {
-            if ( error ) {
-              error = API._('ERR_VFS_TRANSFER_FMT', error);
-            }
-            _finished(error, result, dest);
-          }, options);
         });
       }
     }
@@ -944,12 +944,12 @@
 
     existsWrapper(item, function(error) {
       if ( error ) {
-        return callback(API._('ERR_VFSMODULE_MKDIR_FMT', error));
+        callback(API._('ERR_VFSMODULE_MKDIR_FMT', error));
+      } else {
+        requestWrapper([item.path, 'mkdir', [item]], 'ERR_VFSMODULE_MKDIR_FMT', callback, function(error, response) {
+          return response;
+        }, options, appRef);
       }
-
-      requestWrapper([item.path, 'mkdir', [item]], 'ERR_VFSMODULE_MKDIR_FMT', callback, function(error, response) {
-        return response;
-      }, options, appRef);
     });
   };
 
@@ -1100,7 +1100,8 @@
 
       existsWrapper(dest, function(error) {
         if ( error ) {
-          return callback(error);
+          callback(error);
+          return;
         }
 
         try {
@@ -1202,7 +1203,8 @@
 
       VFS.url(args, function(error, url) {
         if ( error ) {
-          return callback(error);
+          callback(error);
+          return;
         }
 
         Utils.ajax({
@@ -1357,14 +1359,14 @@
 
     if ( arguments.length < 2 ) {
       callback(API._('ERR_VFS_NUM_ARGS'));
-      return;
+      return -1;
     }
 
     try {
       item = checkMetadataArgument(item);
     } catch ( e ) {
       callback(e);
-      return;
+      return -1;
     }
 
     return watches.push({

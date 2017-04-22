@@ -529,7 +529,8 @@
 
       function _next() {
         if ( !list.length || index >= list.length ) {
-          return _finished();
+          _finished();
+          return;
         }
 
         _extract(list[index], function() {

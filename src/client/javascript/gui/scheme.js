@@ -126,7 +126,8 @@
       var uri = iter.uri.replace(/^\//, '');
       if ( uri.length < 3 ) {
         console.warn('resolveExternalFragments()', 'invalid', iter);
-        return next();
+        next();
+        return;
       }
 
       Utils.ajax({

@@ -61,24 +61,26 @@
    * @return {void}
    */
   OSjs.Utils.ajax = function Utils_ajax(args) {
+    /* eslint no-invalid-this: "off" */
+
     var request;
     args = OSjs.Utils.argumentDefaults(args, {
-      onerror          : function() {},
-      onsuccess        : function() {},
-      onprogress       : function() {},
-      oncreated        : function() {},
-      onfailed         : function() {},
-      oncanceled       : function() {},
-      ontimeout        : function() {},
-      acceptcodes      : [200, 201, 304],
-      method           : 'GET',
-      responseType     : null,
-      requestHeaders   : {},
-      body             : null,
-      timeout          : 0,
-      json             : false,
-      url              : '',
-      jsonp            : false
+      onerror: function() {},
+      onsuccess: function() {},
+      onprogress: function() {},
+      oncreated: function() {},
+      onfailed: function() {},
+      oncanceled: function() {},
+      ontimeout: function() {},
+      acceptcodes: [200, 201, 304],
+      method: 'GET',
+      responseType: null,
+      requestHeaders: {},
+      body: null,
+      timeout: 0,
+      json: false,
+      url: '',
+      jsonp: false
     });
 
     function onReadyStateChange() {
@@ -206,7 +208,7 @@
 
     if ( (OSjs.API.getConfig('Connection.Type') === 'standalone') ) {
       args.onerror('You are currently running locally and cannot perform this operation!', null, request, args.url);
-      return;
+      return false;
     }
 
     if ( args.json && (typeof args.body !== 'string') && !(args.body instanceof FormData) ) {
@@ -297,7 +299,8 @@
 
           // This probably always fires. The official docs on this is a bit vague
           if ( typeof document.styleSheet === 'undefined' || (!loaded && _check(src)) ) {
-            return _done(true);
+            _done(true);
+            return;
           }
 
           // Fall back to a timeout, just in case

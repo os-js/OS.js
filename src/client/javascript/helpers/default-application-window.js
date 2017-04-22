@@ -85,19 +85,19 @@
     var app = this._app;
 
     var menuMap = {
-      MenuNew:    function() {
+      MenuNew: function() {
         app.newDialog(self.currentFile, self);
       },
-      MenuSave:   function() {
+      MenuSave: function() {
         app.saveDialog(self.currentFile, self);
       },
       MenuSaveAs: function() {
         app.saveDialog(self.currentFile, self, true);
       },
-      MenuOpen:   function() {
+      MenuOpen: function() {
         app.openDialog(self.currentFile, self);
       },
-      MenuClose:  function() {
+      MenuClose: function() {
         self._close();
       }
     };

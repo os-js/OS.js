@@ -154,12 +154,16 @@ function getRepositoryPackages(repo, all) {
         _glob(glb).then((files) => {
 
           Promise.all(files.map((file) => {
-            getPackageMetadata(repo, file).then((meta) => {
-              meta = Object.assign({}, meta);
-              if ( all || checkEnabledState(forceEnabled, forceDisabled, meta) ) {
-                result[meta.path] = meta;
-              }
-            }).catch(reject);
+            return new Promise((yes) => {
+              getPackageMetadata(repo, file).then((meta) => {
+                meta = Object.assign({}, meta);
+                if ( all || checkEnabledState(forceEnabled, forceDisabled, meta) ) {
+                  result[meta.path] = meta;
+                }
+
+                yes();
+              }).catch(reject);
+            });
           })).then(resolve).catch(reject);
 
         }).catch(reject);

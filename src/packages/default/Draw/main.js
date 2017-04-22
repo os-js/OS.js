@@ -76,10 +76,10 @@
         var index = ((args.pos.x + args.pos.y * args.canvas.width) * 4);
         try {
           value = Utils.convertToHEX({
-            r:imageData[index + 0],
-            g:imageData[index + 1],
-            b:imageData[index + 2],
-            a:imageData[index + 3]
+            r: imageData[index + 0],
+            g: imageData[index + 1],
+            b: imageData[index + 2],
+            a: imageData[index + 3]
           });
         } catch ( e ) {
         }

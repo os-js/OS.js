@@ -146,7 +146,7 @@
       MenuCreateFile: function() {
         app.mkfile(self.currentPath, self);
       },
-      MenuCreateDirectory:function() {
+      MenuCreateDirectory: function() {
         app.mkdir(self.currentPath, self);
       },
       MenuUpload: function() {
@@ -572,7 +572,7 @@
 
   ApplicationFileManagerWindow.prototype.toggleSidebar = function(toggle, set) {
     if ( this._destroyed || !this._scheme ) {
-      return;
+      return null;
     }
 
     this.viewOptions.ViewSide = toggle;
@@ -594,7 +594,7 @@
 
   ApplicationFileManagerWindow.prototype.toggleVFSOption = function(opt, key, toggle, set) {
     if ( this._destroyed || !this._scheme ) {
-      return;
+      return null;
     }
 
     var view = this._find('FileView');
@@ -611,7 +611,7 @@
 
   ApplicationFileManagerWindow.prototype.toggleHidden = function(toggle, set) {
     if ( this._destroyed || !this._scheme ) {
-      return;
+      return null;
     }
 
     return this.toggleVFSOption('showHiddenFiles', 'dotfiles', toggle, set);
@@ -619,7 +619,7 @@
 
   ApplicationFileManagerWindow.prototype.toggleExtension = function(toggle, set) {
     if ( this._destroyed || !this._scheme ) {
-      return;
+      return null;
     }
 
     return this.toggleVFSOption('showFileExtensions', 'extensions', toggle, set);
@@ -627,7 +627,7 @@
 
   ApplicationFileManagerWindow.prototype.toggleNavbar = function(toggle, set) {
     if ( this._destroyed || !this._scheme ) {
-      return;
+      return null;
     }
 
     this.viewOptions.ViewNavigation = toggle;

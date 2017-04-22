@@ -123,7 +123,8 @@
 
     getAllDirectoryFiles(tmpItem, function(error, list, ldir) {
       if ( error ) {
-        return callback(error);
+        callback(error);
+        return;
       }
 
       var found = null;
@@ -156,9 +157,10 @@
 
     getFileFromPath(dir, type, function(error, item) {
       if ( error ) {
-        return callback(error);
+        callback(error);
+      } else {
+        callback(false, item ? item.id : null);
       }
-      callback(false, item ? item.id : null);
     });
   }
 
@@ -187,11 +189,11 @@
 
       return new OSjs.VFS.File({
         filename: iter.title,
-        path:     path,
-        id:       iter.id,
-        size:     iter.quotaBytesUsed || 0,
-        mime:     iter.mimeType === 'application/vnd.google-apps.folder' ? null : iter.mimeType,
-        type:     fileType
+        path: path,
+        id: iter.id,
+        size: iter.quotaBytesUsed || 0,
+        mime: iter.mimeType === 'application/vnd.google-apps.folder' ? null : iter.mimeType,
+        type: fileType
       });
     }
 
@@ -440,10 +442,11 @@
 
     getAllDirectoryFiles(item, function(error, list, dir) {
       if ( error ) {
-        return callback(error);
+        callback(error);
+      } else {
+        var result = createDirectoryList(dir, list, item, options);
+        callback(false, result, list);
       }
-      var result = createDirectoryList(dir, list, item, options);
-      callback(false, result, list);
     });
   };
 
@@ -548,8 +551,10 @@
       console.debug('GoogleDrive::write()->getParentPathId', id);
       if ( error ) {
         console.groupEnd();
-        return callback(error);
+        callback(error);
+        return;
       }
+
       if ( file.id ) {
         doWrite(id, file.id);
       } else {
@@ -682,9 +687,10 @@
         useKeys.forEach(function(k) {
           info[k] = resp[k];
         });
-        return callback(false, info);
+        callback(false, info);
+      } else {
+        callback(API._('ERR_VFSMODULE_NOSUCH'));
       }
-      callback(API._('ERR_VFSMODULE_NOSUCH'));
     });
   };
 
@@ -847,8 +853,10 @@
       var iargs = {load: loads, scope: scopes};
       OSjs.Helpers.GoogleAPI.createInstance(iargs, function(error, result) {
         if ( error ) {
-          return onerror(error);
+          onerror(error);
+          return;
         }
+
         gapi.client.load('drive', 'v2', function() {
           _isMounted = true;
 

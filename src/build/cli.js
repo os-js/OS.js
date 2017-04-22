@@ -41,7 +41,8 @@ module.exports.run = function(args, done) {
 
   if ( process.argv.length < 3 || args.help ) {
     console.log(_fs.readFileSync(_path.join(__dirname, 'help.txt'), 'utf-8'));
-    return done(true);
+    done(true);
+    return;
   }
 
   _build._init();

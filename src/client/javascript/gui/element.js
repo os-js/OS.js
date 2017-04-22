@@ -320,6 +320,7 @@
    */
   UIElement.prototype.son = function(evName, thisArg, callback, args) {
     return this.on(evName, function() {
+      /* eslint no-invalid-this: "off" */
       var args = Array.prototype.slice.call(arguments);
       args.unshift(this);
       callback.apply(thisArg, args);

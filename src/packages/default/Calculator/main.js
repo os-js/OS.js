@@ -34,12 +34,12 @@
   'use strict';
 
   var ops = {
-    dec      : '.',
-    perc     : '%',
-    minus    : '-',
-    plus     : '+',
-    multiply : '*',
-    divide   : '/'
+    dec: '.',
+    perc: '%',
+    minus: '-',
+    plus: '+',
+    multiply: '*',
+    divide: '/'
   };
 
   var keys = {
@@ -61,11 +61,11 @@
   };
 
   var labels = {
-    'CE' : 'CE',  'AC'  : 'AC', 'perc' : '%',  'plus'     : '+',
-    '7'  : '7',   '8'   : '8',  '9'    : '9',  'minus'    : '-',
-    '4'  : '4',   '5'   : '5',  '6'    : '6',  'multiply' : 'x',
-    '1'  : '1',   '2'   : '2',  '3'    : '3',  'divide'   : '÷',
-    '0'  : '0',   'swap': '±',  'dec'  : ',',  'equal'    : '='
+    'CE': 'CE',  'AC': 'AC', 'perc': '%',  'plus': '+',
+    '7': '7',   '8': '8',  '9': '9',  'minus': '-',
+    '4': '4',   '5': '5',  '6': '6',  'multiply': 'x',
+    '1': '1',   '2': '2',  '3': '3',  'divide': '÷',
+    '0': '0',   'swap': '±',  'dec': ',',  'equal': '='
   };
 
   var buttons = [
@@ -179,7 +179,7 @@
       if ( !isNaN(val) || val === 'dec' ) { // Number
         self.temp += val === 'dec' ? ops[val] : val;
 
-        return self.temp.substring(0,10);
+        return self.temp.substring(0, 10);
       } else if ( val === 'AC' ) { // Clear
         self.entries = [];
         self.temp = '';

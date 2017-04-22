@@ -628,16 +628,18 @@
    * @param  {Function}      args.onEnd                       Callback when drag ended => fn(ev, el, args)
    */
   GUI.Helpers.createDraggable = function createDraggable(el, args) {
+    /* eslint no-invalid-this: "off" */
+
     args = OSjs.Utils.argumentDefaults(args, {
-      type       : null,
-      effect     : 'move',
-      data       : null,
-      mime       : 'application/json',
-      dragImage  : null,
-      onStart    : function() {
+      type: null,
+      effect: 'move',
+      data: null,
+      mime: 'application/json',
+      dragImage: null,
+      onStart: function() {
         return true;
       },
-      onEnd      : function() {
+      onEnd: function() {
         return true;
       }
     });
@@ -648,10 +650,10 @@
 
     function _toString(mime) {
       return JSON.stringify({
-        type:   args.type,
+        type: args.type,
         effect: args.effect,
-        data:   args.data,
-        mime:   args.mime
+        data: args.data,
+        mime: args.mime
       });
     }
 
@@ -717,6 +719,8 @@
    * @param   {Function}        args.onItemDropped              Callback when drag drop internal object => fn(ev, el, item, args)
    */
   GUI.Helpers.createDroppable = function createDroppable(el, args) {
+    /* eslint no-invalid-this: "off" */
+
     args = OSjs.Utils.argumentDefaults(args, {
       accept: null,
       effect: 'move',

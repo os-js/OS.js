@@ -61,15 +61,15 @@
   var _LAUNCHING = [];
 
   var _hooks = {
-    'onInitialize':          [],
-    'onInited':              [],
-    'onWMInited':            [],
-    'onSessionLoaded':       [],
-    'onShutdown':            [],
-    'onApplicationPreload':  [],
-    'onApplicationLaunch':   [],
+    'onInitialize': [],
+    'onInited': [],
+    'onWMInited': [],
+    'onSessionLoaded': [],
+    'onShutdown': [],
+    'onApplicationPreload': [],
+    'onApplicationLaunch': [],
     'onApplicationLaunched': [],
-    'onBlurMenu':            []
+    'onBlurMenu': []
   };
 
   /////////////////////////////////////////////////////////////////////////////

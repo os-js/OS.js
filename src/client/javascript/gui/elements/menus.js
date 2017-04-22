@@ -113,7 +113,7 @@
       build: function(arg, winRef) {
         var child = this.$element;
         if ( arguments.length < 2 ) {
-          return;
+          return this;
         }
         child.setAttribute('role', 'menuitem' + (child.getAttribute('data-type') || ''));
 

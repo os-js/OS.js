@@ -66,7 +66,7 @@ function _filter(i, debug) {
  */
 module.exports.fixWinPath = function fixWinPath(str) {
   if ( typeof str === 'string' && ISWIN ) {
-    return str.replace(/(["\s'$`\\])/g,'\\$1').replace(/\\+/g, '/');
+    return str.replace(/(["\s'$`\\])/g, '\\$1').replace(/\\+/g, '/');
   }
   return str;
 };
@@ -93,7 +93,7 @@ module.exports.readTemplate = function readTemplate(name) {
 module.exports.replaceAll = function replaceAll(temp, stringToFind, stringToReplace) {
   let index = temp.indexOf(stringToFind);
   while (index !== -1) {
-    temp = temp.replace(stringToFind,stringToReplace);
+    temp = temp.replace(stringToFind, stringToReplace);
     index = temp.indexOf(stringToFind);
   }
   return temp;
@@ -229,7 +229,8 @@ module.exports.eachp = function(list, onentry) {
   return new Promise((resolve, reject) => {
     (function next(i) {
       if ( i >= list.length ) {
-        return resolve();
+        resolve();
+        return;
       }
 
       const iter = list[i]();

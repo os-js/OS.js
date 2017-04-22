@@ -79,7 +79,8 @@ module.exports.application = function(http, data) {
     //_fs.access(fpath, _fs.constants.R_OK, (err) => {
     _fs.exists(fpath, (exists) => {
       if ( !exists ) {
-        return reject('Failed to load Application API for ' + apath);
+        reject('Failed to load Application API for ' + apath);
+        return;
       }
 
       let found = null;
@@ -111,7 +112,8 @@ module.exports.application = function(http, data) {
         }
       } catch ( e ) {
         _logger.log(_logger.WARNING, e.stack, e.trace);
-        return reject('Application API error: ' + e.toString());
+        reject('Application API error: ' + e.toString());
+        return;
       }
 
       if ( found ) {

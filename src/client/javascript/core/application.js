@@ -473,10 +473,10 @@
     wins.forEach(function(win, i) {
       if ( win && win._properties.allow_session ) {
         data.windows.push({
-          name      : win._name,
-          dimension : win._dimension,
-          position  : win._position,
-          state     : win._state
+          name: win._name,
+          dimension: win._dimension,
+          position: win._position,
+          state: win._state
         });
       }
     });

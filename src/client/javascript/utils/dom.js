@@ -141,7 +141,7 @@
   OSjs.Utils.$position = function Utils_$position(el, parentEl) {
     if ( el ) {
       if ( parentEl ) {
-        var result = {left:0, top:0, width: el.offsetWidth, height: el.offsetHeight};
+        var result = {left: 0, top: 0, width: el.offsetWidth, height: el.offsetHeight};
         while ( true ) {
           result.left += el.offsetLeft;
           result.top  += el.offsetTop;
@@ -548,6 +548,8 @@
           ix++;
         }
       }
+
+      return null;
     }
 
     return _path(el);

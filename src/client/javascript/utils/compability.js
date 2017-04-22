@@ -92,14 +92,14 @@
 
     function getVideoTypesSupported() {
       return canPlayCodec(getVideoSupported(), {
-        webm     : 'video/webm; codecs="vp8.0, vorbis"',
-        ogg      : 'video/ogg; codecs="theora"',
-        h264     : [
+        webm: 'video/webm; codecs="vp8.0, vorbis"',
+        ogg: 'video/ogg; codecs="theora"',
+        h264: [
           'video/mp4; codecs="avc1.42E01E"',
           'video/mp4; codecs="avc1.42E01E, mp4a.40.2"'
         ],
-        mpeg     : 'video/mp4; codecs="mp4v.20.8"',
-        mkv      : 'video/x-matroska; codecs="theora, vorbis"'
+        mpeg: 'video/mp4; codecs="mp4v.20.8"',
+        mkv: 'video/x-matroska; codecs="theora, vorbis"'
       });
     }
 
@@ -109,9 +109,9 @@
 
     function getAudioTypesSupported() {
       return canPlayCodec(getAudioSupported(), {
-        ogg   : 'audio/ogg; codecs="vorbis',
-        mp3   : 'audio/mpeg',
-        wav   : 'audio/wav; codecs="1"'
+        ogg: 'audio/ogg; codecs="vorbis',
+        mp3: 'audio/mpeg',
+        wav: 'audio/wav; codecs="1"'
       });
     }
 
@@ -173,7 +173,7 @@
       if ( feature === false ) {
         featurenameCapital = featurename.charAt(0).toUpperCase() + featurename.substr(1);
         for ( var i = 0; i < domPrefixes.length; i++ ) {
-          if ( elm.style[domPrefixes[i] + featurenameCapital ] !== undefined ) {
+          if ( typeof elm.style[domPrefixes[i] + featurenameCapital ] !== 'undefined' ) {
             feature = true;
             break;
           }
@@ -234,47 +234,47 @@
     }
 
     var checkWindow = {
-      indexedDB      : 'indexedDB',
-      localStorage   : 'localStorage',
-      sessionStorage : 'sessionStorage',
-      globalStorage  : 'globalStorage',
-      openDatabase   : 'openDatabase',
-      socket         : 'WebSocket',
-      worker         : 'Worker',
-      file           : 'File',
-      blob           : 'Blob',
-      orientation    : 'onorientationchange'
+      indexedDB: 'indexedDB',
+      localStorage: 'localStorage',
+      sessionStorage: 'sessionStorage',
+      globalStorage: 'globalStorage',
+      openDatabase: 'openDatabase',
+      socket: 'WebSocket',
+      worker: 'Worker',
+      file: 'File',
+      blob: 'Blob',
+      orientation: 'onorientationchange'
     };
 
     var compability = {
-      touch          : getTouch(),
-      upload         : getUpload(),
-      getUserMedia   : getUserMedia(),
-      fileSystem     : getFileSystem(),
-      localStorage   : false,
-      sessionStorage : false,
-      globalStorage  : false,
-      openDatabase   : false,
-      socket         : false,
-      worker         : false,
-      file           : false,
-      blob           : false,
-      orientation    : false,
-      dnd            : getDnD(),
-      css            : {
-        transition : detectCSSFeature('transition'),
-        animation : detectCSSFeature('animation')
+      touch: getTouch(),
+      upload: getUpload(),
+      getUserMedia: getUserMedia(),
+      fileSystem: getFileSystem(),
+      localStorage: false,
+      sessionStorage: false,
+      globalStorage: false,
+      openDatabase: false,
+      socket: false,
+      worker: false,
+      file: false,
+      blob: false,
+      orientation: false,
+      dnd: getDnD(),
+      css: {
+        transition: detectCSSFeature('transition'),
+        animation: detectCSSFeature('animation')
       },
-      canvas         : !!getCanvasSupported(),
-      canvasContext  : getCanvasContexts(),
-      webgl          : getWebGL(),
-      audioContext   : getAudioContext(),
-      svg            : getSVG(),
-      video          : !!getVideoSupported(),
-      videoTypes     : getVideoTypesSupported(),
-      audio          : !!getAudioSupported(),
-      audioTypes     : getAudioTypesSupported(),
-      richtext       : getRichText()
+      canvas: !!getCanvasSupported(),
+      canvasContext: getCanvasContexts(),
+      webgl: getWebGL(),
+      audioContext: getAudioContext(),
+      svg: getSVG(),
+      video: !!getVideoSupported(),
+      videoTypes: getVideoTypesSupported(),
+      audio: !!getAudioSupported(),
+      audioTypes: getAudioTypesSupported(),
+      richtext: getRichText()
     };
 
     Object.keys(checkWindow).forEach(function(key) {
@@ -315,10 +315,10 @@
     // Example: There are lots of variants of the English language, but currently we only
     // provide locales for one of them, so we force to use the one available.
     var map = {
-      'nb'    : 'no_NO',
-      'es'    : 'es_ES',
-      'ru'    : 'ru_RU',
-      'en'    : 'en_EN'
+      'nb': 'no_NO',
+      'es': 'es_ES',
+      'ru': 'ru_RU',
+      'en': 'en_EN'
     };
 
     var major = loc.split('_')[0] || 'en';
@@ -339,10 +339,10 @@
    */
   OSjs.Utils.getRect = function Utils_getRect() {
     return {
-      top    : 0,
-      left   : 0,
-      width  : document.body.offsetWidth,
-      height : document.body.offsetHeight
+      top: 0,
+      left: 0,
+      width: document.body.offsetWidth,
+      height: document.body.offsetHeight
     };
   };
 

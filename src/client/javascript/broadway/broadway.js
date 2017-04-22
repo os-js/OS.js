@@ -146,7 +146,7 @@
   };
 
   BinCommands.prototype.get_16s = function() {
-    var v = this.get_16 ();
+    var v = this.get_16();
     return (v > 32767) ? v - 65536 : v;
   };
 
@@ -163,7 +163,7 @@
 
   BinCommands.prototype.get_data = function() {
     var size = this.get_32();
-    var data = new Uint8Array (this.arraybuffer, this.pos, size);
+    var data = new Uint8Array(this.arraybuffer, this.pos, size);
     this.pos = this.pos + size;
     return data;
   };
@@ -571,11 +571,11 @@
   /////////////////////////////////////////////////////////////////////////////
 
   function cmdGrabPointer(id, ownerEvents) {
-    sendInput ('g', []);
+    sendInput('g', []);
   }
 
   function cmdUngrabPointer() {
-    sendInput ('u', []);
+    sendInput('u', []);
   }
 
   function cmdPutBuffer(id, w, h, compressed) {
@@ -847,7 +847,7 @@
     mouseup: function(id, cid, ev, relx, rely, mx, my) {
       updateForEvent(ev);
       var button = ev.button + 1;
-      lastState = lastState & ~getButtonMask (button);
+      lastState = lastState & ~getButtonMask(button);
       sendInput('B', [id, cid, relx, rely, mx, my, lastState, button]);
     },
 
@@ -918,7 +918,7 @@
 
       // Send the translated keysym
       if (keysym > 0) {
-        sendInput ('k', [keysym, lastState]);
+        sendInput('k', [keysym, lastState]);
       }
 
       // Stop keypress events just in case
@@ -989,7 +989,7 @@
 
         if ( outstandingCommands.length === 1 ) {
           while ( outstandingCommands.length > 0 ) {
-            var cmd = outstandingCommands.shift();
+            cmd = outstandingCommands.shift();
             if ( !handleCommands(cmd) ) {
               outstandingCommands.unshift(cmd);
               return;
@@ -1005,7 +1005,7 @@
      * @function disconnect
      * @memberof OSjs.Broadway.GTK
      */
-    disconnect:  function() {
+    disconnect: function() {
       if ( ws ) {
         ws.close();
       }

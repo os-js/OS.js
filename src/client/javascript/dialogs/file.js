@@ -57,17 +57,17 @@
    */
   function FileDialog(args, callback) {
     args = Utils.argumentDefaults(args, {
-      file:       null,
-      type:       'open',
-      path:       OSjs.API.getDefaultPath(),
-      filename:   '',
-      filetypes:  [],
-      extension:  '',
-      mime:       'application/octet-stream',
-      filter:     [],
-      mfilter:    [],
-      select:     null,
-      multiple:   false
+      file: null,
+      type: 'open',
+      path: OSjs.API.getDefaultPath(),
+      filename: '',
+      filetypes: [],
+      extension: '',
+      mime: 'application/octet-stream',
+      filter: [],
+      mfilter: [],
+      select: null,
+      multiple: false
     });
 
     args.multiple = (args.type === 'save' ? false : args.multiple === true);
@@ -354,7 +354,7 @@
 
       if ( !this.path || !check.filename ) {
         API.error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_MISSING_FILENAME'));
-        return;
+        return false;
       }
 
       this.selected = new VFS.File(this.path.replace(/^\//, '') + '/' + check.filename, check.mime);

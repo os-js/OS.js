@@ -442,9 +442,9 @@
     now = now ? (now instanceof ExtendedDate ? now.date : now) : new Date();
 
     var d = new Date(+now);
-    d.setHours(0,0,0);
+    d.setHours(0, 0, 0);
     d.setDate(d.getDate() + 4 - (d.getDay() || 7));
-    return Math.ceil((((d - new Date(d.getFullYear(),0,1)) / 8.64e7) + 1) / 7);
+    return Math.ceil((((d - new Date(d.getFullYear(), 0, 1)) / 8.64e7) + 1) / 7);
   };
 
   /**
@@ -524,17 +524,17 @@
     }
 
     var defaultFormats = {
-      'default':      'Y-m-d H:i:s',
-      shortDate:      'm/d/y',
-      mediumDate:     'M d, Y',
-      longDate:       'F d, Y',
-      fullDate:       'l, F d, Y',
-      shortTime:      'h:i A',
-      mediumTime:     'h:i:s A',
-      longTime:       'h:i:s A T',
-      isoDate:        'Y-m-d',
-      isoTime:        'H:i:s',
-      isoDateTime:    'Y-m-d H:i:s'
+      'default': 'Y-m-d H:i:s',
+      shortDate: 'm/d/y',
+      mediumDate: 'M d, Y',
+      longDate: 'F d, Y',
+      fullDate: 'l, F d, Y',
+      shortTime: 'h:i A',
+      mediumTime: 'h:i:s A',
+      longTime: 'h:i:s A T',
+      isoDate: 'Y-m-d',
+      isoTime: 'H:i:s',
+      isoDateTime: 'Y-m-d H:i:s'
     };
 
     format = defaultFormats[format] || format;

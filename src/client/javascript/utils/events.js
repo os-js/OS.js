@@ -63,33 +63,33 @@
       F11: 123,
       F12: 124,
 
-      TILDE:      220,
-      GRAVE:      192,
+      TILDE: 220,
+      GRAVE: 192,
 
-      CMD:        17,
-      LSUPER:     91,
-      RSUPER:     92,
+      CMD: 17,
+      LSUPER: 91,
+      RSUPER: 92,
 
-      DELETE:     46,
-      INSERT:     45,
-      HOME:       36,
-      END:        35,
-      PGDOWN:     34,
-      PGUP:       33,
-      PAUSE:      19,
-      BREAK:      19,
-      CAPS_LOCK:  20,
-      SCROLL_LOCK:186,
+      DELETE: 46,
+      INSERT: 45,
+      HOME: 36,
+      END: 35,
+      PGDOWN: 34,
+      PGUP: 33,
+      PAUSE: 19,
+      BREAK: 19,
+      CAPS_LOCK: 20,
+      SCROLL_LOCK: 186,
 
-      BACKSPACE:  8,
-      SPACE:      32,
-      TAB:        9,
-      ENTER:      13,
-      ESC:        27,
-      LEFT:       37,
-      RIGHT:      39,
-      UP:         38,
-      DOWN:       40
+      BACKSPACE: 8,
+      SPACE: 32,
+      TAB: 9,
+      ENTER: 13,
+      ESC: 27,
+      LEFT: 37,
+      RIGHT: 39,
+      UP: 38,
+      DOWN: 40
     };
 
     // Add all ASCII chacters to the map
@@ -499,7 +499,7 @@
 
         addEventHandler(el, nsType, type, callback, function mouseEventHandler(ev) {
           if ( !OSjs || !OSjs.Utils ) { // Probably shut down
-            return;
+            return null;
           }
 
           if ( noBind ) {

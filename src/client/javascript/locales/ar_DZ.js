@@ -29,7 +29,7 @@
  * @licence Simplified BSD License
  */
 (function() {
-  // jscs:disable validateQuoteMarks
+  /*eslint key-spacing: "off"*/
   'use strict';
 
   OSjs.Locales.ar_DZ = {

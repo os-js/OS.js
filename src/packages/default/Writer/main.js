@@ -52,8 +52,8 @@
     this.checkChangeLength = -1;
     this.checkChangeInterval = null;
     this.color = {
-      background : '#ffffff',
-      foreground : '#000000'
+      background: '#ffffff',
+      foreground: '#000000'
     };
     this.font = {
       name: config.Fonts['default'],
@@ -190,7 +190,7 @@
         var button = buttons[b];
         style[button.command] = {
           button: b,
-          value:_call(button.command)
+          value: _call(button.command)
         };
       });
       return style;

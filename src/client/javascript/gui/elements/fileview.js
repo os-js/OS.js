@@ -193,13 +193,13 @@
     file.type  = 'dir';
 
     var scanopts = {
-      backlink:           opts.backlink,
-      showDotFiles:       opts.dotfiles === true,
+      backlink: opts.backlink,
+      showDotFiles: opts.dotfiles === true,
       showFileExtensions: opts.extensions === true,
-      mimeFilter:         opts.filter || [],
-      typeFilter:         opts.filetype || null,
-      sortBy:             opts.sortby,
-      sortDir:            opts.sortdir
+      mimeFilter: opts.filter || [],
+      typeFilter: opts.filetype || null,
+      sortBy: opts.sortby,
+      sortDir: opts.sortdir
     };
 
     try {
@@ -405,7 +405,7 @@
 
     build: function() {
       if ( this.childView ) {
-        return;
+        return this;
       }
 
       this.buildChildView();
@@ -524,7 +524,7 @@
 
       if ( childView ) {
         if ( childView.$element && childView.$element.tagName.toLowerCase() === type ) {
-          return;
+          return null;
         }
       }
 

@@ -262,7 +262,7 @@
 
     this._setTitle(null);
 
-    var found;
+    var found, settings;
     if ( name ) {
       this._app.modules.forEach(function(m) {
         if ( !found && m.name === name ) {
@@ -275,7 +275,7 @@
       var mod = root.querySelector('div[data-module="' + found.name +  '"]');
       if ( mod ) {
         mod.style.display = 'block';
-        var settings = Utils.cloneObject(wm.getSettings());
+        settings = Utils.cloneObject(wm.getSettings());
 
         try {
           found.update(this, this._scheme, settings, wm, true);
@@ -294,7 +294,7 @@
       }
     } else {
       if ( !name ) { // Resets values to original (or current)
-        var settings = Utils.cloneObject(wm.getSettings());
+        settings = Utils.cloneObject(wm.getSettings());
         this._app.modules.forEach(function(m) {
           try {
             if ( m._inited ) {

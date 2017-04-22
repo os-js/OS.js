@@ -51,8 +51,10 @@ const _fs = require('fs');
 module.exports.iterate = function iterate(list, entry, done) {
   (function _next(i) {
     if ( i >= list.length ) {
-      return done();
+      done();
+      return;
     }
+
     entry(list[i], i, () => {
       _next(i + 1);
     });

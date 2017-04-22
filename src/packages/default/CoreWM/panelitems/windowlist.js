@@ -59,6 +59,7 @@
     });
 
     Utils.$bind(el, 'contextmenu', function(ev) {
+      /* eslint no-invalid-this: "off" */
       ev.preventDefault();
       ev.stopPropagation();
 

@@ -65,8 +65,6 @@
     });
 
     nwin._on('init', function(root) {
-      var self = this;
-
       function setTemplate(name) {
         var tpl = TEMPLATES[name];
         if ( tpl ) {
@@ -75,54 +73,54 @@
             if ( typeof val === 'function' ) {
               val = val();
             }
-            self._find(k).set('value', val);
+            nwin._find(k).set('value', val);
           });
         }
       }
 
       function done() {
         ondone({
-          transport: self._find('MountType').get('value'),
-          name: self._find('MountName').get('value'),
-          description: self._find('MountDescription').get('value'),
+          transport: nwin._find('MountType').get('value'),
+          name: nwin._find('MountName').get('value'),
+          description: nwin._find('MountDescription').get('value'),
           options: {
-            host: self._find('MountHost').get('value'),
-            ns: self._find('MountNamespace').get('value'),
-            username: self._find('MountUsername').get('value'),
-            password: self._find('MountPassword').get('value'),
-            cors: self._find('MountCORS').get('value')
+            host: nwin._find('MountHost').get('value'),
+            ns: nwin._find('MountNamespace').get('value'),
+            username: nwin._find('MountUsername').get('value'),
+            password: nwin._find('MountPassword').get('value'),
+            cors: nwin._find('MountCORS').get('value')
           }
         }, selected);
 
-        self._close();
+        nwin._close();
       }
 
-      this._render(this._name);
+      nwin._render(nwin._name);
 
       if ( selected ) {
-        self._find('MountType').set('value', selected.transport);
-        self._find('MountName').set('value', selected.name);
-        self._find('MountDescription').set('value', selected.description);
+        nwin._find('MountType').set('value', selected.transport);
+        nwin._find('MountName').set('value', selected.name);
+        nwin._find('MountDescription').set('value', selected.description);
 
         if ( selected.options ) {
-          self._find('MountHost').set('value', selected.options.host);
-          self._find('MountNamespace').set('value', selected.options.ns);
-          self._find('MountUsername').set('value', selected.options.username);
-          self._find('MountPassword').set('value', selected.options.password);
-          self._find('MountCORS').set('value', selected.options.cors);
+          nwin._find('MountHost').set('value', selected.options.host);
+          nwin._find('MountNamespace').set('value', selected.options.ns);
+          nwin._find('MountUsername').set('value', selected.options.username);
+          nwin._find('MountPassword').set('value', selected.options.password);
+          nwin._find('MountCORS').set('value', selected.options.cors);
         }
       } else {
-        setTemplate(this._find('MountType').get('value'));
-        this._find('MountType').on('change', function(ev) {
+        setTemplate(nwin._find('MountType').get('value'));
+        nwin._find('MountType').on('change', function(ev) {
           setTemplate(ev.detail);
         });
       }
 
-      this._find('ButtonClose').on('click', function() {
-        self._close();
+      nwin._find('ButtonClose').on('click', function() {
+        nwin._close();
       });
 
-      this._find('ButtonOK').on('click', function() {
+      nwin._find('ButtonOK').on('click', function() {
         done();
       });
     });

@@ -176,7 +176,7 @@
     var sb = ooptions.sortBy;
     var types = {
       mtime: 'date',
-      ctime : 'date'
+      ctime: 'date'
     };
 
     if ( ['filename', 'size', 'mime', 'ctime', 'mtime'].indexOf(sb) !== -1  ) {

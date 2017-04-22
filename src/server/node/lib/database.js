@@ -179,7 +179,8 @@ DatabaseInstance.prototype.queryAll = function(q, a, cb) {
 module.exports.instance = function(name, type, opts) {
   return new Promise((resolve, reject) => {
     if ( arguments.length === 1 || !(type && opts) ) {
-      return resolve(instances[name]);
+      resolve(instances[name]);
+      return;
     }
 
     try {

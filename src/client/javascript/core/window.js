@@ -439,7 +439,7 @@
        * @memberof OSjs.Core.Window#
        * @type {Object}
        */
-      this._position = {x:opts.x, y:opts.y};
+      this._position = {x: opts.x, y: opts.y};
 
       /**
        * Window Dimension With w and h
@@ -447,7 +447,7 @@
        * @memberof OSjs.Core.Window#
        * @type {Object}
        */
-      this._dimension     = {w:opts.width, h:opts.height};
+      this._dimension = {w: opts.width, h: opts.height};
 
       /**
        * Children
@@ -512,25 +512,25 @@
        * @type {Object}
        */
       this._properties    = {
-        gravity           : null,
-        allow_move        : true,
-        allow_resize      : true,
-        allow_minimize    : true,
-        allow_maximize    : true,
-        allow_close       : true,
-        allow_windowlist  : true,
-        allow_drop        : false,
-        allow_iconmenu    : true,
-        allow_ontop       : true,
-        allow_hotkeys     : true,
-        allow_session     : true,
-        key_capture       : false,
-        start_focused     : true,
-        min_width         : _DEFAULT_MIN_HEIGHT,
-        min_height        : _DEFAULT_MIN_WIDTH,
-        max_width         : null,
-        max_height        : null,
-        media_queries     : createMediaQueries()
+        gravity: null,
+        allow_move: true,
+        allow_resize: true,
+        allow_minimize: true,
+        allow_maximize: true,
+        allow_close: true,
+        allow_windowlist: true,
+        allow_drop: false,
+        allow_iconmenu: true,
+        allow_ontop: true,
+        allow_hotkeys: true,
+        allow_session: true,
+        key_capture: false,
+        start_focused: true,
+        min_width: _DEFAULT_MIN_HEIGHT,
+        min_height: _DEFAULT_MIN_WIDTH,
+        max_width: null,
+        max_height: null,
+        media_queries: createMediaQueries()
       };
 
       /**
@@ -540,12 +540,12 @@
        * @type {Object}
        */
       this._state = {
-        focused   : false,
-        modal     : false,
-        minimized : false,
-        maximized : false,
-        ontop     : false,
-        onbottom  : false
+        focused: false,
+        modal: false,
+        minimized: false,
+        maximized: false,
+        ontop: false,
+        onbottom: false
       };
 
       this._translator = null;
@@ -585,7 +585,7 @@
       (function _initPosition(properties, position) {
         if ( !properties.gravity && (typeof position.x === 'undefined') || (typeof position.y === 'undefined') ) {
           var wm = OSjs.Core.getWindowManager();
-          var np = wm ? wm.getWindowPosition() : {x:0, y:0};
+          var np = wm ? wm.getWindowPosition() : {x: 0, y: 0};
 
           position.x = np.x;
           position.y = np.y;
@@ -796,11 +796,11 @@
             main.setAttribute('data-dnd-state', 'true');
           },
 
-          onLeave : function() {
+          onLeave: function() {
             main.setAttribute('data-dnd-state', 'false');
           },
 
-          onDrop : function() {
+          onDrop: function() {
             main.setAttribute('data-dnd-state', 'false');
           },
 

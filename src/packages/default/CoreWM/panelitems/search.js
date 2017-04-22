@@ -123,6 +123,7 @@
     });
 
     Utils.$bind(input, 'keydown', function(ev) {
+      /* eslint no-invalid-this: "off" */
       if ( keyEvents[ev.keyCode] ) {
         ev.preventDefault();
         ev.stopPropagation();

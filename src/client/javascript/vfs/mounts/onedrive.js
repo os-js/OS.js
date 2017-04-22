@@ -605,12 +605,12 @@
 
       OSjs.Helpers.WindowsLiveAPI.createInstance(iargs, function(error, result) {
         if ( error ) {
-          return onerror(error);
+          onerror(error);
+        } else {
+          _isMounted = true;
+          API.message('vfs:mount', 'OneDrive', {source: null});
+          callback(OneDriveStorage);
         }
-
-        _isMounted = true;
-        API.message('vfs:mount', 'OneDrive', {source: null});
-        callback(OneDriveStorage);
       });
       return;
     }

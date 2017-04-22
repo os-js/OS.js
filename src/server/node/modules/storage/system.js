@@ -63,15 +63,16 @@ module.exports.setSettings = function(http, username, settings) {
   return new Promise((resolve, reject) => {
     _fs.ensureFile(path, (err) => {
       if (err) {
-        return reject(err);
+        reject(err);
+      } else {
+        _fs.writeFile(path, JSON.stringify(settings), (err, res) => {
+          if ( err ) {
+            reject(err);
+          } else {
+            resolve(true);
+          }
+        });
       }
-      _fs.writeFile(path, JSON.stringify(settings), (err, res) => {
-        if ( err ) {
-          reject(err);
-        } else {
-          resolve(true);
-        }
-      });
     });
   });
 };

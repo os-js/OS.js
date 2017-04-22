@@ -243,7 +243,7 @@ function combineResources(standalone, metadata, src, dest, debug, optimization) 
       dest: _path.join(dest, '_app.min.js'),
       debug: debug,
       optimizations: optimization
-    }),
+    });
 
     _utils.writeStyles({
       dest: _path.join(dest, '_app.min.css'),

@@ -196,7 +196,7 @@
     if ( to >= buttons.length ) {
       var k = to - buttons.length;
       while ( (k--) + 1 ) {
-        buttons.push(undefined);
+        buttons.push(window.undefined);
       }
     }
 

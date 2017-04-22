@@ -122,12 +122,14 @@ module.exports.curl = function(http, args) {
 
   return new Promise((resolve, reject) => {
     if ( !url ) {
-      return reject('cURL expects an \'url\'');
+      reject('cURL expects an \'url\'');
+      return;
     }
 
     require('request')(curlRequest.opts, (error, response, body) => {
       if ( error ) {
-        return reject(error);
+        reject(error);
+        return;
       }
 
       if ( curlRequest.binary && body ) {

@@ -222,15 +222,15 @@
     },
 
     beforeunload: function(ev) {
-      if ( signingOut ) {
-        return;
+      if ( !signingOut ) {
+        try {
+          if ( OSjs.API.getConfig('ShowQuitWarning') ) {
+            return OSjs.API._('MSG_SESSION_WARNING');
+          }
+        } catch ( e ) {}
       }
 
-      try {
-        if ( OSjs.API.getConfig('ShowQuitWarning') ) {
-          return OSjs.API._('MSG_SESSION_WARNING');
-        }
-      } catch ( e ) {}
+      return null;
     },
 
     resize: (function() {
@@ -548,7 +548,8 @@
   function initWindowManager(config, callback) {
     console.debug('initWindowManager()');
     if ( !config.WM || !config.WM.exec ) {
-      return callback(OSjs.API._('ERR_CORE_INIT_NO_WM'));
+      callback(OSjs.API._('ERR_CORE_INIT_NO_WM'));
+      return;
     }
 
     OSjs.API.launch(config.WM.exec, (config.WM.args || {}), function onWMLaunchSuccess(app) {
@@ -700,7 +701,8 @@
       } else {
         initWindowManager(config, function wmInited(err) {
           if ( err ) {
-            return _error(err);
+            _error(err);
+            return;
           }
 
           initEvents();
@@ -727,7 +729,8 @@
 
       entry(config, function asyncDone(err) {
         if ( err ) {
-          return _error(err);
+          _error(err);
+          return;
         }
 
         next();
