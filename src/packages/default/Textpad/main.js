@@ -65,24 +65,32 @@
 
   ApplicationTextpadWindow.prototype.updateFile = function(file) {
     DefaultApplicationWindow.prototype.updateFile.apply(this, arguments);
-    this._find('Text').$element.focus();
+    var gel = this._find('Text');
+    if ( gel ) {
+      gel.$element.focus();
+    }
   };
 
   ApplicationTextpadWindow.prototype.showFile = function(file, content) {
-    this._find('Text').set('value', content || '');
+    var gel = this._find('Text');
+    if ( gel ) {
+      gel.set('value', content || '');
+    }
+
     DefaultApplicationWindow.prototype.showFile.apply(this, arguments);
   };
 
   ApplicationTextpadWindow.prototype.getFileData = function() {
-    return this._find('Text').get('value');
+    var gel = this._find('Text');
+    return gel ? gel.get('value') : '';
   };
 
   ApplicationTextpadWindow.prototype._focus = function() {
     if ( DefaultApplicationWindow.prototype._focus.apply(this, arguments) ) {
-      if ( this._scheme ) {
-        var input = this._find('Text').$element;
-        if ( input ) {
-          input.focus();
+      var gel = this._find('Text');
+      if ( gel ) {
+        if ( gel.$element ) {
+          gel.$element.focus();
         }
       }
       return true;
