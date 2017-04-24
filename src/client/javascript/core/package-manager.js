@@ -92,10 +92,9 @@
             var len = Object.keys(packages).length;
             if ( len ) {
               cb();
-              return;
+            } else {
+              callback(false, API._('ERR_PACKAGE_ENUM_FAILED'), PackageManager);
             }
-
-            callback(false, 'No packages found!', PackageManager);
           });
         }
 
@@ -173,7 +172,7 @@
           var uri = API.getConfig('Connection.MetadataURI');
           Utils.preload([uri], function(total, failed) {
             if ( failed.length ) {
-              callback('Failed to load package manifest', failed);
+              callback(API._('ERR_PACKAGE_MANIFEST'), failed);
               return;
             }
 

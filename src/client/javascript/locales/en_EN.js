@@ -304,6 +304,8 @@
     //
 
     'ERR_PACKAGE_EXISTS': 'Package installation directory already exists. Cannot continue!',
+    'ERR_PACKAGE_MANIFEST': 'Failed to load package manifest',
+    'ERR_PACKAGE_ENUM_FAILED': 'Failed to get package list. Make sure you\'re not using "Private Mode" as this might case problems.',
 
     //
     // DefaultApplication
