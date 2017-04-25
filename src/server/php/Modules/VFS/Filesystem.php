@@ -36,6 +36,8 @@ use OSjs\Core\VFS;
 use OSjs\Core\VFSTransport;
 
 use Exception;
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
 
 abstract class Filesystem
   extends VFSTransport
@@ -268,7 +270,9 @@ abstract class Filesystem
 
     final public static function find(Request $request, Array $arguments = [])
     {
-        $path = self::_getRealPath($arguments['path']);
+        $dirname = $arguments['path'];
+        $path = self::_getRealPath($dirname);
+        $root = dirname($path);
         $opts = $arguments['args'];
         $result = [];
 
@@ -284,7 +288,7 @@ abstract class Filesystem
                     }
 
                     if (stristr($f, $opts['query']) !== false) {
-                        $result[] = self::_getFileMetadata($f, $dirname, $root);
+                        $result[] = self::_getFileMetadata($f, $dirname, $root . '/' . $f);
                     }
                 }
             }
@@ -298,9 +302,18 @@ abstract class Filesystem
             new RecursiveDirectoryIterator($p),
             RecursiveIteratorIterator::SELF_FIRST);
 
-        foreach ( array_keys($objects) as $name ) {
-            if (stristr($name, $opts['query']) !== false) {
-                $result[] = self::_getFileMetadata(substr($name, strlen($path)), $dirname, $root);
+        foreach ( $objects as $name => $tmp ) {
+
+            $filepath = substr($name, strlen($path) - 1);
+            $filename = basename($filepath);
+
+            if (stristr($filename, $opts['query']) !== false) {
+                $vpath = $dirname;
+                $tmppath = dirname($filepath);
+                if ( $tmppath === '.' ) {
+                    $tmppath = '';
+                }
+                $result[] = self::_getFileMetadata($filename, $vpath . $tmppath, $name);
             }
 
             if ($limit && sizeof($result) >= $limit) {
