@@ -39,7 +39,6 @@
    *
    * @param  {Object}           args                      An object with arguments
    * @param  {String}           args.title                Dialog title
-   * @param  {String}           args.title                Dialog title
    * @param  {String}           [args.type=open]          Dialog type (alternative=save)
    * @param  {Boolean}          [args.multiple=false]     Multiple file selection
    * @param  {OSjs.VFS.File}    [args.file]               Current file
@@ -88,8 +87,8 @@
       }
     }
 
-    var title     = API._(args.type === 'save' ? 'DIALOG_FILE_SAVE' : 'DIALOG_FILE_OPEN');
-    var icon      = args.type === 'open' ? 'actions/document-open.png' : 'actions/documentsave-as.png';
+    var title = args.title || API._(args.type === 'save' ? 'DIALOG_FILE_SAVE' : 'DIALOG_FILE_OPEN');
+    var icon = args.type === 'open' ? 'actions/document-open.png' : 'actions/documentsave-as.png';
 
     DialogWindow.apply(this, ['FileDialog', {
       title: title,
