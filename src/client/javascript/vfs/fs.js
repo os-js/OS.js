@@ -947,6 +947,10 @@
         callback(API._('ERR_VFSMODULE_MKDIR_FMT', error));
       } else {
         requestWrapper([item.path, 'mkdir', [item]], 'ERR_VFSMODULE_MKDIR_FMT', callback, function(error, response) {
+          if ( error ) {
+            console.warn(error);
+          }
+
           return response;
         }, options, appRef);
       }
