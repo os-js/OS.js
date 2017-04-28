@@ -65,7 +65,7 @@
       translator: OSjs.Applications.ApplicationMusicPlayer._
     }, app, scheme, file]);
 
-    this.updated = false;
+    this.updated = 0;
     this.seeking = false;
   }
 
@@ -192,7 +192,7 @@
     seeker.set('max', 0);
     seeker.set('value', 0);
 
-    this.updated = false;
+    this.updated = 0;
     this.seeking = false;
 
     function getInfo() {
@@ -239,17 +239,17 @@
 
     var time = Utils.format('{0} / {1}', formatTime(current), unknown ? '<unknown>' : formatTime(total));
 
-    if ( !this.updated ) {
+    if ( this.updated < 2 ) {
       seeker.set('min', 0);
       seeker.set('max', total);
+    } else {
+      this.updated++;
     }
 
     label.set('value', time);
     if ( !this.seeking ) {
       seeker.set('value', current);
     }
-
-    this.updated = true;
   };
 
   /////////////////////////////////////////////////////////////////////////////
