@@ -84,7 +84,7 @@ class Instance
         $overlays = self::$CONFIG->overlays;
         $paths = [];
 
-        foreach ( $overlays as $oname => $overlay ) {
+        foreach ( array_values($overlays) as $overlay ) {
             if ( !empty($overlay->modules) ) {
                 $paths = $paths + $overlay->modules;
                 foreach ( $overlay->modules as $dir ) {

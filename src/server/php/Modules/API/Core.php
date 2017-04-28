@@ -129,7 +129,7 @@ abstract class Core
     {
         if ($request->data['command'] === 'list') {
             $packages = Instance::GetPackages();
-            foreach ( $packages as $name => &$manifest ) {
+            foreach ( array_values($packages) as &$manifest ) {
                 if ( isset($manifest['_src']) ) {
                     unset($manifest['_src']);
                 }

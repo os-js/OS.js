@@ -302,7 +302,7 @@ abstract class Filesystem
             new RecursiveDirectoryIterator($p),
             RecursiveIteratorIterator::SELF_FIRST);
 
-        foreach ( $objects as $name => $tmp ) {
+        foreach ( array_keys($objects) as $name ) {
 
             $filepath = substr($name, strlen($path) - 1);
             $filename = basename($filepath);
