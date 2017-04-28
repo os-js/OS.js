@@ -1,3 +1,26 @@
+# 2.0.0-96
+
+Mostly bugfixes and sortable shortcut buttons in panel.
+
+Relevant:
+
+* http://community.os.js.org/t/update-version-bump-alpha96/130
+
+Digest:
+
+* Settings: Bugfixes
+* Textpad: Bugfixes
+* PackageManager: Bugfixes, better error messages
+* CoreWM: Sortable buttons in panel (dnd)
+* dialogs: Fixed 'title' argument for File dialog
+* utils: Added $path() and $fromPath() xpath helpers
+* build: Updated watcher ignore files
+* build: Updated base index.html template
+* server-php: Fixed find() VFS method after refactor
+* misc: Updated eslint rules
+* misc: Updated package.json dependencies
+* misc: Updated locales
+
 # 2.0.0-95
 
 Forgot to merge a branch in the last release, so see previous release notes for information.
