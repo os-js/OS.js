@@ -2,22 +2,22 @@
 
 Installation is done in a few simple steps and only takes a minute to get running.
 
-For more general information look at the [README](README.md) file or in the [official documentation](https://os-js.org/doc/).
+It is highly recommended that you use `git` to install instead of downloading an archive.
 
-# Dependencies
+## Dependencies
 
-You only need these packages installed:
+The only requirement is that you have `node` and `npm` installed (v4 or newer).
 
-- `git`
-- `node` (v4 or above. Debian users might also need `nodejs-legacy`)
-- `npm`
+*Note for Debian/Ubuntu users*: You might need to install the `nodejs-legacy` package.
 
-# Installation
+## Installation
 
-For full instructions: https://os-js.org/manual/installation/
+Inside the OS.js directory:
 
 ```
 $ npm install --production
 $ node osjs build
 $ node osjs run
 ```
+
+For more information, see the [Installation Manual](https://os-js.org/manual/installation/).
