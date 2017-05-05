@@ -58,17 +58,18 @@
 
     <script>
       document.addEventListener('DOMContentLoaded', function() {
-        if ( !OSjs ) {
+        if ( typeof OSjs !== 'object' || typeof OSjs.Bootstrap !== 'object' ) {
           alert('OS.js was not loaded, most likely due to network or parsing error(s).');
           return;
         }
 
-        OSjs.Bootstrap.run({
-        });
+        OSjs.Bootstrap.run({});
       });
       document.addEventListener('unload', function() {
-        if ( OSjs ) {
+        try {
           OSjs.Bootstrap.stop();
+        } catch ( e ) {
+          console.warn(e.stack, e);
         }
       });
     </script>
