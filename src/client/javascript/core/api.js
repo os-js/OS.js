@@ -1342,12 +1342,15 @@
    * @return  {String}                Or false on error
    */
   API.createLoading = function API_createLoading(name, opts, panelId) {
-    var wm = OSjs.Core.getWindowManager();
-    if ( wm ) {
+    try {
+      var wm = OSjs.Core.getWindowManager();
       if ( wm.createNotificationIcon(name, opts, panelId) ) {
         return name;
       }
+    } catch ( e ) {
+      console.warn(e, e.stack);
     }
+
     return false;
   };
 
@@ -1363,14 +1366,15 @@
    * @return  {Boolean}
    */
   API.destroyLoading = function API_destroyLoading(name, panelId) {
-    var wm = OSjs.Core.getWindowManager();
-    if ( name ) {
-      if ( wm ) {
-        if ( wm.removeNotificationIcon(name, panelId) ) {
-          return true;
-        }
+    try {
+      var wm = OSjs.Core.getWindowManager();
+      if ( wm.removeNotificationIcon(name, panelId) ) {
+        return true;
       }
+    } catch ( e ) {
+      console.warn(e, e.stack);
     }
+
     return false;
   };
 
