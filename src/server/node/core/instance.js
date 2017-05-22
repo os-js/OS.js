@@ -395,7 +395,7 @@ module.exports.run = function run(port) {
   _evhandler.emit('server:run');
 
   _logger.log('INFO', _logger.colored('Starting OS.js server', 'green'));
-  _logger.log('INFO', _logger.colored(['Running', httpConfig.mode, 'on localhost:' + ENV.PORT].join(' '), 'green'));
+  _logger.log('INFO', _logger.colored(['Running', httpConfig.mode, 'on', (ENV.HOSTNAME || 'localhost') + ':' + ENV.PORT].join(' '), 'green'));
 
   if ( httpConfig.connection === 'ws' ) {
     const wsp = httpConfig.ws.port === 'upgrade' ? ENV.PORT : httpConfig.ws.port;
@@ -409,7 +409,7 @@ module.exports.run = function run(port) {
     _logger.log('INFO', _logger.colored('Running in production mode', 'yellow'));
   }
 
-  const result = _http.run(ENV.PORT);
+  const result = _http.run(ENV.PORT, ENV.HOSTNAME);
   _logger.log('INFO', _logger.colored('Ready...', 'green'));
 
   return result;

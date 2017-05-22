@@ -543,13 +543,14 @@ module.exports.init = function init() {
 /**
  * Runs the HTTP server
  *
- * @param {Number}    port      Which port number
+ * @param {Number}    port          Which port number
+ * @param {String}    [hostname]    Which hostname
  *
  * @function run
  * @memberof core.http
  */
-module.exports.run = function run(port) {
-  httpServer.listen(port);
+module.exports.run = function run(port, hostname) {
+  httpServer.listen(port, hostname);
 };
 
 /**

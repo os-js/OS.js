@@ -306,6 +306,7 @@ module.exports.run = function(cli, args) {
   const settings = require(_path.join(ROOT, 'src/server/node/core/settings.js'));
 
   const opts = {
+    HOSTNAME: cli.option('hostname'),
     DEBUG: cli.option('debug'),
     PORT: cli.option('port'),
     LOGLEVEL: cli.option('loglevel')

@@ -46,6 +46,7 @@ const _minimist = require('minimist');
 const argv = _minimist(process.argv.slice(2));
 const opts = {
   DEBUG: argv.debug,
+  HOSTNAME: argv.h || argv.hostname,
   ROOT: argv.r || argv.root,
   PORT: argv.p || argv.port,
   LOGLEVEL: argv.l || argv.loglevel,

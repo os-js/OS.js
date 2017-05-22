@@ -37,6 +37,7 @@ const _path = require('path');
  */
 
 const ENV = {
+  HOSTNAME: null,
   DEBUG: false,
   PORT: null,
   LOGLEVEL: -2,
@@ -91,6 +92,10 @@ module.exports.update = function(config) {
 
   if ( !ENV.PORT && config.http.port ) {
     ENV.PORT = config.http.port;
+  }
+
+  if ( !ENV.HOSTNAME && config.http.hostname ) {
+    ENV.HOSTNAME = config.http.hostname;
   }
 
   if ( config.overlays ) {
