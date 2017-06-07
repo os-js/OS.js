@@ -1064,11 +1064,11 @@
    */
   WindowManager.prototype.getWindowPosition = function() {
     var winCount = 0;
-    for(var i=0; i<this._windows.length; i++) {
-      if (this._windows[i] !== null) {
+    this._windows.forEach(function(win, i) {
+      if (win !== null) {
         winCount++;
       }
-    }
+    });
     return {x: this._windows.length * winCount, y: this._windows.length * winCount};
   };
 
