@@ -1064,7 +1064,7 @@
    */
   WindowManager.prototype.getWindowPosition = function() {
     var winCount = 0;
-    this._windows.forEach(function(win, i) {
+    this._windows.forEach(function(win) {
       if (win !== null) {
         winCount++;
       }
