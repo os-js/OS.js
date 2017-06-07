@@ -1069,7 +1069,7 @@
         winCount++;
       }
     });
-    return {x: this._windows.length * winCount, y: this._windows.length * winCount};
+    return {x: 10 * winCount, y: 10 * winCount};
   };
 
   /**
