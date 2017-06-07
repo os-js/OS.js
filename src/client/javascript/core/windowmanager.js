@@ -1063,12 +1063,9 @@
    * @return    {Object} rectangle
    */
   WindowManager.prototype.getWindowPosition = function() {
-    var winCount = 0;
-    this._windows.forEach(function(win) {
-      if (win !== null) {
-        winCount++;
-      }
-    });
+    var winCount = this._windows.reduce(function(count, win) {
+      return win === null ? count : (count + 1);
+    }, 0);
     return {x: 10 * winCount, y: 10 * winCount};
   };
 
