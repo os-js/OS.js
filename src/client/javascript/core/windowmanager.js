@@ -1062,20 +1062,15 @@
    *
    * @return    {Object} rectangle
    */
-  WindowManager.prototype.getWindowPosition = (function() {
-    var _LNEWX = 0;
-    var _LNEWY = 0;
-
-    return function() {
-      if ( _LNEWY >= (window.innerHeight - 100) ) {
-        _LNEWY = 0;
+  WindowManager.prototype.getWindowPosition = function() {
+    var winCount = 0;
+    for(var i=0; i<this._windows.length; i++) {
+      if (this._windows[i] !== null) {
+        winCount++;
       }
-      if ( _LNEWX >= (window.innerWidth - 100) )  {
-        _LNEWX = 0;
-      }
-      return {x: (_LNEWX += 10), y: (_LNEWY += 10)};
-    };
-  })();
+    }
+    return {x: this._windows.length * winCount, y: this._windows.length * winCount};
+  };
 
   /**
    * Gets a setting
