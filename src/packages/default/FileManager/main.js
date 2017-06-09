@@ -923,10 +923,16 @@
       }
 
       if ( files ) {
-        VFS.upload({
-          files: files,
-          destination: dest
-        }, done, self);
+        Utils.asyncs(files, function(f, i, n) {
+          VFS.Helpers.createUploadDialog({
+            file: f,
+            destination: dest
+          }, function(error) {
+            if ( error ) {
+              API.error(API._('ERR_GENERIC_APP_FMT', self.__label), API._('ERR_GENERIC_APP_REQUEST'), error);
+            }
+          }, self);
+        }, done);
       } else {
         VFS.Helpers.createUploadDialog({
           destination: dest
