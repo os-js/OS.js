@@ -48,10 +48,16 @@
    */
   function FileUploadDialog(args, callback) {
     args = Utils.argumentDefaults(args, {
-      dest: API.getDefaultPath(),
       progress: {},
       file: null
     });
+
+    if ( args.destination ) {
+      args.dest = args.destination;
+    }
+    if ( !args.dest ) {
+      args.dest = API.getDefaultPath();
+    }
 
     DialogWindow.apply(this, ['FileUploadDialog', {
       title: args.title || API._('DIALOG_UPLOAD_TITLE'),
@@ -113,7 +119,7 @@
 
       this._find('ButtonCancel').set('disabled', true);
 
-      var desc = OSjs.API._('DIALOG_UPLOAD_MSG_FMT', file.name, file.type, fileSize, this.dest);
+      var desc = OSjs.API._('DIALOG_UPLOAD_MSG_FMT', file.name, file.type, fileSize, this.args.dest);
 
       progressDialog = API.createDialog('FileProgress', {
         message: desc,
