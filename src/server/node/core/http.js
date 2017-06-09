@@ -432,10 +432,10 @@ function createServer(resolve, reject) {
       }
 
       websocketServer = new (require('ws')).Server(opts);
-      websocketServer.on('connection', (ws) => {
+      websocketServer.on('connection', (ws, upgradeReq) => {
         _logger.log('VERBOSE', _logger.colored('WS', 'bold'), 'New connection...');
 
-        const sid = _session.getSessionId(ws.upgradeReq);
+        const sid = _session.getSessionId(upgradeReq);
 
         _evhandler.emit('ws:connection', [ws]);
 
@@ -444,8 +444,8 @@ function createServer(resolve, reject) {
           const path = message.path;
           const respond = _responder.createFromWebsocket(servers, ws, message._index);
 
-          _session.getSession(ws.upgradeReq).then((ss) => {
-            const newReq = Object.assign(ws.upgradeReq, {
+          _session.getSession(upgradeReq).then((ss) => {
+            const newReq = Object.assign(upgradeReq, {
               session: ss,
               method: 'POST',
               url: path
