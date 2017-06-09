@@ -119,6 +119,7 @@
     this.$iconview = null;
     this.$element = document.createElement('gui-icon-view');
     this.$element.setAttribute('data-multiple', 'false');
+    this.$element.setAttribute('data-draggable', 'true');
     //this.$element.setAttribute('no-selection', 'true');
     this.$element.id = 'CoreWMDesktopIconView';
     this.shortcutCache = [];
