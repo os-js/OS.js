@@ -140,7 +140,7 @@
           error(err, ev);
           return;
         }
-        progressDialog._close();
+        progressDialog._close(true);
         self.onClose(ev, 'ok', file);
       }, {
         onprogress: function(ev) {
