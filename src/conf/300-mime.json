@@ -13,6 +13,7 @@
       "text/xml"                : "XML Document",
       "application/javascript"  : "JavaScript Document",
       "application/json"        : "JSON Document",
+      "application/font-woff" : "Woff font file",
       "application/x-python"    : "Python Document",
       "application/x-lua"       : "Lua Document",
       "application/x-shellscript": "Shell Script",
@@ -60,6 +61,7 @@
       ".cc"     : "text/x-cplusplus",
       ".otf"    : "font/opentype",
       ".ttf"    : "font/opentype",
+      ".woff" : "application/font-woff",
       ".png"    : "image/png",
 
       ".zip"    : "application/zip",
