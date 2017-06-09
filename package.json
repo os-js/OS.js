@@ -50,7 +50,7 @@
     "uglify-js": "^2.8.28",
     "unzip-stream": "^0.1.2",
     "ws": "^3.0.0",
-    "zlibjs": "^0.2.0"
+    "zlibjs": "^0.3.0"
   },
   "devDependencies": {
     "chai": "^4.0.2",
