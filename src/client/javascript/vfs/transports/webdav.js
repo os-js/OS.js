@@ -166,7 +166,7 @@
         var reqpath = resolvePath(item);
         var root = mm.getRootFromPath(item.path);
 
-        doc.children.forEach(function(c) {
+        (doc.children || []).forEach(function(c) {
           var type = 'file';
 
           function getPath() {

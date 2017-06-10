@@ -364,7 +364,7 @@
       }
     ];
 
-    if ( item ) {
+    if ( item && item.data ) {
       var file = item.data;
 
       if ( file.type === 'application' ) {

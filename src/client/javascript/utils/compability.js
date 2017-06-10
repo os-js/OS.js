@@ -338,11 +338,12 @@
    * @return {Object}
    */
   OSjs.Utils.getRect = function Utils_getRect() {
+    var body = document.body || {};
     return {
       top: 0,
       left: 0,
-      width: document.body.offsetWidth,
-      height: document.body.offsetHeight
+      width: body.offsetWidth || 0,
+      height: body.offsetHeight || 0
     };
   };
 
