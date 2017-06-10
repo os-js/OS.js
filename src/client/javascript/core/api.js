@@ -1344,7 +1344,7 @@
   API.createLoading = function API_createLoading(name, opts, panelId) {
     try {
       var wm = OSjs.Core.getWindowManager();
-      if ( wm.createNotificationIcon(name, opts, panelId) ) {
+      if ( wm && wm.createNotificationIcon(name, opts, panelId) ) {
         return name;
       }
     } catch ( e ) {
@@ -1368,7 +1368,7 @@
   API.destroyLoading = function API_destroyLoading(name, panelId) {
     try {
       var wm = OSjs.Core.getWindowManager();
-      if ( wm.removeNotificationIcon(name, panelId) ) {
+      if ( wm && wm.removeNotificationIcon(name, panelId) ) {
         return true;
       }
     } catch ( e ) {
