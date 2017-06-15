@@ -360,7 +360,9 @@ function buildPackage(cli, cfg, name, metadata) {
  */
 function buildPackages(cli, cfg) {
   return new Promise((resolve, reject) => {
-    _manifest.getPackages(cfg.repositories).then((packages) => {
+    const cliRepos = cli.option('repositories', '');
+    const repos = cliRepos.length ? cliRepos.split(',') : cfg.repositories;
+    _manifest.getPackages(repos).then((packages) => {
       _utils.eachp(Object.keys(packages).map((iter) => {
         return function() {
           return buildPackage(cli, cfg, packages[iter].path, packages[iter]);
