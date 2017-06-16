@@ -273,11 +273,16 @@ function getConfiguration() {
         const u = /^[A-Z]*$/.test(p);
         if ( safeWords.indexOf(w) === -1 ) {
           const value = (u ? process.env[p] : null) || getConfigPath(tmpConfig, p);
-          const re = w.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '$1');
-          tmpFile = tmpFile.replace(new RegExp(re, 'g'), String(value));
+
+          if ( typeof value === 'object' && value.constructor === Object ) {
+            const re = w.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '$1');
+            tmpFile = tmpFile.replace(new RegExp('"' + re + '"', 'g'), JSON.stringify(value));
+          } else {
+            const re = w.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, '$1');
+            tmpFile = tmpFile.replace(new RegExp(re, 'g'), String(value));
+          }
         }
       });
-
       resolve(Object.freeze(JSON.parse(tmpFile)));
     }).catch(reject);
 
