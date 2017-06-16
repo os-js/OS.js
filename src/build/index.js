@@ -328,6 +328,10 @@ module.exports.run = function(cli, args) {
       _logger.log('UNCAUGHT EXCEPTION', error, error.stack);
     });
 
+    process.on('unhandledRejection', (error) => {
+      console.log('UNCAUGHT REJECTION', error);
+    });
+
     ['SIGTERM', 'SIGINT'].forEach((sig) => {
       process.on(sig, () => {
         console.log('\n');
