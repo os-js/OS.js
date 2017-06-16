@@ -1,3 +1,31 @@
+# 2.0.0-97
+
+Bugfixes, updated dependencies, build system updates and moved some methods from Storage to Authenticator module
+
+Relevant:
+
+* http://community.os.js.org/t/update-version-bump-alpha97/136
+
+Digest:
+
+* WM: Change window spawn behavior
+* FileManager: Add upload dialog on native file drops
+* MusicPlayer: Added workaround for seeker not having correct start/end
+* Dialogs: Fixed 'undefined' in message for upload dialog
+* Dialogs: Fixed file upload dialog not closing progress
+* Core: Removed deprecated 'handler' BC (#572)
+* API: Updated loading indication methods
+* server-node: Support for setting 'hostname' http option
+* server-node: Moved some methods from 'Storage' to 'Authenticator'
+* server-php: Moved some methods from 'Storage' to 'Authenticator'
+* build: Updated dist template
+* build: Added support to specify repos on 'build:packages'
+* misc: Add '.woff' extension to MIME config
+* misc: Updated dependencies
+* misc: Some general bugfixes
+* misc: Updated INSTALL
+* misc: Updated eslint
+
 # 2.0.0-96
 
 Mostly bugfixes and sortable shortcut buttons in panel.
