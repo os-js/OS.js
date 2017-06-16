@@ -31,7 +31,6 @@
 'use strict';
 
 const _settings = require('./settings.js');
-const _storage = require('./storage.js');
 const _vfs = require('./vfs.js');
 const _env = require('./env.js');
 const _logger = require('./../lib/logger.js');
@@ -195,7 +194,7 @@ module.exports.checkPermission = function(http, type, options) {
   function checkPackagePermission(userGroups) {
     return new Promise((resolve, reject) => {
       if ( type === 'package' ) {
-        _storage.get().getBlacklist(http, username).then((blacklist) => {
+        MODULE.getBlacklist(http, username).then((blacklist) => {
           if ( blacklist && blacklist.indexOf(options.path) !== -1 ) {
             reject('Access Denied!');
           } else {
@@ -217,7 +216,7 @@ module.exports.checkPermission = function(http, type, options) {
       }
 
       if ( checkGroups ) {
-        _storage.get().getGroups(http, username).then((userGroups) => {
+        MODULE.getGroups(http, username).then((userGroups) => {
           if ( !(userGroups instanceof Array) || !userGroups.length ) {
             userGroups = defaultGroups;
           }

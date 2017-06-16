@@ -30,8 +30,30 @@
 /*eslint strict:["error", "global"]*/
 'use strict';
 
+const _fs = require('fs-extra');
 const _passwd = require('passwd-linux');
 const _userid = require('userid');
+const _settings = require('./../../core/settings.js');
+
+function _readFile(username, path, resolve) {
+  function _done(data) {
+    data = data || {};
+    resolve(username ? (data[username] || []) : data);
+  }
+
+  _fs.readFile(path, (err, data) => {
+    if ( err ) {
+      _done(null);
+    } else {
+      try {
+        _done(JSON.parse(data));
+      } catch ( e ) {
+        console.warn('Failed to read', path);
+        _done({});
+      }
+    }
+  });
+}
 
 module.exports.login = function(http, data) {
   return new Promise((resolve, reject) => {
@@ -84,6 +106,28 @@ module.exports.checkSession = function(http) {
     } else {
       reject('You have no OS.js Session, please log in!');
     }
+  });
+};
+
+module.exports.getGroups = function(http, username) {
+  const config = _settings.get();
+  const path = config.modules.storage.system.groups;
+  return new Promise((resolve) => {
+    _readFile(username, path, resolve);
+  });
+};
+
+module.exports.getBlacklist = function(http, username) {
+  const config = _settings.get();
+  const path = config.modules.storage.system.blacklist;
+  return new Promise((resolve) => {
+    _readFile(username, path, resolve);
+  });
+};
+
+module.exports.setBlacklist = function(http, username, list) {
+  return new Promise((resolve) => {
+    resolve(true);
   });
 };
 

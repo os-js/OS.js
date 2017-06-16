@@ -75,6 +75,24 @@ module.exports.checkSession = function(http) {
   });
 };
 
+module.exports.getGroups = function(http, username) {
+  return new Promise((resolve) => {
+    resolve(['admin']);
+  });
+};
+
+module.exports.getBlacklist = function(http, username) {
+  return new Promise((resolve) => {
+    resolve([]);
+  });
+};
+
+module.exports.setBlacklist = function(http, username, list) {
+  return new Promise((resolve) => {
+    resolve(true);
+  });
+};
+
 module.exports.register = function(config) {
   return Promise.resolve();
 };

@@ -87,28 +87,6 @@ module.exports.getSettings = function(http, username) {
   });
 };
 
-module.exports.getGroups = function(http, username) {
-  const config = _settings.get();
-  const path = config.modules.storage.system.groups;
-  return new Promise((resolve) => {
-    _readFile(username, path, resolve);
-  });
-};
-
-module.exports.getBlacklist = function(http, username) {
-  const config = _settings.get();
-  const path = config.modules.storage.system.blacklist;
-  return new Promise((resolve) => {
-    _readFile(username, path, resolve);
-  });
-};
-
-module.exports.setBlacklist = function(http, username, list) {
-  return new Promise((resolve) => {
-    resolve(true);
-  });
-};
-
 module.exports.register = function(config) {
   return Promise.resolve();
 };

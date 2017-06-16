@@ -65,36 +65,6 @@ module.exports.getSettings = function(http, username) {
   });
 };
 
-module.exports.getGroups = function(http, username) {
-  return new Promise((resolve, reject) => {
-    function done(row) {
-      row = row || {};
-      let json = [];
-      try {
-        json = JSON.parse(row.groups);
-      } catch (e) {}
-      resolve(json);
-    }
-
-    _db.instance('authstorage').then((db) => {
-      db.query('SELECT `groups` FROM `users` WHERE `username` = ? LIMIT 1;', [username])
-        .then(done).catch(reject);
-    }).catch(reject);
-  });
-};
-
-module.exports.getBlacklist = function(http, username) {
-  return new Promise((resolve) => {
-    resolve([]);
-  });
-};
-
-module.exports.setBlacklist = function(http, username, list) {
-  return new Promise((resolve) => {
-    resolve(true);
-  });
-};
-
 module.exports.register = function(config) {
   const type = config.driver;
   const settings = config[type];
