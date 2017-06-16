@@ -77,19 +77,6 @@ abstract class Storage
     }
 
     /**
-     * Gets user package blacklist
-     *
-     * @access public
-     * @param  \OSjs\Core\Request $request The HTTP request
-     * @throws \Exception On failure
-     * @return array
-     */
-    public function getBlacklist(Request $request)
-    {
-        return [];
-    }
-
-    /**
      * Gets module configuration
      *
      * @access public

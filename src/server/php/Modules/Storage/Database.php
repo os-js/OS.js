@@ -64,15 +64,6 @@ class Database extends Storage
         return $stmt;
     }
 
-    final public function getGroups(Request $request)
-    {
-        $query = 'SELECT `groups` FROM `users` WHERE `username` = ? LIMIT 1;';
-        if ($result = self::_query($query, [$_SESSION['username']])->fetch()) {
-            return json_decode($result['groups']) ?: [];
-        }
-        return [];
-    }
-
     final public function getSettings(Request $request)
     {
         $query = 'SELECT settings FROM `users` WHERE `username` = ? LIMIT 1;';

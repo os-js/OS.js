@@ -96,5 +96,14 @@ class Database extends Authenticator
         return parent::checkPermission($request, $type, $options);
     }
 
+    final public function getGroups(Request $request)
+    {
+        $query = 'SELECT `groups` FROM `users` WHERE `username` = ? LIMIT 1;';
+        if ($result = self::_query($query, [$_SESSION['username']])->fetch()) {
+            return json_decode($result['groups']) ?: [];
+        }
+        return [];
+    }
+
 }
 

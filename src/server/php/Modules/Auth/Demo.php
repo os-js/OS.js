@@ -60,5 +60,15 @@ class Demo extends Authenticator
         return parent::checkPermission($request, $type, $options);
     }
 
+    final public function getBlacklist(Request $request)
+    {
+        return [];
+    }
+
+    final public function getGroups(Request $request)
+    {
+        return ['admin'];
+    }
+
 }
 

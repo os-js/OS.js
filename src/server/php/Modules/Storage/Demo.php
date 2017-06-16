@@ -34,10 +34,6 @@ use OSjs\Core\Storage;
 
 class Demo extends Storage
 {
-    final public function getGroups(Request $request)
-    {
-        return ['admin'];
-    }
 
     final public function getSettings(Request $request)
     {
@@ -47,11 +43,6 @@ class Demo extends Storage
     final public function setSettings(Request $request)
     {
         return true;
-    }
-
-    final public function getBlacklist(Request $request)
-    {
-        return [];
     }
 
 }

@@ -31,7 +31,6 @@
 
 use OSjs\Core\Instance;
 use OSjs\Core\Request;
-use OSjs\Core\Storage;
 use OSjs\Core\VFS;
 
 use Exception;
@@ -207,7 +206,7 @@ class Authenticator
     public function checkPermission(Request $request, $type, Array $options = [])
     {
         if ($type === 'package') {
-            $blacklist = Storage::getInstance()->getBlacklist($request);
+            $blacklist = Authenticator::getInstance()->getBlacklist($request);
             return !in_array($options['path'], $blacklist);
         }
 
@@ -231,7 +230,7 @@ class Authenticator
         }
 
         if ($checks) {
-            $groups = Storage::getInstance()->getGroups($request);
+            $groups = Authenticator::getInstance()->getGroups($request);
             if (in_array('admin', $groups) ) {
                 return true;
             } else if (sizeof(array_diff($groups, $checks))) {
@@ -240,6 +239,19 @@ class Authenticator
         }
 
         return true;
+    }
+
+    /**
+     * Gets user package blacklist
+     *
+     * @access public
+     * @param  \OSjs\Core\Request $request The HTTP request
+     * @throws \Exception On failure
+     * @return array
+     */
+    public function getBlacklist(Request $request)
+    {
+        return [];
     }
 
     /**

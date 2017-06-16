@@ -51,10 +51,10 @@ abstract class Core
 
         $storage = Storage::getInstance();
         $userSettings = $storage->getSettings($request);
-        $blacklist = $storage->getBlacklist($request);
+        $blacklist = $authenticator->getBlacklist($request);
 
         if ( !isset($userData['groups']) ) {
-            $groups = $storage->getGroups($request);
+            $groups = $authenticator->getGroups($request);
             $userData['groups'] = $groups;
         }
 
