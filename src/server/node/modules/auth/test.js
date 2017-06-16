@@ -90,6 +90,33 @@ module.exports.checkSession = function(http) {
   });
 };
 
+module.exports.getGroups = function(http, username) {
+  return new Promise((resolve) => {
+    let groups = ({
+      normal: ['admin'],
+      demo: ['admin'],
+      restricted: ['application']
+    })[username] || [];
+    resolve(groups);
+  });
+};
+
+module.exports.getBlacklist = function(http, username) {
+  return new Promise((resolve) => {
+    if ( username === 'restricted' ) {
+      resolve(['default/CoreWM']);
+    } else {
+      resolve([]);
+    }
+  });
+};
+
+module.exports.setBlacklist = function(http, username, list) {
+  return new Promise((resolve) => {
+    resolve(true);
+  });
+};
+
 module.exports.register = function(config) {
   return Promise.resolve();
 };

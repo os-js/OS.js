@@ -33,26 +33,7 @@
 const _fs = require('fs-extra');
 const _vfs = require('./../../core/vfs.js');
 const _settings = require('./../../core/settings.js');
-
-function _readFile(username, path, resolve) {
-  function _done(data) {
-    data = data || {};
-    resolve(username ? (data[username] || []) : data);
-  }
-
-  _fs.readFile(path, (err, data) => {
-    if ( err ) {
-      _done(null);
-    } else {
-      try {
-        _done(JSON.parse(data));
-      } catch ( e ) {
-        console.warn('Failed to read', path);
-        _done({});
-      }
-    }
-  });
-}
+const _utils = require('./../../lib/utils.js');
 
 module.exports.setSettings = function(http, username, settings) {
   const config = _settings.get();
@@ -82,8 +63,9 @@ module.exports.getSettings = function(http, username) {
   const path = _vfs.resolvePathArguments(config.modules.storage.system.settings, {
     username: username
   });
+
   return new Promise((resolve) => {
-    _readFile(null, path, resolve);
+    _utils.readUserMap(null, path, resolve);
   });
 };
 

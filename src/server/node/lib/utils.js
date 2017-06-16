@@ -198,3 +198,23 @@ module.exports.getPackageMainFile = function getApplicationMainFile(manifest) {
   }
   return filename;
 };
+
+module.exports.readUserMap = function readUserMap(username, path, resolve) {
+  function _done(data) {
+    data = data || {};
+    resolve(username ? (data[username] || []) : data);
+  }
+
+  _fs.readFile(path, (err, data) => {
+    if ( err ) {
+      _done(null);
+    } else {
+      try {
+        _done(JSON.parse(data));
+      } catch ( e ) {
+        console.warn('Failed to read', path);
+        _done({});
+      }
+    }
+  });
+};
