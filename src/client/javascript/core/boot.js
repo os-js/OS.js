@@ -400,10 +400,11 @@
       }
       console.warn('window::onerror()', arguments);
       OSjs.API.error(OSjs.API._('ERR_JAVASCRIPT_EXCEPTION'),
-                    OSjs.API._('ERR_JAVACSRIPT_EXCEPTION_DESC'),
-                    OSjs.API._('BUGREPORT_MSG'),
-                    exception || {name: 'window::onerror()', fileName: url, lineNumber: linenumber + ':' + column, message: message},
-                    true );
+                     OSjs.API._('ERR_JAVACSRIPT_EXCEPTION_DESC'),
+                     OSjs.API._('BUGREPORT_MSG'),
+                     exception || {name: 'window::onerror()', fileName: url, lineNumber: linenumber + ':' + column, message: message},
+                     true
+      );
 
       return false;
     };

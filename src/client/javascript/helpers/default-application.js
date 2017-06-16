@@ -115,7 +115,8 @@
         API.error(self.__label,
                   API._('ERR_FILE_APP_OPEN'),
                   API._('ERR_FILE_APP_OPEN_ALT_FMT',
-                  file.path, error));
+                        file.path, error)
+        );
         return true;
       }
       return false;
@@ -130,8 +131,7 @@
     if ( !Utils.checkAcceptMime(file.mime, check) ) {
       API.error(this.__label,
                 API._('ERR_FILE_APP_OPEN'),
-                API._('ERR_FILE_APP_OPEN_FMT',
-                file.path, file.mime)
+                API._('ERR_FILE_APP_OPEN_FMT', file.path, file.mime)
       );
       return false;
     }
@@ -178,8 +178,8 @@
       if ( error ) {
         API.error(self.__label,
                   API._('ERR_FILE_APP_SAVE'),
-                  API._('ERR_FILE_APP_SAVE_ALT_FMT',
-                  file.path, error));
+                  API._('ERR_FILE_APP_SAVE_ALT_FMT', file.path, error)
+        );
         return;
       }
 

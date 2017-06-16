@@ -91,9 +91,9 @@
    */
   OSjs.Utils.cleanHTML = function Utils_cleanHTML(html) {
     return html.replace(/\n/g, '')
-               .replace(/[\t ]+</g, '<')
-               .replace(/\>[\t ]+</g, '><')
-               .replace(/\>[\t ]+$/g, '>');
+      .replace(/[\t ]+</g, '<')
+      .replace(/\>[\t ]+</g, '><')
+      .replace(/\>[\t ]+$/g, '>');
   };
 
   /**

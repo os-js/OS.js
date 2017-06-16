@@ -109,7 +109,10 @@
       2,
       2,
       {
-        "SwitchCase": 1
+        "SwitchCase": 1,
+        "CallExpression": {
+          "arguments": "first"
+        }
       }
     ],
     "space-before-function-paren": [

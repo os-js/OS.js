@@ -237,7 +237,8 @@
       return Object.keys(checkMods).every(function(f) {
         var fk = !!modifiers[f](ev);
         return checkMods[f] === fk;
-      }) && checkKeys.every(function(f) {
+      }) &&
+      checkKeys.every(function(f) {
         return getKeyName(ev.keyCode) === f;
       });
     };

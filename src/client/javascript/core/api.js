@@ -446,14 +446,16 @@
             });
           } else {
             API.error(API._('ERR_FILE_OPEN'),
-                           API._('ERR_FILE_OPEN_FMT', file.path),
-                           API._('ERR_NO_WM_RUNNING') );
+                      API._('ERR_FILE_OPEN_FMT', file.path),
+                      API._('ERR_NO_WM_RUNNING')
+            );
           }
         }
       } else {
         API.error(API._('ERR_FILE_OPEN'),
-                       API._('ERR_FILE_OPEN_FMT', file.path),
-                       API._('ERR_APP_MIME_NOT_FOUND_FMT', file.mime) );
+                  API._('ERR_FILE_OPEN_FMT', file.path),
+                  API._('ERR_APP_MIME_NOT_FOUND_FMT', file.mime)
+        );
       }
     }
 
@@ -634,8 +636,9 @@
       _destroySplash();
 
       API.error(API._('ERR_APP_LAUNCH_FAILED'),
-                  API._('ERR_APP_LAUNCH_FAILED_FMT', name),
-                  err, exception, true);
+                API._('ERR_APP_LAUNCH_FAILED_FMT', name),
+                err, exception, true
+      );
 
       console.groupEnd();
 

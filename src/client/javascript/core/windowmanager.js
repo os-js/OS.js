@@ -230,9 +230,9 @@
         if ( (newTop <= (current.rectWorkspace.top + cornerSnapSize)) && (newTop >= (current.rectWorkspace.top - cornerSnapSize)) ) { // Top
           newTop = current.rectWorkspace.top + (borderSize);
         } else if (
-                    (newBottom >= ((current.rectWorkspace.height + current.rectWorkspace.top) - cornerSnapSize)) &&
-                    (newBottom <= ((current.rectWorkspace.height + current.rectWorkspace.top) + cornerSnapSize))
-                  ) { // Bottom
+          (newBottom >= ((current.rectWorkspace.height + current.rectWorkspace.top) - cornerSnapSize)) &&
+            (newBottom <= ((current.rectWorkspace.height + current.rectWorkspace.top) + cornerSnapSize))
+        ) { // Bottom
           newTop = (current.rectWorkspace.height + current.rectWorkspace.top) - current.rectWindow.h - topMargin - borderSize;
         }
       }
