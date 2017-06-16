@@ -79,8 +79,12 @@
     "modules": {
       "auth": {
         "pam": {
+          "groups": "/etc/osjs/groups.json",
+          "blacklist": "/etc/osjs/blacklist.json"
         },
         "shadow": {
+          "groups": "/etc/osjs/groups.json",
+          "blacklist": "/etc/osjs/blacklist.json"
         },
         "database": {
           "driver": "mysql",
@@ -97,8 +101,6 @@
       },
       "storage": {
         "system": {
-          "groups": "/etc/osjs/groups.json",
-          "blacklist": "/etc/osjs/blacklist.json",
           "settings": "/home/%USERNAME%/.osjs/settings.json"
         },
         "database": {

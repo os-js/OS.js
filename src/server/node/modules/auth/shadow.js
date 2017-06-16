@@ -111,7 +111,7 @@ module.exports.checkSession = function(http) {
 
 module.exports.getGroups = function(http, username) {
   const config = _settings.get();
-  const path = config.modules.storage.system.groups;
+  const path = config.modules.auth.shadow.groups;
   return new Promise((resolve) => {
     _readFile(username, path, resolve);
   });
@@ -119,7 +119,7 @@ module.exports.getGroups = function(http, username) {
 
 module.exports.getBlacklist = function(http, username) {
   const config = _settings.get();
-  const path = config.modules.storage.system.blacklist;
+  const path = config.modules.auth.shadow.blacklist;
   return new Promise((resolve) => {
     _readFile(username, path, resolve);
   });
