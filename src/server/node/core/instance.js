@@ -262,8 +262,12 @@ function destroyServices() {
         Promise.all(list.map((path) => {
           _logger.lognt('VERBOSE', 'Destroying:', _logger.colored('Service', 'bold'), path.replace(ENV.ROOTDIR, ''));
           try {
-            const res = require(path).destroy();
-            return res instanceof Promise ? res : Promise.resolve();
+            const s = require(path);
+            if ( s && typeof s.destroy === 'function' ) {
+              const res = s.destroy();
+              return res instanceof Promise ? res : Promise.resolve();
+            }
+            return Promise.resolve();
           } catch ( e ) {
             _logger.lognt('WARN', _logger.colored('Warning:', 'yellow'), e);
             console.warn(e.stack);

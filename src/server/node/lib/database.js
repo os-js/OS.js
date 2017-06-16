@@ -205,7 +205,13 @@ module.exports.instance = function(name, type, opts) {
  */
 module.exports.destroy = function(name) {
   if ( name ) {
-    instances[name].destroy();
+    try {
+      if ( instances[name] ) {
+        instances[name].destroy();
+      }
+    } catch ( e ) {
+      console.warn(e);
+    }
     delete instances[name];
   } else {
     Object.keys(instances).forEach((k) => {
