@@ -32,6 +32,7 @@
 
 const _fs = require('fs-extra');
 const _path = require('path');
+const _util = require('util');
 
 const _vfs = require('./vfs.js');
 const _env = require('./env.js');
@@ -60,6 +61,35 @@ function endResponse(response) {
   response.end(null, () => {
     _evhandler.emit('http:end', []);
   });
+}
+
+function getLastModifiedTimestamp(mtime) {
+
+  function pad(n) {
+    return n < 10 ? '0' + n : n;
+  }
+
+  var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  var now = new Date(mtime);
+  var utc = new Date(Date.UTC(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+    now.getHours(),
+    now.getMinutes()
+  ));
+
+  return _util.format('%s, %s %s %s %s:%s:%s GMT',
+                      days[utc.getDay()],
+                      pad(utc.getDate()),
+                      months[utc.getMonth()],
+                      utc.getFullYear(),
+                      pad(utc.getHours()),
+                      pad(utc.getMinutes()),
+                      pad(utc.getSeconds())
+  );
 }
 
 /*
@@ -147,7 +177,12 @@ module.exports.createFromHttp = function(servers, request, response) {
                   });
                 }
                 if ( stats.mtime ) {
-                  headers['Last-Modified'] = stats.mtime;
+                  try {
+                    // Last-Modified: <day-name>, <day> <month> <year> <hour>:<minute>:<second> GMT
+                    headers['Last-Modified'] = getLastModifiedTimestamp(stats.mtime);
+                  } catch ( e ) {
+                    headers['Last-Modified'] = stats.mtime;
+                  }
                 }
               }
             } catch ( e ) {
