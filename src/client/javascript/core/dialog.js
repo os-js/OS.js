@@ -136,36 +136,38 @@
     var root = Window.prototype.init.apply(this, arguments);
     root.setAttribute('role', 'dialog');
 
-    this.scheme.render(this, this.className.replace(/Dialog$/, ''), root, 'application-dialog', function(node) {
-      node.querySelectorAll('gui-label').forEach(function(el) {
-        if ( el.childNodes.length && el.childNodes[0].nodeType === 3 && el.childNodes[0].nodeValue ) {
-          var label = el.childNodes[0].nodeValue;
-          Utils.$empty(el);
-          el.appendChild(document.createTextNode(API._(label)));
+    if ( this.scheme ) {
+      this.scheme.render(this, this.className.replace(/Dialog$/, ''), root, 'application-dialog', function(node) {
+        node.querySelectorAll('gui-label').forEach(function(el) {
+          if ( el.childNodes.length && el.childNodes[0].nodeType === 3 && el.childNodes[0].nodeValue ) {
+            var label = el.childNodes[0].nodeValue;
+            Utils.$empty(el);
+            el.appendChild(document.createTextNode(API._(label)));
+          }
+        });
+      });
+
+      var buttonMap = {
+        ButtonOK: 'ok',
+        ButtonCancel: 'cancel',
+        ButtonYes: 'yes',
+        ButtonNo: 'no'
+      };
+
+      var focusButtons = ['ButtonCancel', 'ButtonNo'];
+
+      Object.keys(buttonMap).forEach(function(id) {
+        if ( self._findDOM(id) ) {
+          var btn = self._find(id);
+          btn.on('click', function(ev) {
+            self.onClose(ev, buttonMap[id]);
+          });
+          if ( focusButtons.indexOf(id) >= 0 ) {
+            btn.focus();
+          }
         }
       });
-    });
-
-    var buttonMap = {
-      ButtonOK: 'ok',
-      ButtonCancel: 'cancel',
-      ButtonYes: 'yes',
-      ButtonNo: 'no'
-    };
-
-    var focusButtons = ['ButtonCancel', 'ButtonNo'];
-
-    Object.keys(buttonMap).forEach(function(id) {
-      if ( self._findDOM(id) ) {
-        var btn = self._find(id);
-        btn.on('click', function(ev) {
-          self.onClose(ev, buttonMap[id]);
-        });
-        if ( focusButtons.indexOf(id) >= 0 ) {
-          btn.focus();
-        }
-      }
-    });
+    }
 
     Utils.$addClass(root, 'DialogWindow');
 
