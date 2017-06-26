@@ -106,9 +106,14 @@
         data.name = nwin._find('UserName').get('value') || data.username;
         data.groups = [];
 
-        try {
-          data.groups = JSON.parse(nwin._find('UserGroups').get('value'));
-        } catch ( e ) {
+        var groupString = nwin._find('UserGroups').get('value');
+        if ( groupString.substr(0, 1) === '[' ) {
+          try {
+            data.groups = JSON.parse(groupString);
+          } catch ( e ) {
+          }
+        } else {
+          data.groups = groupString.replace(/\s/, '').split(',');
         }
 
         if ( !data.username || !data.groups ) {
