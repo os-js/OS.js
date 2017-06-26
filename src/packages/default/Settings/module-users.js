@@ -63,7 +63,7 @@
           return;
         }
 
-        API.call('users', {command: 'passwd', user: {password: value}}, function(err, users) {
+        API.call('users', {command: 'passwd', user: {password: value, username: passwd}}, function(err, users) {
           win._toggleDisabled(false);
           if ( err ) {
             API.error('Settings', _('Error while managing users'), err);
@@ -133,7 +133,7 @@
   function removeUser(win, scheme, data) {
     var _ = OSjs.Applications.ApplicationSettings._;
 
-    API.call('users', {command: 'remove', user: {id: data.id}}, function(err, users) {
+    API.call('users', {command: 'remove', user: data}, function(err, users) {
       if ( err ) {
         API.error('Settings', _('Error while managing users'), err);
       }
@@ -168,7 +168,9 @@
       function _action(cb, te) {
         var sel = win._find('UsersList').get('selected');
         if ( sel && sel.length ) {
-          cb(sel[0].data);
+          var data = sel[0].data;
+          data._username = data.username;
+          cb(data);
         } else {
           if ( te ) {
             cb(null);
@@ -190,7 +192,7 @@
       });
       win._find('UsersPasswd').on('click', function() {
         _action(function(data) {
-          showDialog(win, scheme, null, true);
+          showDialog(win, scheme, null, data.username);
         });
       });
     },
