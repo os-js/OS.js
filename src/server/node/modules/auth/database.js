@@ -39,19 +39,19 @@ const manager = {
 
   add: function(db, user, callback) {
     const q = 'INSERT INTO `users` (`username`, `name`, `groups`, `password`) VALUES(?, ?, ?, ?);';
-    const a = [user.username, user.name, user.groups.join(','), ''];
+    const a = [user.username, user.name, JSON.stringify(user.groups), ''];
     return db.query(q, a);
   },
 
   remove: function(db, user, callback) {
-    const q = 'DELETE FROM `users` WHERE `id` = ?;';
-    const a = [user.id];
+    const q = 'DELETE FROM `users` WHERE `username` = ?;';
+    const a = [user._username];
     return db.query(q, a);
   },
 
   edit: function(db, user, callback) {
-    const q = 'UPDATE `users` SET `username` = ?, `name` = ?, `groups` = ? WHERE `id` = ?;';
-    const a = [user.username, user.name, user.groups.join(','), user.id];
+    const q = 'UPDATE `users` SET `username` = ?, `name` = ?, `groups` = ? WHERE `username` = ?;';
+    const a = [user.username, user.name, JSON.stringify(user.groups), user._username];
     return db.query(q, a);
   },
 
@@ -59,8 +59,8 @@ const manager = {
     return new Promise((resolve, reject) => {
       _bcrypt.genSalt(10, (err, salt) => {
         _bcrypt.hash(user.password, salt, (err, hash) => {
-          const q = 'UPDATE `users` SET `password` = ? WHERE `id` = ?;';
-          const a = [hash, user.id];
+          const q = 'UPDATE `users` SET `password` = ? WHERE `username` = ?;';
+          const a = [hash, user._username];
 
           db.query(q, a).then(resolve).catch(reject);
         });
