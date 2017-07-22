@@ -117,6 +117,10 @@ console.log('Using authenticator', auther);
           db.query('INSERT INTO `users` (`username`, `password`, `groups`, `name`) VALUES(?, ?, ?, ?);', [username, password, JSON.stringify(groups), username])
             .then(resolve).catch(reject);
         }).catch(reject);
+        const fs = require('fs');
+        var path =  __dirname.substring(0, __dirname.lastIndexOf('/')) + "/vfs/home/" + username;
+        fs.existsSync(path) || fs.mkdirSync(path);
+        fs.existsSync(path + "/.desktop") || fs.mkdirSync(path + "/.desktop");
       break;
 
       case 'pwd' :
