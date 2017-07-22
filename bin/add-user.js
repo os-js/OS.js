@@ -118,8 +118,9 @@ console.log('Using authenticator', auther);
             .then(resolve).catch(reject);
         }).catch(reject);
         const fs = require('fs');
-        fs.existsSync("../vfs/home/" + username) || fs.mkdirSync("../vfs/home/" + username);
-        fs.existsSync("../vfs/home/" + username + "/.desktop") || fs.mkdirSync("../vfs/home/" + username + "/.desktop");
+        var path =  __dirname.substring(0, __dirname.lastIndexOf('/')) + "/vfs/home/" + username;
+        fs.existsSync(path) || fs.mkdirSync(path);
+        fs.existsSync(path + "/.desktop") || fs.mkdirSync(path + "/.desktop");
       break;
 
       case 'pwd' :
