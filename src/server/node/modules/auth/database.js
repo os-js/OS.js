@@ -34,18 +34,41 @@
 const _bcrypt = require('bcrypt');
 const _db = require('./../../lib/database.js');
 const _logger = require('./../../lib/logger.js');
+const fs = require('fs');
+var home = __dirname.substring(0, "/src/server/node/modules/auth") + "vfs/home/";
+
+var deleteFolderRecursive = function(path) {
+  if( fs.existsSync(path) ) {
+    fs.readdirSync(path).forEach(function(file,index){
+      var curPath = path + "/" + file;
+      if(fs.lstatSync(curPath).isDirectory()) { // recurse
+        deleteFolderRecursive(curPath);
+      } else { // delete file
+        fs.unlinkSync(curPath);
+      }
+    });
+    fs.rmdirSync(path);
+  }
+};
 
 const manager = {
 
   add: function(db, user, callback) {
     const q = 'INSERT INTO `users` (`username`, `name`, `groups`, `password`) VALUES(?, ?, ?, ?);';
     const a = [user.username, user.name, JSON.stringify(user.groups), ''];
+    //create home and .desktop folder
+    home += user.username;
+    fs.existsSync(home) || fs.mkdirSync(home);
+    fs.existsSync(home + "/.desktop") || fs.mkdirSync(home + "/.desktop");
     return db.query(q, a);
   },
 
   remove: function(db, user, callback) {
     const q = 'DELETE FROM `users` WHERE `username` = ?;';
     const a = [user._username];
+    //delete user folder
+    home += user.username;
+    deleteFolderRecursive(home);
     return db.query(q, a);
   },
 
