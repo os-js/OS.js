@@ -620,6 +620,9 @@
     this._windows.every(function(win, i) {
       if ( win && win._wid === w._wid ) {
         self._windows[i] = null;
+        self._windows = self._windows.filter(function(x){
+          return (x !== null );
+        });;
         result = true;
       }
       return result ? false : true;
