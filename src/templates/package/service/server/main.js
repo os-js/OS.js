@@ -36,14 +36,15 @@
    * Registers your package when OS.js server starts.
    */
   module.exports.register = function(env, metadata, servers) {
+    return Promise.resolve(true);
   };
 
   /**
    * Registers your Application API methods
    */
   module.exports.api = {
-    test: function(env, http, resolve, reject, args) {
-      resolve('This is a response from your application');
+    test: function(env, http, args) {
+      return Promise.resolve('This is a response from your application');
     }
   };
 

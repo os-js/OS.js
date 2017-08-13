@@ -27,106 +27,107 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, DialogWindow) {
-  'use strict';
+import DialogWindow from 'core/dialog';
+import * as Utils from 'utils/misc';
+import {_} from 'core/locales';
 
-  /**
-   * An 'Color Chooser' dialog
-   *
-   * @example
-   *
-   * OSjs.API.createDialog('Color', {}, fn);
-   *
-   * @param  {Object}          args              An object with arguments
-   * @param  {String}          args.title        Dialog title
-   * @param  {Mixed}           args.color        Either hex string or rbg object
-   * @param  {CallbackDialog}  callback          Callback when done
-   *
-   * @constructor Color
-   * @memberof OSjs.Dialogs
-   */
-  function ColorDialog(args, callback) {
-    args = Utils.argumentDefaults(args, {
-    });
+function getColor(rgb) {
+  let hex = rgb;
 
-    var rgb = args.color;
-    var hex = rgb;
-    if ( typeof rgb === 'string' ) {
-      hex = rgb;
-      rgb = Utils.convertToRGB(rgb);
+  if ( typeof rgb === 'string' ) {
+    hex = rgb;
+    rgb = Utils.convertToRGB(rgb);
+    rgb.a = null;
+  } else {
+    if ( typeof rgb.a === 'undefined' ) {
       rgb.a = null;
     } else {
-      if ( typeof rgb.a === 'undefined' ) {
-        rgb.a = null;
-      } else {
-        if ( rgb.a > 1.0 ) {
-          rgb.a /= 100;
-        }
+      if ( rgb.a > 1.0 ) {
+        rgb.a /= 100;
       }
-
-      rgb = rgb || {r: 0, g: 0, b: 0, a: 100};
-      hex = Utils.convertToHEX(rgb.r, rgb.g, rgb.b);
     }
 
-    DialogWindow.apply(this, ['ColorDialog', {
-      title: args.title || API._('DIALOG_COLOR_TITLE'),
+    rgb = rgb || {r: 0, g: 0, b: 0, a: 100};
+    hex = Utils.convertToHEX(rgb.r, rgb.g, rgb.b);
+  }
+
+  return [rgb, hex];
+}
+
+/**
+ * An 'Color Chooser' dialog
+ *
+ * @example DialogWindow.create('Color', {}, fn);
+ * @extends DialogWindow
+ */
+export default class ColorDialog extends DialogWindow {
+
+  /**
+   * @param  {Object}          args              An object with arguments
+   * @param  {String}          args.title        Dialog title
+   * @param  {String|Object}   args.color        Either hex string or rbg object
+   * @param  {CallbackDialog}  callback          Callback when done
+   */
+  constructor(args, callback) {
+    args = Object.assign({}, {}, args);
+
+    const [rgb, hex] = getColor(args.color);
+
+    super('ColorDialog', {
+      title: args.title || _('DIALOG_COLOR_TITLE'),
       icon: 'apps/preferences-desktop-theme.png',
       width: 400,
       height: rgb.a !== null ? 300  : 220
-    }, args, callback]);
+    }, args, callback);
 
     this.color = {r: rgb.r, g: rgb.g, b: rgb.b, a: rgb.a, hex: hex};
   }
 
-  ColorDialog.prototype = Object.create(DialogWindow.prototype);
-  ColorDialog.constructor = DialogWindow;
+  init() {
+    const root = super.init(...arguments);
 
-  ColorDialog.prototype.init = function() {
-    var self = this;
-    var root = DialogWindow.prototype.init.apply(this, arguments);
-
-    function updateHex(update) {
-      self._find('LabelRed').set('value', API._('DIALOG_COLOR_R', self.color.r));
-      self._find('LabelGreen').set('value', API._('DIALOG_COLOR_G', self.color.g));
-      self._find('LabelBlue').set('value', API._('DIALOG_COLOR_B', self.color.b));
-      self._find('LabelAlpha').set('value', API._('DIALOG_COLOR_A', self.color.a));
+    const updateHex = (update) => {
+      this._find('LabelRed').set('value', _('DIALOG_COLOR_R', this.color.r));
+      this._find('LabelGreen').set('value', _('DIALOG_COLOR_G', this.color.g));
+      this._find('LabelBlue').set('value', _('DIALOG_COLOR_B', this.color.b));
+      this._find('LabelAlpha').set('value', _('DIALOG_COLOR_A', this.color.a));
 
       if ( update ) {
-        self.color.hex = Utils.convertToHEX(self.color.r, self.color.g, self.color.b);
+        this.color.hex = Utils.convertToHEX(this.color.r, this.color.g, this.color.b);
       }
 
-      var value = self.color.hex;
-      if ( self.color.a !== null && !isNaN(self.color.a) ) {
-        value = Utils.format('rgba({0}, {1}, {2}, {3})', self.color.r, self.color.g, self.color.b, self.color.a);
+      let value = this.color.hex;
+      if ( this.color.a !== null && !isNaN(this.color.a) ) {
+        value = Utils.format('rgba({0}, {1}, {2}, {3})', this.color.r, this.color.g, this.color.b, this.color.a);
       }
-      self._find('ColorPreview').set('value', value);
-    }
+      this._find('ColorPreview').set('value', value);
+    };
 
-    this._find('ColorSelect').on('change', function(ev) {
-      self.color = ev.detail;
-      self._find('Red').set('value', self.color.r);
-      self._find('Green').set('value', self.color.g);
-      self._find('Blue').set('value', self.color.b);
+    this._find('ColorSelect').on('change', (ev) => {
+      this.color = ev.detail;
+      this._find('Red').set('value', this.color.r);
+      this._find('Green').set('value', this.color.g);
+      this._find('Blue').set('value', this.color.b);
       updateHex(true);
     });
 
-    this._find('Red').on('change', function(ev) {
-      self.color.r = parseInt(ev.detail, 10);
+    this._find('Red').on('change', (ev) => {
+      this.color.r = parseInt(ev.detail, 10);
       updateHex(true);
     }).set('value', this.color.r);
 
-    this._find('Green').on('change', function(ev) {
-      self.color.g = parseInt(ev.detail, 10);
+    this._find('Green').on('change', (ev) => {
+      this.color.g = parseInt(ev.detail, 10);
       updateHex(true);
     }).set('value', this.color.g);
 
-    this._find('Blue').on('change', function(ev) {
-      self.color.b = parseInt(ev.detail, 10);
+    this._find('Blue').on('change', (ev) => {
+      this.color.b = parseInt(ev.detail, 10);
       updateHex(true);
     }).set('value', this.color.b);
 
-    this._find('Alpha').on('change', function(ev) {
-      self.color.a = parseInt(ev.detail, 10) / 100;
+    this._find('Alpha').on('change', (ev) => {
+      this.color.a = parseInt(ev.detail, 10) / 100;
       updateHex(true);
     }).set('value', this.color.a * 100);
 
@@ -138,16 +139,11 @@
     updateHex(false, this.color.a !== null);
 
     return root;
-  };
+  }
 
-  ColorDialog.prototype.onClose = function(ev, button) {
+  onClose(ev, button) {
     this.closeCallback(ev, button, button === 'ok' ? this.color : null);
-  };
+  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+}
 
-  OSjs.Dialogs.Color = Object.seal(ColorDialog);
-
-})(OSjs.API, OSjs.Utils, OSjs.Core.DialogWindow);

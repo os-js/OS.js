@@ -27,69 +27,60 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
+import PanelItem from '../panelitem';
+import {showMenu} from '../menu';
+
+const Theme = OSjs.require('core/theme');
+const Events = OSjs.require('utils/events');
+const Locales = OSjs.require('core/locales');
+const WindowManager = OSjs.require('core/window-manager');
 
 /*eslint valid-jsdoc: "off"*/
-(function(CoreWM, Panel, PanelItem, Utils, API, VFS) {
-  'use strict';
+export default class PanelItemAppMenu extends PanelItem {
 
-  /////////////////////////////////////////////////////////////////////////////
-  // ITEM
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * PanelItem: AppMenu
-   */
-  function PanelItemAppMenu(settings) {
-    PanelItem.apply(this, ['PanelItemAppMenu', 'AppMenu', settings, {}]);
+  constructor(settings) {
+    super('PanelItemAppMenu', 'AppMenu', settings, {});
   }
 
-  PanelItemAppMenu.prototype = Object.create(PanelItem.prototype);
-  PanelItemAppMenu.constructor = PanelItem;
+  init() {
+    const root = super.init(...arguments);
+    const wm = WindowManager.instance;
 
-  PanelItemAppMenu.prototype.init = function() {
-    var root = PanelItem.prototype.init.apply(this, arguments);
-    var wm = OSjs.Core.getWindowManager();
-
-    var img = document.createElement('img');
+    const img = document.createElement('img');
     img.alt = '';
-    img.src = API.getIcon(wm.getSetting('icon') || 'osjs-white.png');
+    img.src = Theme.getIcon(wm.getSetting('icon') || 'osjs-white.png');
 
-    var sel = document.createElement('li');
-    sel.title = API._('LBL_APPLICATIONS');
+    const sel = document.createElement('li');
+    sel.title = Locales._('LBL_APPLICATIONS');
     sel.className = 'corewm-panel-button-centered';
     sel.setAttribute('role', 'button');
     sel.setAttribute('data-label', 'OS.js Application Menu');
     sel.appendChild(img);
 
-    Utils.$bind(sel, 'mousedown', function(ev) {
+    Events.$bind(sel, 'mousedown', function(ev) {
       ev.preventDefault();
       ev.stopPropagation();
     });
-    Utils.$bind(sel, 'click', function(ev) {
+    Events.$bind(sel, 'click', function(ev) {
       ev.stopPropagation();
       ev.preventDefault();
-      OSjs.Applications.CoreWM.showMenu(ev);
+
+      const wm = WindowManager.instance;
+      if ( wm ) {
+        showMenu(ev);
+      }
     });
 
     this._$container.appendChild(sel);
 
     return root;
-  };
+  }
 
-  PanelItemAppMenu.prototype.destroy = function() {
+  destroy() {
     if ( this._$container ) {
-      Utils.$unbind(this._$container.querySelector('li'), 'click');
+      Events.$unbind(this._$container.querySelector('li'), 'click');
     }
-    PanelItem.prototype.destroy.apply(this, arguments);
-  };
+    return super.destroy(...arguments);
+  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.CoreWM = OSjs.Applications.CoreWM || {};
-  OSjs.Applications.CoreWM.PanelItems = OSjs.Applications.CoreWM.PanelItems || {};
-  OSjs.Applications.CoreWM.PanelItems.AppMenu = PanelItemAppMenu;
-
-})(OSjs.Applications.CoreWM.Class, OSjs.Applications.CoreWM.Panel, OSjs.Applications.CoreWM.PanelItem, OSjs.Utils, OSjs.API, OSjs.VFS);
+}

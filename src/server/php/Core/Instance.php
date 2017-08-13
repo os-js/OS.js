@@ -84,16 +84,12 @@ class Instance
         $overlays = self::$CONFIG->overlays;
         $paths = [];
 
-        foreach ( array_values((array)$overlays) as $overlay ) {
-            if ( !empty($overlay->modules) ) {
-                $paths = $paths + $overlay->modules;
-                foreach ( $overlay->modules as $dir ) {
-                    if ( preg_match('/^\/|([A-z]:\\\)/', $dir) ) {
-                        self::$BASEDIRS[] = $dir . '/php';
-                    } else {
-                        self::$BASEDIRS[] = DIR_ROOT . '/' . $dir . '/php';
-                    }
-                }
+        foreach ( (array)$overlays as $dir ) {
+            $paths[] = $dir;
+            if ( preg_match('/^\/|([A-z]:\\\)/', $dir) ) {
+                self::$BASEDIRS[] = $dir . '/php';
+            } else {
+                self::$BASEDIRS[] = DIR_ROOT . '/' . $dir . '/php';
             }
         }
 

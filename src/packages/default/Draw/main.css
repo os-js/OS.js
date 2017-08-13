@@ -32,7 +32,7 @@
 }*/
 
 .ApplicationDrawWindow gui-canvas {
-  background : url('./checkerboard.png');
+  background : url('checkerboard.png');
 }
 
 .ApplicationDrawWindow gui-vbox-container[data-id="ScrollContainer"] {

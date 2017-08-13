@@ -1,15 +1,14 @@
 {
-  "className":  "EXAMPLEExtension",
-  "type":       "extension",
+  "className": "EXAMPLEExtension",
+  "type": "extension",
   "conf": [
   ],
   "main": {
+    "webpack": ["main.js"],
     "node": "server/main.js",
     "php": "server/main.php"
   },
-  "preload": [
-    {"src": "main.js", "type": "javascript"}
-  ]
+  "preload": ["main.js"]
 }
 
 

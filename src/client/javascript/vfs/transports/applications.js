@@ -8,10 +8,10 @@
  * modification, are permitted provided that the following conditions are met:
  *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
+ *    list of conditions and the following disclaimer
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
+ *    and/or other materials provided with the distribution
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -27,55 +27,51 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API, VFS) {
-  'use strict';
+import Promise from 'bluebird';
+import PackageManager from 'core/package-manager';
+import Transport from 'vfs/transport';
+import FileMetadata from 'vfs/file';
+import {_} from 'core/locales';
 
-  /**
-   * @namespace Applications
-   * @memberof OSjs.VFS.Transports
-   */
+/**
+ * Application VFS Transport Module
+ *
+ * This is a purely virtual module that allows for listing of applications
+ * via scandir etc.
+ *
+ * @extends Transport
+ */
+export default class ApplicationTransport extends Transport {
 
-  /////////////////////////////////////////////////////////////////////////////
-  // API
-  /////////////////////////////////////////////////////////////////////////////
-
-  /*
-   * Application VFS Transport Module
-   *
-   * This is only used for listing packages
-   */
-  var Transport = {
-    scandir: function(item, callback, options) {
-      var metadata = OSjs.Core.getPackageManager().getPackages();
-      var files = [];
-
-      Object.keys(metadata).forEach(function(m) {
-        var iter = metadata[m];
-        if ( iter.type !== 'extension' ) {
-          files.push(new OSjs.VFS.File({
-            filename: iter.name,
-            type: 'application',
-            path: 'applications:///' + m,
-            mime: 'osjs/application'
-          }, 'osjs/application'));
-        }
-      });
-
-      callback(false, files);
+  request(method, args, options) {
+    if ( ['scandir'].indexOf(method) === -1 ) {
+      return Promise.reject(new Error(_('ERR_VFS_UNAVAILABLE')));
     }
-  };
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+    return super.request(...arguments);
+  }
 
-  VFS.Transports.Applications = {
-    module: Transport,
-    defaults: function(opts) {
-      opts.readOnly = true;
-      opts.special = true;
-      opts.searchable = true;
-    }
-  };
+  scandir() {
+    const metadata = PackageManager.getPackages();
+    const files = [];
 
-})(OSjs.Utils, OSjs.API, OSjs.VFS);
+    Object.keys(metadata).forEach((m) => {
+      const iter = metadata[m];
+      if ( iter.type !== 'extension' ) {
+        files.push(new FileMetadata({
+          filename: iter.name,
+          type: 'application',
+          path: 'applications:///' + m,
+          mime: 'osjs/application'
+        }, 'osjs/application'));
+      }
+    });
+
+    return Promise.resolve(files);
+  }
+
+  url(item) {
+    return Promise.resolve(item.path);
+  }
+
+}

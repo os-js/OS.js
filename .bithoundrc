@@ -5,6 +5,7 @@
     }
   },
   "ignore": [
+    "src/client/javascript/compability.js",
     "src/client/stylesheets/**",
     "src/client/themes/**",
     "src/server/node/modules/*/example.js",

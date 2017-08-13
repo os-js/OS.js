@@ -27,598 +27,531 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function() {
-  'use strict';
 
-  /**
-   * The callback for browser events bound by OS.js
-   * @see OSjs.Utils.$bind
-   * @see OSjs.Utils.$unbind
-   * @callback CallbackEvent
-   * @param {Event} ev Browser event
-   * @param {Object} pos Event pointer position in form of x and y
-   */
+import * as DOM from 'utils/dom';
+import * as Keycodes from 'utils/keycodes';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // MISC
-  /////////////////////////////////////////////////////////////////////////////
+/**
+ * The callback for browser events bound by OS.js
+ * @callback CallbackEvent
+ * @param {Event} ev Browser event
+ * @param {Object} pos Event pointer position in form of x and y
+ */
 
-  /**
-   * A collection of keycode mappings
-   *
-   * @memberof OSjs.Utils
-   * @var
-   */
-  OSjs.Utils.Keys = (function() {
-    var list = {
-      F1: 112,
-      F2: 113,
-      F3: 114,
-      F4: 115,
-      F6: 118,
-      F7: 119,
-      F8: 120,
-      F9: 121,
-      F10: 122,
-      F11: 123,
-      F12: 124,
+/////////////////////////////////////////////////////////////////////////////
+// MISC
+/////////////////////////////////////////////////////////////////////////////
 
-      TILDE: 220,
-      GRAVE: 192,
-
-      CMD: 17,
-      LSUPER: 91,
-      RSUPER: 92,
-
-      DELETE: 46,
-      INSERT: 45,
-      HOME: 36,
-      END: 35,
-      PGDOWN: 34,
-      PGUP: 33,
-      PAUSE: 19,
-      BREAK: 19,
-      CAPS_LOCK: 20,
-      SCROLL_LOCK: 186,
-
-      BACKSPACE: 8,
-      SPACE: 32,
-      TAB: 9,
-      ENTER: 13,
-      ESC: 27,
-      LEFT: 37,
-      RIGHT: 39,
-      UP: 38,
-      DOWN: 40
-    };
-
-    // Add all ASCII chacters to the map
-    for ( var n = 33; n <= 126; n++ ) {
-      list[String.fromCharCode(n)] = n;
+/*
+ * Gets the event name considering compability with
+ * MSPointerEvent and PointerEvent interfaces.
+ */
+function getRealEventName(evName) {
+  let realName = evName;
+  if ( evName !== 'mousewheel' && evName.match(/^mouse/) ) {
+    if ( window.PointerEvent ) {
+      realName = evName.replace(/^mouse/, 'pointer');
+    } else if ( window.MSPointerEvent ) {
+      const tmpName = evName.replace(/^mouse/, '');
+      realName = 'MSPointer' + tmpName.charAt(0).toUpperCase() + tmpName.slice(1).toLowerCase();
     }
+  }
+  return realName;
+}
 
-    return Object.freeze(list);
-  })();
+/*
+ * Gets a list from string of event names
+ */
+function getEventList(str) {
+  return str.replace(/\s/g, '').split(',');
+}
 
-  /*
-   * Gets the event name considering compability with
-   * MSPointerEvent and PointerEvent interfaces.
-   */
-  function getRealEventName(evName) {
-    var realName = evName;
-    if ( evName !== 'mousewheel' && evName.match(/^mouse/) ) {
-      if ( window.PointerEvent ) {
-        realName = evName.replace(/^mouse/, 'pointer');
-      } else if ( window.MSPointerEvent ) {
-        var tmpName = evName.replace(/^mouse/, '');
-        realName = 'MSPointer' + tmpName.charAt(0).toUpperCase() + tmpName.slice(1).toLowerCase();
-      }
-    }
-    return realName;
+/////////////////////////////////////////////////////////////////////////////
+// EVENTS
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Gets mouse position in all cases (including touch)
+ *
+ * @example
+ * mousePosition(ev); // -> {x:1, y:1}
+ *
+ * @param {Event}   ev    DOM Event
+ *
+ * @return {(Event|Object)}   ev      DOM Event or an Object
+ * @return Object
+ */
+export function mousePosition(ev) {
+  // If this is a custom event containing position
+  if ( ev.detail && typeof ev.detail.x !== 'undefined' && typeof ev.detail.y !== 'undefined' ) {
+    return {x: ev.detail.x, y: ev.detail.y};
   }
 
-  /*
-   * Gets a list from string of event names
-   */
-  function getEventList(str) {
-    return str.replace(/\s/g, '').split(',');
+  // If this was a touch event
+  const touch = ev.touches || ev.changedTouches;
+  if ( touch && touch[0] ) {
+    return {x: touch[0].clientX, y: touch[0].clientY};
   }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EVENTS
-  /////////////////////////////////////////////////////////////////////////////
+  return {x: ev.clientX, y: ev.clientY};
+}
 
-  /**
-   * Gets mouse position in all cases (including touch)
-   *
-   * @example
-   * Utils.mousePosition(ev); // -> {x:1, y:1}
-   *
-   * @param {Event}   ev    DOM Event
-   *
-   * @return {(Event|Object)}   ev      DOM Event or an Object
-   * @return Object
-   */
-  OSjs.Utils.mousePosition = function Utils_mousePosition(ev) {
-    // If this is a custom event containing position
-    if ( ev.detail && typeof ev.detail.x !== 'undefined' && typeof ev.detail.y !== 'undefined' ) {
-      return {x: ev.detail.x, y: ev.detail.y};
-    }
-
-    // If this was a touch event
-    var touch = ev.touches || ev.changedTouches;
-    if ( touch && touch[0] ) {
-      return {x: touch[0].clientX, y: touch[0].clientY};
-    }
-
-    return {x: ev.clientX, y: ev.clientY};
-  };
-
-  /**
-   * Get the mouse button pressed
-   *
-   * @function mouseButton
-   * @memberof OSjs.Utils
-   *
-   * @param   {Event}     ev    The DOM Event
-   *
-   * @return  {String}          The mouse button (left/middle/right)
-   */
-  OSjs.Utils.mouseButton = function Utils_mouseButton(ev) {
-    if ( typeof ev.button !== 'undefined' ) {
-      if ( ev.button === 0 ) {
-        return 'left';
-      } else if ( ev.button === 1 ) {
-        return 'middle';
-      }
-      return 'right';
-    }
-
-    if ( ev.which === 2 || ev.which === 4 ) {
-      return 'middle';
-    } else if ( ev.which === 1 ) {
+/**
+ * Get the mouse button pressed
+ *
+ * @param   {Event}     ev    The DOM Event
+ *
+ * @return  {String}          The mouse button (left/middle/right)
+ */
+export function mouseButton(ev) {
+  if ( typeof ev.button !== 'undefined' ) {
+    if ( ev.button === 0 ) {
       return 'left';
+    } else if ( ev.button === 1 ) {
+      return 'middle';
     }
     return 'right';
+  }
+
+  if ( ev.which === 2 || ev.which === 4 ) {
+    return 'middle';
+  } else if ( ev.which === 1 ) {
+    return 'left';
+  }
+  return 'right';
+}
+
+/**
+ * Checks if the event currently has the given key comination.
+ *
+ * Example: 'CTRL+SHIFT+A'
+ *
+ * @param   {Event}     ev            The DOM Event
+ * @param   {String}    checkFor      The string of keystrokes to check
+ *
+ * @return  {Boolean}
+ */
+export const keyCombination = (function() {
+  const modifiers = {
+    CTRL: (ev) => {
+      return ev.ctrlKey;
+    },
+    SHIFT: (ev) => {
+      return ev.shiftKey;
+    },
+    ALT: (ev) => {
+      return ev.altKey;
+    },
+    META: (ev) => {
+      return ev.metaKey;
+    }
   };
 
-  /**
-   * Checks if the event currently has the given key comination.
-   *
-   * Example: 'CTRL+SHIFT+A'
-   *
-   * @function keyCombination
-   * @memberof OSjs.Utils
-   *
-   * @param   {Event}     ev            The DOM Event
-   * @param   {String}    checkFor      The string of keystrokes to check
-   *
-   * @return  {Boolean}
+  function getKeyName(keyCode) {
+    let result = false;
+    Object.keys(Keycodes).forEach((k) => {
+      if ( !result && (keyCode === Keycodes[k]) ) {
+        result = k;
+      }
+    });
+    return result;
+  }
+
+  return function(ev, checkFor) {
+    const checks = checkFor.toUpperCase().split('+');
+    const checkMods = {CTRL: false, SHIFT: false, ALT: false};
+    const checkKeys = [];
+
+    checks.forEach((f) => {
+      if ( modifiers[f] ) {
+        checkMods[f] = true;
+      } else {
+        checkKeys.push(f);
+      }
+    });
+
+    const hasmod = Object.keys(checkMods).every((f) => {
+      const fk = !!modifiers[f](ev);
+      return checkMods[f] === fk;
+    });
+
+    const haskey = checkKeys.every((f) => {
+      return getKeyName(ev.keyCode) === f;
+    });
+
+    return hasmod && haskey;
+  };
+})();
+
+/**
+ * Wrapper for event-binding
+ *
+ * <pre><code>
+ * You can bind multiple events by separating types with a comma.
+ *
+ * This also automatically binds Touch events.
+ *
+ *   mousedown = touchstart
+ *   mouseup = touchend
+ *   mousemove = touchend
+ *   contextmenu = long-hold
+ *   dblclick = double-tap
+ *   click = tap
+ * </code></pre>
+ *
+ * @example
+ * $bind(el, 'click', function(ev, pos, touch) {
+ *  // A click event
+ * });
+ *
+ * @example
+ * $bind(el, 'click:customname', function(ev, pos, touch) {
+ *  // A click event with custom namespace. Useful
+ *  // for when you want to separate events with same
+ *  // type.
+ * });
+ *
+ * @example
+ * $bind(el, 'click, mousedown, mouseup', function(ev, pos, touch) {
+ *  // You can bind multiple events in one go
+ * });
+ *
+ * @param   {Node}            el            DOM Element to attach event to
+ * @param   {String}          ev            DOM Event Name
+ * @param   {CallbackEvent}   callback      Callback on event
+ * @param   {Boolean}         [useCapture]  Use capture mode
+ */
+export const $bind = (function() {
+  // Default timeouts
+  const TOUCH_CONTEXTMENU = 1000;
+  const TOUCH_CLICK_MIN = 30;
+  const TOUCH_CLICK_MAX = 1000;
+  const TOUCH_DBLCLICK = 400;
+
+  /*
+   * This is the wrapper for using addEventListener
    */
-  OSjs.Utils.keyCombination = (function() {
-    var modifiers = {
-      CTRL: function(ev) {
-        return ev.ctrlKey;
-      },
-      SHIFT: function(ev) {
-        return ev.shiftKey;
-      },
-      ALT: function(ev) {
-        return ev.altKey;
-      },
-      META: function(ev) {
-        return ev.metaKey;
-      }
-    };
+  function addEventHandler(el, n, t, callback, handler, useCapture, realType) {
+    const args = [t, handler, useCapture];
 
-    function getKeyName(keyCode) {
-      var result = false;
-      Object.keys(OSjs.Utils.Keys).forEach(function(k) {
-        if ( !result && (keyCode === OSjs.Utils.Keys[k]) ) {
-          result = k;
-        }
-      });
-      return result;
-    }
+    el.addEventListener.apply(el, args);
 
-    return function(ev, checkFor) {
-      var checks = checkFor.toUpperCase().split('+');
-      var checkMods = {CTRL: false, SHIFT: false, ALT: false};
-      var checkKeys = [];
+    el._boundEvents[n].push({
+      realType: realType,
+      args: args,
+      callback: callback
+    });
+  }
 
-      checks.forEach(function(f) {
-        if ( modifiers[f] ) {
-          checkMods[f] = true;
-        } else {
-          checkKeys.push(f);
-        }
-      });
-
-      return Object.keys(checkMods).every(function(f) {
-        var fk = !!modifiers[f](ev);
-        return checkMods[f] === fk;
-      }) &&
-      checkKeys.every(function(f) {
-        return getKeyName(ev.keyCode) === f;
-      });
-    };
-  })();
-
-  /**
-   * Wrapper for event-binding
-   *
-   * <pre><code>
-   * You can bind multiple events by separating types with a comma.
-   *
-   * This also automatically binds Touch events.
-   *
-   *   mousedown = touchstart
-   *   mouseup = touchend
-   *   mousemove = touchend
-   *   contextmenu = long-hold
-   *   dblclick = double-tap
-   *   click = tap
-   * </code></pre>
-   *
-   * @example
-   * Utils.$bind(el, 'click', function(ev, pos, touch) {
-   *  // A click event
-   * });
-   *
-   * @example
-   * Utils.$bind(el, 'click:customname', function(ev, pos, touch) {
-   *  // A click event with custom namespace. Useful
-   *  // for when you want to separate events with same
-   *  // type.
-   * });
-   *
-   * @example
-   * Utils.$bind(el, 'click, mousedown, mouseup', function(ev, pos, touch) {
-   *  // You can bind multiple events in one go
-   * });
-   *
-   * @function $bind
-   * @memberof OSjs.Utils
-   *
-   * @param   {Node}            el            DOM Element to attach event to
-   * @param   {String}          ev            DOM Event Name
-   * @param   {CallbackEvent}   callback      Callback on event
-   * @param   {Boolean}         [useCapture]  Use capture mode
+  /*
+   * Creates mousewheel handler
    */
-  OSjs.Utils.$bind = (function() {
-    // Default timeouts
-    var TOUCH_CONTEXTMENU = 1000;
-    var TOUCH_CLICK_MIN = 30;
-    var TOUCH_CLICK_MAX = 1000;
-    var TOUCH_DBLCLICK = 400;
+  function createWheelHandler(el, n, t, callback, useCapture) {
 
-    /*
-     * This is the wrapper for using addEventListener
-     */
-    function addEventHandler(el, n, t, callback, handler, useCapture, realType) {
-      var args = [t, handler, useCapture];
+    function _wheel(ev) {
+      const pos = mousePosition(ev);
+      const direction = (ev.detail < 0 || ev.wheelDelta > 0) ? 1 : -1;
+      pos.z = direction;
 
-      el.addEventListener.apply(el, args);
-
-      el._boundEvents[n].push({
-        realType: realType,
-        args: args,
-        callback: callback
-      });
+      return callback(ev, pos);
     }
 
-    /*
-     * Creates mousewheel handler
-     */
-    function createWheelHandler(el, n, t, callback, useCapture) {
+    addEventHandler(el, n, 'mousewheel', callback, _wheel, useCapture, 'mousewheel');
+    addEventHandler(el, n, 'DOMMouseScroll', callback, _wheel, useCapture, 'DOMMouseScroll');
+  }
 
-      function _wheel(ev) {
-        var pos = OSjs.Utils.mousePosition(ev);
-        var direction = (ev.detail < 0 || ev.wheelDelta > 0) ? 1 : -1;
-        pos.z = direction;
+  /*
+   * Creates touch gestures for emulating mouse input
+   */
+  function createGestureHandler(el, n, t, callback, useCapture) {
+    /*eslint no-use-before-define: "off"*/
+    let started;
+    let contextTimeout;
+    let dblTimeout;
+    let moved = false;
+    let clicks = 0;
 
-        return callback(ev, pos);
-      }
+    // Wrapper for destroying` the event
+    function _done() {
+      contextTimeout = clearTimeout(contextTimeout);
+      started = null;
+      moved = false;
 
-      addEventHandler(el, n, 'mousewheel', callback, _wheel, useCapture, 'mousewheel');
-      addEventHandler(el, n, 'DOMMouseScroll', callback, _wheel, useCapture, 'DOMMouseScroll');
+      el.removeEventListener('touchend', _touchend, false);
+      el.removeEventListener('touchmove', _touchmove, false);
+      el.removeEventListener('touchcancel', _touchcancel, false);
     }
 
-    /*
-     * Creates touch gestures for emulating mouse input
-     */
-    function createGestureHandler(el, n, t, callback, useCapture) {
-      /*eslint no-use-before-define: "off"*/
-      var started;
-      var contextTimeout;
-      var dblTimeout;
-      var moved = false;
-      var clicks = 0;
-
-      // Wrapper for destroying` the event
-      function _done() {
-        contextTimeout = clearTimeout(contextTimeout);
-        started = null;
-        moved = false;
-
-        el.removeEventListener('touchend', _touchend, false);
-        el.removeEventListener('touchmove', _touchmove, false);
-        el.removeEventListener('touchcancel', _touchcancel, false);
-      }
-
-      // Figure out what kind of event we're supposed to handle on start
-      function _touchstart(ev) {
-        if ( ev.target === document.body ) {
-          ev.preventDefault();
-        }
-
-        contextTimeout = clearTimeout(contextTimeout);
-        started = new Date();
-        moved = false;
-
-        if ( t === 'contextmenu' ) {
-          contextTimeout = setTimeout(function() {
-            emitTouchEvent(ev, t, {button: 2, which: 3, buttons: 2});
-            _done();
-          }, TOUCH_CONTEXTMENU);
-        } else if ( t === 'dblclick' ) {
-          if ( clicks === 0 ) {
-            dblTimeout = clearTimeout(dblTimeout);
-            dblTimeout = setTimeout(function() {
-              clicks = 0;
-            }, TOUCH_DBLCLICK);
-
-            clicks++;
-          } else {
-            if ( !moved ) {
-              emitTouchEvent(ev, t);
-            }
-            clicks = 0;
-          }
-        }
-
-        el.addEventListener('touchend', _touchend, false);
-        el.addEventListener('touchmove', _touchmove, false);
-        el.addEventListener('touchcancel', _touchcancel, false);
-      }
-
-      // Tapping is registered when you let go of the screen
-      function _touchend(ev) {
-        contextTimeout = clearTimeout(contextTimeout);
-        if ( !started ) {
-          return _done();
-        }
-
-        if ( !OSjs.Utils.$isFormElement(ev) ) {
-          ev.preventDefault();
-        }
-
-        var now = new Date();
-        var diff = now - started;
-
-        if ( !moved && t === 'click' ) {
-          if ( (diff > TOUCH_CLICK_MIN) && (diff < TOUCH_CLICK_MAX) ) {
-            ev.stopPropagation();
-            emitTouchEvent(ev, t);
-          }
-        }
-
-        return _done();
-      }
-
-      // Whenever a movement has occured make sure to avoid clicks
-      function _touchmove(ev) {
-        if ( ev.target === document.body || !moved ) {
-          ev.preventDefault();
-        }
-
-        if ( !started ) {
-          return;
-        }
-
-        contextTimeout = clearTimeout(contextTimeout);
-        dblTimeout = clearTimeout(dblTimeout);
-        clicks = 0;
-        moved = true;
-      }
-
-      // In case touch is canceled we reset our clickers
-      function _touchcancel(ev) {
-        dblTimeout = clearTimeout(dblTimeout);
-        clicks = 0;
-
-        _done();
-      }
-
-      addEventHandler(el, n, 'touchstart', callback, _touchstart, false, 'touchstart');
-    }
-
-    /*
-     * Emits a normal mouse event from touches
-     *
-     * This basically emulates mouse behaviour on touch events
-     */
-    function emitTouchEvent(ev, type, combineWith) {
+    // Figure out what kind of event we're supposed to handle on start
+    function _touchstart(ev) {
       if ( ev.target === document.body ) {
         ev.preventDefault();
       }
 
-      if ( !ev.currentTarget || ev.changedTouches.length > 1 || (ev.type === 'touchend' && ev.changedTouches > 0) ) {
+      contextTimeout = clearTimeout(contextTimeout);
+      started = new Date();
+      moved = false;
+
+      if ( t === 'contextmenu' ) {
+        contextTimeout = setTimeout(() => {
+          emitTouchEvent(ev, t, {button: 2, which: 3, buttons: 2});
+          _done();
+        }, TOUCH_CONTEXTMENU);
+      } else if ( t === 'dblclick' ) {
+        if ( clicks === 0 ) {
+          dblTimeout = clearTimeout(dblTimeout);
+          dblTimeout = setTimeout(() => {
+            clicks = 0;
+          }, TOUCH_DBLCLICK);
+
+          clicks++;
+        } else {
+          if ( !moved ) {
+            emitTouchEvent(ev, t);
+          }
+          clicks = 0;
+        }
+      }
+
+      el.addEventListener('touchend', _touchend, false);
+      el.addEventListener('touchmove', _touchmove, false);
+      el.addEventListener('touchcancel', _touchcancel, false);
+    }
+
+    // Tapping is registered when you let go of the screen
+    function _touchend(ev) {
+      contextTimeout = clearTimeout(contextTimeout);
+      if ( !started ) {
+        return _done();
+      }
+
+      if ( !DOM.$isFormElement(ev) ) {
+        ev.preventDefault();
+      }
+
+      const now = new Date();
+      const diff = now - started;
+
+      if ( !moved && t === 'click' ) {
+        if ( (diff > TOUCH_CLICK_MIN) && (diff < TOUCH_CLICK_MAX) ) {
+          ev.stopPropagation();
+          emitTouchEvent(ev, t);
+        }
+      }
+
+      return _done();
+    }
+
+    // Whenever a movement has occured make sure to avoid clicks
+    function _touchmove(ev) {
+      if ( ev.target === document.body || !moved ) {
+        ev.preventDefault();
+      }
+
+      if ( !started ) {
         return;
       }
 
-      // Make sure we copy the keyboard attributes as well
-      var copy = ['ctrlKey', 'altKey', 'shiftKey', 'metaKey', 'screenX', 'screenY'];
-      var touch = ev.changedTouches[0];
-      var evtArgs = {
-        clientX: touch.clientX,
-        clientY: touch.clientY,
-        relatedTarget: ev.target
-      };
-
-      copy.forEach(function(k) {
-        evtArgs[k] = ev[k];
-      });
-
-      if ( combineWith ) {
-        Object.keys(combineWith).forEach(function(k) {
-          evtArgs[k] = combineWith[k];
-        });
-      }
-
-      ev.currentTarget.dispatchEvent(new MouseEvent(type, evtArgs));
+      contextTimeout = clearTimeout(contextTimeout);
+      dblTimeout = clearTimeout(dblTimeout);
+      clicks = 0;
+      moved = true;
     }
 
-    /*
-     * Map of touch events
-     */
-    var customEvents = {
-      mousedown: 'touchstart',
-      mouseup: 'touchend',
-      mousemove: 'touchmove',
-      mousewheel: createWheelHandler,
-      contextmenu: createGestureHandler,
-      click: createGestureHandler,
-      dblclick: createGestureHandler
-    };
+    // In case touch is canceled we reset our clickers
+    function _touchcancel(ev) {
+      dblTimeout = clearTimeout(dblTimeout);
+      clicks = 0;
 
-    return function Utils_$bind(el, evName, callback, useCapture, noBind) {
-      useCapture = (useCapture === true);
+      _done();
+    }
 
-      if ( arguments.length < 3 ) {
-        throw new Error('$bind expects 3 or more arguments');
-      }
-      if ( typeof evName !== 'string' ) {
-        throw new Error('Given event type was not a string');
-      }
-      if ( typeof callback !== 'function' ) {
-        throw new Error('Given callback was not a function');
-      }
+    addEventHandler(el, n, 'touchstart', callback, _touchstart, false, 'touchstart');
+  }
 
-      function addEvent(nsType, type) {
-        type = getRealEventName(type);
-
-        addEventHandler(el, nsType, type, callback, function mouseEventHandler(ev) {
-          if ( !OSjs || !OSjs.Utils ) { // Probably shut down
-            return null;
-          }
-
-          if ( noBind ) {
-            return callback(ev, OSjs.Utils.mousePosition(ev));
-          }
-          return callback.call(el, ev, OSjs.Utils.mousePosition(ev));
-        }, useCapture);
-
-        if ( customEvents[type] ) {
-          if ( typeof customEvents[type] === 'function' ) {
-            customEvents[type](el, nsType, type, callback, useCapture);
-          } else {
-            addEventHandler(el, nsType, customEvents[type], callback, function touchEventHandler(ev) {
-              emitTouchEvent(ev, type);
-            }, useCapture, customEvents[type]);
-          }
-        }
-      }
-
-      function initNamespace(ns) {
-        if ( !el._boundEvents ) {
-          el._boundEvents = {};
-        }
-
-        if ( !el._boundEvents[ns] ) {
-          el._boundEvents[ns] = [];
-        }
-
-        var found = el._boundEvents[ns].filter(function(iter) {
-          return iter.callback === callback;
-        });
-
-        return found.length === 0;
-      }
-
-      getEventList(evName).forEach(function(ns) {
-        var type = ns.split(':')[0];
-
-        if ( !initNamespace(ns) ) {
-          console.warn('Utils::$bind()', 'This event was already bound, skipping');
-          return;
-        }
-
-        addEvent(ns, type);
-      });
-    };
-  })();
-
-  /**
-   * Unbinds the given event
+  /*
+   * Emits a normal mouse event from touches
    *
-   * <pre><b>
-   * If you don't give a callback it will unbind *all* events in this category.
-   *
-   * You can unbind multiple events by separating types with a comma
-   * </b></pre>
-   *
-   * @example
-   * Utils.$unbind(el, 'click', function() {...}); // Unbinds spesific function
-   *
-   * @example
-   * Utils.$unbind(el, 'click'); // Unbinds all click events
-   *
-   * @example
-   * Utils.$unbind(el); // Unbinds all events
-   *
-   * @function $unbind
-   * @memberof OSjs.Utils
-   * @see OSjs.Utils.$bind
-   *
-   * @param   {Node}          el            DOM Element to attach event to
-   * @param   {String}        [evName]      DOM Event Name
-   * @param   {Function}      [callback]    Callback on event
-   * @param   {Boolean}       [useCapture]  Use capture mode
+   * This basically emulates mouse behaviour on touch events
    */
-  OSjs.Utils.$unbind = function Utils_$unbind(el, evName, callback, useCapture) {
-
-    function unbindAll() {
-      if ( el._boundEvents ) {
-        Object.keys(el._boundEvents).forEach(function(type) {
-          unbindNamed(type);
-        });
-        delete el._boundEvents;
-      }
+  function emitTouchEvent(ev, type, combineWith) {
+    if ( ev.target === document.body ) {
+      ev.preventDefault();
     }
 
-    function unbindNamed(type) {
-      if ( el._boundEvents ) {
-        var list = el._boundEvents || {};
-
-        if ( list[type] ) {
-          for ( var i = 0; i < list[type].length; i++ ) {
-            var iter = list[type][i];
-
-            // If a callback/handler was applied make sure we remove the correct one
-            if ( callback && iter.callback !== callback ) {
-              continue;
-            }
-
-            // We stored the event binding earlier
-            el.removeEventListener.apply(el, iter.args);
-
-            list[type].splice(i, 1);
-            i--;
-          }
-        }
-      }
+    if ( !ev.currentTarget || ev.changedTouches.length > 1 || (ev.type === 'touchend' && ev.changedTouches > 0) ) {
+      return;
     }
 
-    if ( el ) {
-      if ( evName ) {
-        getEventList(evName).forEach(function(type) {
-          unbindNamed(type);
-        });
-      } else {
-        unbindAll();
-      }
+    // Make sure we copy the keyboard attributes as well
+    const copy = ['ctrlKey', 'altKey', 'shiftKey', 'metaKey', 'screenX', 'screenY'];
+    const touch = ev.changedTouches[0];
+    const evtArgs = {
+      clientX: touch.clientX,
+      clientY: touch.clientY,
+      relatedTarget: ev.target
+    };
+
+    copy.forEach((k) => {
+      evtArgs[k] = ev[k];
+    });
+
+    if ( combineWith ) {
+      Object.keys(combineWith).forEach((k) => {
+        evtArgs[k] = combineWith[k];
+      });
     }
+
+    ev.currentTarget.dispatchEvent(new MouseEvent(type, evtArgs));
+  }
+
+  /*
+   * Map of touch events
+   */
+  const customEvents = {
+    mousedown: 'touchstart',
+    mouseup: 'touchend',
+    mousemove: 'touchmove',
+    mousewheel: createWheelHandler,
+    contextmenu: createGestureHandler,
+    click: createGestureHandler,
+    dblclick: createGestureHandler
   };
 
+  return function Utils_$bind(el, evName, callback, useCapture, noBind) {
+    useCapture = (useCapture === true);
+
+    if ( arguments.length < 3 ) {
+      throw new Error('$bind expects 3 or more arguments');
+    }
+    if ( typeof evName !== 'string' ) {
+      throw new Error('Given event type was not a string');
+    }
+    if ( typeof callback !== 'function' ) {
+      throw new Error('Given callback was not a function');
+    }
+
+    function addEvent(nsType, type) {
+      type = getRealEventName(type);
+
+      addEventHandler(el, nsType, type, callback, function mouseEventHandler(ev) {
+        if ( !window.OSjs ) { // Probably shut down
+          return null;
+        }
+
+        if ( noBind ) {
+          return callback(ev, mousePosition(ev));
+        }
+        return callback.call(el, ev, mousePosition(ev));
+      }, useCapture);
+
+      if ( customEvents[type] ) {
+        if ( typeof customEvents[type] === 'function' ) {
+          customEvents[type](el, nsType, type, callback, useCapture);
+        } else {
+          addEventHandler(el, nsType, customEvents[type], callback, function touchEventHandler(ev) {
+            emitTouchEvent(ev, type);
+          }, useCapture, customEvents[type]);
+        }
+      }
+    }
+
+    function initNamespace(ns) {
+      if ( !el._boundEvents ) {
+        el._boundEvents = {};
+      }
+
+      if ( !el._boundEvents[ns] ) {
+        el._boundEvents[ns] = [];
+      }
+
+      const found = el._boundEvents[ns].filter((iter) => {
+        return iter.callback === callback;
+      });
+
+      return found.length === 0;
+    }
+
+    getEventList(evName).forEach((ns) => {
+      const type = ns.split(':')[0];
+
+      if ( !initNamespace(ns) ) {
+        console.warn('Utils::$bind()', 'This event was already bound, skipping');
+        return;
+      }
+
+      addEvent(ns, type);
+    });
+  };
 })();
+
+/**
+ * Unbinds the given event
+ *
+ * <pre><b>
+ * If you don't give a callback it will unbind *all* events in this category.
+ *
+ * You can unbind multiple events by separating types with a comma
+ * </b></pre>
+ *
+ * @example
+ * $unbind(el, 'click', function() {...}); // Unbinds spesific function
+ *
+ * @example
+ * $unbind(el, 'click'); // Unbinds all click events
+ *
+ * @example
+ * $unbind(el); // Unbinds all events
+ *
+ * @see $bind
+ *
+ * @param   {Node}          el            DOM Element to attach event to
+ * @param   {String}        [evName]      DOM Event Name
+ * @param   {Function}      [callback]    Callback on event
+ * @param   {Boolean}       [useCapture]  Use capture mode
+ */
+export function $unbind(el, evName, callback, useCapture) {
+
+  function unbindAll() {
+    if ( el._boundEvents ) {
+      Object.keys(el._boundEvents).forEach((type) => {
+        unbindNamed(type);
+      });
+      delete el._boundEvents;
+    }
+  }
+
+  function unbindNamed(type) {
+    if ( el._boundEvents ) {
+      const list = el._boundEvents || {};
+
+      if ( list[type] ) {
+        for ( let i = 0; i < list[type].length; i++ ) {
+          let iter = list[type][i];
+
+          // If a callback/handler was applied make sure we remove the correct one
+          if ( callback && iter.callback !== callback ) {
+            continue;
+          }
+
+          // We stored the event binding earlier
+          el.removeEventListener.apply(el, iter.args);
+
+          list[type].splice(i, 1);
+          i--;
+        }
+      }
+    }
+  }
+
+  if ( el ) {
+    if ( evName ) {
+      getEventList(evName).forEach((type) => {
+        unbindNamed(type);
+      });
+    } else {
+      unbindAll();
+    }
+  }
+}
+

@@ -8,10 +8,10 @@
  * modification, are permitted provided that the following conditions are met:
  *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
+ *    list of conditions and the following disclaimer
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
+ *    and/or other materials provided with the distribution
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -27,53 +27,35 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API) {
-  'use strict';
+import Promise from 'bluebird';
+import OSjsTransport from 'vfs/transports/osjs';
+import MountManager from 'core/mount-manager';
+import {getBrowserPath} from 'core/config';
+import {_} from 'core/locales';
 
-  /**
-   * @namespace Dist
-   * @memberof OSjs.VFS.Transports
-   */
+/**
+ * Dist VFS Transport Module
+ *
+ * This is just an override of the default OS.js transport module
+ *
+ * @extends OSjsTransport
+ */
+export default class DistTransport extends OSjsTransport {
 
-  /////////////////////////////////////////////////////////////////////////////
-  // API
-  /////////////////////////////////////////////////////////////////////////////
-
-  /*
-   * OSjs 'dist' VFS Transport Module
-   *
-   * This is just a custom version of 'OSjs' module
-   */
-  var Transport = {
-    url: function(item, callback) {
-      var root = API.getBrowserPath();
-      var mm = OSjs.Core.getMountManager();
-      var module = mm.getModuleFromPath(item.path, false, true);
-      var url = item.path.replace(module.match, root);
-
-      callback(false, url);
+  request(method, args, options) {
+    if ( ['url', 'scandir', 'read'].indexOf(method) === -1 ) {
+      return Promise.reject(new Error(_('ERR_VFS_UNAVAILABLE')));
     }
-  };
 
-  // Inherit non-restricted methods
-  var restricted = ['write', 'move', 'unlink', 'mkdir', 'exists', 'fileinfo', 'trash', 'untrash', 'emptyTrash', 'freeSpace'];
-  var internal = OSjs.VFS.Transports.OSjs.module;
-  Object.keys(internal).forEach(function(n) {
-    if ( restricted.indexOf(n) === -1 ) {
-      Transport[n] = internal[n];
-    }
-  });
+    return super.request(...arguments);
+  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+  url(item) {
+    const root = getBrowserPath();
+    const module = MountManager.getModuleFromPath(item.path);
+    const url = item.path.replace(module.option('match'), root).replace(/^\/+/, '/');
 
-  OSjs.VFS.Transports.Dist = {
-    module: Transport,
-    defaults: function(opts) {
-      opts.readOnly = true;
-      opts.searchable = true;
-    }
-  };
+    return Promise.resolve(url);
+  }
 
-})(OSjs.Utils, OSjs.API);
+}

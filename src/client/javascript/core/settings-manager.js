@@ -28,87 +28,72 @@
  * @licence Simplified BSD License
  */
 
-(function(Utils, VFS, API) {
-  'use strict';
+import Promise from 'bluebird';
+import Storage from 'core/storage';
+import SettingsFragment from 'helpers/settings-fragment';
+
+/**
+ * Settings Manager Class
+ *
+ * @desc Used for managing Settings across all applications and modules.
+ */
+class SettingsManager {
+
+  constructor() {
+    this.storage = {};
+    this.defaultSettings = {};
+    this.watches = [];
+  }
 
   /**
-   * Settings Manager Class
-   *
-   * @summary Class for maintaining settings
-   *
-   * <pre><b>
-   * YOU CAN ONLY GET AN INSTANCE WITH `Core.getSettingsManager()`
-   * </b></pre>
-   *
-   * @example
-   * OSjs.Core.getSettingsManager()
-   *
-   * @summary Used for managing Settings across all applications and modules.
-   *
-   * @constructor
-   * @memberof OSjs.Core
-   * @see OSjs.Helpers.EventHandler
-   * @see OSjs.Core.getSettingsManager
-   */
-  var SettingsManager = {
-    storage: {},
-    defaults: {},
-    watches: []
-  };
-
-  /**
-   * Initialize SettingsManager.
+   * Initialize Settings.
    * This is run when a user logs in. It will give saved data here
    *
-   * @function init
-   * @memberof OSjs.Core.SettingsManager#
-   *
    * @param {Object}    settings      Entire settings tree
+   * @return {Promise<undefined, Error>}
    */
-  SettingsManager.init = function SettingsManager_init(settings) {
+  init(settings) {
     this.storage = settings || {};
-  };
+
+    return Promise.resolve();
+  }
 
   /**
    * Gets either the full tree or tree entry by key
    *
-   * @function get
-   * @memberof OSjs.Core.SettingsManager#
-   *
    * @param  {String}     pool      Name of settings pool
    * @param  {String}     [key]     Key entry of tree
    *
-   * @return  {Mixed}
+   * @return  {*}
    */
-  SettingsManager.get = function SettingsManager_get(pool, key) {
+  get(pool, key) {
     try {
       if ( this.storage[pool] && Object.keys(this.storage[pool]).length ) {
         return key ? this.storage[pool][key] : this.storage[pool];
       }
 
-      return key ? this.defaults[pool][key] : this.defaults[pool];
+      return key ? this.defaultSettings[pool][key] : this.defaultSettings[pool];
     } catch ( e ) {
       console.warn('SettingsManager::get()', 'exception', e, e.stack);
     }
 
     return false;
-  };
+  }
 
   /**
    * Sets either full tree or a tree entry by key
    *
-   * @function set
-   * @memberof OSjs.Core.SettingsManager#
-   *
-   * @param  {String}     pool                  Name of settings pool
-   * @param  {String}     [key]                 Key entry of tree
-   * @param  {Mixed}      value                 The value (or entire tree if no key given)
-   * @param  {Mixed}      [save]                boolean or callback function for saving
+   * @param  {String}             pool                  Name of settings pool
+   * @param  {String}             [key]                 Key entry of tree
+   * @param  {*}                  value                 The value (or entire tree if no key given)
+   * @param  {Boolean|Function}   [save]                boolean or callback function for saving
    * @param  {Boolean}    [triggerWatch=true]   trigger change event for watchers
    *
-   * @return  {Boolean}
+   * @return  {Promise<Boolean, Error>}
    */
-  SettingsManager.set = function SettingsManager_set(pool, key, value, save, triggerWatch) {
+  set(pool, key, value, save, triggerWatch) {
+    let promise = Promise.resolve(true);
+
     try {
       if ( key ) {
         if ( typeof this.storage[pool] === 'undefined' ) {
@@ -127,164 +112,138 @@
     }
 
     if ( save ) {
-      this.save(pool, save);
+      promise = this.save(pool);
+      if ( typeof save === 'function' ) {
+        console.warn('Using a callback is deprecated, you should use the returned promise');
+        promise.then((res) => save(false, res)).catch((err) => save(err, false));
+      }
     }
 
     if ( typeof triggerWatch === 'undefined' || triggerWatch === true ) {
       this.changed(pool);
     }
 
-    return true;
-  };
+    return promise;
+  }
 
   /**
    * Saves the storage to a location
    *
-   * @function save
-   * @memberof OSjs.Core.SettingsManager#
-   *
    * @param  {String}     pool      Name of settings pool
-   * @param  {Function}   callback  Callback
+   * @return {Promise<Boolean, Error>}
    */
-  SettingsManager.save = function SettingsManager_save(pool, callback) {
+  save(pool) {
     console.debug('SettingsManager::save()', pool, this.storage);
-    if ( typeof callback !== 'function' ) {
-      callback = function() {};
-    }
 
-    var storage = OSjs.Core.getStorage();
-    storage.saveSettings(pool, this.storage, callback);
-  };
+    const saveableStorage = {};
+    Object.keys(this.storage).filter((n) => {
+      return !n.match(/^__/);
+    }).forEach((n) => {
+      saveableStorage[n] = this.storage[n];
+    });
+
+    return Storage.instance.saveSettings(pool, saveableStorage);
+  }
 
   /**
    * Sets the defaults for a specific pool
    *
-   * @function defaults
-   * @memberof OSjs.Core.SettingsManager#
-   *
    * @param  {String}     pool       Name of settings pool
    * @param  {Object}     [defaults] Default settings tree
    */
-  SettingsManager.defaults = function SettingsManager_defaults(pool, defaults) {
-    this.defaults[pool] = defaults;
-  };
+  defaults(pool, defaults) {
+    this.defaultSettings[pool] = defaults;
+  }
 
   /**
    * Creates a new proxy instance
-   *
-   * @function instance
-   * @memberof OSjs.Core.SettingsManager#
    *
    * @param  {String}     pool       Name of settings pool
    * @param  {Object}     [defaults] Default settings tree
    *
    * @return {Object}
    */
-  SettingsManager.instance = function SettingsManager_instance(pool, defaults) {
+  instance(pool, defaults) {
     if ( !this.storage[pool] || (this.storage[pool] instanceof Array) ) {
       this.storage[pool] = {};
     }
 
-    var instance = new OSjs.Helpers.SettingsFragment(this.storage[pool], pool);
+    const instance = new SettingsFragment(this.storage[pool], pool, this);
     if ( arguments.length > 1 ) {
-      SettingsManager.defaults(pool, defaults);
+      this.defaults(pool, defaults);
       instance.mergeDefaults(defaults);
     }
 
     return instance;
-  };
+  }
 
   /**
    * Destroy a watcher
    *
-   * @function unwatch
-   * @memberof OSjs.Core.SettingsManager#
-   *
    * @param  {Number}    index     The index from watch()
    */
-  SettingsManager.unwatch = function SettingsManager_unwatch(index) {
+  unwatch(index) {
     if ( typeof this.watches[index] !== 'undefined' ) {
       delete this.watches[index];
     }
-  };
+  }
 
   /**
    * Receive events when a pool changes.
    *
-   * @function watch
-   * @memberof OSjs.Core.SettingsManager#
-   *
    * @param  {String}     pool      Name of settings pool
    * @param  {Function}   callback  Callback
    *
-   * @return {Mixed}                false on error, index for unwatch() otherwise
+   * @return {Boolean|Number}                false on error, index for unwatch() otherwise
    */
-  SettingsManager.watch = function SettingsMananger_watch(pool, callback) {
+  watch(pool, callback) {
     if ( !this.storage[pool] ) {
       return false;
     }
 
-    var index = this.watches.push({
+    const index = this.watches.push({
       pool: pool,
       callback: callback
     });
 
     return index - 1;
-  };
+  }
 
   /**
    * Notify the SettingsManager that somewhere in a pool's tree it has changed.
    *
-   * @function changed
-   * @memberof OSjs.Core.SettingsManager#
-   *
    * @param  {String}     pool      Name of settings pool that changed
    *
-   * @return {OSjs.Core.SettingsManager}      this
+   * @return {SettingsManager}      this
    */
-  SettingsManager.changed = function SettingsManager_changed(pool) {
-    var self = this;
-    this.watches.forEach(function(watch) {
+  changed(pool) {
+    this.watches.forEach((watch) => {
       if ( watch && watch.pool === pool ) {
-        watch.callback(self.storage[pool]);
+        watch.callback(this.storage[pool]);
       }
     });
 
     return this;
-  };
+  }
 
   /**
    * Clears a pool
    *
-   * @function clear
-   * @memberof OSjs.Core.SettingsManager#
+   * @param  {String}                pool        Name of settings pool
+   * @param  {Boolean|Function}      [save=true] Boolean or callback function for saving
    *
-   * @param  {String}     pool        Name of settings pool
-   * @param  {Mixed}      [save=true] Boolean or callback function for saving
-   *
-   * @return {OSjs.Core.SettingsManager}      this
+   * @return {SettingsManager}      this
    */
-  SettingsManager.clear = function SettingsManager_clear(pool, save) {
+  clear(pool, save) {
     save = (typeof save === 'undefined') || (save === true);
     this.set(pool, null, {}, save);
     return this;
-  };
+  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+}
 
-  Object.seal(SettingsManager);
+/////////////////////////////////////////////////////////////////////////////
+// EXPORTS
+/////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Get the current SettingsManager  instance
-   *
-   * @function getSettingsManager
-   * @memberof OSjs.Core
-   * @return {OSjs.Core.SettingsManager}
-   */
-  OSjs.Core.getSettingsManager = function Core_getSettingsManager() {
-    return SettingsManager;
-  };
-
-})(OSjs.Utils, OSjs.VFS, OSjs.API);
+export default (new SettingsManager());

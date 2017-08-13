@@ -27,635 +27,583 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API, GUI, Process) {
-  'use strict';
+
+import FileMetadata from 'vfs/file';
+import Application from 'core/application';
+import WindowManager from 'core/window-manager';
+import Element from 'gui/element';
+import GUIScheme from 'gui/scheme';
+import EventHandler from 'helpers/event-handler';
+import Theme from 'core/theme';
+import * as DOM from 'utils/dom';
+import * as GUI from 'utils/gui';
+import * as Events from 'utils/events';
+import * as Compability from 'utils/compability';
+import * as Keycodes from 'utils/keycodes';
+import * as Menu from 'gui/menu';
+import {_} from 'core/locales';
+import {running} from 'core/init';
+
+/**
+ * The predefined events are as follows:
+ * <pre><code>
+ *  init          When window is being inited and rendered  => (root, scheme)
+ *  inited        When window has been inited and rendered  => (scheme)
+ *  focus         When window gets focus                    => ()
+ *  blur          When window loses focus                   => ()
+ *  destroy       When window is closed                     => ()
+ *  maximize      When window is maxmimized                 => ()
+ *  minimize      When window is minimized                  => ()
+ *  restore       When window is restored                   => ()
+ *  resize        When window is resized                    => (w, h)
+ *  resized       Triggers after window is resized          => (w, h)
+ *  move          When window is moved                      => (x, y)
+ *  moved         Triggers after window is moved            => (x, y)
+ *  keydown       When keydown                              => (ev, keyCode, shiftKey, ctrlKey, altKey)
+ *  keyup         When keyup                                => (ev, keyCode, shiftKey, ctrlKey, altKey)
+ *  keypress      When keypress                             => (ev, keyCode, shiftKey, ctrlKey, altKey)
+ *  drop          When a drop event occurs                  => (ev, type, item, args, srcEl)
+ *  drop:upload   When a upload file was dropped            => (ev, <File>, args)
+ *  drop:file     When a internal file object was dropped   => (ev, VFS.File, args, srcEl)
+ * </code></pre>
+ * @typedef WindowEvent
+ */
+
+function _noEvent(ev) {
+  Menu.blur();
+  ev.preventDefault();
+  ev.stopPropagation();
+  return false;
+}
+
+function camelCased(str) {
+  return str.replace(/_([a-z])/g, function(g) {
+    return g[1].toUpperCase();
+  });
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// HELPERS
+/////////////////////////////////////////////////////////////////////////////
+
+/*
+ * Get next z-index for Window
+ * @return integer
+ */
+const getNextZindex = (function() {
+  let _lzindex  = 1;
+  let _ltzindex = 100000;
+
+  return function(ontop) {
+    if ( typeof ontop !== 'undefined' && ontop === true ) {
+      return (_ltzindex += 2);
+    }
+    return (_lzindex += 2);
+  };
+})();
+
+/*
+ * Get viewport (Wrapper)
+ *
+ * @return {Object}
+ */
+function getWindowSpace() {
+  const wm = WindowManager.instance;
+  if ( wm ) {
+    return wm.getWindowSpace();
+  }
+
+  return {
+    top: 0,
+    left: 0,
+    width: document.body.offsetWidth,
+    height: document.body.offsetHeight
+  };
+}
+
+/*
+ * Wrapper to wait for animations to finish
+ */
+function waitForAnimation(win, cb) {
+  const wm = WindowManager.instance;
+  const anim = wm ? wm.getSetting('animations') : false;
+  if ( anim ) {
+    win._animationCallback = cb;
+  } else {
+    cb();
+  }
+}
+
+/*
+ * Creates media queries from configuration file
+ */
+const createMediaQueries = (function() {
+  let queries;
+
+  function _createQueries() {
+    let result = {};
+
+    const wm = WindowManager.instance;
+    if ( wm ) {
+      const qs = wm.getDefaultSetting('mediaQueries') || {};
+
+      Object.keys(qs).forEach(function(k) {
+        if ( qs[k] ) {
+          result[k] = function(w, h, ref) {
+            return w <= qs[k];
+          };
+        }
+      });
+    }
+
+    return result;
+  }
+
+  return function() {
+    if ( !queries ) {
+      queries = _createQueries();
+    }
+    return queries;
+  };
+})();
+
+/*
+ * Checks window dimensions and makes media queries dynamic
+ */
+function checkMediaQueries(win) {
+  const wm = WindowManager.instance;
+  if ( !win._$element || !wm ) {
+    return;
+  }
+
+  let n = '';
+  let k;
+
+  const qs = win._properties.media_queries || {};
+  const w = win._$element.offsetWidth;
+  const h = win._$element.offsetHeight;
+
+  for ( k in qs ) {
+    if ( qs.hasOwnProperty(k) ) {
+      if ( qs[k](w, h, win) ) {
+        n = k;
+        break;
+      }
+    }
+  }
+
+  win._$element.setAttribute('data-media', n);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// WINDOW
+/////////////////////////////////////////////////////////////////////////////
+
+let _WID                = 0;
+let _DEFAULT_WIDTH      = 200;
+let _DEFAULT_HEIGHT     = 200;
+let _DEFAULT_MIN_HEIGHT = 150;
+let _DEFAULT_MIN_WIDTH  = 150;
+let _DEFAULT_SND_VOLUME = 1.0;
+let _NAMES              = [];
+
+/**
+ * Base Window Class
+ *
+ * @desc Class used for creating windows.
+ *
+ * @abstract
+ * @mixes EventHandler
+ * @throws {Error} On invalid arguments
+ */
+export default class Window {
 
   /**
-   * The predefined events are as follows:
-   * <pre><code>
-   *  init          When window is being inited and rendered  => (root, scheme)
-   *  inited        When window has been inited and rendered  => (scheme)
-   *  focus         When window gets focus                    => ()
-   *  blur          When window loses focus                   => ()
-   *  destroy       When window is closed                     => ()
-   *  maximize      When window is maxmimized                 => ()
-   *  minimize      When window is minimized                  => ()
-   *  restore       When window is restored                   => ()
-   *  resize        When window is resized                    => (w, h)
-   *  resized       Triggers after window is resized          => (w, h)
-   *  move          When window is moved                      => (x, y)
-   *  moved         Triggers after window is moved            => (x, y)
-   *  keydown       When keydown                              => (ev, keyCode, shiftKey, ctrlKey, altKey)
-   *  keyup         When keyup                                => (ev, keyCode, shiftKey, ctrlKey, altKey)
-   *  keypress      When keypress                             => (ev, keyCode, shiftKey, ctrlKey, altKey)
-   *  drop          When a drop event occurs                  => (ev, type, item, args, srcEl)
-   *  drop:upload   When a upload file was dropped            => (ev, <File>, args)
-   *  drop:file     When a internal file object was dropped   => (ev, VFS.File, args, srcEl)
-   * </code></pre>
-   * @typedef WindowEvent
+   * @param   {String}        name                     Window name (unique)
+   * @param   {Object}        opts                     List of options
+   * @param   {String}        opts.title               Window Title
+   * @param   {String}        opts.icon                Window Icon
+   * @param   {Number}        [opts.x]                 X Position
+   * @param   {Number}        [opts.y]                 Y Position
+   * @param   {Number}        [opts.width]             Width
+   * @param   {Number}        [opts.height]            Height
+   * @param   {String}        [opts.tag]               Window Tag
+   * @param   {String}        [opts.gravity]           Window Gravity
+   * @param   {boolean}       [opts.auto_size=false]   Window automatically fills to content on init
+   * @param   {boolean}       [opts.allow_move]        Allow movment
+   * @param   {boolean}       [opts.allow_resize]      Allow resize
+   * @param   {boolean}       [opts.allow_minimize]    Allow minimize
+   * @param   {boolean}       [opts.allow_maximize]    Allow maximize
+   * @param   {boolean}       [opts.allow_close]       Allow closing
+   * @param   {boolean}       [opts.allow_windowlist]  Allow appear in WindowList (Panel)
+   * @param   {boolean}       [opts.allow_drop]        Allow DnD
+   * @param   {boolean}       [opts.allow_iconmenu]    Allow Menu when click on Window Icon
+   * @param   {boolean}       [opts.allow_ontop]       Allow ontop
+   * @param   {boolean}       [opts.allow_hotkeys]     Allow usage of hotkeys
+   * @param   {boolean}       [opts.allow_session]     Allow to store for session
+   * @param   {boolean}       [opts.key_capture]       Allow key capture (UNSUSED ?!)
+   * @param   {boolean}       [opts.min_width]         Minimum allowed width
+   * @param   {boolean}       [opts.min_height]        Minimum allowed height
+   * @param   {boolean}       [opts.max_width]         Maximum allowed width
+   * @param   {boolean}       [opts.max_height]        Maximum allowed height
+   * @param   {Object}        [opts.media_queries]     Media queries to apply CSS attribute => {name: fn(w,h,win) => Boolean }
+   * @param   {String}        [opts.sound]             Sound name when window is displayed
+   * @param   {Number}        [opts.sound_volume]      Sound volume
+   * @param   {Function}      [opts.translator]        Translation method
+   * @param   {Application}   appRef                   Application Reference
    */
+  constructor(name, opts, appRef) {
 
-  function _noEvent(ev) {
-    OSjs.API.blurMenu();
-    ev.preventDefault();
-    ev.stopPropagation();
-    return false;
-  }
+    if ( _NAMES.indexOf(name) >= 0 ) {
+      throw new Error(_('ERR_WIN_DUPLICATE_FMT', name));
+    }
 
-  function camelCased(str) {
-    return str.replace(/_([a-z])/g, function(g) {
-      return g[1].toUpperCase();
-    });
-  }
+    if ( appRef && !(appRef instanceof Application) ) {
+      throw new TypeError('appRef given was not instance of Application');
+    }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // HELPERS
-  /////////////////////////////////////////////////////////////////////////////
+    opts = Object.assign({}, {
+      icon: Theme.getIcon('apps/preferences-system-windows.png'),
+      width: _DEFAULT_WIDTH,
+      height: _DEFAULT_HEIGHT,
+      title: name,
+      tag: name,
+      auto_size: false
+    }, opts);
 
-  /*
-   * Get next z-index for Window
-   * @return integer
-   */
-  var getNextZindex = (function() {
-    var _lzindex  = 1;
-    var _ltzindex = 100000;
+    console.group('Window::constructor()', _WID, arguments);
 
-    return function(ontop) {
-      if ( typeof ontop !== 'undefined' && ontop === true ) {
-        return (_ltzindex += 2);
-      }
-      return (_lzindex += 2);
+    /**
+     * The outer container
+     * @type {Node}
+     */
+    this._$element = null;
+
+    /**
+     * The inner (content) container
+     * @type {Node}
+     */
+    this._$root = null;
+
+    /**
+     * The top container
+     * @type {Node}
+     */
+    this._$top = null;
+
+    /**
+     * The icon element
+     * @type {Node}
+     */
+    this._$winicon = null;
+
+    /**
+     * The loading overlay
+     * @type {Node}
+     */
+    this._$loading = null;
+
+    /**
+     * The disabled overlay
+     * @type {Node}
+     */
+    this._$disabled = null;
+
+    /**
+     * The resize underlay
+     * @type {Node}
+     */
+    this._$resize = null;
+
+    /**
+     * The warning overlay
+     * @type {Node}
+     */
+    this._$warning = null;
+
+    /**
+     * Constructor options copy
+     * @type {Object}
+     */
+    this._opts = opts;
+
+    /**
+     * Application reference
+     * @type {Application}
+     */
+    this._app = appRef || null;
+
+    /**
+     * If Window has been destroyed
+     * @type {Boolean}
+     */
+    this._destroyed = false;
+
+    /**
+     * If Window was restored
+     * @type {Boolean}
+     */
+    this._restored = false;
+
+    /**
+     * If Window is finished loading
+     * @type {Boolean}
+     */
+    this._loaded = false;
+
+    /**
+     * If Window is finished initing
+     * @type {Boolean}
+     */
+    this._initialized = false;
+
+    /**
+     * If Window is currently disabled
+     * @type {Boolean}
+     */
+    this._disabled = true;
+
+    /**
+     * If Window is currently loading
+     * @type {Boolean}
+     */
+    this._loading = false;
+
+    /**
+     * Window ID (Internal)
+     * @type {Number}
+     */
+    this._wid = _WID;
+
+    /**
+     * Window Icon
+     * @type {String}
+     */
+    this._icon = opts.icon;
+
+    /**
+     * Window Name
+     * @type {String}
+     */
+    this._name = name;
+
+    /**
+     * Window Title
+     * @type {String}
+     */
+    this._title = opts.title;
+
+    /**
+     * Window Tag (ex. Use this when you have a group of windows)
+     * @type {String}
+     */
+    this._tag = opts.tag;
+
+    /**
+     * Window Position With x and y
+     * @type {Object}
+     */
+    this._position = {x: opts.x, y: opts.y};
+
+    /**
+     * Window Dimension With w and h
+     * @type {Object}
+     */
+    this._dimension = {w: opts.width, h: opts.height};
+
+    /**
+     * Children
+     * @return {Window[]}
+     */
+    this._children = [];
+
+    /**
+     * Parent
+     * @type {Window}
+     */
+    this._parent = null;
+
+    /**
+     * Original Window title (The one set on construct)
+     * @type {String}
+     */
+    this._origtitle = this._title;
+
+    /**
+     * Last dimension (before window movement)
+     * @type {Object}
+     */
+    this._lastDimension = this._dimension;
+
+    /**
+     * Last position (before window movement)
+     * @type {Object}
+     */
+    this._lastPosition = this._position;
+
+    /**
+     * The sound this window makes when it is created
+     * @type {String}
+     */
+    this._sound = null;
+
+    /**
+     * The volume of the window sound
+     * @type {Number} Between 0.0 and 1.0
+     */
+    this._soundVolume   = _DEFAULT_SND_VOLUME;
+
+    /**
+     * The active GUI Scheme
+     * @type {GUIScheme}
+     */
+    this._scheme = null;
+
+    /**
+     * Window Properties
+     * @type {Object}
+     */
+    this._properties    = {
+      gravity: null,
+      allow_move: true,
+      allow_resize: true,
+      allow_minimize: true,
+      allow_maximize: true,
+      allow_close: true,
+      allow_windowlist: true,
+      allow_drop: false,
+      allow_iconmenu: true,
+      allow_ontop: true,
+      allow_hotkeys: true,
+      allow_session: true,
+      key_capture: false,
+      start_focused: true,
+      min_width: _DEFAULT_MIN_HEIGHT,
+      min_height: _DEFAULT_MIN_WIDTH,
+      max_width: null,
+      max_height: null,
+      media_queries: createMediaQueries()
     };
-  })();
 
-  /*
-   * Get viewport (Wrapper)
-   *
-   * @return {Object}
-   * @api OSjs.API.getWindowSpace()
-   */
-  function getWindowSpace() {
-    var wm = OSjs.Core.getWindowManager();
-    if ( wm ) {
-      return wm.getWindowSpace();
-    }
-    return Utils.getRect();
-  }
+    /**
+     * Window State
+     * @type {Object}
+     */
+    this._state = {
+      focused: false,
+      modal: false,
+      minimized: false,
+      maximized: false,
+      ontop: false,
+      onbottom: false
+    };
 
-  /*
-   * Wrapper to wait for animations to finish
-   */
-  function waitForAnimation(win, cb) {
-    var wm = OSjs.Core.getWindowManager();
-    var anim = wm ? wm.getSetting('animations') : false;
-    if ( anim ) {
-      win._animationCallback = cb;
-    } else {
-      cb();
-    }
-  }
+    this._animationCallback = null;
 
-  /*
-   * Creates media queries from configuration file
-   */
-  var createMediaQueries = (function() {
-    var queries;
+    //
+    // Internals
+    //
 
-    function _createQueries() {
-      var result = {};
+    this._queryTimer = null;
 
-      var wm = OSjs.Core.getWindowManager();
-      if ( wm ) {
-        var qs = wm.getDefaultSetting('mediaQueries') || {};
+    this._evHandler = new EventHandler(name, [
+      'focus', 'blur', 'destroy', 'maximize', 'minimize', 'restore',
+      'move', 'moved', 'resize', 'resized',
+      'keydown', 'keyup', 'keypress',
+      'drop', 'drop:upload', 'drop:file'
+    ]);
 
-        Object.keys(qs).forEach(function(k) {
-          if ( qs[k] ) {
-            result[k] = function(w, h, ref) {
-              return w <= qs[k];
-            };
+    //
+    // Inherit properties given in arguments
+    //
+
+    Object.keys(opts).forEach((k) => {
+      if ( typeof this._properties[k] !== 'undefined' ) {
+        this._properties[k] = opts[k];
+      } else if ( typeof this._state[k] !== 'undefined' && k !== 'focused' ) {
+        this._state[k] = opts[k];
+      } else if ( ('sound', 'sound_volume').indexOf(k) !== -1 ) {
+        this['_' + camelCased(k)] = opts[k];
+      }
+    });
+
+    //
+    // Make sure that properties are correct according to requested arguments
+    //
+
+    ((properties, position) => {
+      if ( !properties.gravity && (typeof position.x === 'undefined') || (typeof position.y === 'undefined') ) {
+        const wm = WindowManager.instance;
+        const np = wm ? wm.getWindowPosition() : {x: 0, y: 0};
+
+        position.x = np.x;
+        position.y = np.y;
+      }
+    })(this._properties, this._position);
+
+    ((properties, dimension) => {
+      if ( properties.min_height && (dimension.h < properties.min_height) ) {
+        dimension.h = properties.min_height;
+      }
+      if ( properties.max_width && (dimension.w < properties.max_width) ) {
+        dimension.w = properties.max_width;
+      }
+      if ( properties.max_height && (dimension.h > properties.max_height) ) {
+        dimension.h = properties.max_height;
+      }
+      if ( properties.max_width && (dimension.w > properties.max_width) ) {
+        dimension.w = properties.max_width;
+      }
+    })(this._properties, this._dimension);
+
+    ((position, dimension) => {
+      if ( appRef && appRef.__args && appRef.__args.__windows__ ) {
+        appRef.__args.__windows__.forEach((restore) => {
+          if ( !this._restored && restore.name && restore.name === this._name ) {
+            position.x = restore.position.x;
+            position.y = restore.position.y;
+            if ( this._properties.allow_resize ) {
+              dimension.w = restore.dimension.w;
+              dimension.h = restore.dimension.h;
+            }
+
+            console.info('RESTORED FROM SESSION', restore);
+            this._restored = true;
           }
         });
       }
+    })(this._position, this._dimension);
 
-      return result;
-    }
-
-    return function() {
-      if ( !queries ) {
-        queries = _createQueries();
-      }
-      return queries;
-    };
-  })();
-
-  /*
-   * Checks window dimensions and makes media queries dynamic
-   */
-  function checkMediaQueries(win) {
-    var wm = OSjs.Core.getWindowManager();
-    if ( !win._$element || !wm ) {
-      return;
-    }
-
-    var n = '';
-    var qs = win._properties.media_queries || {};
-    var w = win._$element.offsetWidth;
-    var h = win._$element.offsetHeight;
-    var k;
-
-    for ( k in qs ) {
-      if ( qs.hasOwnProperty(k) ) {
-        if ( qs[k](w, h, win) ) {
-          n = k;
-          break;
-        }
-      }
-    }
-
-    win._$element.setAttribute('data-media', n);
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
-  // WINDOW
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Window Class
-   *
-   * @summary Class used for basis as a Window.
-   *
-   * @param   {String}                    name                     Window name (unique)
-   * @param   {Object}                    opts                     List of options
-   * @param   {String}                    opts.title               Window Title
-   * @param   {String}                    opts.icon                Window Icon
-   * @param   {Number}                    [opts.x]                 X Position
-   * @param   {Number}                    [opts.y]                 Y Position
-   * @param   {Number}                    [opts.w]                 Width
-   * @param   {Number}                    [opts.h]                 Height
-   * @param   {String}                    [opts.tag]               Window Tag
-   * @param   {String}                    [opts.gravity]           Window Gravity
-   * @param   {boolean}                   [opts.allow_move]        Allow movment
-   * @param   {boolean}                   [opts.allow_resize]      Allow resize
-   * @param   {boolean}                   [opts.allow_minimize]    Allow minimize
-   * @param   {boolean}                   [opts.allow_maximize]    Allow maximize
-   * @param   {boolean}                   [opts.allow_close]       Allow closing
-   * @param   {boolean}                   [opts.allow_windowlist]  Allow appear in WindowList (Panel)
-   * @param   {boolean}                   [opts.allow_drop]        Allow DnD
-   * @param   {boolean}                   [opts.allow_iconmenu]    Allow Menu when click on Window Icon
-   * @param   {boolean}                   [opts.allow_ontop]       Allow ontop
-   * @param   {boolean}                   [opts.allow_hotkeys]     Allow usage of hotkeys
-   * @param   {boolean}                   [opts.allow_session]     Allow to store for session
-   * @param   {boolean}                   [opts.key_capture]       Allow key capture (UNSUSED ?!)
-   * @param   {boolean}                   [opts.min_width]         Minimum allowed width
-   * @param   {boolean}                   [opts.min_height]        Minimum allowed height
-   * @param   {boolean}                   [opts.max_width]         Maximum allowed width
-   * @param   {boolean}                   [opts.max_height]        Maximum allowed height
-   * @param   {Object}                    [opts.media_queries]     Media queries to apply CSS attribute => {name: fn(w,h,win) => Boolean }
-   * @param   {String}                    [opts.sound]             Sound name when window is displayed
-   * @param   {Number}                    [opts.sound_volume]      Sound volume
-   * @param   {Function}                  [opts.translator]        Translation method
-   * @param   {OSjs.Core.Application}     appRef                   Application Reference
-   * @param   {OSjs.GUI.Scheme}           schemeRef                GUI Scheme Reference
-   *
-   * @abstract
-   * @constructor
-   * @memberof OSjs.Core
-   * @mixes OSjs.Helpers.EventHandler
-   * @throws {Error} On invalid arguments
-   */
-  var Window = (function() {
-    var _WID                = 0;
-    var _DEFAULT_WIDTH      = 200;
-    var _DEFAULT_HEIGHT     = 200;
-    var _DEFAULT_MIN_HEIGHT = 150;
-    var _DEFAULT_MIN_WIDTH  = 150;
-    var _DEFAULT_SND_VOLUME = 1.0;
-    var _NAMES              = [];
-
-    return function(name, opts, appRef, schemeRef) {
-      var self = this;
-
-      if ( _NAMES.indexOf(name) >= 0 ) {
-        throw new Error(API._('ERR_WIN_DUPLICATE_FMT', name));
-      }
-
-      if ( appRef && !(appRef instanceof OSjs.Core.Application) ) {
-        throw new TypeError('appRef given was not instance of Core.Application');
-      }
-
-      if ( schemeRef && !(schemeRef instanceof OSjs.GUI.Scheme) ) {
-        throw new TypeError('schemeRef given was not instance of GUI.Scheme');
-      }
-
-      opts = Utils.argumentDefaults(opts, {
-        icon: API.getThemeResource('wm.png', 'wm'),
-        width: _DEFAULT_WIDTH,
-        height: _DEFAULT_HEIGHT,
-        title: name,
-        tag: name
-      });
-
-      console.group('Window::constructor()', _WID, arguments);
-
-      /**
-       * The outer container
-       * @name _$element
-       * @memberof OSjs.Core.Window#
-       * @type {Node}
-       */
-      this._$element = null;
-
-      /**
-       * The inner (content) container
-       * @name _$root
-       * @memberof OSjs.Core.Window#
-       * @type {Node}
-       */
-      this._$root = null;
-
-      /**
-       * The top container
-       * @name _$top
-       * @memberof OSjs.Core.Window#
-       * @type {Node}
-       */
-      this._$top = null;
-
-      /**
-       * The icon element
-       * @name _$winicon
-       * @memberof OSjs.Core.Window#
-       * @type {Node}
-       */
-      this._$winicon = null;
-
-      /**
-       * The loading overlay
-       * @name _$loading
-       * @memberof OSjs.Core.Window#
-       * @type {Node}
-       */
-      this._$loading = null;
-
-      /**
-       * The disabled overlay
-       * @name _$disabled
-       * @memberof OSjs.Core.Window#
-       * @type {Node}
-       */
-      this._$disabled = null;
-
-      /**
-       * The resize underlay
-       * @name _$resize
-       * @memberof OSjs.Core.Window#
-       * @type {Node}
-       */
-      this._$resize = null;
-
-      /**
-       * The warning overlay
-       * @name _$warning
-       * @memberof OSjs.Core.Window#
-       * @type {Node}
-       */
-      this._$warning = null;
-
-      /**
-       * Constructor options copy
-       * @name _opts
-       * @memberof OSjs.Core.Window#
-       * @type {Object}
-       */
-      this._opts = opts;
-
-      /**
-       * Application reference
-       * @name _app
-       * @memberof OSjs.Core.Window#
-       * @type {OSjs.Core.Application}
-       */
-      this._app = appRef || null;
-
-      /**
-       * Scheme reference
-       * @name _scheme
-       * @memberof OSjs.Core.Window#
-       * @type {OSjs.GUI.Scheme}
-       */
-      this._scheme = schemeRef || null;
-
-      /**
-       * If Window has been destroyed
-       * @name _destroyed
-       * @memberof OSjs.Core.Window#
-       * @type {Boolean}
-       */
-      this._destroyed = false;
-
-      /**
-       * If Window was restored
-       * @name _restored
-       * @memberof OSjs.Core.Window#
-       * @type {Boolean}
-       */
-      this._restored = false;
-
-      /**
-       * If Window is finished loading
-       * @name _loaded
-       * @memberof OSjs.Core.Window#
-       * @type {Boolean}
-       */
-      this._loaded = false;
-
-      /**
-       * If Window is finished initing
-       * @name _initialized
-       * @memberof OSjs.Core.Window#
-       * @type {Boolean}
-       */
-      this._initialized = false;
-
-      /**
-       * If Window is currently disabled
-       * @name _disabled
-       * @memberof OSjs.Core.Window#
-       * @type {Boolean}
-       */
-      this._disabled = true;
-
-      /**
-       * If Window is currently loading
-       * @name _loading
-       * @memberof OSjs.Core.Window#
-       * @type {Boolean}
-       */
-      this._loading = false;
-
-      /**
-       * Window ID (Internal)
-       * @name _wid
-       * @memberof OSjs.Core.Window#
-       * @type {Number}
-       */
-      this._wid = _WID;
-
-      /**
-       * Window Icon
-       * @name _icon
-       * @memberof OSjs.Core.Window#
-       * @type {String}
-       */
-      this._icon = opts.icon;
-
-      /**
-       * Window Name
-       * @name _name
-       * @memberof OSjs.Core.Window#
-       * @type {String}
-       */
-      this._name = name;
-
-      /**
-       * Window Title
-       * @name _title
-       * @memberof OSjs.Core.Window#
-       * @type {String}
-       */
-      this._title = opts.title;
-
-      /**
-       * Window Tag (ex. Use this when you have a group of windows)
-       * @name _title
-       * @memberof OSjs.Core.Window#
-       * @type {String}
-       */
-      this._tag = opts.tag;
-
-      /**
-       * Window Position With x and y
-       * @name _position
-       * @memberof OSjs.Core.Window#
-       * @type {Object}
-       */
-      this._position = {x: opts.x, y: opts.y};
-
-      /**
-       * Window Dimension With w and h
-       * @name _dimension
-       * @memberof OSjs.Core.Window#
-       * @type {Object}
-       */
-      this._dimension = {w: opts.width, h: opts.height};
-
-      /**
-       * Children
-       * @name _children
-       * @memberof OSjs.Core.Window#
-       * @return {OSjs.Core.Window[]}
-       */
-      this._children = [];
-
-      /**
-       * Parent
-       * @name _parent
-       * @memberof OSjs.Core.Window#
-       * @type {OSjs.Core.Window}
-       */
-      this._parent = null;
-
-      /**
-       * Original Window title (The one set on construct)
-       * @name _origtitle
-       * @memberof OSjs.Core.Window#
-       * @type {String}
-       */
-      this._origtitle = this._title;
-
-      /**
-       * Last dimension (before window movement)
-       * @name _lastDimension
-       * @memberof OSjs.Core.Window#
-       * @type {Object}
-       */
-      this._lastDimension = this._dimension;
-
-      /**
-       * Last position (before window movement)
-       * @name _lastPosition
-       * @memberof OSjs.Core.Window#
-       * @type {Object}
-       */
-      this._lastPosition = this._position;
-
-      /**
-       * The sound this window makes when it is created
-       * @name _sound
-       * @memberof OSjs.Core.Window#
-       * @type {String}
-       */
-      this._sound = null;
-
-      /**
-       * The volume of the window sound
-       * @name _soundVolume
-       * @memberof OSjs.Core.Window#
-       * @type {Number} Between 0.0 and 1.0
-       */
-      this._soundVolume   = _DEFAULT_SND_VOLUME;
-
-      /**
-       * Window Properties
-       * @name _properties
-       * @memberof OSjs.Core.Window#
-       * @type {Object}
-       */
-      this._properties    = {
-        gravity: null,
-        allow_move: true,
-        allow_resize: true,
-        allow_minimize: true,
-        allow_maximize: true,
-        allow_close: true,
-        allow_windowlist: true,
-        allow_drop: false,
-        allow_iconmenu: true,
-        allow_ontop: true,
-        allow_hotkeys: true,
-        allow_session: true,
-        key_capture: false,
-        start_focused: true,
-        min_width: _DEFAULT_MIN_HEIGHT,
-        min_height: _DEFAULT_MIN_WIDTH,
-        max_width: null,
-        max_height: null,
-        media_queries: createMediaQueries()
-      };
-
-      /**
-       * Window State
-       * @name _state
-       * @memberof OSjs.Core.Window#
-       * @type {Object}
-       */
-      this._state = {
-        focused: false,
-        modal: false,
-        minimized: false,
-        maximized: false,
-        ontop: false,
-        onbottom: false
-      };
-
-      this._translator = null;
-      this._animationCallback = null;
-
-      //
-      // Internals
-      //
-
-      this._queryTimer = null;
-
-      this._evHandler = new OSjs.Helpers.EventHandler(name, [
-        'focus', 'blur', 'destroy', 'maximize', 'minimize', 'restore',
-        'move', 'moved', 'resize', 'resized',
-        'keydown', 'keyup', 'keypress',
-        'drop', 'drop:upload', 'drop:file'
-      ]);
-
-      //
-      // Inherit properties given in arguments
-      //
-
-      Object.keys(opts).forEach(function(k) {
-        if ( typeof self._properties[k] !== 'undefined' ) {
-          self._properties[k] = opts[k];
-        } else if ( typeof self._state[k] !== 'undefined' && k !== 'focused' ) {
-          self._state[k] = opts[k];
-        } else if ( ('sound', 'sound_volume').indexOf(k) !== -1 ) {
-          self['_' + camelCased(k)] = opts[k];
-        }
-      });
-
-      //
-      // Make sure that properties are correct according to requested arguments
-      //
-
-      (function _initPosition(properties, position) {
-        if ( !properties.gravity && (typeof position.x === 'undefined') || (typeof position.y === 'undefined') ) {
-          var wm = OSjs.Core.getWindowManager();
-          var np = wm ? wm.getWindowPosition() : {x: 0, y: 0};
-
-          position.x = np.x;
-          position.y = np.y;
-        }
-      })(this._properties, this._position);
-
-      (function _initDimension(properties, dimension) {
-        if ( properties.min_height && (dimension.h < properties.min_height) ) {
-          dimension.h = properties.min_height;
-        }
-        if ( properties.max_width && (dimension.w < properties.max_width) ) {
-          dimension.w = properties.max_width;
-        }
-        if ( properties.max_height && (dimension.h > properties.max_height) ) {
-          dimension.h = properties.max_height;
-        }
-        if ( properties.max_width && (dimension.w > properties.max_width) ) {
-          dimension.w = properties.max_width;
-        }
-      })(this._properties, this._dimension);
-
-      (function _initRestore(position, dimension) {
-        if ( appRef && appRef.__args && appRef.__args.__windows__ ) {
-          appRef.__args.__windows__.forEach(function(restore) {
-            if ( !self._restored && restore.name && restore.name === self._name ) {
-              position.x = restore.position.x;
-              position.y = restore.position.y;
-              if ( self._properties.allow_resize ) {
-                dimension.w = restore.dimension.w;
-                dimension.h = restore.dimension.h;
-              }
-
-              console.info('RESTORED FROM SESSION', restore);
-              self._restored = true;
-            }
-          });
-        }
-      })(this._position, this._dimension);
-
-      (function _initGravity(properties, position, dimension, restored) {
-        var grav = properties.gravity;
-        if ( grav && !restored ) {
-          if ( grav === 'center' ) {
-            position.y = (window.innerHeight / 2) - (self._dimension.h / 2);
-            position.x = (window.innerWidth / 2) - (self._dimension.w / 2);
+    ((properties, position, dimension, restored) => {
+      const grav = properties.gravity;
+      if ( grav && !restored ) {
+        if ( grav === 'center' ) {
+          position.y = (window.innerHeight / 2) - (this._dimension.h / 2);
+          position.x = (window.innerWidth / 2) - (this._dimension.w / 2);
+        } else {
+          const space = getWindowSpace();
+          if ( grav.match(/^south/) ) {
+            position.y = space.height - dimension.h;
           } else {
-            var space = getWindowSpace();
-            if ( grav.match(/^south/) ) {
-              position.y = space.height - dimension.h;
-            } else {
-              position.y = space.top;
-            }
-            if ( grav.match(/west$/) ) {
-              position.x = space.left;
-            } else {
-              position.x = space.width - dimension.w;
-            }
+            position.y = space.top;
+          }
+          if ( grav.match(/west$/) ) {
+            position.x = space.left;
+          } else {
+            position.x = space.width - dimension.w;
           }
         }
-      })(this._properties, this._position, this._dimension, this._restored);
+      }
+    })(this._properties, this._position, this._dimension, this._restored);
 
-      console.debug('State', this._state);
-      console.debug('Properties', this._properties);
-      console.debug('Position', this._position);
-      console.debug('Dimension', this._dimension);
-      console.groupEnd();
+    console.debug('State', this._state);
+    console.debug('Properties', this._properties);
+    console.debug('Position', this._position);
+    console.debug('Dimension', this._dimension);
+    console.groupEnd();
 
-      _WID++;
-    };
-  })();
+    _WID++;
+  }
 
   /**
    * Initialize the Window
@@ -664,28 +612,22 @@
    * If you are looking for move/resize events, they are located in
    * the WindowManager.
    *
-   * @function init
-   * @memberof OSjs.Core.Window#
-   *
-   * @param   {OSjs.Core.WindowManager}   _wm     Window Manager reference
-   * @param   {OSjs.Core.Application}     _app    Application reference
-   * @param   {OSjs.GUI.Scheme}           _scheme UIScheme reference
+   * @param   {WindowManager}   _wm     Window Manager reference
+   * @param   {Application}     _app    Application reference
    *
    * @return  {Node} The Window DOM element
    */
-  Window.prototype.init = function(_wm, _app, _scheme) {
-    var self = this;
-
+  init(_wm, _app) {
     if ( this._initialized || this._loaded ) {
       return this._$root;
     }
 
     // Create DOM
-    this._$element = Utils.$create('application-window', {
-      className: (function(n, t) {
-        var classNames = ['Window', Utils.$safeName(n)];
+    this._$element = DOM.$create('application-window', {
+      className: ((n, t) => {
+        const classNames = ['Window', DOM.$safeName(n)];
         if ( t && (n !== t) ) {
-          classNames.push(Utils.$safeName(t));
+          classNames.push(DOM.$safeName(t));
         }
         return classNames;
       })(this._name, this._tag).join(' '),
@@ -713,10 +655,10 @@
     this._$root = document.createElement('application-window-content');
     this._$resize = document.createElement('application-window-resize');
 
-    ['nw', 'n',  'ne', 'e', 'se', 's', 'sw', 'w'].forEach(function(i) {
-      var h = document.createElement('application-window-resize-handle');
+    ['nw', 'n',  'ne', 'e', 'se', 's', 'sw', 'w'].forEach((i) => {
+      let h = document.createElement('application-window-resize-handle');
       h.setAttribute('data-direction', i);
-      self._$resize.appendChild(h);
+      this._$resize.appendChild(h);
       h = null;
     });
 
@@ -728,100 +670,100 @@
     this._$winicon.setAttribute('aria-haspopup', 'true');
     this._$winicon.setAttribute('aria-label', 'Window Menu');
 
-    var windowTitle = document.createElement('application-window-title');
+    const windowTitle = document.createElement('application-window-title');
     windowTitle.setAttribute('role', 'heading');
 
     // Bind events
-    Utils.$bind(this._$loading, 'mousedown', _noEvent);
-    Utils.$bind(this._$disabled, 'mousedown', _noEvent);
+    Events.$bind(this._$loading, 'mousedown', _noEvent);
+    Events.$bind(this._$disabled, 'mousedown', _noEvent);
 
-    var preventTimeout;
-    function _onanimationend(ev) {
-      if ( typeof self._animationCallback === 'function') {
+    let preventTimeout;
+    const _onanimationend = (ev) => {
+      if ( typeof this._animationCallback === 'function') {
         clearTimeout(preventTimeout);
-        preventTimeout = setTimeout(function() {
-          self._animationCallback(ev);
-          self._animationCallback = false;
+        preventTimeout = setTimeout(() => {
+          this._animationCallback(ev);
+          this._animationCallback = false;
           preventTimeout = clearTimeout(preventTimeout);
         }, 10);
       }
-    }
+    };
 
-    Utils.$bind(this._$element, 'transitionend', _onanimationend);
-    Utils.$bind(this._$element, 'animationend', _onanimationend);
+    Events.$bind(this._$element, 'transitionend', _onanimationend);
+    Events.$bind(this._$element, 'animationend', _onanimationend);
 
-    Utils.$bind(this._$element, 'mousedown', function(ev) {
-      self._focus();
+    Events.$bind(this._$element, 'mousedown', (ev) => {
+      this._focus();
     });
 
-    Utils.$bind(this._$element, 'contextmenu', function(ev) {
-      var r = Utils.$isFormElement(ev);
+    Events.$bind(this._$element, 'contextmenu', (ev) => {
+      const r = DOM.$isFormElement(ev);
 
       if ( !r ) {
         ev.preventDefault();
         ev.stopPropagation();
       }
 
-      OSjs.API.blurMenu();
+      Menu.blur();
 
       return !!r;
     });
 
-    Utils.$bind(this._$top, 'click', function(ev) {
-      var t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
+    Events.$bind(this._$top, 'click', (ev) => {
+      const t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
 
       ev.preventDefault();
       if ( t ) {
         if ( t.tagName.match(/^APPLICATION\-WINDOW\-BUTTON/) ) {
-          self._onWindowButtonClick(ev, t, t.getAttribute('data-action'));
+          this._onWindowButtonClick(ev, t, t.getAttribute('data-action'));
         } else if ( t.tagName === 'APPLICATION-WINDOW-ICON' ) {
           ev.stopPropagation();
-          self._onWindowIconClick(ev, t);
+          this._onWindowIconClick(ev, t);
         }
       }
     }, true);
 
-    Utils.$bind(windowTitle, 'mousedown', _noEvent);
-    Utils.$bind(windowTitle, 'dblclick', function() {
-      self._maximize();
+    Events.$bind(windowTitle, 'mousedown', _noEvent);
+    Events.$bind(windowTitle, 'dblclick', () => {
+      this._maximize();
     });
 
-    (function _initDnD(properties, main, compability) {
+    ((properties, main, compability) => {
       if ( properties.allow_drop && compability.dnd ) {
-        var border = document.createElement('div');
+        const border = document.createElement('div');
         border.className = 'WindowDropRect';
 
-        OSjs.GUI.Helpers.createDroppable(main, {
-          onOver: function(ev, el, args) {
+        GUI.createDroppable(main, {
+          onOver: (ev, el, args) => {
             main.setAttribute('data-dnd-state', 'true');
           },
 
-          onLeave: function() {
+          onLeave: () => {
             main.setAttribute('data-dnd-state', 'false');
           },
 
-          onDrop: function() {
+          onDrop: () => {
             main.setAttribute('data-dnd-state', 'false');
           },
 
-          onItemDropped: function(ev, el, item, args) {
+          onItemDropped: (ev, el, item, args) => {
             main.setAttribute('data-dnd-state', 'false');
-            return self._onDndEvent(ev, 'itemDrop', item, args, el);
+            return this._onDndEvent(ev, 'itemDrop', item, args, el);
           },
-          onFilesDropped: function(ev, el, files, args) {
+          onFilesDropped: (ev, el, files, args) => {
             main.setAttribute('data-dnd-state', 'false');
-            return self._onDndEvent(ev, 'filesDrop', files, args, el);
+            return this._onDndEvent(ev, 'filesDrop', files, args, el);
           }
         });
       }
-    })(this._properties, this._$element, Utils.getCompability());
+    })(this._properties, this._$element, Compability.getCompability());
 
     // Append to DOM
     windowTitle.appendChild(document.createTextNode(this._title));
 
     this._$top.appendChild(this._$winicon);
     this._$top.appendChild(windowTitle);
-    this._$top.appendChild(Utils.$create('application-window-button-minimize', {
+    this._$top.appendChild(DOM.$create('application-window-button-minimize', {
       className: 'application-window-button-entry',
       data: {
         action: 'minimize'
@@ -832,7 +774,7 @@
       }
     }));
 
-    this._$top.appendChild(Utils.$create('application-window-button-maximize', {
+    this._$top.appendChild(DOM.$create('application-window-button-maximize', {
       className: 'application-window-button-entry',
       data: {
         action: 'maximize'
@@ -843,7 +785,7 @@
       }
     }));
 
-    this._$top.appendChild(Utils.$create('application-window-button-close', {
+    this._$top.appendChild(DOM.$create('application-window-button-close', {
       className: 'application-window-button-entry',
       data: {
         action: 'close'
@@ -859,32 +801,30 @@
     this._$element.appendChild(this._$root);
     this._$element.appendChild(this._$resize);
     this._$element.appendChild(this._$disabled);
+    this._$element.appendChild(this._$loading);
     document.body.appendChild(this._$element);
 
     // Final stuff
     this._onChange('create');
     this._toggleLoading(false);
     this._toggleDisabled(false);
-    this._setIcon(API.getIcon(this._icon, null, this._app));
+    this._setIcon(Theme.getIcon(this._icon));
     this._updateMarkup();
 
     if ( this._sound ) {
-      API.playSound(this._sound, this._soundVolume);
+      Theme.playSound(this._sound, this._soundVolume);
     }
 
     this._initialized = true;
-    this._emit('init', [this._$root, _scheme]);
+    this._emit('init', [this._$root]);
 
     return this._$root;
-  };
+  }
 
   /**
    * When window is rendered and inited
-   *
-   * @function _inited
-   * @memberof OSjs.Core.Window#
    */
-  Window.prototype._inited = function() {
+  _inited() {
     if ( this._loaded ) {
       return;
     }
@@ -898,12 +838,30 @@
         this._maximize(true);
       } else if ( this._state.minimized ) {
         this._minimize(true);
+      } else {
+        if ( this._opts.auto_size ) {
+          let maxWidth = 0;
+          let maxHeight = 0;
+
+          const traverseTree = (el) => {
+            el.children.forEach((sel) => {
+              maxWidth = Math.max(maxWidth, sel.offsetWidth);
+              maxHeight = Math.max(maxHeight, sel.offsetHeight);
+              if ( sel.children.length ) {
+                traverseTree(sel);
+              }
+            });
+          };
+
+          traverseTree(this._$root);
+
+          this._resize(maxWidth, maxHeight, true);
+        }
       }
     }
 
-    var self = this;
-    var inittimeout = setTimeout(function() {
-      self._emit('inited', [self._scheme]);
+    let inittimeout = setTimeout(() => {
+      this._emit('inited', []);
       inittimeout = clearTimeout(inittimeout);
     }, 10);
 
@@ -912,21 +870,16 @@
     }
 
     console.debug('Window::_inited()', this._name);
-  };
+  }
 
   /**
    * Destroy the Window
    *
    * @param {Boolean}   shutdown    If the action came from a shutdown procedure
    *
-   * @function destroy
-   * @memberof OSjs.Core.Window#
-   *
    * @return  Boolean
    */
-  Window.prototype.destroy = function(shutdown) {
-    var self = this;
-
+  destroy(shutdown) {
     if ( this._destroyed ) {
       return false;
     }
@@ -935,88 +888,88 @@
 
     this._destroyed = true;
 
-    var wm = OSjs.Core.getWindowManager();
+    const wm = WindowManager.instance;
 
     console.group('Window::destroy()');
 
     // Nulls out stuff
-    function _removeDOM() {
-      self._setWarning(null);
+    const _removeDOM = () => {
+      this._setWarning(null);
 
-      self._$root       = null;
-      self._$top        = null;
-      self._$winicon    = null;
-      self._$loading    = null;
-      self._$disabled   = null;
-      self._$resize     = null;
-      self._$warning    = null;
-      self._$element    = Utils.$remove(self._$element);
-    }
+      this._$root       = null;
+      this._$top        = null;
+      this._$winicon    = null;
+      this._$loading    = null;
+      this._$disabled   = null;
+      this._$resize     = null;
+      this._$warning    = null;
+      this._$element    = DOM.$remove(this._$element);
+    };
 
     // Removed DOM elements and their referring objects (GUI Elements etc)
-    function _destroyDOM() {
-      if ( self._$element ) {
+    const _destroyDOM = () => {
+      if ( this._$element ) {
         // Make sure to remove any remaining event listeners
-        self._$element.querySelectorAll('*').forEach(function(iter) {
+        this._$element.querySelectorAll('*').forEach((iter) => {
           if ( iter ) {
-            Utils.$unbind(iter);
+            Events.$unbind(iter);
           }
         });
       }
-      if ( self._parent ) {
-        self._parent._removeChild(self);
+      if ( this._parent ) {
+        this._parent._removeChild(this);
       }
-      self._parent = null;
-      self._removeChildren();
-    }
+      this._parent = null;
+      this._removeChildren();
+    };
 
     // Destroys the window
-    function _destroyWin() {
+    const _destroyWin = () => {
       if ( wm ) {
-        wm.removeWindow(self);
+        wm.removeWindow(this);
       }
 
-      var curWin = wm ? wm.getCurrentWindow() : null;
-      if ( curWin && curWin._wid === self._wid ) {
+      const curWin = wm ? wm.getCurrentWindow() : null;
+      if ( curWin && curWin._wid === this._wid ) {
         wm.setCurrentWindow(null);
       }
 
-      var lastWin = wm ? wm.getLastWindow() : null;
-      if ( lastWin && lastWin._wid === self._wid ) {
+      const lastWin = wm ? wm.getLastWindow() : null;
+      if ( lastWin && lastWin._wid === this._wid ) {
         wm.setLastWindow(null);
       }
-    }
+    };
 
-    function _animateClose(fn) {
-      if ( API.isShuttingDown() ) {
+    const _animateClose = (fn) => {
+      if ( !running() ) {
         fn();
       } else {
-        if ( self._$element ) {
-          var anim = wm ? wm.getSetting('animations') : false;
+        if ( this._$element ) {
+          const anim = wm ? wm.getSetting('animations') : false;
           if ( anim ) {
-            self._$element.setAttribute('data-hint', 'closing');
-            self._animationCallback = fn;
+            this._$element.setAttribute('data-hint', 'closing');
+            this._animationCallback = fn;
 
             // This prevents windows from sticking when shutting down.
             // In some cases this would happen when you remove the stylesheet
             // with animation properties attached.
-            var animatetimeout = setTimeout(function() {
-              if ( self._animationCallback ) {
-                self._animationCallback();
+            let animatetimeout = setTimeout(() => {
+              if ( this._animationCallback ) {
+                this._animationCallback();
               }
               animatetimeout = clearTimeout(animatetimeout);
             }, 1000);
           } else {
-            self._$element.style.display = 'none';
+            this._$element.style.display = 'none';
             fn();
           }
         }
       }
-    }
+    };
 
     this._onChange('close');
 
-    _animateClose(function() {
+    _animateClose(() => {
       _removeDOM();
     });
     _destroyDOM();
@@ -1031,16 +984,16 @@
       this._evHandler.destroy();
     }
 
-    this._scheme = null;
     this._app = null;
     this._evHandler = null;
     this._args = {};
     this._queryTimer = clearTimeout(this._queryTimer);
+    this._scheme = this._scheme ? this._scheme.destroy() : null;
 
     console.groupEnd();
 
     return true;
-  };
+  }
 
   //
   // GUI And Event Hooks
@@ -1049,78 +1002,76 @@
   /**
    * Finds a GUI Element by ID from Scheme.
    *
-   * @function _find
-   * @memberof OSjs.Core.Window#
-   *
    * @param   {String}                id        Element ID (data-id)
    * @param   {Node}                  [root]    Root Node
    *
-   * @return {OSjs.GUI.Element}
+   * @return {GUIElement}
    */
-  Window.prototype._find = function(id, root) {
-    var q = '[data-id="' + id + '"]';
+  _find(id, root) {
+    const q = '[data-id="' + id + '"]';
     return this._findByQuery(q, root);
-  };
+  }
 
   /**
    * Renders a scheme into the window
    *
    * By default uses the internally assigned scheme file from preload (if any)
    *
-   * @function _render
-   * @memberof OSjs.Core.Window#
-   *
    * @param {String}           id           Scheme fragment ID
-   * @param {OSjs.GUI.Scheme}  [scheme]     Scheme reference (defaults to internal)
+   * @param {String|GUIScheme} scheme       Scheme or HTML
    * @param {Node}             [root]       Root element (defaults to internal Node)
    * @param {Object}           [args]       Arguments to pass to parser
+   * @return {GUIScheme}
    */
-  Window.prototype._render = function(id, scheme, root, args) {
-    scheme = scheme || this._scheme;
-    root = root || this._getRoot();
-    args = args || {};
+  _render(id, scheme, root, args) {
+    if ( scheme ) {
+      root = root || this._getRoot();
+      args = args || {};
 
-    if ( this._translator ) {
-      args._ = this._translator;
+      if ( typeof this._opts.translator === 'function' ) {
+        args._ = this._opts.translator;
+      }
+
+      this._scheme = typeof scheme === 'string' ? GUIScheme.fromString(scheme) : scheme;
     }
 
-    scheme.render(this, id, root, null, null, args);
-  };
+    if ( this._scheme instanceof GUIScheme ) {
+      this._scheme.render(this, id, root, null, null, args);
+    } else {
+      console.warn('Got an invalid scheme in window render()', this._scheme);
+    }
+
+    return this._scheme;
+  }
 
   /**
    * Returns given DOMElement by ID
-   *
-   * @function _findDOM
-   * @memberof OSjs.Core.Window#
    *
    * @param   {String}                id        Element ID (data-id)
    * @param   {Node}                  [root]    Root Node
    *
    * @return  {Node}
    */
-  Window.prototype._findDOM = function(id, root) {
+  _findDOM(id, root) {
     root = root || this._getRoot();
-    var q = '[data-id="' + id + '"]';
+    const q = '[data-id="' + id + '"]';
     return root.querySelector(q);
-  };
+  }
 
   /**
    * Creates a new GUI Element
-   *
-   * @function _create
-   * @memberof OSjs.Core.Window#
    *
    * @param   {String}                tagName       OS.js GUI Element name
    * @param   {Object}                params        Parameters
    * @param   {Node}                  [parentNode]  Parent Node
    * @param   {Object}                [applyArgs]   New element parameters
    *
-   * @return {OSjs.GUI.Element}
+   * @return {GUIElement}
    */
-  Window.prototype._create = function(tagName, params, parentNode, applyArgs) {
+  _create(tagName, params, parentNode, applyArgs) {
     parentNode = parentNode || this._getRoot();
-    return GUI.Element.createInto(tagName, params, parentNode, applyArgs, this);
-  };
+    return Element.createInto(tagName, params, parentNode, applyArgs, this);
+  }
 
   /**
    * Finds a GUI Element by ID from Scheme.
@@ -1129,12 +1080,9 @@
    * @param   {Node}                  [root]    Root Node
    * @param   {Boolean}               [all]     Perform `querySelectorAll`
    *
-   * @function _findByQuery
-   * @memberof OSjs.Core.Window#
-   *
-   * @return {(Array|OSjs.GUI.Element)}
+   * @return {(Array|GUIElement)}
    */
-  Window.prototype._findByQuery = function(query, root, all) {
+  _findByQuery(query, root, all) {
     root = root || this._getRoot();
 
     if ( !(root instanceof window.Node) ) {
@@ -1142,73 +1090,65 @@
     }
 
     if ( all ) {
-      return root.querySelectorAll(query).map(function(el) {
-        return GUI.Element.createFromNode(el, query);
+      return root.querySelectorAll(query).map((el) => {
+        return Element.createFromNode(el, query);
       });
     }
 
-    var el = root.querySelector(query);
-    return GUI.Element.createFromNode(el, query);
-  };
+    const el = root.querySelector(query);
+    return Element.createFromNode(el, query);
+  }
 
   /**
    * Fire a hook to internal event
-   *
-   * @function _emit
-   * @memberof OSjs.Core.Window#
-   * @see OSjs.Helpers.EventHandler#emit
+   * @see EventHandler#emit
    *
    * @param   {WindowEvent}    k       Event name
    * @param   {Array}          args    Send these arguments (fn.apply)
    *
    * @return {Boolean}
    */
-  Window.prototype._emit = function(k, args) {
+  _emit(k, args) {
     if ( !this._destroyed ) {
       if ( this._evHandler ) {
         return this._evHandler.emit(k, args);
       }
     }
     return false;
-  };
+  }
 
   /**
    * Adds a hook to internal event
-   *
-   * @function _on
-   * @memberof OSjs.Core.Window#
-   * @see OSjs.Helpers.EventHandler#on
+   * @see EventHandler#on
    *
    * @param   {WindowEvent}    k       Event name
    * @param   {Function}       func    Callback function
    *
    * @return  {Number}
    */
-  Window.prototype._on = function(k, func) {
+  _on(k, func) {
     if ( this._evHandler ) {
       return this._evHandler.on(k, func, this);
     }
     return false;
-  };
+  }
 
   /**
    * Removes a hook to internal event
    *
-   * @function _off
-   * @memberof OSjs.Core.Window#
-   * @see OSjs.Helpers.EventHandler#off
+   * @see EventHandler#off
    *
    * @param   {WindowEvent}    k       Event name
    * @param   {Number}         idx     The hook index returned from _on()
    *
    * @return {Boolean}
    */
-  Window.prototype._off = function(k, idx) {
+  _off(k, idx) {
     if ( this._evHandler ) {
       return this._evHandler.off(k, idx);
     }
     return false;
-  };
+  }
 
   //
   // Children (Windows)
@@ -1217,157 +1157,120 @@
   /**
    * Add a child-window
    *
-   * @param {OSjs.Core.Window}      w               Window
-   * @param {Boolean}               [wmAdd=false]   Add to window manager
-   * @param {Boolean}               [wmFocus=false] Focus window when added
+   * @param {Window}      w               Window
+   * @param {Boolean}     [wmAdd=false]   Add to window manager
+   * @param {Boolean}     [wmFocus=false] Focus window when added
    *
-   * @function _addChild
-   * @memberof OSjs.Core.Window#
-   * @see OSjs.Helpers.EventHandler#off
+   * @see EventHandler#off
    *
-   * @return  {OSjs.Core.Window} The added instance
+   * @return  {Window} The added instance
    */
-  Window.prototype._addChild = function(w, wmAdd, wmFocus) {
+  _addChild(w, wmAdd, wmFocus) {
     console.debug('Window::_addChild()');
     w._parent = this;
 
-    var wm = OSjs.Core.getWindowManager();
+    const wm = WindowManager.instance;
     if ( wmAdd && wm ) {
       wm.addWindow(w, wmFocus);
     }
     this._children.push(w);
 
     return w;
-  };
+  }
 
   /**
    * Removes a child Window
    *
-   * @function _removeChild
-   * @memberof OSjs.Core.Window#
-   *
-   * @param   {OSjs.Core.Window}    w     Widow reference
+   * @param   {Window}    w     Widow reference
    *
    * @return  {Boolean}         On success
    */
-  Window.prototype._removeChild = function(w) {
-    var self = this;
-
-    var found = false;
-    this._children.forEach(function(child, i) {
+  _removeChild(w) {
+    let found = false;
+    this._children.forEach((child, i) => {
       if ( child && child._wid === w._wid ) {
         console.debug('Window::_removeChild()');
         child.destroy();
-        self._children[i] = null;
+        this._children[i] = null;
         found = true;
       }
     });
 
     return found;
-  };
+  }
 
   /**
    * Get a Window child by X
    *
-   * @function _getChild
-   * @memberof OSjs.Core.Window#
-   *
    * @param   {String}      value   Value to look for
    * @param   {String}      key     Key to look for
    *
-   * @return  {OSjs.Core.Window} Resulted Window or 'null'
+   * @return  {Window} Resulted Window or 'null'
    */
-  Window.prototype._getChild = function(value, key) {
+  _getChild(value, key) {
     key = key || 'wid';
 
-    var result = key === 'tag' ? [] : null;
-    this._children.every(function(child, i) {
-      if ( child ) {
-        if ( key === 'tag' ) {
-          result.push(child);
-        } else {
-          if ( child['_' + key] === value ) {
-            result = child;
-            return false;
-          }
-        }
-      }
-      return true;
+    const found = this._getChildren().filter((c) => {
+      return c['_' + key] === value;
     });
-    return result;
-  };
+
+    return key === 'tag' ? found : found[0];
+  }
 
   /**
    * Get a Window child by ID
-   *
-   * @function _getChildById
-   * @memberof OSjs.Core.Window#
-   * @see OSjs.Core.Window#_getChild
+   * @see Window#_getChild
    *
    * @param {Number} id Window id
-   * @return {OSjs.Core.Window}
+   * @return {Window}
    */
-  Window.prototype._getChildById = function(id) {
+  _getChildById(id) {
     return this._getChild(id, 'wid');
-  };
+  }
 
   /**
    * Get a Window child by Name
-   *
-   * @function _getChildByName
-   * @memberof OSjs.Core.Window#
-   * @see OSjs.Core.Window#_getChild
+   * @see Window#_getChild
    *
    * @param {String} name Window name
-   * @return {OSjs.Core.Window}
+   * @return {Window}
    */
-  Window.prototype._getChildByName = function(name) {
+  _getChildByName(name) {
     return this._getChild(name, 'name');
-  };
+  }
 
   /**
    * Get Window(s) child by Tag
-   *
-   * @function _getChildrenByTag
-   * @memberof OSjs.Core.Window#
-   * @see OSjs.Core.Window#_getChild
+   * @see Window#_getChild
    *
    * @param {String} tag Tag name
    *
-   * @return {OSjs.Core.Window[]}
+   * @return {Window[]}
    */
-  Window.prototype._getChildrenByTag = function(tag) {
+  _getChildrenByTag(tag) {
     return this._getChild(tag, 'tag');
-  };
+  }
 
   /**
    * Gets all children Windows
    *
-   * @function _getChildren
-   * @memberof OSjs.Core.Window#
-   *
-   * @return {OSjs.Core.Window[]}
+   * @return {Window[]}
    */
-  Window.prototype._getChildren = function() {
-    return this._children;
-  };
+  _getChildren() {
+    return this._children.filter((w) => !!w);
+  }
 
   /**
    * Removes all children Windows
-   *
-   * @function _removeChildren
-   * @memberof OSjs.Core.Window#
    */
-  Window.prototype._removeChildren = function() {
-    if ( this._children && this._children.length ) {
-      this._children.forEach(function(child, i) {
-        if ( child ) {
-          child.destroy();
-        }
-      });
-    }
+  _removeChildren() {
+    this._children.forEach((child, i) => {
+      if ( child ) {
+        child.destroy();
+      }
+    });
     this._children = [];
-  };
+  }
 
   //
   // Actions
@@ -1376,35 +1279,28 @@
   /**
    * Close the Window
    *
-   * @function _close
-   * @memberof OSjs.Core.Window#
-   *
    * @return  {Boolean}     On succes
    */
-  Window.prototype._close = function() {
-    console.debug('Window::_close()');
+  _close() {
     if ( this._disabled || this._destroyed ) {
       return false;
     }
+    console.debug('Window::_close()');
 
     this._blur();
     this.destroy();
 
     return true;
-  };
+  }
 
   /**
    * Minimize the Window
-   *
-   * @function _minimize
-   * @memberof OSjs.Core.Window#
    *
    * @param     {Boolean}   [force=false]   Force action
    *
    * @return    {Boolean}     On success
    */
-  Window.prototype._minimize = function(force) {
-    var self = this;
+  _minimize(force) {
     if ( !this._properties.allow_minimize || this._destroyed  ) {
       return false;
     }
@@ -1421,15 +1317,15 @@
     this._state.minimized = true;
     this._$element.setAttribute('data-minimized', 'true');
 
-    waitForAnimation(this, function() {
-      self._$element.style.display = 'none';
-      self._emit('minimize');
+    waitForAnimation(this, () => {
+      this._$element.style.display = 'none';
+      this._emit('minimize');
     });
 
     this._onChange('minimize');
 
-    var wm = OSjs.Core.getWindowManager();
-    var win = wm ? wm.getCurrentWindow() : null;
+    const wm = WindowManager.instance;
+    const win = wm ? wm.getCurrentWindow() : null;
     if ( win && win._wid === this._wid ) {
       wm.setCurrentWindow(null);
     }
@@ -1437,20 +1333,16 @@
     this._updateMarkup();
 
     return true;
-  };
+  }
 
   /**
    * Maximize the Window
-   *
-   * @function _maximize
-   * @memberof OSjs.Core.Window#
    *
    * @param     {Boolean}   [force=false]   Force action
    *
    * @return    {Boolean}     On success
    */
-  Window.prototype._maximize = function(force) {
-    var self = this;
+  _maximize(force) {
 
     if ( !this._properties.allow_maximize || this._destroyed || !this._$element  ) {
       return false;
@@ -1467,7 +1359,7 @@
     this._lastDimension   = {w: this._dimension.w, h: this._dimension.h};
     this._state.maximized = true;
 
-    var s = this._getMaximizedSize();
+    const s = this._getMaximizedSize();
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
     this._$element.style.top    = (s.top) + 'px';
     this._$element.style.left   = (s.left) + 'px';
@@ -1483,8 +1375,8 @@
 
     this._focus();
 
-    waitForAnimation(this, function() {
-      self._emit('maximize');
+    waitForAnimation(this, () => {
+      this._emit('maximize');
     });
 
     this._onChange('maximize');
@@ -1493,40 +1385,36 @@
     this._updateMarkup();
 
     return true;
-  };
+  }
 
   /**
    * Restore the Window
    *
-   * @function _restore
-   * @memberof OSjs.Core.Window#
-   *
    * @param     {Boolean}     max     Revert maximize state
    * @param     {Boolean}     min     Revert minimize state
    */
-  Window.prototype._restore = function(max, min) {
-    var self = this;
+  _restore(max, min) {
 
     if ( !this._$element || this._destroyed  ) {
       return;
     }
 
-    function restoreMaximized() {
-      if ( max && self._state.maximized ) {
-        self._move(self._lastPosition.x, self._lastPosition.y);
-        self._resize(self._lastDimension.w, self._lastDimension.h);
-        self._state.maximized = false;
-        self._$element.setAttribute('data-maximized', 'false');
+    const restoreMaximized = () => {
+      if ( max && this._state.maximized ) {
+        this._move(this._lastPosition.x, this._lastPosition.y);
+        this._resize(this._lastDimension.w, this._lastDimension.h);
+        this._state.maximized = false;
+        this._$element.setAttribute('data-maximized', 'false');
       }
-    }
+    };
 
-    function restoreMinimized() {
-      if ( min && self._state.minimized ) {
-        self._$element.style.display = 'block';
-        self._$element.setAttribute('data-minimized', 'false');
-        self._state.minimized = false;
+    const restoreMinimized = () => {
+      if ( min && this._state.minimized ) {
+        this._$element.style.display = 'block';
+        this._$element.setAttribute('data-minimized', 'false');
+        this._state.minimized = false;
       }
-    }
+    };
 
     console.debug(this._name, '>', 'Window::_restore()');
 
@@ -1536,8 +1424,8 @@
     restoreMaximized();
     restoreMinimized();
 
-    waitForAnimation(this, function() {
-      self._emit('restore');
+    waitForAnimation(this, () => {
+      this._emit('restore');
     });
 
     this._onChange('restore');
@@ -1546,19 +1434,16 @@
     this._focus();
 
     this._updateMarkup();
-  };
+  }
 
   /**
    * Focus the window
-   *
-   * @function _focus
-   * @memberof OSjs.Core.Window#
    *
    * @param   {Boolean}     force     Forces focus
    *
    * @return  {Boolean}               On success
    */
-  Window.prototype._focus = function(force) {
+  _focus(force) {
     if ( !this._$element || this._destroyed ) {
       return false;
     }
@@ -1568,8 +1453,8 @@
     this._$element.style.zIndex = getNextZindex(this._state.ontop);
     this._$element.setAttribute('data-focused', 'true');
 
-    var wm = OSjs.Core.getWindowManager();
-    var win = wm ? wm.getCurrentWindow() : null;
+    const wm = WindowManager.instance;
+    const win = wm ? wm.getCurrentWindow() : null;
     if ( win && win._wid !== this._wid ) {
       win._blur();
     }
@@ -1580,7 +1465,7 @@
     }
 
     if ( !this._state.focused || force) {
-      console.debug(this._name, '>', 'Window::_focus()');
+      //console.debug(this._name, '>', 'Window::_focus()');
       this._onChange('focus');
       this._emit('focus');
     }
@@ -1590,24 +1475,21 @@
     this._updateMarkup();
 
     return true;
-  };
+  }
 
   /**
    * Blur the window
-   *
-   * @function _blur
-   * @memberof OSjs.Core.Window#
    *
    * @param   {Boolean}     force     Forces blur
    *
    * @return  {Boolean}               On success
    */
-  Window.prototype._blur = function(force) {
+  _blur(force) {
     if ( !this._$element || this._destroyed || (!force && !this._state.focused) ) {
       return false;
     }
 
-    console.debug(this._name, '>', 'Window::_blur()');
+    //console.debug(this._name, '>', 'Window::_blur()');
 
     this._$element.setAttribute('data-focused', 'false');
     this._state.focused = false;
@@ -1618,8 +1500,8 @@
     // Force all standard HTML input elements to loose focus
     this._blurGUI();
 
-    var wm = OSjs.Core.getWindowManager();
-    var win = wm ? wm.getCurrentWindow() : null;
+    const wm = WindowManager.instance;
+    const win = wm ? wm.getCurrentWindow() : null;
     if ( win && win._wid === this._wid ) {
       wm.setCurrentWindow(null);
     }
@@ -1627,28 +1509,22 @@
     this._updateMarkup();
 
     return true;
-  };
+  }
 
   /**
    * Blurs the GUI
-   *
-   * @function _blurGUI
-   * @memberof OSjs.Core.Window#
    */
-  Window.prototype._blurGUI = function() {
-    this._$root.querySelectorAll('input, textarea, select, iframe, button').forEach(function(el) {
+  _blurGUI() {
+    this._$root.querySelectorAll('input, textarea, select, iframe, button').forEach((el) => {
       el.blur();
     });
-  };
+  }
 
   /**
    * Resize Window to given size
    *
    * Use this method if you want the window to fit into the viewport and not
    * just set a specific size
-   *
-   * @function _resizeTo
-   * @memberof OSjs.Core.Window#
    *
    * @param   {Number}      dw                   Width
    * @param   {Number}      dh                   Height
@@ -1657,32 +1533,31 @@
    * @param   {Node}        [container=null]     Relative to this container
    * @param   {Boolean}     [force=false]        Force movment
    */
-  Window.prototype._resizeTo = function(dw, dh, limit, move, container, force) {
-    var self = this;
+  _resizeTo(dw, dh, limit, move, container, force) {
     if ( !this._$element || (dw <= 0 || dh <= 0) ) {
       return;
     }
 
     limit = (typeof limit === 'undefined' || limit === true);
 
-    var dx = 0;
-    var dy = 0;
+    let dx = 0;
+    let dy = 0;
 
     if ( container ) {
-      var cpos  = Utils.$position(container, this._$root);
+      const cpos  = DOM.$position(container, this._$root);
       dx = parseInt(cpos.left, 10);
       dy = parseInt(cpos.top, 10);
     }
 
-    var space = this._getMaximizedSize();
-    var cx    = this._position.x + dx;
-    var cy    = this._position.y + dy;
-    var newW  = dw;
-    var newH  = dh;
-    var newX  = null;
-    var newY  = null;
+    const space = this._getMaximizedSize();
+    const cx    = this._position.x + dx;
+    const cy    = this._position.y + dy;
+    let newW  = dw;
+    let newH  = dh;
+    let newX  = null;
+    let newY  = null;
 
-    function _limitTo() {
+    const _limitTo = () => {
       if ( (cx + newW) > space.width ) {
         if ( move ) {
           newW = space.width;
@@ -1699,33 +1574,33 @@
           newH = space.height;
           newY = space.top;
         } else {
-          newH = (space.height - cy + self._$top.offsetHeight) + dy;
+          newH = (space.height - cy + this._$top.offsetHeight) + dy;
         }
       } else {
         newH += dy;
       }
-    }
+    };
 
-    function _moveTo() {
+    const _moveTo = () => {
       if ( newX !== null ) {
-        self._move(newX, self._position.y);
+        this._move(newX, this._position.y);
       }
       if ( newY !== null ) {
-        self._move(self._position.x, newY);
+        this._move(this._position.x, newY);
       }
-    }
+    };
 
-    function _resizeFinished() {
-      var wm = OSjs.Core.getWindowManager();
-      var anim = wm ? wm.getSetting('animations') : false;
+    const _resizeFinished = () => {
+      const wm = WindowManager.instance;
+      const anim = wm ? wm.getSetting('animations') : false;
       if ( anim ) {
-        self._animationCallback = function Window_animationCallback() {
-          self._emit('resized');
+        this._animationCallback = () => {
+          this._emit('resized');
         };
       } else {
-        self._emit('resized');
+        this._emit('resized');
       }
-    }
+    };
 
     if ( limit ) {
       _limitTo();
@@ -1735,52 +1610,31 @@
 
     _moveTo();
     _resizeFinished();
-  };
+  }
 
-  // TODO: Optimize
-  Window.prototype._resize = function(w, h, force) {
-    if ( !this._$element || this._destroyed  ) {
+  _resize(w, h, force) {
+    const p = this._properties;
+    if ( !this._$element || this._destroyed || (!force && !p.allow_resize)  ) {
       return false;
     }
 
-    var p = this._properties;
-
-    if ( !force ) {
-      if ( !p.allow_resize ) {
-        return false;
+    const getNewSize = (n, min, max) => {
+      if ( !isNaN(n) && n ) {
+        n = Math.max(n, min);
+        if ( max !== null ) {
+          n = Math.min(n, max);
+        }
       }
-      (function() {
-        if ( !isNaN(w) && w ) {
-          if ( w < p.min_width ) {
-            w = p.min_width;
-          }
-          if ( p.max_width !== null ) {
-            if ( w > p.max_width ) {
-              w = p.max_width;
-            }
-          }
-        }
-      })();
+      return n;
+    };
 
-      (function() {
-        if ( !isNaN(h) && h ) {
-          if ( h < p.min_height ) {
-            h = p.min_height;
-          }
-          if ( p.max_height !== null ) {
-            if ( h > p.max_height ) {
-              h = p.max_height;
-            }
-          }
-        }
-      })();
-    }
-
+    w = force ? w : getNewSize(w, p.min_width, p.max_width);
     if ( !isNaN(w) && w ) {
       this._$element.style.width = w + 'px';
       this._dimension.w = w;
     }
 
+    h = force ? h : getNewSize(h, p.min_height, p.max_height);
     if ( !isNaN(h) && h ) {
       this._$element.style.height = h + 'px';
       this._dimension.h = h;
@@ -1789,25 +1643,22 @@
     this._onResize();
 
     return true;
-  };
+  }
 
   /**
    * Move window to position
    *
-   * @function _moveTo
-   * @memberof OSjs.Core.Window#
-   *
    * @param   {Object}      pos       Position rectangle
    */
-  Window.prototype._moveTo = function(pos) {
-    var wm = OSjs.Core.getWindowManager();
+  _moveTo(pos) {
+    const wm = WindowManager.instance;
     if ( !wm ) {
       return;
     }
 
-    var s = wm.getWindowSpace();
-    var cx = this._position.x;
-    var cy = this._position.y;
+    const s = wm.getWindowSpace();
+    const cx = this._position.x;
+    const cy = this._position.y;
 
     if ( pos === 'left' ) {
       this._move(s.left, cy);
@@ -1818,20 +1669,17 @@
     } else if ( pos === 'bottom' ) {
       this._move(cx, (s.height - this._dimension.h));
     }
-  };
+  }
 
   /**
    * Move window to position
-   *
-   * @function _move
-   * @memberof OSjs.Core.Window#
    *
    * @param   {Number}       x     X Position
    * @param   {Number}       y     Y Position
    *
    * @return  {Boolean}         On success
    */
-  Window.prototype._move = function(x, y) {
+  _move(x, y) {
     if ( !this._$element || this._destroyed || !this._properties.allow_move  ) {
       return false;
     }
@@ -1846,18 +1694,15 @@
     this._position.y          = y;
 
     return true;
-  };
+  }
 
   /**
    * Toggle disabled overlay
    *
-   * @function _toggleDisabled
-   * @memberof OSjs.Core.Window#
-   *
    * @param     {Boolean}     t       Toggle
    */
-  Window.prototype._toggleDisabled = function(t) {
-    console.debug(this._name, '>', 'Window::_toggleDisabled()', t);
+  _toggleDisabled(t) {
+    //console.debug(this._name, '>', 'Window::_toggleDisabled()', t);
     if ( this._$disabled ) {
       this._$disabled.style.display = t ? 'block' : 'none';
     }
@@ -1865,18 +1710,15 @@
     this._disabled = t ? true : false;
 
     this._updateMarkup();
-  };
+  }
 
   /**
    * Toggle loading overlay
    *
-   * @function _toggleLoading
-   * @memberof OSjs.Core.Window#
-   *
    * @param     {Boolean}     t       Toggle
    */
-  Window.prototype._toggleLoading = function(t) {
-    console.debug(this._name, '>', 'Window::_toggleLoading()', t);
+  _toggleLoading(t) {
+    //console.debug(this._name, '>', 'Window::_toggleLoading()', t);
     if ( this._$loading ) {
       this._$loading.style.display = t ? 'block' : 'none';
     }
@@ -1884,25 +1726,22 @@
     this._loading = t ? true : false;
 
     this._updateMarkup();
-  };
+  }
 
   /**
    * Updates window markup with attributes etc
    *
    * @param {Boolean}   [ui=false]    If action came from UI
-   *
-   * @function _updateMarkup
-   * @memberof OSjs.Core.Window#
    */
-  Window.prototype._updateMarkup = function(ui) {
+  _updateMarkup(ui) {
     if ( !this._$element ) {
       return;
     }
 
-    var t = this._loading || this._disabled;
-    var d = this._disabled;
-    var h = this._state.minimized;
-    var f = !this._state.focused;
+    const t = this._loading || this._disabled;
+    const d = this._disabled;
+    const h = this._state.minimized;
+    const f = !this._state.focused;
 
     this._$element.setAttribute('aria-busy', String(t));
     this._$element.setAttribute('aria-hidden', String(h));
@@ -1913,73 +1752,66 @@
       return;
     }
 
-    var dmax   = this._properties.allow_maximize === true ? 'inline-block' : 'none';
-    var dmin   = this._properties.allow_minimize === true ? 'inline-block' : 'none';
-    var dclose = this._properties.allow_close === true ? 'inline-block' : 'none';
+    const dmax   = this._properties.allow_maximize === true ? 'inline-block' : 'none';
+    const dmin   = this._properties.allow_minimize === true ? 'inline-block' : 'none';
+    const dclose = this._properties.allow_close === true ? 'inline-block' : 'none';
 
     this._$top.querySelector('application-window-button-maximize').style.display = dmax;
     this._$top.querySelector('application-window-button-minimize').style.display = dmin;
     this._$top.querySelector('application-window-button-close').style.display = dclose;
 
-    var dres   = this._properties.allow_resize === true;
+    const dres   = this._properties.allow_resize === true;
 
     this._$element.setAttribute('data-allow-resize', String(dres));
-  };
+  }
 
   /**
    * Toggle attention
-   *
-   * @function _toggleAttentionBlink
-   * @memberof OSjs.Core.Window#
    *
    * @param     {Boolean}     t       Toggle
    *
    * @return {Boolean} If activated
    */
-  Window.prototype._toggleAttentionBlink = function(t) {
+  _toggleAttentionBlink(t) {
     if ( !this._$element || this._destroyed || this._state.focused ) {
       return false;
     }
 
-    var el     = this._$element;
-    var self   = this;
+    const el = this._$element;
 
-    function _blink(stat) {
+    const _blink = (stat) => {
       if ( el ) {
         if ( stat ) {
-          Utils.$addClass(el, 'WindowAttentionBlink');
+          DOM.$addClass(el, 'WindowAttentionBlink');
         } else {
-          Utils.$removeClass(el, 'WindowAttentionBlink');
+          DOM.$removeClass(el, 'WindowAttentionBlink');
         }
       }
-      self._onChange(stat ? 'attention_on' : 'attention_off');
-    }
+      this._onChange(stat ? 'attention_on' : 'attention_off');
+    };
 
     _blink(t);
 
     return true;
-  };
+  }
 
   /**
-   * Check next Tab (cycle GUIElement)
-   *
-   * @function _nextTabIndex
-   * @memberof OSjs.Core.Window#
+   * Check next Tab (cycle Element)
    *
    * @param   {Event}     ev            DOM Event
    */
-  Window.prototype._nextTabIndex = function(ev) {
-    var nextElement = OSjs.GUI.Helpers.getNextElement(ev.shiftKey, document.activeElement, this._$root);
+  _nextTabIndex(ev) {
+    const nextElement = GUI.getNextElement(ev.shiftKey, document.activeElement, this._$root);
     if ( nextElement ) {
-      if ( Utils.$hasClass(nextElement, 'gui-data-view') ) {
-        OSjs.GUI.Element.createFromNode(nextElement).focus();
+      if ( DOM.$hasClass(nextElement, 'gui-data-view') ) {
+        Element.createFromNode(nextElement).focus();
       } else {
         try {
           nextElement.focus();
         } catch ( e ) {}
       }
     }
-  };
+  }
 
   //
   // Events
@@ -1987,9 +1819,6 @@
 
   /**
    * On Drag-and-drop event
-   *
-   * @function _onDndEvent
-   * @memberof OSjs.Core.Window#
    *
    * @param   {Event}     ev        DOM Event
    * @param   {String}    type      DnD type
@@ -1999,7 +1828,7 @@
    *
    * @return  {Boolean} On success
    */
-  Window.prototype._onDndEvent = function(ev, type, item, args, el) {
+  _onDndEvent(ev, type, item, args, el) {
     if ( this._disabled || this._destroyed ) {
       return false;
     }
@@ -2012,161 +1841,147 @@
       if ( type === 'filesDrop' ) {
         this._emit('drop:upload', [ev, item, args, el]);
       } else if ( type === 'itemDrop' && item.type === 'file' && item.data ) {
-        this._emit('drop:file', [ev, new OSjs.VFS.File(item.data || {}), args, el]);
+        this._emit('drop:file', [ev, new FileMetadata(item.data || {}), args, el]);
       }
     }
 
     return true;
-  };
+  }
 
   /**
    * On Key event
-   *
-   * @function _onKeyEvent
-   * @memberof OSjs.Core.Window#
    *
    * @param   {Event}      ev        DOM Event
    * @param   {String}     type      Key type
    *
    * @return {Boolean} If triggered
    */
-  Window.prototype._onKeyEvent = function(ev, type) {
+  _onKeyEvent(ev, type) {
     if ( this._destroyed || !this._state.focused) {
       return false;
     }
 
-    if ( type === 'keydown' && ev.keyCode === Utils.Keys.TAB ) {
+    if ( type === 'keydown' && ev.keyCode === Keycodes.TAB ) {
       this._nextTabIndex(ev);
     }
 
     this._emit(type, [ev, ev.keyCode, ev.shiftKey, ev.ctrlKey, ev.altKey]);
 
     return true;
-  };
+  }
 
   /**
    * On Window resized
-   *
-   * @function _onResize
-   * @memberof OSjs.Core.Window#
    */
-  Window.prototype._onResize = function() {
+  _onResize() {
     clearTimeout(this._queryTimer);
 
-    var self = this;
-    this._queryTimer = setTimeout(function() {
-      checkMediaQueries(self);
-      self._queryTimer = clearTimeout(self._queryTimer);
+    this._queryTimer = setTimeout(() => {
+      checkMediaQueries(this);
+      this._queryTimer = clearTimeout(this._queryTimer);
     }, 20);
-  };
+  }
 
   /**
    * On Window Icon Click
    *
-   * @function _onResize
-   * @memberof OSjs.Core.Window#
-   *
    * @param   {Event}   ev        DOM Event
    * @param   {Node}    el        DOM Element
    */
-  Window.prototype._onWindowIconClick = function(ev, el) {
+  _onWindowIconClick(ev, el) {
     if ( !this._properties.allow_iconmenu || this._destroyed  ) {
       return;
     }
 
     console.debug(this._name, '>', 'Window::_onWindowIconClick()');
 
-    var self = this;
-    var control = [
-      [this._properties.allow_minimize, function() {
+    const control = [
+      [this._properties.allow_minimize, () => {
         return {
-          title: API._('WINDOW_MINIMIZE'),
-          icon: API.getIcon('actions/go-up.png'),
-          onClick: function(name, iter) {
-            self._minimize();
+          title: _('WINDOW_MINIMIZE'),
+          icon: Theme.getIcon('actions/go-up.png'),
+          onClick: (name, iter) => {
+            this._minimize();
           }
         };
       }],
-      [this._properties.allow_maximize, function() {
+      [this._properties.allow_maximize, () => {
         return {
-          title: API._('WINDOW_MAXIMIZE'),
-          icon: API.getIcon('actions/view-fullscreen.png'),
-          onClick: function(name, iter) {
-            self._maximize();
-            self._focus();
+          title: _('WINDOW_MAXIMIZE'),
+          icon: Theme.getIcon('actions/view-fullscreen.png'),
+          onClick: (name, iter) => {
+            this._maximize();
+            this._focus();
           }
         };
       }],
-      [this._state.maximized, function() {
+      [this._state.maximized, () => {
         return {
-          title: API._('WINDOW_RESTORE'),
-          icon: API.getIcon('actions/view-restore.png'),
-          onClick: function(name, iter) {
-            self._restore();
-            self._focus();
+          title: _('WINDOW_RESTORE'),
+          icon: Theme.getIcon('actions/view-restore.png'),
+          onClick: (name, iter) => {
+            this._restore();
+            this._focus();
           }
         };
       }],
-      [this._properties.allow_ontop, function() {
-        if ( self._state.ontop ) {
+      [this._properties.allow_ontop, () => {
+        if ( this._state.ontop ) {
           return {
-            title: API._('WINDOW_ONTOP_OFF'),
-            icon: API.getIcon('actions/window-new.png'),
-            onClick: function(name, iter) {
-              self._state.ontop = false;
-              if ( self._$element ) {
-                self._$element.style.zIndex = getNextZindex(false);
+            title: _('WINDOW_ONTOP_OFF'),
+            icon: Theme.getIcon('actions/window-new.png'),
+            onClick: (name, iter) => {
+              this._state.ontop = false;
+              if ( this._$element ) {
+                this._$element.style.zIndex = getNextZindex(false);
               }
-              self._focus();
+              this._focus();
             }
           };
         }
 
         return {
-          title: API._('WINDOW_ONTOP_ON'),
-          icon: API.getIcon('actions/window-new.png'),
-          onClick: function(name, iter) {
-            self._state.ontop = true;
-            if ( self._$element ) {
-              self._$element.style.zIndex = getNextZindex(true);
+          title: _('WINDOW_ONTOP_ON'),
+          icon: Theme.getIcon('actions/window-new.png'),
+          onClick: (name, iter) => {
+            this._state.ontop = true;
+            if ( this._$element ) {
+              this._$element.style.zIndex = getNextZindex(true);
             }
-            self._focus();
+            this._focus();
           }
         };
       }],
-      [this._properties.allow_close, function() {
+      [this._properties.allow_close, () => {
         return {
-          title: API._('WINDOW_CLOSE'),
-          icon: API.getIcon('actions/window-close.png'),
-          onClick: function(name, iter) {
-            self._close();
+          title: _('WINDOW_CLOSE'),
+          icon: Theme.getIcon('actions/window-close.png'),
+          onClick: (name, iter) => {
+            this._close();
           }
         };
       }]
     ];
 
-    var list = [];
-    control.forEach(function(iter) {
+    const list = [];
+    control.forEach((iter) => {
       if (iter[0] ) {
         list.push(iter[1]());
       }
     });
 
-    OSjs.API.createMenu(list, ev);
-  };
+    Menu.create(list, ev);
+  }
 
   /**
    * On Window Button Click
-   *
-   * @function _onWindowButtonClick
-   * @memberof OSjs.Core.Window#
    *
    * @param   {Event}   ev        DOM Event
    * @param   {Node}    el        DOM Element
    * @param   {String}  btn       Button name
    */
-  Window.prototype._onWindowButtonClick = function(ev, el, btn) {
-    console.debug(this._name, '>', 'Window::_onWindowButtonClick()', btn);
+  _onWindowButtonClick(ev, el, btn) {
+    //console.debug(this._name, '>', 'Window::_onWindowButtonClick()', btn);
 
     this._blurGUI();
 
@@ -2177,27 +1992,24 @@
     } else if ( btn === 'maximize' ) {
       this._maximize();
     }
-  };
+  }
 
   /**
    * On Window has changed
    *
-   * @function _onChange
-   * @memberof OSjs.Core.Window#
-   *
    * @param   {Event}     ev        DOM Event
    * @param   {Boolean}   byUser    Performed by user?
    */
-  Window.prototype._onChange = function(ev, byUser) {
+  _onChange(ev, byUser) {
     ev = ev || '';
     if ( ev ) {
-      console.debug(this._name, '>', 'Window::_onChange()', ev);
-      var wm = OSjs.Core.getWindowManager();
+      //console.debug(this._name, '>', 'Window::_onChange()', ev);
+      const wm = WindowManager.instance;
       if ( wm ) {
         wm.eventWindow(ev, this);
       }
     }
-  };
+  }
 
   //
   // Getters
@@ -2206,27 +2018,21 @@
   /**
    * Get Window maximized size
    *
-   * @function _getMaximizedSize
-   * @memberof OSjs.Core.Window#
-   *
    * @return    {Object}      Size in rectangle
    */
-  Window.prototype._getMaximizedSize = function() {
-    var s = getWindowSpace();
+  _getMaximizedSize() {
+    const s = getWindowSpace();
     if ( !this._$element || this._destroyed ) {
       return s;
     }
 
-    var topMargin = 23;
-    var borderSize = 0;
+    let topMargin = 23;
+    let borderSize = 0;
 
-    var wm = OSjs.Core.getWindowManager();
-    if ( wm ) {
-      var theme = wm.getStyleTheme(true, true);
-      if ( theme && theme.style && theme.style.window ) {
-        topMargin = theme.style.window.margin;
-        borderSize = theme.style.window.border;
-      }
+    const theme = Theme.getStyleTheme(true, true);
+    if ( theme && theme.style && theme.style.window ) {
+      topMargin = theme.style.window.margin;
+      borderSize = theme.style.window.border;
     }
 
     s.left += borderSize;
@@ -2235,66 +2041,61 @@
     s.height -= topMargin + (borderSize * 2);
 
     return Object.freeze(s);
-  };
+  }
 
   /**
    * Get Window position in DOM
-   *
-   * @function _getViewRect
-   * @memberof OSjs.Core.Window#
-   * @see OSjs.Utils.position
    * @return {Object}
    */
-  Window.prototype._getViewRect = function() {
-    return this._$element ? Object.freeze(Utils.$position(this._$element)) : null;
-  };
+  _getViewRect() {
+    return this._$element ? Object.freeze(DOM.$position(this._$element)) : null;
+  }
 
   /**
    * Get Window main DOM element
    *
-   * @function _getRoot
-   * @memberof OSjs.Core.Window#
-   *
    * @return  {Node}
    */
-  Window.prototype._getRoot = function() {
+  _getRoot() {
     return this._$root;
-  };
+  }
 
   /**
    * Get Window z-index
    *
-   * @function _getZindex
-   * @memberof OSjs.Core.Window#
-   *
    * @return    {Number}
    */
-  Window.prototype._getZindex = function() {
+  _getZindex() {
     if ( this._$element ) {
       return parseInt(this._$element.style.zIndex, 10);
     }
     return -1;
-  };
+  }
+
+  /**
+   * Get the title
+   * @return {String}
+   */
+  _getTitle() {
+    return this._title;
+  }
 
   /**
    * Set Window title
-   *
-   * @function _setTitle
-   * @memberof OSjs.Core.Window#
    *
    * @param   {String}      t           Title
    * @param   {Boolean}     [append]    Append this to original title
    * @param   {String}      [delimiter] The delimiter (default is -)
    */
-  Window.prototype._setTitle = function(t, append, delimiter) {
+  _setTitle(t, append, delimiter) {
     if ( !this._$element || this._destroyed ) {
       return;
     }
 
     delimiter = delimiter || '-';
 
-    var tel = this._$element.getElementsByTagName('application-window-title')[0];
-    var text = [];
+    const tel = this._$element.getElementsByTagName('application-window-title')[0];
+    let text = [];
     if ( append ) {
       text = [this._origtitle, delimiter, t];
     } else {
@@ -2304,24 +2105,21 @@
     this._title = text.join(' ') || this._origtitle;
 
     if ( tel ) {
-      Utils.$empty(tel);
+      DOM.$empty(tel);
       tel.appendChild(document.createTextNode(this._title));
     }
 
     this._onChange('title');
 
     this._updateMarkup();
-  };
+  }
 
   /**
    * Set Windoc icon
    *
-   * @function _setIcon
-   * @memberof OSjs.Core.Window#
-   *
    * @param   {String}      i     Icon path
    */
-  Window.prototype._setIcon = function(i) {
+  _setIcon(i) {
     if ( this._$winicon ) {
       this._$winicon.title = this._title;
       this._$winicon.style.backgroundImage = 'url(' + i + ')';
@@ -2329,20 +2127,15 @@
 
     this._icon = i;
     this._onChange('icon');
-  };
+  }
 
   /**
    * Set Window warning message (Displays as a popup inside window)
    *
-   * @function _setWarning
-   * @memberof OSjs.Core.Window#
-   *
    * @param   {String}      message       Warning message
    */
-  Window.prototype._setWarning = function(message) {
-    var self = this;
-
-    this._$warning = Utils.$remove(this._$warning);
+  _setWarning(message) {
+    this._$warning = DOM.$remove(this._$warning);
 
     if ( this._destroyed || message === null ) {
       return;
@@ -2350,33 +2143,30 @@
 
     message = message || '';
 
-    var container = document.createElement('application-window-warning');
+    let container = document.createElement('application-window-warning');
 
-    var close = document.createElement('div');
+    let close = document.createElement('div');
     close.innerHTML = 'X';
-    Utils.$bind(close, 'click', function() {
-      self._setWarning(null);
+    Events.$bind(close, 'click', () => {
+      this._setWarning(null);
     });
 
-    var msg = document.createElement('div');
+    let msg = document.createElement('div');
     msg.appendChild(document.createTextNode(message));
 
     container.appendChild(close);
     container.appendChild(msg);
     this._$warning = container;
     this._$root.appendChild(this._$warning);
-  };
+  }
 
   /**
    * Set a window property
    *
-   * @function _setProperty
-   * @memberof OSjs.Core.Window#
-   *
    * @param   {String}    p     Key
    * @param   {String}    v     Value
    */
-  Window.prototype._setProperty = function(p, v) {
+  _setProperty(p, v) {
     if ( (v === '' || v === null) || !this._$element || (typeof this._properties[p] === 'undefined') ) {
       return;
     }
@@ -2384,12 +2174,6 @@
     this._properties[p] = String(v) === 'true';
 
     this._updateMarkup(true);
-  };
+  }
+}
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Core.Window = Object.seal(Window);
-
-})(OSjs.Utils, OSjs.API, OSjs.GUI, OSjs.Core.Process);

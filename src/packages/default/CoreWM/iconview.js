@@ -29,28 +29,40 @@
  */
 
 /*eslint valid-jsdoc: "off"*/
-(function(WindowManager, Window, GUI, Utils, API, VFS) {
-  'use strict';
+import Translations from './locales';
 
-  // TODO: Redo this because of new API
+const _ = OSjs.require('core/locales').createLocalizer(Translations);
+const FS = OSjs.require('utils/fs');
+const Menu = OSjs.require('gui/menu');
+const DOM = OSjs.require('utils/dom');
+const GUI = OSjs.require('utils/gui');
+const VFS = OSjs.require('vfs/fs');
+const Process = OSjs.require('core/process');
+const Theme = OSjs.require('core/theme');
+const Dialog = OSjs.require('core/dialog');
+const FileMetadata = OSjs.require('vfs/file');
+const MountManager = OSjs.require('core/mount-manager');
+const GUIElement = OSjs.require('gui/element');
+const WindowManager = OSjs.require('core/window-manager');
 
-  function createCreateDialog(title, dir, cb) {
-    API.createDialog('Input', {
-      value: title,
-      message: OSjs.Applications.CoreWM._('Create in {0}', dir)
-    }, function(ev, button, result) {
-      if ( result ) {
-        cb(new VFS.File(Utils.pathJoin(dir, result)));
-      }
-    });
-  }
+function createCreateDialog(title, dir, cb) {
+  Dialog.create('Input', {
+    value: title,
+    message: _('Create in {0}', dir)
+  }, function(ev, button, result) {
+    if ( result ) {
+      cb(new FileMetadata(FS.pathJoin(dir, result)));
+    }
+  });
+}
 
-  /////////////////////////////////////////////////////////////////////////////
-  // SHORTCUT DIALOG
-  /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// SHORTCUT DIALOG
+/////////////////////////////////////////////////////////////////////////////
 
-  function IconViewShortcutDialog(item, scheme, closeCallback) {
-    Window.apply(this, ['IconViewShortcutDialog', {
+class IconViewShortcutDialog extends Dialog {
+  constructor(item, scheme, closeCallback) {
+    super('IconViewShortcutDialog', {
       title: 'Edit Launcher',
       icon: 'status/appointment-soon.png',
       width: 400,
@@ -58,63 +70,62 @@
       allow_maximize: false,
       allow_resize: false,
       allow_minimize: false
-    }, null, scheme]);
+    }, () => {});
 
+    this.scheme = scheme;
     this.values = {
       path: item.path,
       filename: item.filename,
       args: item.args || {}
     };
+
     this.cb = closeCallback || function() {};
   }
 
-  IconViewShortcutDialog.prototype = Object.create(Window.prototype);
-  IconViewShortcutDialog.constructor = Window;
+  init(wm, app) {
+    const root = super.init(...arguments);
 
-  IconViewShortcutDialog.prototype.init = function(wm, app) {
-    var self = this;
-    var root = Window.prototype.init.apply(this, arguments);
-
-    this._render(this._name);
+    this._render(this._name, this.scheme);
 
     this._find('InputShortcutLaunch').set('value', this.values.path);
     this._find('InputShortcutLabel').set('value', this.values.filename);
     this._find('InputTooltipFormatString').set('value', JSON.stringify(this.values.args || {}));
 
-    this._find('ButtonApply').on('click', function() {
-      self.applySettings();
-      self._close('ok');
+    this._find('ButtonApply').on('click', () => {
+      this.applySettings();
+      this._close('ok');
     });
 
-    this._find('ButtonCancel').on('click', function() {
-      self._close();
+    this._find('ButtonCancel').on('click', () => {
+      this._close();
     });
 
     return root;
-  };
+  }
 
-  IconViewShortcutDialog.prototype.applySettings = function() {
+  applySettings() {
     this.values.path = this._find('InputShortcutLaunch').get('value');
     this.values.filename = this._find('InputShortcutLabel').get('value');
     this.values.args = JSON.parse(this._find('InputTooltipFormatString').get('value') || {});
-  };
+  }
 
-  IconViewShortcutDialog.prototype._close = function(button) {
+  _close(button) {
     this.cb(button, this.values);
-    return Window.prototype._close.apply(this, arguments);
-  };
+    return super._close(...arguments);
+  }
+}
 
-  IconViewShortcutDialog.prototype._destroy = function() {
-    return Window.prototype._destroy.apply(this, arguments);
-  };
+/////////////////////////////////////////////////////////////////////////////
+// ICON VIEW
+/////////////////////////////////////////////////////////////////////////////
 
-  /////////////////////////////////////////////////////////////////////////////
-  // ICON VIEW
-  /////////////////////////////////////////////////////////////////////////////
+/**
+ * FIXME: This can now be remade into extending the GUI IconView base class
+ * FIXME: Implement the grid desktopview I made in Jan
+ */
+export default class DesktopIconView {
 
-  function DesktopIconView(wm) {
-    var self = this;
-
+  constructor(wm) {
     this.dialog = null;
     this.$iconview = null;
     this.$element = document.createElement('gui-icon-view');
@@ -124,7 +135,7 @@
     this.shortcutCache = [];
     this.refreshTimeout = null;
 
-    GUI.Helpers.createDroppable(this.$element, {
+    GUI.createDroppable(this.$element, {
       onOver: function(ev, el, args) {
         wm.onDropOver(ev, el, args);
       },
@@ -146,36 +157,35 @@
       }
     });
 
-    this.$iconview = GUI.Element.createFromNode(this.$element);
+    this.$iconview = GUIElement.createFromNode(this.$element);
     this.$iconview.build();
 
-    this.$iconview.on('select', function() {
+    this.$iconview.on('select', () => {
       if ( wm ) {
-        var win = wm.getCurrentWindow();
+        const win = wm.getCurrentWindow();
         if ( win ) {
           win._blur();
         }
       }
-
-    }).on('activate', function(ev) {
+    }).on('activate', (ev) => {
       if ( ev && ev.detail ) {
-        ev.detail.entries.forEach(function(entry) {
-          var item = entry.data;
-          var file = new VFS.File(item);
-          API.open(file, item.args);
+        ev.detail.entries.forEach((entry) => {
+          const item = entry.data;
+          const file = new FileMetadata(item);
+          Process.createFromFile(file, item.args);
         });
       }
-    }).on('contextmenu', function(ev) {
+    }).on('contextmenu', (ev) => {
       if ( ev && ev.detail && ev.detail.entries ) {
-        self.createContextMenu(ev.detail.entries[0], ev);
+        this.createContextMenu(ev.detail.entries[0], ev);
       }
     });
 
     this._refresh();
   }
 
-  DesktopIconView.prototype.destroy = function() {
-    Utils.$remove(this.$element);
+  destroy() {
+    DOM.$remove(this.$element);
     this.refreshTimeout = clearTimeout(this.refreshTimeout);
     this.$element = null;
     this.$iconview = null;
@@ -186,20 +196,20 @@
     this.dialog = null;
 
     this.shortcutCache = [];
-  };
+  }
 
-  DesktopIconView.prototype.blur = function() {
-    var cel = GUI.Element.createFromNode(this.$element);
+  blur() {
+    const cel = GUIElement.createFromNode(this.$element);
     cel.set('value', null);
-  };
+  }
 
-  DesktopIconView.prototype.getRoot = function() {
+  getRoot() {
     return this.$element;
-  };
+  }
 
-  DesktopIconView.prototype.resize = function(wm) {
-    var el = this.getRoot();
-    var s  = wm.getWindowSpace();
+  resize(wm) {
+    const el = this.getRoot();
+    const s  = wm.getWindowSpace();
 
     if ( el ) {
       el.style.top    = (s.top) + 'px';
@@ -207,33 +217,31 @@
       el.style.width  = (s.width) + 'px';
       el.style.height = (s.height) + 'px';
     }
-  };
+  }
 
-  DesktopIconView.prototype._refresh = function(wm) {
-    var self = this;
-
-    var desktopPath = OSjs.Core.getWindowManager().getSetting('desktopPath');
-    var shortcutPath = Utils.pathJoin(desktopPath, '.shortcuts.json');
+  _refresh(wm) {
+    const desktopPath = WindowManager.instance.getSetting('desktopPath');
+    const shortcutPath = FS.pathJoin(desktopPath, '.shortcuts.json');
 
     this.shortcutCache = [];
 
     this.refreshTimeout = clearTimeout(this.refreshTimeout);
-    this.refreshTimeout = setTimeout(function() {
-      VFS.scandir(desktopPath, function(error, result) {
-        if ( self.$iconview && !error ) {
-          self.$iconview.clear().add(result.map(function(iter) {
+    this.refreshTimeout = setTimeout(() => {
+      VFS.scandir(desktopPath, {backlink: false}).then((result) => {
+        if ( this.$iconview ) {
+          const entries = result.map((iter) => {
             if ( iter.type === 'application' || iter.shortcut === true ) {
-              var niter = new VFS.File(iter);
+              const niter = new FileMetadata(iter);
               niter.shortcut = true;
 
-              var idx = self.shortcutCache.push(niter) - 1;
+              const idx = this.shortcutCache.push(niter) - 1;
 
-              var file = new VFS.File(iter);
+              const file = new FileMetadata(iter);
               file.__index = idx;
 
               return {
                 _type: iter.type,
-                icon: API.getFileIcon(iter, '32x32'),
+                icon: Theme.getFileIcon(iter, '32x32'),
                 label: iter.filename,
                 value: file,
                 args: iter.args || {}
@@ -242,36 +250,37 @@
 
             return {
               _type: 'vfs',
-              icon: API.getFileIcon(iter, '32x32'),
+              icon: Theme.getFileIcon(iter, '32x32'),
               label: iter.filename,
               value: iter
             };
 
           }).filter(function(iter) {
             return iter.value.path !== shortcutPath;
-          }));
+          });
+
+          this.$iconview.clear().add(entries);
         }
       });
     }, 150);
-  };
+  }
 
-  DesktopIconView.prototype._save = function(refresh) {
-    var desktopPath = OSjs.Core.getWindowManager().getSetting('desktopPath');
-    var path = Utils.pathJoin(desktopPath, '.shortcuts.json');
-    var cache = this.shortcutCache;
-    var self = this;
+  _save(refresh) {
+    const desktopPath = WindowManager.instance.getSetting('desktopPath');
+    const path = FS.pathJoin(desktopPath, '.shortcuts.json');
+    const cache = this.shortcutCache;
 
-    VFS.mkdir(Utils.dirname(path), function(err) {
-      VFS.write(path, JSON.stringify(cache, null, 4), function(e, r) {
+    VFS.mkdir(FS.dirname(path)).finally(() => {
+      VFS.write(path, JSON.stringify(cache, null, 4)).then(() => {
         if ( refresh ) { // Normally caught by VFS message in main.js
-          self._refresh();
+          this._refresh();
         }
       });
     });
-  };
+  }
 
-  DesktopIconView.prototype.updateShortcut = function(data, values) {
-    var o = this.shortcutCache[data.__index];
+  updateShortcut(data, values) {
+    const o = this.shortcutCache[data.__index];
     if ( o.path === data.path ) {
       Object.keys(values).forEach(function(k) {
         o[k] = values[k];
@@ -279,11 +288,11 @@
 
       this._save(true);
     }
-  };
+  }
 
-  DesktopIconView.prototype.getShortcutByPath = function(path) {
-    var found = null;
-    var index = -1;
+  getShortcutByPath(path) {
+    let found = null;
+    let index = -1;
 
     this.shortcutCache.forEach(function(i, idx) {
       if ( !found ) {
@@ -295,9 +304,9 @@
     });
 
     return {item: found, index: index};
-  };
+  }
 
-  DesktopIconView.prototype.addShortcut = function(data, wm, save) {
+  addShortcut(data, wm, save) {
     (['icon']).forEach(function(k) {
       if ( data[k] ) {
         delete data[k];
@@ -311,52 +320,46 @@
     data.shortcut = true;
     this.shortcutCache.push(data);
     this._save(true);
-  };
+  }
 
-  DesktopIconView.prototype.removeShortcut = function(data) {
-    var o = this.shortcutCache[data.__index];
+  removeShortcut(data) {
+    const o = this.shortcutCache[data.__index];
     if ( o && o.path === data.path ) {
       this.shortcutCache.splice(data.__index, 1);
       this._save(true);
     }
-  };
+  }
 
-  DesktopIconView.prototype._getContextMenu = function(item) {
-    var self = this;
-    var mm = OSjs.Core.getMountManager();
-    var desktopPath = OSjs.Core.getWindowManager().getSetting('desktopPath');
-    var menu = [
+  _getContextMenu(item) {
+    const desktopPath = WindowManager.instance.getSetting('desktopPath');
+    const menu = [
       {
-        title: API._('LBL_UPLOAD'),
-        onClick: function() {
-          API.createDialog('FileUpload', {
+        title: _('LBL_UPLOAD'),
+        onClick: () => {
+          Dialog.create('FileUpload', {
             dest: desktopPath
-          }, function() {
-            self._refresh();
+          }, () => {
+            this._refresh();
           });
         }
       },
       {
-        title: API._('LBL_CREATE'),
+        title: _('LBL_CREATE'),
         menu: [{
-          title: API._('LBL_FILE'),
-          onClick: function() {
-            createCreateDialog('New file', desktopPath, function(f) {
-              VFS.write(f, '', function(err) {
-                if ( err ) {
-                  API.error('CoreWM', API._('ERR_VFSMODULE_MKFILE'), err);
-                }
+          title: _('LBL_FILE'),
+          onClick: () => {
+            createCreateDialog('New file', desktopPath, (f) => {
+              VFS.write(f, '').catch((err) => {
+                OSjs.error('CoreWM', _('ERR_VFSMODULE_MKFILE'), err);
               });
             });
           }
         }, {
-          title: API._('LBL_DIRECTORY'),
-          onClick: function() {
-            createCreateDialog('New directory', desktopPath, function(f) {
-              VFS.mkdir(f, function(err) {
-                if ( err ) {
-                  API.error('CoreWM', API._('ERR_VFSMODULE_MKDIR'), err);
-                }
+          title: _('LBL_DIRECTORY'),
+          onClick: () => {
+            createCreateDialog('New directory', desktopPath, (f) => {
+              VFS.mkdir(f).catch((err) => {
+                OSjs.error('CoreWM', _('ERR_VFSMODULE_MKDIR'), err);
               });
             });
           }
@@ -365,69 +368,53 @@
     ];
 
     if ( item && item.data ) {
-      var file = item.data;
+      const file = item.data;
 
       if ( file.type === 'application' ) {
         menu.push({
-          title: OSjs.Applications.CoreWM._('Edit shortcut'),
-          onClick: function() {
-            self.openShortcutEdit(file);
-          }
+          title: _('Edit shortcut'),
+          onClick: () => this.openShortcutEdit(file)
         });
       }
 
-      if ( mm.getRootFromPath(file.path) !== desktopPath  ) {
+      const m = MountManager.getModuleFromPath(file.path);
+      if ( !m || m.option('root') !== desktopPath  ) {
         menu.push({
-          title: OSjs.Applications.CoreWM._('Remove shortcut'),
-          onClick: function() {
-            self.removeShortcut(file);
-          }
+          title: _('Remove shortcut'),
+          onClick: () => this.removeShortcut(file)
         });
       } else {
         menu.push({
-          title: API._('LBL_DELETE'),
-          onClick: function() {
-            VFS.unlink(file, function() {
-              //self._refresh(); // Caught by VFS message in main.js
-            });
-          }
+          title: _('LBL_DELETE'),
+          onClick: () =>VFS.unlink(file) // Caught by VFS message in main.js
         });
       }
     }
 
     return menu;
-  };
+  }
 
-  DesktopIconView.prototype.createContextMenu = function(item, ev) {
-    var wm = OSjs.Core.getWindowManager();
-    var menu = wm._getContextMenu(item);
-    API.createMenu(menu, ev);
-  };
+  createContextMenu(item, ev) {
+    const wm = WindowManager.instance;
+    const menu = wm._getContextMenu(item);
+    Menu.create(menu, ev);
+  }
 
-  DesktopIconView.prototype.openShortcutEdit = function(item) {
+  openShortcutEdit(item) {
     if ( this.dialog ) {
       this.dialog._close();
     }
 
-    var self = this;
-    var wm = OSjs.Core.getWindowManager();
+    const wm = WindowManager.instance;
 
-    this.dialog = new IconViewShortcutDialog(item, wm._scheme, function(button, values) {
+    this.dialog = new IconViewShortcutDialog(item, wm._scheme, (button, values) => {
       if ( button === 'ok' ) {
-        self.updateShortcut(item, values);
+        this.updateShortcut(item, values);
       }
-      self.dialog = null;
+      this.dialog = null;
     });
 
     wm.addWindow(this.dialog, true);
-  };
+  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Applications                          = OSjs.Applications || {};
-  OSjs.Applications.CoreWM                   = OSjs.Applications.CoreWM || {};
-  OSjs.Applications.CoreWM.DesktopIconView   = DesktopIconView;
-
-})(OSjs.Core.WindowManager, OSjs.Core.Window, OSjs.GUI, OSjs.Utils, OSjs.API, OSjs.VFS);
+}

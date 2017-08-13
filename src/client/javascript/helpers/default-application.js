@@ -29,116 +29,109 @@
  */
 
 /*eslint valid-jsdoc: "off"*/
-(function(Application, Window, Utils, VFS, API, GUI) {
-  'use strict';
+import Application from 'core/application';
+import DialogWindow from 'core/dialog';
+import FileMetadata from 'vfs/file';
+import * as VFS from 'vfs/fs';
+import * as FS from 'utils/fs';
+import {_} from 'core/locales';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // Default Application Helper
-  /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// Default Application Helper
+/////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * This is a helper to more easily create an application.
-   *
-   * Handles opening, saving and creation of files.
-   *
-   * @summary Helper for making Applications with file interaction.
-   *
-   * @constructor
-   * @memberof OSjs.Helpers
-   * @see OSjs.Helpers.DefaultApplicationWindow
-   * @see OSjs.Core.Application
-   */
-  function DefaultApplication(name, args, metadata, opts) {
-    this.defaultOptions = Utils.argumentDefaults(opts, {
+/**
+ * This is a helper to more easily create an application.
+ *
+ * Handles opening, saving and creation of files.
+ *
+ * @desc Helper for making Applications with file interaction.
+ */
+export default class DefaultApplication extends Application {
+
+  constructor(name, args, metadata, opts) {
+    super(...arguments);
+
+    this.defaultOptions = Object.assign({}, {
       readData: true,
       rawData: false,
       extension: '',
       mime: 'application/octet-stream',
       filetypes: [],
       filename: 'New file'
-    });
-
-    Application.apply(this, [name, args, metadata]);
+    }, opts);
   }
-
-  DefaultApplication.prototype = Object.create(Application.prototype);
-  DefaultApplication.constructor = Application;
 
   /*
    * Destroy
    */
-  DefaultApplication.prototype.destroy = function() {
-    Application.prototype.destroy.apply(this, arguments);
-  };
+  destroy() {
+    super.destroy(...arguments);
+  }
 
   /*
    * On Message
    */
-  DefaultApplication.prototype._onMessage = function(msg, obj, args) {
-    Application.prototype._onMessage.apply(this, arguments);
+  _onMessage(msg, obj, args) {
+    super._onMessage(...arguments);
 
-    var self = this;
-    var current = this._getArgument('file');
-    var win = this._getWindow(this.__mainwindow);
+    const current = this._getArgument('file');
+    const win = this._getWindow(this.__mainwindow);
 
     if ( msg === 'vfs' && args.source !== null && args.source !== this.__pid && args.file ) {
       if ( win && current && current.path === args.file.path ) {
-        API.createDialog('Confirm', {
+        DialogWindow.create('Confirm', {
           buttons: ['yes', 'no'],
-          message: API._('MSG_FILE_CHANGED')
-        }, function(ev, button) {
+          message: _('MSG_FILE_CHANGED')
+        }, (ev, button) => {
           if ( button === 'ok' || button === 'yes' ) {
-            self.openFile(new VFS.File(args.file), win);
+            this.openFile(new FileMetadata(args.file), win);
           }
         }, {parent: win, modal: true});
       }
     }
-  };
+  }
 
   /**
    * Open given File
    *
-   * @function openFile
-   * @memberof OSjs.Helpers.DefaultApplication#
-   *
-   * @param   {OSjs.VFS.File}       file        File
-   * @param   {OSjs.Core.Window}    win         Window reference
+   * @param   {FileMetadata}  file        File
+   * @param   {Window}        win         Window reference
    */
-  DefaultApplication.prototype.openFile = function(file, win) {
-    var self = this;
+  openFile(file, win) {
     if ( !file ) {
       return false;
     }
 
-    function onError(error) {
+    const onError = (error) => {
       if ( error ) {
-        API.error(self.__label,
-                  API._('ERR_FILE_APP_OPEN'),
-                  API._('ERR_FILE_APP_OPEN_ALT_FMT',
-                        file.path, error)
+        OSjs.error(this.__label,
+                   _('ERR_FILE_APP_OPEN'),
+                   _('ERR_FILE_APP_OPEN_ALT_FMT',
+                     file.path, error)
         );
         return true;
       }
       return false;
-    }
+    };
 
-    function onDone(result) {
-      self._setArgument('file', file);
+    const onDone = (result) => {
+      this._setArgument('file', file);
       win.showFile(file, result);
-    }
+    };
 
-    var check = this.__metadata.mime || [];
-    if ( !Utils.checkAcceptMime(file.mime, check) ) {
-      API.error(this.__label,
-                API._('ERR_FILE_APP_OPEN'),
-                API._('ERR_FILE_APP_OPEN_FMT', file.path, file.mime)
+    const check = this.__metadata.mime || [];
+    if ( !FS.checkAcceptMime(file.mime, check) ) {
+      OSjs.error(this.__label,
+                 _('ERR_FILE_APP_OPEN'),
+                 _('ERR_FILE_APP_OPEN_FMT', file.path, file.mime)
       );
       return false;
     }
 
     win._toggleLoading(true);
 
-    function CallbackVFS(error, result) {
+    function callbackVFS(error, result) {
       win._toggleLoading(false);
       if ( onError(error) ) {
         return;
@@ -147,68 +140,63 @@
     }
 
     if ( this.defaultOptions.readData ) {
-      VFS.read(file, CallbackVFS, {type: this.defaultOptions.rawData ? 'binary' : 'text'});
+      VFS.read(file, {type: this.defaultOptions.rawData ? 'binary' : 'text'}, this)
+        .then((res) => callbackVFS(false, res))
+        .catch((err) => callbackVFS(err));
     } else {
-      VFS.url(file, CallbackVFS);
+      VFS.url(file)
+        .then((res) => callbackVFS(false, res))
+        .catch((err) => callbackVFS(err));
     }
 
     return true;
-  };
+  }
 
   /**
    * Save given File
    *
-   * @function saveFile
-   * @memberof OSjs.Helpers.DefaultApplication#
-   *
-   * @param   {OSjs.VFS.File}       file        File
-   * @param   {Mixed}               value       File contents
-   * @param   {OSjs.Core.Window}    win         Window reference
+   * @param   {FileMetadata}  file        File
+   * @param   {String|Object} value       File contents
+   * @param   {Window}        win         Window reference
    */
-  DefaultApplication.prototype.saveFile = function(file, value, win) {
-    var self = this;
+  saveFile(file, value, win) {
     if ( !file ) {
       return;
     }
 
     win._toggleLoading(true);
-    VFS.write(file, value || '', function(error, result) {
-      win._toggleLoading(false);
-
-      if ( error ) {
-        API.error(self.__label,
-                  API._('ERR_FILE_APP_SAVE'),
-                  API._('ERR_FILE_APP_SAVE_ALT_FMT', file.path, error)
-        );
-        return;
-      }
-
-      self._setArgument('file', file);
+    VFS.write(file, value || '', null, this).then(() => {
+      this._setArgument('file', file);
       win.updateFile(file);
-    }, {}, this);
-  };
+      return true;
+    }).catch((error) => {
+      OSjs.error(this.__label,
+                 _('ERR_FILE_APP_SAVE'),
+                 _('ERR_FILE_APP_SAVE_ALT_FMT', file.path, error)
+      );
+
+    }).finally(() => {
+      win._toggleLoading(false);
+    });
+  }
 
   /**
    * Open Save dialog
    *
-   * @function saveDialog
-   * @memberof OSjs.Helpers.DefaultApplication#
-   *
-   * @param   {OSjs.VFS.File}       file        File
-   * @param   {OSjs.Core.Window}    win         Window reference
-   * @param   {Boolean}             saveAs      SaveAs ?
-   * @param   {CallbackDialog}      cb          Called after the user closed the dialog
+   * @param   {FileMetadata}       file        File
+   * @param   {Window}             win         Window reference
+   * @param   {Boolean}            saveAs      SaveAs ?
+   * @param   {CallbackDialog}     cb          Called after the user closed the dialog
    */
-  DefaultApplication.prototype.saveDialog = function(file, win, saveAs, cb) {
-    var self = this;
-    var value = win.getFileData();
+  saveDialog(file, win, saveAs, cb) {
+    const value = win.getFileData();
 
     if ( !saveAs ) {
       this.saveFile(file, value, win);
       return;
     }
 
-    API.createDialog('File', {
+    DialogWindow.create('File', {
       file: file,
       filename: file ? file.filename : this.defaultOptions.filename,
       filetypes: this.defaultOptions.filetypes,
@@ -216,70 +204,56 @@
       extension: this.defaultOptions.extension,
       mime: this.defaultOptions.mime,
       type: 'save'
-    }, function(ev, button, result) {
+    }, (ev, button, result) => {
       if ( button === 'ok' ) {
-        self.saveFile(result, value, win);
+        this.saveFile(result, value, win);
       }
       if (typeof cb === 'function') {
         cb(ev, button, result);
       }
     }, {parent: win, modal: true});
-  };
+  }
 
   /**
    * Open Open dialog
    *
-   * @function openDialog
-   * @memberof OSjs.Helpers.DefaultApplication#
-   *
-   * @param   {OSjs.VFS.File}       [file]      Current File
-   * @param   {OSjs.Core.Window}    [win]       Window reference
+   * @param   {FileMetadata}   [file]      Current File
+   * @param   {Window}         [win]       Window reference
    */
-  DefaultApplication.prototype.openDialog = function(file, win) {
-    var self = this;
+  openDialog(file, win) {
 
-    function openDialog() {
-      API.createDialog('File', {
+    const openDialog = () => {
+      DialogWindow.create('File', {
         file: file,
-        filter: self.__metadata.mime
-      }, function(ev, button, result) {
+        filter: this.__metadata.mime
+      }, (ev, button, result) => {
         if ( button === 'ok' && result ) {
-          self.openFile(new VFS.File(result), win);
+          this.openFile(new FileMetadata(result), win);
         }
       }, {parent: win, modal: true});
-    }
+    };
 
-    win.checkHasChanged(function(discard) {
+    win.checkHasChanged((discard) => {
       if ( discard ) {
         openDialog();
       }
     });
-  };
+  }
 
   /**
    * Create a new file
    *
-   * @function newDialog
-   * @memberof OSjs.Helpers.DefaultApplication#
-   *
-   * @param   {String}              [path]        Current path
-   * @param   {OSjs.Core.Window}    [win]         Window reference
+   * @param   {String}    [path]        Current path
+   * @param   {Window}    [win]         Window reference
    */
-  DefaultApplication.prototype.newDialog = function(path, win) {
-    var self = this;
-    win.checkHasChanged(function(discard) {
+  newDialog(path, win) {
+    win.checkHasChanged((discard) => {
       if ( discard ) {
-        self._setArgument('file', null);
+        this._setArgument('file', null);
         win.showFile(null, null);
       }
     });
-  };
+  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Helpers.DefaultApplication       = DefaultApplication;
-
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.VFS, OSjs.API, OSjs.GUI);
+}
 

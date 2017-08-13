@@ -27,83 +27,73 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, DialogWindow) {
-  'use strict';
+import DialogWindow from 'core/dialog';
+import {_} from 'core/locales';
+
+/**
+ * An 'Input' dialog
+ *
+ * @example DialogWindow.create('Input', {}, fn);
+ * @extends DialogWindow
+ */
+export default class InputDialog extends DialogWindow {
 
   /**
-   * An 'Input' dialog
-   *
-   * @example
-   *
-   * OSjs.API.createDialog('Input', {}, fn);
-   *
    * @param  {Object}          args                An object with arguments
    * @param  {String}          args.title          Dialog title
    * @param  {String}          args.message        Dialog message
    * @param  {String}          [args.value]        Input value
    * @param  {String}          [args.placeholder]  Input placeholder
    * @param  {CallbackDialog}  callback            Callback when done
-   *
-   * @constructor Input
-   * @memberof OSjs.Dialogs
    */
-  function InputDialog(args, callback) {
-    args = Utils.argumentDefaults(args, {});
+  constructor(args, callback) {
+    args = Object.assign({}, {}, args);
 
-    DialogWindow.apply(this, ['InputDialog', {
-      title: args.title || API._('DIALOG_INPUT_TITLE'),
+    super('InputDialog', {
+      title: args.title || _('DIALOG_INPUT_TITLE'),
       icon: 'status/dialog-information.png',
       width: 400,
       height: 120
-    }, args, callback]);
+    }, args, callback);
   }
 
-  InputDialog.prototype = Object.create(DialogWindow.prototype);
-  InputDialog.constructor = DialogWindow;
-
-  InputDialog.prototype.init = function() {
-    var self = this;
-    var root = DialogWindow.prototype.init.apply(this, arguments);
+  init() {
+    const root = super.init(...arguments);
 
     if ( this.args.message ) {
-      var msg = DialogWindow.parseMessage(this.args.message);
+      const msg = DialogWindow.parseMessage(this.args.message);
       this._find('Message').empty().append(msg);
     }
 
-    var input = this._find('Input');
+    const input = this._find('Input');
     input.set('placeholder', this.args.placeholder || '');
     input.set('value', this.args.value || '');
-    input.on('enter', function(ev) {
-      self.onClose(ev, 'ok');
+    input.on('enter', (ev) => {
+      this.onClose(ev, 'ok');
     });
 
     return root;
-  };
+  }
 
-  InputDialog.prototype._focus = function() {
-    if ( DialogWindow.prototype._focus.apply(this, arguments) ) {
+  _focus() {
+    if ( super._focus(...arguments) ) {
       this._find('Input').focus();
       return true;
     }
     return false;
-  };
+  }
 
-  InputDialog.prototype.onClose = function(ev, button) {
-    var result = this._find('Input').get('value');
+  onClose(ev, button) {
+    const result = this._find('Input').get('value');
     this.closeCallback(ev, button, button === 'ok' ? result : null);
-  };
+  }
 
-  InputDialog.prototype.setRange = function(range) {
-    var input = this._find('Input');
+  setRange(range) {
+    const input = this._find('Input');
     if ( input.$element ) {
       input.$element.querySelector('input').select(range);
     }
-  };
+  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+}
 
-  OSjs.Dialogs.Input = Object.seal(InputDialog);
-
-})(OSjs.API, OSjs.Utils, OSjs.Core.DialogWindow);

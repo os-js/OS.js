@@ -1,13 +1,3 @@
 #!/usr/bin/env node
-(function(_path) {
-
-  var ver = process.version.substr(1).split(/\./g);
-  if ( parseInt(ver[0], 10) < 4 ) {
-    console.warn('You need Node v4 or above to run OS.js', 'yellow');
-  }
-
-  require(_path.join(__dirname, 'src/build/cli.js')).run(process.argv.slice(2), function(err) {
-    process.exit(err ? 1 : 0);
-  });
-
-})(require('path'));
+process.env.OSJS_ROOT = __dirname;
+require('osjs-build').cli();

@@ -28,324 +28,288 @@
  * @licence Simplified BSD License
  */
 
-(function(Utils, VFS, API) {
-  'use strict';
+import Promise from 'bluebird';
+import PackageManager from 'core/package-manager';
+import SettingsManager from 'core/settings-manager';
+import FileMetadata from 'vfs/file';
+import Theme from 'core/theme';
+import * as VFS from 'vfs/fs';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // HELPERS
-  /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// HELPERS
+/////////////////////////////////////////////////////////////////////////////
 
-  /*
-   * Searches an object field for matches
-   */
-  function search(list, query) {
-    var result = [];
+/*
+ * Searches an object field for matches
+ */
+function search(list, query) {
+  const result = [];
 
-    list.forEach(function(obj) {
-      var found = false;
+  list.forEach((obj) => {
+    let found = false;
 
-      obj.fields.forEach(function(s) {
-        if ( found ) {
-          return;
-        }
-
-        var qry = String(query).toLowerCase();
-        var str = String(s).toLowerCase();
-        if ( str.indexOf(qry) !== -1 ) {
-          result.push(obj.value);
-
-          found = true;
-        }
-      });
-    });
-
-    return result;
-  }
-
-  /*
-   * A search Object
-   */
-  function SearchObject(obj) {
-    var self = this;
-    Object.keys(obj).forEach(function(k) {
-      self[k] = obj[k];
-    });
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
-  // MODULES
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Search Applications
-   */
-  var ApplicationModule = (function() {
-    function query() {
-      var packages = OSjs.Core.getPackageManager().getPackages();
-
-      return Object.keys(packages).map(function(pn) {
-        var p = packages[pn];
-
-        return new SearchObject({
-          value: {
-            title: p.name,
-            description: p.description,
-            icon: API.getFileIcon(new VFS.File('applications:///' + p.className, 'application'), '16x16'),
-            launch: {application: pn, args: {}}
-          },
-          fields: [
-            p.className,
-            p.name,
-            p.description
-          ]
-        });
-      });
-    }
-
-    return {
-      search: function(q, args, settings, cb) {
-        if ( settings.applications ) {
-          var results = search(query(), q);
-
-          if ( args.limit && results.length > args.dlimit ) {
-            results = results.splice(0, args.dlimit);
-          }
-
-          cb(false, results);
-        } else {
-          cb(false, []);
-        }
-      },
-      reindex: function(args, cb) {
-        cb(false, true);
-      },
-      destroy: function() {
-      }
-    };
-  })();
-
-  /**
-   * Search VFS for files
-   */
-  var FilesystemModule = {
-    search: function(q, args, settings, cb) {
-      if ( !settings.files || !settings.paths ) {
-        cb(false, []);
+    obj.fields.forEach((s) => {
+      if ( found ) {
         return;
       }
 
-      var found = [];
-      Utils.asyncs(settings.paths, function(e, i, n) {
-        VFS.find(e, {query: q, limit: (args.limit ? args.dlimit : 0), recursive: args.recursive}, function(error, result) {
-          if ( error ) {
-            console.warn(error);
-          }
+      const qry = String(query).toLowerCase();
+      const str = String(s).toLowerCase();
+      if ( str.indexOf(qry) !== -1 ) {
+        result.push(obj.value);
 
-          if ( result ) {
-            var list = result.map(function(iter) {
-              return {
-                title: iter.filename,
-                description: iter.path,
-                icon: API.getFileIcon(new VFS.File(iter)),
-                launch: {application: '', args: '', file: iter}
-              };
-            });
+        found = true;
+      }
+    });
+  });
 
-            found = found.concat(list);
-          }
+  return result;
+}
 
-          n();
-        });
-      }, function() {
-        cb(false, found);
+/*
+ * A search Object
+ */
+function SearchObject(obj) {
+  Object.keys(obj).forEach((k) => {
+    this[k] = obj[k];
+  });
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// MODULES
+/////////////////////////////////////////////////////////////////////////////
+
+/*
+ * Search Applications
+ */
+const ApplicationModule = (function() {
+  function query() {
+    const packages = PackageManager.getPackages();
+
+    return Object.keys(packages).map((pn) => {
+      const p = packages[pn];
+
+      return new SearchObject({
+        value: {
+          title: p.name,
+          description: p.description,
+          icon: Theme.getFileIcon(new FileMetadata('applications:///' + p.className, 'application'), '16x16'),
+          launch: {application: pn, args: {}}
+        },
+        fields: [
+          p.className,
+          p.name,
+          p.description
+        ]
       });
+    });
+  }
+
+  return {
+    search: function(q, args, settings) {
+      if ( settings.applications ) {
+        let results = search(query(), q);
+
+        if ( args.limit && results.length > args.dlimit ) {
+          results = results.splice(0, args.dlimit);
+        }
+
+        return Promise.resolve(results);
+      }
+      return Promise.resolve([]);
     },
-    reindex: function(args, cb) {
-      cb(false, true);
+    reindex: function(args) {
+      return Promise.resolve(true);
     },
     destroy: function() {
     }
   };
+})();
 
-  /////////////////////////////////////////////////////////////////////////////
-  // ENGINE
-  /////////////////////////////////////////////////////////////////////////////
+/*
+ * Search VFS for files
+ */
+const FilesystemModule = {
+  search: function(q, args, settings, cb) {
+    if ( !settings.files || !settings.paths ) {
+      return Promise.resolve([]);
+    }
 
-  /**
-   * Settings Manager Class
-   *
-   * For maintaining settings
-   *
-   * <pre><b>
-   * You can only get an instance with `Core.getSearchEngine()`
-   * </b></pre>
-   *
-   * @example
-   * OSjs.Core.getSearchEngine()
-   *
-   * @summary The Search Engine for location files and application.
-   *
-   * @constructor
-   * @memberof OSjs.Core
-   * @see OSjs.Core.getSearchEngine
-   */
-  var SearchEngine = (function() {
+    let found = [];
+    const append = (result) => {
+      if ( result ) {
+        found = found.concat(result.map((iter) => {
+          return {
+            title: iter.filename,
+            description: iter.path,
+            icon: Theme.getFileIcon(new FileMetadata(iter)),
+            launch: {application: '', args: '', file: iter}
+          };
+        }));
+      }
+    };
 
-    var modules = [
+    return new Promise((resolve, reject) => {
+      Promise.each(settings.paths, (e) => {
+        return new Promise((n) => {
+          VFS.find(e, {query: q, limit: (args.limit ? args.dlimit : 0), recursive: args.recursive}).then((result) => {
+            return n(append(result));
+          }).catch((error) => {
+            console.warn(error);
+            n();
+          });
+        });
+      }).then(() => {
+        return resolve(found);
+      }).catch(reject);
+    });
+  },
+  reindex: function(args) {
+    return Promise.resolve();
+  },
+  destroy: function() {
+  }
+};
+
+/////////////////////////////////////////////////////////////////////////////
+// ENGINE
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Settings Manager Class
+ *
+ * @desc The Search Engine for location files and application.
+ */
+class SearchEngine {
+
+  constructor() {
+    this.settings = {};
+    this.inited = false;
+    this.modules = [
       ApplicationModule,
       FilesystemModule
     ];
+  }
 
-    var settings = {};
-    var inited = false;
+  /**
+   * Initialize instance
+   *
+   * @return {Promise<undefined, Error>}
+   */
+  init() {
+    console.debug('SearchEngine::init()');
 
-    return Object.seal({
+    if ( !this.inited ) {
+      this.settings = SettingsManager.get('SearchEngine') || {};
+      this.inited = true;
+    }
 
-      /**
-       * Initialize instance
-       *
-       * @function init
-       * @memberof OSjs.Core.SearchEngine#
-       *
-       * @param   {Function}    cb        Callback => fn(error, result)
-       */
-      init: function(cb) {
-        console.debug('SearchEngine::init()');
+    return Promise.resolve();
+  }
 
-        if ( inited ) {
-          return;
-        }
+  /**
+   * Destroy instance
+   */
+  destroy() {
+    console.debug('SearchEngine::destroy()');
 
-        var manager = OSjs.Core.getSettingsManager();
-        settings = manager.get('SearchEngine') || {};
+    this.modules.forEach((m) => {
+      m.destroy();
+    });
 
-        inited = true;
+    this.modules = [];
+    this.settings = {};
+    this.inited = false;
+  }
 
-        cb();
-      },
+  /**
+   * Perform a search
+   *
+   * @param   {String}      q         Search query
+   * @param   {Object}      args      Arguments
+   * @return  {Promise<Array, Error>}
+   */
+  search(q, args) {
+    let result = [];
+    let errors = [];
 
-      /**
-       * Destroy instance
-       *
-       * @function destroy
-       * @memberof OSjs.Core.SearchEngine#
-       */
-      destroy: function() {
-        console.debug('SearchEngine::destroy()');
+    args = Object.assign({}, {
+      recursive: false,
+      limit: 0,
+      dlimit: 0
+    }, args);
 
-        modules.forEach(function(m) {
-          m.destroy();
-        });
+    if ( args.limit ) {
+      args.dlimit = args.limit;
+    }
 
-        modules = [];
-        settings = {};
-        inited = false;
-      },
+    return new Promise((resolve, reject) => {
+      Promise.each(this.modules, (module) => {
+        return new Promise((next, reject) => {
 
-      /**
-       * Perform a search
-       *
-       * @function search
-       * @memberof OSjs.Core.SearchEngine#
-       *
-       * @param   {String}      q         Search query
-       * @param   {Object}      args      Arguments
-       * @param   {Function}    cb        Callback => fn(error, result)
-       */
-      search: function(q, args, cb) {
-        var result = [];
-        var errors = [];
-
-        args = Utils.argumentDefaults(args, {
-          recursive: false,
-          limit: 0,
-          dlimit: 0
-        });
-
-        if ( args.limit ) {
-          args.dlimit = args.limit;
-        }
-
-        Utils.asyncs(modules, function(module, index, next) {
           console.debug('SearchEngine::search()', '=>', module);
 
           if ( !args.limit || args.dlimit > 0 ) {
-            module.search(q, args, settings, function(err, res) {
-              if ( err ) {
-                errors.push(err);
-              } else {
-                args.dlimit -= res.length;
+            module.search(q, args, this.settings).then((res) => {
+              args.dlimit -= res.length;
+              result = result.concat(res);
 
-                result = result.concat(res);
-              }
-
+              next();
+            }).catch((err) => {
+              console.warn(err);
+              errors.push(err instanceof Error ? err.toString() : err);
               next();
             });
           } else {
-            cb(errors, result);
-          }
-        }, function() {
-          cb(errors, result);
-        });
-      },
-
-      /**
-       * Reindex databases
-       *
-       * @TODO implement
-       * @function reindex
-       * @memberof OSjs.Core.SearchEngine#
-       *
-       * @param   {Object}      args      Arguments
-       * @param   {Function}    cb        Callback => fn(error, result)
-       */
-      reindex: function(args, cb) {
-        var errors = [];
-
-        Utils.asyncs(modules, function(module, index, next) {
-          console.debug('SearchEngine::reindex()', '=>', module);
-
-          module.reindex(args, function(err, res) {
-            if ( err ) {
-              errors.push(err);
-            }
             next();
-          });
-        }, function() {
-          cb(errors, true);
+            //reject(new Error(errors.join(', ')));
+          }
         });
-      },
-
-      /**
-       * Configure the Search Engine
-       *
-       * @TODO implement
-       * @function configure
-       * @memberof OSjs.Core.SearchEngine#
-       *
-       * @param   {Object}      opts          Settings Object
-       * @param   {Boolean}     [save=true]   Save settings
-       */
-      configure: function(opts, save) {
-      }
+      }).then(() => resolve(result)).catch(reject);
     });
-
-  })();
-
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+  }
 
   /**
-   * Get the current SearchEngine  instance
+   * Reindex databases
    *
-   * @function getSearchEngine
-   * @memberof OSjs.Core
+   * @TODO implement
    *
-   * @return {OSjs.Core.SearchEngine}
+   * @param   {Object}      args      Arguments
+   * @param   {Function}    cb        Callback => fn(error, result)
+   * @return {Promise<Boolean, Error>}
    */
-  OSjs.Core.getSearchEngine = function Core_getSearchEngine() {
-    return SearchEngine;
-  };
+  reindex(args) {
+    const errors = [];
 
-})(OSjs.Utils, OSjs.VFS, OSjs.API);
+    return Promise.each(this.modules, (module) => {
+      return new Promise((next) => {
+        console.debug('SearchEngine::reindex()', '=>', module);
+
+        module.reindex(args).then(next).catch((err) => {
+          if ( err ) {
+            errors.push(err);
+          }
+          next();
+        });
+      });
+    });
+  }
+
+  /**
+   * Configure the Search Engine
+   *
+   * @TODO implement
+   *
+   * @param   {Object}      opts          Settings Object
+   * @param   {Boolean}     [save=true]   Save settings
+   */
+  configure(opts, save) {
+  }
+
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// EXPORTS
+/////////////////////////////////////////////////////////////////////////////
+
+export default (new SearchEngine());

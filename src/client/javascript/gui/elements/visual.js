@@ -27,190 +27,187 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, VFS, GUI) {
-  'use strict';
+import * as Events from 'utils/events';
+import GUIElement from 'gui/element';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // HELPERS
-  /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// HELPERS
+/////////////////////////////////////////////////////////////////////////////
 
-  function createVisualElement(el, nodeType, applyArgs) {
-    applyArgs = applyArgs || {};
-    if ( typeof applyArgs !== 'object' ) {
-      console.error('Derp', 'applyArgs was not an object ?!');
-      applyArgs = {};
-    }
-
-    var img = document.createElement(nodeType);
-    var src = el.getAttribute('data-src');
-    var controls = el.getAttribute('data-controls');
-    if ( controls ) {
-      img.setAttribute('controls', 'controls');
-    }
-    var autoplay = el.getAttribute('data-autoplay');
-    if ( autoplay ) {
-      img.setAttribute('autoplay', 'autoplay');
-    }
-
-    Object.keys(applyArgs).forEach(function(k) {
-      var val = applyArgs[k];
-      if ( typeof val === 'function' ) {
-        k = k.replace(/^on/, '');
-        if ( (nodeType === 'video' || nodeType === 'audio') && k === 'load' ) {
-          k = 'loadedmetadata';
-        }
-        Utils.$bind(img, k, val.bind(img), false);
-      } else {
-        if ( typeof applyArgs[k] === 'boolean' ) {
-          val = val ? 'true' : 'false';
-        }
-        img.setAttribute(k, val);
-      }
-    });
-
-    img.src = src || 'about:blank';
-    el.appendChild(img);
+function createVisualElement(el, nodeType, applyArgs) {
+  applyArgs = applyArgs || {};
+  if ( typeof applyArgs !== 'object' ) {
+    console.error('Derp', 'applyArgs was not an object ?!');
+    applyArgs = {};
   }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // CLASSES
-  /////////////////////////////////////////////////////////////////////////////
+  const img = document.createElement(nodeType);
+  const src = el.getAttribute('data-src');
+  const controls = el.getAttribute('data-controls');
+  if ( controls ) {
+    img.setAttribute('controls', 'controls');
+  }
+  const autoplay = el.getAttribute('data-autoplay');
+  if ( autoplay ) {
+    img.setAttribute('autoplay', 'autoplay');
+  }
 
-  /**
-   * Element: 'gui-audio'
-   *
-   * HTML5 Audio Element.
-   *
-   * <pre><code>
-   *   getter    src   String        The source (src)
-   *   setter    src   String        The source (src)
-   *   property  src   String        The source (src)
-   * </code></pre>
-   *
-   * @constructor Audio
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUIAudio = {
-    on: function(evName, callback, params) {
-      var target = this.$element.querySelector('audio');
-      Utils.$bind(target, evName, callback.bind(this), params);
-      return this;
-    },
-
-    build: function(applyArgs) {
-      createVisualElement(this.$element, 'audio', applyArgs);
-
-      return this;
+  Object.keys(applyArgs).forEach(function(k) {
+    let val = applyArgs[k];
+    if ( typeof val === 'function' ) {
+      k = k.replace(/^on/, '');
+      if ( (nodeType === 'video' || nodeType === 'audio') && k === 'load' ) {
+        k = 'loadedmetadata';
+      }
+      Events.$bind(img, k, val.bind(img), false);
+    } else {
+      if ( typeof applyArgs[k] === 'boolean' ) {
+        val = val ? 'true' : 'false';
+      }
+      img.setAttribute(k, val);
     }
-  };
+  });
 
-  /**
-   * Element: 'gui-video'
-   *
-   * HTML5 Video Element.
-   *
-   * <pre><code>
-   *   getter    src   String        The source (src)
-   *   setter    src   String        The source (src)
-   *   property  src   String        The source (src)
-   * </code></pre>
-   *
-   * @constructor Video
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUIVideo = {
-    on: function(evName, callback, params) {
-      var target = this.$element.querySelector('video');
-      Utils.$bind(target, evName, callback.bind(this), params);
-      return this;
-    },
+  img.src = src || 'about:blank';
+  el.appendChild(img);
+}
 
-    build: function(applyArgs) {
-      createVisualElement(this.$element, 'video', applyArgs);
+/////////////////////////////////////////////////////////////////////////////
+// CLASSES
+/////////////////////////////////////////////////////////////////////////////
 
-      return this;
-    }
-  };
+/**
+ * Element: 'gui-audio'
+ *
+ * HTML5 Audio Element.
+ *
+ * <pre><code>
+ *   getter    src   String        The source (src)
+ *   setter    src   String        The source (src)
+ *   property  src   String        The source (src)
+ * </code></pre>
+ */
+class GUIAudio extends GUIElement {
+  static register() {
+    return super.register({
+      tagName: 'gui-audio'
+    }, this);
+  }
 
-  /**
-   * Element: 'gui-image'
-   *
-   * Normal Image Element.
-   *
-   * <pre><code>
-   *   getter    src   String        The source (src)
-   *   setter    src   String        The source (src)
-   *   property  src   String        The source (src)
-   * </code></pre>
-   *
-   * @constructor Image
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUIImage = {
-    on: function(evName, callback, params) {
-      var target = this.$element.querySelector('img');
-      Utils.$bind(target, evName, callback.bind(this), params);
-      return this;
-    },
+  on(evName, callback, params) {
+    const target = this.$element.querySelector('audio');
+    Events.$bind(target, evName, callback.bind(this), params);
+    return this;
+  }
 
-    build: function(applyArgs) {
-      createVisualElement(this.$element, 'img', applyArgs);
+  build(applyArgs) {
+    createVisualElement(this.$element, 'audio', applyArgs);
 
-      return this;
-    }
-  };
+    return this;
+  }
+}
 
-  /**
-   * Element: 'gui-canvas'
-   *
-   * Canvas Element.
-   *
-   * <pre><code>
-   *   getter    src   String        The source (src)
-   *   setter    src   String        The source (src)
-   *   property  src   String        The source (src)
-   * </code></pre>
-   *
-   * @constructor Canvas
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUICanvas = {
-    on: function(evName, callback, params) {
-      var target = this.$element.querySelector('canvas');
-      Utils.$bind(target, evName, callback.bind(this), params);
-      return this;
-    },
+/**
+ * Element: 'gui-video'
+ *
+ * HTML5 Video Element.
+ *
+ * <pre><code>
+ *   getter    src   String        The source (src)
+ *   setter    src   String        The source (src)
+ *   property  src   String        The source (src)
+ * </code></pre>
+ */
+class GUIVideo extends GUIElement {
+  static register() {
+    return super.register({
+      tagName: 'gui-video'
+    }, this);
+  }
 
-    build: function() {
-      var canvas = document.createElement('canvas');
-      this.$element.appendChild(canvas);
+  on(evName, callback, params) {
+    const target = this.$element.querySelector('video');
+    Events.$bind(target, evName, callback.bind(this), params);
+    return this;
+  }
 
-      return this;
-    }
-  };
+  build(applyArgs) {
+    createVisualElement(this.$element, 'video', applyArgs);
 
-  /////////////////////////////////////////////////////////////////////////////
-  // REGISTRATION
-  /////////////////////////////////////////////////////////////////////////////
+    return this;
+  }
+}
 
-  GUI.Element.register({
-    tagName: 'gui-audio'
-  }, GUIAudio);
+/**
+ * Element: 'gui-image'
+ *
+ * Normal Image Element.
+ *
+ * <pre><code>
+ *   getter    src   String        The source (src)
+ *   setter    src   String        The source (src)
+ *   property  src   String        The source (src)
+ * </code></pre>
+ */
+class GUIImage extends GUIElement {
+  static register() {
+    return super.register({
+      tagName: 'gui-image'
+    }, this);
+  }
 
-  GUI.Element.register({
-    tagName: 'gui-video'
-  }, GUIVideo);
+  on(evName, callback, params) {
+    const target = this.$element.querySelector('img');
+    Events.$bind(target, evName, callback.bind(this), params);
+    return this;
+  }
 
-  GUI.Element.register({
-    tagName: 'gui-image'
-  }, GUIImage);
+  build(applyArgs) {
+    createVisualElement(this.$element, 'img', applyArgs);
 
-  GUI.Element.register({
-    tagName: 'gui-canvas'
-  }, GUICanvas);
+    return this;
+  }
+}
 
-})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);
+/**
+ * Element: 'gui-canvas'
+ *
+ * Canvas Element.
+ *
+ * <pre><code>
+ *   getter    src   String        The source (src)
+ *   setter    src   String        The source (src)
+ *   property  src   String        The source (src)
+ * </code></pre>
+ */
+class GUICanvas extends GUIElement {
+  static register() {
+    return super.register({
+      tagName: 'gui-canvas'
+    }, this);
+  }
+
+  on(evName, callback, params) {
+    const target = this.$element.querySelector('canvas');
+    Events.$bind(target, evName, callback.bind(this), params);
+    return this;
+  }
+
+  build() {
+    const canvas = document.createElement('canvas');
+    this.$element.appendChild(canvas);
+
+    return this;
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// EXPORTS
+/////////////////////////////////////////////////////////////////////////////
+
+export default {
+  GUIAudio: GUIAudio,
+  GUIVideo: GUIVideo,
+  GUIImage: GUIImage,
+  GUICanvas: GUICanvas
+};

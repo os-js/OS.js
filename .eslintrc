@@ -6,6 +6,7 @@
   },
   "globals": {
     "OSjs": true,
+    "OSJS_DEBUG": true,
     "zip": true,
     "alert": true,
     "confirm": true,
@@ -14,7 +15,12 @@
     "EventTarget": true,
     "Uint8Array": true,
     "ArrayBuffer": true,
-    "Promise": true
+    "Promise": true,
+    "gapi": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
   },
   "rules": {
     "valid-jsdoc": [
@@ -97,7 +103,7 @@
     "no-eq-null": 2,
     "strict": [
       1,
-      "function"
+      "global"
     ],
     "no-unused-expressions": 2,
     "no-use-before-define": 1,

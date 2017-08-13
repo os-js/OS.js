@@ -28,27 +28,19 @@
  * @licence Simplified BSD License
  */
 
-(function(Utils, API, GUI, Window) {
-  'use strict';
-
-  /////////////////////////////////////////////////////////////////////////////
-  // API
-  /////////////////////////////////////////////////////////////////////////////
+/**
+ * Event Handler Class
+ *
+ * @desc
+ * This class just holds a map of events that you can trigger.
+ */
+export default class EventHandler {
 
   /**
-   * Event Handler Class
-   *
-   * This class just holds a map of events that you can trigger.
-   *
-   * @summary Helper for handling events.
-   *
    * @param   {String}      name        A name (identifier)
    * @param   {Array}       names       List of initial event names
-   *
-   * @constructor
-   * @memberof OSjs.Helpers
    */
-  function EventHandler(name, names) {
+  constructor(name, names) {
     this.name   = name;
     this.events = {};
 
@@ -59,18 +51,15 @@
     console.debug('EventHandler::constructor()', this.events);
   }
 
-  EventHandler.prototype.destroy = function() {
+  destroy() {
     this.events = {};
-  };
+  }
 
   /**
    * Register an event
    *
    * You can also give a RegExp pattern as a name to match multiple entries,
    * as well as a comma separated string.
-   *
-   * @function on
-   * @memberof OSjs.Helpers.EventHandler#
    * @throws {Error} On invalid callback
    *
    * @param   {String}    name        Event name
@@ -79,25 +68,24 @@
    *
    * @return  {Number}
    */
-  EventHandler.prototype.on = function(name, cb, thisArg) {
+  on(name, cb, thisArg) {
     thisArg = thisArg || this;
 
     if ( !(cb instanceof Function) ) {
       throw new TypeError('EventHandler::on() expects cb to be a Function');
     }
 
-    var self = this;
-    var added = [];
+    const added = [];
 
-    function _register(n) {
-      if ( !(self.events[n] instanceof Array) ) {
-        self.events[n] = [];
+    const _register = (n) => {
+      if ( !(this.events[n] instanceof Array) ) {
+        this.events[n] = [];
       }
 
-      added.push(self.events[n].push(function(args) {
+      added.push(this.events[n].push((args) => {
         return cb.apply(thisArg, args);
       }));
-    }
+    };
 
     if ( name instanceof RegExp ) {
       Object.keys(this.events).forEach(function(n) {
@@ -112,19 +100,17 @@
     }
 
     return added.length === 1 ? added[0] : added;
-  };
+  }
 
   /**
    * Unregister an event
    *
-   * @function off
-   * @memberof OSjs.Helpers.EventHandler#
    * @throws {Error} On event name
    *
    * @param   {String}    name        Event name
    * @param   {Number}    index       Event index (as returned by on())
    */
-  EventHandler.prototype.off = function(name, index) {
+  off(name, index) {
     if ( !(this.events[name] instanceof Array) ) {
       throw new TypeError('Invalid event name');
     }
@@ -134,20 +120,17 @@
     } else {
       this.events[name] = [];
     }
-  };
+  }
 
   /**
    * Fire an event
-   *
-   * @function emit
-   * @memberof OSjs.Helpers.EventHandler#
    *
    * @param   {String}    name        Event name
    * @param   {Array}     args        List of arguments to send to .apply()
    *
    * @return {Boolean} If none of the handlers returned false
    */
-  EventHandler.prototype.emit = function(name, args) {
+  emit(name, args) {
     args = args || [];
 
     if ( !(this.events[name] instanceof Array) ) {
@@ -155,7 +138,7 @@
     }
 
     return (this.events[name]).every(function(fn) {
-      var result;
+      let result;
       try {
         result = fn(args);
       } catch ( e ) {
@@ -165,12 +148,6 @@
 
       return typeof result === 'undefined' || result === true;
     });
-  };
+  }
+}
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Helpers.EventHandler = EventHandler;
-
-})(OSjs.Utils, OSjs.API, OSjs.GUI, OSjs.Core.Window);

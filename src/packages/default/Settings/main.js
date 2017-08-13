@@ -29,126 +29,144 @@
  */
 
 /*eslint valid-jsdoc: "off"*/
-(function(Application, Window, Utils, API, VFS, GUI) {
-  'use strict';
+import Translations from './locales';
+import ModuleDesktop from './module-desktop';
+import ModuleInput from './module-input';
+import ModuleLocale from './module-locale';
+import ModulePanel from './module-panel';
+import ModulePM from './module-pm';
+import ModuleSearch from './module-search';
+import ModuleSounds from './module-sound';
+import ModuleStore from './module-store';
+import ModuleTheme from './module-theme';
+import ModuleUser from './module-user';
+import ModuleUsers from './module-users';
+import ModuleVFS from './module-vfs';
 
-  var DEFAULT_GROUP = 'misc';
+const Locales = OSjs.require('core/locales');
+const Dialog = OSjs.require('core/dialog');
+const Window = OSjs.require('core/window');
+const Events = OSjs.require('utils/events');
+const Theme = OSjs.require('core/theme');
+const Utils = OSjs.require('utils/misc');
+const Menu = OSjs.require('gui/menu');
+const SettingsManager = OSjs.require('core/settings-manager');
+const WindowManager = OSjs.require('core/window-manager');
+const Application = OSjs.require('core/application');
+const _ = Locales.createLocalizer(Translations);
 
-  var _groups = {
-    personal: {
-      label: 'LBL_PERSONAL'
-    },
-    system: {
-      label: 'LBL_SYSTEM'
-    },
-    user: {
-      label: 'LBL_USER'
-    },
-    misc: {
-      label: 'LBL_OTHER'
-    }
-  };
+const DEFAULT_GROUP = 'misc';
 
-  var categoryMap = {
-    'theme': 'Theme',
-    'desktop': 'Desktop',
-    'panel': 'Panel',
-    'user': 'User',
-    'fileview': 'VFS',
-    'search': 'Search'
-  };
+const _groups = {
+  personal: {
+    label: 'LBL_PERSONAL'
+  },
+  system: {
+    label: 'LBL_SYSTEM'
+  },
+  user: {
+    label: 'LBL_USER'
+  },
+  misc: {
+    label: 'LBL_OTHER'
+  }
+};
 
-  /////////////////////////////////////////////////////////////////////////////
-  // DIALOGS
-  /////////////////////////////////////////////////////////////////////////////
+const categoryMap = {
+  'theme': 'Theme',
+  'desktop': 'Desktop',
+  'panel': 'Panel',
+  'user': 'User',
+  'fileview': 'VFS',
+  'search': 'Search'
+};
 
-  function SettingsItemDialog(app, metadata, scheme, callback) {
-    Window.apply(this, ['ApplicationSettingsGenericsWindow', {
+/////////////////////////////////////////////////////////////////////////////
+// DIALOGS
+/////////////////////////////////////////////////////////////////////////////
+
+class SettingsItemDialog extends Dialog {
+
+  constructor(app, metadata, scheme, callback) {
+    super('ApplicationSettingsGenericsWindow', {
       icon: metadata.icon,
       title: metadata.name,
       width: 400,
       height: 300,
-      translator: OSjs.Applications.ApplicationSettings._
-    }, app, scheme]);
+      translator: _
+    });
 
+    this.schemeRef = scheme;
     this.callback = callback;
     this.closed = false;
   }
 
-  SettingsItemDialog.prototype = Object.create(Window.prototype);
-  SettingsItemDialog.constructor = Window;
-
-  SettingsItemDialog.prototype.init = function(wm, app, scheme) {
-    var self = this;
-    var root = Window.prototype.init.apply(this, arguments);
+  init(wm, app) {
+    const root = super.init(...arguments);
 
     // Load and set up scheme (GUI) here
-    this._render('SettingsItemWindow');
+    this.schemeRef.render(this, 'SettingsItemWindow');
 
-    this._find('ButtonItemOK').on('click', function() {
-      self.closed = true;
-      var selected = self._find('List').get('selected');
-      self.callback('ok', selected.length ? selected[0] : null);
-      self._close();
+    this._find('ButtonItemOK').on('click', () => {
+      this.closed = true;
+      const selected = this._find('List').get('selected');
+      this.callback('ok', selected.length ? selected[0] : null);
+      this._close();
     });
 
-    this._find('ButtonItemCancel').on('click', function() {
-      self._close();
-    });
+    this._find('ButtonItemCancel').on('click', () => this._close());
 
     return root;
-  };
+  }
 
-  SettingsItemDialog.prototype._close = function() {
+  _close() {
     if ( !this.closed ) {
       this.callback('cancel');
     }
-    return Window.prototype._close.apply(this, arguments);
-  };
+    return super._close(...arguments);
+  }
+}
 
-  /////////////////////////////////////////////////////////////////////////////
-  // WINDOWS
-  /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// WINDOWS
+/////////////////////////////////////////////////////////////////////////////
 
-  function ApplicationSettingsWindow(app, metadata, scheme, initialCategory) {
-    Window.apply(this, ['ApplicationSettingsWindow', {
+class ApplicationSettingsWindow extends Window {
+
+  constructor(app, metadata, initialCategory) {
+    super('ApplicationSettingsWindow', {
       icon: metadata.icon,
       title: metadata.name,
       width: 500,
       height: 450,
       allow_resize: true,
-      translator: OSjs.Applications.ApplicationSettings._
-    }, app, scheme]);
+      translator: _
+    }, app);
 
     this.initialCategory = initialCategory;
   }
 
-  ApplicationSettingsWindow.prototype = Object.create(Window.prototype);
-  ApplicationSettingsWindow.constructor = Window.prototype;
-
-  ApplicationSettingsWindow.prototype.init = function(wmRef, app, scheme) {
-    var self = this;
-    var root = Window.prototype.init.apply(this, arguments);
-    var wm = OSjs.Core.getWindowManager();
-    var _ = OSjs.Applications.ApplicationSettings._;
+  init(wmRef, app) {
+    const root = super.init(...arguments);
+    const wm = WindowManager.instance;
 
     // Load and render `scheme.html` file
-    this._render('SettingsWindow');
+    this.scheme = this._render('SettingsWindow', require('osjs-scheme-loader!scheme.html'));
 
     this._find('ButtonOK').son('click', this, this.onButtonOK);
     this._find('ButtonCancel').son('click', this, this.onButtonCancel);
 
     // Adds all groups and their respective entries
-    var container = document.createElement('div');
+    const container = document.createElement('div');
     container.className = 'ListView gui-generic-zebra-container';
 
-    var containers = {};
-    var tmpcontent = document.createDocumentFragment();
+    let containers = {};
+    let tmpcontent = document.createDocumentFragment();
 
     Object.keys(_groups).forEach(function(k) {
-      var c = document.createElement('ul');
-      var h = document.createElement('span');
-      var d = document.createElement('div');
+      const c = document.createElement('ul');
+      const h = document.createElement('span');
+      const d = document.createElement('div');
 
       d.className = 'gui-generic-double-padded';
       h.appendChild(document.createTextNode(_(_groups[k].label)));
@@ -160,7 +178,7 @@
       container.appendChild(d);
     });
 
-    app.modules.forEach(function(m) {
+    app.modules.forEach((m) => {
       if ( typeof m.compatible === 'function' ) {
         if ( !m.compatible() ) {
           return;
@@ -168,14 +186,14 @@
       }
 
       if ( containers[m.group] ) {
-        var i = document.createElement('img');
-        i.setAttribute('src', API.getIcon(m.icon, '32x32'));
+        const i = document.createElement('img');
+        i.setAttribute('src', Theme.getIcon(m.icon, '32x32'));
         i.setAttribute('title', m.name);
 
-        var s = document.createElement('span');
+        const s = document.createElement('span');
         s.appendChild(document.createTextNode(_(m.label || m.name)));
 
-        var c = document.createElement('li');
+        const c = document.createElement('li');
         c.className = 'gui-generic-hoverable';
         c.setAttribute('data-module', String(m.name));
         c.appendChild(i);
@@ -183,18 +201,23 @@
 
         containers[m.group].appendChild(c);
 
-        root.querySelector('[data-module="' + m.name +  '"]').className  = 'gui-generic-padded';
+        const found = root.querySelector('[data-module="' + m.name +  '"]');
+        if ( found ) {
+          found.className  = 'gui-generic-padded';
+        } else {
+          console.warn('Not found', m.name);
+        }
 
-        var settings = Utils.cloneObject(wm.getSettings());
+        const settings = Utils.cloneObject(wm.getSettings());
 
         try {
-          m.render(self, scheme, tmpcontent, settings, wm);
+          m.render(this, this.scheme, tmpcontent, settings, wm);
         } catch ( e ) {
           console.warn(e, e.stack);
         }
 
         try {
-          m.update(self, scheme, settings, wm);
+          m.update(this, this.scheme, settings, wm);
         } catch ( e ) {
           console.warn(e, e.stack);
         }
@@ -202,20 +225,20 @@
       }
     });
 
-    Object.keys(containers).forEach(function(k) {
+    Object.keys(containers).forEach((k) => {
       if ( !containers[k].children.length ) {
         containers[k].parentNode.style.display = 'none';
       }
     });
 
-    Utils.$bind(container, 'click', function(ev) {
-      var t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
-      GUI.Helpers.blurMenu();
+    Events.$bind(container, 'click', (ev) => {
+      const t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
+      Menu.blur();
 
       if ( t && t.tagName === 'LI' && t.hasAttribute('data-module') ) {
         ev.preventDefault();
-        var m = t.getAttribute('data-module');
-        self.onModuleSelect(m);
+        const m = t.getAttribute('data-module');
+        this.onModuleSelect(m);
       }
     }, true);
 
@@ -229,24 +252,22 @@
     }
 
     return root;
-  };
+  }
 
-  ApplicationSettingsWindow.prototype.destroy = function() {
+  destroy() {
     // This is where you remove objects, dom elements etc attached to your
     // instance. You can remove this if not used.
-    if ( Window.prototype.destroy.apply(this, arguments) ) {
+    if ( super.destroy(...arguments) ) {
       this.currentModule = null;
 
       return true;
     }
     return false;
-  };
+  }
 
-  ApplicationSettingsWindow.prototype.onModuleSelect = function(name) {
-    var _ = OSjs.Applications.ApplicationSettings._;
-    var wm = OSjs.Core.getWindowManager();
-    var root = this._$element;
-    var self = this;
+  onModuleSelect(name) {
+    const wm = WindowManager.instance;
+    const root = this._$element;
 
     function _d(d) {
       root.querySelector('[data-id="ContainerSelection"]').style.display = d ? 'block' : 'none';
@@ -262,7 +283,7 @@
 
     this._setTitle(null);
 
-    var found, settings;
+    let found, settings;
     if ( name ) {
       this._app.modules.forEach(function(m) {
         if ( !found && m.name === name ) {
@@ -272,13 +293,13 @@
     }
 
     if ( found ) {
-      var mod = root.querySelector('div[data-module="' + found.name +  '"]');
+      const mod = root.querySelector('div[data-module="' + found.name +  '"]');
       if ( mod ) {
         mod.style.display = 'block';
         settings = Utils.cloneObject(wm.getSettings());
 
         try {
-          found.update(this, this._scheme, settings, wm, true);
+          found.update(this, this.scheme, settings, wm, true);
         } catch ( e ) {
           console.warn(e, e.stack);
         }
@@ -295,10 +316,10 @@
     } else {
       if ( !name ) { // Resets values to original (or current)
         settings = Utils.cloneObject(wm.getSettings());
-        this._app.modules.forEach(function(m) {
+        this._app.modules.forEach((m) => {
           try {
             if ( m._inited ) {
-              m.update(self, self._scheme, settings, wm);
+              m.update(this, this.scheme, settings, wm);
             }
           } catch ( e ) {
             console.warn(e, e.stack);
@@ -308,16 +329,15 @@
     }
 
     this._app.setModule(found);
-  };
+  }
 
-  ApplicationSettingsWindow.prototype.onButtonOK = function() {
-    var self = this;
-    var settings = {};
-    var wm = OSjs.Core.getWindowManager();
+  onButtonOK() {
+    const settings = {};
+    const wm = WindowManager.instance;
 
-    this._app.modules.forEach(function(m) {
+    this._app.modules.forEach((m) => {
       if ( m._inited ) {
-        var res = m.save(self, self._scheme, settings, wm);
+        const res = m.save(this, this.scheme, settings, wm);
         if ( typeof res === 'function' ) {
           res();
         }
@@ -325,35 +345,38 @@
     });
 
     this._toggleLoading(true);
-    this._app.saveSettings(settings, function() {
-      self._toggleLoading(false);
+    this._app.saveSettings(settings, () => {
+      this._toggleLoading(false);
     });
-  };
+  }
 
-  ApplicationSettingsWindow.prototype.onButtonCancel = function() {
+  onButtonCancel() {
     this.onModuleSelect(null);
-  };
+  }
 
-  ApplicationSettingsWindow.prototype.onExternalAttention = function(cat) {
+  onExternalAttention(cat) {
     this.onModuleSelect(categoryMap[cat] || cat);
     this._focus();
-  };
+  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // APPLICATION
-  /////////////////////////////////////////////////////////////////////////////
+}
 
-  function ApplicationSettings(args, metadata) {
-    Application.apply(this, ['ApplicationSettings', args, metadata]);
+/////////////////////////////////////////////////////////////////////////////
+// APPLICATION
+/////////////////////////////////////////////////////////////////////////////
 
-    var self = this;
-    var registered = OSjs.Applications.ApplicationSettings.Modules;
+class ApplicationSettings extends Application {
+
+  constructor(args, metadata) {
+    super('ApplicationSettings', args, metadata);
+
+    const registered = OSjs.Applications.ApplicationSettings.Modules;
 
     this.watches = {};
     this.currentModule = null;
 
     this.modules = Object.keys(registered).map(function(name) {
-      var opts = Utils.argumentDefaults(registered[name], {
+      const opts = Utils.argumentDefaults(registered[name], {
         _inited: false,
         name: name,
         group: DEFAULT_GROUP,
@@ -377,15 +400,15 @@
       return opts;
     });
 
-    this.modules.forEach(function(m) {
-      m.init(self);
+    this.modules.forEach((m) => {
+      m.init(this);
 
       if ( m.watch && m.watch instanceof Array ) {
-        m.watch.forEach(function(w) {
-          self.watches[m.name] = OSjs.Core.getSettingsManager().watch(w, function() {
-            var win = self._getMainWindow();
+        m.watch.forEach((w) => {
+          this.watches[m.name] = SettingsManager.watch(w, () => {
+            const win = this._getMainWindow();
             if ( m && win ) {
-              if ( self.currentModule && self.currentModule.name === m.name ) {
+              if ( this.currentModule && this.currentModule.name === m.name ) {
                 win.onModuleSelect(m.name);
               }
             }
@@ -395,56 +418,64 @@
     });
   }
 
-  ApplicationSettings.prototype = Object.create(Application.prototype);
-  ApplicationSettings.constructor = Application;
-
-  ApplicationSettings.prototype.destroy = function() {
+  destroy() {
     // This is where you remove objects, dom elements etc attached to your
     // instance. You can remove this if not used.
-    if ( Application.prototype.destroy.apply(this, arguments) ) {
-
-      var self = this;
-      Object.keys(this.watches).forEach(function(k) {
-        OSjs.Core.getSettingsManager().unwatch(self.watches[k]);
+    if ( super.destroy(...arguments) ) {
+      Object.keys(this.watches).forEach((k) => {
+        SettingsManager.unwatch(this.watches[k]);
       });
       this.watches = {};
 
       return true;
     }
     return false;
-  };
+  }
 
-  ApplicationSettings.prototype.init = function(settings, metadata, scheme) {
-    Application.prototype.init.apply(this, arguments);
+  init(settings, metadata) {
+    super.init(...arguments);
 
-    var category = this._getArgument('category') || settings.category;
-    var win = this._addWindow(new ApplicationSettingsWindow(this, metadata, scheme, category));
+    const category = this._getArgument('category') || settings.category;
+    const win = this._addWindow(new ApplicationSettingsWindow(this, metadata, category));
 
     this._on('attention', function(args) {
       if ( win && args.category ) {
         win.onExternalAttention(args.category);
       }
     });
-  };
+  }
 
-  ApplicationSettings.prototype.saveSettings = function(settings, cb) {
-    var wm = OSjs.Core.getWindowManager();
+  saveSettings(settings, cb) {
+    const wm = WindowManager.instance;
     wm.applySettings(settings, false, 1);
-    OSjs.Core.getSettingsManager().save(null, cb);
-  };
+    SettingsManager.save().then((res) => cb(false, res)).catch(cb);
+  }
 
-  ApplicationSettings.prototype.setModule = function(m) {
+  setModule(m) {
     this.currentModule = m;
-  };
+  }
+}
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// EXPORTS
+/////////////////////////////////////////////////////////////////////////////
 
-  OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationSettings = OSjs.Applications.ApplicationSettings || {};
-  OSjs.Applications.ApplicationSettings.Class = Object.seal(ApplicationSettings);
-  OSjs.Applications.ApplicationSettings.Modules = OSjs.Applications.ApplicationSettings.Modules || {};
-  OSjs.Applications.ApplicationSettings.SettingsItemDialog = SettingsItemDialog;
+OSjs.Applications = OSjs.Applications || {};
+OSjs.Applications.ApplicationSettings = OSjs.Applications.ApplicationSettings || {};
+OSjs.Applications.ApplicationSettings.Class = Object.seal(ApplicationSettings);
+OSjs.Applications.ApplicationSettings.SettingsItemDialog = SettingsItemDialog;
+OSjs.Applications.ApplicationSettings.Modules = {
+  Desktop: ModuleDesktop,
+  Input: ModuleInput,
+  Locale: ModuleLocale,
+  Panel: ModulePanel,
+  PM: ModulePM,
+  Search: ModuleSearch,
+  Sounds: ModuleSounds,
+  Store: ModuleStore,
+  Theme: ModuleTheme,
+  User: ModuleUser,
+  Users: ModuleUsers,
+  VFS: ModuleVFS
+};
 
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);

@@ -29,21 +29,25 @@
  */
 
 /*eslint valid-jsdoc: "off"*/
-(function(DefaultApplication, DefaultApplicationWindow, Application, Window, Utils, API, VFS, GUI) {
-  'use strict';
+const DOM = OSjs.require('utils/dom');
+const Events = OSjs.require('utils/events');
+const Dialog = OSjs.require('core/dialog');
+const Locales = OSjs.require('core/locales');
+const Connection = OSjs.require('core/connection');
+const FileMetadata = OSjs.require('vfs/file');
+const DefaultApplication = OSjs.require('helpers/default-application');
+const DefaultApplicationWindow = OSjs.require('helpers/default-application-window');
 
-  /////////////////////////////////////////////////////////////////////////////
-  // WINDOWS
-  /////////////////////////////////////////////////////////////////////////////
+class ApplicationPreviewWindow extends DefaultApplicationWindow {
 
-  function ApplicationPreviewWindow(app, metadata, scheme, file) {
-    DefaultApplicationWindow.apply(this, ['ApplicationPreviewWindow', {
+  constructor(app, metadata, file) {
+    super('ApplicationPreviewWindow', {
       allow_drop: true,
       icon: metadata.icon,
       title: metadata.name,
       width: 400,
       height: 200
-    }, app, scheme, file]);
+    }, app, file);
 
     this.zoomLevel = 0;
     this.isImage = true;
@@ -52,21 +56,18 @@
     this.$view = null;
   }
 
-  ApplicationPreviewWindow.prototype = Object.create(DefaultApplicationWindow.prototype);
-  ApplicationPreviewWindow.constructor = DefaultApplicationWindow.prototype;
-
-  ApplicationPreviewWindow.prototype.destroy = function() {
+  destroy() {
     this.$view = null;
 
-    return DefaultApplicationWindow.prototype.destroy.apply(this, arguments);
-  };
+    return super.destroy(...arguments);
+  }
 
-  ApplicationPreviewWindow.prototype.init = function(wm, app, scheme) {
+  init(wm, app) {
     var self = this;
-    var root = DefaultApplicationWindow.prototype.init.apply(this, arguments);
+    const root = super.init(...arguments);
 
     // Load and set up scheme (GUI) here
-    this._render('PreviewWindow');
+    this._render('PreviewWindow', require('osjs-scheme-loader!scheme.html'));
 
     this._find('ZoomIn').son('click', this, this.onZoomIn);
     this._find('ZoomOut').son('click', this, this.onZoomOut);
@@ -75,28 +76,28 @@
 
     this._find('SubmenuFile').on('select', function(ev) {
       if ( ev.detail.id === 'MenuOpenLocation' ) {
-        API.createDialog('Input', {
+        Dialog.create('Input', {
           value: 'http://'
         }, function(ev, btn, value) {
           if ( btn === 'ok' ) {
             if ( !value.match(/^http/) ) {
-              self._setWarning(API._('ERR_OPEN_LOCATION_FMT', API._('ERR_INVALID_LOCATION')));
+              self._setWarning(Locales._('ERR_OPEN_LOCATION_FMT', Locales._('ERR_INVALID_LOCATION')));
               return;
             }
 
-            API.curl({
+            Connection.request('curl', {
               method: 'HEAD',
               url: value
             }, function(err, res) {
               var contentType = res.headers['content-type'];
               if ( !contentType ) {
-                err = API._('ERR_VFS_NO_MIME_DETECT');
+                err = Locales._('ERR_VFS_NO_MIME_DETECT');
               }
 
               if ( err ) {
-                self._setWarning(API._('ERR_OPEN_LOCATION_FMT', err));
+                self._setWarning(Locales._('ERR_OPEN_LOCATION_FMT', err));
               } else {
-                self.showFile(new VFS.File(value, contentType), value);
+                self.showFile(new FileMetadata(value, contentType), value);
               }
             });
           }
@@ -105,7 +106,7 @@
     });
 
     var c = this._find('Content').$element;
-    Utils.$bind(c, 'mousewheel', function(ev, pos) {
+    Events.$bind(c, 'mousewheel', function(ev, pos) {
       if ( pos.z === 1 ) {
         self.onZoomOut();
       } else if ( pos.z === -1 ) {
@@ -114,12 +115,12 @@
     });
 
     return root;
-  };
+  }
 
-  ApplicationPreviewWindow.prototype.showFile = function(file, result) {
+  showFile(file, result) {
     var self = this;
     var root = this._find('Content').$element;
-    Utils.$empty(root);
+    DOM.$empty(root);
 
     if ( result ) {
       this.zoomLevel = 0;
@@ -148,10 +149,10 @@
       toolbar[this.isImage ? 'show' : 'hide']();
     }
 
-    DefaultApplicationWindow.prototype.showFile.apply(this, arguments);
-  };
+    super.showFile(...arguments);
+  }
 
-  ApplicationPreviewWindow.prototype._onZoom = function(val) {
+  _onZoom(val) {
     if ( !this.isImage || !this.$view ) {
       return;
     }
@@ -189,49 +190,40 @@
 
     this.$view.$element.setAttribute('data-zoom', attr);
     this.$view.$element.firstChild.style.width = (w === null ? 'auto' : String(w) + 'px');
-  };
+  }
 
-  ApplicationPreviewWindow.prototype.onZoomIn = function() {
+  onZoomIn() {
     this._onZoom('in');
-  };
+  }
 
-  ApplicationPreviewWindow.prototype.onZoomOut = function() {
+  onZoomOut() {
     this._onZoom('out');
-  };
+  }
 
-  ApplicationPreviewWindow.prototype.onZoomFit = function() {
+  onZoomFit() {
     this._onZoom('fit');
-  };
+  }
 
-  ApplicationPreviewWindow.prototype.onZoomOriginal = function() {
+  onZoomOriginal() {
     this._onZoom();
-  };
+  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // APPLICATION
-  /////////////////////////////////////////////////////////////////////////////
+}
 
-  var ApplicationPreview = function(args, metadata) {
-    DefaultApplication.apply(this, ['ApplicationPreview', args, metadata, {
+class ApplicationPreview extends DefaultApplication {
+
+  constructor(args, metadata) {
+    super('ApplicationPreview', args, metadata, {
       readData: false
-    }]);
-  };
+    });
+  }
 
-  ApplicationPreview.prototype = Object.create(DefaultApplication.prototype);
-  ApplicationPreview.constructor = DefaultApplication;
+  init(settings, metadata) {
+    super.init(...arguments);
 
-  ApplicationPreview.prototype.init = function(settings, metadata, scheme) {
-    Application.prototype.init.call(this, settings, metadata, scheme);
-    var file = this._getArgument('file');
-    this._addWindow(new ApplicationPreviewWindow(this, metadata, scheme, file));
-  };
+    const file = this._getArgument('file');
+    this._addWindow(new ApplicationPreviewWindow(this, metadata, file));
+  }
+}
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationPreview = OSjs.Applications.ApplicationPreview || {};
-  OSjs.Applications.ApplicationPreview.Class = Object.seal(ApplicationPreview);
-
-})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);
+OSjs.Applications.ApplicationPreview = ApplicationPreview;

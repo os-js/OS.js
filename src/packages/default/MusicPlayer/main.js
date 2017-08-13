@@ -29,55 +29,61 @@
  */
 
 /*eslint valid-jsdoc: "off"*/
-(function(DefaultApplication, DefaultApplicationWindow, Application, Window, Utils, API, VFS, GUI) {
-  'use strict';
-  // TODO: Playlist
-  // TODO: Server seek support: https://gist.github.com/codler/3906826
+// TODO: Playlist
+// TODO: Server seek support: https://gist.github.com/codler/3906826
 
-  function formatTime(secs) {
-    var hr  = Math.floor(secs / 3600);
-    var min = Math.floor((secs - (hr * 3600)) / 60);
-    var sec = Math.floor(secs - (hr * 3600) -  (min * 60));
+import Translations from './locales';
 
-    if (min < 10) {
-      min = '0' + min;
-    }
-    if (sec < 10) {
-      sec  = '0' + sec;
-    }
+const FS = OSjs.require('utils/fs');
+const Utils = OSjs.require('utils/misc');
+const Locales = OSjs.require('core/locales');
+const Dialog = OSjs.require('core/dialog');
+const FileMetadata = OSjs.require('vfs/file');
+const DefaultApplication = OSjs.require('helpers/default-application');
+const DefaultApplicationWindow = OSjs.require('helpers/default-application-window');
 
-    return min + ':' + sec;
+const doTranslate = Locales.createLocalizer(Translations);
+
+function formatTime(secs) {
+  var hr  = Math.floor(secs / 3600);
+  var min = Math.floor((secs - (hr * 3600)) / 60);
+  var sec = Math.floor(secs - (hr * 3600) -  (min * 60));
+
+  if (min < 10) {
+    min = '0' + min;
+  }
+  if (sec < 10) {
+    sec  = '0' + sec;
   }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // WINDOWS
-  /////////////////////////////////////////////////////////////////////////////
+  return min + ':' + sec;
+}
 
-  function ApplicationMusicPlayerWindow(app, metadata, scheme, file) {
-    DefaultApplicationWindow.apply(this, ['ApplicationMusicPlayerWindow', {
+class ApplicationMusicPlayerWindow extends DefaultApplicationWindow {
+
+  constructor(app, metadata, file) {
+    super('ApplicationMusicPlayerWindow', {
       icon: metadata.icon,
       title: metadata.name,
+      auto_size: true,
       allow_drop: true,
       allow_resize: false,
       allow_maximize: false,
       width: 370,
       height: 260,
-      translator: OSjs.Applications.ApplicationMusicPlayer._
-    }, app, scheme, file]);
+      translator: doTranslate
+    }, app, file);
 
     this.updated = 0;
     this.seeking = false;
   }
 
-  ApplicationMusicPlayerWindow.prototype = Object.create(DefaultApplicationWindow.prototype);
-  ApplicationMusicPlayerWindow.constructor = DefaultApplicationWindow.prototype;
-
-  ApplicationMusicPlayerWindow.prototype.init = function(wm, app, scheme) {
-    var root = DefaultApplicationWindow.prototype.init.apply(this, arguments);
+  init(wm, app) {
+    const root = super.init(...arguments);
     var self = this;
 
     // Load and set up scheme (GUI) here
-    this._render('MusicPlayerWindow');
+    this._render('MusicPlayerWindow', require('osjs-scheme-loader!./scheme.html'));
 
     var label = this._find('LabelTime');
     var seeker = this._find('Seek');
@@ -137,34 +143,34 @@
       try {
         switch ( ev.target.error.code ) {
           case ev.target.error.MEDIA_ERR_ABORTED:
-            msg = OSjs.Applications.ApplicationMusicPlayer._('Playback aborted');
+            msg = doTranslate('Playback aborted');
             break;
           case ev.target.error.MEDIA_ERR_NETWORK:
-            msg = OSjs.Applications.ApplicationMusicPlayer._('Network or communication error');
+            msg = doTranslate('Network or communication error');
             break;
           case ev.target.error.MEDIA_ERR_DECODE:
-            msg = OSjs.Applications.ApplicationMusicPlayer._('Decoding failed. Corruption or unsupported media');
+            msg = doTranslate('Decoding failed. Corruption or unsupported media');
             break;
           case ev.target.error.MEDIA_ERR_SRC_NOT_SUPPORTED:
-            msg = OSjs.Applications.ApplicationMusicPlayer._('Media source not supported');
+            msg = doTranslate('Media source not supported');
             break;
           default:
-            msg = OSjs.API._('ERR_APP_UNKNOWN_ERROR');
+            msg = Locales._('ERR_APP_UNKNOWN_ERROR');
             break;
         }
       } catch ( e ) {
-        msg = OSjs.API._('ERR_GENERIC_APP_FATAL_FMT', e);
+        msg = Locales._('ERR_GENERIC_APP_FATAL_FMT', e);
       }
 
       if ( msg ) {
-        API.createDialog('Alert', {title: self._title, message: msg}, null, self);
+        Dialog.create('Alert', {title: self._title, message: msg}, null, self);
       }
     });
 
     return root;
-  };
+  }
 
-  ApplicationMusicPlayerWindow.prototype.showFile = function(file, content) {
+  showFile(file, content) {
     if ( !file || !content ) {
       return;
     }
@@ -182,7 +188,7 @@
     });
 
     var artist = file ? file.filename : '';
-    var album = file ? Utils.dirname(file.path) : '';
+    var album = file ? FS.dirname(file.path) : '';
 
     var labelArtist = this._find('LabelArtist').set('value', '');
     var labelTitle  = this._find('LabelTitle').set('value', artist);
@@ -196,7 +202,7 @@
     this.seeking = false;
 
     function getInfo() {
-      self._app._api('info', {filename: file.path}, function(err, info) {
+      self._app._api('info', {filename: file.path}).then((info) => {
         if ( info ) {
           if ( info.Artist ) {
             labelArtist.set('value', info.Artist);
@@ -214,9 +220,9 @@
     audio.src = content || '';
     audio.play();
     getInfo();
-  };
+  }
 
-  ApplicationMusicPlayerWindow.prototype.updateTime = function(label, seeker) {
+  updateTime(label, seeker) {
     if ( this._destroyed ) {
       return; // Important because async
     }
@@ -250,46 +256,32 @@
     if ( !this.seeking ) {
       seeker.set('value', current);
     }
-  };
+  }
+}
 
-  /////////////////////////////////////////////////////////////////////////////
-  // APPLICATION
-  /////////////////////////////////////////////////////////////////////////////
+class ApplicationMusicPlayer extends DefaultApplication {
 
-  var ApplicationMusicPlayer = function(args, metadata) {
-    DefaultApplication.apply(this, ['ApplicationMusicPlayer', args, metadata, {
+  constructor(args, metadata) {
+    super('ApplicationMusicPlayer', args, metadata, {
       readData: false
-    }]);
-  };
+    });
+  }
 
-  ApplicationMusicPlayer.prototype = Object.create(DefaultApplication.prototype);
-  ApplicationMusicPlayer.constructor = DefaultApplication;
+  init(settings, metadata) {
+    super.init(...arguments);
 
-  ApplicationMusicPlayer.prototype.destroy = function() {
-    return DefaultApplication.prototype.destroy.apply(this, arguments);
-  };
+    const file = this._getArgument('file');
+    this._addWindow(new ApplicationMusicPlayerWindow(this, metadata, file));
+  }
 
-  ApplicationMusicPlayer.prototype.init = function(settings, metadata, scheme) {
-    Application.prototype.init.call(this, settings, metadata, scheme);
-    var file = this._getArgument('file');
-    this._addWindow(new ApplicationMusicPlayerWindow(this, metadata, scheme, file));
-  };
-
-  ApplicationMusicPlayer.prototype._onMessage = function(msg, obj, args) {
-    Application.prototype._onMessage.apply(this, arguments);
+  _onMessage(msg, obj, args) {
+    super._onMessage(...arguments);
 
     if ( msg === 'attention' && obj && obj.file ) {
       var win = this._getMainWindow();
-      this.openFile(new VFS.File(obj.file), win);
+      this.openFile(new FileMetadata(obj.file), win);
     }
-  };
+  }
+}
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationMusicPlayer = OSjs.Applications.ApplicationMusicPlayer || {};
-  OSjs.Applications.ApplicationMusicPlayer.Class = Object.seal(ApplicationMusicPlayer);
-
-})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);
+OSjs.Applications.ApplicationMusicPlayer = ApplicationMusicPlayer;

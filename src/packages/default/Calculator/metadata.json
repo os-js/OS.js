@@ -16,8 +16,5 @@
   },
   "icon": "apps/accessories-calculator.png",
   "category": "office",
-  "preload": ["main.js", "main.css", {
-    "src": "scheme.html",
-    "type": "scheme"
-  }]
+  "preload": ["main.js", "main.css"]
 }

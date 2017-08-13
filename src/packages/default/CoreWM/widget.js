@@ -29,157 +29,164 @@
  */
 
 /*eslint valid-jsdoc: "off"*/
-(function(Window, GUI, Utils, API, VFS) {
-  'use strict';
+import Translations from './locales';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // DEFAULTS
-  /////////////////////////////////////////////////////////////////////////////
+const _ = OSjs.require('core/locales').createLocalizer(Translations);
+const Menu = OSjs.require('gui/menu');
+const DOM = OSjs.require('utils/dom');
+const Utils = OSjs.require('utils/misc');
+const Events = OSjs.require('utils/events');
+const WindowManager = OSjs.require('core/window-manager');
 
-  var MIN_WIDTH = 64;
-  var MIN_HEIGHT = 64;
+/////////////////////////////////////////////////////////////////////////////
+// DEFAULTS
+/////////////////////////////////////////////////////////////////////////////
 
-  var TIMEOUT_SAVE = 500;
-  var TIMEOUT_SHOW_ENVELOPE = 3000;
-  var TIMEOUT_HIDE_ENVELOPE = 1000;
+const MIN_WIDTH = 64;
+const MIN_HEIGHT = 64;
 
-  var DEFAULT_OPTIONS = {
-    aspect: false, // true for automatic aspect based on width
-    width: 100,
-    height: 100,
-    minWidth: MIN_WIDTH,
-    minHeight: MIN_HEIGHT,
-    maxHeight: 500,
-    maxWidth: 500,
-    left: 0,
-    right: null,
-    top: 0,
-    bottom: null,
-    locked: false,
-    canvas: false,
-    resizable: false,
-    viewBox: false, // x y w h or 'true'
-    frequency: 2, // FPS for canvas
-    custom: {
-      // Used for widget-spesific styles etc
-    },
-    settings: {
-      enabled: false,
-      name: 'CoreWMWidgetSettingsWindow',
-      title: API._('LBL_SETTINGS'),
-      width: 300,
-      height: 300
-    }
-  };
+const TIMEOUT_SAVE = 500;
+const TIMEOUT_SHOW_ENVELOPE = 3000;
+const TIMEOUT_HIDE_ENVELOPE = 1000;
 
-  /////////////////////////////////////////////////////////////////////////////
-  // HELPERS
-  /////////////////////////////////////////////////////////////////////////////
+const DEFAULT_OPTIONS = {
+  aspect: false, // true for automatic aspect based on width
+  width: 100,
+  height: 100,
+  minWidth: MIN_WIDTH,
+  minHeight: MIN_HEIGHT,
+  maxHeight: 500,
+  maxWidth: 500,
+  left: 0,
+  right: null,
+  top: 0,
+  bottom: null,
+  locked: false,
+  canvas: false,
+  resizable: false,
+  viewBox: false, // x y w h or 'true'
+  frequency: 2, // FPS for canvas
+  custom: {
+    // Used for widget-spesific styles etc
+  },
+  settings: {
+    enabled: false,
+    name: 'CoreWMWidgetSettingsWindow',
+    title: _('LBL_SETTINGS'),
+    width: 300,
+    height: 300
+  }
+};
 
-  function bindWidgetEvents(instance) {
-    var timeout = null;
-    var position = instance._getNormalizedPosition();
-    var dimension = instance._getDimension();
-    var start = {x: 0, y: 0};
+/////////////////////////////////////////////////////////////////////////////
+// HELPERS
+/////////////////////////////////////////////////////////////////////////////
 
-    function _getDimensionAspected(dx, dy) {
-      if ( instance._options.aspect === true ) {
-        var width = dimension.width + dx;
-        var height = width / instance._aspect;
-        return {width: width, height: height};
-      }
+function bindWidgetEvents(instance) {
+  var timeout = null;
+  var position = instance._getNormalizedPosition();
+  var dimension = instance._getDimension();
+  var start = {x: 0, y: 0};
 
-      return {
-        width: dimension.width + dx,
-        height: dimension.height + dy
-      };
-    }
-
-    function _mouseDown(ev, pos, action) {
-      ev.preventDefault();
-      if ( instance._locked ) {
-        return;
-      }
-
-      timeout = clearTimeout(timeout);
-      start = pos;
-      position = instance._getNormalizedPosition();
-      dimension = instance._getDimension();
-
-      Utils.$bind(window, 'mousemove:modifywidget', function(ev, pos) {
-        var dx = pos.x - start.x;
-        var dy = pos.y - start.y;
-        var obj = action === 'move' ? {
-          left: position.left + dx,
-          top: position.top + dy
-        } : _getDimensionAspected(dx, dy);
-
-        instance._onMouseMove(ev, obj, action);
-      });
-
-      Utils.$bind(window, 'mouseup:modifywidget', function(ev, pos) {
-        Utils.$unbind(window, 'mousemove:modifywidget');
-        Utils.$unbind(window, 'mouseup:modifywidget');
-
-        instance._onMouseUp(ev, pos, action);
-      });
-
-      instance._windowWidth = window.innerWidth;
-      instance._windowHeight = window.innerHeight;
-      instance._onMouseDown(ev, pos, action);
+  function _getDimensionAspected(dx, dy) {
+    if ( instance._options.aspect === true ) {
+      var width = dimension.width + dx;
+      var height = width / instance._aspect;
+      return {width: width, height: height};
     }
 
-    Utils.$bind(instance._$element, 'mousedown:movewidget', function(ev, pos) {
-      _mouseDown(ev, pos, 'move');
-    });
-    Utils.$bind(instance._$resize, 'mousedown:resizewidget', function(ev, pos) {
-      ev.stopPropagation();
-      _mouseDown(ev, pos, 'resize');
+    return {
+      width: dimension.width + dx,
+      height: dimension.height + dy
+    };
+  }
+
+  function _mouseDown(ev, pos, action) {
+    ev.preventDefault();
+    if ( instance._locked ) {
+      return;
+    }
+
+    timeout = clearTimeout(timeout);
+    start = pos;
+    position = instance._getNormalizedPosition();
+    dimension = instance._getDimension();
+
+    Events.$bind(window, 'mousemove:modifywidget', function(ev, pos) {
+      var dx = pos.x - start.x;
+      var dy = pos.y - start.y;
+      var obj = action === 'move' ? {
+        left: position.left + dx,
+        top: position.top + dy
+      } : _getDimensionAspected(dx, dy);
+
+      instance._onMouseMove(ev, obj, action);
     });
 
-    Utils.$bind(instance._$element, 'click:showenvelope', function(ev) {
-      timeout = clearTimeout(timeout);
+    Events.$bind(window, 'mouseup:modifywidget', function(ev, pos) {
+      Events.$unbind(window, 'mousemove:modifywidget');
+      Events.$unbind(window, 'mouseup:modifywidget');
+
+      instance._onMouseUp(ev, pos, action);
+    });
+
+    instance._windowWidth = window.innerWidth;
+    instance._windowHeight = window.innerHeight;
+    instance._onMouseDown(ev, pos, action);
+  }
+
+  Events.$bind(instance._$element, 'mousedown:movewidget', function(ev, pos) {
+    _mouseDown(ev, pos, 'move');
+  });
+  Events.$bind(instance._$resize, 'mousedown:resizewidget', function(ev, pos) {
+    ev.stopPropagation();
+    _mouseDown(ev, pos, 'resize');
+  });
+
+  Events.$bind(instance._$element, 'click:showenvelope', function(ev) {
+    timeout = clearTimeout(timeout);
+    instance._showEnvelope();
+  });
+  Events.$bind(instance._$element, 'mouseover:showenvelope', function() {
+    timeout = clearTimeout(timeout);
+    timeout = setTimeout(function() {
       instance._showEnvelope();
-    });
-    Utils.$bind(instance._$element, 'mouseover:showenvelope', function() {
-      timeout = clearTimeout(timeout);
-      timeout = setTimeout(function() {
-        instance._showEnvelope();
-      }, TIMEOUT_SHOW_ENVELOPE);
-    });
-    Utils.$bind(instance._$element, 'mouseout:hideenvelope', function(ev) {
-      timeout = clearTimeout(timeout);
-      timeout = setTimeout(function() {
-        instance._hideEnvelope();
-      }, TIMEOUT_HIDE_ENVELOPE);
-    });
+    }, TIMEOUT_SHOW_ENVELOPE);
+  });
+  Events.$bind(instance._$element, 'mouseout:hideenvelope', function(ev) {
+    timeout = clearTimeout(timeout);
+    timeout = setTimeout(function() {
+      instance._hideEnvelope();
+    }, TIMEOUT_HIDE_ENVELOPE);
+  });
 
-    Utils.$bind(instance._$element, 'contextmenu:widgetcontext', function(ev) {
-      instance._onContextMenu(ev);
-    });
+  Events.$bind(instance._$element, 'contextmenu:widgetcontext', function(ev) {
+    instance._onContextMenu(ev);
+  });
+}
+
+function validNumber(num) {
+  if ( typeof num !== 'undefined' && num !== null ) {
+    return !isNaN(num);
   }
+  return false;
+}
 
-  function validNumber(num) {
-    if ( typeof num !== 'undefined' && num !== null ) {
-      return !isNaN(num);
-    }
-    return false;
-  }
+/////////////////////////////////////////////////////////////////////////////
+// WIDGET
+/////////////////////////////////////////////////////////////////////////////
 
-  /////////////////////////////////////////////////////////////////////////////
-  // WIDGET
-  /////////////////////////////////////////////////////////////////////////////
-
+export default class Widget {
   /**
    * A CoreWM Widget
    *
    * TODO: Behave according to orientation
    *
-   * @param   {String}                          name      Widget Name
-   * @param   {Object}                          options   Widget Options
-   * @param   {OSjs.Helpers.SettingsFragment}   settings  SettingsFragment instance
+   * @param   {String}             name      Widget Name
+   * @param   {Object}             options   Widget Options
+   * @param   {SettingsFragment}   settings  SettingsFragment instance
    */
-  function Widget(name, options, settings) {
+  constructor(name, options, settings) {
     options = Utils.mergeObject(Utils.cloneObject(DEFAULT_OPTIONS), options || {});
 
     this._aspect = options.aspect === true ? options.width / options.height : (typeof options.aspect === 'number' ? options.aspect : 1.0);
@@ -235,7 +242,7 @@
    *
    * @return {Node}                   The created DOM Node containing Widget
    */
-  Widget.prototype.init = function(root) {
+  init(root) {
     this._windowWidth = window.innerWidth;
     this._windowHeight = window.innerHeight;
     this._$element = document.createElement('corewm-widget');
@@ -258,25 +265,23 @@
     this._updateDimension();
     this._setLock(this._locked);
 
-    Utils.$addClass(this._$element, 'Widget' + this._name);
+    DOM.$addClass(this._$element, 'Widget' + this._name);
     this._$element.appendChild(this._$resize);
     root.appendChild(this._$element);
 
     return this._$element;
-  };
+  }
 
   /**
    * When widget has been rendered to DOM and added in WindowManager
    */
-  Widget.prototype._inited = function() {
-    var self = this;
-
+  _inited() {
     this.onInited();
     this.onResize(this._dimension);
 
     var fpsInterval, now, then, elapsed;
 
-    function animate() {
+    const animate = () => {
       window.requestAnimationFrame(animate);
 
       now = Date.now();
@@ -284,9 +289,9 @@
 
       if ( elapsed > fpsInterval ) {
         then = now - (elapsed % fpsInterval);
-        self.onRender();
+        this.onRender();
       }
-    }
+    };
 
     if ( this._$canvas ) {
       var fps = Math.min(this._options.frequency, 1);
@@ -298,20 +303,20 @@
         animate();
       });
     }
-  };
+  }
 
   /**
    * When WindowManager requests destruction of Widget
    */
-  Widget.prototype.destroy = function() {
-    Utils.$unbind(window, 'mousemove:modifywidget');
-    Utils.$unbind(window, 'mouseup:modifywidget');
-    Utils.$unbind(this._$resize, 'mousedown:resizewidget');
-    Utils.$unbind(this._$element, 'mousedown:movewidget');
-    Utils.$unbind(this._$element, 'click:showenvelope');
-    Utils.$unbind(this._$element, 'mouseover:showenvelope');
-    Utils.$unbind(this._$element, 'mouseout:hideenvelope');
-    Utils.$unbind(this._$element, 'contextmenu:widgetcontext');
+  destroy() {
+    Events.$unbind(window, 'mousemove:modifywidget');
+    Events.$unbind(window, 'mouseup:modifywidget');
+    Events.$unbind(this._$resize, 'mousedown:resizewidget');
+    Events.$unbind(this._$element, 'mousedown:movewidget');
+    Events.$unbind(this._$element, 'click:showenvelope');
+    Events.$unbind(this._$element, 'mouseover:showenvelope');
+    Events.$unbind(this._$element, 'mouseout:hideenvelope');
+    Events.$unbind(this._$element, 'contextmenu:widgetcontext');
 
     this._saveTimeout = clearTimeout(this._saveTimeout);
 
@@ -325,25 +330,25 @@
     }
     this._settingsWindow = null;
 
-    this._$canvas = Utils.$remove(this._$canvas);
-    this._$resize = Utils.$remove(this._$resize);
-    this._$element = Utils.$remove(this._$element);
+    this._$canvas = DOM.$remove(this._$canvas);
+    this._$resize = DOM.$remove(this._$resize);
+    this._$element = DOM.$remove(this._$element);
     this._$context = null;
-  };
+  }
 
   /**
    * Blurs the widget if active
    */
-  Widget.prototype.blur = function() {
-  };
+  blur() {
+  }
 
   /**
    * When mouse is pressed
    */
-  Widget.prototype._onMouseDown = function(ev, pos, action) {
+  _onMouseDown(ev, pos, action) {
     this._saveTimeout = clearTimeout(this._saveTimeout);
 
-    Utils.$addClass(this._$element, 'corewm-widget-active');
+    DOM.$addClass(this._$element, 'corewm-widget-active');
 
     // This temporarily sets the position to a normalized one
     // to prevent resizing going in wrong direction
@@ -351,12 +356,12 @@
       var obj = this._getNormalizedPosition();
       this._setPosition(obj);
     }
-  };
+  }
 
   /**
    * When mouse is moved after pressing
    */
-  Widget.prototype._onMouseMove = function(ev, obj, action) {
+  _onMouseMove(ev, obj, action) {
     this._isManipulating = true;
 
     if ( action === 'move' ) {
@@ -366,18 +371,16 @@
       this._setDimension(obj);
       this.onResize(this._dimension);
     }
-  };
+  }
 
   /**
    * When mouse has been released
    */
-  Widget.prototype._onMouseUp = function(ev, pos, action) {
-    var self = this;
-
+  _onMouseUp(ev, pos, action) {
     this._isManipulating = false;
     this._resizeTimeout = clearTimeout(this._resizeTimeout);
 
-    Utils.$removeClass(this._$element, 'corewm-widget-active');
+    DOM.$removeClass(this._$element, 'corewm-widget-active');
 
     this._hideEnvelope();
 
@@ -388,25 +391,22 @@
     }
 
     this._saveTimeout = clearTimeout(this._saveTimeout);
-    this._saveTimeout = setTimeout(function() {
-      self._saveOptions();
+    this._saveTimeout = setTimeout(() => {
+      this._saveOptions();
     }, TIMEOUT_SAVE);
-  };
+  }
 
   /**
    * When right mouse button is pressed
    */
-  Widget.prototype._onContextMenu = function(ev) {
-    var _ = OSjs.Applications.CoreWM._;
-    var self = this;
-
+  _onContextMenu(ev) {
     var c = this.onContextMenu(ev);
 
     var menu = [{
       title: this._locked ? _('LBL_UNLOCK') : _('LBL_LOCK'),
-      onClick: function() {
-        self._setLock();
-        self._saveOptions();
+      onClick: () => {
+        this._setLock();
+        this._saveOptions();
       }
     }];
 
@@ -418,20 +418,20 @@
       if ( this._options.settings.enabled ) {
         menu.push({
           title: _('Open {0} Settings', _(this._name)),
-          onClick: function(ev) {
-            self._openSettings(ev);
+          onClick: (ev) => {
+            this._openSettings(ev);
           }
         });
       }
     }
 
-    API.createMenu(menu, ev);
-  };
+    Menu.create(menu, ev);
+  }
 
   /**
    * Saves this Widgets options to CoreWM
    */
-  Widget.prototype._saveOptions = function(custom) {
+  _saveOptions(custom) {
     if ( typeof custom !== 'undefined' ) {
       this._options.settings.tree = custom;
     }
@@ -450,69 +450,68 @@
     };
 
     this._settings.set(null, opts, true);
-  };
+  }
 
   /**
    * Show settings dialog
    */
-  Widget.prototype._openSettings = function(ev) {
+  _openSettings(ev) {
     if ( this._settingsWindow ) {
       this._settingsWindow._focus();
       return;
     }
 
-    var self = this;
-    var wm = OSjs.Core.getWindowManager();
+    var wm = WindowManager.instance;
     var win = new Window(this._options.settings.name, {
       title: this._options.settings.title,
       width: this._options.settings.width,
       height: this._options.settings.height
     }, null, wm._scheme);
 
-    win._on('init', function(root, scheme) {
-      var opts = self.onOpenSettings(root, scheme, ev);
+    win._on('init', (root, scheme) => {
+      var opts = this.onOpenSettings(root, scheme, ev);
 
       win._render(opts.id);
 
-      win._find('ButtonOK').on('click', function() {
+      win._find('ButtonOK').on('click', () => {
         var settings = opts.save(root, scheme, ev);
-        self._saveOptions(settings);
+        this._saveOptions(settings);
       });
 
       opts.render(root, scheme, ev);
     });
 
-    win._on('close', function() {
-      self._settingsWindow = null;
+    win._on('close', () => {
+      this._settingsWindow = null;
     });
 
     this._settingsWindow = wm.addWindow(win, true);
-  };
+  }
 
   /**
    * Show the envelope containing this Widget
    */
-  Widget.prototype._showEnvelope = function() {
+  _showEnvelope() {
     if ( !this._$element ) {
       return;
     }
-    Utils.$addClass(this._$element, 'corewm-widget-envelope');
-  };
+    DOM.$addClass(this._$element, 'corewm-widget-envelope');
+  }
 
   /**
    * Hide the envelope containing this Widget
    */
-  Widget.prototype._hideEnvelope = function() {
+  _hideEnvelope() {
     if ( !this._$element || this._isManipulating ) {
       return;
     }
-    Utils.$removeClass(this._$element, 'corewm-widget-envelope');
-  };
+    DOM.$removeClass(this._$element, 'corewm-widget-envelope');
+  }
 
   /**
    * Sets the position and correctly aligns it to the DOM (sticking)
    */
-  Widget.prototype._setPosition = function(obj, stick) {
+  _setPosition(obj, stick) {
     obj = obj || Utils.cloneObject(this._position);
 
     this._position.top = obj.top;
@@ -533,12 +532,12 @@
     }
 
     this._updatePosition();
-  };
+  }
 
   /**
    * Sets the dimension of the widget
    */
-  Widget.prototype._setDimension = function(obj) {
+  _setDimension(obj) {
     var o = this._options;
     var w = Math.min(Math.max(obj.width, o.minWidth), o.maxWidth);
     var h = Math.min(Math.max(obj.height, o.minHeight), o.maxHeight);
@@ -550,12 +549,12 @@
     this._dimension.height = h;
 
     this._updateDimension();
-  };
+  }
 
   /**
    * Lock widget (make unmoveable)
    */
-  Widget.prototype._setLock = function(l) {
+  _setLock(l) {
     if ( typeof l !== 'boolean' ) {
       l = !this._locked;
     }
@@ -564,12 +563,12 @@
     if ( this._$element ) {
       this._$element.setAttribute('data-locked', String(this._locked));
     }
-  };
+  }
 
   /**
    * Updates the Widgets position based on internal options
    */
-  Widget.prototype._updatePosition = function() {
+  _updatePosition() {
     if ( this._$element ) {
       if ( validNumber(this._position.right) ) {
         this._$element.style.left = 'auto';
@@ -587,12 +586,12 @@
         this._$element.style.bottom = 'auto';
       }
     }
-  };
+  }
 
   /**
    * Updates the Widgets dimensions based on internal options
    */
-  Widget.prototype._updateDimension = function() {
+  _updateDimension() {
     if ( this._$element ) {
       this._$element.style.width = String(this._dimension.width) + 'px';
       this._$element.style.height = String(this._dimension.height) + 'px';
@@ -602,14 +601,14 @@
       this._$canvas.width = this._dimension.width || MIN_WIDTH;
       this._$canvas.height = this._dimension.height || MIN_HEIGHT;
     }
-  };
+  }
 
   /**
    * Gets the position of the Widget
    *
    * @return {Object}
    */
-  Widget.prototype._getNormalizedPosition = function() {
+  _getNormalizedPosition() {
     var left = this._position.left;
     if ( validNumber(this._position.right) ) {
       left = this._windowWidth - this._position.right - this._dimension.width;
@@ -621,55 +620,55 @@
     }
 
     return {left: left, top: top};
-  };
+  }
 
   /**
    * Gets the dimensions
    *
    * @return {Object}
    */
-  Widget.prototype._getDimension = function() {
+  _getDimension() {
     return {
       width: this._dimension.width,
       height: this._dimension.height
     };
-  };
+  }
 
   /**
    * Gets the position
    *
    * @return {Object}
    */
-  Widget.prototype._getPosition = function() {
+  _getPosition() {
     return {
       left: this._position.left,
       top: this._position.top,
       right: this._position.right,
       bottom: this._position.bottom
     };
-  };
+  }
 
   /**
    * Sets a setting
    */
-  Widget.prototype._setSetting = function(k, v, save) {
+  _setSetting(k, v, save) {
     this._options.settings.tree[k] = v;
     if ( save ) {
       this._saveOptions();
     }
-  };
+  }
 
   /**
    * Gets a setting
    */
-  Widget.prototype._getSetting = function(k, def) {
+  _getSetting(k, def) {
     if ( typeof this._options.settings === 'undefined' || typeof this._options.settings.tree === 'undefined' ) {
       return def;
     }
 
     var value = this._options.settings.tree[k];
     return typeof value === 'undefined' ? def : value;
-  };
+  }
 
   /**
    * Check if widget has passed the middle of screen in
@@ -677,7 +676,7 @@
    *
    * @return {Boolean}
    */
-  Widget.prototype._isPastHalf = function(dir, obj) {
+  _isPastHalf(dir, obj) {
     obj = obj || this._position;
 
     var hleft = this._windowWidth / 2;
@@ -689,49 +688,49 @@
     var htop = this._windowHeight / 2;
     var atop = obj.top + (this._dimension.height / 2);
     return atop >= htop;
-  };
+  }
 
   /**
    * When Widget is being moved
    */
-  Widget.prototype.onMove = function() {
+  onMove() {
     // Implement in your widget
-  };
+  }
 
   /**
    * When Widget is being resized
    */
-  Widget.prototype.onResize = function() {
+  onResize() {
     // Implement in your widget
-  };
+  }
 
   /**
    * When Widget is being rendered
    */
-  Widget.prototype.onRender = function() {
+  onRender() {
     // Implement in your widget
-  };
+  }
 
   /**
    * When Widget has been initialized
    */
-  Widget.prototype.onInited = function() {
+  onInited() {
     // Implement in your widget
-  };
+  }
 
   /**
    * When Widget opens contextmenu
    */
-  Widget.prototype.onContextMenu = function(ev) {
+  onContextMenu(ev) {
     // Implement in your widget.
     // You can return true to prevent default context action.
     // Or an array of elements to append to the default menu.
-  };
+  }
 
   /**
    * When Widget Settings dialog shows
    */
-  Widget.prototype.onOpenSettings = function(root, scheme, ev) {
+  onOpenSettings(root, scheme, ev) {
     // Implement in your widget.
     return {
       id: null,
@@ -741,13 +740,6 @@
       render: function() {
       }
     };
-  };
+  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Applications.CoreWM = OSjs.Applications.CoreWM || {};
-  OSjs.Applications.CoreWM.Widget = Object.freeze(Widget);
-
-})(OSjs.Core.Window, OSjs.GUI, OSjs.Utils, OSjs.API, OSjs.VFS);
+}

@@ -27,29 +27,30 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, Storage) {
-  'use strict';
+import Promise from 'bluebird';
+import {getConfig} from 'core/config';
+import Storage from 'core/storage';
 
-  function DemoStorage() {
-    Storage.apply(this, arguments);
-  }
+/**
+ * Demo Storage Handler
+ * @xtends Storage
+ */
+export default class DemoStorage extends Storage {
 
-  DemoStorage.prototype = Object.create(Storage.prototype);
-  DemoStorage.constructor = Storage;
+  init() {
+    const curr = getConfig('Version');
+    const version = localStorage.getItem('__version__');
 
-  DemoStorage.prototype.init = function(callback) {
-    var curr = API.getConfig('Version');
-    var version = localStorage.getItem('__version__');
     if ( curr !== version ) {
       localStorage.clear();
     }
     localStorage.setItem('__version__', String(curr));
 
-    callback(null, true);
-  };
+    return Promise.resolve();
+  }
 
-  DemoStorage.prototype.saveSettings = function(pool, storage, callback) {
-    Object.keys(storage).forEach(function(key) {
+  saveSettings(pool, storage) {
+    Object.keys(storage).forEach((key) => {
       if ( pool && key !== pool ) {
         return;
       }
@@ -61,14 +62,8 @@
       }
     });
 
-    callback();
-  };
+    return Promise.resolve();
+  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+}
 
-  OSjs.Storage = OSjs.Storage || {};
-  OSjs.Storage.demo = DemoStorage;
-
-})(OSjs.API, OSjs.Utils, OSjs.Core.Storage);

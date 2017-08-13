@@ -1,7 +1,7 @@
 {
   "client" : {
     "Connection": {
-      "Type": "%connection%",
+      "Connection": "%connection%",
       "Authenticator": "%authenticator%",
       "Storage": "%storage%",
       "WSPort": "%server.http.ws.port%",
@@ -9,7 +9,6 @@
       "RootURI": "",
       "APIURI": "API",
       "FSURI": "FS",
-      "MetadataURI": "packages.js",
       "ThemeURI": "themes/styles",
       "SoundURI": "themes/sounds",
       "IconURI": "themes/icons",
@@ -20,7 +19,7 @@
     },
 
     "BugReporting": {
-      "enabled": true,
+      "enabled": false,
       "url": "//github.com/os-js/OS.js/issues/new?title=%TITLE%&body=%BODY%",
       "options": {
         "issue": true,
@@ -36,8 +35,7 @@
     "Watermark": {
       "enabled": true,
       "lines": [
-        "OS.js %VERSION%",
-        "Copyright &copy; 2011-2016 <a href=\"mailto:andersevenrud@gmail.com\">Anders Evenrud</a>"
+        "OS.js %VERSION%"
       ]
     },
 

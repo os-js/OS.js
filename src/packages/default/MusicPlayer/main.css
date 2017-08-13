@@ -28,8 +28,9 @@
  * @licence Simplified BSD License
  */
 
-/*.ApplicationMusicPlayerWindow {
-}*/
+.ApplicationMusicPlayerWindow application-window-content {
+  overflow : hidden;
+}
 
 .ApplicationMusicPlayerWindow gui-slider {
   margin : 0.333em;

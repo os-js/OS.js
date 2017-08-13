@@ -27,16 +27,20 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
+import PanelItem from '../panelitem';
+
+const Menu = OSjs.require('gui/menu');
+const DOM = OSjs.require('utils/dom');
+const Events = OSjs.require('utils/events');
 
 /*eslint valid-jsdoc: "off"*/
-(function(CoreWM, Panel, PanelItem, Utils, API, VFS) {
-  'use strict';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // ITEM
-  /////////////////////////////////////////////////////////////////////////////
+// NOTE: This is a workaround for resetting items on panel change
+let _restartFix = {};
 
-  function NotificationAreaItem(name, opts) {
+class NotificationAreaItem {
+
+  constructor(name, opts) {
     opts = opts || {};
 
     this.name           = name;
@@ -54,9 +58,9 @@
     this.onCreated();
   }
 
-  NotificationAreaItem.prototype._build = function(name) {
-    var self = this;
-    var classNames = ['NotificationArea', 'NotificationArea_' + name];
+  _build(name) {
+    /* eslint no-invalid-this: "off" */
+    const classNames = ['NotificationArea', 'NotificationArea_' + name];
     if ( this.opts.className ) {
       classNames.push(this.opts.className);
     }
@@ -69,24 +73,26 @@
       this.$container.title = this.opts.tooltip;
     }
 
-    Utils.$bind(this.$container, 'mousedown', function(ev) {
+    Events.$bind(this.$container, 'mousedown', function(ev) {
       ev.preventDefault();
       ev.stopPropagation();
     });
 
-    Utils.$bind(this.$container, 'click', function(ev) {
+    const self = this;
+
+    Events.$bind(this.$container, 'click', function(ev) {
       ev.stopPropagation();
       ev.preventDefault();
-      OSjs.API.blurMenu();
-      self.onClick.apply(self, arguments);
+      Menu.blur();
+      self.onClick.apply(this, arguments);
       return false;
     });
 
-    Utils.$bind(this.$container, 'contextmenu', function(ev) {
+    Events.$bind(this.$container, 'contextmenu', function(ev) {
       ev.stopPropagation();
       ev.preventDefault();
-      OSjs.API.blurMenu();
-      self.onContextMenu.apply(self, arguments);
+      Menu.blur();
+      self.onContextMenu.apply(this, arguments);
       return false;
     });
 
@@ -96,12 +102,12 @@
       this.$container.appendChild(this.$image);
     }
 
-    var inner = document.createElement('div');
+    const inner = document.createElement('div');
     inner.appendChild(document.createElement('div'));
     this.$container.appendChild(inner);
-  };
+  }
 
-  NotificationAreaItem.prototype.init = function(root) {
+  init(root) {
     root.appendChild(this.$container);
 
     try {
@@ -110,72 +116,63 @@
       console.warn('NotificationAreaItem', 'onInited error');
       console.warn(e, e.stack);
     }
-  };
+  }
 
-  NotificationAreaItem.prototype.setIcon = function(src) {
+  setIcon(src) {
     return this.setImage(src);
-  };
+  }
 
-  NotificationAreaItem.prototype.setImage = function(src) {
+  setImage(src) {
     if ( this.$image ) {
       this.$image.src = src;
     }
     this.opts.image = src;
-  };
+  }
 
-  NotificationAreaItem.prototype.setTitle = function(title) {
+  setTitle(title) {
     if ( this.$image ) {
       this.$image.title = title;
     }
     this.opts.title = title;
-  };
+  }
 
-  NotificationAreaItem.prototype.destroy = function() {
+  destroy() {
     if ( this.$container ) {
-      Utils.$unbind(this.$container, 'click');
-      Utils.$unbind(this.$container, 'mousedown');
-      Utils.$unbind(this.$container, 'contextmenu');
+      Events.$unbind(this.$container, 'click');
+      Events.$unbind(this.$container, 'mousedown');
+      Events.$unbind(this.$container, 'contextmenu');
     }
     this.onDestroy();
 
-    this.$image     = Utils.$remove(this.$image);
-    this.$container = Utils.$remove(this.$container);
-  };
+    this.$image     = DOM.$remove(this.$image);
+    this.$container = DOM.$remove(this.$container);
+  }
+}
 
-  // NOTE: This is a workaround for resetting items on panel change
-  var _restartFix = {};
-
-  /**
-   * PanelItem: NotificationArea
-   */
-  function PanelItemNotificationArea() {
-    PanelItem.apply(this, ['PanelItemNotificationArea corewm-panel-right']);
+export default class PanelItemNotificationArea extends PanelItem {
+  constructor() {
+    super('PanelItemNotificationArea corewm-panel-right');
     this.notifications = {};
   }
 
-  PanelItemNotificationArea.prototype = Object.create(PanelItem.prototype);
-  PanelItemNotificationArea.constructor = PanelItem;
-
-  PanelItemNotificationArea.prototype.init = function() {
-    var self = this;
-
-    var root = PanelItem.prototype.init.apply(this, arguments);
+  init() {
+    const root = super.init(...arguments);
     root.setAttribute('role', 'toolbar');
 
-    var fix = Object.keys(_restartFix);
+    const fix = Object.keys(_restartFix);
     if ( fix.length ) {
-      fix.forEach(function(k) {
-        self.createNotification(k, _restartFix[k]);
+      fix.forEach((k) => {
+        this.createNotification(k, _restartFix[k]);
       });
     }
 
     return root;
-  };
+  }
 
-  PanelItemNotificationArea.prototype.createNotification = function(name, opts) {
+  createNotification(name, opts) {
     if ( this._$root ) {
       if ( !this.notifications[name] ) {
-        var item = new NotificationAreaItem(name, opts);
+        const item = new NotificationAreaItem(name, opts);
         item.init(this._$container);
         this.notifications[name] = item;
         _restartFix[name] = opts;
@@ -184,9 +181,9 @@
       }
     }
     return null;
-  };
+  }
 
-  PanelItemNotificationArea.prototype.removeNotification = function(name) {
+  removeNotification(name) {
     if ( this._$root ) {
       if ( this.notifications[name] ) {
         this.notifications[name].destroy();
@@ -199,19 +196,19 @@
     }
 
     return false;
-  };
+  }
 
-  PanelItemNotificationArea.prototype.getNotification = function(name) {
+  getNotification(name) {
     if ( this._$root ) {
       if ( this.notifications[name] ) {
         return this.notifications[name];
       }
     }
     return false;
-  };
+  }
 
-  PanelItemNotificationArea.prototype.destroy = function() {
-    for ( var i in this.notifications ) {
+  destroy() {
+    for ( let i in this.notifications ) {
       if ( this.notifications.hasOwnProperty(i) ) {
         if ( this.notifications[i] ) {
           this.notifications[i].destroy();
@@ -220,16 +217,8 @@
       }
     }
 
-    PanelItem.prototype.destroy.apply(this, arguments);
-  };
+    return super.destroy(...arguments);
+  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+}
 
-  OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.CoreWM = OSjs.Applications.CoreWM || {};
-  OSjs.Applications.CoreWM.PanelItems = OSjs.Applications.CoreWM.PanelItems || {};
-  OSjs.Applications.CoreWM.PanelItems.NotificationArea = PanelItemNotificationArea;
-
-})(OSjs.Applications.CoreWM.Class, OSjs.Applications.CoreWM.Panel, OSjs.Applications.CoreWM.PanelItem, OSjs.Utils, OSjs.API, OSjs.VFS);

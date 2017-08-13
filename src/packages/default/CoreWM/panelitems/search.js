@@ -27,25 +27,24 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-
 /*eslint valid-jsdoc: "off"*/
-(function(CoreWM, Panel, PanelItem, PanelItemDialog, Utils, API, VFS, GUI, Window) {
-  'use strict';
+import PanelItem from '../panelitem';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // Search Settings Dialog
-  /////////////////////////////////////////////////////////////////////////////
+const DOM = OSjs.require('utils/dom');
+const Hooks = OSjs.require('helpers/hooks');
+const Theme = OSjs.require('core/theme');
+const Events = OSjs.require('utils/events');
+const Locales = OSjs.require('core/locales');
+const Keycodes = OSjs.require('utils/keycodes');
+const Process = OSjs.require('core/process');
+const FileMetadata = OSjs.require('vfs/file');
+const SearchEngine = OSjs.require('core/search-engine');
+const WindowManager = OSjs.require('core/window-manager');
 
-  /////////////////////////////////////////////////////////////////////////////
-  // ITEM
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * PanelItem: Search
-   */
-  function PanelItemSearch(settings) {
-    PanelItem.apply(this, ['PanelItemSearch corewm-panel-right', 'Search', settings, {
-    }]);
+export default class PanelItemSearch extends PanelItem {
+  constructor(settings) {
+    super('PanelItemSearch corewm-panel-right', 'Search', settings, {
+    });
 
     this.$ul = null;
     this.$box = null;
@@ -58,26 +57,22 @@
     this.currentCount = 0;
   }
 
-  PanelItemSearch.prototype = Object.create(PanelItem.prototype);
-  PanelItemSearch.constructor = PanelItem;
+  init() {
+    const root = super.init(...arguments);
 
-  PanelItemSearch.prototype.init = function() {
-    var self = this;
-    var root = PanelItem.prototype.init.apply(this, arguments);
+    const img = document.createElement('img');
+    img.src = Theme.getIcon('actions/system-search.png');
 
-    var img = document.createElement('img');
-    img.src = API.getIcon('actions/system-search.png');
-
-    var input = document.createElement('input');
+    const input = document.createElement('input');
     input.setAttribute('type', 'text');
 
-    var guinput = document.createElement('gui-text');
+    const guinput = document.createElement('gui-text');
     guinput.appendChild(input);
 
-    var ul = document.createElement('ul');
+    const ul = document.createElement('ul');
 
     this.$message = document.createElement('div');
-    this.$message.appendChild(document.createTextNode(API._('SEARCH_LOADING')));
+    this.$message.appendChild(document.createTextNode(Locales._('SEARCH_LOADING')));
 
     this.$box = document.createElement('corewm-search');
     this.$box.className = 'custom-notification';
@@ -85,17 +80,12 @@
     this.$box.appendChild(this.$message);
     this.$box.appendChild(ul);
 
-    var keyEvents = {};
-    keyEvents[Utils.Keys.DOWN] = function(ev) {
-      self.navigateDown();
-    };
-    keyEvents[Utils.Keys.UP] = function(ev) {
-      self.navigateUp();
-    };
-    keyEvents[Utils.Keys.ESC] = function(ev) {
-      self.hide();
-    };
-    keyEvents[Utils.Keys.ENTER] = function(ev) {
+    const self = this;
+    const keyEvents = {};
+    keyEvents[Keycodes.DOWN] = () => this.navigateDown();
+    keyEvents[Keycodes.UP] = () => this.navigateUp();
+    keyEvents[Keycodes.ESC] = () => this.hide();
+    keyEvents[Keycodes.ENTER] = function(ev) {
       if ( this.value.length ) {
         self.search(this.value);
         this.value = '';
@@ -104,11 +94,9 @@
       }
     };
 
-    API.addHook('onBlurMenu', function() {
-      self.hide();
-    });
+    Hooks.addHook('onBlurMenu', () => this.hide());
 
-    Utils.$bind(root, 'click', function(ev) {
+    Events.$bind(root, 'click', function(ev) {
       ev.stopPropagation();
 
       if ( self.visible ) {
@@ -118,11 +106,9 @@
       }
     });
 
-    Utils.$bind(input, 'mousedown', function(ev) {
-      ev.stopPropagation();
-    });
+    Events.$bind(input, 'mousedown', (ev) => ev.stopPropagation());
 
-    Utils.$bind(input, 'keydown', function(ev) {
+    Events.$bind(input, 'keydown', function(ev) {
       /* eslint no-invalid-this: "off" */
       if ( keyEvents[ev.keyCode] ) {
         ev.preventDefault();
@@ -132,24 +118,22 @@
       }
     });
 
-    Utils.$bind(ul, 'mousedown', function(ev) {
-      ev.stopPropagation();
-    });
+    Events.$bind(ul, 'mousedown', (ev) => ev.stopPropagation());
 
-    Utils.$bind(ul, 'click', function(ev) {
-      var target = ev.target;
+    Events.$bind(ul, 'click', (ev) => {
+      const target = ev.target;
       if ( target.tagName === 'LI' ) {
         self.launch(target);
       }
     });
 
-    Utils.$bind(this.$box, 'mousedown', function() {
+    Events.$bind(this.$box, 'mousedown', () => {
       if ( input ) {
         input.focus();
       }
     });
 
-    var li = document.createElement('li');
+    const li = document.createElement('li');
     li.appendChild(img);
 
     this.$ul = ul;
@@ -159,84 +143,87 @@
     document.body.appendChild(this.$box);
 
     return root;
-  };
+  }
 
-  PanelItemSearch.prototype.applySettings = function() {
-  };
+  applySettings() {
+  }
 
-  PanelItemSearch.prototype.openSettings = function() {
-    API.launch('ApplicationSettings', {category: 'search'});
-  };
+  openSettings() {
+    Process.create('ApplicationSettings', {category: 'search'});
+  }
 
-  PanelItemSearch.prototype.destroy = function() {
+  destroy() {
     if ( this.hookId >= 0 ) {
-      API.removeHook(this.hookId);
+      Hooks.removeHook(this.hookId);
     }
 
-    Utils.$unbind(this._$root, 'click');
-    Utils.$unbind(this.$input, 'mousedown');
-    Utils.$unbind(this.$input, 'keydown');
-    Utils.$unbind(this.$ul, 'mousedown');
-    Utils.$unbind(this.$ul, 'click');
-    Utils.$unbind(this.$box, 'mousedown');
+    Events.$unbind(this._$root, 'click');
+    Events.$unbind(this.$input, 'mousedown');
+    Events.$unbind(this.$input, 'keydown');
+    Events.$unbind(this.$ul, 'mousedown');
+    Events.$unbind(this.$ul, 'click');
+    Events.$unbind(this.$box, 'mousedown');
 
-    this.$message = Utils.$remove(this.$message);
-    this.$input = Utils.$remove(this.$input);
-    this.$box = Utils.$remove(this.$box);
-    this.$ul = Utils.$remove(this.$ul);
+    this.$message = DOM.$remove(this.$message);
+    this.$input = DOM.$remove(this.$input);
+    this.$box = DOM.$remove(this.$box);
+    this.$ul = DOM.$remove(this.$ul);
 
-    PanelItem.prototype.destroy.apply(this, arguments);
-  };
+    return super.destroy(...arguments);
+  }
 
-  PanelItemSearch.prototype.launch = function(target) {
-    var launch = target.getAttribute('data-launch');
-    var args = JSON.parse(target.getAttribute('data-args'));
-    var file = target.getAttribute('data-file');
-    var mime = target.getAttribute('data-mime');
-    var type = target.getAttribute('data-type');
+  launch(target) {
+    const launch = target.getAttribute('data-launch');
+    const args = JSON.parse(target.getAttribute('data-args'));
+    const file = target.getAttribute('data-file');
+    const mime = target.getAttribute('data-mime');
+    const type = target.getAttribute('data-type');
 
     if ( file ) {
       if ( type === 'dir' ) {
-        API.launch('ApplicationFileManager', {path: file});
+        Process.create('ApplicationFileManager', {path: file});
       } else {
-        API.open(new VFS.File(file, mime));
+        Process.createFromFile(new FileMetadata(file, mime));
       }
     } else {
-      API.launch(launch, args);
+      Process.create(launch, args);
     }
 
     this.hide();
-  };
+  }
 
-  PanelItemSearch.prototype.show = function() {
+  show() {
     if ( !this.$box || this.visible ) {
       return;
     }
 
-    var wm = OSjs.Core.getWindowManager();
-    var space = wm.getWindowSpace(true);
+    const wm = WindowManager.instance;
+    const space = wm.getWindowSpace(true);
+    const input = this.$box.querySelector('input');
 
-    Utils.$empty(this.$box.querySelector('ul'));
+    DOM.$empty(this.$box.querySelector('ul'));
     this.$box.style.marginTop = String(space.top) + 'px';
-    this.$box.querySelector('input').value = '';
     this.$box.setAttribute('data-visible', String(true));
 
-    this.$box.querySelector('input').focus();
+    if ( input ) {
+      input.value = '';
+      input.focus();
+    }
     this.visible = true;
 
     this.$message.style.display = 'none';
-  };
+  }
 
-  PanelItemSearch.prototype.hide = function() {
+  hide() {
     if ( !this.$box || !this.visible ) {
       return;
     }
 
     this.$box.setAttribute('data-visible', String(false));
     this.visible = false;
-  };
+  }
 
-  PanelItemSearch.prototype.search = function(q) {
+  search(q) {
     if ( !this.$box ) {
       return;
     }
@@ -244,51 +231,48 @@
     this.currentIndex = -1;
     this.currentCount = 0;
 
-    Utils.$empty(this.$message);
-    this.$message.appendChild(document.createTextNode(API._('SEARCH_LOADING')));
+    DOM.$empty(this.$message);
+    this.$message.appendChild(document.createTextNode(Locales._('SEARCH_LOADING')));
     this.$message.style.display = 'block';
 
-    var self = this;
-    OSjs.Core.getSearchEngine().search(q, {limit: 10, recursive: true}, function(errors, result) {
-      if ( errors.length ) {
-        console.error('PanelItemSearch::search()', 'errors', errors);
-      } else {
-        self.renderResult(result);
-      }
+    SearchEngine.search(q, {limit: 10, recursive: true}).then((result) => {
+      this.renderResult(result);
+    }).catch((errors) => {
+      console.error('PanelItemSearch::search()', 'errors', errors);
     });
-  };
+  }
 
-  PanelItemSearch.prototype.renderResult = function(list) {
+  renderResult(list) {
     if ( !this.$box ) {
       return;
     }
 
-    var root = this.$box.querySelector('ul');
-    Utils.$empty(root);
+    const root = this.$box.querySelector('ul');
+    DOM.$empty(root);
 
     this.currentCount = list.length;
 
     if ( this.currentCount ) {
       this.$message.style.display = 'none';
     } else {
-      Utils.$empty(this.$message);
-      this.$message.appendChild(document.createTextNode(API._('SEARCH_NO_RESULTS')));
+      DOM.$empty(this.$message);
+      this.$message.appendChild(document.createTextNode(Locales._('SEARCH_NO_RESULTS')));
       this.$message.style.display = 'block';
     }
 
     list.forEach(function(l) {
-      var img = document.createElement('img');
+      const img = document.createElement('img');
       img.src = l.icon;
 
-      var title = document.createElement('div');
+      const title = document.createElement('div');
       title.className = 'Title';
       title.appendChild(document.createTextNode(l.title));
 
-      var description = document.createElement('div');
+      const description = document.createElement('div');
       description.className = 'Message';
       description.appendChild(document.createTextNode(l.description));
 
-      var node = document.createElement('li');
+      const node = document.createElement('li');
       node.setAttribute('data-launch', l.launch.application);
       node.setAttribute('data-args', JSON.stringify(l.launch.args));
       if ( l.launch.file ) {
@@ -302,20 +286,20 @@
       node.appendChild(description);
       root.appendChild(node);
     });
-  };
+  }
 
-  PanelItemSearch.prototype.updateSelection = function() {
-    var root = this.$box.querySelector('ul');
-    var child = root.children[this.currentIndex];
+  updateSelection() {
+    const root = this.$box.querySelector('ul');
+    const child = root.children[this.currentIndex];
 
     root.querySelectorAll('li').forEach(function(el) {
-      Utils.$removeClass(el, 'active');
+      DOM.$removeClass(el, 'active');
     });
 
-    Utils.$addClass(child, 'active');
-  };
+    DOM.$addClass(child, 'active');
+  }
 
-  PanelItemSearch.prototype.navigateUp = function() {
+  navigateUp() {
     if ( !this.currentCount ) {
       return;
     }
@@ -327,9 +311,9 @@
     }
 
     this.updateSelection();
-  };
+  }
 
-  PanelItemSearch.prototype.navigateDown = function() {
+  navigateDown() {
     if ( !this.currentCount ) {
       return;
     }
@@ -341,32 +325,18 @@
     }
 
     this.updateSelection();
-  };
+  }
 
-  PanelItemSearch.prototype.navigateOpen = function() {
+  navigateOpen() {
     if ( this.currentIndex === -1 || !this.currentCount ) {
       return;
     }
 
-    var root = this.$box.querySelector('ul');
-    var child = root.children[this.currentIndex];
+    const root = this.$box.querySelector('ul');
+    const child = root.children[this.currentIndex];
     if ( child ) {
       this.launch(child);
     }
-  };
+  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.CoreWM = OSjs.Applications.CoreWM || {};
-  OSjs.Applications.CoreWM.PanelItems = OSjs.Applications.CoreWM.PanelItems || {};
-  OSjs.Applications.CoreWM.PanelItems.Search = PanelItemSearch;
-
-})(
-  OSjs.Applications.CoreWM.Class,
-  OSjs.Applications.CoreWM.Panel,
-  OSjs.Applications.CoreWM.PanelItem,
-  OSjs.Applications.CoreWM.PanelItemDialog,
-  OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI, OSjs.Core.Window);
+}

@@ -27,158 +27,169 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, VFS, GUI) {
-  'use strict';
+//import Promise from 'bluebird';
+import axios from 'axios';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // INTERNAL HELPERS
-  /////////////////////////////////////////////////////////////////////////////
+//import * as FS from 'utils/fs';
+import * as DOM from 'utils/dom';
+import * as Utils from 'utils/misc';
+import GUIElement from 'gui/element';
+import {getConfig, getBrowserPath} from 'core/config';
 
-  /*
-   * Method for adding children (moving)
-   */
-  function addChildren(frag, root, before) {
-    if ( frag ) {
-      var children = frag.children;
-      var i = 0;
-      while ( children.length && i < 10000 ) {
-        if ( before ) {
-          root.parentNode.insertBefore(children[0], root);
-        } else {
-          root.appendChild(children[0]);
-        }
-        i++;
+/////////////////////////////////////////////////////////////////////////////
+// INTERNAL HELPERS
+/////////////////////////////////////////////////////////////////////////////
+
+/*
+ * Method for adding children (moving)
+ */
+function addChildren(frag, root, before) {
+  if ( frag ) {
+    const children = frag.children;
+
+    let i = 0;
+    while ( children.length && i < 10000 ) {
+      if ( before ) {
+        root.parentNode.insertBefore(children[0], root);
+      } else {
+        root.appendChild(children[0]);
       }
+      i++;
     }
   }
+}
 
-  /*
-   * Makes sure "include" fragments are rendered correctly
-   */
-  function resolveFragments(scheme, node) {
-    function _resolve() {
-      var nodes = node.querySelectorAll('gui-fragment');
-      if ( nodes.length ) {
-        nodes.forEach(function(el) {
-          var id = el.getAttribute('data-fragment-id');
-          if ( id ) {
-            var frag = scheme.getFragment(id, 'application-fragment');
-            if ( frag ) {
-              addChildren(frag.cloneNode(true), el.parentNode);
-            } else {
-              console.warn('Fragment', id, 'not found');
-            }
+/*
+ * Makes sure "include" fragments are rendered correctly
+ */
+function resolveFragments(scheme, node) {
+  function _resolve() {
+    const nodes = node.querySelectorAll('gui-fragment');
+    if ( nodes.length ) {
+      nodes.forEach(function(el) {
+        const id = el.getAttribute('data-fragment-id');
+        if ( id ) {
+          const frag = scheme.getFragment(id, 'application-fragment');
+          if ( frag ) {
+            addChildren(frag.cloneNode(true), el.parentNode);
+          } else {
+            console.warn('Fragment', id, 'not found');
           }
-          Utils.$remove(el); // Or else we'll never get out of the loop!
-        });
-        return true;
-      }
-      return false;
+        }
+        DOM.$remove(el); // Or else we'll never get out of the loop!
+      });
+      return true;
     }
-
-    if ( scheme ) {
-      var resolving = true;
-      while ( resolving ) {
-        resolving = _resolve();
-      }
-    }
+    return false;
   }
 
-  /*
-   * Removes self-closing tags from HTML string
-   */
-  function removeSelfClosingTags(str) {
-    var split = (str || '').split('/>');
-    var newhtml = '';
-    for (var i = 0; i < split.length - 1;i++) {
-      var edsplit = split[i].split('<');
-      newhtml += split[i] + '></' + edsplit[edsplit.length - 1].split(' ')[0] + '>';
+  if ( scheme ) {
+    let resolving = true;
+    while ( resolving ) {
+      resolving = _resolve();
     }
-    return newhtml + split[split.length - 1];
   }
+}
 
-  /*
-   * Cleans a HTML string
-   */
-  function cleanScheme(html) {
-    return Utils.cleanHTML(removeSelfClosingTags(html));
+/*
+ * Removes self-closing tags from HTML string
+ */
+function removeSelfClosingTags(str) {
+  const split = (str || '').split('/>');
+
+  let newhtml = '';
+  for (let i = 0; i < split.length - 1;i++) {
+    const edsplit = split[i].split('<');
+    newhtml += split[i] + '></' + edsplit[edsplit.length - 1].split(' ')[0] + '>';
   }
+  return newhtml + split[split.length - 1];
+}
 
-  /*
-   * Makes sure "external include" fragments are rendered correctly.
-   *
-   * Currently this only supports one level deep.
-   *
-   * This occurs on the load() function instead on runtime due to
-   * performance concerns.
-   */
-  function resolveExternalFragments(root, html, cb) {
-    var doc = document.createElement('div');
-    doc.innerHTML = html;
+/*
+ * Cleans a HTML string
+ */
+function cleanScheme(html) {
+  return Utils.cleanHTML(removeSelfClosingTags(html));
+}
 
-    var nodes = doc.querySelectorAll('gui-fragment[data-fragment-external]');
-    Utils.asyncs(nodes.map(function(el) {
-      return {
-        element: el,
-        uri: el.getAttribute('data-fragment-external')
-      };
-    }), function asyncIter(iter, index, next) {
-      var uri = iter.uri.replace(/^\//, '');
+/* FIXME: This is no longer used because of Webpack, but I might
+ * need this for the IDE ?!
+ *
+ * Makes sure "external include" fragments are rendered correctly.
+ *
+ * Currently this only supports one level deep.
+ *
+ * This occurs on the load() function instead on runtime due to
+ * performance concerns.
+function resolveExternalFragments(root, html, cb) {
+  let doc = document.createElement('div');
+  doc.innerHTML = html;
+
+  let nodes = doc.querySelectorAll('gui-fragment[data-fragment-external]');
+
+  Promise.each(nodes.map(function(el) {
+    return {
+      element: el,
+      uri: el.getAttribute('data-fragment-external')
+    };
+  }), (iter) => {
+    return new Promise((next) => {
+      const uri = iter.uri.replace(/^\//, '');
       if ( uri.length < 3 ) {
         console.warn('resolveExternalFragments()', 'invalid', iter);
         next();
         return;
       }
 
-      Utils.ajax({
-        url: Utils.pathJoin(root, uri),
-        onsuccess: function(h) {
-          var tmp = document.createElement('div');
-          tmp.innerHTML = cleanScheme(h);
-          addChildren(tmp, iter.element, iter.element);
-          tmp = next();
-        },
-        onerror: function() {
-          next();
-        }
+      axios({
+        url: FS.pathJoin(root, uri),
+        method: 'GET'
+      }).then((response) => {
+        let tmp = document.createElement('div');
+        tmp.innerHTML = cleanScheme(response.data);
+        addChildren(tmp, iter.element, iter.element);
+        tmp = next();
+      }).catch((err) => {
+        next();
       });
-    }, function asyncDone() {
-      cb(doc.innerHTML);
-
-      doc = null;
-      nodes = null;
     });
-  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // SCHEME
-  /////////////////////////////////////////////////////////////////////////////
+  }).then(() => {
+    cb(doc.innerHTML);
+
+    doc = null;
+    nodes = null;
+
+    return true;
+  });
+}
+ */
+
+/////////////////////////////////////////////////////////////////////////////
+// SCHEME
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * The class for loading and parsing UI Schemes
+ *
+ * @desc Class for loading, parsing and manipulating Scheme files.
+ */
+export default class GUIScheme {
 
   /**
-   * The class for loading and parsing UI Schemes
-   *
-   * @summary Class for loading, parsing and manipulating Scheme files.
-   *
    * @param {String}    url     Scheme URL
-   *
-   * @constructor Scheme
-   * @memberof OSjs.GUI
    */
-  function UIScheme(url) {
-    console.debug('UIScheme::construct()', url);
+  constructor(url) {
+    console.debug('GUIScheme::construct()', url);
 
     /**
      * The URL of the Scheme file
-     * @name url
-     * @memberof OSjs.GUI.Scheme#
      * @type {String}
      */
     this.url = url;
 
     /**
      * The Scheme DOM Node
-     * @name scheme
-     * @memberof OSjs.GUI.Scheme#
      * @type {DocumentFragment}
      */
     this.scheme = null;
@@ -188,78 +199,71 @@
 
   /**
    * Destroys the instance
-   *
-   * @function destroy
-   * @memberof OSjs.GUI.Scheme#
    */
-  UIScheme.prototype.destroy = function() {
-    Utils.$empty(this.scheme);
+  destroy() {
+    DOM.$empty(this.scheme);
 
     this.scheme = null;
     this.triggers = {};
-  };
+  }
 
   /**
    * Register event
    *
-   * @function on
-   * @memberof OSjs.GUI.Scheme#
-   *
    * @param   {String}      f       Event name
    * @param   {Function}    fn      Function/callback
    */
-  UIScheme.prototype.on = function(f, fn) {
+  on(f, fn) {
     this.triggers[f].push(fn);
-  };
+  }
 
   /*
    * Trigger event
    */
-  UIScheme.prototype._trigger = function(f, args) {
+  _trigger(f, args) {
     args = args || [];
 
-    var self = this;
     if ( this.triggers[f] ) {
-      this.triggers[f].forEach(function(fn) {
-        fn.apply(self, args);
+      this.triggers[f].forEach((fn) => {
+        fn.apply(this, args);
       });
     }
-  };
+  }
 
   /*
    * Content loading wrapper
    */
-  UIScheme.prototype._load = function(html, src) {
-    var doc = document.createDocumentFragment();
-    var wrapper = document.createElement('div');
+  _load(html, src) {
+    let doc = document.createDocumentFragment();
+    let wrapper = document.createElement('div');
     wrapper.innerHTML = html;
     doc.appendChild(wrapper);
 
     this.scheme = doc.cloneNode(true);
 
-    if ( API.getConfig('DebugScheme') ) {
+    if ( getConfig('DebugScheme') ) {
       console.group('Scheme::_load() validation', src);
-      this.scheme.querySelectorAll('*').forEach(function(node) {
-        var tagName = node.tagName.toLowerCase();
-        var gelData = GUI.Element.getRegisteredElement(tagName);
+      this.scheme.querySelectorAll('*').forEach((node) => {
+        const tagName = node.tagName.toLowerCase();
+        const gelData = GUIElement.getRegisteredElement(tagName);
         if ( gelData ) {
-          var ac = gelData.metadata.allowedChildren;
+          const ac = gelData.metadata.allowedChildren;
           if ( ac instanceof Array && ac.length ) {
-            var childrenTagNames = node.children.map(function(sNode) {
+            const childrenTagNames = node.children.map((sNode) => {
               return sNode.tagName.toLowerCase();
             });
 
-            childrenTagNames.forEach(function(chk, idx) {
-              var found = ac.indexOf(chk);
+            childrenTagNames.forEach((chk, idx) => {
+              const found = ac.indexOf(chk);
               if ( found === -1 ) {
                 console.warn(chk, node.children[idx], 'is not a valid child of type', tagName);
               }
             });
           }
 
-          var ap = gelData.metadata.allowedParents;
+          const ap = gelData.metadata.allowedParents;
           if ( ap instanceof Array && ap.length ) {
-            var parentTagName = node.parentNode.tagName.toLowerCase();
+            const parentTagName = node.parentNode.tagName.toLowerCase();
             if ( ap.indexOf(parentTagName) === -1 ) {
               console.warn(parentTagName, node.parentNode, 'is in an invalid parent of type', tagName);
             }
@@ -271,82 +275,59 @@
 
     wrapper = null;
     doc = null;
-  };
-
-  /**
-   * Load Scheme from given String
-   *
-   * @function loadString
-   * @memberof OSjs.GUI.Scheme#
-   *
-   * @param   {String}      html    HTML data
-   * @param   {Function}    cb      callback => fn(error, scheme)
-   */
-  UIScheme.prototype.loadString = function(html, cb) {
-    console.debug('UIScheme::loadString()');
-    this._load(cleanScheme(html), '<html>');
-    if ( cb ) {
-      cb(false, this.scheme);
-    }
-  };
+  }
 
   /**
    * Load Scheme from URL
    *
-   * @function load
-   * @memberof OSjs.GUI.Scheme#
-   *
    * @param   {Function}    cb      callback => fn(error, DocumentFragment)
    * @param   {Function}    [cbxhr] callback on ajax => fn(error, html)
    */
-  UIScheme.prototype.load = function(cb, cbxhr) {
+  load(cb, cbxhr) {
     cbxhr = cbxhr || function() {};
 
-    console.debug('UIScheme::load()', this.url);
+    console.debug('GUIScheme::load()', this.url);
 
-    var self = this;
-    var src = this.url;
+    let src = this.url;
     if ( src.substr(0, 1) !== '/' && !src.match(/^(https?|ftp)/) ) {
-      src = API.getBrowserPath(src);
+      src = getBrowserPath(src);
     }
 
-    var root = Utils.dirname(src);
-    Utils.ajax({
+    //const root = FS.dirname(src);
+
+    axios({
       url: src,
-      onsuccess: function(html) {
-        html = cleanScheme(html);
+      method: 'GET'
+    }).then((response) => {
+      const html = cleanScheme(response.data);
+      /*
+      resolveExternalFragments(root, html, (result) => {
+      });
+      */
+      // This is normally used for the preloader for caching
+      cbxhr(false, html);
 
-        resolveExternalFragments(root, html, function onFragmentResolved(result) {
-          // This is normally used for the preloader for caching
-          cbxhr(false, result);
+      // Then we run some manipulations
+      this._load(html, src);
 
-          // Then we run some manipulations
-          self._load(result, src);
-
-          // And finally, finish
-          cb(false, self.scheme);
-        });
-      },
-      onerror: function() {
-        cb('Failed to fetch scheme');
-        cbxhr(true);
-      }
+      // And finally, finish
+      cb(false, this.scheme);
+    }).catch((err) => {
+      cb('Failed to fetch scheme: ' + err.message);
+      cbxhr(true);
     });
-  };
+  }
 
   /**
    * Get fragment from ID (and/or type)
-   *
-   * @function getFragment
-   * @memberof OSjs.GUI.Scheme#
    *
    * @param   {String}      id      ID
    * @param   {String}      [type]  Type (application-window | application-fragment)
    *
    * @return  {Node}
    */
-  UIScheme.prototype.getFragment = function(id, type) {
-    var content = null;
+  getFragment(id, type) {
+    let content = null;
     if ( id ) {
       if ( type ) {
         content = this.scheme.querySelector(type + '[data-id="' + id + '"]');
@@ -356,29 +337,26 @@
       }
     }
     return content;
-  };
+  }
 
   /**
    * Parses the given fragment
    *
-   * @function parse
-   * @memberof OSjs.GUI.Scheme#
-   *
    * @param   {String}            id        Fragment ID
    * @param   {String}            [type]    Fragment Type
-   * @param   {OSjs.Core.Window}  [win]     OS.js Window
+   * @param   {Window}            [win]     OS.js Window
    * @param   {Function}          [onparse] Callback on parsed
    * @param   {Object}            [args]    Parameters
    *
    * @return  {Node}
    */
-  UIScheme.prototype.parse = function(id, type, win, onparse, args) {
-    var content = this.getFragment(id, type);
+  parse(id, type, win, onparse, args) {
+    const content = this.getFragment(id, type);
 
-    console.debug('UIScheme::parse()', id);
+    console.debug('GUIScheme::parse()', id);
 
     if ( !content ) {
-      console.error('UIScheme::parse()', 'No fragment found', id + '@' + type);
+      console.error('GUIScheme::parse()', 'No fragment found', id + '@' + type);
       return null;
     }
 
@@ -386,48 +364,45 @@
     args = args || {};
 
     if ( content ) {
-      var node = content.cloneNode(true);
+      const node = content.cloneNode(true);
 
       // Resolve fragment includes before dynamic rendering
       if ( args.resolve !== false ) {
         resolveFragments(this, node);
       }
 
-      GUI.Element.parseNode(win, node, type, args, onparse, id);
+      GUIElement.parseNode(win, node, type, args, onparse, id);
 
       return node;
     }
 
     return null;
-  };
+  }
 
   /**
    * Renders the given fragment into Window
    *
-   * @function render
-   * @memberof OSjs.GUI.Scheme#
-   *
-   * @param   {OSjs.Core.Window}    win       OS.js Window
-   * @param   {String}              id        Fragment ID
-   * @param   {Node}                [root]    Root HTML Node
-   * @param   {String}              [type]    Fragment Type
-   * @param   {Function}            [onparse] Callback on parsed
-   * @param   {Object}              [args]    Parameters
+   * @param   {Window}    win       OS.js Window
+   * @param   {String}    id        Fragment ID
+   * @param   {Node}      [root]    Root HTML Node
+   * @param   {String}    [type]    Fragment Type
+   * @param   {Function}  [onparse] Callback on parsed
+   * @param   {Object}    [args]    Parameters
    */
-  UIScheme.prototype.render = function(win, id, root, type, onparse, args) {
+  render(win, id, root, type, onparse, args) {
     root = root || win._getRoot();
-    if ( root instanceof GUI.Element ) {
+    if ( root instanceof GUIElement ) {
       root = root.$element;
     }
 
     function setWindowProperties(frag) {
       if ( frag ) {
-        var width = parseInt(frag.getAttribute('data-width'), 10) || 0;
-        var height = parseInt(frag.getAttribute('data-height'), 10) || 0;
-        var allow_maximize = frag.getAttribute('data-allow_maximize');
-        var allow_minimize = frag.getAttribute('data-allow_minimize');
-        var allow_close = frag.getAttribute('data-allow_close');
-        var allow_resize = frag.getAttribute('data-allow_resize');
+        const width = parseInt(frag.getAttribute('data-width'), 10) || 0;
+        const height = parseInt(frag.getAttribute('data-height'), 10) || 0;
+        const allow_maximize = frag.getAttribute('data-allow_maximize');
+        const allow_minimize = frag.getAttribute('data-allow_minimize');
+        const allow_close = frag.getAttribute('data-allow_close');
+        const allow_resize = frag.getAttribute('data-allow_resize');
 
         if ( (!isNaN(width) && width > 0) || (!isNaN(height) && height > 0) ) {
           win._resize(width, height);
@@ -440,13 +415,13 @@
       }
     }
 
-    console.debug('UIScheme::render()', id);
+    console.debug('GUIScheme::render()', id);
 
-    var content = this.parse(id, type, win, onparse, args);
+    const content = this.parse(id, type, win, onparse, args);
     addChildren(content, root);
 
-    root.querySelectorAll('application-fragment').forEach(function(e) {
-      Utils.$remove(e);
+    root.querySelectorAll('application-fragment').forEach((e) => {
+      DOM.$remove(e);
     });
 
     if ( !win._restored ) {
@@ -454,147 +429,28 @@
     }
 
     this._trigger('render', [root]);
-  };
-
-  UIScheme.prototype.create = function(win, tagName, params, parentNode, applyArgs) {
-    console.warn('UIScheme::create() is deprecated, use Window::_create() or Element::createInto() instead');
-    if ( win ) {
-      return win._create(tagName, params, parentNode, applyArgs);
-    }
-    return GUI.Element.createInto(tagName, params, parentNode, applyArgs);
-  };
-
-  UIScheme.prototype.find = function(win, id, root) {
-    console.warn('UIScheme::find() is deprecated, use Window::_find() instead');
-    return win._find(id, root);
-  };
-
-  UIScheme.prototype.findByQuery = function(win, query, root, all) {
-    console.warn('UIScheme::findByQuery() is deprecated, use Window::_findByQuery() instead');
-    return win._findByQuery(query, root, all);
-  };
-
-  UIScheme.prototype.findDOM = function(win, id, root) {
-    console.warn('UIScheme::findDOM() is deprecated, use Window::_findDOM() instead');
-    return win._findDOM(id, root);
-  };
+  }
 
   /**
    * Get HTML from Scheme
    *
-   * @function getHTML
-   * @memberof OSjs.GUI.Scheme#
-   *
    * @return  {String}
    */
-  UIScheme.prototype.getHTML = function() {
+  getHTML() {
     return this.scheme.firstChild.innerHTML;
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // DialogScheme
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Shortcut for creating a new UIScheme class
-   *
-   * @summary Helper for loading Dialog scheme files.
-   *
-   * @constructor DialogScheme
-   * @memberof OSjs.GUI
-   */
-  var DialogScheme = (function() {
-    var dialogScheme;
-
-    return {
-
-      /**
-       * Get the Dialog scheme
-       *
-       * @function get
-       * @memberof OSjs.GUI.DialogScheme#
-       *
-       * @return {OSjs.GUI.Scheme}
-       */
-      get: function() {
-        return dialogScheme;
-      },
-
-      /**
-       * Destroy the Dialog scheme
-       *
-       * @function destroy
-       * @memberof OSjs.GUI.DialogScheme#
-       */
-      destroy: function() {
-        if ( dialogScheme ) {
-          dialogScheme.destroy();
-        }
-        dialogScheme = null;
-      },
-
-      /**
-       * Initialize the Dialog scheme
-       *
-       * @function init
-       * @memberof OSjs.GUI.DialogScheme#
-       *
-       * @param   {Function}    cb      Callback function
-       */
-      init: function(cb) {
-        if ( dialogScheme ) {
-          cb();
-          return;
-        }
-
-        if ( OSjs.API.isStandalone() ) {
-          var html = OSjs.STANDALONE.SCHEMES['/dialogs.html'];
-          dialogScheme = new OSjs.GUI.Scheme();
-          dialogScheme.loadString(html);
-          cb();
-          return;
-        }
-
-        var root = API.getConfig('Connection.RootURI');
-        var url = root + 'dialogs.html';
-
-        dialogScheme = GUI.createScheme(url);
-        dialogScheme.load(function(error) {
-          if ( error ) {
-            console.warn('OSjs.GUI.initDialogScheme()', 'error loading dialog schemes', error);
-          }
-          cb();
-        });
-      }
-
-    };
-
-  })();
-
-  /////////////////////////////////////////////////////////////////////////////
-  // API
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Shortcut for creating a new UIScheme class
-   *
-   * @function createScheme
-   * @memberof OSjs.GUI
-   *
-   * @param {String}    url     URL to scheme file
-   *
-   * @return {OSjs.GUI.Scheme}
-   */
-  function createScheme(url) {
-    return new UIScheme(url);
   }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+  /**
+   * Creates a new Scheme from a string
+   * @param {String} str The string (HTML)
+   * @return GUIScheme
+   */
+  static fromString(str) {
+    const inst = new GUIScheme(null);
+    const cleaned = cleanScheme(str);
+    inst._load(cleaned, '<html>');
+    return inst;
+  }
 
-  GUI.Scheme = Object.seal(UIScheme);
-  GUI.DialogScheme = DialogScheme;
-  GUI.createScheme = createScheme;
+}
 
-})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

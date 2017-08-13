@@ -27,298 +27,243 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API) {
-  'use strict';
+import axios from 'axios';
+import Promise from 'bluebird';
+import Connection from 'core/connection';
+import * as FS from 'utils/fs';
+import * as Utils from 'utils/misc';
+import Transport from 'vfs/transport';
+import FileMetadata from 'vfs/file';
+import {getConfig} from 'core/config';
+import {_} from 'core/locales';
 
-  /**
-   * @namespace WebDAV
-   * @memberof OSjs.VFS.Transports
-   */
+function getTargetPath(item, mount) {
+  return item.path.replace(mount.option('match'), '');
+}
 
-  /////////////////////////////////////////////////////////////////////////////
-  // HELPERS
-  /////////////////////////////////////////////////////////////////////////////
+function getTargetUrl(mount, file, moduleOptions) {
+  let baseUrl = moduleOptions.host;
+  if ( !moduleOptions.cors ) {
+    baseUrl = Utils.parseurl(moduleOptions.host, {username: moduleOptions.username, password: moduleOptions.password}).url;
+  }
 
-  function getModule(item) {
-    var mm = OSjs.Core.getMountManager();
-    var module = mm.getModuleFromPath(item.path, false, true);
-    if ( !module ) {
-      throw new Error(API._('ERR_VFSMODULE_INVALID_FMT', item.path));
+  const basename = getTargetPath(file, mount);
+  return baseUrl.replace(/\/?$/, basename.replace(/^\/?/, '/'));
+}
+
+function getFilePath(c, ns, mount) {
+  const moduleOptions = mount.option('options') || {};
+  const uri = Utils.parseurl(moduleOptions.host).path;
+
+  try {
+    let path = c.getElementsByTagNameNS(ns, 'href')[0].textContent;
+    return path.substr(uri.length - 1, path.length);
+  } catch ( e ) {
+    console.warn(e);
+  }
+  return '/';
+}
+
+function getFileMime(type, c, ns) {
+  if ( type === 'file' ) {
+    try {
+      return c.getElementsByTagNameNS(ns, 'getcontenttype')[0].textContent || 'application/octet-stream';
+    } catch ( e ) {
+      return 'application/octet-stream';
     }
-    return module;
+  }
+  return null;
+}
+
+function getFileId(type, c, ns) {
+  try {
+    return c.getElementsByTagNameNS(ns, 'getetag')[0].textContent;
+  } catch ( e ) {}
+  return null;
+}
+
+function getFileSize(type, c, ns) {
+  if ( type === 'file' ) {
+    try {
+      return parseInt(c.getElementsByTagNameNS(ns, 'getcontentlength')[0].textContent, 10) || 0;
+    } catch ( e ) {}
+  }
+  return 0;
+}
+
+function parseListing(doc, item, mount) {
+  const root = mount.option('root');
+  const moduleOptions = mount.option('options') || {};
+  const reqpath = getTargetPath(item, mount);
+
+  let ns = moduleOptions.ns || 'DAV';
+  if ( ns.substr(-1) !== ':' ) {
+    ns += ':';
   }
 
-  function getNamespace(item) {
-    var module = getModule(item);
-    return module.options.ns || 'DAV:';
-  }
-
-  function getCORSAllowed(item) {
-    var module = getModule(item);
-    return module.options.cors === true;
-  }
-
-  function getURL(item) {
-    if ( typeof item === 'string' ) {
-      item = new OSjs.VFS.File(item);
-    }
-    var module = getModule(item);
-    var opts = module.options;
-    return Utils.parseurl(opts.host, {username: opts.username, password: opts.password}).url;
-  }
-
-  function getURI(item) {
-    var module = getModule(item);
-    return Utils.parseurl(module.options.host).path;
-  }
-
-  function resolvePath(item) {
-    var module = getModule(item);
-    return item.path.replace(module.match, '');
-  }
-
-  function davCall(method, args, callback, raw) {
-    function parseDocument(body) {
-      var parser = new DOMParser();
-      var doc = parser.parseFromString(body, 'application/xml');
-      return doc.firstChild;
-    }
-
-    function getUrl(p, f) {
-      var url = getURL(p);
-      url += resolvePath(f).replace(/^\//, '');
-      return url;
+  return (doc.children || []).map((c) => {
+    let path = getFilePath(c, ns, mount);
+    let type = 'file';
+    if ( path.match(/\/$/) ) {
+      type = 'dir';
+      path = path.replace(/\/$/, '') || '/';
     }
 
-    var mime = args.mime || 'application/octet-stream';
-    var headers = {};
-    var sourceFile = new OSjs.VFS.File(args.path, mime);
-    var sourceUrl = getUrl(args.path, sourceFile);
-    var destUrl = null;
+    if ( path === reqpath ) {
+      return false;
+    }
 
+    return new FileMetadata({
+      id: getFileId(type, c, ns),
+      path: root + path.replace(/^\//, ''),
+      filename: FS.filename(path),
+      size: getFileSize(type, c, ns),
+      mime: getFileMime(type, c, ns),
+      type: type
+    });
+  }).filter((iter) => iter !== false);
+}
+
+function parseResponse(body) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(body, 'application/xml');
+  return doc.firstChild;
+}
+
+/**
+ * WebDAV VFS Transport Module
+ *
+ * Allows for file operations to WebDAV sources, like
+ * OwnCloud.
+ *
+ * @extends Transport
+ */
+export default class WebDAVTransport extends Transport {
+
+  _request(method, args, options, mount, raw) {
+    const mime = args.mime || 'application/octet-stream';
+    const file = new FileMetadata(args, mime);
+    const moduleOptions = mount.option('options') || {};
+    const headers = {};
+
+    const url = getTargetUrl(mount, file, moduleOptions);
     if ( args.dest ) {
-      destUrl = getUrl(args.dest, new OSjs.VFS.File(args.dest, mime));
-      headers.Destination = destUrl;
+      const dest = new FileMetadata(args.dest, mime);
+      headers.Destination = getTargetUrl(mount, dest, moduleOptions);
     }
 
-    function externalCall() {
-      var opts = {
-        url: sourceUrl,
-        method: method,
-        requestHeaders: headers
-      };
+    if ( mime ) {
+      headers['Content-Type'] = mime;
+    }
 
-      if ( raw ) {
-        opts.binary = true;
-        opts.mime = mime;
+    return new Promise((resolve, reject) => {
+      if ( moduleOptions.cors ) {
+        const aopts = {
+          url: url,
+          responseType: raw === true ? 'arraybuffer' : 'text',
+          method: method,
+          headers: headers,
+          data: args.data,
+          auth: {
+            username: moduleOptions.username,
+            password: moduleOptions.password
+          }
+        };
+
+        axios(aopts).then((response) => {
+          return resolve(response.data);
+        }).catch((e) => reject(new Error(e.message || e)));
+      } else {
+        const copts = {
+          url: url,
+          method: method,
+          binary: raw === true,
+          mime: mime,
+          headers: headers
+        };
+
+        Connection.request('curl', copts).then((response) => {
+          const code = response.httpCode;
+
+          if ( !response ) {
+            return reject(new Error(_('ERR_VFS_REMOTEREAD_EMPTY')));
+          } else if ( ([200, 201, 203, 204, 205, 207]).indexOf(code) < 0 ) {
+            const error = new Error(_('ERR_VFSMODULE_XHR_ERROR') + ': ' + code);
+            error.httpCode = code;
+            return reject(error);
+          }
+
+          if ( raw === true ) {
+            return FS.dataSourceToAb(response.body, mime, (err, ab) => {
+              return err ? reject(new Error(err)) : resolve(ab);
+            });
+          }
+
+          return resolve(parseResponse(response.body));
+        }).catch(reject);
       }
+    });
+  }
 
-      if ( typeof args.data !== 'undefined' ) {
-        opts.query = args.data;
-      }
+  scandir(item, options, mount) {
+    return new Promise((resolve, reject) => {
+      this._request('PROPFIND', {path: item.path}, options, mount).then((doc) => {
+        resolve(doc ? parseListing(doc, item, mount).map((iter) => new FileMetadata(iter)) : []);
+      }).catch(reject);
+    });
+  }
 
-      API.call('curl', opts, function(error, result) {
-        if ( error ) {
-          callback(error);
-          return;
-        }
+  read(item, options, mount) {
+    return this._request('GET', {path: item.path, mime: item.mime}, options, mount, true);
+  }
 
-        if ( !result ) {
-          callback(API._('ERR_VFS_REMOTEREAD_EMPTY'));
-          return;
-        }
+  write(item, data, options, mount) {
+    return this._request('PUT', {path: item.path, data: data, mime: item.mime}, options, mount);
+  }
 
-        if ( ([200, 201, 203, 204, 205, 207]).indexOf(result.httpCode) < 0 ) {
-          callback(API._('ERR_VFSMODULE_XHR_ERROR') + ': ' + result.httpCode);
-          return;
-        }
+  unlink(item, options, mount) {
+    return this._request('DELETE', {path: item.path}, options, mount);
+  }
 
-        if ( opts.binary ) {
-          OSjs.VFS.Helpers.dataSourceToAb(result.body, mime, callback);
+  copy(src, dest, options, mount) {
+    return this._request('COPY', {path: src.path, dest: dest.path}, options, mount);
+  }
+
+  move(src, dest, options, mount) {
+    return this._request('MOVE', {path: src.path, dest: dest.path}, options, mount);
+  }
+
+  exists(item, options, mount) {
+    return new Promise((resolve, reject) => {
+      this._request('PROPFIND', {path: item.path}, options, mount).then(() => {
+        resolve(false);
+      }).catch((err) => {
+        if ( err.httpCode === 404 ) {
+          resolve(false);
         } else {
-          var doc = parseDocument(result.body);
-          callback(false, doc);
+          console.warn(err);
+          resolve(true);
         }
       });
-    }
-
-    if ( getCORSAllowed(sourceFile) ) {
-      OSjs.VFS.Transports.OSjs.request('get', {url: sourceUrl, method: method}, callback);
-    } else {
-      externalCall();
-    }
+    });
   }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // API
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * WebDAV (OwnCloud) VFS Transport Module
-   */
-  var Transport = {
-    scandir: function(item, callback, options) {
-      var mm = OSjs.Core.getMountManager();
-
-      function parse(doc) {
-        var ns = getNamespace(item);
-        var list = [];
-        var reqpath = resolvePath(item);
-        var root = mm.getRootFromPath(item.path);
-
-        (doc.children || []).forEach(function(c) {
-          var type = 'file';
-
-          function getPath() {
-            var path = c.getElementsByTagNameNS(ns, 'href')[0].textContent;
-            return path.substr(getURI(item).length - 1, path.length);
-          }
-
-          function getId() {
-            var id = null;
-            try {
-              id = c.getElementsByTagNameNS(ns, 'getetag')[0].textContent;
-            } catch ( e ) {
-            }
-            return id;
-          }
-
-          function getMime() {
-            var mime = null;
-            if ( type === 'file' ) {
-              try {
-                mime = c.getElementsByTagNameNS(ns, 'getcontenttype')[0].textContent || 'application/octet-stream';
-              } catch ( e ) {
-                mime = 'application/octet-stream';
-              }
-            }
-            return mime;
-          }
-
-          function getSize() {
-            var size = 0;
-            if ( type === 'file' ) {
-              try {
-                size = parseInt(c.getElementsByTagNameNS(ns, 'getcontentlength')[0].textContent, 10) || 0;
-              } catch ( e ) {
-              }
-            }
-            return size;
-          }
-
-          try {
-            var path = getPath();
-            if ( path.match(/\/$/) ) {
-              type = 'dir';
-              path = path.replace(/\/$/, '') || '/';
-            }
-
-            if ( path !== reqpath ) {
-              list.push({
-                id: getId(),
-                path: root + path.replace(/^\//, ''),
-                filename: Utils.filename(path),
-                size: getSize(),
-                mime: getMime(),
-                type: type
-              });
-            }
-          } catch ( e ) {
-            console.warn('scandir() exception', e, e.stack);
-          }
-        });
-
-        return OSjs.VFS.Helpers.filterScandir(list, options);
-      }
-
-      davCall('PROPFIND', {path: item.path}, function(error, doc) {
-        var list = [];
-        if ( !error && doc ) {
-          var result = parse(doc);
-          result.forEach(function(iter) {
-            list.push(new OSjs.VFS.File(iter));
-          });
-        }
-        callback(error, list);
-      });
-    },
-
-    write: function(item, data, callback, options) {
-      davCall('PUT', {path: item.path, mime: item.mime, data: data}, callback);
-    },
-
-    read: function(item, callback, options) {
-      davCall('GET', {path: item.path, mime: item.mime}, callback, true);
-    },
-
-    copy: function(src, dest, callback) {
-      davCall('COPY', {path: src.path, dest: dest.path}, callback);
-    },
-
-    move: function(src, dest, callback) {
-      davCall('MOVE', {path: src.path, dest: dest.path}, callback);
-    },
-
-    unlink: function(item, callback) {
-      davCall('DELETE', {path: item.path}, callback);
-    },
-
-    mkdir: function(item, callback) {
-      davCall('MKCOL', {path: item.path}, callback);
-    },
-
-    exists: function(item, callback) {
-      davCall('PROPFIND', {path: item.path}, function(error, doc) {
-        callback(false, !error);
-      });
-    },
-
-    url: function(item, callback, options) {
-      callback(false, OSjs.VFS.Transports.WebDAV.path(item));
-    },
-
-    freeSpace: function(root, callback) {
-      callback(false, -1);
-    }
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // WRAPPERS
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Make a WebDAV HTTP URL for VFS
-   *
-   * @param   {(String|OSjs.VFS.File)}    item        VFS File
-   *
-   * @return  {String}                  URL based on input
-   *
-   * @function path
-   * @memberof OSjs.VFS.Transports.WebDAV
-   */
-  function makePath(item) {
-    if ( typeof item === 'string' ) {
-      item = new OSjs.VFS.File(item);
-    }
-
-    var url      = getURL(item);
-    var reqpath  = resolvePath(item).replace(/^\//, '');
-    var fullpath = url + reqpath;
-
-    if ( !getCORSAllowed(item) ) {
-      fullpath = API.getConfig('Connection.FSURI') + '/get/' + fullpath;
-    }
-
-    return fullpath;
+  mkdir(item, options, mount) {
+    return this._request('MKCOL', {path: item.path}, options, mount);
   }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+  url(item, options, mount) {
+    const moduleOptions = mount.option('options') || {};
+    let requestUrl = getTargetUrl(mount, item, moduleOptions);
+    if ( !moduleOptions.cors ) {
+      requestUrl = getConfig('Connection.FSURI') + '/read?path=' + encodeURIComponent(requestUrl);
+    }
 
-  OSjs.VFS.Transports.WebDAV = {
-    module: Transport,
-    path: makePath
-  };
+    return Promise.resolve(requestUrl);
+  }
 
-})(OSjs.Utils, OSjs.API);
+  freeSpace(root) {
+    return Promise.resolve(-1);
+  }
+
+}

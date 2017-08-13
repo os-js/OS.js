@@ -27,192 +27,194 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, VFS, GUI) {
-  'use strict';
+import * as DOM from 'utils/dom';
+import * as GUI from 'utils/gui';
+import * as Events from 'utils/events';
+import GUIElement from 'gui/element';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // HELPERS
-  /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// HELPERS
+/////////////////////////////////////////////////////////////////////////////
 
-  function toggleActive(el, eidx, idx) {
-    Utils.$removeClass(el, 'gui-active');
-    if ( eidx === idx ) {
-      Utils.$addClass(el, 'gui-active');
-    }
+function toggleActive(el, eidx, idx) {
+  DOM.$removeClass(el, 'gui-active');
+  if ( eidx === idx ) {
+    DOM.$addClass(el, 'gui-active');
+  }
+}
+
+function selectTab(el, tabs, ev, idx, tab) {
+  tabs.querySelectorAll('li').forEach((tel, eidx) => {
+    toggleActive(tel, eidx, idx);
+  });
+
+  el.querySelectorAll('gui-tab-container').forEach((tel, eidx) => {
+    toggleActive(tel, eidx, idx);
+  });
+
+  DOM.$addClass(tab, 'gui-active');
+
+  el.dispatchEvent(new CustomEvent('_change', {detail: {index: idx}}));
+}
+
+function findTab(el, tabs, idx) {
+  let found = null;
+  if ( typeof idx === 'number' ) {
+    found = idx;
+  } else {
+    tabs.querySelectorAll('li').forEach((iter, i) => {
+      if ( found === null && iter.firstChild.textContent === idx ) {
+        found = i;
+      }
+    });
+  }
+  return found;
+}
+
+function removeTab(el, tabs, idx) {
+  const found = findTab(el, tabs, idx);
+  if ( found !== null ) {
+    tabs.children[found].remove();
+    el.querySelectorAll('gui-tab-container')[found].remove();
+  }
+}
+
+function createTab(el, tabs, label, prog) {
+  const tab = document.createElement('li');
+  const idx = tabs.children.length;
+
+  Events.$bind(tab, 'click', (ev) => {
+    selectTab(el, tabs, ev, idx, tab);
+  }, false);
+
+  tab.setAttribute('role', 'tab');
+  tab.setAttribute('aria-label', label);
+  tab.appendChild(document.createTextNode(label));
+  tabs.appendChild(tab);
+
+  if ( prog ) {
+    const tel = document.createElement('gui-tab-container');
+    tel.setAttribute('data-label', label);
+    tel.setAttribute('role', 'tabpanel');
+    el.appendChild(tel);
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// CLASSES
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Element: 'gui-tabs'
+ *
+ * A container with tabs for displaying content.
+ *
+ * <pre><code>
+ *   event     select                    When tab has changed => fn(ev)
+ *   event     activate                  Alias of 'select'
+ * </code></pre>
+ */
+class GUITabs extends GUIElement {
+  static register() {
+    return super.register({
+      tagName: 'gui-tabs'
+    }, this);
   }
 
-  function selectTab(el, tabs, ev, idx, tab) {
-    tabs.querySelectorAll('li').forEach(function(tel, eidx) {
-      toggleActive(tel, eidx, idx);
+  on(evName, callback, params) {
+    if ( (['select', 'activate']).indexOf(evName) !== -1 ) {
+      evName = 'change';
+    }
+    if ( evName === 'change' ) {
+      evName = '_' + evName;
+    }
+
+    Events.$bind(this.$element, evName, callback.bind(this), params);
+
+    return this;
+  }
+
+  set(param, value) {
+    if ( ['current', 'selected', 'active'].indexOf(param) !== -1 ) {
+      const el = this.$element;
+      const tabs = el.querySelector('ul');
+      const found = findTab(el, tabs, value);
+      if ( found !== null ) {
+        selectTab(el, tabs, null, found, tabs[found]);
+      }
+
+      return this;
+    }
+    return super.set(...arguments);
+  }
+
+  get(param, value) {
+    if ( ['current', 'selected', 'active'].indexOf(param) !== -1 ) {
+      const cur = this.$element.querySelector('ul > li[class="gui-active"]');
+      return DOM.$index(cur);
+    }
+    return super.get(...arguments);
+  }
+
+  add(newtabs) {
+    const el = this.$element;
+    const tabs = el.querySelector('ul');
+
+    if ( !(newtabs instanceof Array) ) {
+      newtabs = [newtabs];
+    }
+
+    newtabs.forEach((label) => {
+      createTab(el, tabs, label, true);
     });
 
-    el.querySelectorAll('gui-tab-container').forEach(function(tel, eidx) {
-      toggleActive(tel, eidx, idx);
+    return this;
+  }
+
+  remove(removetabs) {
+    const el = this.$element;
+    const tabs = el.querySelector('ul');
+
+    if ( !(removetabs instanceof Array) ) {
+      removetabs = [removetabs];
+    }
+
+    removetabs.forEach((id) => {
+      removeTab(el, tabs, id);
     });
 
-    Utils.$addClass(tab, 'gui-active');
-
-    el.dispatchEvent(new CustomEvent('_change', {detail: {index: idx}}));
+    return this;
   }
 
-  function findTab(el, tabs, idx) {
-    var found = null;
-    if ( typeof idx === 'number' ) {
-      found = idx;
-    } else {
-      tabs.querySelectorAll('li').forEach(function(iter, i) {
-        if ( found === null && iter.firstChild.textContent === idx ) {
-          found = i;
-        }
-      });
-    }
-    return found;
-  }
+  build() {
+    const el = this.$element;
+    const tabs = document.createElement('ul');
 
-  function removeTab(el, tabs, idx) {
-    var found = findTab(el, tabs, idx);
-    if ( found !== null ) {
-      tabs.children[found].remove();
-      el.querySelectorAll('gui-tab-container')[found].remove();
-    }
-  }
-
-  function createTab(el, tabs, label, prog) {
-    var tab = document.createElement('li');
-    var idx = tabs.children.length;
-
-    Utils.$bind(tab, 'click', function(ev) {
-      selectTab(el, tabs, ev, idx, tab);
-    }, false);
-
-    tab.setAttribute('role', 'tab');
-    tab.setAttribute('aria-label', label);
-    tab.appendChild(document.createTextNode(label));
-    tabs.appendChild(tab);
-
-    if ( prog ) {
-      var tel = document.createElement('gui-tab-container');
-      tel.setAttribute('data-label', label);
+    el.querySelectorAll('gui-tab-container').forEach((tel, idx) => {
+      createTab(el, tabs, GUI.getLabel(tel));
       tel.setAttribute('role', 'tabpanel');
-      el.appendChild(tel);
+    });
+
+    tabs.setAttribute('role', 'tablist');
+    el.setAttribute('role', 'navigation');
+
+    if ( el.children.length ) {
+      el.insertBefore(tabs, el.children[0]);
+    } else {
+      el.appendChild(tabs);
     }
+
+    const currentTab = parseInt(el.getAttribute('data-selected-index'), 10) || 0;
+    selectTab(el, tabs, null, currentTab);
+
+    return this;
   }
+}
 
-  /////////////////////////////////////////////////////////////////////////////
-  // CLASSES
-  /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// EXPORTS
+/////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Element: 'gui-tabs'
-   *
-   * A container with tabs for displaying content.
-   *
-   * <pre><code>
-   *   event     select                    When tab has changed => fn(ev)
-   *   event     activate                  Alias of 'select'
-   * </code></pre>
-   *
-   * @constructor Tabs
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUITabs = {
-    on: function(evName, callback, params) {
-      if ( (['select', 'activate']).indexOf(evName) !== -1 ) {
-        evName = 'change';
-      }
-      if ( evName === 'change' ) {
-        evName = '_' + evName;
-      }
-
-      Utils.$bind(this.$element, evName, callback.bind(this), params);
-
-      return this;
-    },
-
-    set: function(param, value) {
-      if ( ['current', 'selected', 'active'].indexOf(param) !== -1 ) {
-        var el = this.$element;
-        var tabs = el.querySelector('ul');
-        var found = findTab(el, tabs, value);
-        if ( found !== null ) {
-          selectTab(el, tabs, null, found, tabs[found]);
-        }
-
-        return this;
-      }
-      return GUI.Element.prototype.set.apply(this, arguments);
-    },
-
-    get: function(param, value) {
-      if ( ['current', 'selected', 'active'].indexOf(param) !== -1 ) {
-        var cur = this.$element.querySelector('ul > li[class="gui-active"]');
-        return Utils.$index(cur);
-      }
-      return GUI.Element.prototype.get.apply(this, arguments);
-    },
-
-    add: function(newtabs) {
-      var el = this.$element;
-      var tabs = el.querySelector('ul');
-
-      if ( !(newtabs instanceof Array) ) {
-        newtabs = [newtabs];
-      }
-
-      newtabs.forEach(function(label) {
-        createTab(el, tabs, label, true);
-      });
-
-      return this;
-    },
-
-    remove: function(removetabs) {
-      var el = this.$element;
-      var tabs = el.querySelector('ul');
-
-      if ( !(removetabs instanceof Array) ) {
-        removetabs = [removetabs];
-      }
-
-      removetabs.forEach(function(id) {
-        removeTab(el, tabs, id);
-      });
-
-      return this;
-    },
-
-    build: function() {
-      var el = this.$element;
-      var tabs = document.createElement('ul');
-
-      el.querySelectorAll('gui-tab-container').forEach(function(tel, idx) {
-        createTab(el, tabs, GUI.Helpers.getLabel(tel));
-        tel.setAttribute('role', 'tabpanel');
-      });
-
-      tabs.setAttribute('role', 'tablist');
-      el.setAttribute('role', 'navigation');
-
-      if ( el.children.length ) {
-        el.insertBefore(tabs, el.children[0]);
-      } else {
-        el.appendChild(tabs);
-      }
-
-      var currentTab = parseInt(el.getAttribute('data-selected-index'), 10) || 0;
-      selectTab(el, tabs, null, currentTab);
-
-      return this;
-    }
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // REGISTRATION
-  /////////////////////////////////////////////////////////////////////////////
-
-  GUI.Element.register({
-    tagName: 'gui-tabs'
-  }, GUITabs);
-
-})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);
+export default {
+  GUITabs: GUITabs
+};

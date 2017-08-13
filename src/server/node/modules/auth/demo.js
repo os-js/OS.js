@@ -27,76 +27,30 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-/*eslint strict:["error", "global"]*/
-'use strict';
 
-module.exports.login = function(http, data) {
-  return new Promise((resolve, reject) => {
-    resolve({
-      id: 0,
-      username: 'demo',
-      name: 'Demo User',
-      groups: ['admin']
+const Authenticator = require('./../authenticator.js');
+const User = require('./../../user.js');
+
+const users = {
+  1000: {
+    id: 1000,
+    username: 'demo',
+    name: 'Demo User',
+    groups: ['admin']
+  }
+};
+
+class DemoAuthenticator extends Authenticator {
+  login(data) {
+    return new Promise((resolve, reject) => {
+      resolve(users[1000]);
     });
-  });
-};
+  }
 
-module.exports.logout = function(http) {
-  return new Promise((resolve) => {
-    resolve(true);
-  });
-};
+  getUserFromRequest(http) {
+    const uid = http.session.get('uid');
+    return Promise.resolve(User.createFromObject(users[uid]));
+  }
+}
 
-module.exports.manage = function(http) {
-  return new Promise((resolve, reject) => {
-    reject('Not available');
-  });
-};
-
-module.exports.initSession = function(http) {
-  return new Promise((resolve) => {
-    resolve(true);
-  });
-};
-
-module.exports.checkPermission = function(http, type, options) {
-  return new Promise((resolve) => {
-    resolve(true);
-  });
-};
-
-module.exports.checkSession = function(http) {
-  return new Promise((resolve, reject) => {
-    if ( http.session.get('username') ) {
-      resolve();
-    } else {
-      reject('You have no OS.js Session, please log in!');
-    }
-  });
-};
-
-module.exports.getGroups = function(http, username) {
-  return new Promise((resolve) => {
-    resolve(['admin']);
-  });
-};
-
-module.exports.getBlacklist = function(http, username) {
-  return new Promise((resolve) => {
-    resolve([]);
-  });
-};
-
-module.exports.setBlacklist = function(http, username, list) {
-  return new Promise((resolve) => {
-    resolve(true);
-  });
-};
-
-module.exports.register = function(config) {
-  return Promise.resolve();
-};
-
-module.exports.destroy = function() {
-  return Promise.resolve();
-};
+module.exports = new DemoAuthenticator();

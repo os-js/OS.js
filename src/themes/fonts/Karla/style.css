@@ -1,0 +1,57 @@
+@font-face {
+  font-family:Karla;
+  src: url('./fonts/Regular.eot');
+  src: url('./fonts/Regular.eot?#iefix') format('embedded-opentype'),
+       url('./fonts/Regular.woff') format('woff'),
+       url('./fonts/Regular.ttf') format('truetype'),
+       url('./fonts/Regular.svg#karla') format('svg');
+  font-weight:normal;
+  font-style:normal;
+}
+@font-face {
+  font-family:Karla;
+  src: url('./fonts/Bold.eot');
+  src: url('./fonts/Bold.eot?#iefix') format('embedded-opentype'),
+       url('./fonts/Bold.woff') format('woff'),
+       url('./fonts/Bold.ttf') format('truetype'),
+       url('./fonts/Bold.svg#karla_bold') format('svg');
+  font-weight:bold;
+}
+@font-face {
+  font-family:Karla;
+  src: url('./fonts/Italic.eot');
+  src: url('./fonts/Italic.eot?#iefix') format('embedded-opentype'),
+       url('./fonts/Italic.woff') format('woff'),
+       url('./fonts/Italic.ttf') format('truetype'),
+       url('./fonts/Italic.svg#karla_italic') format('svg');
+  font-style:italic;
+}
+@font-face {
+  font-family:Karla;
+  src: url('./fonts/Italic.eot');
+  src: url('./fonts/Italic.eot?#iefix') format('embedded-opentype'),
+       url('./fonts/Italic.woff') format('woff'),
+       url('./fonts/Italic.ttf') format('truetype'),
+       url('./fonts/Italic.svg#karla_italic') format('svg');
+  font-style:oblique;
+}
+@font-face {
+  font-family:Karla;
+  src: url('./fonts/BoldItalic.eot');
+  src: url('./fonts/BoldItalic.eot?#iefix') format('embedded-opentype'),
+       url('./fonts/BoldItalic.woff') format('woff'),
+       url('./fonts/BoldItalic.ttf') format('truetype'),
+       url('./fonts/BoldItalic.svg#karla_bolditalic') format('svg');
+  font-weight:bold;
+  font-style:italic;
+}
+@font-face {
+  font-family:Karla;
+  src: url('./fonts/BoldItalic.eot');
+  src: url('./fonts/BoldItalic.eot?#iefix') format('embedded-opentype'),
+       url('./fonts/BoldItalic.woff') format('woff'),
+       url('./fonts/BoldItalic.ttf') format('truetype'),
+       url('./fonts/BoldItalic.svg#karla_bolditalic') format('svg');
+  font-weight:bold;
+  font-style:oblique;
+}

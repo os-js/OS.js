@@ -29,242 +29,224 @@
  */
 
 /*eslint valid-jsdoc: "off"*/
-(function(Application, Window, Utils, API, PM, GUI, VFS) {
-  'use strict';
+const Dialog = OSjs.require('core/dialog');
+const SettingsManager = OSjs.require('core/settings-manager');
+const PackageManager = OSjs.require('core/package-manager');
+const FileMetadata = OSjs.require('vfs/file');
 
-  var list, hidden;
+let list, hidden;
 
-  function updateEnabledStates() {
-    var pacman = OSjs.Core.getPackageManager();
-    var sm = OSjs.Core.getSettingsManager();
-    var pool = sm.instance('PackageManager', {Hidden: []});
+function updateEnabledStates() {
+  const pool = SettingsManager.instance('PackageManager', {Hidden: []});
 
-    list = pacman.getPackages(false);
-    hidden = pool.get('Hidden');
+  list = PackageManager.getPackages(false);
+  hidden = pool.get('Hidden');
+}
+
+function renderInstalled(win, scheme) {
+  if ( !win || win._destroyed ) {
+    return;
   }
 
-  function renderInstalled(win, scheme) {
-    if ( !win || win._destroyed ) {
-      return;
-    }
+  win._find('ButtonUninstall').set('disabled', true);
 
-    win._find('ButtonUninstall').set('disabled', true);
+  updateEnabledStates();
 
-    updateEnabledStates();
+  const view = win._find('InstalledPackages');
+  const rows = Object.keys(list).map(function(k, idx) {
+    return {
+      index: idx,
+      value: k,
+      columns: [
+        {label: ''},
+        {label: k},
+        {label: list[k].scope},
+        {label: list[k].name}
+      ]
+    };
+  });
 
-    var view = win._find('InstalledPackages');
-    var rows = [];
+  view.clear();
+  view.add(rows);
 
-    Object.keys(list).forEach(function(k, idx) {
-      rows.push({
-        index: idx,
-        value: k,
-        columns: [
-          {label: ''},
-          {label: k},
-          {label: list[k].scope},
-          {label: list[k].name}
-        ]
-      });
-    });
+  view.$element.querySelectorAll('gui-list-view-body > gui-list-view-row').forEach(function(row) {
+    const col = row.children[0];
+    const name = row.getAttribute('data-value');
+    const enabled = hidden.indexOf(name) >= 0;
 
-    view.clear();
-    view.add(rows);
+    win._create('gui-checkbox', {value: enabled}, col).on('change', function(ev) {
+      const idx = hidden.indexOf(name);
 
-    view.$element.querySelectorAll('gui-list-view-body > gui-list-view-row').forEach(function(row) {
-      var col = row.children[0];
-      var name = row.getAttribute('data-value');
-      var enabled = hidden.indexOf(name) >= 0;
-
-      win._create('gui-checkbox', {value: enabled}, col).on('change', function(ev) {
-        var idx = hidden.indexOf(name);
-
-        if ( ev.detail ) {
-          if ( idx < 0 ) {
-            hidden.push(name);
-          }
-        } else {
-          if ( idx >= 0 ) {
-            hidden.splice(idx, 1);
-          }
+      if ( ev.detail ) {
+        if ( idx < 0 ) {
+          hidden.push(name);
         }
-      });
-    });
-  }
-
-  function renderPaths(win, scheme) {
-    if ( !win || win._destroyed ) {
-      return;
-    }
-
-    var sm = OSjs.Core.getSettingsManager();
-    var paths = sm.instance('PackageManager').get('PackagePaths', []);
-    win._find('PackagePaths').clear().add(paths.map(function(iter, idx) {
-      return {
-        value: idx,
-        columns: [
-          {label: iter}
-        ]
-      };
-    }));
-  }
-
-  function _save(sf, win, scheme, paths) {
-    win._toggleLoading(true);
-    sf.set(null, {PackagePaths: paths}, function() {
-      renderPaths(win, scheme);
-      win._toggleLoading(false);
-    }, false);
-  }
-
-  function addPath(win, scheme) {
-    var sm = OSjs.Core.getSettingsManager();
-    var sf = sm.instance('PackageManager');
-    var paths = sf.get('PackagePaths', []);
-
-    win._toggleDisabled(true);
-    API.createDialog('Input', {
-      message: 'Enter path',
-      placeholder: 'mount:///path'
-    }, function(ev, btn, value) {
-      win._toggleDisabled(false);
-
-      if ( value ) {
-        if ( paths.indexOf(value) === -1 ) {
-          paths.push(value);
-          _save(sf, win, scheme, paths);
+      } else {
+        if ( idx >= 0 ) {
+          hidden.splice(idx, 1);
         }
       }
     });
+  });
+}
+
+function renderPaths(win, scheme) {
+  if ( !win || win._destroyed ) {
+    return;
   }
 
-  function removePath(win, scheme, index) {
-    var sm = OSjs.Core.getSettingsManager();
-    var sf = sm.instance('PackageManager');
-    var paths = sf.get('PackagePaths', []);
-    if ( typeof paths[index] !== 'undefined' ) {
-      paths.splice(index, 1);
-      _save(sf, win, scheme, paths);
+  const paths = SettingsManager.instance('PackageManager').get('PackagePaths', []);
+  win._find('PackagePaths').clear().add(paths.map(function(iter, idx) {
+    return {
+      value: idx,
+      columns: [
+        {label: iter}
+      ]
+    };
+  }));
+}
+
+function _save(sf, win, scheme, paths) {
+  win._toggleLoading(true);
+  sf.set(null, {PackagePaths: paths}, function() {
+    renderPaths(win, scheme);
+    win._toggleLoading(false);
+  }, false);
+}
+
+function addPath(win, scheme) {
+  const sf = SettingsManager.instance('PackageManager');
+  const paths = sf.get('PackagePaths', []);
+
+  win._toggleDisabled(true);
+  Dialog.create('Input', {
+    message: 'Enter path',
+    placeholder: 'mount:///path'
+  }, function(ev, btn, value) {
+    win._toggleDisabled(false);
+
+    if ( value ) {
+      if ( paths.indexOf(value) === -1 ) {
+        paths.push(value);
+        _save(sf, win, scheme, paths);
+      }
     }
+  });
+}
+
+function removePath(win, scheme, index) {
+  const sf = SettingsManager.instance('PackageManager');
+  const paths = sf.get('PackagePaths', []);
+  if ( typeof paths[index] !== 'undefined' ) {
+    paths.splice(index, 1);
+    _save(sf, win, scheme, paths);
   }
+}
 
-  /////////////////////////////////////////////////////////////////////////////
-  // MODULE
-  /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// MODULE
+/////////////////////////////////////////////////////////////////////////////
 
-  var module = {
-    group: 'misc',
-    name: 'Packages',
-    label: 'LBL_PACKAGES',
-    icon: 'apps/system-software-install.png',
-    button: false,
+export default {
+  group: 'misc',
+  name: 'Packages',
+  label: 'LBL_PACKAGES',
+  icon: 'apps/system-software-install.png',
+  button: false,
 
-    init: function() {
-    },
+  init: function() {
+  },
 
-    update: function(win, scheme, settings, wm) {
-      renderInstalled(win, scheme);
-      renderPaths(win, scheme);
-    },
+  update: function(win, scheme, settings, wm) {
+    renderInstalled(win, scheme);
+    renderPaths(win, scheme);
+  },
 
-    render: function(win, scheme, root, settings, wm) {
-      var pacman = OSjs.Core.getPackageManager();
-      var sm = OSjs.Core.getSettingsManager();
-      var pool = sm.instance('PackageManager', {Hidden: []});
+  render: function(win, scheme, root, settings, wm) {
+    const pool = SettingsManager.instance('PackageManager', {Hidden: []});
 
-      win._find('ButtonUninstall').on('click', function() {
-        var selected = win._find('InstalledPackages').get('selected');
-        if ( selected && selected[0] ) {
-          var pkg = pacman.getPackage(selected[0].data);
-          if ( pkg && pkg.scope === 'user' ) {
-            win._toggleLoading(true);
+    win._find('ButtonUninstall').on('click', function() {
+      const selected = win._find('InstalledPackages').get('selected');
+      if ( selected && selected[0] ) {
+        const pkg = PackageManager.getPackage(selected[0].data);
+        if ( pkg && pkg.scope === 'user' ) {
+          win._toggleLoading(true);
 
-            var file = new VFS.File(pkg.path);
-            pacman.uninstall(file, function(e) {
-              win._toggleLoading(false);
-              renderInstalled(win, scheme);
-
-              if ( e ) {
-                alert(e);
-              }
-            });
-          }
+          const file = new FileMetadata(pkg.path);
+          PackageManager.uninstall(file).then(() => {
+            win._toggleLoading(false);
+            renderInstalled(win, scheme);
+          }).catch((e) => {
+            win._toggleLoading(false);
+            alert(e);
+          });
         }
-      });
+      }
+    });
 
-      win._find('InstalledPackages').on('select', function(ev) {
-        var d = true;
-        var e = ev.detail.entries || [];
-        if ( e.length ) {
-          var pkg = pacman.getPackage(e[0].data);
-          if ( pkg && pkg.scope === 'user' ) {
-            d = false;
-          }
+    win._find('InstalledPackages').on('select', function(ev) {
+      let d = true;
+      const e = ev.detail.entries || [];
+      if ( e.length ) {
+        const pkg = PackageManager.getPackage(e[0].data);
+        if ( pkg && pkg.scope === 'user' ) {
+          d = false;
         }
+      }
 
-        win._find('ButtonUninstall').set('disabled', d);
+      win._find('ButtonUninstall').set('disabled', d);
+    });
+
+    win._find('ButtonSaveHidden').on('click', function() {
+      win._toggleLoading(true);
+      pool.set('Hidden', hidden, function() {
+        win._toggleLoading(false);
       });
+    });
 
-      win._find('ButtonSaveHidden').on('click', function() {
-        win._toggleLoading(true);
-        pool.set('Hidden', hidden, function() {
-          win._toggleLoading(false);
-        });
+    win._find('ButtonRegen').on('click', function() {
+      win._toggleLoading(true);
+      PackageManager.generateUserMetadata().then(() => {
+        win._toggleLoading(false);
+        renderInstalled(win, scheme);
+      }).catch(() => {
+        win._toggleLoading(false);
       });
+    });
 
-      win._find('ButtonRegen').on('click', function() {
-        win._toggleLoading(true);
-        pacman.generateUserMetadata(function() {
-          win._toggleLoading(false);
+    win._find('ButtonZipInstall').on('click', function() {
+      win._toggleDisabled(true);
 
-          renderInstalled(win, scheme);
-        });
-      });
-
-      win._find('ButtonZipInstall').on('click', function() {
-        win._toggleDisabled(true);
-
-        API.createDialog('File', {
-          filter: ['application/zip']
-        }, function(ev, button, result) {
-          if ( button !== 'ok' || !result ) {
+      Dialog.create('File', {
+        filter: ['application/zip']
+      }, function(ev, button, result) {
+        if ( button !== 'ok' || !result ) {
+          win._toggleDisabled(false);
+        } else {
+          PackageManager.install(result, true).then(() => {
             win._toggleDisabled(false);
-          } else {
-            OSjs.Core.getPackageManager().install(result, true, function(e) {
-              win._toggleDisabled(false);
-              renderInstalled(win, scheme);
-
-              if ( e ) {
-                alert(e);
-              }
-            });
-          }
-        }, win);
-      });
-
-      win._find('PackagePathsRemove').on('click', function() {
-        var sel = win._find('PackagePaths').get('selected');
-        if ( sel && sel.length ) {
-          removePath(win, scheme, sel[0].data);
+            renderInstalled(win, scheme);
+          }).catch((e) => {
+            win._toggleDisabled(false);
+            alert(e);
+          });
         }
-      });
+      }, win);
+    });
 
-      win._find('PackagePathsAdd').on('click', function() {
-        addPath(win, scheme);
-      });
-    },
+    win._find('PackagePathsRemove').on('click', function() {
+      const sel = win._find('PackagePaths').get('selected');
+      if ( sel && sel.length ) {
+        removePath(win, scheme, sel[0].data);
+      }
+    });
 
-    save: function(win, scheme, settings, wm) {
-    }
-  };
+    win._find('PackagePathsAdd').on('click', function() {
+      addPath(win, scheme);
+    });
+  },
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+  save: function(win, scheme, settings, wm) {
+  }
+};
 
-  OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationSettings = OSjs.Applications.ApplicationSettings || {};
-  OSjs.Applications.ApplicationSettings.Modules = OSjs.Applications.ApplicationSettings.Modules || {};
-  OSjs.Applications.ApplicationSettings.Modules.PM = module;
-
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.PM, OSjs.GUI, OSjs.VFS);

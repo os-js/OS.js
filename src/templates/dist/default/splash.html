@@ -1,0 +1,48 @@
+
+    <div id="LoadingScreen">
+      <img alt="" src="splash.png" />
+      <div class="progress-bar">
+        <div class="progress"></div>
+      </div>
+    </div>
+
+    <style type="text/css">
+
+#LoadingScreen {
+  position : absolute;
+  width : 320px;
+  height : 182px;
+  top : 50%;
+  left : 50%;
+  margin-top : -91px;
+  margin-left : -160px;
+  z-index : 999;
+}
+  #LoadingScreen > .progress-bar {
+    position : absolute;
+    bottom : -3em;
+    height : 2em;
+    left : 0;
+    right : 0;
+  }
+    #LoadingScreen > .progress-bar:before {
+      content : '';
+      position : absolute;
+      top : -2px;
+      left : -2px;
+      bottom : -2px;
+      right : -2px;
+      border : 1px solid #ccc;
+      background : #ddd;
+    }
+    #LoadingScreen > .progress-bar > .progress {
+      position : absolute;
+      left : 0;
+      top : 0;
+      bottom : 0;
+      width : 0;
+      margin : 2px;
+      background : rgb(87, 42, 121);
+    }
+
+    </style>

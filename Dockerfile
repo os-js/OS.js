@@ -41,7 +41,7 @@ RUN cd OS.js/
 
 # Install OS.js
 WORKDIR OS.js/
-RUN npm install --production
+RUN npm install
 RUN node osjs build
 
 # Run OS.js

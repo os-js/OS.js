@@ -27,84 +27,49 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
+const Application = OSjs.require('core/application');
+const Window = OSjs.require('core/window');
 
-/*eslint valid-jsdoc: "off"*/
-(function(Application, Window, Utils, API, VFS, GUI) {
-  'use strict';
+class ApplicationEXAMPLEWindow extends Window {
 
-  /////////////////////////////////////////////////////////////////////////////
-  // WINDOWS
-  /////////////////////////////////////////////////////////////////////////////
-
-  function ApplicationEXAMPLEWindow(app, metadata, scheme) {
-    Window.apply(this, ['ApplicationEXAMPLEWindow', {
+  constructor(app, metadata) {
+    super('ApplicationEXAMPLEWindow', {
       icon: metadata.icon,
       title: metadata.name,
       width: 400,
       height: 200
-    }, app, scheme]);
+    }, app);
   }
 
-  ApplicationEXAMPLEWindow.prototype = Object.create(Window.prototype);
-  ApplicationEXAMPLEWindow.constructor = Window.prototype;
-
-  ApplicationEXAMPLEWindow.prototype.init = function(wmRef, app, scheme) {
-    var root = Window.prototype.init.apply(this, arguments);
-    var self = this;
+  init(wmRef, app) {
+    const root = super.init(...arguments);
 
     // Render our Scheme file fragment into this Window
-    this._render('EXAMPLEWindow');
+    this._render('EXAMPLEWindow', require('osjs-scheme-loader!./scheme.html'));
 
     // Put your GUI code here (or make a new prototype function and call it):
 
     return root;
-  };
-
-  ApplicationEXAMPLEWindow.prototype.destroy = function() {
-    // This is where you remove objects, dom elements etc attached to your
-    // instance. You can remove this if not used.
-    if ( Window.prototype.destroy.apply(this, arguments) ) {
-      return true;
-    }
-    return false;
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // APPLICATION
-  /////////////////////////////////////////////////////////////////////////////
-
-  function ApplicationEXAMPLE(args, metadata) {
-    Application.apply(this, ['ApplicationEXAMPLE', args, metadata]);
   }
 
-  ApplicationEXAMPLE.prototype = Object.create(Application.prototype);
-  ApplicationEXAMPLE.constructor = Application;
+}
 
-  ApplicationEXAMPLE.prototype.destroy = function() {
-    // This is where you remove objects, dom elements etc attached to your
-    // instance. You can remove this if not used.
-    if ( Application.prototype.destroy.apply(this, arguments) ) {
-      return true;
-    }
-    return false;
-  };
+class ApplicationEXAMPLE extends Application {
 
-  ApplicationEXAMPLE.prototype.init = function(settings, metadata, scheme) {
-    Application.prototype.init.apply(this, arguments);
-    this._addWindow(new ApplicationEXAMPLEWindow(this, metadata, scheme));
+  constructor(args, metadata) {
+    super('ApplicationEXAMPLE', args, metadata);
+  }
+
+  init(settings, metadata) {
+    super.init(...arguments);
+
+    this._addWindow(new ApplicationEXAMPLEWindow(this, metadata));
 
     // Example on how to call `api.js` methods
-    this._api('test', {}, function(err, res) {
-      console.log('Result from your server API method', err, res);
+    this._api('test', {}).then((res) => {
+      console.log('Result from your server API method', res);
     });
   };
+}
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationEXAMPLE = OSjs.Applications.ApplicationEXAMPLE || {};
-  OSjs.Applications.ApplicationEXAMPLE.Class = Object.seal(ApplicationEXAMPLE);
-
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);
+OSjs.Applications.ApplicationEXAMPLE = ApplicationEXAMPLE;

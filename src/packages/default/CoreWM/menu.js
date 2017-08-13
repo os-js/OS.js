@@ -29,24 +29,28 @@
  */
 
 /*eslint valid-jsdoc: "off"*/
-(function(WindowManager, Window, GUI, Utils, API, VFS) {
-  'use strict';
+import Translations from './locales';
 
-  function _createIcon(aiter, aname, arg) {
-    return API.getIcon(aiter.icon, arg, aiter.className);
-  }
+const _ = OSjs.require('core/locales').createLocalizer(Translations);
+const Menu = OSjs.require('gui/menu');
+const GUI = OSjs.require('utils/gui');
+const DOM = OSjs.require('utils/dom');
+const Events = OSjs.require('utils/events');
+const Process = OSjs.require('core/process');
+const Theme = OSjs.require('core/theme');
+const WindowManager = OSjs.require('core/window-manager');
+const PackageManager = OSjs.require('core/package-manager');
 
-  /**
-   * Create default application menu with categories (sub-menus)
-   */
-  function doBuildCategoryMenu(ev) {
-    var apps = OSjs.Core.getPackageManager().getPackages();
-    var wm = OSjs.Core.getWindowManager();
+class CategorizedApplicationMenu {
+
+  constructor() {
+    var apps = PackageManager.getPackages();
+    var wm = WindowManager.instance;
     var cfgCategories = wm.getDefaultSetting('menu');
 
     function createEvent(iter) {
       return function(el) {
-        OSjs.GUI.Helpers.createDraggable(el, {
+        GUI.createDraggable(el, {
           type: 'application',
           data: {
             launch: iter.name
@@ -57,7 +61,7 @@
 
     function clickEvent(iter) {
       return function() {
-        API.launch(iter.name);
+        Process.create(iter.name);
       };
     }
 
@@ -82,7 +86,7 @@
         var iter = cats[c][a];
         submenu.push({
           title: iter.data.name,
-          icon: _createIcon(iter.data, iter.name),
+          icon: Theme.getIcon(iter.data.icon, '16x16'),
           tooltip: iter.data.description,
           onCreated: createEvent(iter),
           onClick: clickEvent(iter)
@@ -91,39 +95,46 @@
 
       if ( submenu.length ) {
         list.push({
-          title: OSjs.Applications.CoreWM._(cfgCategories[c].title),
-          icon: API.getIcon(cfgCategories[c].icon, '16x16'),
+          title: _(cfgCategories[c].title),
+          icon: Theme.getIcon(cfgCategories[c].icon, '16x16'),
           menu: submenu
         });
       }
     });
 
-    return list;
+    this.list = list;
   }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // NEW MENU
-  /////////////////////////////////////////////////////////////////////////////
+  show(ev) {
+    var m = Menu.create(this.list, ev);
+    if ( m && m.$element ) {
+      DOM.$addClass(m.$element, 'CoreWMDefaultApplicationMenu');
+    }
+  }
 
-  function ApplicationMenu() {
+}
+
+class ApplicationMenu {
+
+  constructor() {
     var root = this.$element = document.createElement('gui-menu');
     this.$element.id = 'CoreWMApplicationMenu';
 
-    var apps = OSjs.Core.getPackageManager().getPackages();
+    var apps = PackageManager.getPackages();
 
     function createEntry(a, iter) {
       var entry = document.createElement('gui-menu-entry');
 
       var img = document.createElement('img');
-      img.src = _createIcon(iter, a, '32x32');
+      img.src = Theme.getIcon(iter.icon, '32x32');
 
       var txt = document.createElement('div');
       txt.appendChild(document.createTextNode(iter.name)); //.replace(/([^\s-]{8})([^\s-]{8})/, '$1-$2')));
 
-      Utils.$bind(entry, 'click', function(ev) {
+      Events.$bind(entry, 'click', function(ev) {
         ev.stopPropagation();
-        API.launch(a);
-        API.blurMenu();
+        Process.create(a);
+        Menu.blur();
       });
 
       entry.appendChild(img);
@@ -139,18 +150,17 @@
     });
   }
 
-  ApplicationMenu.prototype.destroy = function() {
-
+  destroy() {
     if ( this.$element ) {
       this.$element.querySelectorAll('gui-menu-entry').forEach(function(el) {
-        Utils.$unbind(el, 'click');
+        Events.$unbind(el, 'click');
       });
-      Utils.$remove(this.$element);
+      DOM.$remove(this.$element);
     }
     this.$element = null;
-  };
+  }
 
-  ApplicationMenu.prototype.show = function(pos) {
+  show(pos) {
     if ( !this.$element ) {
       return;
     }
@@ -160,75 +170,61 @@
     }
 
     // FIXME: This is a very hackish way of doing it and does not work when button is moved!
-    Utils.$removeClass(this.$element, 'AtBottom');
-    Utils.$removeClass(this.$element, 'AtTop');
+    DOM.$removeClass(this.$element, 'AtBottom');
+    DOM.$removeClass(this.$element, 'AtTop');
     if ( pos.y > (window.innerHeight / 2) ) {
-      Utils.$addClass(this.$element, 'AtBottom');
+      DOM.$addClass(this.$element, 'AtBottom');
 
       this.$element.style.top = 'auto';
       this.$element.style.bottom = '30px';
     } else {
-      Utils.$addClass(this.$element, 'AtTop');
+      DOM.$addClass(this.$element, 'AtTop');
 
       this.$element.style.bottom = 'auto';
       this.$element.style.top = '30px';
     }
 
     this.$element.style.left = pos.x + 'px';
-  };
-
-  ApplicationMenu.prototype.getRoot = function() {
-    return this.$element;
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // MENU
-  /////////////////////////////////////////////////////////////////////////////
-
-  function doShowMenu(ev) {
-    var wm = OSjs.Core.getWindowManager();
-
-    if ( (wm && wm.getSetting('useTouchMenu') === true) ) {
-      var inst = new ApplicationMenu();
-      var pos = {x: ev.clientX, y: ev.clientY};
-
-      if ( ev.target ) {
-        var rect = Utils.$position(ev.target, document.body);
-        if ( rect.left && rect.top && rect.width && rect.height ) {
-          pos.x = rect.left - (rect.width / 2);
-
-          if ( pos.x <= 16 ) {
-            pos.x = 0; // Snap to left
-          }
-
-          var panel = Utils.$parent(ev.target, function(node) {
-            return node.tagName.toLowerCase() === 'corewm-panel';
-          });
-
-          if ( panel ) {
-            var prect = Utils.$position(panel);
-            pos.y = prect.top + prect.height;
-          } else {
-            pos.y = rect.top + rect.height;
-          }
-        }
-      }
-      API.createMenu(null, pos, inst);
-    } else {
-      var list = doBuildCategoryMenu(ev);
-      var m = API.createMenu(list, ev);
-      if ( m && m.$element ) {
-        Utils.$addClass(m.$element, 'CoreWMDefaultApplicationMenu');
-      }
-    }
   }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+  getRoot() {
+    return this.$element;
+  }
+}
 
-  OSjs.Applications                          = OSjs.Applications || {};
-  OSjs.Applications.CoreWM                   = OSjs.Applications.CoreWM || {};
-  OSjs.Applications.CoreWM.showMenu          = doShowMenu;
+export function showMenu(ev) {
+  const wm = WindowManager.instance;
 
-})(OSjs.Core.WindowManager, OSjs.Core.Window, OSjs.GUI, OSjs.Utils, OSjs.API, OSjs.VFS);
+  let inst;
+  if ( (wm && wm.getSetting('useTouchMenu') === true) ) {
+    inst = new ApplicationMenu();
+
+    var pos = {x: ev.clientX, y: ev.clientY};
+    if ( ev.target ) {
+      var rect = DOM.$position(ev.target, document.body);
+      if ( rect.left && rect.top && rect.width && rect.height ) {
+        pos.x = rect.left - (rect.width / 2);
+
+        if ( pos.x <= 16 ) {
+          pos.x = 0; // Snap to left
+        }
+
+        var panel = DOM.$parent(ev.target, function(node) {
+          return node.tagName.toLowerCase() === 'corewm-panel';
+        });
+
+        if ( panel ) {
+          var prect = DOM.$position(panel);
+          pos.y = prect.top + prect.height;
+        } else {
+          pos.y = rect.top + rect.height;
+        }
+      }
+    }
+    Menu.create(null, pos, inst);
+  } else {
+    inst = new CategorizedApplicationMenu();
+    inst.show(ev);
+  }
+}
+

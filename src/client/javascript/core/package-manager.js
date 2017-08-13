@@ -28,481 +28,453 @@
  * @licence Simplified BSD License
  */
 
-(function(Utils, VFS, API) {
-  'use strict';
+// TODO: Could use a cleanup after 2.1
 
-  /**
-   * This is the contents of a 'metadata.json' file for a package.
-   * @typedef Metadata
-   */
+import Promise from 'bluebird';
+import Authenticator from 'core/authenticator';
+import SettingsManager from 'core/settings-manager';
+import {cloneObject} from 'utils/misc';
+import {_, getLocale} from 'core/locales';
+import {getConfig} from 'core/config';
+import * as VFS from 'vfs/fs';
+import * as FS from 'utils/fs';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // PACKAGE MANAGER
-  /////////////////////////////////////////////////////////////////////////////
+import Connection from 'core/connection';
 
-  /**
-   * Package Manager Class
-   *
-   * For maintaining packages
-   *
-   * <pre><b>
-   * YOU CAN ONLY GET AN INSTANCE WITH `Core.getPackageManager()`
-   * </b></pre>
-   *
-   * @example
-   * OSjs.Core.getPackageManager()
-   *
-   * @summary Used for managing packages
-   *
-   * @constructor
-   * @memberof OSjs.Core
-   * @see OSjs.Core.getPackageManager
-   */
-  var PackageManager = (function() {
-    var blacklist = [];
-    var packages = {};
+const resolvePreloads = (metadata, pm) => {
+  const packageURI = getConfig('Connection.PackageURI');
 
-    return Object.seal({
-      destroy: function() {
-        blacklist = [];
-        packages = {};
-      },
+  const mapIter = (s) => (typeof s === 'string' ? {src: s} : s);
 
-      /**
-       * Load Metadata from server and set packages
-       *
-       * @function load
-       * @memberof OSjs.Core.PackageManager#
-       *
-       * @param  {Function} callback      callback
-       */
-      load: function(callback) {
-        var self = this;
-        callback = callback || {};
+  let additions = [];
+  let list = (metadata.preload || []).slice(0).map(mapIter);
 
-        console.debug('PackageManager::load()');
-
-        function loadMetadata(cb) {
-          self._loadMetadata(function(err) {
-            if ( err ) {
-              callback(err, false, PackageManager);
-              return;
-            }
-
-            var len = Object.keys(packages).length;
-            if ( len ) {
-              cb();
-            } else {
-              callback(false, API._('ERR_PACKAGE_ENUM_FAILED'), PackageManager);
-            }
-          });
+  // If this package depends on another package, make sure
+  // to load the resources for the related one as well
+  if ( metadata.depends instanceof Array ) {
+    metadata.depends.forEach((k) => {
+      if ( !OSjs.Applications[k] ) {
+        const pkg = pm.getPackage(k);
+        if ( pkg ) {
+          console.info('Using dependency', k);
+          additions = additions.concat(pkg.preload.map(mapIter));
         }
-
-        loadMetadata(function() {
-          self._loadExtensions(function() {
-            callback(true, false, PackageManager);
-          });
-        });
-      },
-
-      /**
-       * Internal method for loading all extensions
-       *
-       * @function _loadExtensions
-       * @memberof OSjs.Core.PackageManager#
-       *
-       * @param  {Function} callback      callback
-       */
-      _loadExtensions: function(callback) {
-        var preloads = [];
-
-        Object.keys(packages).forEach(function(k) {
-          var iter = packages[k];
-          if ( iter.type === 'extension' && iter.preload ) {
-            preloads = preloads.concat(iter.preload);
-          }
-        });
-
-        if ( preloads.length ) {
-          Utils.preload(preloads, function(total, failed) {
-            callback();
-          });
-        } else {
-          callback();
-        }
-      },
-
-      /**
-       * Internal method for loading all package metadata
-       *
-       * @function _loadMetadata
-       * @memberof OSjs.Core.PackageManager#
-       *
-       * @param  {Function} callback      callback
-       */
-      _loadMetadata: function(callback) {
-        var packageURI = API.getConfig('Connection.PackageURI').replace(/\/?$/, '/');
-        var rootURI = API.getBrowserPath().replace(/\/$/, packageURI);
-
-        function checkEntry(key, iter, scope) {
-          iter = Utils.cloneObject(iter);
-
-          iter.type = iter.type || 'application';
-
-          if ( scope ) {
-            iter.scope = scope;
-          }
-
-          if ( iter.preload ) {
-            iter.preload.forEach(function(it) {
-              if ( it.src && !it.src.match(/^(\/)|(http)|(ftp)/) ) {
-                if ( iter.scope === 'user' ) {
-                  it.src = Utils.pathJoin(iter.path, it.src);
-                } else {
-                  it.src = Utils.pathJoin(rootURI, key, it.src);
-                }
-              }
-            });
-          }
-
-          return iter;
-        }
-
-        if ( API.isStandalone() ) {
-          var uri = API.getConfig('Connection.MetadataURI');
-          Utils.preload([uri], function(total, failed) {
-            if ( failed.length ) {
-              callback(API._('ERR_PACKAGE_MANIFEST'), failed);
-              return;
-            }
-
-            packages = {};
-
-            var list = OSjs.Core.getMetadata();
-            Object.keys(list).forEach(function(name) {
-              var iter = list[name];
-              packages[iter.className] = checkEntry(name, iter);
-            });
-
-            callback();
-          });
-          return;
-        }
-
-        var paths = OSjs.Core.getSettingsManager().instance('PackageManager').get('PackagePaths', []);
-        API.call('packages', {command: 'list', args: {paths: paths}}, function(err, res) {
-          if ( res ) {
-            packages = {};
-
-            Object.keys(res).forEach(function(key) {
-              var iter = res[key];
-              if ( iter && !packages[iter.className] ) {
-                packages[iter.className] = checkEntry(key, iter);
-              }
-            });
-          }
-
-          callback(err);
-        });
-      },
-
-      /**
-       * Generates user-installed package metadata (on runtime)
-       *
-       * @function generateUserMetadata
-       * @memberof OSjs.Core.PackageManager#
-       *
-       * @param  {Function} callback      callback
-       */
-      generateUserMetadata: function(callback) {
-        var self = this;
-        var paths = OSjs.Core.getSettingsManager().instance('PackageManager').get('PackagePaths', []);
-        API.call('packages', {command: 'cache', args: {action: 'generate', scope: 'user', paths: paths}}, function() {
-          self._loadMetadata(callback);
-        });
-      },
-
-      /**
-       * Add a list of packages
-       *
-       * @param   {Object}    result    Package dict (manifest data)
-       * @param   {String}    scope     Package scope (system/user)
-       *
-       *
-       * @function _addPackages
-       * @memberof OSjs.Core.PackageManager#
-       */
-      _addPackages: function(result, scope) {
-        console.debug('PackageManager::_addPackages()', result);
-
-        var keys = Object.keys(result);
-        if ( !keys.length ) {
-          return;
-        }
-
-        var currLocale = API.getLocale();
-
-        keys.forEach(function(i) {
-          var newIter = Utils.cloneObject(result[i]);
-          if ( typeof newIter !== 'object' ) {
-            return;
-          }
-
-          if ( typeof newIter.names !== 'undefined' && newIter.names[currLocale] ) {
-            newIter.name = newIter.names[currLocale];
-          }
-          if ( typeof newIter.descriptions !== 'undefined' && newIter.descriptions[currLocale] ) {
-            newIter.description = newIter.descriptions[currLocale];
-          }
-          if ( !newIter.description ) {
-            newIter.description = newIter.name;
-          }
-
-          newIter.scope = scope || 'system';
-          newIter.type  = newIter.type || 'application';
-
-          packages[i] = newIter;
-        });
-      },
-
-      /**
-       * Installs a package by ZIP
-       *
-       * @function install
-       * @memberof OSjs.Core.PackageManager#
-       *
-       * @param {OSjs.VFS.File}   file        The ZIP file
-       * @param {String}          root        Packge install root (defaults to first path)
-       * @param {Function}        cb          Callback function
-       */
-      install: function(file, root, cb) {
-        var self = this;
-        var paths = OSjs.Core.getSettingsManager().instance('PackageManager').get('PackagePaths', []);
-        if ( typeof root !== 'string' ) {
-          root = paths[0];
-        }
-
-        var dest = Utils.pathJoin(root, file.filename.replace(/\.zip$/i, ''));
-        API.call('packages', {command: 'install', args: {zip: file.path, dest: dest, paths: paths}}, function(e, r) {
-          if ( e ) {
-            cb(e);
-          } else {
-            self.generateUserMetadata(cb);
-          }
-        });
-      },
-
-      /**
-       * Uninstalls given package
-       *
-       * @function uninstall
-       * @memberof OSjs.Core.PackageManager#
-       *
-       * @param {OSjs.VFS.File}   file        The path
-       * @param {Function}        cb          Callback function
-       */
-      uninstall: function(file, cb) {
-        var self = this;
-        API.call('packages', {command: 'uninstall', args: {path: file.path}}, function(e, r) {
-          if ( e ) {
-            cb(e);
-          } else {
-            self.generateUserMetadata(cb);
-          }
-        });
-      },
-
-      /**
-       * Sets the package blacklist
-       *
-       * @function setBlacklist
-       * @memberof OSjs.Core.PackageManager#
-       *
-       * @param   {String[]}       list        List of package names
-       */
-      setBlacklist: function(list) {
-        blacklist = list || [];
-      },
-
-      /**
-       * Get a list of packges from online repositories
-       *
-       * @function getStorePackages
-       * @memberof OSjs.Core.PackageManager#
-       *
-       * @param {Object}    opts      Options
-       * @param {Function}  callback  Callback => fn(error, result)
-       */
-      getStorePackages: function(opts, callback) {
-        var sm = OSjs.Core.getSettingsManager();
-        var repos = sm.instance('PackageManager').get('Repositories', []);
-        var entries = [];
-
-        Utils.asyncs(repos, function(url, idx, next) {
-          API.curl({
-            url: url,
-            method: 'GET'
-          }, function(error, result) {
-            if ( !error && result.body ) {
-              var list = [];
-              if ( typeof result.body === 'string' ) {
-                try {
-                  list = JSON.parse(result.body);
-                } catch ( e ) {}
-              }
-
-              entries = entries.concat(list.map(function(iter) {
-                iter._repository = url;
-                return iter;
-              }));
-            }
-            next();
-          });
-        }, function() {
-          callback(false, entries);
-        });
-      },
-
-      /**
-       * Get package by name
-       *
-       * @function getPackage
-       * @memberof OSjs.Core.PackageManager#
-       *
-       * @param {String}    name      Package name
-       *
-       * @return {Metadata}
-       */
-      getPackage: function(name) {
-        if ( typeof packages[name] !== 'undefined' ) {
-          return Object.freeze(Utils.cloneObject(packages)[name]);
-        }
-        return false;
-      },
-
-      /**
-       * Get all packages
-       *
-       * @function getPackages
-       * @memberof OSjs.Core.PackageManager#
-       *
-       * @param {Boolean}     [filtered=true]      Returns filtered list
-       *
-       * @return {Metadata[]}
-       */
-      getPackages: function(filtered) {
-        var hidden = OSjs.Core.getSettingsManager().instance('PackageManager').get('Hidden', []);
-        var p = Utils.cloneObject(packages);
-
-        function allowed(i, iter) {
-          if ( blacklist.indexOf(i) >= 0 ) {
-            return false;
-          }
-
-          if ( iter && (iter.groups instanceof Array) ) {
-            if ( !API.checkPermission(iter.groups) ) {
-              return false;
-            }
-          }
-
-          return true;
-        }
-
-        if ( typeof filtered === 'undefined' || filtered === true ) {
-          var result = {};
-          Object.keys(p).forEach(function(name) {
-            var iter = p[name];
-            if ( !allowed(name, iter) ) {
-              return;
-            }
-            if ( iter && hidden.indexOf(name) < 0 ) {
-              result[name] = iter;
-            }
-          });
-
-          return Object.freeze(result);
-        }
-
-        return Object.freeze(p);
-      },
-
-      /**
-       * Get packages by Mime support type
-       *
-       * @function getPackagesByMime
-       * @memberof OSjs.Core.PackageManager#
-       *
-       * @param {String}    mime      MIME string
-       *
-       * @return  {Metadata[]}
-       */
-      getPackagesByMime: function(mime) {
-        var list = [];
-        var p = Utils.cloneObject(packages);
-
-        Object.keys(p).forEach(function(i) {
-          if ( blacklist.indexOf(i) < 0 ) {
-            var a = p[i];
-            if ( a && a.mime ) {
-              if ( Utils.checkAcceptMime(mime, a.mime) ) {
-                list.push(i);
-              }
-            }
-          }
-        });
-        return list;
-      },
-
-      /**
-       * Add a dummy package (useful for having shortcuts in the launcher menu)
-       *
-       * @function addDummyPackage
-       * @memberof OSjs.Core.PackageManager#
-       * @throws {Error} On invalid package name or callback
-       *
-       * @param   {String}      n             Name of your package
-       * @param   {String}      title         The display title
-       * @param   {String}      icon          The display icon
-       * @param   {Function}    fn            The function to run when the package tries to launch
-       */
-      addDummyPackage: function(n, title, icon, fn) {
-        if ( packages[n] || OSjs.Applications[n] ) {
-          throw new Error('A package already exists with this name!');
-        }
-        if ( typeof fn !== 'function' ) {
-          throw new TypeError('You need to specify a function/callback!');
-        }
-
-        packages[n] = Object.seal({
-          _dummy: true,
-          type: 'application',
-          className: n,
-          description: title,
-          name: title,
-          icon: icon,
-          cateogry: 'other',
-          scope: 'system'
-        });
-
-        OSjs.Applications[n] = fn;
       }
     });
-  })();
+  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+  // ... same goes for packages that uses this package
+  // as a dependency.
+  const pkgs = pm.getPackages(false);
+  Object.keys(pkgs).forEach((pn) => {
+    const p = pkgs[pn];
+    if ( p.type === 'extension' && p.uses === name ) {
+      if ( p ) {
+        console.info('Using extension', pn);
+        additions = additions.concat(p.preload.map(mapIter));
+      }
+    }
+  });
+
+  return additions.concat(list).map((p) => {
+    if ( !p.src.match(/^(\/|https?|ftp)/) ) {
+      if ( metadata.scope === 'user' ) {
+        // For user packages, make sure to load the correct URL
+        VFS.url(FS.pathJoin(metadata.path, p.src)).then((url) => {
+          p.src = url;
+          return true;
+        });
+      } else {
+        p.src = FS.pathJoin(packageURI, metadata.path, p.src);
+      }
+    }
+
+    return p;
+  });
+};
+
+/////////////////////////////////////////////////////////////////////////////
+// PACKAGE MANAGER
+/////////////////////////////////////////////////////////////////////////////
+
+class PackageManager {
+
+  constructor() {
+    this.packages = {};
+    this.blacklist = [];
+  }
+
+  destroy() {
+    this.packages = {};
+    this.blacklist = [];
+  }
 
   /**
-   * Get the current PackageManager instance
-   *
-   * @function getPackageManager
-   * @memberof OSjs.Core
-   *
-   * @return {OSjs.Core.PackageManager}
+   * Initializes Package Manager
+   * @param {Object} [metadata] An initial set of packages
+   * @return {Promise<undefined, Error>}
    */
-  OSjs.Core.getPackageManager = function Core_getPackageManager() {
-    return PackageManager;
-  };
+  init(metadata) {
+    console.debug('PackageManager::load()', metadata);
 
-})(OSjs.Utils, OSjs.VFS, OSjs.API);
+    return new Promise((resolve, reject) => {
+      const setPackages = metadata ? this.setPackages(metadata) : Promise.resolve();
+
+      setPackages.then(() => {
+        return this._loadMetadata().then(() => {
+          const len = Object.keys(this.packages).length;
+          if ( len ) {
+            return resolve(true);
+          }
+          return reject(new Error(_('ERR_PACKAGE_ENUM_FAILED')));
+        }).catch(reject);
+      }).catch(reject);
+    });
+  }
+
+  /**
+   * Internal method for loading all package metadata
+   * @return {Promise<Boolean, Error>}
+   */
+  _loadMetadata() {
+    const paths = SettingsManager.instance('PackageManager').get('PackagePaths', []);
+    return new Promise((resolve, reject) => {
+      Connection.request('packages', {command: 'list', args: {paths: paths}}).then((res) => {
+        return this.setPackages(res).then(resolve).catch(reject);
+      }).catch(reject);
+    });
+  }
+
+  /**
+   * Generates user-installed package metadata (on runtime)
+   * @return {Promise<Boolean, Error>}
+   */
+  generateUserMetadata() {
+    const paths = SettingsManager.instance('PackageManager').get('PackagePaths', []);
+    return new Promise((resolve, reject) => {
+      const cb = () => this._loadMetadata().then(resolve).catch(reject);
+
+      Connection.request('packages', {command: 'cache', args: {action: 'generate', scope: 'user', paths: paths}})
+        .then(cb)
+        .catch(cb);
+    });
+  }
+
+  /**
+   * Add a list of packages
+   *
+   * @param   {Object}    result    Package dict (manifest data)
+   * @param   {String}    scope     Package scope (system/user)
+   */
+  _addPackages(result, scope) {
+    console.debug('PackageManager::_addPackages()', result);
+
+    const keys = Object.keys(result);
+    if ( !keys.length ) {
+      return;
+    }
+
+    const currLocale = getLocale();
+
+    keys.forEach((i) => {
+      const newIter = cloneObject(result[i]);
+      if ( typeof newIter !== 'object' ) {
+        return;
+      }
+
+      if ( typeof newIter.names !== 'undefined' && newIter.names[currLocale] ) {
+        newIter.name = newIter.names[currLocale];
+      }
+      if ( typeof newIter.descriptions !== 'undefined' && newIter.descriptions[currLocale] ) {
+        newIter.description = newIter.descriptions[currLocale];
+      }
+      if ( !newIter.description ) {
+        newIter.description = newIter.name;
+      }
+
+      newIter.scope = scope || 'system';
+      newIter.type  = newIter.type || 'application';
+
+      this.packages[i] = newIter;
+    });
+  }
+
+  /**
+   * Installs a package by ZIP
+   *
+   * @param {FileMetadata}    file        The ZIP file
+   * @param {String}          root        Packge install root (defaults to first path)
+   * @return {Promise<Object, Error>}
+   */
+  install(file, root) {
+    const paths = SettingsManager.instance('PackageManager').get('PackagePaths', []);
+    if ( typeof root !== 'string' ) {
+      root = paths[0];
+    }
+
+    const dest = FS.pathJoin(root, file.filename.replace(/\.zip$/i, ''));
+    return new Promise((resolve, reject) => {
+      Connection.request('packages', {command: 'install', args: {zip: file.path, dest: dest, paths: paths}}).then(() => {
+        return this.generateUserMetadata().then(resolve).catch(reject);
+      }).catch(reject);
+    });
+  }
+
+  /**
+   * Uninstalls given package
+   *
+   * @param {FileMetadata}   file        The path
+   * @return {Promise<Boolean, Error>}
+   */
+  uninstall(file) {
+    return new Promise((resolve, reject) => {
+      Connection.request('packages', {command: 'uninstall', args: {path: file.path}}).then(() => {
+        return this.generateUserMetadata().then(resolve).catch(reject);
+      }).catch(reject);
+    });
+  }
+
+  /**
+   * Sets the package blacklist
+   *
+   * @param   {String[]}       list        List of package names
+   */
+  setBlacklist(list) {
+    this.blacklist = list || [];
+  }
+
+  /**
+   * Get a list of packges from online repositories
+   *
+   * @param {Object}    opts      Options
+   * @return {Promise<Array, Error>}
+   */
+  getStorePackages(opts) {
+    const repos = SettingsManager.instance('PackageManager').get('Repositories', []);
+
+    let entries = [];
+
+    return new Promise((resolve, reject) => {
+      Promise.all(repos.map((url) => {
+        return new Promise((yes, no) => {
+          Connection.request('curl', {
+            url: url,
+            method: 'GET'
+          }).then((result) => {
+            let list = [];
+            if ( typeof result.body === 'string' ) {
+              try {
+                list = JSON.parse(result.body);
+              } catch ( e ) {}
+            }
+
+            entries = entries.concat(list.map((iter) => {
+              iter._repository = url;
+              return iter;
+            }));
+
+            return yes();
+          }).catch(no);
+        });
+      })).then(() => resolve(entries)).catch(reject);
+    });
+  }
+
+  /**
+   * Get package by name
+   *
+   * @param {String}    name      Package name
+   *
+   * @return {Object}
+   */
+  getPackage(name) {
+    if ( typeof this.packages[name] !== 'undefined' ) {
+      return Object.freeze(cloneObject(this.packages)[name]);
+    }
+    return false;
+  }
+
+  /**
+   * Get all packages
+   *
+   * @param {Boolean}     [filtered=true]      Returns filtered list
+   *
+   * @return {Object[]}
+   */
+  getPackages(filtered) {
+    const hidden = SettingsManager.instance('PackageManager').get('Hidden', []);
+    const p = cloneObject(this.packages);
+
+    const allowed = (iter) => {
+      if ( this.blacklist.indexOf(iter.path) >= 0 ) {
+        return false;
+      }
+
+      if ( iter && (iter.groups instanceof Array) ) {
+        if ( !Authenticator.instance().checkPermission(iter.groups) ) {
+          return false;
+        }
+      }
+
+      return true;
+    };
+
+    if ( typeof filtered === 'undefined' || filtered === true ) {
+      const result = {};
+      Object.keys(p).forEach((name) => {
+        const iter = p[name];
+        if ( !allowed(iter) ) {
+          return;
+        }
+        if ( iter && hidden.indexOf(name) < 0 ) {
+          result[name] = iter;
+        }
+      });
+
+      return Object.freeze(result);
+    }
+
+    return Object.freeze(p);
+  }
+
+  /**
+   * Get packages by Mime support type
+   *
+   * @param {String}    mime      MIME string
+   *
+   * @return  {Object[]}
+   */
+  getPackagesByMime(mime) {
+    const list = [];
+    const p = cloneObject(this.packages);
+
+    Object.keys(p).forEach((i) => {
+      if ( this.blacklist.indexOf(i) < 0 ) {
+        const a = p[i];
+        if ( a && a.mime ) {
+          if ( FS.checkAcceptMime(mime, a.mime) ) {
+            list.push(i);
+          }
+        }
+      }
+    });
+    return list;
+  }
+
+  /**
+   * Get package resource
+   *
+   * @param {Process|String}    app       The application (or package name)
+   * @param {String}            name      Resource name
+   * @param {String}            vfspath   Return a VFS path
+   * @return {String}
+   */
+  getPackageResource(app, name, vfspath) {
+    if ( name.match(/^((https?:)|\.)?\//) ) {
+      return name;
+    }
+    name = name.replace(/^\.\//, '');
+
+    const appname = typeof app === 'string' ? app : app.__pname;
+    const fsuri = getConfig('Connection.FSURI');
+    const pkg = this.getPackage(appname);
+
+    let path = name;
+    if ( pkg ) {
+      path = pkg.scope === 'user'
+        ? '/user-package/' + FS.filename(pkg.path) + '/' + name.replace(/^\//, '')
+        : 'packages/' + pkg.path + '/' + name;
+
+      if ( vfspath ) {
+        return pkg.scope === 'user'
+          ? path.substr(fsuri.length)
+          : 'osjs:///' + path;
+      }
+    }
+
+    return path;
+  }
+
+  /**
+   * Sets the current list of packages
+   * @param {Object} res Package map
+   * @return {Promise<Boolean, Error>}
+   */
+  setPackages(res) {
+    const packages = {};
+    const locale = getLocale();
+
+    const checkEntry = (key, iter, scope) => {
+      iter = Object.assign({}, iter);
+      iter.type = iter.type || 'application';
+
+      if ( scope ) {
+        iter.scope = scope;
+      }
+
+      if ( iter.names && iter.names[locale] ) {
+        iter.name = iter.names[locale];
+      }
+
+      if ( iter.descriptions && iter.descriptions[locale] ) {
+        iter.description = iter.descriptions[locale];
+      }
+
+      let resolveIcon = () => {
+        if ( iter.icon && iter.path ) {
+          let packagePath = iter.path.replace(/^\//, '');
+
+          if ( iter.scope === 'user' ) {
+            return VFS.url(FS.pathJoin(packagePath, iter.icon));
+          } else {
+            if ( iter.icon.match(/^\.\//) ) {
+              const packageURI = getConfig('Connection.PackageURI').replace(/\/?$/, '/');
+              return Promise.resolve(packageURI + packagePath + iter.icon.replace(/^\./, ''));
+            }
+          }
+        }
+
+        return Promise.resolve(iter.icon);
+      };
+
+      iter.preload = resolvePreloads(iter, this);
+      return new Promise((resolve, reject) => {
+        resolveIcon().then((icon) => {
+          if ( icon ) {
+            iter.icon = icon;
+          }
+
+          return resolve(iter);
+        }).catch(reject);
+      });
+    };
+
+    return new Promise((resolve, reject) => {
+      const entries = Object.keys(res || {});
+      Promise.each(entries, (key) => {
+        return new Promise((yes, no) => {
+          const iter = res[key];
+          if ( iter && !packages[iter.className] ) {
+            checkEntry(key, iter).then((pkg) => {
+              packages[iter.className] = pkg;
+              return yes();
+            }).catch(no);
+          } else {
+            console.warn('No such package', key);
+            yes();
+          }
+        });
+      }).catch(reject).then(() => {
+        this.packages = packages;
+        return resolve();
+      });
+    });
+  }
+
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// EXPORTS
+/////////////////////////////////////////////////////////////////////////////
+
+export default (new PackageManager());

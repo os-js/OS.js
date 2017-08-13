@@ -27,21 +27,11 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, Storage) {
-  'use strict';
+import Storage from 'core/storage';
 
-  function SystemStorage() {
-    Storage.apply(this, arguments);
-  }
-
-  SystemStorage.prototype = Object.create(Storage.prototype);
-  SystemStorage.constructor = Storage;
-
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Storage = OSjs.Storage || {};
-  OSjs.Storage.system = SystemStorage;
-
-})(OSjs.API, OSjs.Utils, OSjs.Core.Storage);
+/**
+ * System Storage Handler
+ * @xtends Storage
+ */
+export default class SystemStorage extends Storage {
+}

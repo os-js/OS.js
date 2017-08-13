@@ -1,5 +1,13 @@
 {
   "client" : {
+    "WindowManager": {
+      "exec": "CoreWM",
+      "args": {
+        "defaults": {
+
+        }
+      }
+    },
     "SettingsManager": {
       "CoreWM": {
         "styleTheme": "default",
@@ -128,13 +136,6 @@
             "icon": "categories/applications-other.png",
             "title": "Other"
           }
-        }
-      }
-    },
-    "WM" : {
-      "exec": "CoreWM",
-      "args": {
-        "defaults": {
         }
       }
     }

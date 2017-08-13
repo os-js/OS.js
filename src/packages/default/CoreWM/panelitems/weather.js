@@ -29,20 +29,17 @@
  */
 
 /*eslint valid-jsdoc: "off"*/
-(function(CoreWM, Panel, PanelItem, Utils, API, VFS) {
-  'use strict';
+import PanelItem from '../panelitem';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // ITEM
-  /////////////////////////////////////////////////////////////////////////////
+const DOM = OSjs.require('utils/dom');
+const Utils = OSjs.require('utils/misc');
+const Theme = OSjs.require('core/theme');
+const Events = OSjs.require('utils/events');
+const Connection = OSjs.require('core/connection');
 
-  /**
-   * PanelItem: Weather
-   */
-  function PanelItemWeather() {
-    var self = this;
-
-    PanelItem.apply(this, ['PanelItemWeather corewm-panel-right corewm-panel-dummy']);
+export default class PanelItemWeather extends PanelItem {
+  constructor() {
+    super('PanelItemWeather corewm-panel-right corewm-panel-dummy');
 
     this.clockInterval  = null;
     this.position = null;
@@ -51,40 +48,33 @@
     this.$image = null;
 
     if ( navigator.geolocation ) {
-      navigator.geolocation.getCurrentPosition(function(pos) {
-        self.position = pos;
-        setTimeout(function() {
-          self.updateWeather();
-        }, 100);
+      navigator.geolocation.getCurrentPosition((pos) => {
+        this.position = pos;
+        setTimeout(() => this.updateWeather(), 100);
       });
     }
   }
 
-  PanelItemWeather.prototype = Object.create(PanelItem.prototype);
-  PanelItemWeather.constructor = PanelItem;
-
-  PanelItemWeather.prototype.init = function() {
-    var root = PanelItem.prototype.init.apply(this, arguments);
+  init() {
+    const root = super.init(...arguments);
     this.$element = document.createElement('li');
     this.$image = document.createElement('img');
     this.$element.appendChild(this.$image);
     this._$container.appendChild(this.$element);
     this.updateWeather();
     return root;
-  };
+  }
 
-  PanelItemWeather.prototype.destroy = function() {
-    Utils.$unbind(this._$root, 'click');
+  destroy() {
+    Events.$unbind(this._$root, 'click');
     this.interval = clearInterval(this.interval);
-    this.$image = Utils.$remove(this.$image);
-    this.$element = Utils.$remove(this.$element);
+    this.$image = DOM.$remove(this.$image);
+    this.$element = DOM.$remove(this.$element);
 
-    PanelItem.prototype.destroy.apply(this, arguments);
-  };
+    return super.destroy(...arguments);
+  }
 
-  PanelItemWeather.prototype.updateWeather = function() {
-    var self = this;
-
+  updateWeather() {
     if ( !this.$image ) {
       return;
     }
@@ -93,14 +83,14 @@
 
     var busy = false;
 
-    function setImage(src) {
-      if ( self.$image ) {
-        self.$image.src = src;
+    const setImage = (src) => {
+      if ( this.$image ) {
+        this.$image.src = src;
       }
-    }
+    };
 
-    function setWeather(name, weather, main) {
-      if ( !self.$image ) {
+    const setWeather = (name, weather, main) => {
+      if ( !this.$image ) {
         return;
       }
 
@@ -156,27 +146,27 @@
           break;
       }
 
-      var src = API.getIcon('status/' + icon);
-      self.$image.title = Utils.format('{0} - {1} - {2}', name, desc, temp);
+      var src = Theme.getIcon('status/' + icon);
+      this.$image.title = Utils.format('{0} - {1} - {2}', name, desc, temp);
       setImage(src);
-    }
+    };
 
-    function updateWeather() {
-      if ( busy || !self.position ) {
+    const updateWeather = () => {
+      if ( busy || !this.position ) {
         return;
       }
       busy = true;
 
-      var lat = self.position.coords.latitude;
-      var lon = self.position.coords.longitude;
+      var lat = this.position.coords.latitude;
+      var lon = this.position.coords.longitude;
       var unt = 'metric';
       var key = '4ea33327bcfa4ea0293b2d02b6fda385';
       var url = Utils.format('http://api.openweathermap.org/data/2.5/weather?lat={0}&lon={1}&units={2}&APPID={3}', lat, lon, unt, key);
 
-      API.curl({
+      Connection.request('curl', {
         url: url
-      }, function(error, response) {
-        if ( !error && response ) {
+      }).then((response) => {
+        if ( response ) {
           var result = null;
           try {
             result = JSON.parse(response.body);
@@ -188,31 +178,18 @@
         }
 
         busy = false;
+      }).catch(() => {
+        busy = false;
       });
-    }
+    };
 
-    setImage(API.getIcon('status/weather-severe-alert.png'));
+    setImage(Theme.getIcon('status/weather-severe-alert.png'));
 
     this.interval = setInterval(function() {
       updateWeather();
     }, (60 * 60 * 1000));
 
-    Utils.$bind(this._$root, 'click', function() {
-      updateWeather();
-    });
-
-    setTimeout(function() {
-      updateWeather();
-    }, 1000);
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.CoreWM = OSjs.Applications.CoreWM || {};
-  OSjs.Applications.CoreWM.PanelItems = OSjs.Applications.CoreWM.PanelItems || {};
-  OSjs.Applications.CoreWM.PanelItems.Weather = PanelItemWeather;
-
-})(OSjs.Applications.CoreWM.Class, OSjs.Applications.CoreWM.Panel, OSjs.Applications.CoreWM.PanelItem, OSjs.Utils, OSjs.API, OSjs.VFS);
+    Events.$bind(this._$root, 'click', () => updateWeather());
+    setTimeout(() => updateWeather(), 1000);
+  }
+}

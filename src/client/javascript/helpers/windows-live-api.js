@@ -28,50 +28,43 @@
  * @licence Simplified BSD License
  */
 
-(function(Utils, API) {
-  'use strict';
+import MountManager from 'core/mount-manager';
+import ServiceNotificationIcon from 'helpers/service-notification-icon';
+import Preloader from 'utils/preloader';
+import {_} from 'core/locales';
+import {getConfig} from 'core/config';
+
+const redirectURI = window.location.href.replace(/\/$/, '') + '/windows-live-oauth.html';
+
+/////////////////////////////////////////////////////////////////////////////
+// API
+/////////////////////////////////////////////////////////////////////////////
+
+let SingletonInstance = null;
+
+/**
+ * The WindowsLiveAPI wrapper class
+ *
+ * @desc Helper for communicating with Windows Live API.
+ * <pre><b>
+ * Generally you want to create an instance of this helper
+ * and when successfully created use `window.WL`.
+ * </b></pre>
+ *
+ * @link http://msdn.microsoft.com/en-us/library/hh826547.aspx
+ * @link http://msdn.microsoft.com/en-us/library/hh826538.aspx
+ * @link http://msdn.microsoft.com/en-us/library/hh550837.aspx
+ * @link http://msdn.microsoft.com/en-us/library/dn631844.aspx
+ * @link http://msdn.microsoft.com/en-us/library/dn631839.aspx
+ * @link http://msdn.microsoft.com/en-us/library/hh243643.aspx
+ * @link https://account.live.com/developers/applications/index
+ */
+class WindowsLiveAPI {
 
   /**
-   * @namespace OSjs.Helpers.WindowsLiveAPI
-   * @memberof OSjs.Helpers
-   */
-
-  var redirectURI = window.location.href.replace(/\/$/, '') + '/vendor/wlOauthReceiver.html';
-
-  /////////////////////////////////////////////////////////////////////////////
-  // API
-  /////////////////////////////////////////////////////////////////////////////
-
-  var SingletonInstance = null;
-
-  /**
-   * The WindowsLiveAPI wrapper class
-   *
-   * <pre><b>
-   * This is a private class and can only be aquired through
-   * OSjs.Helpers.WindowsLiveAPI.createInsatance()
-   *
-   * Generally you want to create an instance of this helper
-   * and when successfully created use `window.WL`.
-   * </b></pre>
-   *
-   * @summary Helper for communicating with Windows Live API.
-   *
-   * @constructor Class
-   * @memberof OSjs.Helpers.WindowsLiveAPI
-   * @see OSjs.Helpers.WindowsLiveAPI.createInsatance
-   *
    * @param {String}  clientId    Client ID (key)
-   *
-   * @link http://msdn.microsoft.com/en-us/library/hh826547.aspx
-   * @link http://msdn.microsoft.com/en-us/library/hh826538.aspx
-   * @link http://msdn.microsoft.com/en-us/library/hh550837.aspx
-   * @link http://msdn.microsoft.com/en-us/library/dn631844.aspx
-   * @link http://msdn.microsoft.com/en-us/library/dn631839.aspx
-   * @link http://msdn.microsoft.com/en-us/library/hh243643.aspx
-   * @link https://account.live.com/developers/applications/index
    */
-  function WindowsLiveAPI(clientId) {
+  constructor(clientId) {
     this.hasSession = false;
     this.clientId = clientId;
     this.loaded = false;
@@ -87,95 +80,93 @@
   /*
    * Destroy the class
    */
-  WindowsLiveAPI.prototype.destroy = function() {
-  };
+  destroy() {
+  }
 
   /*
    * Initializes (preloads) the API
    */
-  WindowsLiveAPI.prototype.init = function(callback) {
+  init(callback) {
     callback = callback || function() {};
-    var self = this;
     if ( this.loaded ) {
       callback(false, true);
     } else {
-      Utils.preload(this.preloads, function(total, failed) {
-        if ( !failed.length ) {
-          self.loaded = true;
+      Preloader.preload(this.preloads).then((result) => {
+        if ( !result.failed.length ) {
+          this.loaded = true;
         }
-        callback(failed.join('\n'));
-      });
+        callback(result.failed.join('\n'));
+      }).catch(() => callback());
     }
-  };
+  }
 
   /*
    * Loads the API
    */
-  WindowsLiveAPI.prototype.load = function(scope, callback) {
+  load(scope, callback) {
     console.debug('WindowsLiveAPI::load()', scope);
 
-    var self = this;
-    var WL = window.WL || {};
+    let WL = window.WL || {};
 
-    function _login() {
-      var lastScope = (self.lastScope || []).sort();
-      var currScope = (scope || []).sort();
+    const _login = () => {
+      const lastScope = (this.lastScope || []).sort();
+      const currScope = (scope || []).sort();
 
-      if ( self.hasSession && (lastScope.toString() === currScope.toString()) ) {
+      if ( this.hasSession && (lastScope.toString() === currScope.toString()) ) {
         callback(false, true);
         return;
       }
 
-      self.login(scope, function(error, response) {
+      this.login(scope, (error, response) => {
         if ( error ) {
           callback(error);
           return;
         }
 
-        setTimeout(function() {
+        setTimeout(() => {
           callback(false, true);
         }, 10);
       });
-    }
+    };
 
-    this.init(function(error) {
+    this.init((error) => {
       if ( error ) {
         callback(error);
         return;
       }
 
       if ( !window.WL ) {
-        callback(API._('WLAPI_LOAD_FAILURE'));
+        callback(_('WLAPI_LOAD_FAILURE'));
         return;
       }
       WL = window.WL || {};
 
-      if ( self.inited ) {
+      if ( this.inited ) {
         _login();
       } else {
-        self.inited = true;
-        WL.Event.subscribe('auth.login', function() {
-          self.onLogin.apply(self, arguments);
+        this.inited = true;
+        WL.Event.subscribe('auth.login', (a, b, c, d) => {
+          this.onLogin(a, b, c, d);
         });
-        WL.Event.subscribe('auth.logout', function() {
-          self.onLogout.apply(self, arguments);
+        WL.Event.subscribe('auth.logout', (a, b, c, d) => {
+          this.onLogout(a, b, c, d);
         });
-        WL.Event.subscribe('wl.log', function() {
-          self.onLog.apply(self, arguments);
+        WL.Event.subscribe('wl.log', (a, b, c, d) => {
+          this.onLog(a, b, c, d);
         });
-        WL.Event.subscribe('auth.sessionChange', function() {
-          self.onSessionChange.apply(self, arguments);
+        WL.Event.subscribe('auth.sessionChange', (a, b, c, d) => {
+          this.onSessionChange(a, b, c, d);
         });
 
         WL.init({
-          client_id: self.clientId,
+          client_id: this.clientId,
           display: 'popup',
           redirect_uri: redirectURI
-        }).then(function(result) {
+        }).then((result) => {
           console.debug('WindowsLiveAPI::load()', '=>', result);
 
           if ( result.session ) {
-            self.accessToken = result.session.access_token || null;
+            this.accessToken = result.session.access_token || null;
           }
 
           if ( result.status === 'connected' ) {
@@ -183,44 +174,37 @@
           } else if ( result.status === 'success' ) {
             _login();
           } else {
-            callback(API._('WLAPI_INIT_FAILED_FMT', result.status.toString()));
+            callback(_('WLAPI_INIT_FAILED_FMT', result.status.toString()));
           }
-        }, function(result) {
+        }, (result) => {
           console.error('WindowsLiveAPI::load()', 'init() error', result);
           callback(result.error_description);
         });
       }
     });
-  };
+  }
 
-  WindowsLiveAPI.prototype._removeRing = function() {
-    var ring = API.getServiceNotificationIcon();
-    if ( ring ) {
-      ring.remove('Windows Live API');
-    }
-  };
+  _removeRing() {
+    ServiceNotificationIcon.remove('Windows Live API');
+  }
 
   /**
    * Sign out of WindowsLiveAPI
    *
-   * @function logout
-   * @memberof OSjs.Helpers.WindowsLiveAPI.Class#
-   *
    * @param   {Function}    callback      Callback => fn(error, result)
    */
-  WindowsLiveAPI.prototype.logout = function(callback) {
+  logout(callback) {
     callback = callback || function() {};
 
-    var self = this;
-    var WL = window.WL || {};
+    const WL = window.WL || {};
 
     if ( this.hasSession ) {
       callback(false, false);
     }
 
     WL.Event.unsubscribe('auth.logout');
-    WL.Event.subscribe('auth.logout', function() {
-      self._removeRing();
+    WL.Event.subscribe('auth.logout', () => {
+      this._removeRing();
 
       WL.Event.unsubscribe('auth.logout');
       callback(false, true);
@@ -228,14 +212,14 @@
 
     WL.logout();
 
-    OSjs.Core.getMountManager().remove('OneDrive');
-  };
+    MountManager.remove('OneDrive');
+  }
 
   /*
    * Authenticates the user
    */
-  WindowsLiveAPI.prototype.login = function(scope, callback) {
-    var WL = window.WL || {};
+  login(scope, callback) {
+    const WL = window.WL || {};
 
     if ( this.hasSession ) {
       callback(false, true);
@@ -245,123 +229,99 @@
     WL.login({
       scope: scope,
       redirect_uri: redirectURI
-    }).then(function(result) {
+    }).then((result) => {
       if ( result.status === 'connected' ) {
         callback(false, true);
       } else {
-        callback(API._('WLAPI_LOGIN_FAILED'));
+        callback(_('WLAPI_LOGIN_FAILED'));
       }
-    }, function(result) {
-      callback(API._('WLAPI_LOGIN_FAILED_FMT', result.error_description));
+    }, (result) => {
+      callback(_('WLAPI_LOGIN_FAILED_FMT', result.error_description));
     });
-  };
+  }
 
   /*
    * If the API session was changed
    */
-  WindowsLiveAPI.prototype.onSessionChange = function() {
+  onSessionChange() {
     console.warn('WindowsLiveAPI::onSessionChange()', arguments);
-    var WL = window.WL || {};
-    var session = WL.getSession();
+    const WL = window.WL || {};
+    const session = WL.getSession();
     if ( session ) {
       this.hasSession = true;
     } else {
       this.hasSession = false;
     }
-  };
+  }
 
   /*
    * When user logged in
    */
-  WindowsLiveAPI.prototype.onLogin = function() {
+  onLogin() {
     console.warn('WindowsLiveAPI::onLogin()', arguments);
     this.hasSession = true;
 
-    var self = this;
-    var ring = API.getServiceNotificationIcon();
-    if ( ring ) {
-      ring.add('Windows Live API', [{
-        title: API._('WLAPI_SIGN_OUT'),
-        onClick: function() {
-          self.logout();
-        }
-      }]);
-    }
-  };
+    ServiceNotificationIcon.add('Windows Live API', [{
+      title: _('WLAPI_SIGN_OUT'),
+      onClick: () => {
+        this.logout();
+      }
+    }]);
+  }
 
   /*
    * When user logs out
    */
-  WindowsLiveAPI.prototype.onLogout = function() {
+  onLogout() {
     console.warn('WindowsLiveAPI::onLogout()', arguments);
     this.hasSession = false;
     this._removeRing();
-  };
+  }
 
   /*
    * When API sends a log message
    */
-  WindowsLiveAPI.prototype.onLog = function() {
+  onLog() {
     console.debug('WindowsLiveAPI::onLog()', arguments);
-  };
+  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+}
 
-  OSjs.Helpers.WindowsLiveAPI = OSjs.Helpers.WindowsLiveAPI || {};
+/////////////////////////////////////////////////////////////////////////////
+// EXPORTS
+/////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Gets the currently running instance
-   *
-   * @function getInstance
-   * @memberof OSjs.Helpers.WindowsLiveAPI
-   *
-   * @return  {OSjs.Helpers.WindowsLiveAPI.Class}       Can also be null
-   */
-  OSjs.Helpers.WindowsLiveAPI.getInstance = function() {
-    return SingletonInstance;
-  };
+export function instance() {
+  return SingletonInstance;
+}
 
-  /**
-   * Create an instance of WindowsLiveAPI
-   *
-   * @function createInstance
-   * @memberof OSjs.Helpers.WindowsLiveAPI
-   *
-   * @param   {Object}    args           Arguments
-   * @param   {Array}     args.load      What functions/apis to load
-   * @param   {Function}  callback       Callback function => fn(error, instance)
-   */
-  OSjs.Helpers.WindowsLiveAPI.createInstance = function(args, callback) {
-    args = args || {};
+export function create(args, callback) {
+  args = args || {};
 
-    function _run() {
-      var scope = args.scope;
-      SingletonInstance.load(scope, function(error) {
-        callback(error ? error : false, SingletonInstance);
-      });
-    }
+  function _run() {
+    const scope = args.scope;
+    SingletonInstance.load(scope, (error) => {
+      callback(error ? error : false, SingletonInstance);
+    });
+  }
 
-    if ( SingletonInstance ) {
-      _run();
-      return;
-    }
-
-    var clientId = null;
-    try {
-      clientId = API.getConfig('WindowsLiveAPI.ClientId');
-    } catch ( e ) {
-      console.warn('getWindowsLiveAPI()', e, e.stack);
-    }
-
-    if ( !clientId ) {
-      callback(API._('WLAPI_DISABLED'));
-      return;
-    }
-
-    SingletonInstance = new WindowsLiveAPI(clientId);
+  if ( SingletonInstance ) {
     _run();
-  };
+    return;
+  }
 
-})(OSjs.Utils, OSjs.API);
+  let clientId = null;
+  try {
+    clientId = getConfig('WindowsLiveAPI.ClientId');
+  } catch ( e ) {
+    console.warn('getWindowsLiveAPI()', e, e.stack);
+  }
+
+  if ( !clientId ) {
+    callback(_('WLAPI_DISABLED'));
+    return;
+  }
+
+  SingletonInstance = new WindowsLiveAPI(clientId);
+  _run();
+}

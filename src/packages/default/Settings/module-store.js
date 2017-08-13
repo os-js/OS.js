@@ -29,126 +29,107 @@
  */
 
 /*eslint valid-jsdoc: "off"*/
-(function(Application, Window, Utils, API, PM, GUI, VFS) {
-  'use strict';
+const FS = OSjs.require('utils/fs');
+const VFS = OSjs.require('vfs/fs');
+const FileMetadata = OSjs.require('vfs/file');
+const PackageManager = OSjs.require('core/package-manager');
 
-  function installSelected(download, cb) {
-    var pacman = OSjs.Core.getPackageManager();
+function installSelected(download, cb) {
+  const file = new FileMetadata(download, 'application/zip');
 
-    var file = new VFS.File(download, 'application/zip');
-    VFS.read(file, function(error, ab) {
-      if ( error ) {
-        cb(error);
-        return;
-      }
+  (new Promise((resolve, reject) => {
+    VFS.read(file).then((ab) => {
 
-      var dest = new VFS.File({
-        filename: Utils.filename(download),
+      const dest = new FileMetadata({
+        filename: FS.filename(download),
         type: 'file',
-        path: 'home:///' + Utils.filename(download),
+        path: 'home:///' + FS.filename(download),
         mime: 'application/zip'
       });
 
-      VFS.write(dest, ab, function(error, success) {
-        if ( error ) {
-          cb('Failed to write package: ' + error); // FIXME
-          return;
-        }
+      VFS.write(dest, ab).then(() => {
+        return PackageManager.install(dest, true).then(() => {
+          PackageManager.generateUserMetadata()
+            .then(resolve).catch(reject);
+        }).catch((error) => {
+          reject(new Error('Failed to install package: ' + error)); // FIXME
+        });
+      }).catch(reject);
+    }).catch(reject);
+  })).then((res) => cb(false, res)).catch(cb);
+}
 
-        OSjs.Core.getPackageManager().install(dest, true, function(error) {
+function renderStore(win) {
+  win._toggleLoading(true);
+
+  PackageManager.getStorePackages({}).then((result) => {
+    const rows = result.map(function(i, idx) {
+      const a = document.createElement('a');
+      a.href = i._repository;
+
+      return {
+        index: idx,
+        value: i.download,
+        columns: [
+          {label: i.name},
+          {label: a.hostname},
+          {label: i.version},
+          {label: i.author}
+        ]
+      };
+    });
+
+    win._toggleLoading(false);
+
+    const gelList = win._find('AppStorePackages');
+    if ( gelList ) {
+      gelList.clear().add(rows);
+    }
+
+    return true;
+  }).catch((err) => {
+    console.warn(err);
+    win._toggleLoading(false);
+  });
+}
+
+export default {
+  group: 'user',
+  name: 'Store',
+  label: 'LBL_STORE',
+  icon: 'apps/system-software-update.png',
+  button: false,
+
+  init: function() {
+  },
+
+  update: function(win, scheme, settings, wm, clicked) {
+    if ( clicked ) {
+      renderStore(win);
+    }
+  },
+
+  render: function(win, scheme, root, settings, wm) {
+    win._find('ButtonStoreRefresh').on('click', function() {
+      renderStore(win);
+    });
+
+    win._find('ButtonStoreInstall').on('click', function() {
+      const selected = win._find('AppStorePackages').get('selected');
+      if ( selected.length && selected[0].data ) {
+        win._toggleLoading(true);
+        installSelected(selected[0].data, function(error, result) {
+          win._toggleLoading(false);
           if ( error ) {
-            cb('Failed to install package: ' + error); // FIXME
+            alert(error); // FIXME
             return;
           }
-          pacman.generateUserMetadata(function() {
-            cb(false, true);
-          });
         });
-      });
-    });
-  }
-
-  function renderStore(win) {
-    win._toggleLoading(true);
-
-    var pacman = OSjs.Core.getPackageManager();
-    pacman.getStorePackages({}, function(error, result) {
-      var rows = result.map(function(i, idx) {
-        var a = document.createElement('a');
-        a.href = i._repository;
-
-        return {
-          index: idx,
-          value: i.download,
-          columns: [
-            {label: i.name},
-            {label: a.hostname},
-            {label: i.version},
-            {label: i.author}
-          ]
-        };
-      });
-
-      win._toggleLoading(false);
-
-      var gelList = win._find('AppStorePackages');
-      if ( gelList ) {
-        gelList.clear().add(rows);
       }
     });
+  },
+
+  save: function(win, scheme, settings, wm) {
   }
+};
 
-  /////////////////////////////////////////////////////////////////////////////
-  // MODULE
-  /////////////////////////////////////////////////////////////////////////////
-
-  var module = {
-    group: 'user',
-    name: 'Store',
-    label: 'LBL_STORE',
-    icon: 'apps/system-software-update.png',
-    button: false,
-
-    init: function() {
-    },
-
-    update: function(win, scheme, settings, wm, clicked) {
-      if ( clicked ) {
-        renderStore(win);
-      }
-    },
-
-    render: function(win, scheme, root, settings, wm) {
-      win._find('ButtonStoreRefresh').on('click', function() {
-        renderStore(win);
-      });
-
-      win._find('ButtonStoreInstall').on('click', function() {
-        var selected = win._find('AppStorePackages').get('selected');
-        if ( selected.length && selected[0].data ) {
-          win._toggleLoading(true);
-          installSelected(selected[0].data, function(error, result) {
-            win._toggleLoading(false);
-            if ( error ) {
-              alert(error); // FIXME
-              return;
-            }
-          });
-        }
-      });
-    },
-
-    save: function(win, scheme, settings, wm) {
-    }
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationSettings = OSjs.Applications.ApplicationSettings || {};
-  OSjs.Applications.ApplicationSettings.Modules = OSjs.Applications.ApplicationSettings.Modules || {};
-  OSjs.Applications.ApplicationSettings.Modules.Store = module;
-
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.PM, OSjs.GUI, OSjs.VFS);

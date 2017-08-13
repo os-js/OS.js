@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Hello World</h1>
+
+    <script src="osjs.js"></script>
+    <script>
+
+OSjs.on('init', function() {
+  // The event emitted when everything is loaded
+
+  OSjs.send('ping');
+});
+
+OSjs.on('destroy', function() {
+  // The event emitted when app is closed
+});
+
+OSjs.on('data', function(data) {
+  // The event emitted wh
+  console.log('Application answered with', data)
+});
+
+    </script>
+
+  </body>
+</html>

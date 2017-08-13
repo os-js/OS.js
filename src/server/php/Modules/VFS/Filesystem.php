@@ -91,6 +91,7 @@ abstract class Filesystem
         '%UID%' => isset($_SESSION['username']) ? $_SESSION['username'] : -1,
         '%USERNAME%' => isset($_SESSION['username']) ? $_SESSION['username'] : '',
         '%DROOT%' => DIR_ROOT,
+        '%SROOT%' => DIR_SERVER,
         '%MOUNTPOINT%' => $protocol
         ];
 
@@ -192,7 +193,7 @@ abstract class Filesystem
         return file_put_contents(self::_getRealPath($arguments['path']), $data) !== false;
     }
 
-    final public static function delete(Request $request, Array $arguments = [])
+    final public static function unlink(Request $request, Array $arguments = [])
     {
         $path = self::_getRealPath($arguments['path']);
 
@@ -302,7 +303,7 @@ abstract class Filesystem
             new RecursiveDirectoryIterator($p),
             RecursiveIteratorIterator::SELF_FIRST);
 
-        foreach ( array_keys($objects) as $name ) {
+        foreach ( $objects as $noop => $name ) {
 
             $filepath = substr($name, strlen($path) - 1);
             $filename = basename($filepath);

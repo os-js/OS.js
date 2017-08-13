@@ -27,16 +27,11 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, Authenticator) {
-  'use strict';
+import Authenticator from 'core/authenticator';
 
-  function PAMAuthenticator() {
-    Authenticator.apply(this, arguments);
-  }
-
-  PAMAuthenticator.prototype = Object.create(Authenticator.prototype);
-  PAMAuthenticator.constructor = Authenticator;
-
-  OSjs.Auth.pam = PAMAuthenticator;
-
-})(OSjs.API, OSjs.Utils, OSjs.Core.Authenticator);
+/**
+ * PAM Authentication Handler
+ * @extends Authenticator
+ */
+export default class PAMAuthenticator extends Authenticator {
+}

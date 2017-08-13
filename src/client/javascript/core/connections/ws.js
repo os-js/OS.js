@@ -27,17 +27,25 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
+import {getConfig} from 'core/config';
+import {_} from 'core/locales';
+import * as VFS from 'vfs/fs';
+import FileMetadata from 'vfs/file';
+import Connection from 'core/connection';
+import Promise from 'bluebird';
 
-(function(API, VFS, Utils, Connection) {
-  'use strict';
+/**
+ * WebSocket Connection Handler
+ * @xtends Connection
+ */
+export default class WSConnection extends Connection {
+  constructor() {
+    super(...arguments);
 
-  function WSConnection() {
-    Connection.apply(this, arguments);
+    const port = getConfig('Connection.WSPort');
+    const path = getConfig('Connection.WSPath') || '';
 
-    var port = API.getConfig('Connection.WSPort');
-    var path = API.getConfig('Connection.WSPath') || '';
-    var url = window.location.protocol.replace('http', 'ws') + '//' + window.location.host;
-
+    let url = window.location.protocol.replace('http', 'ws') + '//' + window.location.host;
     if ( port !== 'upgrade' ) {
       if ( url.match(/:\d+$/) ) {
         url = url.replace(/:\d+$/, '');
@@ -52,78 +60,88 @@
     this.destroying = false;
   }
 
-  WSConnection.prototype = Object.create(Connection.prototype);
-  WSConnection.constructor = Connection;
+  destroy() {
+    if ( !this.destroying ) {
+      if ( this.ws ) {
+        this.ws.close();
+      }
 
-  WSConnection.prototype.destroy = function() {
-    this.destroying = true;
-
-    if ( this.ws ) {
-      this.ws.close();
+      this.ws = null;
+      this.wsqueue = {};
     }
 
-    this.ws = null;
-    this.wsqueue = {};
-    return Connection.prototype.destroy.apply(this, arguments);
-  };
+    this.destroying = true;
 
-  WSConnection.prototype.init = function(callback) {
+    return super.destroy.apply(this, arguments);
+  }
+
+  init() {
     this.destroying = false;
 
-    this._connect(false, callback);
-  };
+    return new Promise((resolve, reject) => {
+      this._connect(false, (err, res) => {
+        if ( err ) {
+          reject(err instanceof Error ? err : new Error(err));
+        } else {
+          resolve(res);
+        }
+      });
+    });
+  }
 
-  WSConnection.prototype._connect = function(reconnect, callback) {
+  _connect(reconnect, callback) {
     if ( this.destroying || this.ws && !reconnect ) {
       return;
     }
 
     console.info('Trying WebSocket Connection', this.wsurl);
 
-    var self = this;
-    var connected = false;
+    let connected = false;
 
     this.ws = new WebSocket(this.wsurl);
 
-    this.ws.onopen = function() {
+    this.ws.onopen = function(ev) {
       connected = true;
       // NOTE: For some reason it needs to be fired on next tick
-      setTimeout(function() {
-        callback();
-      }, 0);
+      setTimeout(() => callback(false), 0);
     };
 
-    this.ws.onmessage = function(ev) {
-      var data = JSON.parse(ev.data);
-      var idx = data._index;
-      self._onmessage(idx, data);
+    this.ws.onmessage = (ev) => {
+      console.debug('websocket open', ev);
+      const data = JSON.parse(ev.data);
+      const idx = data._index;
+      this._onmessage(idx, data);
     };
 
-    this.ws.onclose = function(ev) {
+    this.ws.onerror = (ev) => {
+      console.error('websocket error', ev);
+    };
+
+    this.ws.onclose = (ev) => {
+      console.debug('websocket close', ev);
       if ( !connected && ev.code !== 3001 ) {
-        callback(API._('CONNECTION_ERROR'));
+        callback(_('CONNECTION_ERROR'));
         return;
       }
-      self._onclose();
+      this._onclose();
     };
-  };
+  }
 
-  WSConnection.prototype._onmessage = function(idx, data) {
+  _onmessage(idx, data) {
     if ( typeof idx === 'undefined'  ) {
       this.message(data);
     } else {
       if ( this.wsqueue[idx] ) {
         delete data._index;
 
-        this.wsqueue[idx](data);
+        this.wsqueue[idx](false, data);
 
         delete this.wsqueue[idx];
       }
     }
-  };
+  }
 
-  WSConnection.prototype._onclose = function(reconnecting) {
-    var self = this;
+  _onclose(reconnecting) {
     if ( this.destroying ) {
       return;
     }
@@ -132,44 +150,40 @@
 
     this.ws = null;
 
-    setTimeout(function() {
-      self._connect(true, function(err) {
+    setTimeout(() => {
+      this._connect(true, (err) => {
         if ( err ) {
-          self._onclose((reconnecting || 0) + 1);
+          this._onclose((reconnecting || 0) + 1);
         } else {
-          self.onOnline();
+          this.onOnline();
         }
       });
     }, reconnecting ? 10000 : 1000);
-  };
+  }
 
-  WSConnection.prototype.message = function(data) {
+  message(data) {
     // Emit a VFS event when a change occures
     if ( data.action === 'vfs:watch' ) {
-      VFS.Helpers.triggerWatch(data.args.event, VFS.file(data.args.file));
+      VFS.triggerWatch(data.args.event, new FileMetadata(data.args.file));
     }
 
     // Emit a subscription event
     if ( this._evHandler ) {
       this._evHandler.emit(data.action, data.args);
     }
-  };
+  }
 
-  WSConnection.prototype.request = function(method, args, onsuccess, onerror, options) {
-    onerror = onerror || function() {
-      console.warn('Connection::callWS()', 'error', arguments);
-    };
-
-    var res = Connection.prototype.request.apply(this, arguments);
-    if ( res !== false ) {
-      return res;
-    }
+  createRequest(method, args, options) {
     if ( !this.ws ) {
-      return false;
+      return Promise.reject(new Error('No websocket connection'));
     }
 
-    var idx = this.index++;
-    var base = method.match(/^FS:/) ? '/FS/' : '/API/';
+    if ( ['FS:upload', 'FS:get', 'logout'].indexOf(method) !== -1 ) {
+      return super.createRequest(...arguments);
+    }
+
+    const idx = this.index++;
+    const base = method.match(/^FS:/) ? '/FS/' : '/API/';
 
     try {
       this.ws.send(JSON.stringify({
@@ -177,23 +191,15 @@
         path: base + method.replace(/^FS:/, ''),
         args: args
       }));
-
-      this.wsqueue[idx] = onsuccess || function() {};
-
-      return true;
     } catch ( e ) {
-      console.warn('callWS() Warning', e.stack, e);
-      onerror(e);
+      return Promise.reject(e);
     }
 
-    return false;
-  };
+    return new Promise((resolve, reject) => {
+      this.wsqueue[idx] = function(err, res) {
+        return err ? reject(err) : resolve(res);
+      };
+    });
+  }
+}
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Connections = OSjs.Connections || {};
-  OSjs.Connections.ws = WSConnection;
-
-})(OSjs.API, OSjs.VFS, OSjs.Utils, OSjs.Core.Connection);

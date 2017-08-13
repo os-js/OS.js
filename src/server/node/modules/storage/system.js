@@ -27,52 +27,37 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-/*eslint strict:["error", "global"]*/
-'use strict';
 
-const _fs = require('fs-extra');
-const _vfs = require('./../../core/vfs.js');
-const _settings = require('./../../core/settings.js');
-const _utils = require('./../../lib/utils.js');
+const fs = require('fs-extra');
 
-module.exports.setSettings = function(http, username, settings) {
-  const config = _settings.get();
-  const path = _vfs.resolvePathArguments(config.modules.storage.system.settings, {
-    username: username
-  });
+const VFS = require('./../../vfs.js');
+const Settings = require('./../../settings.js');
+const Storage = require('./../storage.js');
 
-  return new Promise((resolve, reject) => {
-    _fs.ensureFile(path, (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        _fs.writeFile(path, JSON.stringify(settings), (err, res) => {
-          if ( err ) {
-            reject(err);
-          } else {
-            resolve(true);
-          }
-        });
-      }
+class SystemStorage extends Storage {
+
+  setSettings(user, settings) {
+    return new Promise((resolve, reject) => {
+      const config = Settings.get('modules.storage.system.settings');
+      const filename = VFS.resolvePathArguments(config, user);
+      fs.ensureFile(filename).then(() => {
+        return fs.writeJson(filename, settings).then(resolve).catch(reject);
+      }).catch(reject);
     });
-  });
-};
+  }
 
-module.exports.getSettings = function(http, username) {
-  const config = _settings.get();
-  const path = _vfs.resolvePathArguments(config.modules.storage.system.settings, {
-    username: username
-  });
+  getSettings(user) {
+    return new Promise((resolve, reject) => {
+      const config = Settings.get('modules.storage.system.settings');
+      const filename = VFS.resolvePathArguments(config, user);
 
-  return new Promise((resolve) => {
-    _utils.readUserMap(null, path, resolve);
-  });
-};
+      fs.readJson(filename).then(resolve).catch((err) => {
+        console.warn(err);
+        return resolve({});
+      });
+    });
+  }
 
-module.exports.register = function(config) {
-  return Promise.resolve();
-};
+}
 
-module.exports.destroy = function() {
-  return Promise.resolve();
-};
+module.exports = new SystemStorage();

@@ -217,6 +217,7 @@ corewm-window-switcher > div > img {
     }
 
     #CoreWMApplicationMenu gui-menu-entry div {
+      line-height : 1;
       white-space : normal;
       max-height : 30px;
       box-sizing : border-box;
@@ -594,6 +595,7 @@ corewm-search[data-visible=true] {
         position : absolute;
         top : 5px;
         left : 5px;
+        width : 16px;
       }
 
 /**

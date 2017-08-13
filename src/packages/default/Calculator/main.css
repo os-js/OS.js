@@ -34,7 +34,7 @@
 .ApplicationCalculatorWindow gui-text {
   display : block;
   margin : 0.666em;
-  height : 4.1666em;
+  height : 4.1666em !important;
 }
 
 .ApplicationCalculatorWindow gui-text > input {

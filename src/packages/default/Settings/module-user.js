@@ -29,46 +29,31 @@
  */
 
 /*eslint valid-jsdoc: "off"*/
-(function(Application, Window, Utils, API, User, GUI) {
-  'use strict';
+const Authenticator = OSjs.require('core/authenticator');
 
-  /////////////////////////////////////////////////////////////////////////////
-  // MODULE
-  /////////////////////////////////////////////////////////////////////////////
+export default {
+  group: 'user',
+  name: 'User',
+  label: 'LBL_USER',
+  icon: 'apps/user-info.png',
+  button: false,
 
-  var module = {
-    group: 'user',
-    name: 'User',
-    label: 'LBL_USER',
-    icon: 'apps/user-info.png',
-    button: false,
+  init: function() {
+  },
 
-    init: function() {
-    },
+  update: function(win, scheme, settings, wm) {
+    const user = Authenticator.instance.getUser();
 
-    update: function(win, scheme, settings, wm) {
-      var user = OSjs.Core.getAuthenticator().getUser();
+    win._find('UserID').set('value', user.id);
+    win._find('UserName').set('value', user.name);
+    win._find('UserUsername').set('value', user.username);
+    win._find('UserGroups').set('value', user.groups);
+  },
 
-      win._find('UserID').set('value', user.id);
-      win._find('UserName').set('value', user.name);
-      win._find('UserUsername').set('value', user.username);
-      win._find('UserGroups').set('value', user.groups);
-    },
+  render: function(win, scheme, root, settings, wm) {
+  },
 
-    render: function(win, scheme, root, settings, wm) {
-    },
+  save: function(win, scheme, settings, wm) {
+  }
+};
 
-    save: function(win, scheme, settings, wm) {
-    }
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationSettings = OSjs.Applications.ApplicationSettings || {};
-  OSjs.Applications.ApplicationSettings.Modules = OSjs.Applications.ApplicationSettings.Modules || {};
-  OSjs.Applications.ApplicationSettings.Modules.User = module;
-
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.User, OSjs.GUI);

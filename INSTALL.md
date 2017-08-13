@@ -6,7 +6,7 @@ It is highly recommended that you use `git` to install instead of downloading an
 
 ## Dependencies
 
-The only requirement is that you have `node` and `npm` installed (v4 or newer).
+The only requirement is that you have `node` and `npm` installed (v6 or newer).
 
 *Note for Debian/Ubuntu users*: You might need to install the `nodejs-legacy` package.
 
@@ -15,9 +15,9 @@ The only requirement is that you have `node` and `npm` installed (v4 or newer).
 Inside the OS.js directory:
 
 ```
-$ npm install --production
+$ npm install
 $ node osjs build
 $ node osjs run
 ```
 
-For more information, see the [Installation Manual](https://os-js.org/manual/installation/).
+For more information, see the [Installation Manual](https://manual.os-js.org/installation/).

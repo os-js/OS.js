@@ -1,10 +1,75 @@
+# 2.1.0
+
+Rewritten to ES6 (Babel), Webpack and Express.
+
+Many of these are **breaking** changes, but you can easily migrate to the new style.
+
+For a full writeup of changes etc, see links below.
+
+Relevant:
+
+* https://community.os-js.org/t/update-version-bump-2-1-0/142
+* https://community.os-js.org/t/road-to-es6-es2015/131/8
+* https://github.com/os-js/OS.js/issues/617
+
+Digest:
+
+* Core: Rewritten to ES6
+* Core: Callbacks replaced with Promise
+* Core: Now using imports
+* Core: Deprecated all marked methods
+* Core: Removed global namespace (available as BC module)
+* Core: Removed support for "simple" packages
+* Core: Removed support for "dummy" packages
+* Core: Removed support for "old" packages
+* Core: Detached Scheme files from applications
+* Core: Changed in namespaces (code separation)
+* API: Now using axios for XHR
+* API: Now using bluebird for better promises
+* VFS: Removed 'delete' operation (use 'unlink')
+* GUI: Schemes now embed in bundles if used
+* Packages: Default packages refactored
+* build: Now using Ygor as task system
+* build: Rewritten
+* build: Now using Webpack for themes
+* build: Now using Webpack for packages
+* build: Now using Webpack for core
+* build: Removed grunt entirely
+* build: Split up into separate package
+* build: Changed templating generation
+* build: Simplified configuration capabilities
+* build: Better overlay support
+* server-node: Rewritten to ES6
+* server-node: Now using Express
+* server-node: Changed how modules look
+* server-node: Better module APIs
+* server-node: Better user handling
+* conf: Changed overlay layouts
+* conf: Overlays now support themes
+* conf: Overlays now support configuration includes
+* conf: Changed vfs configuration
+* misc: Added some new `bin/` scripts
+* misc: Removed the `Zip` helper. This will be replaced with something newer.
+* misc: The `Database` handler now uses separate tables
+* misc: Added `OSjs.require()` for externals
+* misc: Moved src/client/themes to src/themes
+* misc: Bugfixes and general cleanups
+* misc: Performance improvements
+* misc: No more 'dist/vendor' by default
+* misc: Removed automated installers from repo
+* misc: Separated graphics sources to own repo
+* misc: Separated x11 sources to own repo
+* misc: Separated Broadway (will be replaced with Xpra)
+* misc: Updated documentation
+* misc: Now using esdoc
+
 # 2.0.0-97
 
 Bugfixes, updated dependencies, build system updates and moved some methods from Storage to Authenticator module
 
 Relevant:
 
-* http://community.os.js.org/t/update-version-bump-alpha97/136
+* https://community.os-js.org/t/update-version-bump-alpha97/136
 
 Digest:
 
@@ -32,7 +97,7 @@ Mostly bugfixes and sortable shortcut buttons in panel.
 
 Relevant:
 
-* http://community.os.js.org/t/update-version-bump-alpha96/130
+* https://community.os-js.org/t/update-version-bump-alpha96/130
 
 Digest:
 
@@ -60,7 +125,7 @@ Also updated mouse/pointer handling in some cases for better compability.
 
 Relevant:
 
-* http://community.os.js.org/t/update-version-bump-alpha94/129
+* https://community.os-js.org/t/update-version-bump-alpha94/129
 
 Digest:
 
@@ -87,7 +152,7 @@ your package metadata file (see included).
 
 Relevant:
 
-* http://community.os.js.org/t/update-version-bump-alpha93/128
+* https://community.os-js.org/t/update-version-bump-alpha93/128
 
 Digest:
 
@@ -230,7 +295,7 @@ add a small snippet in the bottom of your file(s)
 
 Relevant:
 
-* http://community.os.js.org/t/update-version-bump-alpha86/122
+* https://community.os-js.org/t/update-version-bump-alpha86/122
 
 Digest:
 
@@ -267,7 +332,7 @@ handling has been updated.
 
 Relevant:
 
-* http://community.os.js.org/t/update-version-bump-alpha85/
+* https://community.os-js.org/t/update-version-bump-alpha85/
 
 Digest:
 
@@ -297,7 +362,7 @@ Updates to mobile UI and handling, VFS improvements, bugfixes and a new 'osjs wa
 
 Relevant:
 
-* http://community.os.js.org/t/update-version-bump-alpha84/118
+* https://community.os-js.org/t/update-version-bump-alpha84/118
 * https://www.os-js.org/manual/gui/elements/#create-javascript
 
 Digest:
@@ -340,7 +405,7 @@ bunch of bugfixes and compability updates.
 
 Relevant:
 
-* http://community.os.js.org/t/update-version-bump-alpha83/114
+* https://community.os-js.org/t/update-version-bump-alpha83/114
 
 Digest:
 
@@ -388,8 +453,8 @@ server and build system improvements and lots of bugfixes.
 
 Relevant:
 
-- http://community.os.js.org/t/update-version-bump-alpha82/110
-- http://community.os.js.org/t/feature-http-middleware/107/1
+- https://community.os-js.org/t/update-version-bump-alpha82/110
+- https://community.os-js.org/t/feature-http-middleware/107/1
 
 Digest:
 
@@ -455,10 +520,10 @@ The official documentation (manual) has also been completely reworked. It now ex
 
 Relevant:
 
-- http://community.os.js.org/t/update-version-bump-alpha81/104
+- https://community.os-js.org/t/update-version-bump-alpha81/104
 - https://gitter.im/os-js/topics/topic/5818ce090b10738c73fe24e0/new-server-codebase-and-handler-abstraction
-- http://community.os.js.org/t/notice-upcoming-server-api-changes/104/2
-- http://community.os.js.org/t/feature-widgets/90
+- https://community.os-js.org/t/notice-upcoming-server-api-changes/104/2
+- https://community.os-js.org/t/feature-widgets/90
 - https://github.com/os-js/OS.js/issues/527
 - https://os.js.org/manual/
 
@@ -527,11 +592,11 @@ New Settings application, package management and user management subsystem, deve
 
 Relevant:
 
-- http://community.os.js.org/t/update-version-bump-alpha80/101
-- http://community.os.js.org/t/notice-upcoming-grunt-and-build-system-changes/99
-- http://community.os.js.org/t/feature-create-applications-without-prototype-chain/96
-- http://community.os.js.org/t/feature-import-files-in-your-schemes/95
-- http://community.os.js.org/t/feature-scheme-loading-via-metadata-json/94
+- https://community.os-js.org/t/update-version-bump-alpha80/101
+- https://community.os-js.org/t/notice-upcoming-grunt-and-build-system-changes/99
+- https://community.os-js.org/t/feature-create-applications-without-prototype-chain/96
+- https://community.os-js.org/t/feature-import-files-in-your-schemes/95
+- https://community.os-js.org/t/feature-scheme-loading-via-metadata-json/94
 
 Digest:
 
@@ -584,9 +649,9 @@ Core API WebSocket support, Desktop now uses VFS mount, New touch menu, Bugfixes
 
 Relevant:
 
-- http://community.os.js.org/t/update-version-bump-alpha79/92
-- http://community.os.js.org/t/feature-api-over-websocket/91
-- http://community.os.js.org/t/feature-widgets/90
+- https://community.os-js.org/t/update-version-bump-alpha79/92
+- https://community.os-js.org/t/feature-api-over-websocket/91
+- https://community.os-js.org/t/feature-widgets/90
 
 Digest:
 
@@ -680,9 +745,9 @@ to documentation and developer features.
 
 Relevant:
 
-- http://community.os.js.org/t/features-extending-base-css/65
-- http://community.os.js.org/t/notice-node-server-api-changes/73
-- http://community.os.js.org/t/features-package-less-and-custom-script-support/72
+- https://community.os-js.org/t/features-extending-base-css/65
+- https://community.os-js.org/t/notice-node-server-api-changes/73
+- https://community.os-js.org/t/features-package-less-and-custom-script-support/72
 
 Digest:
 
@@ -748,9 +813,9 @@ Digest:
 
 Search Engine, HTTP/2 support, bugfixes, improvements
 
-- http://community.os.js.org/t/quick-tips-window-events/47/1
-- http://community.os.js.org/t/feature-search-engine/43
-- http://community.os.js.org/t/feature-http-v2/44/2
+- https://community.os-js.org/t/quick-tips-window-events/47/1
+- https://community.os-js.org/t/feature-search-engine/43
+- https://community.os-js.org/t/feature-http-v2/44/2
 
 This update brings you a new Search Engine implementation, HTTP/2 support, lots of bugfixes
 and general impreovements. Also a new HTML Viewer application.
@@ -841,9 +906,9 @@ Bugfixes, Locale updates, Security and general improvements.
 
 New wallpaper, UI improvements, bugfixes and many improvements to the build system(s). Also new developer features!
 
-**API CHANGE**: http://community.os.js.org/t/notice-updated-gui-methods/33
+**API CHANGE**: https://community.os-js.org/t/notice-updated-gui-methods/33
 
-**API CHANGE**: http://community.os.js.org/t/notice-recent-api-changes/31
+**API CHANGE**: https://community.os-js.org/t/notice-recent-api-changes/31
 
 * UI: New Wallpaper
 * UI: Added loading bar to boot

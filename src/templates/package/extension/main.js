@@ -29,37 +29,34 @@
  */
 
 /*eslint valid-jsdoc: "off"*/
-(function(Utils, VFS, API) {
-  'use strict';
+'use strict';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // MODULE API
-  /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// MODULE API
+/////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Extension modules requires an init() method
-   */
-  var EXAMPLE = {
-    init: function(metadata, done) {
-      done();
-    },
+/**
+ * Extension modules requires an init() method
+ */
+const EXAMPLE = {
+  init: function(metadata, done) {
+    done();
+  },
 
-    test: function(done) {
-      API.call('test', {}, function(err, res) {
-        console.log('Result from your server API method', err, res);
-      });
-    }
-  };
+  test: function(done) {
+    API.call('test', {}, function(err, res) {
+      console.log('Result from your server API method', err, res);
+    });
+  }
+};
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// EXPORTS
+/////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * This is an example using the internal Extension system.
-   * You can use any namespace you want and override already defined internal methods
-   */
-  OSjs.Extensions.EXAMPLE = EXAMPLE;
-
-})(OSjs.Utils, OSjs.VFS, OSjs.API);
+/**
+ * This is an example using the internal Extension system.
+ * You can use any namespace you want and override already defined internal methods
+ */
+OSjs.Extensions.EXAMPLE = EXAMPLE;
 

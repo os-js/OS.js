@@ -1,124 +1,66 @@
 {
   "build": {
-    "dist": {
-      "template": "default",
-      "splash": "default",
-      "login": "default"
-    },
-    "statics": {
-      "src/client/dialogs.html": "dist/dialogs.html",
-      "?src/templates/misc/vfs/home/.desktop/.shortcuts.json": "vfs/home/demo/.desktop/.shortcuts.json"
-    },
-    "locales": [
-      "src/client/javascript/locales/en_EN.js",
-      "src/client/javascript/locales/bg_BG.js",
-      "src/client/javascript/locales/no_NO.js",
-      "src/client/javascript/locales/de_DE.js",
-      "src/client/javascript/locales/es_ES.js",
-      "src/client/javascript/locales/fr_FR.js",
-      "src/client/javascript/locales/ru_RU.js",
-      "src/client/javascript/locales/ko_KR.js",
-      "src/client/javascript/locales/zh_CN.js",
-      "src/client/javascript/locales/nl_NL.js",
-      "src/client/javascript/locales/pl_PL.js",
-      "src/client/javascript/locales/pt_BR.js",
-      "src/client/javascript/locales/sk_SK.js",
-      "src/client/javascript/locales/vi_VN.js",
-      "src/client/javascript/locales/tr_TR.js",
-      "src/client/javascript/locales/it_IT.js",
-      "src/client/javascript/locales/fa_FA.js",
-      "src/client/javascript/locales/ar_DZ.js"
-    ],
-    "javascript": [
-      "src/client/javascript/polyfill.js",
-      "src/client/javascript/core/boot.js",
-      "src/client/javascript/core/api.js",
-      "src/client/javascript/core/connection.js",
-      "src/client/javascript/core/authenticator.js",
-      "src/client/javascript/core/storage.js",
-      "src/client/javascript/core/process.js",
-      "src/client/javascript/core/application.js",
-      "src/client/javascript/core/service.js",
-      "src/client/javascript/core/window.js",
-      "src/client/javascript/core/dialog.js",
-      "src/client/javascript/core/windowmanager.js",
-      "src/client/javascript/core/package-manager.js",
-      "src/client/javascript/core/settings-manager.js",
-      "src/client/javascript/core/mount-manager.js",
-      "src/client/javascript/core/search-engine.js",
-      "src/client/javascript/core/connections/http.js",
-      "src/client/javascript/core/connections/ws.js",
-      "src/client/javascript/core/auth/demo.js",
-      "src/client/javascript/core/auth/database.js",
-      "src/client/javascript/core/auth/pam.js",
-      "src/client/javascript/core/storage/demo.js",
-      "src/client/javascript/core/storage/database.js",
-      "src/client/javascript/core/storage/system.js",
-      "src/client/javascript/utils/compability.js",
-      "src/client/javascript/utils/events.js",
-      "src/client/javascript/utils/misc.js",
-      "src/client/javascript/utils/dom.js",
-      "src/client/javascript/utils/xhr.js",
-      "src/client/javascript/utils/fs.js",
-      "src/client/javascript/gui/helpers.js",
-      "src/client/javascript/gui/scheme.js",
-      "src/client/javascript/gui/element.js",
-      "src/client/javascript/gui/dataview.js",
-      "src/client/javascript/gui/elements/misc.js",
-      "src/client/javascript/gui/elements/menus.js",
-      "src/client/javascript/gui/elements/tabs.js",
-      "src/client/javascript/gui/elements/inputs.js",
-      "src/client/javascript/gui/elements/visual.js",
-      "src/client/javascript/gui/elements/fileview.js",
-      "src/client/javascript/gui/elements/treeview.js",
-      "src/client/javascript/gui/elements/listview.js",
-      "src/client/javascript/gui/elements/iconview.js",
-      "src/client/javascript/gui/elements/richtext.js",
-      "src/client/javascript/gui/elements/containers.js",
-      "src/client/javascript/dialogs/alert.js",
-      "src/client/javascript/dialogs/applicationchooser.js",
-      "src/client/javascript/dialogs/color.js",
-      "src/client/javascript/dialogs/confirm.js",
-      "src/client/javascript/dialogs/error.js",
-      "src/client/javascript/dialogs/file.js",
-      "src/client/javascript/dialogs/fileinfo.js",
-      "src/client/javascript/dialogs/fileprogress.js",
-      "src/client/javascript/dialogs/fileupload.js",
-      "src/client/javascript/dialogs/font.js",
-      "src/client/javascript/dialogs/input.js",
-      "src/client/javascript/vfs/helpers.js",
-      "src/client/javascript/vfs/fs.js",
-      "src/client/javascript/vfs/file.js",
-      "src/client/javascript/vfs/transports/osjs.js",
-      "src/client/javascript/vfs/transports/dist.js",
-      "src/client/javascript/vfs/transports/http.js",
-      "src/client/javascript/vfs/transports/web.js",
-      "src/client/javascript/vfs/transports/webdav.js",
-      "src/client/javascript/vfs/transports/applications.js",
-      "src/client/javascript/vfs/mounts/googledrive.js",
-      "src/client/javascript/vfs/mounts/dropbox.js",
-      "src/client/javascript/vfs/mounts/onedrive.js",
-      "src/client/javascript/vfs/mounts/localstorage.js",
-      "src/client/javascript/broadway/unicode.js",
-      "src/client/javascript/broadway/window.js",
-      "src/client/javascript/broadway/broadway.js",
-      "src/client/javascript/broadway/connection.js",
-      "src/client/javascript/helpers/date.js",
-      "src/client/javascript/helpers/event-handler.js",
-      "src/client/javascript/helpers/iframe-application.js",
-      "src/client/javascript/helpers/default-application.js",
-      "src/client/javascript/helpers/default-application-window.js",
-      "src/client/javascript/helpers/google-api.js",
-      "src/client/javascript/helpers/windows-live-api.js",
-      "src/client/javascript/helpers/zip-archiver.js",
-      "src/client/javascript/helpers/settings-fragment.js"
-    ],
-    "stylesheets": [
-      "src/client/stylesheets/core.css",
-      "src/client/stylesheets/gui.css",
-      "dev:src/client/stylesheets/debug.css"
-    ],
+    "template": "default",
     "overlays": {
+    },
+    "static": [
+      "src/templates/dist/api.php",
+      "src/templates/dist/blank.css",
+      "src/templates/dist/windows-live-oauth.html",
+      "src/templates/dist/dropbox-oauth.html"
+    ],
+    "includes": {
+      "scripts": [
+        "standalone:packages.js",
+        "settings.js"
+      ],
+      "styles": [
+        "themes.css"
+      ]
+    },
+    "webpack": {
+      "output": {
+        "publicPath": "",
+        "path": "%ROOT%/dist",
+        "chunkFilename": "[name].js"
+      },
+      "resolve": {
+        "modules": [
+          "%ROOT%/src/client/javascript",
+          "%ROOT%/node_modules"
+        ]
+      },
+      "entry": {
+        "polyfill": [
+          "src/client/javascript/polyfill.js"
+        ],
+        "osjs": [
+          "src/client/javascript/boot.js",
+          "src/client/stylesheets/core.css",
+          "src/client/stylesheets/gui.css",
+          "dev:src/client/stylesheets/debug.css"
+        ],
+        "locales": [
+          "src/client/javascript/locales/en_EN.js",
+          "src/client/javascript/locales/bg_BG.js",
+          "src/client/javascript/locales/no_NO.js",
+          "src/client/javascript/locales/de_DE.js",
+          "src/client/javascript/locales/es_ES.js",
+          "src/client/javascript/locales/fr_FR.js",
+          "src/client/javascript/locales/ru_RU.js",
+          "src/client/javascript/locales/ko_KR.js",
+          "src/client/javascript/locales/zh_CN.js",
+          "src/client/javascript/locales/nl_NL.js",
+          "src/client/javascript/locales/pl_PL.js",
+          "src/client/javascript/locales/pt_BR.js",
+          "src/client/javascript/locales/sk_SK.js",
+          "src/client/javascript/locales/vi_VN.js",
+          "src/client/javascript/locales/tr_TR.js",
+          "src/client/javascript/locales/it_IT.js",
+          "src/client/javascript/locales/fa_FA.js",
+          "src/client/javascript/locales/ar_DZ.js"
+        ]
+      }
     }
   }
 }

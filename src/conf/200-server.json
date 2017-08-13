@@ -2,8 +2,8 @@
   "server" : {
     "authenticator": "%authenticator%",
     "storage": "%storage%",
+    "connection": "%connection%",
     "tz": "",
-    "overlays": {},
     "vfs": {
       "mounts": {
         "home": "%DROOT%/vfs/home/%USERNAME%",
@@ -18,7 +18,7 @@
       }
     },
     "api": {
-      "defaultGroups": ["api", "application", "upload", "fs"],
+      "defaultGroups": ["api", "application", "upload", "fs", "curl"],
       "groups": {
         "users": "admin",
         "curl": "curl",
@@ -29,28 +29,22 @@
     "proxies": {
       "http-bind-jabber/": "http://localhost:5280/http-bind/"
     },
+    "logger": {
+      "format": ":status :method :url :res[content-length] (:response-time ms)"
+    },
     "http": {
-      "mode": "http",
-      "connection": "%connection%",
       "hostname": null,
       "port" : 8000,
       "compression": {
         "memLevel": 8,
         "level": -1
       },
-      "cache": {
-        "static": {
-          "Cache-Control": "private, max-age=86400000"
-        }
-      },
       "session": {
-        "module": "memory",
+        "module": "session-file-store",
         "secret": "YOU SHOULD GENERATE YOUR OWN KEY",
         "name": null,
         "options": {
-          "memory": {
-          },
-          "file": {
+          "session-file-store": {
             "path": "%ROOT%/src/server/sessions"
           }
         },

@@ -28,17 +28,12 @@
  * @licence Simplified BSD License
  */
 
-/*eslint valid-jsdoc: "off"*/
-(function() {
-  'use strict';
+/**
+ * Registers your Extension API methods
+ */
+module.exports.api = {
+  test: function(http, data) {
+    return Promise.resolve('This is a response from your extension');
+  }
+};
 
-  /**
-   * Registers your Extension API methods
-   */
-  module.exports.api = {
-    test: function(http, data) {
-      return Promise.resolve('This is a response from your extension');
-    }
-  };
-
-})();

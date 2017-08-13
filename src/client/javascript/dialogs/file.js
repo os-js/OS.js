@@ -27,38 +27,43 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, VFS, Utils, DialogWindow) {
-  'use strict';
+import DialogWindow from 'core/dialog';
+import GUIElement from 'gui/element';
+import FileMetadata from 'vfs/file';
+import SettingsManager from 'core/settings-manager';
+import MountManager from 'core/mount-manager';
+import * as FS from 'utils/fs';
+import * as Utils from 'utils/misc';
+import * as VFS from 'vfs/fs';
+import {_} from 'core/locales';
+import {getDefaultPath} from 'core/config';
 
-  /**
-   * An 'File' dialog
-   *
-   * @example
-   *
-   * OSjs.API.createDialog('File', {}, fn);
-   *
-   * @param  {Object}           args                      An object with arguments
-   * @param  {String}           args.title                Dialog title
-   * @param  {String}           [args.type=open]          Dialog type (alternative=save)
-   * @param  {Boolean}          [args.multiple=false]     Multiple file selection
-   * @param  {OSjs.VFS.File}    [args.file]               Current file
-   * @param  {String}           [args.path]               Default path
-   * @param  {String}           [args.filename]           Default filename
-   * @param  {String}           [args.extension]          Default file extension
-   * @param  {String}           [args.mime]               Default file MIME
-   * @param  {Array}            [args.filter]             Array of MIMIE filters
-   * @param  {Array}            [args.mfilter]            Array of function to filter module list
-   * @param  {String}           [args.select]             Selection type (file/dir)
-   * @param  {CallbackDialog}   callback                  Callback when done
-   *
-   * @constructor File
-   * @memberof OSjs.Dialogs
-   */
-  function FileDialog(args, callback) {
-    args = Utils.argumentDefaults(args, {
+/**
+ * An 'File' dialog
+ *
+ * @example DialogWindow.create('File', {}, fn);
+ * @extends DialogWindow
+ *
+ * @param  {Object}           args                      An object with arguments
+ * @param  {String}           args.title                Dialog title
+ * @param  {String}           [args.type=open]          Dialog type (alternative=save)
+ * @param  {Boolean}          [args.multiple=false]     Multiple file selection
+ * @param  {FileMetadata}     [args.file]               Current file
+ * @param  {String}           [args.path]               Default path
+ * @param  {String}           [args.filename]           Default filename
+ * @param  {String}           [args.extension]          Default file extension
+ * @param  {String}           [args.mime]               Default file MIME
+ * @param  {Array}            [args.filter]             Array of MIMIE filters
+ * @param  {Array}            [args.mfilter]            Array of function to filter module list
+ * @param  {String}           [args.select]             Selection type (file/dir)
+ * @param  {CallbackDialog}   callback                  Callback when done
+ */
+export default class FileDialog extends DialogWindow {
+  constructor(args, callback) {
+    args = Object.assign({}, {
       file: null,
       type: 'open',
-      path: OSjs.API.getDefaultPath(),
+      path: getDefaultPath(),
       filename: '',
       filetypes: [],
       extension: '',
@@ -67,128 +72,122 @@
       mfilter: [],
       select: null,
       multiple: false
-    });
+    }, args);
 
     args.multiple = (args.type === 'save' ? false : args.multiple === true);
 
-    if ( args.path && args.path instanceof VFS.File ) {
-      args.path = Utils.dirname(args.path.path);
+    if ( args.path && args.path instanceof FileMetadata ) {
+      args.path = FS.dirname(args.path.path);
     }
 
     if ( args.file && args.file.path ) {
-      args.path = Utils.dirname(args.file.path);
+      args.path = FS.dirname(args.file.path);
       args.filename = args.file.filename;
       args.mime = args.file.mime;
 
       if ( args.filetypes.length ) {
-        var setTo = args.filetypes[0];
-        args.filename = Utils.replaceFileExtension(args.filename, setTo.extension);
+        const setTo = args.filetypes[0];
+        args.filename = FS.replaceFileExtension(args.filename, setTo.extension);
         args.mime = setTo.mime;
       }
     }
 
-    var title = args.title || API._(args.type === 'save' ? 'DIALOG_FILE_SAVE' : 'DIALOG_FILE_OPEN');
-    var icon = args.type === 'open' ? 'actions/document-open.png' : 'actions/documentsave-as.png';
+    const title = args.title || _(args.type === 'save' ? 'DIALOG_FILE_SAVE' : 'DIALOG_FILE_OPEN');
+    const icon = args.type === 'open' ? 'actions/document-open.png' : 'actions/documentsave-as.png';
 
-    DialogWindow.apply(this, ['FileDialog', {
+    super('FileDialog', {
       title: title,
       icon: icon,
       width: 600,
       height: 400
-    }, args, callback]);
+    }, args, callback);
 
     this.selected = null;
     this.path = args.path;
 
-    var self = this;
-    this.settingsWatch = OSjs.Core.getSettingsManager().watch('VFS', function() {
-      self.changePath();
+    this.settingsWatch = SettingsManager.watch('VFS', () => {
+      this.changePath();
     });
   }
 
-  FileDialog.prototype = Object.create(DialogWindow.prototype);
-  FileDialog.constructor = DialogWindow;
-
-  FileDialog.prototype.destroy = function() {
+  destroy() {
     try {
-      OSjs.Core.getSettingsManager().unwatch(this.settingsWatch);
+      SettingsManager.unwatch(this.settingsWatch);
     } catch ( e ) {}
-    return DialogWindow.prototype.destroy.apply(this, arguments);
-  };
 
-  FileDialog.prototype.init = function() {
-    var self = this;
-    var root = DialogWindow.prototype.init.apply(this, arguments);
-    var view = this._find('FileView');
+    return super.destroy(...arguments);
+  }
+
+  init() {
+    const root = super.init(...arguments);
+    const view = this._find('FileView');
     view.set('filter', this.args.filter);
     view.set('filetype', this.args.select || '');
     view.set('defaultcolumns', 'true');
 
-    var filename = this._find('Filename');
-    var home = this._find('HomeButton');
-    var mlist = this._find('ModuleSelect');
+    const filename = this._find('Filename');
+    const home = this._find('HomeButton');
+    const mlist = this._find('ModuleSelect');
 
-    function checkEmptyInput() {
-      var disable = false;
-      if ( self.args.select !== 'dir' ) {
+    const checkEmptyInput = () => {
+      let disable = false;
+      if ( this.args.select !== 'dir' ) {
         disable = !filename.get('value').length;
       }
-      self._find('ButtonOK').set('disabled', disable);
-    }
+      this._find('ButtonOK').set('disabled', disable);
+    };
 
     this._toggleLoading(true);
     view.set('multiple', this.args.multiple);
     filename.set('value', this.args.filename || '');
 
-    this._find('ButtonMkdir').on('click', function() {
-      API.createDialog('Input', {message: API._('DIALOG_FILE_MKDIR_MSG', self.path), value: 'New folder'}, function(ev, btn, value) {
+    this._find('ButtonMkdir').on('click', () => {
+      DialogWindow.create('Input', {message: _('DIALOG_FILE_MKDIR_MSG', this.path), value: 'New folder'}, (ev, btn, value) => {
         if ( btn === 'ok' && value ) {
-          var path = Utils.pathJoin(self.path, value);
-          VFS.mkdir(VFS.file(path, 'dir'), function(err) {
-            if ( err ) {
-              API.error(API._('DIALOG_FILE_ERROR'), API._('ERR_VFSMODULE_MKDIR'), err);
-            } else {
-              self.changePath(path);
-            }
+          const path = FS.pathJoin(this.path, value);
+          VFS.mkdir(new FileMetadata(path, 'dir')).then(() => {
+            return this.changePath(path);
+          }).catch((err) => {
+            OSjs.error(_('DIALOG_FILE_ERROR'), _('ERR_VFSMODULE_MKDIR'), err);
           });
         }
-      }, self);
+      }, this);
     });
 
-    home.on('click', function() {
-      var dpath = API.getDefaultPath();
-      self.changePath(dpath);
+    home.on('click', () => {
+      const dpath = getDefaultPath();
+      this.changePath(dpath);
     });
 
-    view.on('activate', function(ev) {
-      self.selected = null;
-      if ( self.args.type !== 'save' ) {
+    view.on('activate', (ev) => {
+      this.selected = null;
+      if ( this.args.type !== 'save' ) {
         filename.set('value', '');
       }
 
       if ( ev && ev.detail && ev.detail.entries ) {
-        var activated = ev.detail.entries[0];
+        const activated = ev.detail.entries[0];
         if ( activated ) {
-          self.selected = new VFS.File(activated.data);
-          if ( self.selected.type !== 'dir' ) {
-            filename.set('value', self.selected.filename);
+          this.selected = new FileMetadata(activated.data);
+          if ( this.selected.type !== 'dir' ) {
+            filename.set('value', this.selected.filename);
           }
-          self.checkSelection(ev, true);
+          this.checkSelection(ev, true);
         }
       }
     });
 
-    view.on('select', function(ev) {
-      self.selected = null;
+    view.on('select', (ev) => {
+      this.selected = null;
       //filename.set('value', '');
 
       if ( ev && ev.detail && ev.detail.entries ) {
-        var activated = ev.detail.entries[0];
+        const activated = ev.detail.entries[0];
         if ( activated ) {
-          self.selected = new VFS.File(activated.data);
+          this.selected = new FileMetadata(activated.data);
 
-          if ( self.selected.type !== 'dir' ) {
-            filename.set('value', self.selected.filename);
+          if ( this.selected.type !== 'dir' ) {
+            filename.set('value', this.selected.filename);
           }
         }
       }
@@ -197,31 +196,31 @@
     });
 
     if ( this.args.type === 'save' ) {
-      var filetypes = [];
-      this.args.filetypes.forEach(function(f) {
+      const filetypes = [];
+      this.args.filetypes.forEach((f) => {
         filetypes.push({
           label: Utils.format('{0} (.{1} {2})', f.label, f.extension, f.mime),
           value: f.extension
         });
       });
 
-      var ft = this._find('Filetype').add(filetypes).on('change', function(ev) {
-        var newinput = Utils.replaceFileExtension(filename.get('value'), ev.detail);
+      const ft = this._find('Filetype').add(filetypes).on('change', (ev) => {
+        const newinput = FS.replaceFileExtension(filename.get('value'), ev.detail);
         filename.set('value', newinput);
       });
 
       if ( filetypes.length <= 1 ) {
-        new OSjs.GUI.Element(ft.$element.parentNode).hide();
+        new GUIElement(ft.$element.parentNode).hide();
       }
 
-      filename.on('enter', function(ev) {
-        self.selected = null;
-        self.checkSelection(ev);
+      filename.on('enter', (ev) => {
+        this.selected = null;
+        this.checkSelection(ev);
       });
-      filename.on('change', function(ev) {
+      filename.on('change', (ev) => {
         checkEmptyInput();
       });
-      filename.on('keyup', function(ev) {
+      filename.on('keyup', (ev) => {
         checkEmptyInput();
       });
     } else {
@@ -233,31 +232,22 @@
       this._find('FileInput').hide();
     }
 
-    var mm = OSjs.Core.getMountManager();
-    var rootPath = mm.getRootFromPath(this.path);
-    var modules = mm.getModules().filter(function(m) {
-      if ( self.args.mfilter.length ) {
-        var success = false;
-
-        self.args.mfilter.forEach(function(fn) {
-          if ( !success ) {
-            success = fn(m);
-          }
-        });
-
-        return success;
+    const rootPath = MountManager.getModuleFromPath(this.path).option('root');
+    const modules = MountManager.getModules().filter((m) => {
+      if ( !this.args.mfilter.length ) {
+        return true;
       }
-      return true;
-    }).map(function(m) {
+      return this.args.mfilter.every((fn) => fn(m));
+    }).map((m) => {
       return {
-        label: m.name + (m.module.readOnly ? Utils.format(' ({0})', API._('LBL_READONLY')) : ''),
-        value: m.module.root
+        label: m.option('title') + (m.isReadOnly() ? Utils.format(' ({0})', _('LBL_READONLY')) : ''),
+        value: m.option('root')
       };
     });
 
     mlist.clear().add(modules).set('value', rootPath);
-    mlist.on('change', function(ev) {
-      self.changePath(ev.detail, true);
+    mlist.on('change', (ev) => {
+      this.changePath(ev.detail, true);
     });
 
     this.changePath();
@@ -265,49 +255,47 @@
     checkEmptyInput();
 
     return root;
-  };
+  }
 
-  FileDialog.prototype.changePath = function(dir, fromDropdown) {
-    var self = this;
-    var view = this._find('FileView');
-    var lastDir = this.path;
+  changePath(dir, fromDropdown) {
+    const view = this._find('FileView');
+    const lastDir = this.path;
 
-    function resetLastSelected() {
-      var mm = OSjs.Core.getMountManager();
-      var rootPath = mm.getRootFromPath(lastDir);
+    const resetLastSelected = () => {
       try {
-        self._find('ModuleSelect').set('value', rootPath);
+        const rootPath = MountManager.getModuleFromPath(lastDir).option('root');
+        this._find('ModuleSelect').set('value', rootPath);
       } catch ( e ) {
         console.warn('FileDialog::changePath()', 'resetLastSelection()', e);
       }
-    }
+    };
 
     this._toggleLoading(true);
 
     view.chdir({
       path: dir || this.path,
-      done: function(error) {
+      done: (error) => {
         if ( error ) {
           if ( fromDropdown ) {
             resetLastSelected();
           }
         } else {
           if ( dir ) {
-            self.path = dir;
+            this.path = dir;
           }
         }
 
-        self.selected = null;
-        self._toggleLoading(false);
+        this.selected = null;
+        this._toggleLoading(false);
       }
     });
-  };
+  }
 
-  FileDialog.prototype.checkFileExtension = function() {
-    var filename = this._find('Filename');
+  checkFileExtension() {
+    const filename = this._find('Filename');
 
-    var mime = this.args.mime;
-    var input = filename.get('value');
+    let mime = this.args.mime;
+    let input = filename.get('value');
 
     if ( this.args.filetypes.length ) {
       if ( !input && this.args.filename ) {
@@ -315,10 +303,10 @@
       }
 
       if ( input.length ) {
-        var extension = input.split('.').pop();
-        var found = false;
+        const extension = input.split('.').pop();
 
-        this.args.filetypes.forEach(function(f) {
+        let found = false;
+        this.args.filetypes.forEach((f) => {
           if ( f.extension === extension ) {
             found = f;
           }
@@ -326,7 +314,7 @@
         });
 
         found = found || this.args.filetypes[0];
-        input = Utils.replaceFileExtension(input, found.extension);
+        input = FS.replaceFileExtension(input, found.extension);
         mime  = found.mime;
       }
     }
@@ -335,11 +323,9 @@
       filename: input,
       mime: mime
     };
-  };
+  }
 
-  FileDialog.prototype.checkSelection = function(ev, wasActivated) {
-    var self = this;
-
+  checkSelection(ev, wasActivated) {
     if ( this.selected && this.selected.type === 'dir' ) {
       if ( wasActivated ) {
         // this.args.select !== 'dir' &&
@@ -349,59 +335,61 @@
     }
 
     if ( this.args.type === 'save' ) {
-      var check = this.checkFileExtension();
+      let check = this.checkFileExtension();
 
       if ( !this.path || !check.filename ) {
-        API.error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_MISSING_FILENAME'));
+        OSjs.error(_('DIALOG_FILE_ERROR'), _('DIALOG_FILE_MISSING_FILENAME'));
         return false;
       }
 
-      this.selected = new VFS.File(this.path.replace(/^\//, '') + '/' + check.filename, check.mime);
+      this.selected = new FileMetadata(this.path.replace(/^\//, '') + '/' + check.filename, check.mime);
       this._toggleDisabled(true);
 
-      VFS.exists(this.selected, function(error, result) {
-        self._toggleDisabled(false);
+      VFS.exists(this.selected).then((result) => {
+        this._toggleDisabled(false);
+        if ( this._destroyed ) {
+          return false;
+        }
 
-        if ( self._destroyed ) {
+        if ( result ) {
+          this._toggleDisabled(true);
+
+          if ( this.selected ) {
+            DialogWindow.create('Confirm', {
+              buttons: ['yes', 'no'],
+              message: _('DIALOG_FILE_OVERWRITE', this.selected.filename)
+            }, (ev, button) => {
+              this._toggleDisabled(false);
+
+              if ( button === 'yes' || button === 'ok' ) {
+                this.closeCallback(ev, 'ok', this.selected);
+              }
+            }, this);
+          }
+        } else {
+          this.closeCallback(ev, 'ok', this.selected);
+        }
+
+        return true;
+      }).catch((error) => {
+        this._toggleDisabled(false);
+        if ( this._destroyed ) {
           return;
         }
-
-        if ( error ) {
-          API.error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_MISSING_FILENAME'));
-        } else {
-          if ( result ) {
-            self._toggleDisabled(true);
-
-            if ( self.selected ) {
-              API.createDialog('Confirm', {
-                buttons: ['yes', 'no'],
-                message: API._('DIALOG_FILE_OVERWRITE', self.selected.filename)
-              }, function(ev, button) {
-                self._toggleDisabled(false);
-
-                if ( button === 'yes' || button === 'ok' ) {
-                  self.closeCallback(ev, 'ok', self.selected);
-                }
-              }, self);
-            }
-          } else {
-            self.closeCallback(ev, 'ok', self.selected);
-          }
-        }
-
+        OSjs.error(_('DIALOG_FILE_ERROR'), _('DIALOG_FILE_MISSING_FILENAME'));
       });
 
       return false;
     } else {
       if ( !this.selected && this.args.select !== 'dir' ) {
-        API.error(API._('DIALOG_FILE_ERROR'), API._('DIALOG_FILE_MISSING_SELECTION'));
+        OSjs.error(_('DIALOG_FILE_ERROR'), _('DIALOG_FILE_MISSING_SELECTION'));
         return false;
       }
 
-      var res = this.selected;
+      let res = this.selected;
       if ( !res && this.args.select === 'dir' ) {
-        res = new VFS.File({
-          filename: Utils.filename(this.path),
+        res = new FileMetadata({
+          filename: FS.filename(this.path),
           path: this.path,
           type: 'dir'
         });
@@ -411,20 +399,15 @@
     }
 
     return true;
-  };
+  }
 
-  FileDialog.prototype.onClose = function(ev, button) {
+  onClose(ev, button) {
     if ( button === 'ok' && !this.checkSelection(ev) ) {
       return;
     }
 
     this.closeCallback(ev, button, this.selected);
-  };
+  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+}
 
-  OSjs.Dialogs.File = Object.seal(FileDialog);
-
-})(OSjs.API, OSjs.VFS, OSjs.Utils, OSjs.Core.DialogWindow);

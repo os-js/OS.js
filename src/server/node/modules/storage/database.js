@@ -28,53 +28,64 @@
  * @licence Simplified BSD License
  */
 
-/*eslint strict:["error", "global"]*/
-'use strict';
+const path = require('path');
+const Database = require('./../database.js');
+const Storage = require('./../storage.js');
 
-const _db = require('./../../lib/database.js');
-const _logger = require('./../../lib/logger.js');
+class DatabaseStorage extends Storage {
 
-module.exports.setSettings = function(http, username, settings) {
-  return new Promise((resolve, reject) => {
-    function done() {
-      resolve(true);
-    }
+  setSettings(user, settings) {
+    return new Promise((resolve, reject) => {
+      Database.instance('authstorage').then((db) => {
+        return db.query('SELECT `settings` FROM `settings` WHERE user_id = ?', [user.id]).then((row) => {
+          let promise;
+          const json = JSON.stringify(settings);
+          if ( typeof row === 'undefined' ) {
+            promise = db.query('INSERT INTO `settings` (user_id, settings) VALUES(?, ?)', [user.id, json]);
+          } else {
+            promise = db.query('UPDATE `settings` SET `settings` = ? WHERE `user_id` = ?;', [json, user.id]);
+          }
 
-    _db.instance('authstorage').then((db) => {
-      db.query('UPDATE `users` SET `settings` = ? WHERE `username` = ?;', [JSON.stringify(settings), username])
-        .then(done).catch(reject);
-    }).catch(reject);
-  });
-};
+          return promise.then(() => resolve(true)).catch((err) => {
+            console.warn(err);
+            resolve(false);
+          });
+        }).catch(reject);
+      }).catch(reject);
+    });
+  }
 
-module.exports.getSettings = function(http, username) {
-  return new Promise((resolve, reject) => {
-    function done(row) {
-      row = row || {};
-      let json = {};
-      try {
-        json = JSON.parse(row.settings);
-      } catch (e) {}
-      resolve(json);
-    }
+  getSettings(user) {
+    return new Promise((resolve, reject) => {
+      function done(row) {
+        row = row || {};
+        let json = {};
+        try {
+          json = JSON.parse(row.settings);
+        } catch (e) {}
+        resolve(json);
+      }
 
-    _db.instance('authstorage').then((db) => {
-      db.query('SELECT `settings` FROM `users` WHERE `username` = ? LIMIT 1;', [username])
-        .then(done).catch(reject);
-    }).catch(reject);
-  });
-};
+      Database.instance('authstorage').then((db) => {
+        return db.query('SELECT `settings` FROM `settings` WHERE user_id = ?', [user.id]).then(done).catch(reject);
+      }).catch(reject);
+    });
+  }
 
-module.exports.register = function(config) {
-  const type = config.driver;
-  const settings = config[type];
+  register(config) {
+    const type = config.driver;
+    const settings = config[type];
 
-  const str = type === 'sqlite' ? require('path').basename(settings.database) : settings.user + '@' + settings.host + ':/' + settings.database;
-  _logger.lognt('INFO', 'Module:', _logger.colored('Storage', 'bold'), 'using', _logger.colored(type, 'green'), '->', _logger.colored(str, 'green'));
+    const str = type === 'sqlite' ? path.basename(settings.database) : settings.user + '@' + settings.host + ':/' + settings.database;
+    console.log('>', type, str);
 
-  return _db.instance('authstorage', type, settings);
-};
+    return Database.instance('authstorage', type, settings);
+  }
 
-module.exports.destroy = function() {
-  return _db.destroy('authstorage');
-};
+  destroy() {
+    return Database.destroy('authstorage');
+  }
+
+}
+
+module.exports = new DatabaseStorage();

@@ -29,26 +29,17 @@
  * @licence Simplified BSD License
  */
 
-/*eslint strict:["error", "global"]*/
-'use strict';
+const fs = require('fs-extra');
+const path = require('path');
 
-const _bcrypt = require('bcrypt');
-const _path = require('path');
-const _fs = require('fs');
-
-const ROOT = _path.join(__dirname, '/../');
+const ROOT = path.join(__dirname, '/../');
 const ARGS = process.argv;
 
-const _db = require(_path.join(ROOT, 'src/server/node/lib/database.js'));
-
-const config = JSON.parse(_fs.readFileSync(_path.join(ROOT, 'src', 'server', 'settings.json')));
-
-const username = ARGS[3];
-const name = ARGS[3];
-const groups = String(ARGS[4] || 'admin').replace(/\s/g, '').split(',');
-
+const config = JSON.parse(fs.readFileSync(path.resolve(ROOT, 'src', 'server', 'settings.json')));
 const auther = config.authenticator;
-const cfg = config.modules.auth[auther];
+const command = ARGS[2];
+const username = ARGS[3];
+const groups = String(ARGS[4] || 'admin').replace(/\s/g, '').split(',');
 
 function createPassword() {
   return new Promise(function(resolve, reject) {
@@ -62,33 +53,27 @@ function createPassword() {
     stdin.setEncoding('utf8');
 
     process.stdin.on('data', function(ch) {
-       ch = String(ch);
+      ch = String(ch);
 
-       switch (ch) {
-         case '\n':
-         case '\r':
-         case '\u0004':
-           process.stdout.write('\n');
-           stdin.setRawMode(false);
-           stdin.pause();
+      switch (ch) {
+        case '\n':
+        case '\r':
+        case '\u0004':
+          process.stdout.write('\n');
+          stdin.setRawMode(false);
+          stdin.pause();
 
-           const salt = _bcrypt.genSaltSync(10);
-           const hash = _bcrypt.hashSync(password, salt);
-           if ( hash ) {
-             resolve(hash);
-           } else {
-             reject('Empty password');
-           }
-           break;
+          resolve(password);
+          break;
 
-         case '\u0003':
-           reject('Aborted...');
-           break;
+        case '\u0003':
+          reject('Aborted...');
+          break;
 
-         default:
-           process.stdout.write('*');
-           password += ch;
-           break;
+        default:
+          process.stdout.write('*');
+          password += ch;
+          break;
       }
     });
   });
@@ -96,7 +81,7 @@ function createPassword() {
 
 if ( auther !== 'database' ) {
   console.error('You have to add users via your system for this authenticator.');
-  return;
+  process.exit(1);
 }
 
 if ( ARGS.length < 4 ) {
@@ -104,44 +89,61 @@ if ( ARGS.length < 4 ) {
   console.log('  add <username> <groups> - Add a user (ex: anders api,fs,curl)');
   console.log('  pwd <username>          - Change a user password');
   console.log('  grp <username> <groups> - Change a users group(s)');
-  return;
+  process.exit(1);
 }
 
-console.log('Using authenticator', auther);
+const filename = path.resolve(ROOT, 'src/server/node/modules/auth', auther);
+console.log('Using authenticator', auther, 'at', filename);
 
-(new Promise(function(resolve, reject) {
-  _db.instance('cli', cfg.driver, cfg[cfg.driver]).then(function(db) {
-    switch ( ARGS[2] ) {
-      case 'add' :
-        createPassword().then(function(password) {
-          db.query('INSERT INTO `users` (`username`, `password`, `groups`, `name`) VALUES(?, ?, ?, ?);', [username, password, JSON.stringify(groups), username])
-            .then(resolve).catch(reject);
-        }).catch(reject);
+const instance = require(filename);
+instance.register(config.modules.auth[auther]).then(() => {
+  let promise;
+  switch ( command ) {
+    case 'add':
+      promise = instance.manage('add', {
+        username: username,
+        name: username,
+        groups: groups
+      });
       break;
 
-      case 'pwd' :
-        createPassword().then(function(password) {
-          db.query('UPDATE `users` SET `password` = ? WHERE `username` = ?;', [password, username])
-            .then(resolve).catch(reject);
-        }).catch(reject);
+    case 'pwd':
+      promise = new Promise((yes, no) => {
+        instance.manager().then((manager) => {
+          manager.getUserFromUsername(username).then((user) => {
+            createPassword().then((input) => {
+              instance.manage('passwd', {
+                id: user.id,
+                password: input
+              }).then(yes).catch(no);
+            });
+          }).catch(no);
+        }).catch(no);
+      });
       break;
 
-      case 'grp' :
-        db.query('UPDATE `users` SET `groups` = ? WHERE `username` = ?;', [JSON.stringify(groups), username])
-          .then(resolve).catch(reject);
+    case 'grp':
+      promise = new Promise((yes, no) => {
+        instance.manager().then((manager) => {
+          manager.getUserFromUsername(username).then((user) => {
+            return manager.setGroups(user.id, groups).then(yes).catch(no);
+          }).catch(no);
+        }).catch(no);
+      });
       break;
 
-      default:
-        reject('Invalid command' + ARGS[2]);
+    default:
+      promise = Promise.reject('No such command');
       break;
-    }
-  });
-})).then(function(result) {
-  if ( result ) {
-    console.log(result);
   }
-  process.exit(0);
-}).catch(function(error) {
-  console.error(error);
-  process.exit(1);
+
+  promise.then((result) => {
+    if ( result ) {
+      console.log(result);
+    }
+    process.exit(0);
+  }).catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
 });

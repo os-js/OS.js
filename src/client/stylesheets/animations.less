@@ -1,0 +1,232 @@
+
+/**
+ * ===========================================================================
+ *                              ANIMATIONS
+ * ===========================================================================
+ */
+
+@-webkit-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@-moz-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@-o-keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+@-webkit-keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
+@-moz-keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
+@-o-keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
+@keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
+
+@-webkit-keyframes windowloadinganim {
+  to {
+    -webkit-transform: rotate( 180deg );
+  }
+}
+@-moz-keyframes windowloadinganim {
+  to {
+    -moz-transform: rotate( 180deg );
+  }
+}
+@-o-keyframes windowloadinganim {
+  to {
+    -o-transform: rotate( 180deg );
+  }
+}
+@keyframes windowloadinganim {
+  to {
+    transform: rotate( 180deg );
+  }
+}
+
+@-webkit-keyframes show {
+  50% { -webkit-transform: scale(1.03); }
+}
+@-moz-keyframes show {
+  50% { -moz-transform: scale(1.03); }
+}
+@keyframes show {
+  50% { transform: scale(1.03); }
+}
+
+@-webkit-keyframes hide {
+  50% { -webkit-transform: scale(0.97); }
+  100% { opacity: 0; -webkit-transform: scale(0.90);  }
+}
+@-moz-keyframes hide {
+  50% { -moz-transform: scale(0.97); }
+  100% { opacity: 0; -moz-transform: scale(0.90);  }
+}
+@keyframes hide {
+  50% { transform: scale(0.97); }
+  100% { opacity: 0; transform: scale(0.90);  }
+}
+
+@-webkit-keyframes pulse {
+  0%   {-webkit-transform: scale(0.95); opacity: 0;}
+  8%   {-webkit-transform: scale(1.0); opacity: 0;}
+  15%  {-webkit-transform: scale(1.001); opacity: 1;}
+  30%  {-webkit-transform: scale(1.005); opacity: 1;}
+  100% {opacity: 0; -webkit-transform: scale(1);}
+}
+@-moz-keyframes pulse {
+  0%   {-moz-transform: scale(0.95); opacity: 0;}
+  8%   {-moz-transform: scale(1.0); opacity: 0;}
+  15%  {-moz-transform: scale(1.001); opacity: 1;}
+  30%  {-moz-transform: scale(1.005); opacity: 1;}
+  100% {opacity: 0; -moz-transform: scale(1);}
+}
+@keyframes pulse {
+  0%   {transform: scale(0.95); opacity: 0;}
+  8%   {transform: scale(1.0); opacity: 0;}
+  15%  {transform: scale(1.001); opacity: 1;}
+  30%  {transform: scale(1.005); opacity: 1;}
+  100% {opacity: 0; transform: scale(1);}
+}
+
+@-webkit-keyframes pulseback {
+  50% { opacity: .35; }
+}
+@-moz-keyframes pulseback {
+  50% { opacity: .35; }
+}
+@keyframes pulseback {
+  50% { opacity: .35; }
+}
+
+@-webkit-keyframes attention {
+  0% { -webkit-transform: scale(1); }
+  30% { -webkit-transform: scale(1); }
+  40% { -webkit-transform: scale(1.02); }
+  50% { -webkit-transform: scale(1); }
+  60% { -webkit-transform: scale(1); }
+  70% { -webkit-transform: scale(1.005); }
+  80% { -webkit-transform: scale(1); }
+  100% { -webkit-transform: scale(1); }
+}
+@-moz-keyframes attention {
+  0% { -moz-transform: scale(1); }
+  30% { -moz-transform: scale(1); }
+  40% { -moz-transform: scale(1.02); }
+  50% { -moz-transform: scale(1); }
+  60% { -moz-transform: scale(1); }
+  70% { -moz-transform: scale(1.005); }
+  80% { -moz-transform: scale(1); }
+  100% { -moz-transform: scale(1); }
+}
+@keyframes attention {
+  0% { transform: scale(1); }
+  30% { transform: scale(1); }
+  40% { transform: scale(1.02); }
+  50% { transform: scale(1); }
+  60% { transform: scale(1); }
+  70% { transform: scale(1.005); }
+  80% { transform: scale(1); }
+  100% { transform: scale(1); }
+}
+
+body[data-animations="true"] {
+
+  /* Windows */
+  application-window {
+   -webkit-animation: show .3s;
+      -moz-animation: show .3s;
+       -ms-animation: show .3s;
+           animation: show .3s;
+
+   -webkit-transition: height 0.3s ease-in-out, width 0.3s, top 0.3s, left 0.3s;
+      -moz-transition: height 0.3s ease-in-out, width 0.3s, top 0.3s, left 0.3s;
+       -ms-transition: height 0.3s ease-in-out, width 0.3s, top 0.3s, left 0.3s;
+        -o-transition: height 0.3s ease-in-out, width 0.3s, top 0.3s, left 0.3s;
+           transition: height 0.3s ease-in-out, width 0.3s, top 0.3s, left 0.3s;
+  }
+  application-window[data-hint="resizing"],
+  application-window[data-hint="moving"] {
+   -webkit-transition: none;
+      -moz-transition: none;
+       -ms-transition: none;
+        -o-transition: none;
+           transition: none;
+  }
+
+  application-window[data-hint="closing"],
+  application-window[data-minimized="true"] {
+   -webkit-animation: hide .3s;
+      -moz-animation: hide .3s;
+       -ms-animation: hide .3s;
+           animation: hide .3s;
+
+    -webkit-animation-fill-mode: forwards;
+       -moz-animation-fill-mode: forwards;
+        -ms-animation-fill-mode: forwards;
+         -o-animation-fill-mode: forwards;
+            animation-fill-mode: forwards;
+  }
+
+  .WindowDropRect {
+    -webkit-animation: pulse 2s linear infinite;
+       -moz-animation: pulse 2s linear infinite;
+        -ms-animation: pulse 2s linear infinite;
+            animation: pulse 2s linear infinite;
+
+    border-image: initial;
+  }
+
+  .WindowAttentionBlink {
+    -webkit-animation: attention 2s linear infinite;
+       -moz-animation: attention 2s linear infinite;
+        -ms-animation: attention 2s linear infinite;
+            animation: attention 2s linear infinite;
+  }
+
+  /* Desktop */
+  &[data-attention="true"]:after {
+    position : absolute;
+    top : 0;
+    left : 0;
+    right : 0;
+    bottom : 0;
+    opacity : 0;
+
+    -webkit-animation: pulseback 2s linear infinite;
+       -moz-animation: pulseback 2s linear infinite;
+        -ms-animation: pulseback 2s linear infinite;
+            animation: pulseback 2s linear infinite;
+  }
+
+  /* Panel */
+  corewm-panel {
+    -webkit-transition: translate .3s ease-in-out;
+       -moz-transition: translate .3s ease-in-out;
+        -ms-transition: translate .3s ease-in-out;
+         -o-transition: translate .3s ease-in-out;
+            transition: translate .3s ease-in-out;
+  }
+
+  corewm-panel .Button.Attention {
+    -webkit-animation: attention 2s linear infinite;
+       -moz-animation: attention 2s linear infinite;
+        -ms-animation: attention 2s linear infinite;
+            animation: attention 2s linear infinite;
+  }
+
+  /* Menus */
+  gui-menu,
+  corewm-notification-entry {
+   -webkit-animation: fadeIn .3s;
+      -moz-animation: fadeIn .3s;
+       -ms-animation: fadeIn .3s;
+           animation: fadeIn .3s;
+  }
+  gui-menu[data-hint="closing"],
+  corewm-notification[data-hint="closing"] {
+   -webkit-animation: fadeOut .3s;
+      -moz-animation: fadeOut .3s;
+       -ms-animation: fadeOut .3s;
+           animation: fadeOut .3s;
+
+    -webkit-animation-fill-mode: forwards;
+       -moz-animation-fill-mode: forwards;
+        -ms-animation-fill-mode: forwards;
+         -o-animation-fill-mode: forwards;
+            animation-fill-mode: forwards;
+  }
+
+}

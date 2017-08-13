@@ -8,10 +8,10 @@
  * modification, are permitted provided that the following conditions are met:
  *
  * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
+ *    list of conditions and the following disclaimer
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
+ *    and/or other materials provided with the distribution
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -27,162 +27,100 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API) {
-  'use strict';
+import axios from 'axios';
+import Promise from 'bluebird';
+import Transport from 'vfs/transport';
+import Connection from 'core/connection';
+import * as FS from 'utils/fs';
 
-  /**
-   * @namespace Web
-   * @memberof OSjs.VFS.Transports
-   */
+export default class WebTransport extends Transport {
 
-  /*
-   * THIS IS AN EXPERIMENTAL WEB TRANSPORT MODULE FOR OS.js VFS
-   *
-   * IT IS READ-ONLY!
-   *
-   * To make this work you *will need* CORS support!
-   *
-   * scandir() works by loading a file named `_scandir.json` in the
-   * requested folder.
-   *
-   * Example _scandir.json file in doc/vfs/web/_scandir.json
-   */
+  _request(url, responseType, method, options) {
+    return new Promise((resolve, reject) => {
+      if ( !options.cors ) {
+        const binary = options.type === 'text' ? false : (responseType === 'arraybuffer');
 
-  /////////////////////////////////////////////////////////////////////////////
-  // HELPERS
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Make a Web HTTP URL for VFS
-   *
-   * @param   {(String|OSjs.VFS.File)}    file        VFS File
-   *
-   * @return  {String}                  URL based on input
-   *
-   * @function path
-   * @memberof OSjs.VFS.Transports.Web
-   */
-  function makePath(file) {
-    var mm = OSjs.Core.getMountManager();
-    var rel = mm.getPathProtocol(file.path);
-    var module = mm.getModuleFromPath(file.path, false, true);
-    var base = (module.options || {}).url;
-    return base + rel.replace(/^\/+/, '/');
-  }
-
-  /*
-   * Wrapper for making a request
-   */
-  function httpCall(func, item, callback) {
-    var url = makePath(item);
-
-    if ( func === 'scandir' ) {
-      url += '/_scandir.json';
-    }
-
-    var args = {
-      method: func === 'exists' ? 'HEAD' : 'GET',
-      url: url,
-      onerror: function(error) {
-        callback(error);
-      },
-      onsuccess: function(response) {
-        callback(false, response);
+        Connection.request('curl', {
+          url: url,
+          method: method,
+          binary: binary
+        }).then((result) => {
+          if ( binary ) {
+            return FS.dataSourceToAb(result.body, 'application/octet-stream', (err, ab) => {
+              return err ? reject(err) : resolve(ab);
+            });
+          }
+          return resolve(result.body);
+        }).catch(reject);
+      } else {
+        axios({
+          responseType: responseType,
+          url: url,
+          method: method
+        }).then((response) => {
+          return resolve(responseType === null ? response.statusText : response.data);
+        }).catch((e) => reject(new Error(e.message || e)));
       }
-    };
-
-    if ( func === 'read' ) {
-      args.responseType = 'arraybuffer';
-    }
-
-    Utils.ajax(args);
+    });
   }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // API
-  /////////////////////////////////////////////////////////////////////////////
+  scandir(item, options, mount) {
+    return new Promise((resolve, reject) => {
+      const root = mount.option('root');
+      const url = item.path.replace(/\/?$/, '/_scandir.json');
 
-  /**
-   * Web/HTTP VFS Transport Module
-   *
-   * @api OSjs.VFS.Transports.Web
-   */
-  var Transport = {
-    scandir: function(item, callback, options) {
-      var mm = OSjs.Core.getMountManager();
-      var root = mm.getRootFromPath(item.path);
+      this._request(url, 'json', 'GET', options).then((response) => {
+        return resolve(response.map((iter) => {
+          iter.path = root + iter.path.replace(/^\//, '');
+          return iter;
+        }));
+      }).catch(reject);
+    });
+  }
 
-      httpCall('scandir', item, function(error, response) {
-        var list = null;
-        if ( !error ) {
-          var json = null;
-          try {
-            json = JSON.parse(response);
-          } catch ( e ) {}
+  read(item, options) {
+    const mime = item.mime || 'application/octet-stream';
 
-          if ( json === null ) {
-            error = 'Failed to parse directory JSON';
-          } else {
-            list = json.map(function(iter) {
-              iter.path = root + iter.path.replace(/^\//, '');
-              return iter;
-            });
-
-            var rel = Utils.getPathProtocol(item.path);
-            if ( rel !== '/' ) {
-              list.unshift({
-                filename: '..',
-                path: Utils.dirname(item.path),
-                type: 'dir',
-                size: 0
-              });
-            }
-          }
-        }
-        callback(error, list);
-      });
-    },
-
-    read: function(item, callback, options) {
-      options = options || {};
-
-      var mime = item.mime || 'application/octet-stream';
-
-      httpCall('read', item, function(error, response) {
-        if ( !error ) {
+    return new Promise((resolve, reject) => {
+      this._request(item.path, 'arraybuffer', 'GET', options).then((response) => {
+        if ( options.cors ) {
           if ( options.type === 'text' ) {
-            OSjs.VFS.Helpers.abToText(response, mime, function(error, text) {
-              callback(error, text);
+            resolve(response);
+          } else {
+            FS.dataSourceToAb(response, 'application/octet-stream', (err, ab) => {
+              return err ? reject(err) : resolve(ab);
             });
-            return;
           }
+
+          return true;
         }
-        callback(error, response);
-      });
-    },
 
-    exists: function(item, callback) {
-      httpCall('exists', item, function(err) {
-        callback(err, err ? false : true);
-      });
-    },
+        if ( options.type === 'text' ) {
+          FS.abToText(response, mime, (err, txt) => {
+            if ( err ) {
+              reject(new Error(err));
+            } else {
+              resolve(txt);
+            }
+          });
 
-    url: function(item, callback, options) {
-      callback(false, makePath(item));
-    }
-  };
+          return true;
+        }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+        return resolve(response);
+      }).catch(reject);
+    });
+  }
 
-  OSjs.VFS.Transports.Web = {
-    defaults: function(iter) {
-      iter.readOnly = true;
-      iter.match = /^https?\:\/\//;
-    },
-    module: Transport,
-    path: makePath
-  };
+  exists(item) {
+    return new Promise((resolve, reject) => {
+      this._request(item.path, null, 'HEAD').then((response) => {
+        return resolve(response.toUpperCase() === 'OK');
+      }).catch(reject);
+    });
+  }
 
-})(OSjs.Utils, OSjs.API);
+  url(item) {
+    return Promise.resolve(item.path);
+  }
+}

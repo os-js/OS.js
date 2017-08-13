@@ -29,34 +29,30 @@
  */
 
 /*eslint valid-jsdoc: "off"*/
-(function(WindowManager, Window, GUI, Utils, API, VFS) {
-  'use strict';
+const DOM = OSjs.require('utils/dom');
 
-  /////////////////////////////////////////////////////////////////////////////
-  // Window Switcher
-  /////////////////////////////////////////////////////////////////////////////
-
-  var WindowSwitcher = function() {
+export default class WindowSwitcher {
+  constructor() {
     this.$switcher      = null;
     this.showing        = false;
     this.index          = -1;
     this.winRef         = null;
-  };
+  }
 
-  WindowSwitcher.prototype.destroy = function() {
+  destroy() {
     this._remove();
-  };
+  }
 
-  WindowSwitcher.prototype._remove = function() {
+  _remove() {
     if ( this.$switcher ) {
       if ( this.$switcher.parentNode ) {
         this.$switcher.parentNode.removeChild(this.$switcher);
       }
       this.$switcher = null;
     }
-  };
+  }
 
-  WindowSwitcher.prototype.show = function(ev, win, wm) {
+  show(ev, win, wm) {
     win = win || wm.getLastWindow();
 
     ev.preventDefault();
@@ -69,7 +65,7 @@
     if ( !this.$switcher ) {
       this.$switcher = document.createElement('corewm-window-switcher');
     } else {
-      Utils.$empty(this.$switcher);
+      DOM.$empty(this.$switcher);
     }
 
     var container, image, label, iter;
@@ -127,9 +123,9 @@
     } else {
       this.winRef = null;
     }
-  };
+  }
 
-  WindowSwitcher.prototype.hide = function(ev, win, wm) {
+  hide(ev, win, wm) {
     if ( !this.showing ) {
       return;
     }
@@ -146,14 +142,6 @@
     this.winRef  = null;
     this.index   = -1;
     this.showing = false;
-  };
+  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Applications                          = OSjs.Applications || {};
-  OSjs.Applications.CoreWM                   = OSjs.Applications.CoreWM || {};
-  OSjs.Applications.CoreWM.WindowSwitcher    = WindowSwitcher;
-
-})(OSjs.Core.WindowManager, OSjs.Core.Window, OSjs.GUI, OSjs.Utils, OSjs.API, OSjs.VFS);
+}

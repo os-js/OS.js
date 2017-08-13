@@ -29,36 +29,38 @@
  */
 
 /*eslint valid-jsdoc: "off"*/
-(function(CoreWM, Panel, PanelItem, Utils, API, GUI, VFS) {
-  'use strict';
+import PanelItem from '../panelitem';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // ITEM
-  /////////////////////////////////////////////////////////////////////////////
+const GUI = OSjs.require('utils/gui');
+const DOM = OSjs.require('utils/dom');
+const Events = OSjs.require('utils/events');
+const WindowManager = OSjs.require('core/window-manager');
 
-  function WindowListEntry(win, className) {
+class WindowListEntry {
 
-    var el = document.createElement('li');
+  constructor(win, className) {
+
+    const el = document.createElement('li');
     el.className = className;
     el.title = win._title;
     el.setAttribute('role', 'button');
     el.setAttribute('aria-label', win._title);
 
-    var img = document.createElement('img');
+    const img = document.createElement('img');
     img.alt = win._title;
     img.src = win._icon;
 
-    var span = document.createElement('span');
+    const span = document.createElement('span');
     span.appendChild(document.createTextNode(win._title));
 
     el.appendChild(img);
     el.appendChild(span);
 
-    Utils.$bind(el, 'click', function() {
+    Events.$bind(el, 'click', function() {
       win._restore(false, true);
     });
 
-    Utils.$bind(el, 'contextmenu', function(ev) {
+    Events.$bind(el, 'contextmenu', function(ev) {
       /* eslint no-invalid-this: "off" */
       ev.preventDefault();
       ev.stopPropagation();
@@ -70,8 +72,8 @@
       return false;
     });
 
-    var peeking = false;
-    OSjs.GUI.Helpers.createDroppable(el, {
+    let peeking = false;
+    GUI.createDroppable(el, {
       onDrop: function(ev, el) {
         if ( win ) {
           win._focus();
@@ -112,21 +114,21 @@
     this.id = win._wid;
   }
 
-  WindowListEntry.prototype.destroy = function() {
+  destroy() {
     if ( this.$element ) {
-      Utils.$unbind(this.$element, 'click');
-      Utils.$unbind(this.$element, 'contextmenu');
-      this.$element = Utils.$remove(this.$element);
+      Events.$unbind(this.$element, 'click');
+      Events.$unbind(this.$element, 'contextmenu');
+      this.$element = DOM.$remove(this.$element);
     }
-  };
+  }
 
-  WindowListEntry.prototype.event = function(ev, win, parentEl) {
-    var cn = 'WindowList_Window_' + win._wid;
+  event(ev, win, parentEl) {
+    const cn = 'WindowList_Window_' + win._wid;
 
     function _change(cn, callback) {
-      var els = parentEl.getElementsByClassName(cn);
+      const els = parentEl.getElementsByClassName(cn);
       if ( els.length ) {
-        for ( var i = 0, l = els.length; i < l; i++ ) {
+        for ( let i = 0, l = els.length; i < l; i++ ) {
           if ( els[i] && els[i].parentNode ) {
             callback(els[i]);
           }
@@ -146,12 +148,12 @@
       _change(cn, function(el) {
         el.setAttribute('aria-label', win._title);
 
-        var span = el.getElementsByTagName('span')[0];
+        const span = el.getElementsByTagName('span')[0];
         if ( span ) {
-          Utils.$empty(span);
+          DOM.$empty(span);
           span.appendChild(document.createTextNode(win._title));
         }
-        var img = el.getElementsByTagName('img')[0];
+        const img = el.getElementsByTagName('img')[0];
         if ( img ) {
           img.alt = win._title;
         }
@@ -177,26 +179,23 @@
     }
 
     return true;
-  };
+  }
+}
 
-  /**
-   * PanelItem: WindowList
-   */
-  function PanelItemWindowList() {
-    PanelItem.apply(this, ['PanelItemWindowList corewm-panel-expand']);
+export default class PanelItemWindowList extends PanelItem {
+
+  constructor() {
+    super('PanelItemWindowList corewm-panel-expand');
     this.entries = [];
   }
 
-  PanelItemWindowList.prototype = Object.create(PanelItem.prototype);
-  PanelItemWindowList.constructor = PanelItem;
+  init() {
+    const root = super.init(...arguments);
 
-  PanelItemWindowList.prototype.init = function() {
-    var root = PanelItem.prototype.init.apply(this, arguments);
-
-    var wm = OSjs.Core.getWindowManager();
+    const wm = WindowManager.instance;
     if ( wm ) {
-      var wins = wm.getWindows();
-      for ( var i = 0; i < wins.length; i++ ) {
+      const wins = wm.getWindows();
+      for ( let i = 0; i < wins.length; i++ ) {
         if ( wins[i] ) {
           this.update('create', wins[i]);
         }
@@ -204,9 +203,9 @@
     }
 
     return root;
-  };
+  }
 
-  PanelItemWindowList.prototype.destroy = function() {
+  destroy() {
     this.entries.forEach(function(e) {
       try {
         e.destroy();
@@ -216,17 +215,17 @@
 
     this.entries = [];
 
-    PanelItem.prototype.destroy.apply(this, arguments);
-  };
+    return super.destroy(...arguments);
+  }
 
-  PanelItemWindowList.prototype.update = function(ev, win) {
+  update(ev, win) {
     if ( !this._$container || (win && win._properties.allow_windowlist === false) ) {
       return;
     }
 
-    var entry = null;
+    let entry = null;
     if ( ev === 'create' ) {
-      var className = 'corewm-panel-ellipsis WindowList_Window_' + win._wid;
+      const className = 'corewm-panel-ellipsis WindowList_Window_' + win._wid;
       if ( this._$container.getElementsByClassName(className).length ) {
         return;
       }
@@ -235,7 +234,7 @@
       this.entries.push(entry);
       this._$container.appendChild(entry.$element);
     } else {
-      var found = -1;
+      let found = -1;
       this.entries.forEach(function(e, idx) {
         if ( e.id === win._wid ) {
           found = idx;
@@ -252,15 +251,6 @@
         }
       }
     }
-  };
+  }
+}
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.CoreWM = OSjs.Applications.CoreWM || {};
-  OSjs.Applications.CoreWM.PanelItems = OSjs.Applications.CoreWM.PanelItems || {};
-  OSjs.Applications.CoreWM.PanelItems.WindowList = PanelItemWindowList;
-
-})(OSjs.Applications.CoreWM.Class, OSjs.Applications.CoreWM.Panel, OSjs.Applications.CoreWM.PanelItem, OSjs.Utils, OSjs.API, OSjs.GUI, OSjs.VFS);

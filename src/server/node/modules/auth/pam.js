@@ -27,90 +27,56 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-/*eslint strict:["error", "global"]*/
-'use strict';
+const fs = require('fs-extra');
 
-const _pam = require('authenticate-pam');
-const _userid = require('userid');
-const _settings = require('./../../core/settings.js');
-const _utils = require('./../../lib/utils.js');
+const PAM = require('authenticate-pam');
+const UserID = require('userid');
+const Settings = require('./../../settings.js');
+const Authenticator = require('./../authenticator.js');
 
-module.exports.login = function(http, data) {
-  return new Promise((resolve, reject) => {
-    _pam.authenticate(data.username, data.password, (err) => {
-      if ( err ) {
-        reject(err);
-      } else {
-        resolve({
-          id: _userid.uid(data.username),
-          username: data.username,
-          name: data.username
-        });
-      }
+class PAMAuthenticator extends Authenticator {
+  login(data) {
+    return new Promise((resolve, reject) => {
+      PAM.authenticate(data.username, data.password, (err) => {
+        if ( err ) {
+          reject(err);
+        } else {
+          this.getGroups({username: data.username}).then((groups) => {
+            resolve({
+              id: UserID.uid(data.username),
+              username: data.username,
+              name: data.username,
+              groups: groups
+            });
+          }).catch(reject);
+        }
+      });
     });
-  });
-};
+  }
 
-module.exports.logout = function(http) {
-  return new Promise((resolve) => {
-    resolve(true);
-  });
-};
+  getGroups(user) {
+    const filename = Settings.get('modules.auth.pam.groups');
+    return new Promise((resolve, reject) => {
+      fs.readJson(filename).then((map) => {
+        return resolve(map[user.username] || []);
+      }).catch((err) => {
+        console.warn(err);
+        return resolve([]);
+      });
+    });
+  }
 
-module.exports.manage = function(http) {
-  return new Promise((resolve, reject) => {
-    reject('Not available');
-  });
-};
+  getBlacklist(user) {
+    const filename = Settings.get('modules.auth.pam.blacklist');
+    return new Promise((resolve, reject) => {
+      fs.readJson(filename).then((map) => {
+        return resolve(map[user.username] || []);
+      }).catch((err) => {
+        console.warn(err);
+        return resolve([]);
+      });
+    });
+  }
+}
 
-module.exports.initSession = function(http) {
-  return new Promise((resolve) => {
-    resolve(true);
-  });
-};
-
-module.exports.checkPermission = function(http, type, options) {
-  return new Promise((resolve) => {
-    resolve(true);
-  });
-};
-
-module.exports.checkSession = function(http) {
-  return new Promise((resolve, reject) => {
-    if ( http.session.get('username') ) {
-      resolve();
-    } else {
-      reject('You have no OS.js Session, please log in!');
-    }
-  });
-};
-
-module.exports.getGroups = function(http, username) {
-  const config = _settings.get();
-  const path = config.modules.auth.pam.groups;
-  return new Promise((resolve) => {
-    _utils.readUserMap(username, path, resolve);
-  });
-};
-
-module.exports.getBlacklist = function(http, username) {
-  const config = _settings.get();
-  const path = config.modules.auth.pam.blacklist;
-  return new Promise((resolve) => {
-    _utils.readUserMap(username, path, resolve);
-  });
-};
-
-module.exports.setBlacklist = function(http, username, list) {
-  return new Promise((resolve) => {
-    resolve(true);
-  });
-};
-
-module.exports.register = function(config) {
-  return Promise.resolve();
-};
-
-module.exports.destroy = function() {
-  return Promise.resolve();
-};
+module.exports = new PAMAuthenticator();

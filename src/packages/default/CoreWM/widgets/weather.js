@@ -29,46 +29,32 @@
  */
 
 /*eslint valid-jsdoc: "off"*/
-(function(Widget, Utils, API, VFS, GUI, Window) {
-  'use strict';
+import Widget from '../widget';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // ITEM
-  /////////////////////////////////////////////////////////////////////////////
+/**
+ * Widget: Weather
+ */
+export default class WidgetWeather extends Widget {
 
-  /**
-   * Widget: Weather
-   */
-  function WidgetWeather(settings) {
-    Widget.call(this, 'Weather', {
+  constructor(settings) {
+    super('Weather', {
       // Default options
     }, settings);
   }
 
-  WidgetWeather.prototype = Object.create(Widget.prototype);
-  WidgetWeather.constructor = Widget;
+  init(root) {
+    return super.init(...arguments);
+  }
 
-  WidgetWeather.prototype.init = function(root) {
-    return Widget.prototype.init.apply(this, arguments);
-  };
+  destroy(root) {
+    return super.destroy(...arguments);
+  }
 
-  WidgetWeather.prototype.destroy = function(root) {
-    return Widget.prototype.destroy.apply(this, arguments);
-  };
-
-  WidgetWeather.prototype.onRender = function() {
+  onRender() {
     // If you use a canvas
-  };
+  }
 
-  WidgetWeather.prototype.onResize = function() {
-  };
+  onResize() {
+  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Applications.CoreWM = OSjs.Applications.CoreWM || {};
-  OSjs.Applications.CoreWM.Widgets = OSjs.Applications.CoreWM.Widgets || {};
-  OSjs.Applications.CoreWM.Widgets.Weather = WidgetWeather;
-
-})(OSjs.Applications.CoreWM.Widget, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI, OSjs.Core.Window);
+}

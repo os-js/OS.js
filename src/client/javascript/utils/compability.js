@@ -27,324 +27,270 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function() {
-  'use strict';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+const compability = (function() {
+  function _checkSupport(enabled, check, isSupported) {
+    const supported = {};
 
-  /**
-   * Gets browser compability flags
-   *
-   * @function getCompability
-   * @memberof OSjs.Utils
-   *
-   * @return    {Object}      List of compability
-   */
-  OSjs.Utils.getCompability = (function() {
-    function _checkSupport(enabled, check, isSupported) {
-      var supported = {};
+    Object.keys(check).forEach((key) => {
+      let chk = check[key];
+      let value = false;
 
-      Object.keys(check).forEach(function(key) {
-        var chk = check[key];
-        var value = false;
-
-        if ( chk instanceof Array ) {
-          chk.forEach(function(c) {
-            value = isSupported(c);
-            return !value;
-          });
-        } else {
-          value = isSupported(chk);
-        }
-        supported[key] = value;
-      });
-
-      return supported;
-    }
-
-    function getUpload() {
-      try {
-        var xhr = new XMLHttpRequest();
-        return (!!(xhr && ('upload' in xhr) && ('onprogress' in xhr.upload)));
-      } catch ( e ) {}
-      return false;
-    }
-
-    function getCanvasSupported() {
-      return document.createElement('canvas').getContext ? document.createElement('canvas') : null;
-    }
-
-    function getVideoSupported() {
-      return document.createElement('video').canPlayType ? document.createElement('video') : null;
-    }
-
-    function canPlayCodec(support, check) {
-      return _checkSupport(support, check, function(codec) {
-        try {
-          return !!support.canPlayType(codec);
-        } catch ( e ) {
-        }
-        return false;
-      });
-    }
-
-    function getVideoTypesSupported() {
-      return canPlayCodec(getVideoSupported(), {
-        webm: 'video/webm; codecs="vp8.0, vorbis"',
-        ogg: 'video/ogg; codecs="theora"',
-        h264: [
-          'video/mp4; codecs="avc1.42E01E"',
-          'video/mp4; codecs="avc1.42E01E, mp4a.40.2"'
-        ],
-        mpeg: 'video/mp4; codecs="mp4v.20.8"',
-        mkv: 'video/x-matroska; codecs="theora, vorbis"'
-      });
-    }
-
-    function getAudioSupported() {
-      return document.createElement('audio').canPlayType ? document.createElement('audio') : null;
-    }
-
-    function getAudioTypesSupported() {
-      return canPlayCodec(getAudioSupported(), {
-        ogg: 'audio/ogg; codecs="vorbis',
-        mp3: 'audio/mpeg',
-        wav: 'audio/wav; codecs="1"'
-      });
-    }
-
-    function getAudioContext() {
-      if ( window.hasOwnProperty('AudioContext') || window.hasOwnProperty('webkitAudioContext') ) {
-        return true;
+      if ( chk instanceof Array ) {
+        chk.forEach((c) => {
+          value = isSupported(c);
+          return !value;
+        });
+      } else {
+        value = isSupported(chk);
       }
-      return false;
-    }
-
-    var getCanvasContexts = (function() {
-      var cache = [];
-
-      return function() {
-        if ( !cache.length ) {
-          var canvas = getCanvasSupported();
-          if ( canvas ) {
-            var test = ['2d', 'webgl', 'experimental-webgl', 'webkit-3d', 'moz-webgl'];
-            test.forEach(function(tst, i) {
-              try {
-                if ( !!canvas.getContext(tst) ) {
-                  cache.push(tst);
-                }
-              } catch ( eee ) {}
-            });
-          }
-        }
-
-        return cache;
-      };
-    })();
-
-    function getWebGL() {
-      var result = false;
-      var contexts = getCanvasContexts();
-      try {
-        result = (contexts.length > 1);
-        if ( !result ) {
-          if ( 'WebGLRenderingContext' in window ) {
-            result = true;
-          }
-        }
-      } catch ( e ) {}
-      return result;
-    }
-
-    function detectCSSFeature(featurename) {
-      var feature = false;
-      var domPrefixes = 'Webkit Moz ms O'.split(' ');
-      var elm = document.createElement('div');
-      var featurenameCapital = null;
-
-      featurename = featurename.toLowerCase();
-
-      if ( elm.style[featurename] ) {
-        feature = true;
-      }
-
-      if ( feature === false ) {
-        featurenameCapital = featurename.charAt(0).toUpperCase() + featurename.substr(1);
-        for ( var i = 0; i < domPrefixes.length; i++ ) {
-          if ( typeof elm.style[domPrefixes[i] + featurenameCapital ] !== 'undefined' ) {
-            feature = true;
-            break;
-          }
-        }
-      }
-      return feature;
-    }
-
-    function getUserMedia() {
-      var getMedia = false;
-      if ( window.navigator ) {
-        getMedia = ( navigator.getUserMedia ||
-                         navigator.webkitGetUserMedia ||
-                         navigator.mozGetUserMedia ||
-                         navigator.msGetUserMedia);
-      }
-      return !!getMedia;
-    }
-
-    function getRichText() {
-      try {
-        return !!document.createElement('textarea').contentEditable;
-      } catch ( e ) {}
-      return false;
-    }
-
-    function getTouch() {
-      // False positives in win 8+
-      try {
-        if ( navigator.userAgent.match(/Windows NT 6\.(2|3)/) ) {
-          return false;
-        }
-      } catch ( e ) {}
-
-      // We only want touch for mobile devices
-      try {
-        if ( navigator.userAgent.match(/iOS|Android|BlackBerry|IEMobile|iPad|iPhone|iPad/i) ) {
-          return true;
-        }
-      } catch ( e ) {}
-
-      return false;
-      // This was the old method
-      //return ('ontouchstart' in window) || (window.DocumentTouch && (document instanceof window.DocumentTouch));
-      //return (('ontouchstart' in window) || (navigator.msMaxTouchPoints > 0));
-    }
-
-    function getDnD() {
-      return !!('draggable' in document.createElement('span'));
-    }
-
-    function getSVG() {
-      return (!!document.createElementNS && !!document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect);
-    }
-
-    function getFileSystem() {
-      return (('requestFileSystem' in window) || ('webkitRequestFileSystem' in window));
-    }
-
-    var checkWindow = {
-      indexedDB: 'indexedDB',
-      localStorage: 'localStorage',
-      sessionStorage: 'sessionStorage',
-      globalStorage: 'globalStorage',
-      openDatabase: 'openDatabase',
-      socket: 'WebSocket',
-      worker: 'Worker',
-      file: 'File',
-      blob: 'Blob',
-      orientation: 'onorientationchange'
-    };
-
-    var compability = {
-      touch: getTouch(),
-      upload: getUpload(),
-      getUserMedia: getUserMedia(),
-      fileSystem: getFileSystem(),
-      localStorage: false,
-      sessionStorage: false,
-      globalStorage: false,
-      openDatabase: false,
-      socket: false,
-      worker: false,
-      file: false,
-      blob: false,
-      orientation: false,
-      dnd: getDnD(),
-      css: {
-        transition: detectCSSFeature('transition'),
-        animation: detectCSSFeature('animation')
-      },
-      canvas: !!getCanvasSupported(),
-      canvasContext: getCanvasContexts(),
-      webgl: getWebGL(),
-      audioContext: getAudioContext(),
-      svg: getSVG(),
-      video: !!getVideoSupported(),
-      videoTypes: getVideoTypesSupported(),
-      audio: !!getAudioSupported(),
-      audioTypes: getAudioTypesSupported(),
-      richtext: getRichText()
-    };
-
-    Object.keys(checkWindow).forEach(function(key) {
-      compability[key] = (checkWindow[key] in window) && window[checkWindow[key]] !== null;
+      supported[key] = value;
     });
 
-    return function() {
-      return compability;
+    return supported;
+  }
+
+  function getUpload() {
+    try {
+      const xhr = new XMLHttpRequest();
+      return (!!(xhr && ('upload' in xhr) && ('onprogress' in xhr.upload)));
+    } catch ( e ) {}
+    return false;
+  }
+
+  function getCanvasSupported() {
+    return document.createElement('canvas').getContext ? document.createElement('canvas') : null;
+  }
+
+  function getVideoSupported() {
+    return document.createElement('video').canPlayType ? document.createElement('video') : null;
+  }
+
+  function canPlayCodec(support, check) {
+    return _checkSupport(support, check, (codec) => {
+      try {
+        return !!support.canPlayType(codec);
+      } catch ( e ) {
+      }
+      return false;
+    });
+  }
+
+  function getVideoTypesSupported() {
+    return canPlayCodec(getVideoSupported(), {
+      webm: 'video/webm; codecs="vp8.0, vorbis"',
+      ogg: 'video/ogg; codecs="theora"',
+      h264: [
+        'video/mp4; codecs="avc1.42E01E"',
+        'video/mp4; codecs="avc1.42E01E, mp4a.40.2"'
+      ],
+      mpeg: 'video/mp4; codecs="mp4v.20.8"',
+      mkv: 'video/x-matroska; codecs="theora, vorbis"'
+    });
+  }
+
+  function getAudioSupported() {
+    return document.createElement('audio').canPlayType ? document.createElement('audio') : null;
+  }
+
+  function getAudioTypesSupported() {
+    return canPlayCodec(getAudioSupported(), {
+      ogg: 'audio/ogg; codecs="vorbis',
+      mp3: 'audio/mpeg',
+      wav: 'audio/wav; codecs="1"'
+    });
+  }
+
+  function getAudioContext() {
+    if ( window.hasOwnProperty('AudioContext') || window.hasOwnProperty('webkitAudioContext') ) {
+      return true;
+    }
+    return false;
+  }
+
+  const getCanvasContexts = (() => {
+    const cache = [];
+
+    return () => {
+      if ( !cache.length ) {
+        const canvas = getCanvasSupported();
+        if ( canvas ) {
+          const test = ['2d', 'webgl', 'experimental-webgl', 'webkit-3d', 'moz-webgl'];
+          test.forEach((tst, i) => {
+            try {
+              if ( !!canvas.getContext(tst) ) {
+                cache.push(tst);
+              }
+            } catch ( eee ) {}
+          });
+        }
+      }
+
+      return cache;
     };
   })();
 
-  /**
-   * Check if browser is IE
-   *
-   * @return    boolean       If IE
-   *
-   * @api       OSjs.Utils.isIE()
-   */
-  OSjs.Utils.isIE = function Utils_isIE() {
-    var dm = parseInt(document.documentMode, 10);
-    return dm <= 11 || !!navigator.userAgent.match(/(MSIE|Edge)/);
-  };
+  function getWebGL() {
+    let result = false;
+    let contexts = getCanvasContexts();
+    try {
+      result = (contexts.length > 1);
+      if ( !result ) {
+        if ( 'WebGLRenderingContext' in window ) {
+          result = true;
+        }
+      }
+    } catch ( e ) {}
+    return result;
+  }
 
-  /**
-   * Gets the browser Locale
-   *
-   * For example 'en_EN'
-   *
-   * @function getUserLocale
-   * @memberof OSjs.Utils
-   *
-   * @return  {String}          Locale string
-   */
-  OSjs.Utils.getUserLocale = function Utils_getUserLocale() {
-    var loc = ((window.navigator.userLanguage || window.navigator.language) || 'en-EN').replace('-', '_');
+  function detectCSSFeature(featurename) {
+    let feature = false;
+    let domPrefixes = 'Webkit Moz ms O'.split(' ');
+    let elm = document.createElement('div');
+    let featurenameCapital = null;
 
-    // Restricts to a certain type of language.
-    // Example: There are lots of variants of the English language, but currently we only
-    // provide locales for one of them, so we force to use the one available.
-    var map = {
-      'nb': 'no_NO',
-      'es': 'es_ES',
-      'ru': 'ru_RU',
-      'en': 'en_EN'
-    };
+    featurename = featurename.toLowerCase();
 
-    var major = loc.split('_')[0] || 'en';
-    var minor = loc.split('_')[1] || major.toUpperCase();
-    if ( map[major] ) {
-      return map[major];
+    if ( elm.style[featurename] ) {
+      feature = true;
     }
-    return major + '_' + minor;
+
+    if ( feature === false ) {
+      featurenameCapital = featurename.charAt(0).toUpperCase() + featurename.substr(1);
+      for ( let i = 0; i < domPrefixes.length; i++ ) {
+        if ( typeof elm.style[domPrefixes[i] + featurenameCapital ] !== 'undefined' ) {
+          feature = true;
+          break;
+        }
+      }
+    }
+    return feature;
+  }
+
+  function getUserMedia() {
+    let getMedia = false;
+    if ( window.navigator ) {
+      getMedia = ( navigator.getUserMedia ||
+                       navigator.webkitGetUserMedia ||
+                       navigator.mozGetUserMedia ||
+                       navigator.msGetUserMedia);
+    }
+    return !!getMedia;
+  }
+
+  function getRichText() {
+    try {
+      return !!document.createElement('textarea').contentEditable;
+    } catch ( e ) {}
+    return false;
+  }
+
+  function getTouch() {
+    // False positives in win 8+
+    try {
+      if ( navigator.userAgent.match(/Windows NT 6\.(2|3)/) ) {
+        return false;
+      }
+    } catch ( e ) {}
+
+    // We only want touch for mobile devices
+    try {
+      if ( navigator.userAgent.match(/iOS|Android|BlackBerry|IEMobile|iPad|iPhone|iPad/i) ) {
+        return true;
+      }
+    } catch ( e ) {}
+
+    return false;
+    // This was the old method
+    //return ('ontouchstart' in window) || (window.DocumentTouch && (document instanceof window.DocumentTouch));
+    //return (('ontouchstart' in window) || (navigator.msMaxTouchPoints > 0));
+  }
+
+  function getDnD() {
+    return !!('draggable' in document.createElement('span'));
+  }
+
+  function getSVG() {
+    return (!!document.createElementNS && !!document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect);
+  }
+
+  function getFileSystem() {
+    return (('requestFileSystem' in window) || ('webkitRequestFileSystem' in window));
+  }
+
+  const checkWindow = {
+    indexedDB: 'indexedDB',
+    localStorage: 'localStorage',
+    sessionStorage: 'sessionStorage',
+    globalStorage: 'globalStorage',
+    openDatabase: 'openDatabase',
+    socket: 'WebSocket',
+    worker: 'Worker',
+    file: 'File',
+    blob: 'Blob',
+    orientation: 'onorientationchange'
   };
 
-  /**
-   * Gets the browser window rect (x, y, width, height)
-   *
-   * @function getRect
-   * @memberof OSjs.Utils
-   *
-   * @return {Object}
-   */
-  OSjs.Utils.getRect = function Utils_getRect() {
-    var body = document.body || {};
-    return {
-      top: 0,
-      left: 0,
-      width: body.offsetWidth || 0,
-      height: body.offsetHeight || 0
-    };
+  const compability = {
+    touch: getTouch(),
+    upload: getUpload(),
+    getUserMedia: getUserMedia(),
+    fileSystem: getFileSystem(),
+    localStorage: false,
+    sessionStorage: false,
+    globalStorage: false,
+    openDatabase: false,
+    socket: false,
+    worker: false,
+    file: false,
+    blob: false,
+    orientation: false,
+    dnd: getDnD(),
+    css: {
+      transition: detectCSSFeature('transition'),
+      animation: detectCSSFeature('animation')
+    },
+    canvas: !!getCanvasSupported(),
+    canvasContext: getCanvasContexts(),
+    webgl: getWebGL(),
+    audioContext: getAudioContext(),
+    svg: getSVG(),
+    video: !!getVideoSupported(),
+    videoTypes: getVideoTypesSupported(),
+    audio: !!getAudioSupported(),
+    audioTypes: getAudioTypesSupported(),
+    richtext: getRichText()
   };
 
+  Object.keys(checkWindow).forEach((key) => {
+    try {
+      compability[key] = (checkWindow[key] in window) && window[checkWindow[key]] !== null;
+    } catch ( e ) {
+      console.warn(e);
+    }
+  });
+
+  return () => {
+    return compability;
+  };
 })();
+
+/**
+ * Gets browser compability flags
+ *
+ * @return    {Object}      List of compability
+ */
+export function getCompability() {
+  return compability();
+}
+
+/**
+ * Check if browser is IE
+ *
+ * @return    {Boolean}       If IE
+ */
+export function isIE() {
+  const dm = parseInt(document.documentMode, 10);
+  return dm <= 11 || !!navigator.userAgent.match(/(MSIE|Edge)/);
+}

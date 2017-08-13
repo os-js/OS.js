@@ -29,48 +29,33 @@
  */
 
 /*eslint valid-jsdoc: "off"*/
-(function(Application, Window, Utils, API, VFS, GUI) {
-  'use strict';
+const Config = OSjs.require('core/config');
+const Locales = OSjs.require('core/locales');
 
-  /////////////////////////////////////////////////////////////////////////////
-  // MODULE
-  /////////////////////////////////////////////////////////////////////////////
+export default {
+  group: 'user',
+  name: 'Locale',
+  label: 'LBL_LOCALE',
+  icon: 'apps/accessories-character-map.png',
 
-  var module = {
-    group: 'user',
-    name: 'Locale',
-    label: 'LBL_LOCALE',
-    icon: 'apps/accessories-character-map.png',
+  init: function() {
+  },
 
-    init: function() {
-    },
+  update: function(win, scheme, settings, wm) {
+    const config = Config.getConfig();
+    const locales = config.Languages;
 
-    update: function(win, scheme, settings, wm) {
-      var config = OSjs.Core.getConfig();
-      var locales = config.Languages;
+    win._find('UserLocale').clear().add(Object.keys(locales).filter(function(l) {
+      return !!OSjs.Locales[l];
+    }).map(function(l) {
+      return {label: locales[l], value: l};
+    })).set('value', Locales.getLocale());
+  },
 
-      win._find('UserLocale').clear().add(Object.keys(locales).filter(function(l) {
-        return !!OSjs.Locales[l];
-      }).map(function(l) {
-        return {label: locales[l], value: l};
-      })).set('value', API.getLocale());
-    },
+  render: function(win, scheme, root, settings, wm) {
+  },
 
-    render: function(win, scheme, root, settings, wm) {
-    },
-
-    save: function(win, scheme, settings, wm) {
-      settings.language = win._find('UserLocale').get('value');
-    }
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationSettings = OSjs.Applications.ApplicationSettings || {};
-  OSjs.Applications.ApplicationSettings.Modules = OSjs.Applications.ApplicationSettings.Modules || {};
-  OSjs.Applications.ApplicationSettings.Modules.Locale = module;
-
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);
+  save: function(win, scheme, settings, wm) {
+    settings.language = win._find('UserLocale').get('value');
+  }
+};

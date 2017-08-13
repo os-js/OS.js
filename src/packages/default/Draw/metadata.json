@@ -34,9 +34,7 @@
   "icon":       "categories/applications-graphics.png",
   "compability":["canvas"],
   "preload":    [
-    {"src": "locales.js", "type": "javascript"},
     {"src": "main.js", "type": "javascript"},
-    {"src": "main.css", "type": "stylesheet"},
-    {"src": "scheme.html", "type": "scheme"}
+    {"src": "main.css", "type": "stylesheet"}
   ]
 }

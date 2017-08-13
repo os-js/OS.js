@@ -27,54 +27,68 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-/*eslint strict:["error", "global"]*/
-'use strict';
+require('app-module-path/register');
 
-var ver = process.version.substr(1).split(/\./g);
-if ( parseInt(ver[0], 10) < 4 ) {
-  console.error('You need Node v4 or above to run OS.js');
-  process.exit(2);
-}
+const express = require('express');
+const path = require('path');
+const minimist = require('minimist');
 
-const _instance = require('./core/instance.js');
-const _minimist = require('minimist');
+const Modules = require('./modules.js');
+const Settings = require('./settings.js');
 
-///////////////////////////////////////////////////////////////////////////////
-// MAIN
-///////////////////////////////////////////////////////////////////////////////
+const shutdown = () => {
+  console.log('\n');
 
-const argv = _minimist(process.argv.slice(2));
-const opts = {
-  DEBUG: argv.debug,
-  HOSTNAME: argv.h || argv.hostname,
-  ROOT: argv.r || argv.root,
-  PORT: argv.p || argv.port,
-  LOGLEVEL: argv.l || argv.loglevel,
-  AUTH: argv.authenticator,
-  STORAGE: argv.storage
+  Modules.destroy()
+    .then(() => process.exit(0))
+    .catch(() => process.exit(1));
 };
 
-_instance.init(opts).then((env) => {
-  const config = require('./core/settings.js').get();
+const start = (opts) => {
+  opts = opts || {};
 
-  if ( config.tz ) {
-    process.env.TZ = config.tz;
-  }
+  return new Promise((resolve, reject) => {
+    const app = express();
 
-  ['SIGTERM', 'SIGINT'].forEach((sig) => {
-    process.on(sig, () => {
-      console.log('\n');
-      _instance.destroy((err) => {
-        process.exit(err ? 1 : 0);
+    try {
+      Settings.load(minimist(process.argv.slice(2)), {
+        HOSTNAME: null,
+        DEBUG: false,
+        PORT: null,
+        LOGLEVEL: 7,
+        NODEDIR: path.resolve(__dirname + '/../'),
+        ROOTDIR: path.resolve(__dirname + '/../../../'),
+        SERVERDIR: path.resolve(__dirname + '/../')
+      }, opts);
+
+      const runningOptions = Settings.option();
+      if ( runningOptions.DEBUG ) {
+        Object.keys(runningOptions).forEach((k) => {
+          console.log('-', k, '=', runningOptions[k]);
+        });
+      }
+    } catch ( e ) {
+      reject(e);
+      return;
+    }
+
+    Modules.load(app).then(() => {
+      console.info('Running...');
+
+      return resolve({
+        settings: Settings.get(),
+        options: Settings.option(),
+        connection: Modules.getConnection(),
+        authenticator: Modules.getAuthenticator(),
+        storage: Modules.getStorage()
       });
-    });
+    }).catch(reject);
   });
+};
 
-  process.on('exit', () => {
-    _instance.destroy();
-  });
+module.exports = {start, shutdown};
 
-  _instance.run();
+if ( require.main === module ) {
 
   process.on('uncaughtException', (error) => {
     console.log('UNCAUGHT EXCEPTION', error, error.stack);
@@ -83,7 +97,15 @@ _instance.init(opts).then((env) => {
   process.on('unhandledRejection', (error) => {
     console.log('UNCAUGHT REJECTION', error);
   });
-}).catch((error) => {
-  console.log(error);
-  process.exit(1);
-});
+
+  ['SIGTERM', 'SIGINT'].forEach((sig) => {
+    process.on(sig, () => shutdown());
+  });
+
+  process.on('exit', () => shutdown());
+
+  start().catch((err) => {
+    console.error(err);
+  });
+}
+

@@ -7,9 +7,11 @@
     "text\\/html"
   ],
   "category": "utilities",
+  "main": {
+    "webpack": ["main.js"]
+  },
   "preload":    [
-    {"src": "main.js", "type": "javascript"},
-    {"src": "scheme.html", "type": "scheme"}
+    {"src": "main.js", "type": "javascript"}
   ]
 }
 

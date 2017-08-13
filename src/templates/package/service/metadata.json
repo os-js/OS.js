@@ -4,13 +4,9 @@
   "name": "EXAMPLEService",
   "icon": "categories/applications-system.png",
   "main": {
+    "webpack": ["main.js"],
     "node": "server/main.js",
     "php": "server/main.php"
   },
-  "preload": [
-    {
-      "src": "main.js",
-      "type": "javascript"
-    }
-  ]
+  "preload": ["main.js"]
 }

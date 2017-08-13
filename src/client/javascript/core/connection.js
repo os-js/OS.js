@@ -28,123 +28,125 @@
  * @licence Simplified BSD License
  */
 
-(function(API, Utils) {
-  'use strict';
+import axios from 'axios';
+import Promise from 'bluebird';
+import EventHandler from 'helpers/event-handler';
+import Loader from 'helpers/loader';
+import {getConfig} from 'core/config';
 
-  var _connectionInstance;
+//let _CALL_INDEX = 1;
+function progressHandler(ev, onprogress) {
+  if ( ev.lengthComputable ) {
+    onprogress(ev, ev.loaded / ev.total);
+  } else {
+    onprogress(ev, -1);
+  }
+}
 
-  /*
-   * Attaches options to a XHR call
-   */
-  function appendRequestOptions(data, options) {
-    options = options || {};
+/*
+ * Attaches options to a XHR call
+ */
+function appendRequestOptions(data, options) {
+  options = options || {};
 
-    var onprogress = options.onprogress || function() {};
-    var ignore = ['onsuccess', 'onerror', 'onprogress', 'oncanceled'];
+  const onprogress = options.onprogress || function() {};
+  const ignore = ['onsuccess', 'onerror', 'onprogress', 'oncanceled'];
 
-    Object.keys(options).forEach(function(key) {
-      if ( ignore.indexOf(key) === -1 ) {
-        data[key] = options[key];
-      }
-    });
+  Object.keys(options).forEach((key) => {
+    if ( ignore.indexOf(key) === -1 ) {
+      data[key] = options[key];
+    }
+  });
 
-    data.onprogress = function XHR_onprogress(ev) {
-      if ( ev.lengthComputable ) {
-        onprogress(ev, ev.loaded / ev.total);
-      } else {
-        onprogress(ev, -1);
-      }
-    };
+  data.onUploadProgress = (ev) => progressHandler(ev, onprogress);
+  data.onDownloadProgress = (ev) => progressHandler(ev, onprogress);
 
-    return data;
+  return data;
+}
+
+let _instance;
+
+/**
+ * Default Connection Implementation
+ *
+ * @desc Wrappers for communicating over HTTP, WS and NW
+ *
+ * @mixes utils/event-handler~EventHandler
+ */
+export default class Connection {
+
+  static get instance() {
+    return _instance;
   }
 
   /**
-   * Default Connection Implementation
-   *
-   * @summary Wrappers for communicating over HTTP, WS and NW
-   *
-   * @constructor Connection
-   * @memberof OSjs.Core
-   * @mixes OSjs.Helpers.EventHandler
+   * Create a new Connection
    */
-  function Connection() {
-    this.index = 0;
+  constructor() {
+    /* eslint consistent-this: "off" */
+    if ( !_instance ) {
+      _instance = this;
+    }
 
     /**
      * If browser is offline
-     * @name offline
-     * @memberof OSjs.Core.Connection#
      * @type {Boolean}
      */
     this.offline    = false;
 
-    this._evHandler = new OSjs.Helpers.EventHandler(name, []);
+    this.index = 0;
+    this._evHandler = new EventHandler(name, []);
 
-    /*eslint consistent-this: "off"*/
-    _connectionInstance = this;
+    this.onlineFn = () => this.onOnline();
+    this.offlineFn = () => this.onOffline();
   }
 
   /**
    * Initializes the instance
-   *
-   * @param {Function}  callback    Callback function
-   *
-   * @function init
-   * @memberof OSjs.Core.Connection#
+   * @return {Promise<undefined, Error>}
    */
-  Connection.prototype.init = function(callback) {
-    var self = this;
-
+  init() {
     if ( typeof navigator.onLine !== 'undefined' ) {
-      Utils.$bind(window, 'offline', function(ev) {
-        self.onOffline();
-      });
-      Utils.$bind(window, 'online', function(ev) {
-        self.onOnline();
-      });
+      window.addEventListener('offline', this.offlineFn);
+      window.addEventListener('online', this.onlineFn);
     }
 
-    callback();
-  };
+    return Promise.resolve();
+  }
 
   /**
    * Destroys the instance
-   *
-   * @function destroy
-   * @memberof OSjs.Core.Connection#
    */
-  Connection.prototype.destroy = function() {
-    Utils.$unbind(window, 'offline');
-    Utils.$unbind(window, 'online');
+  destroy() {
+    window.removeEventListener('offline', this.offlineFn);
+    window.removeEventListener('online', this.onlineFn);
 
     if ( this._evHandler ) {
       this._evHandler = this._evHandler.destroy();
     }
-  };
+
+    _instance = null;
+  }
 
   /**
    * Default method to perform a resolve on a VFS File object.
    *
    * This should return the URL for given resource.
    *
-   * @function getVFSPath
-   * @memberof OSjs.Core.Connection#
-   *
-   * @param   {OSjs.VFS.File}       item      The File Object
-   * @param   {Object}              [options] Options. These are added to the URL
+   * @param   {FileMetadata}       item      The File Object
+   * @param   {Object}             [options] Options. These are added to the URL
    *
    * @return  {String}
    */
-  Connection.prototype.getVFSPath = function(item, options) {
+  getVFSPath(item, options) {
     options = options || {};
 
-    var base = API.getConfig('Connection.RootURI', '/');
+    const base = getConfig('Connection.RootURI', '/');
     if ( window.location.protocol === 'file:' ) {
       return base + item.path.replace(/^osjs:\/\/\//, '');
     }
 
-    var url = API.getConfig('Connection.FSURI', '/');
+    let url = getConfig('Connection.FSURI', '/');
     if ( item ) {
       url += '/read';
       options.path = item.path;
@@ -153,7 +155,7 @@
     }
 
     if ( options ) {
-      var q = Object.keys(options).map(function(k) {
+      const q = Object.keys(options).map((k) => {
         return k + '=' + encodeURIComponent(options[k]);
       });
 
@@ -163,360 +165,199 @@
     }
 
     return url;
-  };
+  }
 
   /**
    * Get if connection is Online
    *
-   * @function isOnline
-   * @memberof OSjs.Core.Connection#
    * @return {Boolean}
    */
-  Connection.prototype.isOnline = function() {
+  isOnline() {
     return !this.offline;
-  };
+  }
 
   /**
    * Get if connection is Offline
    *
-   * @function isOffline
-   * @memberof OSjs.Core.Connection#
    * @return {Boolean}
    */
-  Connection.prototype.isOffline = function() {
+  isOffline() {
     return this.offline;
-  };
-
-  /**
-   * Called upon a VFS request
-   *
-   * You can use this to interrupt/hijack operations.
-   *
-   * It is what gets called 'before' a VFS request takes place
-   *
-   * @function onVFSRequest
-   * @memberof OSjs.Core.Connection#
-   *
-   * @param   {String}    vfsModule     VFS Module Name
-   * @param   {String}    vfsMethod     VFS Method Name
-   * @param   {Object}    vfsArguments  VFS Method Arguments
-   * @param   {Function}  callback      Callback function
-   */
-  Connection.prototype.onVFSRequest = function(vfsModule, vfsMethod, vfsArguments, callback) {
-    // If you want to interrupt/hijack or modify somehow, just send the two arguments to the
-    // callback: (error, result)
-    callback(/* continue normal behaviour */);
-  };
+  }
 
   /**
    * Called upon a VFS request completion
    *
    * It is what gets called 'after' a VFS request has taken place
    *
-   * @function onVFSRequestCompleted
-   * @memberof OSjs.Core.Connection#
-   *
-   * @param   {String}    vfsModule     VFS Module Name
-   * @param   {String}    vfsMethod     VFS Method Name
-   * @param   {Object}    vfsArguments  VFS Method Arguments
-   * @param   {String}    vfsError      VFS Response Error
-   * @param   {Mixed}     vfsResult     VFS Response Result
-   * @param   {Function}  callback      Callback function
+   * @param   {Mountpoint} mount     VFS Module Name
+   * @param   {String}     method    VFS Method Name
+   * @param   {Object}     args      VFS Method Arguments
+   * @param   {*}          response  VFS Response Result
+   * @param   {Process}    [appRef]  Application reference
+   * @return  {Promise<Boolean, Error>}
    */
-  Connection.prototype.onVFSRequestCompleted = function(vfsModule, vfsMethod, vfsArguments, vfsError, vfsResult, callback) {
-    // If you want to interrupt/hijack or modify somehow, just send the two arguments to the
-    // callback: (error, result)
-    callback(/* continue normal behaviour */);
-  };
+  onVFSRequestCompleted(mount, method, args, response, appRef) {
+    return Promise.resolve(true);
+  }
 
   /**
    * When browser goes online
-   *
-   * @function onOnline
-   * @memberof OSjs.Core.Connection#
    */
-  Connection.prototype.onOnline = function() {
+  onOnline() {
     console.warn('Connection::onOnline()', 'Going online...');
     this.offline = false;
-
-    var wm = OSjs.Core.getWindowManager();
-    if ( wm ) {
-      wm.notification({title: API._('LBL_INFO'), message: API._('CONNECTION_RESTORED')});
-    }
 
     if ( this._evHandler ) {
       this._evHandler.emit('online');
     }
-  };
+  }
 
   /**
    * When browser goes offline
    *
    * @param {Number} reconnecting Amount retries for connection
-   *
-   * @function onOffline
-   * @memberof OSjs.Core.Connection#
    */
-  Connection.prototype.onOffline = function(reconnecting) {
+  onOffline(reconnecting) {
     console.warn('Connection::onOffline()', 'Going offline...');
 
     if ( !this.offline && this._evHandler ) {
-      this._evHandler.emit('offline');
+      this._evHandler.emit('offline', [reconnecting]);
     }
 
     this.offline = true;
-
-    var wm = OSjs.Core.getWindowManager();
-    if ( wm ) {
-      wm.notification({title: API._('LBL_WARNING'), message: API._(reconnecting ? 'CONNECTION_RESTORE_FAILED' : 'CONNECTION_LOST')});
-    }
-  };
+  }
 
   /**
    * Default method to perform a call to the backend (API)
    *
-   * Please note that this function is internal, and if you want to make
-   * a actual API call, use "API.call()" instead.
+   * Please use the static request() method externally.
    *
    * @param {String}    method      API method name
    * @param {Object}    args        API method arguments
-   * @param {Function}  cbSuccess   On success
-   * @param {Function}  cbError     On error
-   * @param {Object}    [options]   Options passed on to the connection request method (ex: Utils.ajax)
+   * @param {Object}    [options]   Options passed on to the connection request method (ex: XHR.ajax)
    *
-   * @return {Boolean}
-   *
-   * @function request
-   * @memberof OSjs.Core.Connection#
-   * @see OSjs.Core.API.call
+   * @return {Promise<Object, Error>}
    */
-  Connection.prototype.request = function(method, args, cbSuccess, cbError, options) {
+  createRequest(method, args, options) {
     args = args || {};
-    cbSuccess = cbSuccess || function() {};
-    cbError = cbError || function() {};
+    options = options || {};
 
     if ( this.offline ) {
-      cbError('You are currently off-line and cannot perform this operation!');
-      return false;
-    } else if ( (API.getConfig('Connection.Type') === 'standalone') ) {
-      cbError('You are currently running locally and cannot perform this operation!');
-      return false;
+      return Promise.reject(new Error('You are currently off-line and cannot perform this operation!'));
     }
+
+    const {raw, requestOptions} = this.createRequestOptions(method, args);
+
+    return new Promise((resolve, reject) => {
+      axios(appendRequestOptions(requestOptions, options)).then((result) => {
+        return resolve(raw ? result.data : {error: false, result: result.data});
+      }).catch((error) => {
+        reject(new Error(error.message || error));
+      });
+    });
+  }
+
+  /**
+   * Creates default request options
+   *
+   * @param {String}    method      API method name
+   * @param {Object}    args        API method arguments
+   *
+   * @return {Object}
+   */
+  createRequestOptions(method, args) {
+    const realMethod = method.replace(/^FS:/, '');
+
+    let raw = true;
+    let requestOptions = {
+      responseType: 'json',
+      url: getConfig('Connection.APIURI') + '/' + realMethod,
+      method: 'POST',
+      data: args
+    };
 
     if ( method.match(/^FS:/) ) {
-      return this.requestVFS(method.replace(/^FS:/, ''), args, options, cbSuccess, cbError);
+      if ( realMethod === 'get' ) {
+        requestOptions.responseType = 'arraybuffer';
+        requestOptions.url = args.url || this.getVFSPath({path: args.path});
+        requestOptions.method = args.method || 'GET';
+        raw = false;
+      } else if ( realMethod === 'upload' ) {
+        requestOptions.url = this.getVFSPath();
+      } else {
+        requestOptions.url = getConfig('Connection.FSURI') + '/' + realMethod;
+      }
     }
 
-    return this.requestAPI(method, args, options, cbSuccess, cbError);
-  };
-
-  /**
-   * Wrapper for server API XHR calls
-   *
-   * @param   {String}    method    API Method name
-   * @param   {Object}    args      API Method arguments
-   * @param   {Object}    options   Call options
-   * @param   {Function}  cbSuccess Callback on success
-   * @param   {Function}  cbError   Callback on error
-   *
-   * @function requestAPI
-   * @memberof OSjs.Core.Connection#
-   * @see OSjs.Core.Connection.request
-   *
-   * @return {Boolean}
-   */
-  Connection.prototype.requestAPI = function(method, args, options, cbSuccess, cbError) {
-    return false;
-  };
-
-  /**
-   * Wrapper for server VFS XHR calls
-   *
-   * @param   {String}    method    API Method name
-   * @param   {Object}    args      API Method arguments
-   * @param   {Object}    options   Call options
-   * @param   {Function}  cbSuccess Callback on success
-   * @param   {Function}  cbError   Callback on error
-   *
-   * @function requestVFS
-   * @memberof OSjs.Core.Connection#
-   * @see OSjs.Core.Connection.request
-   *
-   * @return {Boolean}
-   */
-  Connection.prototype.requestVFS = function(method, args, options, cbSuccess, cbError) {
-    if ( method === 'get' ) {
-      return this._requestGET(args, options, cbSuccess, cbError);
-    } else if ( method === 'upload' ) {
-      return this._requestPOST(args, options, cbSuccess, cbError);
-    }
-
-    return false;
-  };
-
-  /**
-   * Makes a HTTP POST call
-   *
-   * @param   {Object}    form      Call data
-   * @param   {Object}    options   Call options
-   * @param   {Function}  onsuccess Callback on success
-   * @param   {Function}  onerror   Callback on error
-   *
-   * @function _requestPOST
-   * @memberof OSjs.Core.Connection#
-   *
-   * @return {Boolean}
-   */
-  Connection.prototype._requestPOST = function(form, options, onsuccess, onerror) {
-    onerror = onerror || function() {
-      console.warn('Connection::_requestPOST()', 'error', arguments);
-    };
-
-    Utils.ajax(appendRequestOptions({
-      url: OSjs.VFS.Transports.OSjs.path(),
-      method: 'POST',
-      body: form,
-      onsuccess: function Connection_POST_success(result) {
-        onsuccess(false, result);
-      },
-      onerror: function Connection_POST_error(result) {
-        onerror('error', null, result);
-      },
-      oncanceled: function Connection_POST_cancel(evt) {
-        onerror('canceled', null, evt);
-      }
-    }, options));
-
-    return true;
-  };
-
-  /**
-   * Makes a HTTP GET call
-   *
-   * @param   {Object}    args      Call data
-   * @param   {Object}    options   Call options
-   * @param   {Function}  onsuccess Callback on success
-   * @param   {Function}  onerror   Callback on error
-   *
-   * @function _requestGET
-   * @memberof OSjs.Core.Connection#
-   *
-   * @return {Boolean}
-   */
-  Connection.prototype._requestGET = function(args, options, onsuccess, onerror) {
-    onerror = onerror || function() {
-      console.warn('Connection::_requestGET()', 'error', arguments);
-    };
-
-    var self = this;
-
-    Utils.ajax(appendRequestOptions({
-      url: args.url || OSjs.VFS.Transports.OSjs.path(args.path),
-      method: args.method || 'GET',
-      responseType: 'arraybuffer',
-      onsuccess: function Connection_GET_success(response, xhr) {
-        if ( !xhr || xhr.status === 404 || xhr.status === 500 ) {
-          onsuccess({error: xhr.statusText || response, result: null});
-          return;
-        }
-        onsuccess({error: false, result: response});
-      },
-      onerror: function Connection_GET_error() {
-        onerror.apply(self, arguments);
-      }
-    }, options));
-
-    return true;
-  };
-
-  /**
-   * Makes a HTTP XHR call
-   *
-   * @param   {String}    url       Call URL
-   * @param   {Object}    args      Call data
-   * @param   {Object}    options   Call options
-   * @param   {Function}  onsuccess Callback on success
-   * @param   {Function}  onerror   Callback on error
-   *
-   * @function _requestXHR
-   * @memberof OSjs.Core.Connection#
-   *
-   * @return {Boolean}
-   */
-  Connection.prototype._requestXHR = function(url, args, options, onsuccess, onerror) {
-    onerror = onerror || function() {
-      console.warn('Connection::_requestXHR()', 'error', arguments);
-    };
-
-    var self = this;
-
-    Utils.ajax(appendRequestOptions({
-      url: url,
-      method: 'POST',
-      json: true,
-      body: args,
-      onsuccess: function Connection_XHR_onsuccess(/*response, request, url*/) {
-        onsuccess.apply(self, arguments);
-      },
-      onerror: function Connection_XHR_onerror(/*error, response, request, url*/) {
-        onerror.apply(self, arguments);
-      }
-    }, options));
-
-    return true;
-  };
+    return {raw, requestOptions};
+  }
 
   /**
    * Subscribe to a event
    *
    * NOTE: This is only available on WebSocket connections
    *
-   * @function subscribe
-   * @memberof OSjs.Core.Connection#
-   * @see OSjs.Helpers.EventHandler#on
-   *
    * @param   {String}    k       Event name
    * @param   {Function}  func    Callback function
    *
    * @return  {Number}
+   *
+   * @see EventHandler#on
    */
-  Connection.prototype.subscribe = function(k, func) {
+  subscribe(k, func) {
     return this._evHandler.on(k, func, this);
-  };
+  }
 
   /**
    * Removes an event subscription
-   *
-   * @function unsubscribe
-   * @memberof OSjs.Core.Connection#
-   * @see OSjs.Helpers.EventHandler#off
    *
    * @param   {String}    k       Event name
    * @param   {Number}    [idx]   The hook index returned from subscribe()
    *
    * @return {Boolean}
+   *
+   * @see EventHandler#off
    */
-  Connection.prototype.unsubscribe = function(k, idx) {
+  unsubscribe(k, idx) {
     return this._evHandler.off(k, idx);
-  };
+  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Core.Connection = Connection;
-
-  /**
-   * Get running 'Connection' instance
+  /*
+   * This is a wrapper for making a request
    *
-   * @function getConnection
-   * @memberof OSjs.Core
+   * @desc This method performs a request to the server
    *
-   * @return {OSjs.Core.Connection}
+   * @param {String}   m        Method name
+   * @param {Object}   a        Method arguments
+   * @param {Object}   options  Request options
+   * @return {Promise<Object, Error>}
    */
-  OSjs.Core.getConnection = function Core_getConnection() {
-    return _connectionInstance;
-  };
+  static request(m, a, options) {
+    a = a || {};
+    options = options || {};
 
-})(OSjs.API, OSjs.Utils);
+    if ( options && typeof options !== 'object' ) {
+      return Promise.reject(new TypeError('request() expects an object as options'));
+    }
 
+    Loader.create('Connection.request');
+
+    if ( typeof options.indicator !== 'undefined' ) {
+      delete options.indicator;
+    }
+
+    return new Promise((resolve, reject) => {
+      this.instance.createRequest(m, a, options).then((response) => {
+        if ( response.error ) {
+          return reject(new Error(response.error));
+        }
+        return resolve(response.result);
+      }).catch(((err) => {
+        reject(new Error(err));
+      })).finally(() => {
+        Loader.destroy('Connection.request');
+      });
+    });
+  }
+}

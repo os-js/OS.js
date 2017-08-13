@@ -27,21 +27,12 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, Storage) {
-  'use strict';
+import Storage from 'core/storage';
 
-  function DatabaseStorage() {
-    Storage.apply(this, arguments);
-  }
+/**
+ * Database Storage Handler
+ * @xtends Storage
+ */
+export default class DatabaseStorage extends Storage {
+}
 
-  DatabaseStorage.prototype = Object.create(Storage.prototype);
-  DatabaseStorage.constructor = Storage;
-
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Storage = OSjs.Storage || {};
-  OSjs.Storage.database = DatabaseStorage;
-
-})(OSjs.API, OSjs.Utils, OSjs.Core.Storage);

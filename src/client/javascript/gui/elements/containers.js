@@ -27,404 +27,395 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, VFS, GUI) {
-  'use strict';
+import * as GUI from 'utils/gui';
+import * as Events from 'utils/events';
+import GUIElement from 'gui/element';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // CLASSES
-  /////////////////////////////////////////////////////////////////////////////
+function toggleState(el, expanded) {
+  if ( typeof expanded === 'undefined' ) {
+    expanded = el.getAttribute('data-expanded') !== 'false';
+    expanded = !expanded;
+  }
 
-  /**
-   * Element: 'gui-paned-view'
-   *
-   * A view with resizable content boxes
-   *
-   * @constructor PanedView
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUIPanedView = {
-    on: function(evName, callback, params) {
-      var el = this.$element;
-      if ( evName === 'resize' ) {
-        evName = '_' + evName;
-      }
-      Utils.$bind(el, evName, callback.bind(this), params);
+  el.setAttribute('aria-expanded', String(expanded));
+  el.setAttribute('data-expanded', String(expanded));
+  return expanded;
+}
 
-      return this;
-    },
+/////////////////////////////////////////////////////////////////////////////
+// CLASSES
+/////////////////////////////////////////////////////////////////////////////
 
-    build: function() {
-      var el = this.$element;
-      var orient = el.getAttribute('data-orientation') || 'horizontal';
+/**
+ * Element: 'gui-paned-view'
+ *
+ * A view with resizable content boxes
+ */
+class GUIPanedView extends GUIElement {
 
-      function bindResizer(resizer, idx, cel) {
-        var resizeEl = resizer.previousElementSibling;
-        if ( !resizeEl ) {
-          return;
-        }
+  static register() {
+    return super.register({
+      tagName: 'gui-paned-view',
+      type: 'container',
+      allowedChildren: ['gui-paned-view-container']
+    }, this);
+  }
 
-        var startWidth = resizeEl.offsetWidth;
-        var startHeight = resizeEl.offsetHeight;
-        var minSize = 16;
-        var maxSize = Number.MAX_VALUE;
+  on(evName, callback, params) {
+    const el = this.$element;
+    if ( evName === 'resize' ) {
+      evName = '_' + evName;
+    }
+    Events.$bind(el, evName, callback.bind(this), params);
 
-        GUI.Helpers.createDrag(resizer, function(ev) {
-          startWidth = resizeEl.offsetWidth;
-          startHeight = resizeEl.offsetHeight;
-          minSize = parseInt(cel.getAttribute('data-min-size'), 10) || minSize;
+    return this;
+  }
 
-          var max = parseInt(cel.getAttribute('data-max-size'), 10);
-          if ( !max ) {
-            var totalSize = resizer.parentNode[(orient === 'horizontal' ? 'offsetWidth' : 'offsetHeight')];
-            var totalContainers = resizer.parentNode.querySelectorAll('gui-paned-view-container').length;
-            var totalSpacers = resizer.parentNode.querySelectorAll('gui-paned-view-handle').length;
+  build() {
+    const el = this.$element;
+    const orient = el.getAttribute('data-orientation') || 'horizontal';
 
-            maxSize = totalSize - (totalContainers * 16) - (totalSpacers * 8);
-          }
-        }, function(ev, diff) {
-          var newWidth = startWidth + diff.x;
-          var newHeight = startHeight + diff.y;
-
-          var flex;
-          if ( orient === 'horizontal' ) {
-            if ( !isNaN(newWidth) && newWidth > 0 && newWidth >= minSize && newWidth <= maxSize ) {
-              flex = newWidth.toString() + 'px';
-            }
-          } else {
-            if ( !isNaN(newHeight) && newHeight > 0 && newHeight >= minSize && newHeight <= maxSize ) {
-              flex = newHeight.toString() + 'px';
-            }
-          }
-
-          if ( flex ) {
-            resizeEl.style.webkitFlexBasis = flex;
-            resizeEl.style.mozFflexBasis = flex;
-            resizeEl.style.msFflexBasis = flex;
-            resizeEl.style.oFlexBasis = flex;
-            resizeEl.style.flexBasis = flex;
-          }
-        }, function(ev) {
-          el.dispatchEvent(new CustomEvent('_resize', {detail: {index: idx}}));
-        });
-
+    function bindResizer(resizer, idx, cel) {
+      const resizeEl = resizer.previousElementSibling;
+      if ( !resizeEl ) {
+        return;
       }
 
-      el.querySelectorAll('gui-paned-view-container').forEach(function(cel, idx) {
-        if ( idx % 2 ) {
-          var resizer = document.createElement('gui-paned-view-handle');
-          resizer.setAttribute('role', 'separator');
-          cel.parentNode.insertBefore(resizer, cel);
-          bindResizer(resizer, idx, cel);
+      let startWidth = resizeEl.offsetWidth;
+      let startHeight = resizeEl.offsetHeight;
+      let minSize = 16;
+      let maxSize = Number.MAX_VALUE;
+
+      GUI.createDrag(resizer, (ev) => {
+        startWidth = resizeEl.offsetWidth;
+        startHeight = resizeEl.offsetHeight;
+        minSize = parseInt(cel.getAttribute('data-min-size'), 10) || minSize;
+
+        const max = parseInt(cel.getAttribute('data-max-size'), 10);
+        if ( !max ) {
+          const totalSize = resizer.parentNode[(orient === 'horizontal' ? 'offsetWidth' : 'offsetHeight')];
+          const totalContainers = resizer.parentNode.querySelectorAll('gui-paned-view-container').length;
+          const totalSpacers = resizer.parentNode.querySelectorAll('gui-paned-view-handle').length;
+
+          maxSize = totalSize - (totalContainers * 16) - (totalSpacers * 8);
         }
-      });
+      }, (ev, diff) => {
+        const newWidth = startWidth + diff.x;
+        const newHeight = startHeight + diff.y;
 
-      return this;
-    }
-  };
-
-  /**
-   * Element: 'gui-paned-view-container'
-   *
-   * <pre><code>
-   *   property  base      String        CSS base flexbox property
-   *   property  grow      integer       CSS grow flexbox property
-   *   property  shrink    integer       CSS shrink flexbox property
-   *   property  min-size  integer       Minimum size in pixels
-   *   property  max-size  integer       Maxmimum size in pixels
-   * </code></pre>
-   *
-   * @constructor PanedViewContainer
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUIPanedViewContainer = {
-    build: function() {
-      GUI.Helpers.setFlexbox(this.$element);
-      return this;
-    }
-  };
-
-  /**
-   * Element: 'gui-button-bar'
-   *
-   * @constructor ButtonBar
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUIButtonBar = {
-    build: function() {
-      this.$element.setAttribute('role', 'toolbar');
-      return this;
-    }
-  };
-
-  /**
-   * Element: 'gui-toolbar'
-   *
-   * @constructor ToolBar
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUIToolBar = {
-    build: function() {
-      this.$element.setAttribute('role', 'toolbar');
-      return this;
-    }
-  };
-
-  /**
-   * Element: 'gui-grid'
-   *
-   * A grid-type container with equal-sized containers
-   *
-   * @constructor Grid
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUIGrid = {
-    build: function() {
-      var rows = this.$element.querySelectorAll('gui-grid-row');
-      var p = 100 / rows.length;
-
-      rows.forEach(function(r) {
-        r.style.height = String(p) + '%';
-      });
-
-      return this;
-    }
-  };
-
-  /**
-   * Element: 'gui-grid-row'
-   *
-   * @constructor GridRow
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUIGridRow = {};
-
-  /**
-   * Element: 'gui-grid-entry'
-   *
-   * @constructor GridEntry
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUIGridEntry = {};
-
-  /**
-   * Element: 'gui-vbox'
-   *
-   * Vertical boxed layout
-   *
-   * @constructor VBox
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUIVBox = {};
-
-  /**
-   * Element: 'gui-vbox-container'
-   *
-   * Vertical boxed layout container
-   *
-   * <pre><code>
-   *   property  base      String        CSS base flexbox property
-   *   property  grow      integer       CSS grow flexbox property
-   *   property  shrink    integer       CSS shrink flexbox property
-   *   property  expand    boolean       Make content expand to full width
-   *   property  fill      boolean       Make content fill up entire space
-   * </code></pre>
-   *
-   * @constructor VBoxContainer
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUIVBoxContainer = {
-    build: function() {
-      GUI.Helpers.setFlexbox(this.$element);
-
-      return this;
-    }
-  };
-
-  /**
-   * Element: 'gui-hbox'
-   *
-   * Horizontal boxed layout
-   *
-   * @constructor HBox
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUIHBox = {};
-
-  /**
-   * Element: 'gui-hbox-container'
-   *
-   * Horizontal boxed layout container
-   *
-   * <pre><code>
-   *   property  base      String        CSS base flexbox property
-   *   property  grow      integer       CSS grow flexbox property
-   *   property  shrink    integer       CSS shrink flexbox property
-   *   property  expand    boolean       Make content expand to full width
-   *   property  fill      boolean       Make content fill up entire space
-   * </code></pre>
-   *
-   * @constructor HBoxContainer
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUIHBoxContainer = {
-    build: function() {
-      GUI.Helpers.setFlexbox(this.$element);
-
-      return this;
-    }
-  };
-
-  /**
-   * Element: 'gui-expander'
-   *
-   * A expandable/collapsable container with label and indicator
-   *
-   * <pre><code>
-   *   property  label     String        The label
-   *   property  expanded  boolean       Expanded state (default=true)
-   * </code></pre>
-   *
-   * @constructor Expander
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUIExpander = (function() {
-    function toggleState(el, expanded) {
-      if ( typeof expanded === 'undefined' ) {
-        expanded = el.getAttribute('data-expanded') !== 'false';
-        expanded = !expanded;
-      }
-
-      el.setAttribute('aria-expanded', String(expanded));
-      el.setAttribute('data-expanded', String(expanded));
-      return expanded;
-    }
-
-    return {
-      set: function(param, value) {
-        if ( param === 'expanded' ) {
-          return toggleState(this.$element, value === true);
-        }
-        return GUI.Element.prototype.set.apply(this, arguments);
-      },
-
-      on: function(evName, callback, params) {
-        if ( (['change']).indexOf(evName) !== -1 ) {
-          evName = '_' + evName;
-        }
-        Utils.$bind(this.$element, evName, callback.bind(this), params);
-
-        return this;
-      },
-
-      build: function() {
-        var el = this.$element;
-        var lbltxt = el.getAttribute('data-label') || '';
-        var label = document.createElement('gui-expander-label');
-
-        Utils.$bind(label, 'click', function(ev) {
-          el.dispatchEvent(new CustomEvent('_change', {detail: {expanded: toggleState(el)}}));
-        }, false);
-
-        label.appendChild(document.createTextNode(lbltxt));
-
-        el.setAttribute('role', 'toolbar');
-        el.setAttribute('aria-expanded', 'true');
-        el.setAttribute('data-expanded', 'true');
-        if ( el.children.length ) {
-          el.insertBefore(label, el.children[0]);
+        let flex;
+        if ( orient === 'horizontal' ) {
+          if ( !isNaN(newWidth) && newWidth > 0 && newWidth >= minSize && newWidth <= maxSize ) {
+            flex = newWidth.toString() + 'px';
+          }
         } else {
-          el.appendChild(label);
+          if ( !isNaN(newHeight) && newHeight > 0 && newHeight >= minSize && newHeight <= maxSize ) {
+            flex = newHeight.toString() + 'px';
+          }
         }
 
-        return this;
+        if ( flex ) {
+          resizeEl.style.webkitFlexBasis = flex;
+          resizeEl.style.mozFflexBasis = flex;
+          resizeEl.style.msFflexBasis = flex;
+          resizeEl.style.oFlexBasis = flex;
+          resizeEl.style.flexBasis = flex;
+        }
+      }, (ev) => {
+        el.dispatchEvent(new CustomEvent('_resize', {detail: {index: idx}}));
+      });
+
+    }
+
+    el.querySelectorAll('gui-paned-view-container').forEach((cel, idx) => {
+      if ( idx % 2 ) {
+        const resizer = document.createElement('gui-paned-view-handle');
+        resizer.setAttribute('role', 'separator');
+        cel.parentNode.insertBefore(resizer, cel);
+        bindResizer(resizer, idx, cel);
       }
-    };
-  })();
+    });
 
-  /////////////////////////////////////////////////////////////////////////////
-  // REGISTRATION
-  /////////////////////////////////////////////////////////////////////////////
+    return this;
+  }
+}
 
-  GUI.Element.register({
-    tagName: 'gui-paned-view',
-    type: 'container',
-    allowedChildren: ['gui-paned-view-container']
-  }, GUIPanedView);
+/**
+ * Element: 'gui-paned-view-container'
+ *
+ * <pre><code>
+ *   property  base      String        CSS base flexbox property
+ *   property  grow      integer       CSS grow flexbox property
+ *   property  shrink    integer       CSS shrink flexbox property
+ *   property  min-size  integer       Minimum size in pixels
+ *   property  max-size  integer       Maxmimum size in pixels
+ * </code></pre>
+ */
+class GUIPanedViewContainer extends GUIElement {
+  static register() {
+    return super.register({
+      tagName: 'gui-paned-view-container',
+      type: 'container',
+      allowedParents: ['gui-paned-view']
+    }, this);
+  }
 
-  GUI.Element.register({
-    tagName: 'gui-paned-view-container',
-    type: 'container',
-    allowedParents: ['gui-paned-view']
-  }, GUIPanedViewContainer);
+  build() {
+    GUI.setFlexbox(this.$element);
+    return this;
+  }
+}
 
-  GUI.Element.register({
-    tagName: 'gui-button-bar',
-    type: 'container'
-  }, GUIButtonBar);
+/**
+ * Element: 'gui-button-bar'
+ */
+class GUIButtonBar extends GUIElement {
+  static register() {
+    return super.register({
+      tagName: 'gui-button-bar',
+      type: 'container'
+    }, this);
+  }
 
-  GUI.Element.register({
-    tagName: 'gui-toolbar',
-    type: 'container'
-  }, GUIToolBar);
+  build() {
+    this.$element.setAttribute('role', 'toolbar');
+    return this;
+  }
+}
 
-  GUI.Element.register({
-    tagName: 'gui-grid',
-    type: 'container',
-    allowedChildren: ['gui-grid-row']
-  }, GUIGrid);
+/**
+ * Element: 'gui-toolbar'
+ */
+class GUIToolBar extends GUIElement {
+  static register() {
+    return super.register({
+      tagName: 'gui-toolbar',
+      type: 'container'
+    }, this);
+  }
 
-  GUI.Element.register({
-    tagName: 'gui-grid-row',
-    type: 'container',
-    allowedChildren: ['gui-grid-entry'],
-    allowedParents: ['gui-grid-row']
-  }, GUIGridRow);
+  build() {
+    this.$element.setAttribute('role', 'toolbar');
+    return this;
+  }
+}
 
-  GUI.Element.register({
-    tagName: 'gui-grid-entry',
-    type: 'container',
-    allowedParents: ['gui-grid-row']
-  }, GUIGridEntry);
+/**
+ * Element: 'gui-grid'
+ *
+ * A grid-type container with equal-sized containers
+ */
+class GUIGrid extends GUIElement {
+  static register() {
+    return super.register({
+      tagName: 'gui-grid',
+      type: 'container',
+      allowedChildren: ['gui-grid-row']
+    }, this);
+  }
 
-  GUI.Element.register({
-    tagName: 'gui-vbox',
-    type: 'container',
-    allowedChildren: ['gui-vbox-container']
-  }, GUIVBox);
+  build() {
+    const rows = this.$element.querySelectorAll('gui-grid-row');
+    const p = 100 / rows.length;
 
-  GUI.Element.register({
-    tagName: 'gui-vbox-container',
-    type: 'container',
-    allowedParents: ['gui-vbox']
-  }, GUIVBoxContainer);
+    rows.forEach((r) => {
+      r.style.height = String(p) + '%';
+    });
 
-  GUI.Element.register({
-    tagName: 'gui-hbox',
-    type: 'container',
-    allowedChildren: ['gui-hbox-container']
-  }, GUIHBox);
+    return this;
+  }
+}
 
-  GUI.Element.register({
-    tagName: 'gui-hbox-container',
-    type: 'container',
-    allowedParents: ['gui-hbox']
-  }, GUIHBoxContainer);
+/**
+ * Element: 'gui-grid-row'
+ */
+class GUIGridRow extends GUIElement {
+  static register() {
+    return super.register({
+      tagName: 'gui-grid-row',
+      type: 'container',
+      allowedChildren: ['gui-grid-entry'],
+      allowedParents: ['gui-grid-row']
+    }, this);
+  }
+}
 
-  GUI.Element.register({
-    tagName: 'gui-expander',
-    type: 'container'
-  }, GUIExpander);
+/**
+ * Element: 'gui-grid-entry'
+ */
+class GUIGridEntry extends GUIElement {
+  static register() {
+    return super.register({
+      tagName: 'gui-grid-entry',
+      type: 'container',
+      allowedParents: ['gui-grid-row']
+    }, this);
+  }
+}
 
-})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);
+/**
+ * Element: 'gui-vbox'
+ *
+ * Vertical boxed layout
+ */
+class GUIVBox extends GUIElement {
+  static register() {
+    return super.register({
+      tagName: 'gui-vbox',
+      type: 'container',
+      allowedChildren: ['gui-vbox-container']
+    }, this);
+  }
+}
+
+/**
+ * Element: 'gui-vbox-container'
+ *
+ * Vertical boxed layout container
+ *
+ * <pre><code>
+ *   property  base      String        CSS base flexbox property
+ *   property  grow      integer       CSS grow flexbox property
+ *   property  shrink    integer       CSS shrink flexbox property
+ *   property  expand    boolean       Make content expand to full width
+ *   property  fill      boolean       Make content fill up entire space
+ * </code></pre>
+ */
+class GUIVBoxContainer extends GUIElement {
+  static register() {
+    return super.register({
+      tagName: 'gui-vbox-container',
+      type: 'container',
+      allowedParents: ['gui-vbox']
+    }, this);
+  }
+
+  build() {
+    GUI.setFlexbox(this.$element);
+
+    return this;
+  }
+}
+
+/**
+ * Element: 'gui-hbox'
+ *
+ * Horizontal boxed layout
+ */
+class GUIHBox extends GUIElement {
+  static register() {
+    return super.register({
+      tagName: 'gui-hbox',
+      type: 'container',
+      allowedChildren: ['gui-hbox-container']
+    }, this);
+  }
+}
+
+/**
+ * Element: 'gui-hbox-container'
+ *
+ * Horizontal boxed layout container
+ *
+ * <pre><code>
+ *   property  base      String        CSS base flexbox property
+ *   property  grow      integer       CSS grow flexbox property
+ *   property  shrink    integer       CSS shrink flexbox property
+ *   property  expand    boolean       Make content expand to full width
+ *   property  fill      boolean       Make content fill up entire space
+ * </code></pre>
+ */
+class GUIHBoxContainer extends GUIElement {
+  static register() {
+    return super.register({
+      tagName: 'gui-hbox-container',
+      type: 'container',
+      allowedParents: ['gui-hbox']
+    }, this);
+  }
+
+  build() {
+    GUI.setFlexbox(this.$element);
+
+    return this;
+  }
+}
+
+/**
+ * Element: 'gui-expander'
+ *
+ * A expandable/collapsable container with label and indicator
+ *
+ * <pre><code>
+ *   property  label     String        The label
+ *   property  expanded  boolean       Expanded state (default=true)
+ * </code></pre>
+ */
+
+class GUIExpander extends GUIElement {
+  static register() {
+    return super.register({
+      tagName: 'gui-expander',
+      type: 'container'
+    }, this);
+  }
+
+  set(param, value) {
+    if ( param === 'expanded' ) {
+      return toggleState(this.$element, value === true);
+    }
+    return super.set(...arguments);
+  }
+
+  on(evName, callback, params) {
+    if ( (['change']).indexOf(evName) !== -1 ) {
+      evName = '_' + evName;
+    }
+    Events.$bind(this.$element, evName, callback.bind(this), params);
+
+    return this;
+  }
+
+  build() {
+    const el = this.$element;
+    const lbltxt = el.getAttribute('data-label') || '';
+    const label = document.createElement('gui-expander-label');
+
+    Events.$bind(label, 'click', (ev) => {
+      el.dispatchEvent(new CustomEvent('_change', {detail: {expanded: toggleState(el)}}));
+    }, false);
+
+    label.appendChild(document.createTextNode(lbltxt));
+
+    el.setAttribute('role', 'toolbar');
+    el.setAttribute('aria-expanded', 'true');
+    el.setAttribute('data-expanded', 'true');
+    if ( el.children.length ) {
+      el.insertBefore(label, el.children[0]);
+    } else {
+      el.appendChild(label);
+    }
+
+    return this;
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// EXPORTS
+/////////////////////////////////////////////////////////////////////////////
+
+export default {
+  GUIPanedView: GUIPanedView,
+  GUIPanedViewContainer: GUIPanedViewContainer,
+  GUIButtonBar: GUIButtonBar,
+  GUIToolBar: GUIToolBar,
+  GUIGrid: GUIGrid,
+  GUIGridRow: GUIGridRow,
+  GUIGridEntry: GUIGridEntry,
+  GUIVBox: GUIVBox,
+  GUIVBoxContainer: GUIVBoxContainer,
+  GUIHBox: GUIHBox,
+  GUIHBoxContainer: GUIHBoxContainer,
+  GUIExpander: GUIExpander
+};
+

@@ -27,481 +27,275 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function() {
-  'use strict';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // COOKIES
-  /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// COOKIES
+/////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Gets a cookie by key, or all cookies
-   *
-   * @function getCookie
-   * @memberof OSjs.Utils
-   *
-   * @param {String} [k] What key to get
-   * @return {String|Object}  Depending on 'k' parameter
-   */
-  OSjs.Utils.getCookie = function Utils_getCookie(k) {
-    var map = {};
-    document.cookie.split(/;\s+?/g).forEach(function(i) {
-      var idx = i.indexOf('=');
-      map[i.substr(i, idx)] = i.substr(idx + 1);
-    });
-    return k ? map[k] : map;
-  };
+/**
+ * Gets a cookie by key, or all cookies
+ *
+ * @param {String} [k] What key to get
+ * @return {String|Object}  Depending on 'k' parameter
+ */
+export function getCookie(k) {
+  const map = {};
+  document.cookie.split(/;\s+?/g).forEach((i) => {
+    const idx = i.indexOf('=');
+    map[i.substr(i, idx)] = i.substr(idx + 1);
+  });
+  return k ? map[k] : map;
+}
 
-  /////////////////////////////////////////////////////////////////////////////
-  // STRING
-  /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// STRING
+/////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Format a string (almost like sprintf)
-   *
-   * @function format
-   * @memberof OSjs.Utils
-   * @link http://stackoverflow.com/a/4673436
-   *
-   * @param   {String}      format        String format
-   * @param   {...String}   s             Insert into format
-   *
-   * @return  {String}                    The formatted string
-   */
-  OSjs.Utils.format = function Utils_format(format) {
-    var args = Array.prototype.slice.call(arguments, 1);
-    var sprintfRegex = /\{(\d+)\}/g;
+/**
+ * Format a string (almost like sprintf)
+ *
+ * @link http://stackoverflow.com/a/4673436
+ *
+ * @param   {String}      format        String format
+ * @param   {...String}   s             Insert into format
+ *
+ * @return  {String}                    The formatted string
+ */
+export function format(format) {
+  const args = Array.prototype.slice.call(arguments, 1);
+  const sprintfRegex = /\{(\d+)\}/g;
 
-    function sprintf(match, number) {
-      return number in args ? args[number] : match;
-    }
+  function sprintf(match, number) {
+    return number in args ? args[number] : match;
+  }
 
-    return format.replace(sprintfRegex, sprintf);
-  };
+  return format.replace(sprintfRegex, sprintf);
+}
 
-  /**
-   * Remove whitespaces and newlines from HTML document
-   *
-   * @function cleanHTML
-   * @memberof OSjs.Utils
-   *
-   * @param   {String}    html          HTML string input
-   *
-   * @return  {String}
-   */
-  OSjs.Utils.cleanHTML = function Utils_cleanHTML(html) {
-    return html.replace(/\n/g, '')
-      .replace(/[\t ]+</g, '<')
-      .replace(/\>[\t ]+</g, '><')
-      .replace(/\>[\t ]+$/g, '>');
-  };
+/**
+ * Remove whitespaces and newlines from HTML document
+ *
+ * @param   {String}    html          HTML string input
+ *
+ * @return  {String}
+ */
+export function cleanHTML(html) {
+  return html.replace(/\n/g, '')
+    .replace(/[\t ]+</g, '<')
+    .replace(/\>[\t ]+</g, '><')
+    .replace(/\>[\t ]+$/g, '>');
+}
 
-  /**
-   * Parses url into a dictionary (supports modification)
-   *
-   * @function parseurl
-   * @memberof OSjs.Utils
-   *
-   * @param     {String}        url       Input URL
-   * @param     {Object}        [modify]  Modify URL with these options
-   *
-   * @return    {Object}                  Object with protocol, host, path
-   */
-  OSjs.Utils.parseurl = function Utils_parseurl(url, modify) {
-    modify = modify || {};
+/**
+ * Parses url into a dictionary (supports modification)
+ *
+ * @param     {String}        url       Input URL
+ * @param     {Object}        [modify]  Modify URL with these options
+ *
+ * @return    {Object}                  Object with protocol, host, path
+ */
+export function parseurl(url, modify) {
+  modify = modify || {};
 
-    if ( !url.match(/^(\w+\:)\/\//) ) {
-      url = '//' + url;
-    }
+  if ( !url.match(/^(\w+\:)\/\//) ) {
+    url = '//' + url;
+  }
 
-    var protocol = url.split(/^(\w+\:)?\/\//);
+  const protocol = url.split(/^(\w+\:)?\/\//);
 
-    var splitted = (function() {
-      var tmp = protocol[2].replace(/^\/\//, '').split('/');
-      return {
-        proto: (modify.protocol || protocol[1] || window.location.protocol || '').replace(/\:$/, ''),
-        host: modify.host || tmp.shift(),
-        path: modify.path || '/' + tmp.join('/')
-      };
-    })();
-
-    function _parts() {
-      var parts = [splitted.proto, '://'];
-
-      if ( modify.username ) {
-        var authstr = String(modify.username) + ':' + String(modify.password);
-        parts.push(authstr);
-        parts.push('@');
-      }
-
-      parts.push(splitted.host);
-      parts.push(splitted.path);
-      return parts.join('');
-    }
-
+  const splitted = (() => {
+    const tmp = protocol[2].replace(/^\/\//, '').split('/');
     return {
-      protocol: splitted.proto,
-      host: splitted.host,
-      path: splitted.path,
-      url: _parts()
+      proto: (modify.protocol || protocol[1] || window.location.protocol || '').replace(/\:$/, ''),
+      host: modify.host || tmp.shift(),
+      path: modify.path || '/' + tmp.join('/')
     };
+  })();
+
+  function _parts() {
+    const parts = [splitted.proto, '://'];
+
+    if ( modify.username ) {
+      const authstr = String(modify.username) + ':' + String(modify.password);
+      parts.push(authstr);
+      parts.push('@');
+    }
+
+    parts.push(splitted.host);
+    parts.push(splitted.path);
+    return parts.join('');
+  }
+
+  return {
+    protocol: splitted.proto,
+    host: splitted.host,
+    path: splitted.path,
+    url: _parts()
   };
+}
 
-  /////////////////////////////////////////////////////////////////////////////
-  // OBJECT HELPERS
-  /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// OBJECT HELPERS
+/////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Wrapper for merging function argument dictionaries
-   *
-   * @function argumentDefaults
-   * @memberof OSjs.Utils
-   *
-   * @param  {Object}   args      Given function Dictionary
-   * @param  {Object}   defaults  Defaults Dictionary
-   * @param  {Boolean}  undef     Check with 'undefined'
-   * @return {Object}
-   */
-  OSjs.Utils.argumentDefaults = function Utils_argumentDefaults(args, defaults, undef) {
-    args = args || {};
-    Object.keys(defaults).forEach(function(key) {
-      if ( typeof defaults[key] === 'boolean' || typeof defaults[key] === 'number' ) {
-        if ( typeof args[key] === 'undefined' || args[key] === null ) {
-          args[key] = defaults[key];
-        }
-      } else {
-        args[key] = args[key] || defaults[key];
+/**
+ * Wrapper for merging function argument dictionaries
+ *
+ * @param  {Object}   args      Given function Dictionary
+ * @param  {Object}   defaults  Defaults Dictionary
+ * @param  {Boolean}  undef     Check with 'undefined'
+ * @return {Object}
+ */
+export function argumentDefaults(args, defaults, undef) {
+  args = args || {};
+  Object.keys(defaults).forEach((key) => {
+    if ( typeof defaults[key] === 'boolean' || typeof defaults[key] === 'number' ) {
+      if ( typeof args[key] === 'undefined' || args[key] === null ) {
+        args[key] = defaults[key];
       }
-    });
-    return args;
-  };
+    } else {
+      args[key] = args[key] || defaults[key];
+    }
+  });
+  return args;
+}
 
-  /**
-   * Deep-merge to objects
-   *
-   * @function mergeObject
-   * @memberof OSjs.Utils
-   *
-   * @param   {Object}      obj1                    Object to merge to
-   * @param   {Object}      obj2                    Object to merge with
-   * @param   {Object}      [opts]                  Options
-   * @param   {Bollean}     [opts.overwrite=true]   Overwrite existing
-   *
-   * @return  {Object}                The merged object
-   */
-  OSjs.Utils.mergeObject = function Utils_mergeObject(obj1, obj2, opts) {
-    opts = opts || {};
+/**
+ * Deep-merge to objects
+ *
+ * @param   {Object}      obj1                    Object to merge to
+ * @param   {Object}      obj2                    Object to merge with
+ * @param   {Object}      [opts]                  Options
+ * @param   {Bollean}     [opts.overwrite=true]   Overwrite existing
+ *
+ * @return  {Object}                The merged object
+ */
+export function mergeObject(obj1, obj2, opts) {
+  opts = opts || {};
 
-    for ( var p in obj2 ) {
-      if ( obj2.hasOwnProperty(p) ) {
-        try {
-          if (opts.overwrite === false && obj1.hasOwnProperty(p)) {
-            continue;
-          }
+  for ( let p in obj2 ) {
+    if ( obj2.hasOwnProperty(p) ) {
+      try {
+        if (opts.overwrite === false && obj1.hasOwnProperty(p)) {
+          continue;
+        }
 
-          if ( obj2[p].constructor === Object ) {
-            obj1[p] = OSjs.Utils.mergeObject(obj1[p], obj2[p]);
-          } else {
-            obj1[p] = obj2[p];
-          }
-        } catch (e) {
+        if ( obj2[p].constructor === Object ) {
+          obj1[p] = mergeObject(obj1[p], obj2[p]);
+        } else {
           obj1[p] = obj2[p];
         }
+      } catch (e) {
+        obj1[p] = obj2[p];
       }
     }
-    return obj1;
-  };
+  }
+  return obj1;
+}
 
-  /**
-   * Clone a object
-   *
-   * @function cloneObject
-   * @memberof OSjs.Utils
-   *
-   * @param   {Object}      o                     The object to clone
-   * @param   {Boolean}     [alternative=false]   Do a programatic deep clone approach
-   *
-   * @return  {Object}            An identical object
-   */
-  OSjs.Utils.cloneObject = function Utils_cloneObject(o, alternative) {
-    function _clone(i) {
-      if ( typeof i !== 'object' || i === null ) {
-        return i;
-      } else if ( i instanceof Array ) {
-        return i.map(_clone);
-      }
-
-      var iter = {};
-      Object.keys(i).forEach(function(k) {
-        iter[k] = _clone(i[k]);
-      });
-      return iter;
+/**
+ * Clone a object
+ *
+ * @param   {Object}      o                     The object to clone
+ * @param   {Boolean}     [alternative=false]   Do a programatic deep clone approach
+ *
+ * @return  {Object}            An identical object
+ */
+export function cloneObject(o, alternative) {
+  function _clone(i) {
+    if ( typeof i !== 'object' || i === null ) {
+      return i;
+    } else if ( i instanceof Array ) {
+      return i.map(_clone);
     }
 
-    if ( alternative ) {
-      return _clone(o);
-    }
-
-    return JSON.parse(JSON.stringify(o, function(key, value) {
-      if ( value && typeof value === 'object' && value.tagName ) {
-        return window.undefined;
-      }
-      return value;
-    }));
-  };
-
-  /**
-   * Extends the given object
-   *
-   * <pre>
-   * If you give a `parentObj` and a prototype method exists
-   * in that target, the child object method will be wrapped
-   * to make sure the super object method is called.
-   * </pre>
-   *
-   * @example
-   * Utils.extend({
-   *  a: 'foo'
-   * }, {
-   *  b: 'bar'
-   * }); // -> {a: 'foo', b: 'bar'}
-   *
-   * @function extend
-   * @memberof OSjs.Utils
-   *
-   * @param {Object}    obj          The destination
-   * @param {Object}    methods      The source
-   */
-  OSjs.Utils.extend = function Utils_extend(obj, methods) {
-    if ( obj && methods ) {
-      Object.keys(methods).forEach(function(k) {
-        obj[k] = methods[k];
-      });
-    }
-  };
-
-  /**
-   * Extends the given object by prototype chain
-   *
-   * @example
-   * var MyApp = Utils.inherit(OSjs.Core.Application, function(name, args, metadata) {
-   *  Application.apply(this, arguments);
-   * }, {
-   *  init: function() {
-   *    // then do your stuff here
-   *  }
-   * });
-   *
-   * @function inherit
-   * @memberof OSjs.Utils
-   * @see OSjs.Utils.extend
-   *
-   * @param {Object}    to        The class to inherit
-   * @param {Object}    from      The child class
-   * @param {Object}    [extend]  Extend the class with these methods
-   * @return {Object}
-   */
-  OSjs.Utils.inherit = function Utils_inherit(to, from, extend) {
-    from = from || function() {
-      /* eslint no-invalid-this: "off" */
-      to.apply(this, arguments);
-    };
-
-    from.prototype = Object.create(to.prototype);
-    from.constructor = to;
-
-    if ( extend ) {
-      OSjs.Utils.extend(from.prototype, extend);
-    }
-
-    return from;
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // COLORS
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Convert HEX to RGB
-   *
-   * @function convertToRGB
-   * @memberof OSjs.Utils
-   *
-   * @param   {String}      hex     The hex string (with #)
-   *
-   * @return  {Object}              RGB in form of r, g, b
-   */
-  OSjs.Utils.convertToRGB = function Utils_convertToRGB(hex) {
-    var rgb = parseInt(hex.replace('#', ''), 16);
-    var val = {};
-    val.r = (rgb & (255 << 16)) >> 16;
-    val.g = (rgb & (255 << 8)) >> 8;
-    val.b = (rgb & 255);
-    return val;
-  };
-
-  /**
-   * Convert RGB to HEX
-   *
-   * @function convertToHEX
-   * @memberof OSjs.Utils
-   *
-   * @param   {Number|Object}    r         Red value or RGB object
-   * @param   {Number|undefined} [g]       Green value
-   * @param   {Number|undefined} [b]       Blue value
-   *
-   * @return  {String}              Hex string (with #)
-   */
-  OSjs.Utils.convertToHEX = function Utils_convertToHEX(r, g, b) {
-    if ( typeof r === 'object' ) {
-      g = r.g;
-      b = r.b;
-      r = r.r;
-    }
-
-    if ( typeof r === 'undefined' || typeof g === 'undefined' || typeof b === 'undefined' ) {
-      throw new Error('Invalid RGB supplied to convertToHEX()');
-    }
-
-    var hex = [
-      parseInt(r, 10).toString( 16 ),
-      parseInt(g, 10).toString( 16 ),
-      parseInt(b, 10).toString( 16 )
-    ];
-
-    Object.keys(hex).forEach(function(i) {
-      if ( hex[i].length === 1 ) {
-        hex[i] = '0' + hex[i];
-      }
+    const iter = {};
+    Object.keys(i).forEach((k) => {
+      iter[k] = _clone(i[k]);
     });
+    return iter;
+  }
 
-    return '#' + hex.join('').toUpperCase();
-  };
+  if ( alternative ) {
+    return _clone(o);
+  }
 
-  /**
-   * Ivert HEX color
-   *
-   * @function invertHEX
-   * @memberof OSjs.Utils
-   * @link http://stackoverflow.com/a/9601429/1236086
-   *
-   * @param   {String}      hex     Hex string (With #)
-   *
-   * @return  {String}              Inverted hex (With #)
-   *
-   */
-  OSjs.Utils.invertHEX = function Utils_invertHEX(hex) {
-    var color = parseInt(hex.replace('#', ''), 16);
-    color = 0xFFFFFF ^ color;
-    color = color.toString(16);
-    color = ('000000' + color).slice(-6);
-    return '#' + color;
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // ASYNC
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Run an async queue in series
-   *
-   * @function asyncs
-   * @memberof OSjs.Utils
-   *
-   * @param   {Array}       queue     The queue
-   * @param   {Function}    onentry   Callback on step => fn(entry, index, fnNext)
-   * @param   {Function}    ondone    Callback on done => fn()
-   */
-  OSjs.Utils.asyncs = function Utils_asyncs(queue, onentry, ondone) {
-    onentry = onentry || function(e, i, n) {
-      return n();
-    };
-    ondone = ondone || function() {};
-
-    var finished = [];
-    var isdone = false;
-
-    (function next(i) {
-      // Ensure that the given index is not run again!
-      // This might occur if something is out of time
-      if ( isdone || finished.indexOf(i) !== -1 ) {
-        return;
-      }
-      finished.push(i);
-
-      if ( i >= queue.length ) {
-        isdone = true;
-        ondone();
-        return;
-      }
-
-      try {
-        onentry(queue[i], i, function onAsyncIter() {
-          next(i + 1);
-        });
-      } catch ( e ) {
-        console.warn('Utils::asyncs()', 'Exception while stepping', e.stack, e);
-        next(i + 1);
-      }
-    })(0);
-  };
-
-  /**
-   * Run an async queue in parallel
-   *
-   * @function asyncp
-   * @memberof OSjs.Utils
-   *
-   * @param   {Array}       queue         The queue
-   * @param   {Object}      [opts]        Options
-   * @param   {Number}      [opts.max=3]  Maximum number of running entries
-   * @param   {Function}    onentry       Callback on step => fn(entry, index, fnNext)
-   * @param   {Function}    ondone        Callback on done => fn()
-   */
-  OSjs.Utils.asyncp = function Utils_asyncp(queue, opts, onentry, ondone) {
-    opts = opts || {};
-
-    var running = 0;
-    var max = opts.max || 3;
-    var qleft = Object.keys(queue);
-    var finished = [];
-    var isdone = false;
-
-    function spawn(i, cb) {
-      function _done() {
-        running--;
-        cb();
-      }
-
-      if ( finished.indexOf(i) !== -1 ) {
-        return;
-      }
-      finished.push(i);
-
-      running++;
-      try {
-        onentry(queue[i], i, _done);
-      } catch ( e ) {
-        console.warn('Utils::asyncp()', 'Exception while stepping', e.stack, e);
-        _done();
-      }
+  return JSON.parse(JSON.stringify(o, (key, value) => {
+    if ( value && typeof value === 'object' && value.tagName ) {
+      return window.undefined;
     }
+    return value;
+  }));
+}
 
-    (function check() {
-      if ( !qleft.length ) {
-        if ( running || isdone ) {
-          return;
-        }
-        isdone = true;
-        ondone();
-        return;
-      }
+/////////////////////////////////////////////////////////////////////////////
+// COLORS
+/////////////////////////////////////////////////////////////////////////////
 
-      var d = Math.min(qleft.length, max - running);
-      for ( var i = 0; i < d; i++ ) {
-        spawn(qleft.shift(), check);
-      }
-    })();
-  };
+/**
+ * Convert HEX to RGB
+ *
+ * @param   {String}      hex     The hex string (with #)
+ *
+ * @return  {Object}              RGB in form of r, g, b
+ */
+export function convertToRGB(hex) {
+  const rgb = parseInt(hex.replace('#', ''), 16);
+  const val = {};
+  val.r = (rgb & (255 << 16)) >> 16;
+  val.g = (rgb & (255 << 8)) >> 8;
+  val.b = (rgb & 255);
+  return val;
+}
 
-})();
+/**
+ * Convert RGB to HEX
+ *
+ * @param   {Number|Object}    r         Red value or RGB object
+ * @param   {Number|undefined} [g]       Green value
+ * @param   {Number|undefined} [b]       Blue value
+ *
+ * @return  {String}              Hex string (with #)
+ */
+export function convertToHEX(r, g, b) {
+  if ( typeof r === 'object' ) {
+    g = r.g;
+    b = r.b;
+    r = r.r;
+  }
+
+  if ( typeof r === 'undefined' || typeof g === 'undefined' || typeof b === 'undefined' ) {
+    throw new Error('Invalid RGB supplied to convertToHEX()');
+  }
+
+  const hex = [
+    parseInt(r, 10).toString( 16 ),
+    parseInt(g, 10).toString( 16 ),
+    parseInt(b, 10).toString( 16 )
+  ];
+
+  Object.keys(hex).forEach((i) => {
+    if ( hex[i].length === 1 ) {
+      hex[i] = '0' + hex[i];
+    }
+  });
+
+  return '#' + hex.join('').toUpperCase();
+}
+
+/**
+ * Ivert HEX color
+ * @link http://stackoverflow.com/a/9601429/1236086
+ *
+ * @param   {String}      hex     Hex string (With #)
+ *
+ * @return  {String}              Inverted hex (With #)
+ *
+ */
+export function invertHEX(hex) {
+  let color = parseInt(hex.replace('#', ''), 16);
+  color = 0xFFFFFF ^ color;
+  color = color.toString(16);
+  color = ('000000' + color).slice(-6);
+  return '#' + color;
+}

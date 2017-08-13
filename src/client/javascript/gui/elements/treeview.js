@@ -27,265 +27,270 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, VFS, GUI) {
-  'use strict';
+import * as DOM from 'utils/dom';
+import * as GUI from 'utils/gui';
+import GUIDataView from 'gui/dataview';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // HELPERS
-  /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// HELPERS
+/////////////////////////////////////////////////////////////////////////////
 
-  function createEntry(cls, e) {
-    var entry = GUI.Helpers.createElement('gui-tree-view-entry', e, ['entries']);
-    return entry;
+function createEntry(cls, e) {
+  const entry = GUI.createElement('gui-tree-view-entry', e, ['entries']);
+  return entry;
+}
+
+function handleItemExpand(ev, el, root, expanded) {
+  if ( typeof expanded === 'undefined' ) {
+    expanded = !DOM.$hasClass(root, 'gui-expanded');
   }
 
-  function handleItemExpand(ev, el, root, expanded) {
-    if ( typeof expanded === 'undefined' ) {
-      expanded = !Utils.$hasClass(root, 'gui-expanded');
+  DOM.$removeClass(root, 'gui-expanded');
+  if ( expanded ) {
+    DOM.$addClass(root, 'gui-expanded');
+  }
+
+  const children = root.children;
+  for ( let i = 0; i < children.length; i++ ) {
+    if ( children[i].tagName.toLowerCase() === 'gui-tree-view-entry' ) {
+      children[i].style.display = expanded ? 'block' : 'none';
     }
+  }
 
-    Utils.$removeClass(root, 'gui-expanded');
-    if ( expanded ) {
-      Utils.$addClass(root, 'gui-expanded');
-    }
+  const selected = {
+    index: DOM.$index(root),
+    data: GUI.getViewNodeValue(root)
+  };
 
-    var children = root.children;
-    for ( var i = 0; i < children.length; i++ ) {
-      if ( children[i].tagName.toLowerCase() === 'gui-tree-view-entry' ) {
-        children[i].style.display = expanded ? 'block' : 'none';
-      }
-    }
+  root.setAttribute('data-expanded', String(expanded));
+  root.setAttribute('aria-expanded', String(expanded));
 
-    var selected = {
-      index: Utils.$index(root),
-      data: GUI.Helpers.getViewNodeValue(root)
-    };
+  el.dispatchEvent(new CustomEvent('_expand', {detail: {entries: [selected], expanded: expanded, element: root}}));
+} // handleItemExpand()
 
-    root.setAttribute('data-expanded', String(expanded));
-    root.setAttribute('aria-expanded', String(expanded));
+function initEntry(cls, sel) {
+  const el = cls.$element;
+  if ( sel._rendered ) {
+    return;
+  }
+  sel._rendered = true;
 
-    el.dispatchEvent(new CustomEvent('_expand', {detail: {entries: [selected], expanded: expanded, element: root}}));
-  } // handleItemExpand()
+  const icon = sel.getAttribute('data-icon');
+  const label = GUI.getLabel(sel);
+  const expanded = el.getAttribute('data-expanded') === 'true';
+  const next = sel.querySelector('gui-tree-view-entry');
+  const container = document.createElement('div');
+  const dspan = document.createElement('span');
 
-  function initEntry(cls, sel) {
-    var el = cls.$element;
-    if ( sel._rendered ) {
-      return;
-    }
-    sel._rendered = true;
+  function onDndEnter(ev) {
+    ev.stopPropagation();
+    DOM.$addClass(sel, 'dnd-over');
+  }
 
-    var icon = sel.getAttribute('data-icon');
-    var label = GUI.Helpers.getLabel(sel);
-    var expanded = el.getAttribute('data-expanded') === 'true';
-    var next = sel.querySelector('gui-tree-view-entry');
-    var container = document.createElement('div');
-    var dspan = document.createElement('span');
+  function onDndLeave(ev) {
+    DOM.$removeClass(sel, 'dnd-over');
+  }
 
-    function onDndEnter(ev) {
-      ev.stopPropagation();
-      Utils.$addClass(sel, 'dnd-over');
-    }
+  if ( icon ) {
+    dspan.style.backgroundImage = 'url(' + icon + ')';
+    DOM.$addClass(dspan, 'gui-has-image');
+  }
+  dspan.appendChild(document.createTextNode(label));
 
-    function onDndLeave(ev) {
-      Utils.$removeClass(sel, 'dnd-over');
-    }
+  container.appendChild(dspan);
 
-    if ( icon ) {
-      dspan.style.backgroundImage = 'url(' + icon + ')';
-      Utils.$addClass(dspan, 'gui-has-image');
-    }
-    dspan.appendChild(document.createTextNode(label));
+  if ( next ) {
+    DOM.$addClass(sel, 'gui-expandable');
+    const expander = document.createElement('gui-tree-view-expander');
+    sel.insertBefore(container, next);
+    sel.insertBefore(expander, container);
+  } else {
+    sel.appendChild(container);
+  }
 
-    container.appendChild(dspan);
+  if ( String(sel.getAttribute('data-draggable')) === 'true' ) {
+    GUI.createDraggable(container, (() => {
+      let data = {};
+      try {
+        data = JSON.parse(sel.getAttribute('data-value'));
+      } catch ( e ) {}
 
-    if ( next ) {
-      Utils.$addClass(sel, 'gui-expandable');
-      var expander = document.createElement('gui-tree-view-expander');
-      sel.insertBefore(container, next);
-      sel.insertBefore(expander, container);
-    } else {
-      sel.appendChild(container);
-    }
+      return {data: data};
+    })());
+  }
 
-    if ( String(sel.getAttribute('data-draggable')) === 'true' ) {
-      GUI.Helpers.createDraggable(container, (function() {
-        var data = {};
+  if ( String(sel.getAttribute('data-droppable')) === 'true' ) {
+    let timeout;
+    GUI.createDroppable(container, {
+      onEnter: onDndEnter,
+      onOver: onDndEnter,
+      onLeave: onDndLeave,
+      onDrop: onDndLeave,
+      onItemDropped: (ev, eel, item) => {
+        ev.stopPropagation();
+        ev.preventDefault();
+
+        timeout = clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          DOM.$removeClass(sel, 'dnd-over');
+        }, 10);
+
+        let dval = {};
         try {
-          data = JSON.parse(sel.getAttribute('data-value'));
+          dval = JSON.parse(eel.parentNode.getAttribute('data-value'));
         } catch ( e ) {}
 
-        return {data: data};
-      })());
-    }
-
-    if ( String(sel.getAttribute('data-droppable')) === 'true' ) {
-      var timeout;
-      GUI.Helpers.createDroppable(container, {
-        onEnter: onDndEnter,
-        onOver: onDndEnter,
-        onLeave: onDndLeave,
-        onDrop: onDndLeave,
-        onItemDropped: function(ev, eel, item) {
-          ev.stopPropagation();
-          ev.preventDefault();
-
-          timeout = clearTimeout(timeout);
-          timeout = setTimeout(function() {
-            Utils.$removeClass(sel, 'dnd-over');
-          }, 10);
-
-          var dval = {};
-          try {
-            dval = JSON.parse(eel.parentNode.getAttribute('data-value'));
-          } catch ( e ) {}
-
-          el.dispatchEvent(new CustomEvent('_drop', {detail: {
-            src: item.data,
-            dest: dval
-          }}));
-        }
-      });
-    }
-
-    handleItemExpand(null, el, sel, expanded);
-
-    cls.bindEntryEvents(sel, 'gui-tree-view-entry');
+        el.dispatchEvent(new CustomEvent('_drop', {detail: {
+          src: item.data,
+          dest: dval
+        }}));
+      }
+    });
   }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+  handleItemExpand(null, el, sel, expanded);
 
-  /**
-   * Element: 'gui-tree-view'
-   *
-   * A tree view for nested content
-   *
-   * For more properties and events etc, see 'dataview'
-   *
-   * @example
-   *
-   *   .add({
-   *      label: "Label",
-   *      icon: "Optional icon path",
-   *      value: "something or JSON or whatever",
-   *      entries: [] // Recurse :)
-   *   })
-   *
-   * @constructor TreeView
-   * @extends OSjs.GUI.DataView
-   * @memberof OSjs.GUI.Elements
-   */
-  GUI.Element.register({
-    parent: GUI.DataView,
-    tagName: 'gui-tree-view'
-  }, {
+  cls.bindEntryEvents(sel, 'gui-tree-view-entry');
+}
 
-    values: function() {
-      var el = this.$element;
-      return this.getSelected(el.querySelectorAll('gui-tree-view-entry'));
-    },
+/////////////////////////////////////////////////////////////////////////////
+// EXPORTS
+/////////////////////////////////////////////////////////////////////////////
 
-    build: function(applyArgs) {
-      var el = this.$element;
-      var body = el.querySelector('gui-tree-view-body');
-      var found = !!body;
-      var self = this;
+/**
+ * Element: 'gui-tree-view'
+ *
+ * A tree view for nested content
+ *
+ * For more properties and events etc, see 'dataview'
+ *
+ * @example
+ *
+ *   .add({
+ *      label: "Label",
+ *      icon: "Optional icon path",
+ *      value: "something or JSON or whatever",
+ *      entries: [] // Recurse :)
+ *   })
+ */
+class GUITreeView extends GUIDataView {
+  static register() {
+    return super.register({
+      parent: GUIDataView,
+      tagName: 'gui-tree-view'
+    }, this);
+  }
 
-      if ( !body ) {
-        body = document.createElement('gui-tree-view-body');
-        el.appendChild(body);
+  values() {
+    const el = this.$element;
+    return this.getSelected(el.querySelectorAll('gui-tree-view-entry'));
+  }
+
+  build(applyArgs) {
+    const el = this.$element;
+
+    let body = el.querySelector('gui-tree-view-body');
+    let found = !!body;
+
+    if ( !body ) {
+      body = document.createElement('gui-tree-view-body');
+      el.appendChild(body);
+    }
+
+    body.setAttribute('role', 'group');
+    el.setAttribute('role', 'tree');
+    el.setAttribute('aria-multiselectable', body.getAttribute('data-multiselect') || 'false');
+
+    el.querySelectorAll('gui-tree-view-entry').forEach((sel, idx) => {
+      sel.setAttribute('aria-expanded', 'false');
+
+      if ( !found ) {
+        body.appendChild(sel);
       }
 
-      body.setAttribute('role', 'group');
-      el.setAttribute('role', 'tree');
-      el.setAttribute('aria-multiselectable', body.getAttribute('data-multiselect') || 'false');
+      sel.setAttribute('role', 'treeitem');
+      initEntry(this, sel);
+    });
 
-      el.querySelectorAll('gui-tree-view-entry').forEach(function(sel, idx) {
-        sel.setAttribute('aria-expanded', 'false');
+    return super.build(...arguments);
+  }
 
-        if ( !found ) {
-          body.appendChild(sel);
-        }
+  get(param, value, arg) {
+    if ( param === 'entry' ) {
+      const body = this.$element.querySelector('gui-tree-view-body');
+      return this.getEntry(body.querySelectorAll('gui-tree-view-entry'), value, arg);
+    }
+    return super.get(...arguments);
+  }
 
-        sel.setAttribute('role', 'treeitem');
-        initEntry(self, sel);
-      });
-
-      return GUI.DataView.prototype.build.apply(this, arguments);
-    },
-
-    get: function(param, value, arg) {
-      if ( param === 'entry' ) {
-        var body = this.$element.querySelector('gui-tree-view-body');
-        return this.getEntry(body.querySelectorAll('gui-tree-view-entry'), value, arg);
-      }
-      return GUI.DataView.prototype.get.apply(this, arguments);
-    },
-
-    set: function(param, value, arg, arg2) {
-      var el = this.$element;
-      var body = el.querySelector('gui-tree-view-body');
-      if ( param === 'selected' || param === 'value' ) {
-        this.setSelected(body, body.querySelectorAll('gui-tree-view-entry'), value, arg, arg2);
-        return this;
-      }
-      return GUI.DataView.prototype.set.apply(this, arguments);
-    },
-
-    clear: function() {
-      var body = this.$element.querySelector('gui-tree-view-body');
-      return GUI.DataView.prototype.clear.call(this, body);
-    },
-
-    add: function(entries) {
-      var body = this.$element.querySelector('gui-tree-view-body');
-      var parentNode = body;
-      var adder = GUI.DataView.prototype.add;
-      var self = this;
-
-      function recurse(a, root, level) {
-        adder.call(self, a, function(cls, e) {
-          if ( e ) {
-            if ( e.parentNode ) {
-              delete e.parentNode;
-            }
-
-            var entry = createEntry(self, e);
-            root.appendChild(entry);
-
-            if ( e.entries ) {
-              recurse(e.entries, entry, level + 1);
-            }
-
-            initEntry(self, entry);
-          }
-        });
-      }
-
-      if ( typeof entries === 'object' && !(entries instanceof Array) && Object.keys(entries).length ) {
-        parentNode = entries.parentNode || body;
-        entries = entries.entries || [];
-      }
-
-      recurse(entries, parentNode, 0);
-
-      return this;
-    },
-
-    remove: function(entries) {
-      return GUI.DataView.prototype.remove.call(this, entries, 'gui-tree-view-entry');
-    },
-
-    patch: function(entries) {
-      var body = this.$element.querySelector('gui-tree-view-body');
-      return GUI.DataView.prototype.patch.call(this, entries, 'gui-list-view-entry', body, createEntry, initEntry);
-    },
-
-    expand: function(entry) {
-      handleItemExpand(entry.ev, this.$element, entry.entry);
+  set(param, value, arg, arg2) {
+    const el = this.$element;
+    const body = el.querySelector('gui-tree-view-body');
+    if ( param === 'selected' || param === 'value' ) {
+      this.setSelected(body, body.querySelectorAll('gui-tree-view-entry'), value, arg, arg2);
       return this;
     }
-  });
+    return super.set(...arguments);
+  }
 
-})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);
+  clear() {
+    const body = this.$element.querySelector('gui-tree-view-body');
+    return super.clear(body);
+  }
+
+  add(entries) {
+    const body = this.$element.querySelector('gui-tree-view-body');
+
+    let parentNode = body;
+
+    const recurse = (a, root, level) => {
+      super.add(a, (cls, e) => {
+        if ( e ) {
+          if ( e.parentNode ) {
+            delete e.parentNode;
+          }
+
+          const entry = createEntry(this, e);
+          root.appendChild(entry);
+
+          if ( e.entries ) {
+            recurse(e.entries, entry, level + 1);
+          }
+
+          initEntry(this, entry);
+        }
+      });
+    };
+
+    if ( typeof entries === 'object' && !(entries instanceof Array) && Object.keys(entries).length ) {
+      parentNode = entries.parentNode || body;
+      entries = entries.entries || [];
+    }
+
+    recurse(entries, parentNode, 0);
+
+    return this;
+  }
+
+  remove(entries) {
+    return super.remove(entries, 'gui-tree-view-entry');
+  }
+
+  patch(entries) {
+    const body = this.$element.querySelector('gui-tree-view-body');
+    return super.patch(entries, 'gui-list-view-entry', body, createEntry, initEntry);
+  }
+
+  expand(entry) {
+    handleItemExpand(entry.ev, this.$element, entry.entry);
+    return this;
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// EXPORTS
+/////////////////////////////////////////////////////////////////////////////
+
+export default {
+  GUITreeView: GUITreeView
+};

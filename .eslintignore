@@ -13,4 +13,3 @@ vendor/*
 dist/**
 vfs/**
 doc/**
-bin/**

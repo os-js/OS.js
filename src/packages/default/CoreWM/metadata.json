@@ -26,71 +26,7 @@
   },
   "preload": [
     {
-      "src": "scheme.html",
-      "type": "scheme"
-    },
-    {
-      "src": "menu.js",
-      "type": "javascript"
-    },
-    {
-      "src": "iconview.js",
-      "type": "javascript"
-    },
-    {
-      "src": "windowswitcher.js",
-      "type": "javascript"
-    },
-    {
-      "src": "panel.js",
-      "type": "javascript"
-    },
-    {
-      "src": "widget.js",
-      "type": "javascript"
-    },
-    {
-      "src": "panelitems/buttons.js",
-      "type": "javascript"
-    },
-    {
-      "src": "panelitems/clock.js",
-      "type": "javascript"
-    },
-    {
-      "src": "panelitems/notificationarea.js",
-      "type": "javascript"
-    },
-    {
-      "src": "panelitems/windowlist.js",
-      "type": "javascript"
-    },
-    {
-      "src": "panelitems/weather.js",
-      "type": "javascript"
-    },
-    {
-      "src": "panelitems/appmenu.js",
-      "type": "javascript"
-    },
-    {
-      "src": "panelitems/search.js",
-      "type": "javascript"
-    },
-    {
-      "src": "widgets/analogclock.js",
-      "type": "javascript"
-    },
-    {
-      "src": "widgets/digitalclock.js",
-      "type": "javascript"
-    },
-    {
       "src": "main.js",
-      "type": "javascript"
-    },
-    {
-      "src": "locales.js",
       "type": "javascript"
     },
     {

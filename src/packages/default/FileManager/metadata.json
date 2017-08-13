@@ -38,16 +38,8 @@
       "type": "javascript"
     },
     {
-      "src": "locales.js",
-      "type": "javascript"
-    },
-    {
       "src": "main.css",
       "type": "stylesheet"
-    },
-    {
-      "src": "scheme.html",
-      "type": "scheme"
     }
   ]
 }

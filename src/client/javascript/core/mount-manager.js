@@ -27,492 +27,233 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, VFS, API) {
-  'use strict';
+
+import Promise from 'bluebird';
+
+import Mountpoint from 'vfs/mountpoint';
+import {_} from 'core/locales';
+import {getConfig} from 'core/config';
+
+function loadTransports() {
+  const list = ['web', 'osjs', 'dist', 'applications', 'webdav', 'google-drive', 'onedrive'];
+  const result = {};
+  list.forEach((name) => {
+    result[name] = require(`vfs/transports/${name}`).default;
+  });
+  return result;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// MOUNT MANAGER
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Mount Manager Class
+ *
+ * @desc Class for maintaining mountpoints and handling
+ *       requests over to VFS.
+ */
+class MountManager {
 
   /**
-   * A mountpoint object for use in MountManager
-   * @property {String}     name                      Mountpoint Name (unique)
-   * @property {String}     description               General description
-   * @property {String}     icon                      Icon
-   * @property {String}     root                      The root path (ex: home:///)
-   * @property {RegExp}     match                     Matches a path given in VFS methods to this
-   * @property {String}     transport                 Transporter name (OSjs/WebDAV)
-   * @property {Boolean}    [readOnly=false]          If this is a readonly point
-   * @property {Boolean}    [visible=true]            If this is visible in the UIs
-   * @property {Boolean}    [searchable=true]         If you can search for files in this module
-   * @property {Boolean}    [internal=false]          If this is a internal module
-   * @property {Function}   [mount]                   Method for mounting (INTERNAL)
-   * @property {Function}   [unmount]                 Method for unmounting (INTERNAL)
-   * @property {Function}   [enabled]                 Method for getting enabled state (INTERNAL)
-   * @property {Function}   [request]                 Method for making a request (INTERNAL)
-   * @property {Object}     options                   Connection options (for external services like webdav)
-   * @property {String}     [options.host]            Host (full URL)
-   * @property {String}     [options.username]        Username
-   * @property {String}     [options.password]        Password
-   * @property {Boolean}    [options.cors=false]      If CORS is enabled
-   * @typedef Mountpoint
+   * Constructs a new MountManager
    */
-
-  var DefaultModule = 'home';
-
-  /////////////////////////////////////////////////////////////////////////////
-  // MOUNT MANAGER
-  /////////////////////////////////////////////////////////////////////////////
+  constructor() {
+    this.inited = false;
+    this.mountpoints = [];
+    this.transports = loadTransports();
+  }
 
   /**
-   * Mount Manager Class
+   * Initializes MountManager
    *
-   * @summary Class for maintaining mountpoints
-   *
-   * <pre><b>
-   * YOU CAN ONLY GET AN INSTANCE WITH `Core.getMountManager()`
-   * </b></pre>
-   *
-   * @example
-   * OSjs.Core.getMountManager()
-   *
-   * @constructor
-   * @memberof OSjs.Core
-   * @see OSjs.Core.getMountManager
+   * @return {Promise<Boolean, Error>}
    */
-  var MountManager = (function() {
-    var _queue = [];
-    var _inited = false;
-    var _modules = {};
+  init() {
+    if ( this.inited ) {
+      return Promise.resolve();
+    }
 
-    /*
-     * Checks if given transport mount is read-only
-     */
-    function isReadOnly(name, params, args) {
-      if ( params.readOnly ) {
-        var restricted = ['upload', 'unlink', 'write', 'mkdir', 'move', 'trash', 'untrash', 'emptyTrash'];
+    this.inited = true;
 
-        if ( name === 'copy' ) {
-          var dest = MountManager.getModuleFromPath(args[1].path, false, true);
-          return dest.internal !== params.internal;
+    const config = getConfig('VFS.Mountpoints', {});
+    const enabled = Object.keys(config).filter((name) => {
+      return config[name].enabled !== false;
+    });
+
+    return Promise.each(enabled, (name) => {
+      return new Promise((resolve) => {
+        const iter = Object.assign({
+          name: name,
+          dynamic: false
+        }, config[name]);
+
+        this.add(iter, true, {
+          notify: false
+        }).then(resolve).catch((e) => {
+          console.warn('Failed to init VFS Mountpoint', name, iter, String(e));
+          return resolve(false); // We skip errors on init
+        });
+      });
+    });
+  }
+
+  /**
+   * Adds a list of mountpoints
+   *
+   * @param {Mountpoint[]|Object[]} mountPoints Mountpoints
+   * @return {Promise<Boolean, Error>}
+   */
+  addList(mountPoints) {
+    return Promise.each(mountPoints, (iter) => this.add(iter));
+  }
+
+  /**
+   * Adds a mountpoint
+   *
+   * @param {Mountpoint|Object} point   The mountpoint
+   * @param {Boolean}           mount   Mounts the mountpoint
+   * @param {Object}            options Mount options
+   * @return {Promise<Mountpoint, Error>}
+   */
+  add(point, mount, options) {
+
+    try {
+      if ( !(point instanceof Mountpoint) ) {
+
+        if ( typeof point.transport === 'string' ) {
+          const T = this.transports[point.transport];
+          if ( !T ) {
+            return Promise.reject(new Error('No such transport: ' + point.transport));
+          }
+          point.transport = new T();
         }
 
-        if ( restricted.indexOf(name) !== -1 ) {
+        point = new Mountpoint(point);
+      }
+
+      const found = this.mountpoints.filter((m) => {
+        if ( m.option('name') === point.option('name') ) {
+          return true;
+        }
+        if ( m.option('root') === point.option('root') ) {
+          return true;
+        }
+        return false;
+      });
+
+      if ( found.length ) {
+        return Promise.reject(new Error(_('ERR_VFSMODULE_ALREADY_MOUNTED_FMT', point.option('name'))));
+      }
+
+      this.mountpoints.push(point);
+    } catch ( e ) {
+      return Promise.reject(e);
+    }
+
+    console.info('Mounting', point);
+
+    return new Promise((resolve, reject) => {
+      if ( mount ) {
+        point.mount().then(() => {
+          return resolve(point);
+        }).catch(reject);
+      } else {
+        resolve(point);
+      }
+    });
+  }
+
+  /**
+   * Removes a mountpoint
+   *
+   * @param {String}      moduleName      Name of the mountpoint
+   * @param {Object}      options         Unmount options
+   * @return {Promise<Boolean, Error>}
+   */
+  remove(moduleName, options) {
+    const module = this.getModule(moduleName);
+    const index = this.getModule(moduleName, true);
+    if ( module ) {
+      return new Promise((resolve, reject) => {
+        module.unmount(options).then((res) => {
+          if ( index !== -1 ) {
+            this.mountpoints.splice(index, 1);
+          }
+          return resolve(res);
+        }).catch(reject);
+      });
+    }
+
+    return Promise.reject(new Error(_('ERR_VFSMODULE_NOT_MOUNTED_FMT', moduleName)));
+  }
+
+  /**
+   * Gets all modules (with filtering)
+   *
+   * @param {Object} filter The filter
+   * @return {Mountpoint[]}
+   */
+  getModules(filter) {
+    filter = Object.assign({}, {
+      visible: true,
+      special: false
+    }, filter);
+
+    return this.mountpoints.filter((mount) => {
+      if ( mount.enabled() && mount.option('visible') ) {
+
+        const hits = Object.keys(filter).filter((filterName) => {
+          return mount.option(filterName) === filter[filterName];
+        });
+
+        return hits.length > 0;
+      }
+
+      return false;
+    });
+  }
+
+  /**
+   * Gets a mountpoint from a matching path
+   * @param {String} test Path to test
+   * @return {Mountpoint}
+   */
+  getModuleFromPath(test) {
+    return this.mountpoints.find((mount) => {
+      if ( typeof test === 'string' && mount.enabled() ) {
+        if ( mount.option('match') && test.match(mount.option('match')) ) {
           return true;
         }
       }
       return false;
-    }
-
-    /*
-     * Creates a new mount object
-     */
-    function createMountPoint(name, args, dynamic) {
-      if ( name === null ) {
-        name = args.name;
-      }
-
-      var sname = name.replace(/\s/g, '-').toLowerCase();
-      if ( _modules[name] ) {
-        throw new Error(API._('ERR_VFSMODULE_ALREADY_MOUNTED_FMT', name));
-      }
-
-      var match = new RegExp('^' + (sname + '://').replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&'));
-
-      var mount = Utils.argumentDefaults(Utils.cloneObject(args, true), {
-        searchable: true,
-        readOnly: false,
-        visible: true,
-        dynamic: dynamic === true,
-        options: {},
-
-        transport: 'OSjs',
-        root: sname + ':///',
-        name: name,
-        description: name,
-        icon: 'devices/drive-harddisk.png',
-
-        request: function _request(n, a, callback, options) {
-          MountManager._request(mount, n, a, callback, options);
-        },
-        unmount: function(cb) {
-          (cb || function() {})(API._('ERR_VFS_UNAVAILABLE'), false);
-        },
-        mounted: function() {
-          return true;
-        },
-        enabled: function() {
-          return true;
-        }
-      }, true);
-
-      mount.match = args.match || match;
-
-      // TODO: Make sure aliases inherit correct transport
-      var internals = ['OSjs'];
-      if ( typeof mount.internal === 'undefined' ) {
-        mount.internal = internals.indexOf(mount.transport) !== -1;
-      }
-
-      if ( mount.transport.toLowerCase() === 'owndrive' ) {
-        mount.transport = 'WebDAV';
-      }
-
-      var target = VFS.Transports[mount.transport];
-      if ( target && typeof target.defaults === 'function' ) {
-        target.defaults(mount);
-      }
-
-      if ( dynamic ) {
-        var validModule = (function() {
-          if ( Object.keys(VFS.Transports).indexOf(mount.transport) < 0 ) {
-            return 'No such transport \'' + mount.transport + '\'';
-          }
-          if ( mount.transport === 'WebDAV' && !mount.options.username ) {
-            return 'Connection requires username (authorization)';
-          }
-          return true;
-        })();
-
-        if ( validModule !== true ) {
-          throw new Error(API._('ERR_VFSMODULE_INVALID_CONFIG_FMT', validModule));
-        }
-      }
-
-      return Object.freeze(mount);
-    }
-
-    return Object.seal({
-
-      /**
-       * Method for adding pre-defined modules like Dropbox and GoogleDrive
-       *
-       * @function _add
-       * @memberof OSjs.Core.MountManager#
-       *
-       * @param {Mountpoint}  opts                Mounpoint options
-       * @param {Boolean}     [emitEvent=false]   Emit the internal mount event
-       */
-      _add: function(opts, emitEvent) {
-        if ( _inited ) {
-          _modules[opts.name] = Object.seal(opts);
-          if ( emitEvent ) {
-            API.message('vfs:mount', opts.name, {source: null});
-          }
-
-          console.debug('MountManager::_add()', 'Created mountpoint...', opts);
-        } else {
-          _queue.push(arguments);
-        }
-      },
-
-      /**
-       * Initializes all pre-configured mountpoints
-       *
-       * @function init
-       * @memberof OSjs.Core.MountManager#
-       *
-       * @param {Function} callback Callback when done
-       */
-      init: function(callback) {
-        if ( _inited ) {
-          callback();
-          return;
-        }
-
-        _inited = true;
-
-        var config = API.getConfig('VFS.Mountpoints', {});
-
-        _queue.forEach(function(args) {
-          var mount = createMountPoint(null, args[0]);
-          MountManager._add(mount, args[1]);
-        });
-
-        Object.keys(config).forEach(function(key) {
-          var m = config[key];
-          if ( m.enabled !== false ) {
-            m.name = key;
-            delete m.enabled;
-
-            var mount = createMountPoint(null, m);
-            MountManager._add(mount, false);
-          }
-        });
-
-        _queue = [];
-
-        callback();
-      },
-
-      /**
-       * Makes a VFS request via a Transport module from mountpoint
-       *
-       * @function _request
-       * @memberof OSjs.Core.MountManager#
-       *
-       * @param {Object}   mount      Mountpoint
-       * @param {String}   method     VFS method
-       * @param {Object}   args       VFS arguments
-       * @param {Function} callback   Callback when done
-       * @param {Object}   [options]  VFS options
-       */
-      _request: function(mount, method, args, callback, options) {
-        callback = callback || function() {
-          console.warn('NO CALLBACK FUNCTION WAS ASSIGNED IN VFS REQUEST');
-        };
-
-        var target = VFS.Transports[mount.transport];
-        if ( !target ) {
-          callback(API._('ERR_VFSMODULE_INVALID_TYPE_FMT', mount.transport));
-          return;
-        }
-
-        if ( isReadOnly(method, mount, args) ) {
-          callback(API._('ERR_VFSMODULE_READONLY'));
-          return;
-        }
-
-        var mparams = (function() {
-          var o = {};
-          Object.keys(mount).forEach(function(k) {
-            if ( typeof mount[k] !== 'function' ) {
-              o[k] = mount[k];
-            }
-          });
-          return Object.freeze(o);
-        })();
-
-        var module = target.module || {};
-        if ( !module[method] ) {
-          callback(API._('ERR_VFS_UNAVAILABLE'));
-        } else {
-          var fargs = args || [];
-          fargs.push(callback);
-          fargs.push(options);
-          fargs.push(mparams);
-          module[method].apply(module, fargs);
-        }
-      },
-
-      /**
-       * Restores all stored connections
-       *
-       * @function restore
-       * @memberof OSjs.Core.MountManager#
-       *
-       * @param {Function} callback Callback when done
-       */
-      restore: function(callback) {
-        var sm = OSjs.Core.getSettingsManager();
-        Utils.asyncs(sm.instance('VFS').get('mounts', []), function(iter, idx, next) {
-          try {
-            MountManager.add(iter, next);
-          } catch ( e ) {
-            console.warn('MountManager::restore()', e, e.stack);
-            next();
-          }
-        }, function() {
-          callback();
-        });
-      },
-
-      /**
-       * Mounts given mountpoint
-       *
-       * Currently supports: Custom internal methods, webdav/owncloud
-       *
-       * If you want to configure default mountpoints, look at the manual linked below.
-       *
-       * @function add
-       * @memberof OSjs.Core.MountManager#
-       * @throws {Error} If the mountpoint is already mounted or the module is invalid
-       *
-       * @param {Mountpoint} opts                           Mountpoint options
-       * @param {Function}   cb                             Callback function => fn(err, result)
-       *
-       * @link https://os-js.org/manual/vfs/#mountpoints
-       */
-      add: function(opts, cb) {
-        var mount = (function() {
-          var isMounted = true;
-
-          return Utils.argumentDefaults(Utils.cloneObject(opts, true), {
-            icon: 'places/network-server.png',
-            searchable: false,
-            unmount: function(done) {
-              isMounted = false;
-              API.message('vfs:unmount', opts.name, {source: null});
-              (done || function() {})(false, true);
-            },
-            mounted: function() {
-              return isMounted;
-            }
-          });
-        })();
-
-        var module = createMountPoint(null, mount, true);
-        MountManager._add(module, true);
-
-        (cb || function() {})(false, true);
-      },
-
-      /**
-       * Unmounts given mountpoint
-       *
-       * @function remove
-       * @memberof OSjs.Core.MountManager#
-       * @throws {Error} If the mountpoint does not exist
-       *
-       * @param   {String}      moduleName        Name of registered module
-       * @param   {Function}    cb                Callback function => fn(err, result)
-       */
-      remove: function(moduleName, cb) {
-        if ( !_modules[moduleName] ) {
-          throw new Error(API._('ERR_VFSMODULE_NOT_MOUNTED_FMT', moduleName));
-        }
-
-        _modules[moduleName].unmount(function() {
-          delete _modules[moduleName];
-          cb.apply(MountManager, arguments);
-        });
-      },
-
-      /**
-       * Check if given path is an internal module
-       *
-       * @function isInternal
-       * @memberof OSjs.Core.MountManager#
-       *
-       * @param   {String}    test        Module Name
-       *
-       * @return  {Boolean}
-       */
-      isInternal: function isInternalModule(test) {
-        test = test || '';
-
-        var m = _modules;
-        var d = null;
-
-        if ( test !== null ) {
-          Object.keys(m).forEach(function(name) {
-            if ( d !== true ) {
-              var i = m[name];
-              if ( i.internal === true && i.match && test.match(i.match) ) {
-                d = true;
-              }
-            }
-          });
-        }
-
-        return d;
-      },
-
-      /**
-       * Returns a list of all enabled VFS modules
-       *
-       * @function getModules
-       * @memberof OSjs.Core.MountManager#
-       *
-       * @param   {Object}    opts                  Options
-       * @param   {Boolean}   [opts.visible=true]   All visible modules only
-       *
-       * @return  {Object[]}                   List of all Modules found
-       */
-      getModules: function(opts) {
-        opts = Utils.argumentDefaults(opts, {
-          visible: true,
-          special: false
-        });
-
-        var m = _modules;
-        var a = [];
-        Object.keys(m).forEach(function(name) {
-          var iter = m[name];
-          if ( !iter.enabled() || (!opts.special && iter.special) ) {
-            return;
-          }
-
-          if ( opts.visible && iter.visible === opts.visible ) {
-            a.push({
-              name: name,
-              module: iter
-            });
-          }
-        });
-        return a;
-      },
-
-      getModule: function(name) {
-        return _modules[name];
-      },
-
-      /**
-       * Get module name from path
-       *
-       * @function getModuleFromPath
-       * @memberof OSjs.Core.MountManager#
-       *
-       * @param   {String}    test               Path name
-       * @param   {Boolean}   [retdef=true]      Return default upon failure
-       * @param   {Boolean}   [retobj=false]     Return module object instead of name
-       *
-       * @return  {Mixed}                 Module name or object based on arguments
-       */
-      getModuleFromPath: function getModuleFromPath(test, retdef, retobj) {
-        retdef = typeof retdef === 'undefined' ? true : (retdef === true);
-
-        var d = null;
-
-        if ( typeof test === 'string' ) {
-          Object.keys(_modules).forEach(function(name) {
-            if ( d === null ) {
-              var i = _modules[name];
-              if ( i.enabled() === true && i.match instanceof RegExp && test.match(i.match) ) {
-                d = name;
-              }
-            }
-          });
-        }
-
-        var moduleName = d || (retdef ? DefaultModule : null);
-        return retobj ? _modules[moduleName] : moduleName;
-      },
-
-      /**
-       * Get root from path (ex: foo:///)
-       *
-       * @function getRootFromPath
-       * @memberof OSjs.Core.MountManager#
-       *
-       * @param   {String}    path        Path name
-       * @return  {String}
-       * @api     OSjs.VFS.getRootFromPath()
-       */
-      getRootFromPath: function getRootFromPath(path) {
-        return MountManager.getModuleFromPath(path, false, true).root;
-      },
-
-      getModuleProperty: function(module, property) {
-        if ( typeof module === 'string' ) {
-          module = _modules[module];
-        }
-
-        return module[property];
-      }
     });
-
-  })();
-
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+  }
 
   /**
-   * Get the current MountManager  instance
-   *
-   * @function getMountManager
-   * @memberof OSjs.Core
-   * @return {OSjs.Core.MountManager}
+   * Gets a mountpoint by name
+   * @param {String}  name         Mountpoint name
+   * @param {Boolean} [idx=false]  Get index and not the actual mountpoint
+   * @return {Mountpoint|Number}
    */
-  OSjs.Core.getMountManager = function Core_getMountManager() {
-    return MountManager;
-  };
+  getModule(name, idx) {
+    const m = idx ? 'findIndex' : 'find';
+    return this.mountpoints[m]((i) => i.option('name') === name);
+  }
 
-})(OSjs.Utils, OSjs.VFS, OSjs.API);
+  /**
+   * Gets a transport by name
+   * @param {String}  name   Transport name
+   * @return {Mountpoint}
+   */
+  getTransport(name) {
+    return this.transports[name];
+  }
+
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// EXPORTS
+/////////////////////////////////////////////////////////////////////////////
+
+export default (new MountManager());

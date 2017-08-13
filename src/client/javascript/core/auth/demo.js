@@ -27,21 +27,20 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, Authenticator) {
-  'use strict';
 
-  function DemoAuthenticator() {
-    Authenticator.apply(this, arguments);
-  }
+import Promise from 'bluebird';
+import Authenticator from 'core/authenticator';
 
-  DemoAuthenticator.prototype = Object.create(Authenticator.prototype);
-  DemoAuthenticator.constructor = Authenticator;
+/**
+ * Demo Authentication Handler
+ * @extends Authenticator
+ */
+export default class DemoAuthenticator extends Authenticator {
 
-  DemoAuthenticator.prototype.login = function(login, callback) {
-    var settings = {};
-    var key;
-
-    for ( var i = 0; i < localStorage.length; i++ ) {
+  _getSettings() {
+    let settings = {};
+    let key;
+    for ( let i = 0; i < localStorage.length; i++ ) {
       key = localStorage.key(i);
       if ( key.match(/^OSjs\//) ) {
         try {
@@ -52,41 +51,24 @@
       }
     }
 
-    if ( API.isStandalone() ) {
-      return callback(false, {
-        userData: {
-          id: 0,
-          username: 'demo',
-          name: 'Demo User',
-          groups: ['admin']
-        },
-        userSettings: settings,
-        blacklistedPackages: []
-      });
-    }
+    return settings;
+  }
 
-    return Authenticator.prototype.login.call(this, login, function(error, result) {
-      if ( error ) {
-        callback(error);
-      } else {
-        result.userSettings = settings;
-        callback(null, result);
-      }
+  login(login) {
+    return new Promise((resolve, reject) => {
+      super.login(login).then((result) => {
+        result.userSettings = this._getSettings();
+        return resolve(result);
+      }).catch(reject);
     });
-  };
+  }
 
-  DemoAuthenticator.prototype.onCreateUI = function(callback) {
-    this.onLoginRequest({
+  onCreateUI() {
+    return this.onLoginRequest({
       username: 'demo',
       password: 'demo'
-    }, callback);
-  };
+    });
+  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+}
 
-  OSjs.Auth = OSjs.Auth || {};
-  OSjs.Auth.demo = DemoAuthenticator;
-
-})(OSjs.API, OSjs.Utils, OSjs.Core.Authenticator);

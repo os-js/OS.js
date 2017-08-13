@@ -29,67 +29,52 @@
  */
 
 /*eslint valid-jsdoc: "off"*/
-(function(DefaultApplication, DefaultApplicationWindow, Application, Window, Utils, API, VFS, GUI) {
-  'use strict';
+const DefaultApplication = OSjs.require('helpers/default-application');
+const DefaultApplicationWindow = OSjs.require('helpers/default-application-window');
 
-  /////////////////////////////////////////////////////////////////////////////
-  // WINDOWS
-  /////////////////////////////////////////////////////////////////////////////
+class ApplicationHTMLViewerWindow extends DefaultApplicationWindow {
 
-  function ApplicationHTMLViewerWindow(app, metadata, scheme, file) {
-    DefaultApplicationWindow.apply(this, ['ApplicationHTMLViewerWindow', {
+  constructor(app, metadata, file) {
+    super('ApplicationHTMLViewerWindow', {
       icon: metadata.icon,
       title: metadata.name,
       width: 400,
       height: 200
-    }, app, scheme, file]);
+    }, app, file);
   }
 
-  ApplicationHTMLViewerWindow.prototype = Object.create(DefaultApplicationWindow.prototype);
-  ApplicationHTMLViewerWindow.constructor = DefaultApplicationWindow.prototype;
-
-  ApplicationHTMLViewerWindow.prototype.init = function(wmRef, app, scheme) {
-    var root = DefaultApplicationWindow.prototype.init.apply(this, arguments);
-    this._render('HTMLViewerWindow');
+  init(wmRef, app) {
+    const root = super.init(...arguments);
+    this._render('HTMLViewerWindow', require('osjs-scheme-loader!scheme.html'));
     return root;
-  };
+  }
 
-  ApplicationHTMLViewerWindow.prototype.showFile = function(file, url) {
+  showFile(file, url) {
     if ( this._scheme ) {
       this._find('iframe').set('src', url);
     }
-    DefaultApplicationWindow.prototype.showFile.apply(this, arguments);
-  };
+    super.showFile(...arguments);
+  }
+}
 
-  /////////////////////////////////////////////////////////////////////////////
-  // APPLICATION
-  /////////////////////////////////////////////////////////////////////////////
+class ApplicationHTMLViewer extends DefaultApplication {
 
-  function ApplicationHTMLViewer(args, metadata) {
-    DefaultApplication.apply(this, ['ApplicationHTMLViewer', args, metadata, {
+  constructor(args, metadata) {
+    super('ApplicationHTMLViewer', args, metadata, {
       extension: 'html',
       mime: 'text/htm',
       filename: 'index.html',
       fileypes: ['htm', 'html'],
       readData: false
-    }]);
+    });
   }
 
-  ApplicationHTMLViewer.prototype = Object.create(DefaultApplication.prototype);
-  ApplicationHTMLViewer.constructor = DefaultApplication;
+  init(settings, metadata) {
+    super.init(...arguments);
 
-  ApplicationHTMLViewer.prototype.init = function(settings, metadata, scheme) {
-    Application.prototype.init.call(this, settings, metadata, scheme);
-    var file = this._getArgument('file');
-    this._addWindow(new ApplicationHTMLViewerWindow(this, metadata, scheme, file));
-  };
+    const file = this._getArgument('file');
+    this._addWindow(new ApplicationHTMLViewerWindow(this, metadata, file));
+  }
+}
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationHTMLViewer = OSjs.Applications.ApplicationHTMLViewer || {};
-  OSjs.Applications.ApplicationHTMLViewer.Class = Object.seal(ApplicationHTMLViewer);
-
-})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);
+OSjs.Applications.ApplicationHTMLViewer = ApplicationHTMLViewer;

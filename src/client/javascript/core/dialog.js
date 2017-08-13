@@ -27,69 +27,68 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(Utils, API, Window) {
-  'use strict';
+import {$empty, $addClass, $escape} from 'utils/dom';
+import Keycodes from 'utils/keycodes';
+import Window from 'core/window';
+import Application from 'core/application';
+import WindowManager from 'core/window-manager';
+import GUIScheme from 'gui/scheme';
+import {_} from 'core/locales';
+
+/**
+ * A callback for Dialogs.
+ *
+ * <pre>
+ * The list of included buttons are: ok, cancel, yes, no
+ * depending on which dialog was called.
+ *
+ * The result also depends on which dialog was called.
+ *
+ * The default button is 'cancel' if window was closed.
+ *
+ * You only get an event back if an actual button was pressed.
+ * </pre>
+ *
+ * @callback CallbackDialog
+ * @param {Event}   ev      Browser event that occured from action
+ * @param {String}  button  Which button that was clicked
+ * @param {*}       result  Result from dialog input
+ */
+
+let _dialogScheme;
+
+/////////////////////////////////////////////////////////////////////////////
+// DIALOG
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Base Dialog Window Class
+ *
+ * @desc Class used for basis as a Dialog.
+ *
+ * @extends {Window}
+ * @abstract
+ */
+export default class DialogWindow extends Window {
 
   /**
-   * A callback for Dialogs.
-   *
-   * <pre>
-   * The list of included buttons are: ok, cancel, yes, no
-   * depending on which dialog was called.
-   *
-   * The result also depends on which dialog was called.
-   *
-   * The default button is 'cancel' if window was closed.
-   *
-   * You only get an event back if an actual button was pressed.
-   * </pre>
-   *
-   * @callback CallbackDialog
-   * @param {Event}   ev      Browser event that occured from action
-   * @param {String}  button  Which button that was clicked
-   * @param {Mixed}   result  Result from dialog input
-   */
-
-  /////////////////////////////////////////////////////////////////////////////
-  // DIALOG
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Dialog Window
-   *
-   * A simple wrapper with some pre-defined options
-   *
-   * <pre><b>
-   * YOU CANNOT CANNOT USE THIS VIA 'new' KEYWORD.
-   * </b></pre>
-   *
-   * @summary Class used for basis as a Dialog.
-   *
    * @param {String}          className     Dialog Class Name
    * @param {Object}          opts          Dialog Class Options
    * @param {Object}          args          Dialog Class Arguments
    * @param {CallbackDialog}  callback      Callback function
-   *
-   * @abstract
-   * @constructor
-   * @memberof OSjs.Core
-   * @extends OSjs.Core.Window
-   * @see OSjs.API.createDialog
    */
-  function DialogWindow(className, opts, args, callback) {
-    var self = this;
-
+  constructor(className, opts, args, callback) {
     opts = opts || {};
     args = args || {};
-
     callback = callback || function() {};
+
     if ( typeof callback !== 'function' ) {
       throw new TypeError('DialogWindow expects a callback Function, gave: ' + typeof callback);
     }
 
     console.info('DialogWindow::construct()', className, opts, args);
 
-    Window.apply(this, [className, opts]);
+    super(className, opts);
 
     this._properties.gravity          = 'center';
     this._properties.allow_resize     = false;
@@ -100,117 +99,114 @@
     this._state.ontop                 = true;
     this._tag                         = 'DialogWindow';
 
-    if ( args.scheme && args.scheme instanceof OSjs.GUI.Scheme ) {
+    if ( args.scheme && args.scheme instanceof GUIScheme ) {
       this.scheme = args.scheme;
       delete args.scheme;
     } else {
-      this.scheme = OSjs.GUI.DialogScheme.get();
+      try {
+        if ( !_dialogScheme ) {
+          const cachedHtml = require('osjs-scheme-loader!dialogs.html');
+          if ( cachedHtml ) {
+            _dialogScheme = GUIScheme.fromString(cachedHtml);
+          }
+        }
+      } catch ( e ) {
+        console.warn(e);
+      }
+
+      this.scheme = _dialogScheme;
     }
 
     this.args = args;
     this.className = className;
     this.buttonClicked = false;
 
-    this.closeCallback = function Dialog_closeCallback(ev, button, result) {
-      if ( self._destroyed ) {
+    this.closeCallback = (ev, button, result) => {
+      if ( this._destroyed ) {
         return;
       }
 
-      self.buttonClicked = true;
-      callback.apply(self, arguments);
-      self._close();
+      this.buttonClicked = true;
+      callback.call(this, ev, button, result);
+      this._close();
     };
   }
 
-  DialogWindow.prototype = Object.create(Window.prototype);
-  DialogWindow.constructor = Window;
-
   /**
    * @override
-   * @function init
-   * @memberof OSjs.Core.DialogWindow#
    */
-  DialogWindow.prototype.init = function() {
-    var self = this;
+  init() {
+    const root = super.init(...arguments);
 
-    var root = Window.prototype.init.apply(this, arguments);
     root.setAttribute('role', 'dialog');
 
     if ( this.scheme ) {
-      this.scheme.render(this, this.className.replace(/Dialog$/, ''), root, 'application-dialog', function(node) {
-        node.querySelectorAll('gui-label').forEach(function(el) {
+      this.scheme.render(this, this.className.replace(/Dialog$/, ''), root, 'application-dialog', (node) => {
+        node.querySelectorAll('gui-label').forEach((el) => {
           if ( el.childNodes.length && el.childNodes[0].nodeType === 3 && el.childNodes[0].nodeValue ) {
-            var label = el.childNodes[0].nodeValue;
-            Utils.$empty(el);
-            el.appendChild(document.createTextNode(API._(label)));
+            const label = el.childNodes[0].nodeValue;
+            $empty(el);
+            el.appendChild(document.createTextNode(_(label)));
           }
         });
       });
 
-      var buttonMap = {
+      const buttonMap = {
         ButtonOK: 'ok',
         ButtonCancel: 'cancel',
         ButtonYes: 'yes',
         ButtonNo: 'no'
       };
 
-      var focusButtons = ['ButtonCancel', 'ButtonNo'];
+      const focusButtons = ['ButtonCancel', 'ButtonNo'];
 
-      Object.keys(buttonMap).forEach(function(id) {
-        if ( self._findDOM(id) ) {
-          var btn = self._find(id);
-          btn.on('click', function(ev) {
-            self.onClose(ev, buttonMap[id]);
-          });
-          if ( focusButtons.indexOf(id) >= 0 ) {
-            btn.focus();
-          }
+      Object.keys(buttonMap).filter((id) => this._findDOM(id)).forEach((id) => {
+        const btn = this._find(id);
+        btn.on('click', (ev) => {
+          this.onClose(ev, buttonMap[id]);
+        });
+
+        if ( focusButtons.indexOf(id) >= 0 ) {
+          btn.focus();
         }
       });
     }
 
-    Utils.$addClass(root, 'DialogWindow');
+    $addClass(root, 'DialogWindow');
 
     return root;
-  };
+  }
 
   /**
    * When dialog closes
    *
    * @param   {Event}     ev        DOM Event
    * @param   {String}    button    Button used
-   *
-   * @function onClose
-   * @memberof OSjs.Core.DialogWindow#
    */
-  DialogWindow.prototype.onClose = function(ev, button) {
+  onClose(ev, button) {
     this.closeCallback(ev, button, null);
-  };
+  }
 
   /**
    * @override
-   * @function _close
-   * @memberof OSjs.Core.DialogWindow#
    */
-  DialogWindow.prototype._close = function() {
+  _close() {
     if ( !this.buttonClicked ) {
       this.onClose(null, 'cancel', null);
     }
-    return Window.prototype._close.apply(this, arguments);
-  };
+    return super._close(...arguments);
+  }
 
   /**
    * @override
-   * @function _onKeyEvent
-   * @memberof OSjs.Core.DialogWindow#
    */
-  DialogWindow.prototype._onKeyEvent = function(ev) {
-    Window.prototype._onKeyEvent.apply(this, arguments);
+  _onKeyEvent(ev) {
+    super._onKeyEvent(...arguments);
 
-    if ( ev.keyCode === Utils.Keys.ESC ) {
+    if ( ev.keyCode === Keycodes.ESC ) {
       this.onClose(ev, 'cancel');
     }
-  };
+  }
 
   /**
    * Parses given message to be inserted into Dialog
@@ -218,29 +214,93 @@
    * @param {String}  msg   Message
    *
    * @return {DocumentFragment}
-   *
-   * @function parseMessage
-   * @memberof OSjs.Core.DialogWindow
    */
-  DialogWindow.parseMessage = function(msg) {
-    msg = Utils.$escape(msg || '').replace(/\*\*(.*)\*\*/g, '<span>$1</span>');
+  static parseMessage(msg) {
+    msg = $escape(msg || '').replace(/\*\*(.*)\*\*/g, '<span>$1</span>');
 
-    var tmp = document.createElement('div');
+    let tmp = document.createElement('div');
     tmp.innerHTML = msg;
 
-    var frag = document.createDocumentFragment();
-    for ( var i = 0; i < tmp.childNodes.length; i++ ) {
+    const frag = document.createDocumentFragment();
+    for ( let i = 0; i < tmp.childNodes.length; i++ ) {
       frag.appendChild(tmp.childNodes[i].cloneNode(true));
     }
     tmp = null;
 
     return frag;
-  };
+  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+  /**
+   * Create a new dialog
+   *
+   * You can also pass a function as `className` to return an instance of your own class
+   *
+   * @param   {String}                     className             Dialog Namespace Class Name
+   * @param   {Object}                     args                  Arguments you want to send to dialog
+   * @param   {CallbackDialog}             callback              Callback on dialog action (close/ok etc) => fn(ev, button, result)
+   * @param   {Object|Window|Application}  [options]             A window or app (to make it a child window) or a set of options:
+   * @param   {Window|Application}         [options.parent]      Same as above argument (without options context)
+   * @param   {Boolean}                    [options.modal=false] If you provide a parent you can toggle "modal" mode.
+   *
+   * @return  {Window}
+   */
+  static create(className, args, callback, options) {
 
-  OSjs.Core.DialogWindow = Object.seal(DialogWindow);
+    callback = callback || function() {};
+    options = options || {};
 
-})(OSjs.Utils, OSjs.API, OSjs.Core.Window);
+    let parentObj = options;
+    let parentIsWindow = (parentObj instanceof Window);
+    let parentIsProcess = (parentObj instanceof Application);
+    if ( parentObj && !(parentIsWindow && parentIsProcess) ) {
+      parentObj = options.parent;
+      parentIsWindow = (parentObj instanceof Window);
+      parentIsProcess = (parentObj instanceof Application);
+    }
+
+    function cb() {
+      if ( parentObj ) {
+        if ( parentIsWindow && parentObj._destroyed ) {
+          console.warn('DialogWindow::create()', 'INGORED EVENT: Window was destroyed');
+          return;
+        }
+        if ( parentIsProcess && parentObj.__destroyed ) {
+          console.warn('DialogWindow::create()', 'INGORED EVENT: Process was destroyed');
+          return;
+        }
+      }
+
+      if ( options.modal && parentIsWindow ) {
+        parentObj._toggleDisabled(false);
+      }
+
+      callback.apply(null, arguments);
+    }
+
+    const win = typeof className === 'string' ? new OSjs.Dialogs[className](args, cb) : className(args, cb);
+
+    if ( !parentObj ) {
+      const wm = WindowManager.instance;
+      wm.addWindow(win, true);
+    } else if ( parentObj instanceof Window ) {
+      win._on('destroy', () => {
+        if ( parentObj ) {
+          parentObj._focus();
+        }
+      });
+      parentObj._addChild(win, true);
+    } else if ( parentObj instanceof Application ) {
+      parentObj._addWindow(win);
+    }
+
+    if ( options.modal && parentIsWindow ) {
+      parentObj._toggleDisabled(true);
+    }
+
+    setTimeout(() => {
+      win._focus();
+    }, 10);
+
+    return win;
+  }
+}

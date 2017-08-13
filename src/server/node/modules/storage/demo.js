@@ -27,25 +27,11 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-/*eslint strict:["error", "global"]*/
-'use strict';
 
-module.exports.setSettings = function(http, username, data) {
-  return new Promise((resolve) => {
-    resolve(true);
-  });
-};
+const Storage = require('./../storage.js');
 
-module.exports.getSettings = function(http, username) {
-  return new Promise((resolve) => {
-    resolve({});
-  });
-};
+class DemoStorage extends Storage {
 
-module.exports.register = function(config) {
-  return Promise.resolve();
-};
+}
 
-module.exports.destroy = function() {
-  return Promise.resolve();
-};
+module.exports = new DemoStorage();

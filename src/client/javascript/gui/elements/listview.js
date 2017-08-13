@@ -27,370 +27,377 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, VFS, GUI) {
-  'use strict';
+import * as DOM from 'utils/dom';
+import * as GUI from 'utils/gui';
+import * as Events from 'utils/events';
+import GUIDataView from 'gui/dataview';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // HELPERS
-  /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// HELPERS
+/////////////////////////////////////////////////////////////////////////////
 
-  /*
-   * This is the function that applies a "fake" header to the table
-   * floating on top, containing the resizers.
-   *
-   * There's no other way to do this perfectly using tables.
-   * First attempt was using flexboxes, but it has a severe performance penalty
-   * when resizing because you have to repaint ALL the rows manually
-   */
-  function createFakeHeader(el) {
+/*
+ * This is the function that applies a "fake" header to the table
+ * floating on top, containing the resizers.
+ *
+ * There's no other way to do this perfectly using tables.
+ * First attempt was using flexboxes, but it has a severe performance penalty
+ * when resizing because you have to repaint ALL the rows manually
+ */
+function createFakeHeader(el) {
 
-    function createResizers() {
-      var fhead = el.querySelector('gui-list-view-fake-head');
-      var head = el.querySelector('gui-list-view-head');
-      var fcols = fhead.querySelectorAll('gui-list-view-column');
-      var cols = head.querySelectorAll('gui-list-view-column');
+  function createResizers() {
+    const fhead = el.querySelector('gui-list-view-fake-head');
+    const head = el.querySelector('gui-list-view-head');
+    const fcols = fhead.querySelectorAll('gui-list-view-column');
+    const cols = head.querySelectorAll('gui-list-view-column');
 
-      fhead.querySelectorAll('gui-list-view-column-resizer').forEach(function(rel) {
-        Utils.$remove(rel);
-      });
-
-      cols.forEach(function(col, idx) {
-        var attr = col.getAttribute('data-resizable');
-        if ( attr === 'true' ) {
-          var fcol = fcols[idx];
-
-          var resizer = document.createElement('gui-list-view-column-resizer');
-          fcol.appendChild(resizer);
-
-          var startWidth   = 0;
-          var maxWidth     = 0;
-          var widthOffset  = 16;
-          var minWidth     = widthOffset;
-          var tmpEl        = null;
-
-          GUI.Helpers.createDrag(resizer, function(ev) {
-            startWidth = col.offsetWidth;
-            minWidth = widthOffset;//calculateWidth();
-            maxWidth = el.offsetWidth - (el.children.length * widthOffset);
-          }, function(ev, diff) {
-            var newWidth = startWidth - diff.x;
-
-            if ( !isNaN(newWidth) && newWidth > minWidth && newWidth < maxWidth ) {
-              col.style.width = String(newWidth) + 'px';
-              fcol.style.width = String(newWidth) + 'px';
-            }
-
-            tmpEl = Utils.$remove(tmpEl);
-          });
-        }
-      });
-    }
-
-    var fh = el.querySelector('gui-list-view-fake-head gui-list-view-head');
-    Utils.$empty(fh);
-
-    var row = el.querySelector('gui-list-view-head gui-list-view-row');
-    if ( row ) {
-      fh.appendChild(row.cloneNode(true));
-      createResizers();
-    }
-  }
-
-  /*
-   * Applies DOM changes for a row to be rendered properly
-   */
-  function initRow(cls, row) {
-    var el = cls.$element;
-
-    row.querySelectorAll('gui-list-view-column').forEach(function(cel, idx) {
-      var icon = cel.getAttribute('data-icon');
-      if ( icon && icon !== 'null' ) {
-        Utils.$addClass(cel, 'gui-has-image');
-        cel.style.backgroundImage = 'url(' + icon + ')';
-      }
-
-      var text = cel.firstChild;
-      if ( text && text.nodeType === 3 ) {
-        var span = document.createElement('span');
-        span.appendChild(document.createTextNode(text.nodeValue));
-        cel.insertBefore(span, text);
-        cel.removeChild(text);
-      }
-
-      if ( el._columns[idx] && !el._columns[idx].visible ) {
-        cel.style.display = 'none';
-      }
-
-      cel.setAttribute('role', 'listitem');
+    fhead.querySelectorAll('gui-list-view-column-resizer').forEach((rel) => {
+      DOM.$remove(rel);
     });
 
-    cls.bindEntryEvents(row, 'gui-list-view-row');
-  }
+    cols.forEach((col, idx) => {
+      const attr = col.getAttribute('data-resizable');
+      if ( attr === 'true' ) {
+        const fcol = fcols[idx];
 
-  /*
-   * Creates a new `gui-list-view-column`
-   */
-  function createEntry(cls, v, head) {
-    var label = v.label || '';
+        const resizer = document.createElement('gui-list-view-column-resizer');
+        fcol.appendChild(resizer);
 
-    if ( v.label ) {
-      delete v.label;
-    }
-    var setSize = null;
-    if ( v.size ) {
-      setSize = v.size;
-      delete v.size;
-    }
+        let startWidth   = 0;
+        let maxWidth     = 0;
+        let widthOffset  = 16;
+        let minWidth     = widthOffset;
+        let tmpEl        = null;
 
-    var nel = GUI.Helpers.createElement('gui-list-view-column', v);
-    if ( setSize ) {
-      nel.style.width = setSize;
-    }
-    if ( typeof label === 'function' ) {
-      nel.appendChild(label.call(nel, nel, v));
-    } else {
-      var span = document.createElement('span');
-      span.appendChild(document.createTextNode(label));
-      nel.appendChild(span);
-    }
+        GUI.createDrag(resizer, (ev) => {
+          startWidth = col.offsetWidth;
+          minWidth = widthOffset;//calculateWidth();
+          maxWidth = el.offsetWidth - (el.children.length * widthOffset);
+        }, (ev, diff) => {
+          const newWidth = startWidth - diff.x;
 
-    return nel;
-  }
-
-  /*
-   * Creates a new `gui-list-view-row` from iter
-   */
-  function createRow(cls, e) {
-    e = e || {};
-    if ( e.columns ) {
-      var row = GUI.Helpers.createElement('gui-list-view-row', e, ['columns']);
-
-      e.columns.forEach(function(se) {
-        row.appendChild(createEntry(cls, se));
-      });
-
-      return row;
-    }
-    return null;
-  }
-
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Element: 'gui-list-view'
-   *
-   * A list view with columns.
-   *
-   * <pre><code>
-   *   Parameters:
-   *    zebra     boolean       Enable zebra stripes
-   *
-   *   Setters:
-   *    columns(arr)  Sets the columns
-   * </code></pre>
-   *
-   * @example
-   *
-   * .set('columns', [
-   *      {label: "Column 1", size: "100px"},
-   *      {label: "Column 2", size: "100px", visible: false},
-   *      {label: "Column 3", size: "100px", textalign: "right"},
-   *      {label: "Column 4", size: "100px", textalign: "right"}
-   * ])
-   *
-   * @example
-   *
-   * .add([
-   *   {
-   *      value: "something or JSON or whatever",
-   *      columns: [
-   *        {label: "Value for column 1", icon: "Optional icon"},
-   *        {label: "Value for column 2", icon: "Optional icon"},
-   *        {label: "Value for column 3", icon: "Optional icon"},
-   *        {label: "Value for column 4", icon: "Optional icon"},
-   *      ]
-   *   }
-   * ])
-   *
-   * @constructor ListView
-   * @extends OSjs.GUI.DataView
-   * @memberof OSjs.GUI.Elements
-   */
-  GUI.Element.register({
-    parent: GUI.DataView,
-    tagName: 'gui-list-view'
-  }, {
-
-    values: function() {
-      var body = this.$element.querySelector('gui-list-view-body');
-      var values = this.getSelected(body.querySelectorAll('gui-list-view-row'));
-      return values;
-    },
-
-    get: function(param, value, arg, asValue) {
-      if ( param === 'entry' ) {
-        var body = this.$element.querySelector('gui-list-view-body');
-        var rows = body.querySelectorAll('gui-list-view-row');
-        return this.getEntry(rows, value, arg, asValue);
-      }
-      return GUI.DataView.prototype.get.apply(this, arguments);
-    },
-
-    set: function(param, value, arg, arg2) {
-      var el = this.$element;
-      var self = this;
-
-      if ( param === 'columns' ) {
-        var head = el.querySelector('gui-list-view-head');
-        var row = document.createElement('gui-list-view-row');
-        Utils.$empty(head);
-
-        el._columns = [];
-
-        value.forEach(function(v) {
-          v.visible = (typeof v.visible === 'undefined') || v.visible === true;
-
-          var nel = createEntry(self, v, true);
-
-          el._columns.push(v);
-
-          if ( !v.visible ) {
-            nel.style.display = 'none';
+          if ( !isNaN(newWidth) && newWidth > minWidth && newWidth < maxWidth ) {
+            col.style.width = String(newWidth) + 'px';
+            fcol.style.width = String(newWidth) + 'px';
           }
-          row.appendChild(nel);
+
+          tmpEl = DOM.$remove(tmpEl);
         });
-
-        head.appendChild(row);
-
-        createFakeHeader(el);
-        return this;
-      } else if ( param === 'selected' || param === 'value' ) {
-        var body = el.querySelector('gui-list-view-body');
-        this.setSelected(body, body.querySelectorAll('gui-list-view-row'), value, arg, arg2);
-        return this;
       }
+    });
+  }
 
-      return GUI.DataView.prototype.set.apply(this, arguments);
-    },
+  const fh = el.querySelector('gui-list-view-fake-head gui-list-view-head');
+  DOM.$empty(fh);
 
-    add: function(entries) {
-      var body = this.$element.querySelector('gui-list-view-body');
-      var self = this;
+  const row = el.querySelector('gui-list-view-head gui-list-view-row');
+  if ( row ) {
+    fh.appendChild(row.cloneNode(true));
+    createResizers();
+  }
+}
 
-      return GUI.DataView.prototype.add.call(this, entries, function(cls, e) {
-        var cbCreated = e.onCreated || function() {};
-        var row = createRow(self, e);
-        if ( row ) {
-          body.appendChild(row);
-          initRow(self, row);
-        }
+/*
+ * Applies DOM changes for a row to be rendered properly
+ */
+function initRow(cls, row) {
+  const el = cls.$element;
 
-        cbCreated(row);
-      });
-    },
-
-    clear: function() {
-      var body = this.$element.querySelector('gui-list-view-body');
-      return GUI.DataView.prototype.clear.call(this, body);
-    },
-
-    remove: function(entries) {
-      var body = this.$element.querySelector('gui-list-view-body');
-      return GUI.DataView.prototype.remove.call(this, entries, 'gui-list-view-row', null, body);
-    },
-
-    patch: function(entries) {
-      var body = this.$element.querySelector('gui-list-view-body');
-      return GUI.DataView.prototype.patch.call(this, entries, 'gui-list-view-row', body, createRow, initRow);
-    },
-
-    build: function() {
-      var el = this.$element;
-      el._columns  = [];
-
-      // Make sure base elements are in the dom
-      var inner = el.querySelector('gui-list-view-inner');
-      var head = el.querySelector('gui-list-view-head');
-      var body = el.querySelector('gui-list-view-body');
-
-      function moveIntoInner(cel) {
-        // So user can forget adding the inner
-        if ( cel.parentNode.tagName !== 'GUI-LIST-VIEW-INNER' ) {
-          inner.appendChild(cel);
-        }
-      }
-
-      var fakeHead = el.querySelector('gui-list-view-fake-head');
-      if ( !fakeHead ) {
-        fakeHead = document.createElement('gui-list-view-fake-head');
-        var fakeHeadInner = document.createElement('gui-list-view-inner');
-        fakeHeadInner.appendChild(document.createElement('gui-list-view-head'));
-        fakeHead.appendChild(fakeHeadInner);
-      }
-
-      if ( !inner ) {
-        inner = document.createElement('gui-list-view-inner');
-        el.appendChild(inner);
-      }
-
-      (function _createBody() {
-        if ( body ) {
-          moveIntoInner(body);
-        } else {
-          body = document.createElement('gui-list-view-body');
-          inner.appendChild(body);
-        }
-        body.setAttribute('role', 'group');
-      })();
-
-      (function _createHead() {
-        if ( head ) {
-          moveIntoInner(head);
-        } else {
-          head = document.createElement('gui-list-view-head');
-          inner.insertBefore(head, body);
-        }
-        head.setAttribute('role', 'group');
-      })();
-
-      el.setAttribute('role', 'list');
-      el.appendChild(fakeHead);
-
-      Utils.$bind(el, 'scroll', function(ev) {
-        fakeHead.style.top = el.scrollTop + 'px';
-      }, false);
-
-      // Create scheme defined header
-      var hcols = el.querySelectorAll('gui-list-view-head gui-list-view-column');
-      hcols.forEach(function(cel, idx) {
-        var vis = cel.getAttribute('data-visible');
-        var iter = {
-          visible: vis === null || vis === 'true',
-          size: cel.getAttribute('data-size')
-        };
-
-        if ( iter.size ) {
-          cel.style.width = iter.size;
-        }
-
-        el._columns.push(iter);
-
-        if ( !iter.visible ) {
-          cel.style.display = 'none';
-        }
-      });
-
-      createFakeHeader(el);
-
-      // Create scheme defined rows
-      el.querySelectorAll('gui-list-view-body gui-list-view-row').forEach(function(row) {
-        initRow(self, row);
-      });
-
-      return GUI.DataView.prototype.build.apply(this, arguments);
+  row.querySelectorAll('gui-list-view-column').forEach((cel, idx) => {
+    const icon = cel.getAttribute('data-icon');
+    if ( icon && icon !== 'null' ) {
+      DOM.$addClass(cel, 'gui-has-image');
+      cel.style.backgroundImage = 'url(' + icon + ')';
     }
+
+    const text = cel.firstChild;
+    if ( text && text.nodeType === 3 ) {
+      const span = document.createElement('span');
+      span.appendChild(document.createTextNode(text.nodeValue));
+      cel.insertBefore(span, text);
+      cel.removeChild(text);
+    }
+
+    if ( el._columns[idx] && !el._columns[idx].visible ) {
+      cel.style.display = 'none';
+    }
+
+    cel.setAttribute('role', 'listitem');
   });
 
-})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);
+  cls.bindEntryEvents(row, 'gui-list-view-row');
+}
+
+/*
+ * Creates a new `gui-list-view-column`
+ */
+function createEntry(cls, v, head) {
+  const label = v.label || '';
+
+  if ( v.label ) {
+    delete v.label;
+  }
+
+  let setSize = null;
+  if ( v.size ) {
+    setSize = v.size;
+    delete v.size;
+  }
+
+  const nel = GUI.createElement('gui-list-view-column', v);
+  if ( setSize ) {
+    nel.style.width = setSize;
+  }
+
+  if ( typeof label === 'function' ) {
+    nel.appendChild(label.call(nel, nel, v));
+  } else {
+    const span = document.createElement('span');
+    span.appendChild(document.createTextNode(label));
+    nel.appendChild(span);
+  }
+
+  return nel;
+}
+
+/*
+ * Creates a new `gui-list-view-row` from iter
+ */
+function createRow(cls, e) {
+  e = e || {};
+  if ( e.columns ) {
+    const row = GUI.createElement('gui-list-view-row', e, ['columns']);
+
+    e.columns.forEach((se) => {
+      row.appendChild(createEntry(cls, se));
+    });
+
+    return row;
+  }
+  return null;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// EXPORTS
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Element: 'gui-list-view'
+ *
+ * A list view with columns.
+ *
+ * <pre><code>
+ *   Parameters:
+ *    zebra     boolean       Enable zebra stripes
+ *
+ *   Setters:
+ *    columns(arr)  Sets the columns
+ * </code></pre>
+ *
+ * @example
+ *
+ * .set('columns', [
+ *      {label: "Column 1", size: "100px"},
+ *      {label: "Column 2", size: "100px", visible: false},
+ *      {label: "Column 3", size: "100px", textalign: "right"},
+ *      {label: "Column 4", size: "100px", textalign: "right"}
+ * ])
+ *
+ * @example
+ *
+ * .add([
+ *   {
+ *      value: "something or JSON or whatever",
+ *      columns: [
+ *        {label: "Value for column 1", icon: "Optional icon"},
+ *        {label: "Value for column 2", icon: "Optional icon"},
+ *        {label: "Value for column 3", icon: "Optional icon"},
+ *        {label: "Value for column 4", icon: "Optional icon"},
+ *      ]
+ *   }
+ * ])
+ */
+class GUIListView extends GUIDataView {
+  static register() {
+    return super.register({
+      parent: GUIDataView,
+      tagName: 'gui-list-view'
+    }, this);
+  }
+
+  values() {
+    const body = this.$element.querySelector('gui-list-view-body');
+    const values = this.getSelected(body.querySelectorAll('gui-list-view-row'));
+    return values;
+  }
+
+  get(param, value, arg, asValue) {
+    if ( param === 'entry' ) {
+      const body = this.$element.querySelector('gui-list-view-body');
+      const rows = body.querySelectorAll('gui-list-view-row');
+      return this.getEntry(rows, value, arg, asValue);
+    }
+    return super.get(...arguments);
+  }
+
+  set(param, value, arg, arg2) {
+    const el = this.$element;
+
+    if ( param === 'columns' ) {
+      const head = el.querySelector('gui-list-view-head');
+      const row = document.createElement('gui-list-view-row');
+      DOM.$empty(head);
+
+      el._columns = [];
+
+      value.forEach((v) => {
+        v.visible = (typeof v.visible === 'undefined') || v.visible === true;
+
+        const nel = createEntry(this, v, true);
+
+        el._columns.push(v);
+
+        if ( !v.visible ) {
+          nel.style.display = 'none';
+        }
+        row.appendChild(nel);
+      });
+
+      head.appendChild(row);
+
+      createFakeHeader(el);
+      return this;
+    } else if ( param === 'selected' || param === 'value' ) {
+      const body = el.querySelector('gui-list-view-body');
+      this.setSelected(body, body.querySelectorAll('gui-list-view-row'), value, arg, arg2);
+      return this;
+    }
+
+    return super.set(...arguments);
+  }
+
+  add(entries) {
+    const body = this.$element.querySelector('gui-list-view-body');
+
+    return super.add(entries, (cls, e) => {
+      const cbCreated = e.onCreated || function() {};
+      const row = createRow(this, e);
+      if ( row ) {
+        body.appendChild(row);
+        initRow(this, row);
+      }
+
+      cbCreated(row);
+    });
+  }
+
+  clear() {
+    const body = this.$element.querySelector('gui-list-view-body');
+    return super.clear(body);
+  }
+
+  remove(entries) {
+    const body = this.$element.querySelector('gui-list-view-body');
+    return super.remove(entries, 'gui-list-view-row', null, body);
+  }
+
+  patch(entries) {
+    const body = this.$element.querySelector('gui-list-view-body');
+    return super.patch(entries, 'gui-list-view-row', body, createRow, initRow);
+  }
+
+  build() {
+    const el = this.$element;
+    el._columns  = [];
+
+    // Make sure base elements are in the dom
+    let inner = el.querySelector('gui-list-view-inner');
+    let head = el.querySelector('gui-list-view-head');
+    let body = el.querySelector('gui-list-view-body');
+
+    function moveIntoInner(cel) {
+      // So user can forget adding the inner
+      if ( cel.parentNode.tagName !== 'GUI-LIST-VIEW-INNER' ) {
+        inner.appendChild(cel);
+      }
+    }
+
+    let fakeHead = el.querySelector('gui-list-view-fake-head');
+    if ( !fakeHead ) {
+      fakeHead = document.createElement('gui-list-view-fake-head');
+      const fakeHeadInner = document.createElement('gui-list-view-inner');
+      fakeHeadInner.appendChild(document.createElement('gui-list-view-head'));
+      fakeHead.appendChild(fakeHeadInner);
+    }
+
+    if ( !inner ) {
+      inner = document.createElement('gui-list-view-inner');
+      el.appendChild(inner);
+    }
+
+    (function _createBody() {
+      if ( body ) {
+        moveIntoInner(body);
+      } else {
+        body = document.createElement('gui-list-view-body');
+        inner.appendChild(body);
+      }
+      body.setAttribute('role', 'group');
+    })();
+
+    (function _createHead() {
+      if ( head ) {
+        moveIntoInner(head);
+      } else {
+        head = document.createElement('gui-list-view-head');
+        inner.insertBefore(head, body);
+      }
+      head.setAttribute('role', 'group');
+    })();
+
+    el.setAttribute('role', 'list');
+    el.appendChild(fakeHead);
+
+    Events.$bind(el, 'scroll', (ev) => {
+      fakeHead.style.top = el.scrollTop + 'px';
+    }, false);
+
+    // Create scheme defined header
+    const hcols = el.querySelectorAll('gui-list-view-head gui-list-view-column');
+    hcols.forEach((cel, idx) => {
+      const vis = cel.getAttribute('data-visible');
+      const iter = {
+        visible: vis === null || vis === 'true',
+        size: cel.getAttribute('data-size')
+      };
+
+      if ( iter.size ) {
+        cel.style.width = iter.size;
+      }
+
+      el._columns.push(iter);
+
+      if ( !iter.visible ) {
+        cel.style.display = 'none';
+      }
+    });
+
+    createFakeHeader(el);
+
+    // Create scheme defined rows
+    el.querySelectorAll('gui-list-view-body gui-list-view-row').forEach((row) => {
+      initRow(this, row);
+    });
+
+    return super.build(...arguments);
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// EXPORTS
+/////////////////////////////////////////////////////////////////////////////
+
+export default {
+  GUIListView: GUIListView
+};

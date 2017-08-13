@@ -14,32 +14,16 @@
       "MaxUploadSize": 2097152,
       "Home": "home:///",
 
-      "GoogleDrive": {
-        "Enabled": false
-      },
-
-      "OneDrive": {
-        "Enabled": false
-      },
-
-      "Dropbox": {
-        "Enabled": false
-      },
-
-      "LocalStorage": {
-        "Enabled": false
-      },
-
       "Mountpoints": {
         "applications": {
-          "enabled": true,
-          "transport": "Applications",
+          "transport": "applications",
           "icon": "places/user-bookmarks.png",
+          "title": "Applications",
           "description": "Applications"
         },
 
         "desktop": {
-          "enabled": true,
+          "transport": "osjs",
           "icon": "places/user-desktop.png",
           "description": "Desktop",
           "options": {
@@ -49,23 +33,67 @@
         },
 
         "osjs": {
-          "enabled": true,
-          "transport": "Dist",
+          "transport": "dist",
           "icon": "devices/drive-harddisk.png",
-          "description": "OS.js",
+          "title": "OS.js",
+          "description": "OS.js build",
           "readOnly": true
         },
 
         "home": {
-          "enabled": true,
+          "transport": "osjs",
           "icon": "places/user-home.png",
-          "description": "Home"
+          "title": "Home",
+          "description": "Home",
+          "searchable": true
         },
 
         "shared": {
-          "enabled": true,
+          "transport": "osjs",
           "description": "Shared",
           "icon": "places/folder-publicshare.png"
+        },
+
+        "http": {
+          "readOnly": true,
+          "transport": "web",
+          "title": "HTTP",
+          "description": "HTTP",
+          "visible": false,
+          "special": true,
+          "match": "^https?\\:\\/\\/"
+        },
+
+        "dropbox": {
+          "enabled": false,
+          "title": "Dropbox",
+          "transport": "dropbox",
+          "description": "Dropbox",
+          "icon": "places/dropbox.png"
+        },
+
+        "google-drive": {
+          "enabled": false,
+          "title": "GoogleDrive",
+          "transport": "google-drive",
+          "description": "Google Drive",
+          "icon": "places/google-drive.png"
+        },
+
+        "localstorage": {
+          "enabled": false,
+          "title": "LocalStorage",
+          "transport": "localstorage",
+          "description": "Browser Localstorage",
+          "icon": "apps/web-browser.png"
+        },
+
+        "onedrive": {
+          "enabled": false,
+          "title": "OneDrive",
+          "transport": "onedrive",
+          "description": "OneDrive",
+          "icon": "places/onedrive.png"
         }
       }
     }

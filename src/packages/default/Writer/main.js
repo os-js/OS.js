@@ -29,25 +29,35 @@
  */
 
 /*eslint valid-jsdoc: "off"*/
-(function(DefaultApplication, DefaultApplicationWindow, Application, Window, Utils, API, VFS, GUI) {
-  'use strict';
+import Translations from './locales';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // WINDOWS
-  /////////////////////////////////////////////////////////////////////////////
+const VFS = OSjs.require('vfs/fs');
+const Config = OSjs.require('core/config');
+const Dialog = OSjs.require('core/dialog');
+const GUIElement = OSjs.require('gui/element');
+const Utils = OSjs.require('utils/misc');
+const Locales = OSjs.require('core/locales');
+const DefaultApplication = OSjs.require('helpers/default-application');
+const DefaultApplicationWindow = OSjs.require('helpers/default-application-window');
+const _ = Locales.createLocalizer(Translations);
 
-  function ApplicationWriterWindow(app, metadata, scheme, file) {
-    /*eslint dot-notation: "off"*/
-    var config = OSjs.Core.getConfig();
+/////////////////////////////////////////////////////////////////////////////
+// WINDOWS
+/////////////////////////////////////////////////////////////////////////////
 
-    DefaultApplicationWindow.apply(this, ['ApplicationWriterWindow', {
+class ApplicationWriterWindow extends DefaultApplicationWindow {
+  /*eslint dot-notation: "off"*/
+  constructor(app, metadata, file) {
+    const config = Config.getConfig();
+
+    super('ApplicationWriterWindow', {
       allow_drop: true,
       icon: metadata.icon,
       title: metadata.name,
       width: 550,
       height: 400,
-      translator: OSjs.Applications.ApplicationWriter._
-    }, app, scheme, file]);
+      translator: _
+    }, app, file);
 
     this.checkChangeLength = -1;
     this.checkChangeInterval = null;
@@ -61,21 +71,17 @@
     };
   }
 
-  ApplicationWriterWindow.prototype = Object.create(DefaultApplicationWindow.prototype);
-  ApplicationWriterWindow.constructor = DefaultApplicationWindow.prototype;
-
-  ApplicationWriterWindow.prototype.destroy = function() {
+  destroy() {
     this.checkChangeInterval = clearInterval(this.checkChangeInterval);
-    return DefaultApplicationWindow.prototype.destroy.apply(this, arguments);
-  };
+    super.destroy(...arguments);
+  }
 
-  ApplicationWriterWindow.prototype.init = function(wmRef, app, scheme) {
-    var root = DefaultApplicationWindow.prototype.init.apply(this, arguments);
+  init(wmRef, app) {
+    const root = super.init(...arguments);
     var self = this;
-    var _ = OSjs.Applications.ApplicationWriter._;
 
     // Load and set up scheme (GUI) here
-    this._render('WriterWindow');
+    this._render('WriterWindow', require('osjs-scheme-loader!scheme.html'));
 
     var text = this._find('Text');
 
@@ -140,20 +146,20 @@
         text.command('insertUnorderedList', false);
       },
       'MenuInsertImage': function() {
-        API.createDialog('File', {
+        Dialog.create('File', {
           filter: ['^image']
         }, function(ev, button, result) {
           if ( button !== 'ok' || !result ) {
             return;
           }
 
-          VFS.url(result, function(error, url) {
+          VFS.url(result).then((url) => {
             text.command('insertImage', false, url);
           });
         }, self);
       },
       'MenuInsertLink': function() {
-        API.createDialog('Input', {
+        Dialog.create('Input', {
           message: _('Insert URL'),
           placeholder: 'https://os-js.org'
         }, function(ev, button, result) {
@@ -198,7 +204,7 @@
 
     function createColorDialog(current, cb) {
       self._toggleDisabled(true);
-      API.createDialog('Color', {
+      Dialog.create('Color', {
         color: current
       }, function(ev, button, result) {
         self._toggleDisabled(false);
@@ -210,7 +216,7 @@
 
     function createFontDialog(current, cb) {
       self._toggleDisabled(true);
-      API.createDialog('Font', {
+      Dialog.create('Font', {
         fontSize: self.font.size,
         fontName: self.font.name,
         minSize: 1,
@@ -252,7 +258,7 @@
       var id = b.getAttribute('data-id');
       var button = buttons[id];
       if ( button ) {
-        GUI.Element.createFromNode(b).on('click', function() {
+        GUIElement.createFromNode(b).on('click', function() {
           text.command(button.command);
         }).on('mousedown', function(ev) {
           ev.preventDefault();
@@ -298,9 +304,9 @@
     }, 500);
 
     return root;
-  };
+  }
 
-  ApplicationWriterWindow.prototype.updateFile = function(file) {
+  updateFile(file) {
     DefaultApplicationWindow.prototype.updateFile.apply(this, arguments);
 
     try {
@@ -309,56 +315,49 @@
     } catch ( e ) {}
 
     this.checkChangeLength = -1;
-  };
+  }
 
-  ApplicationWriterWindow.prototype.showFile = function(file, content) {
+  showFile(file, content) {
     this._find('Text').set('value', content || '');
     DefaultApplicationWindow.prototype.showFile.apply(this, arguments);
-  };
+  }
 
-  ApplicationWriterWindow.prototype.getFileData = function() {
+  getFileData() {
     return this._find('Text').get('value');
-  };
+  }
 
-  ApplicationWriterWindow.prototype._focus = function(file, content) {
-    if ( DefaultApplicationWindow.prototype._focus.apply(this, arguments) ) {
+  _focus(file, content) {
+    if ( super._focus(...arguments) ) {
       this._find('Text').focus();
       return true;
     }
     return false;
-  };
+  }
+}
 
-  /////////////////////////////////////////////////////////////////////////////
-  // APPLICATION
-  /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// APPLICATION
+/////////////////////////////////////////////////////////////////////////////
 
-  function ApplicationWriter(args, metadata) {
-    DefaultApplication.apply(this, ['ApplicationWriter', args, metadata, {
+class ApplicationWriter extends DefaultApplication {
+  constructor(args, metadata) {
+    super('ApplicationWriter', args, metadata, {
       extension: 'odoc',
       mime: 'osjs/document',
       filename: 'New text file.odoc'
-    }]);
+    });
   }
 
-  ApplicationWriter.prototype = Object.create(DefaultApplication.prototype);
-  ApplicationWriter.constructor = DefaultApplication;
+  init(settings, metadata) {
+    super.init(...arguments);
 
-  ApplicationWriter.prototype.destroy = function() {
-    return DefaultApplication.prototype.destroy.apply(this, arguments);
-  };
+    const file = this._getArgument('file');
+    this._addWindow(new ApplicationWriterWindow(this, metadata, file));
+  }
+}
 
-  ApplicationWriter.prototype.init = function(settings, metadata, scheme) {
-    Application.prototype.init.call(this, settings, metadata, scheme);
-    var file = this._getArgument('file');
-    this._addWindow(new ApplicationWriterWindow(this, metadata, scheme, file));
-  };
+/////////////////////////////////////////////////////////////////////////////
+// EXPORTS
+/////////////////////////////////////////////////////////////////////////////
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationWriter = OSjs.Applications.ApplicationWriter || {};
-  OSjs.Applications.ApplicationWriter.Class = Object.seal(ApplicationWriter);
-
-})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);
+OSjs.Applications.ApplicationWriter = ApplicationWriter;

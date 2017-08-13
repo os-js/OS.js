@@ -28,24 +28,32 @@
  * @licence Simplified BSD License
  */
 
-(function(API, Utils) {
-  'use strict';
+import Promise from 'bluebird';
+import {_, setLocale} from 'core/locales';
+import {getConfig, getUserLocale} from 'core/config';
+import Connection from 'core/connection';
+import SettingsManager from 'core/settings-manager';
+import PackageManager from 'core/package-manager';
 
-  var _authInstance;
+let _instance;
 
-  /**
-   * Authenticator Base Class
-   *
-   * @abstract
-   * @constructor Authenticator
-   * @memberof OSjs.Core
-   */
-  function Authenticator() {
+/**
+ * Authenticator Base Class
+ *
+ * @abstract
+ */
+export default class Authenticator {
+
+  static get instance() {
+    return _instance;
+  }
+
+  constructor() {
+    /* eslint consistent-this: "off" */
+    _instance = this;
 
     /**
      * User data
-     * @name userData
-     * @memberof OSjs.Core.Authenticator#
      * @type {Object}
      * @example
      * {
@@ -63,133 +71,118 @@
 
     /**
      * If user is logged in
-     * @name loggedIn
-     * @memberof OSjs.Core.Authenticator#
      * @type {Boolean}
      */
     this.loggedIn = false;
-
-    /*eslint consistent-this: "off"*/
-    _authInstance = this;
   }
 
   /**
    * Initializes the Authenticator
-   *
-   * @function init
-   * @memberof OSjs.Core.Authenticator#
-   *
-   * @param   {CallbackHandler}      callback        Callback function
+   * @return {Promise}
    */
-  Authenticator.prototype.init = function(callback) {
-    this.onCreateUI(callback);
-  };
+  init() {
+    return this.onCreateUI();
+  }
 
   /**
    * Destroys the Authenticator
-   *
-   * @function destroy
-   * @memberof OSjs.Core.Authenticator#
    */
-  Authenticator.prototype.destroy = function() {
-  };
+  destroy() {
+    _instance = null;
+  }
 
   /**
    * Get data for logged in user
    *
-   * @function getUser
-   * @memberof OSjs.Core.Authenticator#
-   *
    * @return  {Object}      JSON With user data
    */
-  Authenticator.prototype.getUser = function() {
-    return Utils.cloneObject(this.userData || {}, true);
-  };
+  getUser() {
+    return Object.assign({}, this.userData);
+  }
 
   /**
    * Gets if there is a user logged in
    *
-   * @function isLoggedIn
-   * @memberof OSjs.Core.Authenticator#
-   *
    * @return {Boolean}
    */
-  Authenticator.prototype.isLoggedIn = function() {
+  isLoggedIn() {
     return this.isLoggedIn;
-  };
+  }
 
   /**
    * Log in user
    *
-   * @function login
-   * @memberof OSjs.Core.Authenticator#
-   *
-   * @param   {Object}               data            Login form data
-   * @param   {CallbackHandler}      callback        Callback function
+   * @param  {Object}   data            Login form data
+   * @return {Promise<Object, Error>}
    */
-  Authenticator.prototype.login = function(data, callback) {
-    API.call('login', data, function onLoginResponse(error, result) {
-      if ( result ) {
-        callback(false, result);
-      } else {
-        error = error || API._('ERR_LOGIN_INVALID');
-        callback(API._('ERR_LOGIN_FMT', error), false);
-      }
+  login(data) {
+    return new Promise((resolve, reject) => {
+      Connection.request('login', data).then((result) => {
+        return resolve(result ? result : _('ERR_LOGIN_INVALID'));
+      }).catch((error) => {
+        reject(new Error(_('ERR_LOGIN_FMT', error)));
+      });
     });
-  };
+  }
 
   /**
    * Log out user
-   *
-   * @function logout
-   * @memberof OSjs.Core.Authenticator#
-   *
-   * @param   {CallbackHandler}      callback        Callback function
+   * @return {Promise<Boolean, Error>}
    */
-  Authenticator.prototype.logout = function(callback) {
-    var opts = {};
-
-    API.call('logout', opts, function onLogoutResponse(error, result) {
-      if ( result ) {
-        callback(false, true);
-      } else {
-        callback('An error occured: ' + (error || 'Unknown error'));
-      }
+  logout() {
+    return new Promise((resolve, reject) => {
+      Connection.request('logout', {}).then((result) => {
+        return resolve(!!result);
+      }).catch((err) => {
+        reject(new Error('An error occured: ' + err));
+      });
     });
-  };
+  }
+
+  /**
+   * Checks the given permission (groups) against logged in user
+   *
+   * @param   {String|String[]}     group         Either a string or array of groups
+   *
+   * @return {Boolean}
+   */
+  checkPermission(group) {
+    const user = this.getUser();
+    const userGroups = user.groups || [];
+
+    if ( !(group instanceof Array) ) {
+      group = [group];
+    }
+
+    if ( userGroups.indexOf('admin') === -1 ) {
+      return !!group.every((g) => userGroups.indexOf(g) >= 0);
+    }
+
+    return true;
+  }
 
   /**
    * When login is requested
    *
-   * @function onLoginRequest
-   * @memberof OSjs.Core.Authenticator#
-   *
-   * @param   {Object}               data            Login data
-   * @param   {CallbackHandler}      callback        Callback function
+   * @param  {Object}               data            Login data
+   * @return {Promise<Object, Error>}
    */
-  Authenticator.prototype.onLoginRequest = function(data, callback) {
-    var self = this;
-
-    this.login(data, function onLoginRequest(err, result) {
-      if ( err ) {
-        callback(err);
-      } else {
-        self.onLogin(result, callback);
-      }
+  onLoginRequest(data) {
+    return new Promise((resolve, reject) => {
+      this.login(data).then((res) => {
+        return this.onLogin(res).then(resolve).catch(reject);
+      }).catch(reject);
     });
-  };
+  }
 
   /**
    * When login has occured
    *
-   * @function onLogin
-   * @memberof OSjs.Core.Authenticator#
-   *
    * @param   {Object}               data            User data
-   * @param   {CallbackHandler}      callback        Callback function
+   * @return {Promise<Object, Error>}
    */
-  Authenticator.prototype.onLogin = function(data, callback) {
-    var userSettings = data.userSettings;
+  onLogin(data) {
+    let userSettings = data.userSettings;
     if ( !userSettings || userSettings instanceof Array ) {
       userSettings = {};
     }
@@ -197,16 +190,16 @@
     this.userData = data.userData;
 
     // Ensure we get the user-selected locale configured from WM
-    function getUserLocale() {
-      var curLocale = API.getConfig('Locale');
-      var detectedLocale = Utils.getUserLocale();
+    function getLocale() {
+      let curLocale = getConfig('Locale');
+      let detectedLocale = getUserLocale();
 
-      if ( API.getConfig('LocaleOptions.AutoDetect', true) && detectedLocale ) {
+      if ( getConfig('LocaleOptions.AutoDetect', true) && detectedLocale ) {
         console.info('Auto-detected user locale via browser', detectedLocale);
         curLocale = detectedLocale;
       }
 
-      var result = OSjs.Core.getSettingsManager().get('CoreWM');
+      let result = SettingsManager.get('CoreWM');
       if ( !result ) {
         try {
           result = userSettings.CoreWM;
@@ -217,37 +210,28 @@
 
     document.getElementById('LoadingScreen').style.display = 'block';
 
-    API.setLocale(getUserLocale());
-    OSjs.Core.getSettingsManager().init(userSettings);
+    setLocale(getLocale());
+    SettingsManager.init(userSettings);
 
     if ( data.blacklistedPackages ) {
-      OSjs.Core.getPackageManager().setBlacklist(data.blacklistedPackages);
+      PackageManager.setBlacklist(data.blacklistedPackages);
     }
 
     this.loggedIn = true;
 
-    callback(null, true);
-  };
+    return Promise.resolve(true);
+  }
 
   /**
    * When login UI is requested
-   *
-   * @function onCreateUI
-   * @memberof OSjs.Core.Authenticator#
-   *
-   * @param   {CallbackHandler}      callback        Callback function
+   * @return {Promise<Object, Error>}
    */
-  Authenticator.prototype.onCreateUI = function(callback) {
-    var self = this;
-    var container = document.getElementById('Login');
-    var login = document.getElementById('LoginForm');
-    var u = document.getElementById('LoginUsername');
-    var p = document.getElementById('LoginPassword');
-    var s = document.getElementById('LoginSubmit');
-
-    if ( !container ) {
-      throw new Error('Could not find Login Form Container');
-    }
+  onCreateUI() {
+    const container = document.getElementById('Login');
+    const login = document.getElementById('LoginForm');
+    const u = document.getElementById('LoginUsername');
+    const p = document.getElementById('LoginPassword');
+    const s = document.getElementById('LoginSubmit');
 
     function _restore() {
       s.removeAttribute('disabled');
@@ -261,48 +245,29 @@
       p.setAttribute('disabled', 'disabled');
     }
 
-    login.onsubmit = function(ev) {
-      _lock();
-      if ( ev ) {
-        ev.preventDefault();
-      }
+    container.style.display = 'block';
+    _restore();
 
-      self.onLoginRequest({
-        username: u.value,
-        password: p.value
-      }, function(err) {
-        if ( err ) {
+    return new Promise((resolve, reject) => {
+      login.onsubmit = (ev) => {
+        _lock();
+        if ( ev ) {
+          ev.preventDefault();
+        }
+
+        this.onLoginRequest({
+          username: u.value,
+          password: p.value
+        }).then(() => {
+          container.parentNode.removeChild(container);
+          return resolve();
+        }).catch((err) => {
           alert(err);
           _restore();
-        } else {
-          container.parentNode.removeChild(container);
-          callback();
-        }
-      });
-    };
+        });
+      };
+    });
+  }
 
-    container.style.display = 'block';
-
-    _restore();
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Core.Authenticator = Authenticator;
-
-  /**
-   * Get running 'Authenticator' instance
-   *
-   * @function getAuthenticator
-   * @memberof OSjs.Core
-   *
-   * @return {OSjs.Core.Authenticator}
-   */
-  OSjs.Core.getAuthenticator = function Core_getAuthenticator() {
-    return _authInstance;
-  };
-
-})(OSjs.API, OSjs.Utils);
+}
 

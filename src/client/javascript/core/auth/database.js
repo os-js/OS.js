@@ -27,16 +27,12 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, Authenticator) {
-  'use strict';
+import Authenticator from 'core/authenticator';
 
-  function DatabaseAuthenticator() {
-    Authenticator.apply(this, arguments);
-  }
+/**
+ * Database Authentication Handler
+ * @extends Authenticator
+ */
+export default class DatabaseAuthenticator extends Authenticator {
+}
 
-  DatabaseAuthenticator.prototype = Object.create(Authenticator.prototype);
-  DatabaseAuthenticator.constructor = Authenticator;
-
-  OSjs.Auth.database = DatabaseAuthenticator;
-
-})(OSjs.API, OSjs.Utils, OSjs.Core.Authenticator);

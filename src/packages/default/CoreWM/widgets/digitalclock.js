@@ -29,18 +29,21 @@
  */
 
 /*eslint valid-jsdoc: "off"*/
-(function(Widget, Utils, API, VFS, GUI, Window) {
-  'use strict';
+import Widget from '../widget';
+const Locales = OSjs.require('core/locales');
+const Dialog = OSjs.require('core/dialog');
 
-  /////////////////////////////////////////////////////////////////////////////
-  // ITEM
-  /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// ITEM
+/////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * Widget: DigitalClock
-   */
-  function WidgetDigitalClock(settings) {
-    Widget.call(this, 'DigitalClock', {
+/**
+ * Widget: DigitalClock
+ */
+export default class WidgetDigitalClock extends Widget {
+
+  constructor(settings) {
+    super('DigitalClock', {
       width: 300,
       height: 100,
       aspect: true,
@@ -59,46 +62,42 @@
     }, settings);
   }
 
-  WidgetDigitalClock.prototype = Object.create(Widget.prototype);
-  WidgetDigitalClock.constructor = Widget;
-
-  WidgetDigitalClock.prototype.onRender = function() {
+  onRender() {
     if ( !this._$canvas ) {
       return;
     }
 
-    var ctx = this._$context;
-    var now = new Date();
-    var txt = [now.getHours(), now.getMinutes(), now.getSeconds()].map(function(i) {
+    const ctx = this._$context;
+    const now = new Date();
+    const txt = [now.getHours(), now.getMinutes(), now.getSeconds()].map(function(i) {
       return i < 10 ? '0' + String(i) : String(i);
     }).join(':');
 
-    var ratio = 0.55;
-    var xOffset = -10;
-    var fontSize = Math.round(this._dimension.height * ratio);
+    const ratio = 0.55;
+    const xOffset = -10;
+    const fontSize = Math.round(this._dimension.height * ratio);
 
     ctx.font = String(fontSize) + 'px Digital-7Mono';
     //ctx.textAlign = 'center'; // Does not work properly for @font-facve
     ctx.textBaseline = 'middle';
     ctx.fillStyle = this._getSetting('color');
 
-    var x = Math.round(this._dimension.width / 2);
-    var y = Math.round(this._dimension.height / 2);
-    var m = ctx.measureText(txt).width;
+    const x = Math.round(this._dimension.width / 2);
+    const y = Math.round(this._dimension.height / 2);
+    const m = ctx.measureText(txt).width;
 
     ctx.clearRect(0, 0, this._dimension.width, this._dimension.height);
     //ctx.fillText(txt, x, y);
     ctx.fillText(txt, x - (m / 2) + xOffset, y);
-  };
+  }
 
-  WidgetDigitalClock.prototype.onContextMenu = function(ev) {
-    var color = this._getSetting('color') || '#ffffff';
-    var self = this;
+  onContextMenu(ev) {
+    const color = this._getSetting('color') || '#ffffff';
 
     return [{
-      title: API._('LBL_COLOR'),
-      onClick: function() {
-        API.createDialog('Color', {
+      title: Locales._('LBL_COLOR'),
+      onClick: () => {
+        Dialog.create('Color', {
           color: color
         }, function(ev, btn, result) {
           if ( btn === 'ok' ) {
@@ -107,14 +106,7 @@
         });
       }
     }];
-  };
+  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+}
 
-  OSjs.Applications.CoreWM = OSjs.Applications.CoreWM || {};
-  OSjs.Applications.CoreWM.Widgets = OSjs.Applications.CoreWM.Widgets || {};
-  OSjs.Applications.CoreWM.Widgets.DigitalClock = WidgetDigitalClock;
-
-})(OSjs.Applications.CoreWM.Widget, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI, OSjs.Core.Window);

@@ -47,7 +47,8 @@ echo "[image] Updating sources..."
 rm -rf node_modules
 
 git checkout -- dist &>/dev/null
-npm install --production &>/dev/null
+rm -rf dist/*.*
+npm install &>/dev/null
 
 if [ "$TEMPLATE" == "intel-edison" ]; then
 #  npm install mraa
@@ -61,7 +62,7 @@ echo "[image] Building..."
 # Build and copy required files
 #
 
-grunt all &>/dev/null
+node osjs build &>/dev/null
 
 mkdir -p $OUTDIR/bin
 mkdir -p $OUTDIR/server
@@ -101,8 +102,6 @@ else
   fi
   cp -r src/server/node/* $OUTDIR/server/
   cp -r node_modules $OUTDIR/
-  rm -rf $OUTDIR/node_modules/grunt*
-  rm -rf $OUTDIR/node_modules/*grunt
   modclean -p $OUTDIR -d -r -n safe
 fi
 
@@ -152,22 +151,12 @@ if [ "$TEMPLATE" != "deb" ]; then
   rm -rf $OUTDIR/dist/themes/wallpapers/*
 fi
 
-rm $OUTDIR/dist/*.min.* 2>/dev/null
 rm $OUTDIR/dist/.htaccess 2>/dev/null
 rm $OUTDIR/dist/.gitignore 2>/dev/null
 rm $OUTDIR/dist/vendor/.gitignore 2>/dev/null
 rm $OUTDIR/dist/themes/.gitignore 2>/dev/null
 rm $OUTDIR/dist/packages/.gitignore 2>/dev/null
 rm $OUTDIR/dist/api.php 2>/dev/null
-rm $OUTDIR/dist/packages/*/*/package.json 2>/dev/null
-rm $OUTDIR/dist/packages/*/*/api.php 2>/dev/null
-rm $OUTDIR/dist/packages/*/*/server.lua 2>/dev/null
-if [ "$TEMPLATE" == "arduino" ]; then
-  rm $OUTDIR/dist/packages/*/*/api.js 2>/dev/null
-  rm $OUTDIR/dist/packages/target/CodeMirror/vendor 2>/dev/null
-fi
-rm $OUTDIR/dist/packages/target/CoreWM/panelitems 2>/dev/null
-rm $OUTDIR/build/dist/themes/styles/*/*.less 2>/dev/null
 
 echo "[image] Done :)"
 exit 0

@@ -29,197 +29,207 @@
  */
 
 /*eslint valid-jsdoc: "off"*/
-(function(DefaultApplication, DefaultApplicationWindow, Application, Window, Utils, API, VFS, GUI) {
-  'use strict';
+import Translations from './locales';
 
-  var DEFAULT_WIDTH = 1024;
-  var DEFAULT_HEIGHT = 768;
+const Locales = OSjs.require('core/locales');
+const Dialog = OSjs.require('core/dialog');
+const GUI = OSjs.require('utils/gui');
+const DOM = OSjs.require('utils/dom');
+const Utils = OSjs.require('utils/misc');
+const FileDataURL = OSjs.require('vfs/filedataurl');
+const DefaultApplication = OSjs.require('helpers/default-application');
+const DefaultApplicationWindow = OSjs.require('helpers/default-application-window');
 
-  var tools = {
-    pointer: {
-      statusText: ''
-    },
-    picker: {
-      statusText: 'LMB: Pick foreground-, RMB: Pick background color'
-    },
-    bucket: {
-      statusText: 'LMB: Fill with foreground-, RMB: Fill with background color'
-    },
-    pencil: {
-      statusText: 'LMB: Use foreground-, RMB: Use background color'
-    },
-    path: {
-      statusText: 'LMB: Use foreground-, RMB: Use background color'
-    },
-    rectangle: {
-      statusText: 'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode'
-    },
-    circle: {
-      statusText: 'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode'
+const doTranslate = Locales.createLocalizer(Translations);
+
+var DEFAULT_WIDTH = 1024;
+var DEFAULT_HEIGHT = 768;
+
+var tools = {
+  pointer: {
+    statusText: ''
+  },
+  picker: {
+    statusText: 'LMB: Pick foreground-, RMB: Pick background color'
+  },
+  bucket: {
+    statusText: 'LMB: Fill with foreground-, RMB: Fill with background color'
+  },
+  pencil: {
+    statusText: 'LMB: Use foreground-, RMB: Use background color'
+  },
+  path: {
+    statusText: 'LMB: Use foreground-, RMB: Use background color'
+  },
+  rectangle: {
+    statusText: 'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle rectangle/square mode'
+  },
+  circle: {
+    statusText: 'LMB: Use foreground-, RMB: Use background color. SHIFT: Toggle circle/ellipse mode'
+  }
+};
+var toolEvents = {
+  pointer: {
+  },
+
+  picker: (function() {
+    var imageData;
+
+    function pick(ev, args) {
+      var value = '#000000';
+      var t = (ev.shiftKey || ev.button > 0) ? 'background' : 'foreground';
+
+      if ( !imageData ) {
+        imageData = args.ctx.getImageData(0, 0, args.canvas.width, args.canvas.height).data;
+      }
+
+      var index = ((args.pos.x + args.pos.y * args.canvas.width) * 4);
+      try {
+        value = Utils.convertToHEX({
+          r: imageData[index + 0],
+          g: imageData[index + 1],
+          b: imageData[index + 2],
+          a: imageData[index + 3]
+        });
+      } catch ( e ) {
+      }
+
+      args.win.setToolProperty(t, value);
     }
-  };
-  var toolEvents = {
-    pointer: {
+
+    return {
+      mousedown: pick,
+      mousemove: pick,
+      mouseup: function(ev, pos, canvas, ctx, win) {
+        imageData = null;
+      }
+    };
+  })(),
+
+  bucket: {
+    mousedown: function(ev, args) {
+      var t = (ev.shiftKey || ev.button > 0) ? 'background' : 'foreground';
+      args.ctx.fillStyle = args.win.tool[t];
+      args.ctx.fillRect(0, 0, args.canvas.width, args.canvas.height);
+    }
+  },
+
+  pencil: {
+    mousedown: function(ev, args) {
+      var t = (ev.shiftKey || ev.button > 0) ? 'background' : 'foreground';
+      args.ctx.strokeStyle = args.win.tool[t];
     },
+    mousemove: function(ev, args) {
+      args.ctx.beginPath();
+      args.ctx.moveTo(args.pos.x - 1, args.pos.y);
+      args.ctx.lineTo(args.pos.x, args.pos.y);
+      args.ctx.closePath();
+      args.ctx.stroke();
+    }
+  },
 
-    picker: (function() {
-      var imageData;
+  path: {
+    mousemove: function(ev, args) {
+      if ( args.tmpContext ) {
+        args.tmpContext.clearRect(0, 0, args.tmpCanvas.width, args.tmpCanvas.height);
+        args.tmpContext.beginPath();
+        args.tmpContext.moveTo(args.start.x, args.start.y);
+        args.tmpContext.lineTo(args.pos.x, args.pos.y);
+        args.tmpContext.closePath();
+        args.tmpContext.stroke();
+      }
+    }
+  },
 
-      function pick(ev, args) {
-        var value = '#000000';
-        var t = (ev.shiftKey || ev.button > 0) ? 'background' : 'foreground';
+  rectangle: {
+    mousedown: function(ev, args) {
+      args.tmpContext.fillStyle = (ev.button > 0) ? args.win.tool.background : args.win.tool.foreground;
+      args.tmpContext.strokeStyle = (ev.button <= 0) ? args.win.tool.background : args.win.tool.foreground;
+    },
+    mousemove: function(ev, args) {
+      var x, y, w, h;
 
-        if ( !imageData ) {
-          imageData = args.ctx.getImageData(0, 0, args.canvas.width, args.canvas.height).data;
-        }
-
-        var index = ((args.pos.x + args.pos.y * args.canvas.width) * 4);
-        try {
-          value = Utils.convertToHEX({
-            r: imageData[index + 0],
-            g: imageData[index + 1],
-            b: imageData[index + 2],
-            a: imageData[index + 3]
-          });
-        } catch ( e ) {
-        }
-
-        args.win.setToolProperty(t, value);
+      if ( ev.shiftKey ) {
+        x = Math.min(args.pos.x, args.start.x);
+        y = Math.min(args.pos.y, args.start.y);
+        w = Math.abs(args.pos.x - args.start.x);
+        h = Math.abs(args.pos.y - args.start.y);
+      } else {
+        x = args.start.x; //Math.min(args.pos.x, args.start.x);
+        y = args.start.y; //Math.min(args.pos.y, args.start.y);
+        w = Math.abs(args.pos.x - args.start.x) * (args.pos.x < args.start.x ? -1 : 1);
+        h = Math.abs(w) * (args.pos.y < args.start.y ? -1 : 1);
       }
 
-      return {
-        mousedown: pick,
-        mousemove: pick,
-        mouseup: function(ev, pos, canvas, ctx, win) {
-          imageData = null;
+      args.tmpContext.clearRect(0, 0, args.tmpCanvas.width, args.tmpCanvas.height);
+      if ( w && h ) {
+        if ( args.win.tool.lineStroke ) {
+          args.tmpContext.strokeRect(x, y, w, h);
         }
-      };
-    })(),
-
-    bucket: {
-      mousedown: function(ev, args) {
-        var t = (ev.shiftKey || ev.button > 0) ? 'background' : 'foreground';
-        args.ctx.fillStyle = args.win.tool[t];
-        args.ctx.fillRect(0, 0, args.canvas.width, args.canvas.height);
+        args.tmpContext.fillRect(x, y, w, h);
       }
+    }
+  },
+
+  circle: {
+    mousedown: function(ev, args) {
+      args.tmpContext.fillStyle = (ev.button > 0) ? args.win.tool.background : args.win.tool.foreground;
+      args.tmpContext.strokeStyle = (ev.button <= 0) ? args.win.tool.background : args.win.tool.foreground;
     },
-
-    pencil: {
-      mousedown: function(ev, args) {
-        var t = (ev.shiftKey || ev.button > 0) ? 'background' : 'foreground';
-        args.ctx.strokeStyle = args.win.tool[t];
-      },
-      mousemove: function(ev, args) {
-        args.ctx.beginPath();
-        args.ctx.moveTo(args.pos.x - 1, args.pos.y);
-        args.ctx.lineTo(args.pos.x, args.pos.y);
-        args.ctx.closePath();
-        args.ctx.stroke();
-      }
-    },
-
-    path: {
-      mousemove: function(ev, args) {
-        if ( args.tmpContext ) {
-          args.tmpContext.clearRect(0, 0, args.tmpCanvas.width, args.tmpCanvas.height);
-          args.tmpContext.beginPath();
-          args.tmpContext.moveTo(args.start.x, args.start.y);
-          args.tmpContext.lineTo(args.pos.x, args.pos.y);
-          args.tmpContext.closePath();
-          args.tmpContext.stroke();
-        }
-      }
-    },
-
-    rectangle: {
-      mousedown: function(ev, args) {
-        args.tmpContext.fillStyle = (ev.button > 0) ? args.win.tool.background : args.win.tool.foreground;
-        args.tmpContext.strokeStyle = (ev.button <= 0) ? args.win.tool.background : args.win.tool.foreground;
-      },
-      mousemove: function(ev, args) {
-        var x, y, w, h;
-
-        if ( ev.shiftKey ) {
-          x = Math.min(args.pos.x, args.start.x);
-          y = Math.min(args.pos.y, args.start.y);
-          w = Math.abs(args.pos.x - args.start.x);
-          h = Math.abs(args.pos.y - args.start.y);
-        } else {
-          x = args.start.x; //Math.min(args.pos.x, args.start.x);
-          y = args.start.y; //Math.min(args.pos.y, args.start.y);
-          w = Math.abs(args.pos.x - args.start.x) * (args.pos.x < args.start.x ? -1 : 1);
-          h = Math.abs(w) * (args.pos.y < args.start.y ? -1 : 1);
-        }
+    mousemove: function(ev, args) {
+      if ( ev.shiftKey ) {
+        var width = Math.abs(args.start.x - args.pos.x);
+        var height = Math.abs(args.start.y - args.pos.y);
 
         args.tmpContext.clearRect(0, 0, args.tmpCanvas.width, args.tmpCanvas.height);
-        if ( w && h ) {
+        if ( width > 0 && height > 0 ) {
+          args.tmpContext.beginPath();
+          args.tmpContext.moveTo(args.start.x, args.start.y - height * 2); // A1
+          args.tmpContext.bezierCurveTo(
+            args.start.x + width * 2, args.start.y - height * 2, // C1
+            args.start.x + width * 2, args.start.y + height * 2, // C2
+            args.start.x, args.start.y + height * 2); // A2
+
+          args.tmpContext.bezierCurveTo(
+            args.start.x - width * 2, args.start.y + height * 2, // C3
+            args.start.x - width * 2, args.start.y - height * 2, // C4
+            args.start.x, args.start.y - height * 2); // A1
+
+          args.tmpContext.closePath();
           if ( args.win.tool.lineStroke ) {
-            args.tmpContext.strokeRect(x, y, w, h);
+            args.tmpContext.stroke();
           }
-          args.tmpContext.fillRect(x, y, w, h);
+          args.tmpContext.fill();
         }
-      }
-    },
+      } else {
+        var x = Math.abs(args.start.x - args.pos.x);
+        var y = Math.abs(args.start.y - args.pos.y);
+        var r = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 
-    circle: {
-      mousedown: function(ev, args) {
-        args.tmpContext.fillStyle = (ev.button > 0) ? args.win.tool.background : args.win.tool.foreground;
-        args.tmpContext.strokeStyle = (ev.button <= 0) ? args.win.tool.background : args.win.tool.foreground;
-      },
-      mousemove: function(ev, args) {
-        if ( ev.shiftKey ) {
-          var width = Math.abs(args.start.x - args.pos.x);
-          var height = Math.abs(args.start.y - args.pos.y);
+        args.tmpContext.clearRect(0, 0, args.tmpCanvas.width, args.tmpCanvas.height);
+        if ( r > 0 ) {
+          args.tmpContext.beginPath();
+          args.tmpContext.arc(args.start.x, args.start.y, r, 0, Math.PI * 2, true);
+          args.tmpContext.closePath();
 
-          args.tmpContext.clearRect(0, 0, args.tmpCanvas.width, args.tmpCanvas.height);
-          if ( width > 0 && height > 0 ) {
-            args.tmpContext.beginPath();
-            args.tmpContext.moveTo(args.start.x, args.start.y - height * 2); // A1
-            args.tmpContext.bezierCurveTo(
-              args.start.x + width * 2, args.start.y - height * 2, // C1
-              args.start.x + width * 2, args.start.y + height * 2, // C2
-              args.start.x, args.start.y + height * 2); // A2
-
-            args.tmpContext.bezierCurveTo(
-              args.start.x - width * 2, args.start.y + height * 2, // C3
-              args.start.x - width * 2, args.start.y - height * 2, // C4
-              args.start.x, args.start.y - height * 2); // A1
-
-            args.tmpContext.closePath();
-            if ( args.win.tool.lineStroke ) {
-              args.tmpContext.stroke();
-            }
-            args.tmpContext.fill();
+          if ( args.win.tool.lineStroke ) {
+            args.tmpContext.stroke();
           }
-        } else {
-          var x = Math.abs(args.start.x - args.pos.x);
-          var y = Math.abs(args.start.y - args.pos.y);
-          var r = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-
-          args.tmpContext.clearRect(0, 0, args.tmpCanvas.width, args.tmpCanvas.height);
-          if ( r > 0 ) {
-            args.tmpContext.beginPath();
-            args.tmpContext.arc(args.start.x, args.start.y, r, 0, Math.PI * 2, true);
-            args.tmpContext.closePath();
-
-            if ( args.win.tool.lineStroke ) {
-              args.tmpContext.stroke();
-            }
-            args.tmpContext.fill();
-          }
+          args.tmpContext.fill();
         }
       }
     }
-  };
+  }
+};
 
-  /////////////////////////////////////////////////////////////////////////////
-  // WINDOWS
-  /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// APPLICATION
+/////////////////////////////////////////////////////////////////////////////
 
-  var doTranslate = OSjs.Applications.ApplicationDraw._;
+class ApplicationDrawWindow extends DefaultApplicationWindow {
 
-  function ApplicationDrawWindow(app, metadata, scheme, file) {
-    DefaultApplicationWindow.apply(this, ['ApplicationDrawWindow', {
+  constructor(app, metadata, file) {
+    super('ApplicationDrawWindow', {
       icon: metadata.icon,
       title: metadata.name,
       allow_drop: true,
@@ -228,7 +238,7 @@
       width: 800,
       height: 450,
       translator: doTranslate
-    }, app, scheme, file]);
+    }, app, file);
 
     this.tool = {
       name: 'pointer',
@@ -240,15 +250,12 @@
     };
   }
 
-  ApplicationDrawWindow.prototype = Object.create(DefaultApplicationWindow.prototype);
-  ApplicationDrawWindow.constructor = DefaultApplicationWindow.prototype;
-
-  ApplicationDrawWindow.prototype.init = function(wm, app, scheme) {
-    var root = DefaultApplicationWindow.prototype.init.apply(this, arguments);
+  init(wm, app) {
+    const root = super.init(...arguments);
     var self = this;
 
     // Load and set up scheme (GUI) here
-    this._render('DrawWindow');
+    this._render('DrawWindow', require('osjs-scheme-loader!./scheme.html'));
 
     var statusbar = this._find('Statusbar');
 
@@ -286,7 +293,7 @@
     }
 
     function removeTempCanvas() {
-      Utils.$remove(tmpCanvas);
+      DOM.$remove(tmpCanvas);
       tmpContext = null;
       tmpCanvas = null;
     }
@@ -297,7 +304,7 @@
 
         removeTempCanvas();
 
-        var elpos = Utils.$position(canvas);
+        var elpos = DOM.$position(canvas);
         startPos.x = pos.x - elpos.left;
         startPos.y = pos.y - elpos.top;
         cpos = {x: startPos.x, y: startPos.y};
@@ -334,7 +341,7 @@
       }
     }
 
-    GUI.Helpers.createDrag(canvas, function(ev, pos) {
+    GUI.createDrag(canvas, function(ev, pos) {
       toolAction('down', ev, pos);
     }, function(ev, diff, pos) {
       toolAction('move', ev, pos, diff);
@@ -388,9 +395,9 @@
     this.setToolProperty('lineStroke', null);
 
     return root;
-  };
+  }
 
-  ApplicationDrawWindow.prototype.openColorDialog = function(param) {
+  openColorDialog(param) {
     var self = this;
 
     var colorParam = null;
@@ -400,7 +407,7 @@
       colorParam = doTranslate('Set foreground color');
     }
 
-    API.createDialog('Color', {
+    Dialog.create('Color', {
       title: colorParam,
       color: self.tool[param]
     }, function(ev, button, result) {
@@ -409,9 +416,9 @@
       }
       self.setToolProperty(param, result.hex);
     }, this);
-  };
+  }
 
-  ApplicationDrawWindow.prototype.setToolProperty = function(param, value) {
+  setToolProperty(param, value) {
     console.warn('setToolProperty', param, value);
 
     if ( typeof this.tool[param] !== 'undefined' ) {
@@ -425,11 +432,12 @@
     this._find('LineJoin').set('value', this.tool.lineJoin);
     this._find('LineWidth').set('value', this.tool.lineWidth);
     this._find('LineStroke').set('value', this.tool.lineStroke);
-  };
+  }
 
-  ApplicationDrawWindow.prototype.showFile = function(file, result) {
+  showFile(file, result) {
     var self = this;
-    DefaultApplicationWindow.prototype.showFile.apply(this, arguments);
+
+    super.showFile(...arguments);
 
     var canvas = this._find('Canvas').querySelector('canvas');
     var ctx = canvas.getContext('2d');
@@ -468,22 +476,21 @@
       canvas.height = DEFAULT_HEIGHT;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
-  };
+  }
 
-  ApplicationDrawWindow.prototype.getFileData = function() {
+  getFileData() {
     var canvas = this._find('Canvas').querySelector('canvas');
     if ( canvas ) {
-      return new VFS.FileDataURL(canvas.toDataURL('image/png'));
+      return new FileDataURL(canvas.toDataURL('image/png'));
     }
     return null;
-  };
+  }
+}
 
-  /////////////////////////////////////////////////////////////////////////////
-  // APPLICATION
-  /////////////////////////////////////////////////////////////////////////////
+class ApplicationDraw extends DefaultApplication {
 
-  var ApplicationDraw = function(args, metadata) {
-    DefaultApplication.apply(this, ['ApplicationDraw', args, metadata, {
+  constructor(args, metadata) {
+    super('ApplicationDraw', args, metadata, {
       readData: false,
       extension: 'png',
       mime: 'image/png',
@@ -493,24 +500,15 @@
         mime: 'image/png',
         extension: 'png'
       }]
-    }]);
-  };
+    });
+  }
 
-  ApplicationDraw.prototype = Object.create(DefaultApplication.prototype);
-  ApplicationDraw.constructor = DefaultApplication;
+  init(settings, metadata) {
+    super.init(...arguments);
 
-  ApplicationDraw.prototype.init = function(settings, metadata, scheme) {
-    Application.prototype.init.call(this, settings, metadata, scheme);
-    var file = this._getArgument('file');
-    this._addWindow(new ApplicationDrawWindow(this, metadata, scheme, file));
-  };
+    const file = this._getArgument('file');
+    this._addWindow(new ApplicationDrawWindow(this, metadata, file));
+  }
+}
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationDraw = OSjs.Applications.ApplicationDraw || {};
-  OSjs.Applications.ApplicationDraw.Class = Object.seal(ApplicationDraw);
-
-})(OSjs.Helpers.DefaultApplication, OSjs.Helpers.DefaultApplicationWindow, OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);
+OSjs.Applications.ApplicationDraw = ApplicationDraw;

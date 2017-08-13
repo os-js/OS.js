@@ -28,28 +28,19 @@
  * @licence Simplified BSD License
  */
 
-/*eslint valid-jsdoc: "off"*/
-(function() {
-  'use strict';
+/**
+ * Registers your package when OS.js server starts.
+ */
+module.exports.register = function(env, metadata, servers) {
+  return Promise.resolve(true);
+};
 
-  /*
-   * See http://os.js.org/doc/tutorials/application-with-server-api.html
-   */
-
-  /**
-   * Registers your package when OS.js server starts.
-   */
-  module.exports.register = function(env, metadata, servers) {
-  };
-
-  /**
-   * Registers your Application API methods
-   */
-  module.exports.api = {
-    test: function(env, http, resolve, reject, args) {
-      resolve('This is a response from your application');
-    }
-  };
-
-})();
+/**
+ * Registers your Application API methods
+ */
+module.exports.api = {
+  test: function(env, http, args) {
+    return Promise.resolve('This is a response from your application');
+  }
+};
 

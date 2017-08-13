@@ -27,119 +27,222 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-(function(API, Utils, VFS, GUI) {
-  'use strict';
+import * as DOM from 'utils/dom';
+import * as GUI from 'utils/gui';
+import * as Clipboard from 'utils/clipboard';
+import * as Events from 'utils/events';
+import Keycodes from 'utils/keycodes';
+import GUIElement from 'gui/element';
+import {_} from 'core/locales';
 
-  var _buttonCount = 0;
+let _buttonCount = 0;
 
-  /////////////////////////////////////////////////////////////////////////////
-  // INPUT HELPERS
-  /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// INPUT HELPERS
+/////////////////////////////////////////////////////////////////////////////
 
-  function createInputOfType(el, type) {
-    var group = el.getAttribute('data-group');
-    var placeholder = el.getAttribute('data-placeholder');
-    var disabled = String(el.getAttribute('data-disabled')) === 'true';
-    var value = el.childNodes.length ? el.childNodes[0].nodeValue : null;
-    Utils.$empty(el);
+function createInputOfType(el, type) {
+  const group = el.getAttribute('data-group');
+  const placeholder = el.getAttribute('data-placeholder');
+  const disabled = String(el.getAttribute('data-disabled')) === 'true';
+  const value = el.childNodes.length ? el.childNodes[0].nodeValue : null;
+  DOM.$empty(el);
 
-    var input = document.createElement(type === 'textarea' ? 'textarea' : 'input');
+  const input = document.createElement(type === 'textarea' ? 'textarea' : 'input');
 
-    var attribs = {
-      value: null,
-      type: type,
-      tabindex: -1,
-      placeholder: placeholder,
-      disabled: disabled ? 'disabled' : null,
-      name: group ? group + '[]' : null
-    };
+  const attribs = {
+    value: null,
+    type: type,
+    tabindex: -1,
+    placeholder: placeholder,
+    disabled: disabled ? 'disabled' : null,
+    name: group ? group + '[]' : null
+  };
 
-    (['autocomplete', 'autocorrect', 'autocapitalize', 'spellcheck']).forEach(function(a) {
-      attribs[a] = el.getAttribute('data-' + a) || 'false';
+  (['autocomplete', 'autocorrect', 'autocapitalize', 'spellcheck']).forEach((a) => {
+    attribs[a] = el.getAttribute('data-' + a) || 'false';
+  });
+
+  function _bindDefaults() {
+    if ( ['range', 'slider'].indexOf(type) >= 0 ) {
+      attribs.min = el.getAttribute('data-min');
+      attribs.max = el.getAttribute('data-max');
+      attribs.step = el.getAttribute('data-step');
+    } else if ( ['radio', 'checkbox'].indexOf(type) >= 0 ) {
+      if ( el.getAttribute('data-value') === 'true' ) {
+        attribs.checked = 'checked';
+      }
+    } else if ( ['text', 'password', 'textarea'].indexOf(type) >= 0 ) {
+      attribs.value = value || '';
+    }
+
+    Object.keys(attribs).forEach((a) => {
+      if ( attribs[a] !== null ) {
+        if ( a === 'value' ) {
+          input.value = attribs[a];
+        } else {
+          input.setAttribute(a, attribs[a]);
+        }
+      }
     });
-
-    function _bindDefaults() {
-      if ( ['range', 'slider'].indexOf(type) >= 0 ) {
-        attribs.min = el.getAttribute('data-min');
-        attribs.max = el.getAttribute('data-max');
-        attribs.step = el.getAttribute('data-step');
-      } else if ( ['radio', 'checkbox'].indexOf(type) >= 0 ) {
-        if ( el.getAttribute('data-value') === 'true' ) {
-          attribs.checked = 'checked';
+  }
+  function _bindEvents() {
+    if ( type === 'text' || type === 'password' || type === 'textarea' ) {
+      Events.$bind(input, 'keydown', (ev) => {
+        if ( ev.keyCode === Keycodes.ENTER ) {
+          input.dispatchEvent(new CustomEvent('_enter', {detail: input.value}));
+        } else if ( ev.keyCode === Keycodes.C && ev.ctrlKey ) {
+          Clipboard.setClipboard(input.value);
         }
-      } else if ( ['text', 'password', 'textarea'].indexOf(type) >= 0 ) {
-        attribs.value = value || '';
-      }
 
-      Object.keys(attribs).forEach(function(a) {
-        if ( attribs[a] !== null ) {
-          if ( a === 'value' ) {
-            input.value = attribs[a];
-          } else {
-            input.setAttribute(a, attribs[a]);
-          }
+        if ( type === 'textarea' && ev.keyCode === Keycodes.TAB ) {
+          ev.preventDefault();
+          input.value += '\t';
         }
-      });
-    }
-    function _bindEvents() {
-      if ( type === 'text' || type === 'password' || type === 'textarea' ) {
-        Utils.$bind(input, 'keydown', function(ev) {
-          if ( ev.keyCode === Utils.Keys.ENTER ) {
-            input.dispatchEvent(new CustomEvent('_enter', {detail: input.value}));
-          } else if ( ev.keyCode === Utils.Keys.C && ev.ctrlKey ) {
-            API.setClipboard(input.value);
-          }
-
-          if ( type === 'textarea' && ev.keyCode === Utils.Keys.TAB ) {
-            ev.preventDefault();
-            input.value += '\t';
-          }
-        }, false);
-      }
-    }
-
-    function _create() {
-      _bindDefaults();
-      _bindEvents();
-
-      GUI.Helpers.createInputLabel(el, type, input);
-
-      var rolemap = {
-        'TEXTAREA': function() {
-          return 'textbox';
-        },
-        'INPUT': function(i) {
-          var typemap = {
-            'range': 'slider',
-            'text': 'textbox',
-            'password': 'textbox'
-          };
-
-          return typemap[i.type] || i.type;
-        }
-      };
-
-      if ( rolemap[el.tagName] ) {
-        input.setAttribute('role', rolemap[el.tagName](input));
-      }
-      input.setAttribute('aria-label', el.getAttribute('title') || '');
-      el.setAttribute('role', 'region');
-      el.setAttribute('aria-disabled', String(disabled));
-
-      Utils.$bind(input, 'change', function(ev) {
-        var value = input.value;
-        if ( type === 'radio' || type === 'checkbox' ) {
-          //value = input.getAttribute('checked') === 'checked';
-          value = input.checked; //input.value === 'on';
-        }
-        input.dispatchEvent(new CustomEvent('_change', {detail: value}));
       }, false);
     }
-
-    _create();
   }
 
-  function bindInputEvents(evName, callback, params) {
+  function _create() {
+    _bindDefaults();
+    _bindEvents();
+
+    GUI.createInputLabel(el, type, input);
+
+    const rolemap = {
+      'TEXTAREA': () => {
+        return 'textbox';
+      },
+      'INPUT': (i) => {
+        const typemap = {
+          'range': 'slider',
+          'text': 'textbox',
+          'password': 'textbox'
+        };
+
+        return typemap[i.type] || i.type;
+      }
+    };
+
+    if ( rolemap[el.tagName] ) {
+      input.setAttribute('role', rolemap[el.tagName](input));
+    }
+    input.setAttribute('aria-label', el.getAttribute('title') || '');
+    el.setAttribute('role', 'region');
+    el.setAttribute('aria-disabled', String(disabled));
+
+    Events.$bind(input, 'change', (ev) => {
+      let value = input.value;
+      if ( type === 'radio' || type === 'checkbox' ) {
+        //value = input.getAttribute('checked') === 'checked';
+        value = input.checked; //input.value === 'on';
+      }
+      input.dispatchEvent(new CustomEvent('_change', {detail: value}));
+    }, false);
+  }
+
+  _create();
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// SELECT HELPERS
+/////////////////////////////////////////////////////////////////////////////
+
+function addToSelectBox(el, entries) {
+  const target = el.querySelector('select');
+  if ( !(entries instanceof Array) ) {
+    entries = [entries];
+  }
+
+  entries.forEach((e) => {
+    const opt = document.createElement('option');
+    opt.setAttribute('role', 'option');
+    opt.setAttribute('value', e.value);
+    opt.appendChild(document.createTextNode(e.label));
+
+    target.appendChild(opt);
+  });
+}
+
+function removeFromSelectBox(el, what) {
+  const target = el.querySelector('select');
+  target.querySelectorAll('option').forEach((opt) => {
+    if ( String(opt.value) === String(what) ) {
+      DOM.$remove(opt);
+      return false;
+    }
+    return true;
+  });
+}
+
+function createSelectInput(el, multiple) {
+  const disabled = el.getAttribute('data-disabled') !== null;
+  const selected = el.getAttribute('data-selected');
+
+  const select = document.createElement('select');
+  if ( multiple ) {
+    select.setAttribute('size', el.getAttribute('data-size') || 2);
+    multiple = el.getAttribute('data-multiple') === 'true';
+  }
+
+  if ( multiple ) {
+    select.setAttribute('multiple', 'multiple');
+  }
+  if ( disabled ) {
+    select.setAttribute('disabled', 'disabled');
+  }
+  if ( selected !== null ) {
+    select.selectedIndex = selected;
+  }
+
+  el.querySelectorAll('gui-select-option').forEach((sel) => {
+    const value = sel.getAttribute('data-value') || '';
+    const label = sel.childNodes.length ? sel.childNodes[0].nodeValue : '';
+
+    const option = document.createElement('option');
+    option.setAttribute('role', 'option');
+    option.setAttribute('value', value);
+    option.appendChild(document.createTextNode(label));
+    if ( sel.getAttribute('selected') ) {
+      option.setAttribute('selected', 'selected');
+    }
+    select.appendChild(option);
+    sel.parentNode.removeChild(sel);
+  });
+
+  Events.$bind(select, 'change', (ev) => {
+    select.dispatchEvent(new CustomEvent('_change', {detail: select.value}));
+  }, false);
+
+  select.setAttribute('role', 'listbox');
+  select.setAttribute('aria-label', el.getAttribute('title') || '');
+  el.setAttribute('aria-disabled', String(disabled));
+  el.setAttribute('role', 'region');
+  el.appendChild(select);
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// OTHER HELPERS
+/////////////////////////////////////////////////////////////////////////////
+
+function setSwitchValue(val, input, button) {
+  if ( val !== true ) {
+    input.removeAttribute('checked');
+    DOM.$removeClass(button, 'gui-active');
+    button.innerHTML = '0';
+  } else {
+    input.setAttribute('checked', 'checked');
+    DOM.$addClass(button, 'gui-active');
+    button.innerHTML = '1';
+  }
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// CLASSES
+/////////////////////////////////////////////////////////////////////////////
+
+class _GUIInput extends GUIElement {
+  on(evName, callback, params) {
     /* eslint no-invalid-this: "off" */
     if ( evName === 'enter' ) {
       evName = '_enter';
@@ -147,810 +250,689 @@
       evName = '_change';
     }
 
-    var target = this.$element.querySelector('textarea, input, select');
-    Utils.$bind(target, evName, callback.bind(this), params);
+    const target = this.$element.querySelector('textarea, input, select');
+    Events.$bind(target, evName, callback.bind(this), params);
+    return this;
+  }
+}
+
+/**
+ * Element: 'gui-label'
+ *
+ * Just a normal label.
+ *
+ * <pre><code>
+ *   getter    value     String        The value/contents
+ *   setter    value     String        The value/contents
+ *   setter    label     String        The label text
+ *   property  disabled  boolean       Disabled state
+ * </code></pre>
+ */
+class GUILabel extends GUIElement {
+  static register() {
+    return super.register({
+      tagName: 'gui-label'
+    }, this);
+  }
+
+  set(param, value, isHTML) {
+    const el = this.$element;
+    if ( param === 'value' || param === 'label' ) {
+      el.setAttribute('data-label', String(value));
+
+      const lbl = el.querySelector('label');
+      DOM.$empty(lbl);
+      if ( isHTML ) {
+        lbl.innerHTML = value;
+      } else {
+        lbl.appendChild(document.createTextNode(value));
+      }
+      return this;
+    }
+    return super.set(...arguments);
+  }
+
+  build() {
+    const el = this.$element;
+    const label = GUI.getValueLabel(el, true);
+    const lbl = document.createElement('label');
+    lbl.appendChild(document.createTextNode(label));
+    el.setAttribute('role', 'heading');
+    el.setAttribute('data-label', String(label));
+    el.appendChild(lbl);
+
+    return this;
+  }
+}
+
+/**
+ * Element: 'gui-textarea'
+ *
+ * Text area input (multi-line)
+ *
+ * See `ev.detail` for data on events (like on 'change').
+ *
+ * <pre><code>
+ *   getter    value         String        The value/contents
+ *   setter    value         String        The value/contents
+ *   setter    label         String        The label text
+ *   setter    disabled      boolean       Set disabled state
+ *   property  disabled      boolean       Disabled state
+ *   property  value         String        The input value
+ *   property  placeholder   String        An optional placeholder
+ *   event     change                      When input has changed => fn(ev)
+ * </code></pre>
+ */
+class GUITextarea extends _GUIInput {
+  static register() {
+    return super.register({
+      tagName: 'gui-textarea',
+      type: 'input'
+    }, this);
+  }
+
+  build() {
+    createInputOfType(this.$element, 'textarea');
+
     return this;
   }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // SELECT HELPERS
-  /////////////////////////////////////////////////////////////////////////////
-
-  function addToSelectBox(el, entries) {
-    var target = el.querySelector('select');
-    if ( !(entries instanceof Array) ) {
-      entries = [entries];
+  set(param, value) {
+    const el = this.$element;
+    if ( el && param === 'scrollTop' ) {
+      if ( typeof value !== 'number' ) {
+        value = el.firstChild.scrollHeight;
+      }
+      el.firstChild.scrollTop = value;
+      return this;
     }
+    return super.set(...arguments);
+  }
+}
 
-    entries.forEach(function(e) {
-      var opt = document.createElement('option');
-      opt.setAttribute('role', 'option');
-      opt.setAttribute('value', e.value);
-      opt.appendChild(document.createTextNode(e.label));
-
-      target.appendChild(opt);
-    });
+/**
+ * Element: 'gui-text'
+ *
+ * Text input.
+ *
+ * See `ev.detail` for data on events (like on 'change').
+ *
+ * <pre><code>
+ *   getter    value         String        The value/contents
+ *   setter    value         String        The value/contents
+ *   setter    disabled      boolean       Set disabled state
+ *   property  disabled      boolean       Disabled state
+ *   property  value         String        The input value
+ *   property  placeholder   String        An optional placeholder
+ *   event     change                      When input has changed => fn(ev)
+ *   event     enter                       When enter key was pressed => fn(ev)
+ * </code></pre>
+ */
+class GUIText extends _GUIInput {
+  static register() {
+    return super.register({
+      tagName: 'gui-text',
+      type: 'input'
+    }, this);
   }
 
-  function removeFromSelectBox(el, what) {
-    var target = el.querySelector('select');
-    target.querySelectorAll('option').forEach(function(opt) {
-      if ( String(opt.value) === String(what) ) {
-        Utils.$remove(opt);
-        return false;
-      }
-      return true;
-    });
+  build() {
+    createInputOfType(this.$element, 'text');
+    return this;
+  }
+}
+
+/**
+ * Element: 'gui-password'
+ *
+ * Password input.
+ *
+ * See `ev.detail` for data on events (like on 'change').
+ *
+ * <pre><code>
+ *   getter    value         String        The value/contents
+ *   setter    value         String        The value/contents
+ *   setter    disabled      boolean       Set disabled state
+ *   property  disabled      boolean       Disabled state
+ *   property  value         String        The input value
+ *   property  placeholder   String        An optional placeholder
+ *   event     change                      When input has changed => fn(ev)
+ *   event     enter                       When enter key was pressed => fn(ev)
+ * </code></pre>
+ */
+class GUIPassword extends _GUIInput {
+  static register() {
+    return super.register({
+      tagName: 'gui-password',
+      type: 'input'
+    }, this);
   }
 
-  function createSelectInput(el, multiple) {
-    var disabled = el.getAttribute('data-disabled') !== null;
-    var selected = el.getAttribute('data-selected');
+  build() {
+    createInputOfType(this.$element, 'password');
+    return this;
+  }
+}
 
-    var select = document.createElement('select');
-    if ( multiple ) {
-      select.setAttribute('size', el.getAttribute('data-size') || 2);
-      multiple = el.getAttribute('data-multiple') === 'true';
-    }
+/**
+ * Element: 'gui-file-upload'
+ *
+ * File upload selector.
+ *
+ * See `ev.detail` for data on events (like on 'change').
+ *
+ * <pre><code>
+ *   getter    value     String        The value/contents
+ *   setter    value     String        The value/contents
+ *   setter    disabled  boolean       Set disabled state
+ *   property  disabled  boolean       Disabled state
+ *   event     change                  When input has changed => fn(ev)
+ * </code></pre>
+ */
+class GUIFileUpload extends _GUIInput {
+  static register() {
+    return super.register({
+      tagName: 'gui-file-upload',
+      type: 'input'
+    }, this);
+  }
 
-    if ( multiple ) {
-      select.setAttribute('multiple', 'multiple');
-    }
-    if ( disabled ) {
-      select.setAttribute('disabled', 'disabled');
-    }
-    if ( selected !== null ) {
-      select.selectedIndex = selected;
-    }
+  build() {
+    const input = document.createElement('input');
+    input.setAttribute('role', 'button');
+    input.setAttribute('type', 'file');
+    input.onchange = (ev) => {
+      input.dispatchEvent(new CustomEvent('_change', {detail: input.files[0]}));
+    };
+    this.$element.appendChild(input);
 
-    el.querySelectorAll('gui-select-option').forEach(function(sel) {
-      var value = sel.getAttribute('data-value') || '';
-      var label = sel.childNodes.length ? sel.childNodes[0].nodeValue : '';
+    return this;
+  }
+}
 
-      var option = document.createElement('option');
-      option.setAttribute('role', 'option');
-      option.setAttribute('value', value);
-      option.appendChild(document.createTextNode(label));
-      if ( sel.getAttribute('selected') ) {
-        option.setAttribute('selected', 'selected');
+/**
+ * Element: 'gui-radio'
+ *
+ * Radio selection input.
+ *
+ * See `ev.detail` for data on events (like on 'change').
+ *
+ * <pre><code>
+ *   getter    value     boolean       The value/checked state
+ *   setter    value     boolean       The value/checked state
+ *   setter    disabled  boolean       Set disabled state
+ *   property  disabled  boolean       Disabled state
+ *   property  label     String        (Optional) Set a label on the input element
+ *   property  group     String        (Optional) A group identificator
+ *   event     change                  When input has changed => fn(ev)
+ * </code></pre>
+ */
+class GUIRadio extends _GUIInput {
+  static register() {
+    return super.register({
+      tagName: 'gui-radio',
+      type: 'input'
+    }, this);
+  }
+
+  build() {
+    createInputOfType(this.$element, 'radio');
+    return this;
+  }
+}
+
+/**
+ * Element: 'gui-checbox'
+ *
+ * Checkbox selection input.
+ *
+ * See `ev.detail` for data on events (like on 'change').
+ *
+ * <pre><code>
+ *   getter    value     boolean       The value/checked state
+ *   setter    value     boolean       The value/checked state
+ *   setter    disabled  boolean       Set disabled state
+ *   property  disabled  boolean       Disabled state
+ *   property  label     String        (Optional) Set a label on the input element
+ *   property  group     String        (Optional) A group identificator
+ *   event     change                  When input has changed => fn(ev)
+ * </code></pre>
+ */
+class GUICheckbox extends _GUIInput {
+  static register() {
+    return super.register({
+      tagName: 'gui-checkbox',
+      type: 'input'
+    }, this);
+  }
+
+  build() {
+    createInputOfType(this.$element, 'checkbox');
+    return this;
+  }
+}
+
+/**
+ * Element: 'gui-switch'
+ *
+ * A switch (on/off) input.
+ *
+ * See `ev.detail` for data on events (like on 'change').
+ *
+ * <pre><code>
+ *   getter    value     String        The value/enabled state
+ *   setter    value     String        The value/enabled state
+ *   setter    disabled  boolean       Set disabled state
+ *   property  disabled  boolean       Disabled state
+ *   event     change                  When input has changed => fn(ev)
+ * </code></pre>
+ */
+class GUISwitch extends _GUIInput {
+  static register() {
+    return super.register({
+      tagName: 'gui-switch',
+      type: 'input'
+    }, this);
+  }
+
+  set(param, value) {
+    if ( param === 'value' ) {
+      const input = this.$element.querySelector('input');
+      const button = this.$element.querySelector('button');
+
+      setSwitchValue(value, input, button);
+
+      return this;
+    }
+    return super.set(...arguments);
+  }
+
+  build() {
+    const el = this.$element;
+    const input = document.createElement('input');
+    input.type = 'checkbox';
+    el.appendChild(input);
+
+    const inner = document.createElement('div');
+
+    const button = document.createElement('button');
+    inner.appendChild(button);
+    GUI.createInputLabel(el, 'switch', inner);
+
+    function toggleValue(v) {
+      let val = false;
+      if ( typeof v === 'undefined' ) {
+        val = !!input.checked;
+        val = !val;
+      } else {
+        val = v;
       }
-      select.appendChild(option);
-      sel.parentNode.removeChild(sel);
-    });
 
-    Utils.$bind(select, 'change', function(ev) {
-      select.dispatchEvent(new CustomEvent('_change', {detail: select.value}));
+      setSwitchValue(val, input, button);
+    }
+
+    Events.$bind(inner, 'click', (ev) => {
+      ev.preventDefault();
+      const disabled = el.getAttribute('data-disabled') !== null;
+      if ( !disabled ) {
+        toggleValue();
+      }
     }, false);
 
-    select.setAttribute('role', 'listbox');
-    select.setAttribute('aria-label', el.getAttribute('title') || '');
-    el.setAttribute('aria-disabled', String(disabled));
-    el.setAttribute('role', 'region');
-    el.appendChild(select);
+    toggleValue(false);
+
+    return this;
+  }
+}
+
+/**
+ * Element: 'gui-button'
+ *
+ * A normal button
+ *
+ * <pre><code>
+ *   getter    value     String        The value
+ *   setter    value     String        The value
+ *   setter    icon      String        Icon source
+ *   setter    disabled  boolean       Set disabled state
+ *   property  disabled  boolean       Disabled state
+ *   property  icon      String        Icon source
+ *   event     click                   When input was clicked => fn(ev)
+ * </code></pre>
+ */
+class GUIButton extends GUIElement {
+  static register() {
+    return super.register({
+      tagName: 'gui-button',
+      type: 'input'
+    }, this);
   }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // OTHER HELPERS
-  /////////////////////////////////////////////////////////////////////////////
+  set(param, value, isHTML) {
+    if ( param === 'value' || param === 'label' ) {
+      const lbl = this.$element.querySelector('button');
+      DOM.$empty(lbl);
+      if ( isHTML ) {
+        lbl.innerHTML = value;
+      } else {
+        lbl.appendChild(document.createTextNode(value));
+      }
 
-  function setSwitchValue(val, input, button) {
-    if ( val !== true ) {
-      input.removeAttribute('checked');
-      Utils.$removeClass(button, 'gui-active');
-      button.innerHTML = '0';
-    } else {
-      input.setAttribute('checked', 'checked');
-      Utils.$addClass(button, 'gui-active');
-      button.innerHTML = '1';
+      lbl.setAttribute('aria-label', value);
+
+      return this;
     }
+    return super.set(...arguments);
   }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // CLASSES
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Element: 'gui-label'
-   *
-   * Just a normal label.
-   *
-   * <pre><code>
-   *   getter    value     String        The value/contents
-   *   setter    value     String        The value/contents
-   *   setter    label     String        The label text
-   *   property  disabled  boolean       Disabled state
-   * </code></pre>
-   *
-   * @constructor Label
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUILabel = {
-    set: function(param, value, isHTML) {
-      var el = this.$element;
-      if ( param === 'value' || param === 'label' ) {
-        el.setAttribute('data-label', String(value));
-
-        var lbl = el.querySelector('label');
-        Utils.$empty(lbl);
-        if ( isHTML ) {
-          lbl.innerHTML = value;
-        } else {
-          lbl.appendChild(document.createTextNode(value));
-        }
-        return this;
-      }
-      return GUI.Element.prototype.set.apply(this, arguments);
-    },
-
-    build: function() {
-      var el = this.$element;
-      var label = GUI.Helpers.getValueLabel(el, true);
-      var lbl = document.createElement('label');
-      lbl.appendChild(document.createTextNode(label));
-      el.setAttribute('role', 'heading');
-      el.setAttribute('data-label', String(label));
-      el.appendChild(lbl);
-
-      return this;
+  create(params) {
+    const label = params.label;
+    if ( params.label ) {
+      delete params.label;
     }
-  };
 
-  /**
-   * Element: 'gui-textarea'
-   *
-   * Text area input (multi-line)
-   *
-   * See `ev.detail` for data on events (like on 'change').
-   *
-   * <pre><code>
-   *   getter    value         String        The value/contents
-   *   setter    value         String        The value/contents
-   *   setter    label         String        The label text
-   *   setter    disabled      boolean       Set disabled state
-   *   property  disabled      boolean       Disabled state
-   *   property  value         String        The input value
-   *   property  placeholder   String        An optional placeholder
-   *   event     change                      When input has changed => fn(ev)
-   * </code></pre>
-   *
-   * @constructor Textarea
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUITextarea = {
-    on: bindInputEvents,
-
-    build: function() {
-      createInputOfType(this.$element, 'textarea');
-
-      return this;
-    },
-
-    set: function(param, value) {
-      var el = this.$element;
-      if ( el && param === 'scrollTop' ) {
-        if ( typeof value !== 'number' ) {
-          value = el.firstChild.scrollHeight;
-        }
-        el.firstChild.scrollTop = value;
-        return this;
-      }
-      return GUI.Element.prototype.set.apply(this, arguments);
+    const el = GUI.createElement('gui-button', params);
+    if ( label ) {
+      el.appendChild(document.createTextNode(label));
     }
-  };
+    return el;
+  }
 
-  /**
-   * Element: 'gui-text'
-   *
-   * Text input.
-   *
-   * See `ev.detail` for data on events (like on 'change').
-   *
-   * <pre><code>
-   *   getter    value         String        The value/contents
-   *   setter    value         String        The value/contents
-   *   setter    disabled      boolean       Set disabled state
-   *   property  disabled      boolean       Disabled state
-   *   property  value         String        The input value
-   *   property  placeholder   String        An optional placeholder
-   *   event     change                      When input has changed => fn(ev)
-   *   event     enter                       When enter key was pressed => fn(ev)
-   * </code></pre>
-   *
-   * @constructor Text
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUIText = {
-    on: bindInputEvents,
-    build: function() {
-      createInputOfType(this.$element, 'text');
+  on(evName, callback, params) {
+    const target = this.$element.querySelector('button');
+    Events.$bind(target, evName, callback.bind(this), params);
+    return this;
+  }
 
-      return this;
-    }
-  };
+  build() {
+    const el = this.$element;
+    const icon = el.getAttribute('data-icon');
+    const disabled = el.getAttribute('data-disabled') !== null;
+    const group = el.getAttribute('data-group');
+    const label = GUI.getValueLabel(el);
+    const input = document.createElement('button');
 
-  /**
-   * Element: 'gui-password'
-   *
-   * Password input.
-   *
-   * See `ev.detail` for data on events (like on 'change').
-   *
-   * <pre><code>
-   *   getter    value         String        The value/contents
-   *   setter    value         String        The value/contents
-   *   setter    disabled      boolean       Set disabled state
-   *   property  disabled      boolean       Disabled state
-   *   property  value         String        The input value
-   *   property  placeholder   String        An optional placeholder
-   *   event     change                      When input has changed => fn(ev)
-   *   event     enter                       When enter key was pressed => fn(ev)
-   * </code></pre>
-   *
-   * @constructor Password
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUIPassword = {
-    on: bindInputEvents,
-    build: function() {
-      createInputOfType(this.$element, 'password');
+    function setGroup(g) {
+      if ( g ) {
+        input.setAttribute('name', g + '[' + _buttonCount + ']');
 
-      return this;
-    }
-  };
-
-  /**
-   * Element: 'gui-file-upload'
-   *
-   * File upload selector.
-   *
-   * See `ev.detail` for data on events (like on 'change').
-   *
-   * <pre><code>
-   *   getter    value     String        The value/contents
-   *   setter    value     String        The value/contents
-   *   setter    disabled  boolean       Set disabled state
-   *   property  disabled  boolean       Disabled state
-   *   event     change                  When input has changed => fn(ev)
-   * </code></pre>
-   *
-   * @constructor FileUpload
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUIFileUpload = {
-    on: bindInputEvents,
-    build: function() {
-      var input = document.createElement('input');
-      input.setAttribute('role', 'button');
-      input.setAttribute('type', 'file');
-      input.onchange = function(ev) {
-        input.dispatchEvent(new CustomEvent('_change', {detail: input.files[0]}));
-      };
-      this.$element.appendChild(input);
-
-      return this;
-    }
-  };
-
-  /**
-   * Element: 'gui-radio'
-   *
-   * Radio selection input.
-   *
-   * See `ev.detail` for data on events (like on 'change').
-   *
-   * <pre><code>
-   *   getter    value     boolean       The value/checked state
-   *   setter    value     boolean       The value/checked state
-   *   setter    disabled  boolean       Set disabled state
-   *   property  disabled  boolean       Disabled state
-   *   property  label     String        (Optional) Set a label on the input element
-   *   property  group     String        (Optional) A group identificator
-   *   event     change                  When input has changed => fn(ev)
-   * </code></pre>
-   *
-   * @constructor Radio
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUIRadio = {
-    on: bindInputEvents,
-    build: function() {
-      createInputOfType(this.$element, 'radio');
-
-      return this;
-    }
-  };
-
-  /**
-   * Element: 'gui-checbox'
-   *
-   * Checkbox selection input.
-   *
-   * See `ev.detail` for data on events (like on 'change').
-   *
-   * <pre><code>
-   *   getter    value     boolean       The value/checked state
-   *   setter    value     boolean       The value/checked state
-   *   setter    disabled  boolean       Set disabled state
-   *   property  disabled  boolean       Disabled state
-   *   property  label     String        (Optional) Set a label on the input element
-   *   property  group     String        (Optional) A group identificator
-   *   event     change                  When input has changed => fn(ev)
-   * </code></pre>
-   *
-   * @constructor Checkbox
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUICheckbox = {
-    on: bindInputEvents,
-    build: function() {
-      createInputOfType(this.$element, 'checkbox');
-
-      return this;
-    }
-  };
-
-  /**
-   * Element: 'gui-switch'
-   *
-   * A switch (on/off) input.
-   *
-   * See `ev.detail` for data on events (like on 'change').
-   *
-   * <pre><code>
-   *   getter    value     String        The value/enabled state
-   *   setter    value     String        The value/enabled state
-   *   setter    disabled  boolean       Set disabled state
-   *   property  disabled  boolean       Disabled state
-   *   event     change                  When input has changed => fn(ev)
-   * </code></pre>
-   *
-   * @constructor Button
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUISwitch = {
-    on: bindInputEvents,
-
-    set: function(param, value) {
-      if ( param === 'value' ) {
-        var input = this.$element.querySelector('input');
-        var button = this.$element.querySelector('button');
-
-        setSwitchValue(value, input, button);
-
-        return this;
-      }
-      return GUI.Element.prototype.set.apply(this, arguments);
-    },
-
-    build: function() {
-      var el = this.$element;
-      var input = document.createElement('input');
-      input.type = 'checkbox';
-      el.appendChild(input);
-
-      var inner = document.createElement('div');
-
-      var button = document.createElement('button');
-      inner.appendChild(button);
-      GUI.Helpers.createInputLabel(el, 'switch', inner);
-
-      function toggleValue(v) {
-        var val = false;
-        if ( typeof v === 'undefined' ) {
-          val = !!input.checked;
-          val = !val;
-        } else {
-          val = v;
-        }
-
-        setSwitchValue(val, input, button);
-      }
-
-      Utils.$bind(inner, 'click', function(ev) {
-        ev.preventDefault();
-        var disabled = el.getAttribute('data-disabled') !== null;
-        if ( !disabled ) {
-          toggleValue();
-        }
-      }, false);
-
-      toggleValue(false);
-
-      return this;
-    }
-  };
-
-  /**
-   * Element: 'gui-button'
-   *
-   * A normal button
-   *
-   * <pre><code>
-   *   getter    value     String        The value
-   *   setter    value     String        The value
-   *   setter    icon      String        Icon source
-   *   setter    disabled  boolean       Set disabled state
-   *   property  disabled  boolean       Disabled state
-   *   property  icon      String        Icon source
-   *   event     click                   When input was clicked => fn(ev)
-   * </code></pre>
-   *
-   * @constructor Button
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUIButton = {
-    set: function(param, value, isHTML) {
-      if ( param === 'value' || param === 'label' ) {
-        var lbl = this.$element.querySelector('button');
-        Utils.$empty(lbl);
-        if ( isHTML ) {
-          lbl.innerHTML = value;
-        } else {
-          lbl.appendChild(document.createTextNode(value));
-        }
-
-        lbl.setAttribute('aria-label', value);
-
-        return this;
-      }
-      return GUI.Element.prototype.set.apply(this, arguments);
-    },
-
-    create: function(params) {
-      var label = params.label;
-      if ( params.label ) {
-        delete params.label;
-      }
-
-      var el = GUI.Helpers.createElement('gui-button', params);
-      if ( label ) {
-        el.appendChild(document.createTextNode(label));
-      }
-      return el;
-    },
-
-    on: function(evName, callback, params) {
-      var target = this.$element.querySelector('button');
-      Utils.$bind(target, evName, callback.bind(this), params);
-      return this;
-    },
-
-    build: function() {
-      var el = this.$element;
-      var icon = el.getAttribute('data-icon');
-      var disabled = el.getAttribute('data-disabled') !== null;
-      var group = el.getAttribute('data-group');
-      var label = GUI.Helpers.getValueLabel(el);
-      var input = document.createElement('button');
-
-      function setGroup(g) {
-        if ( g ) {
-          input.setAttribute('name', g + '[' + _buttonCount + ']');
-
-          Utils.$bind(input, 'click', function() {
-            // NOTE: This is probably a bit slow
-            var root = el;
-            while ( root.parentNode ) {
-              if ( root.tagName.toLowerCase() === 'application-window-content' ) {
-                break;
-              }
-              root = root.parentNode;
+        Events.$bind(input, 'click', () => {
+          // NOTE: This is probably a bit slow
+          let root = el;
+          while ( root.parentNode ) {
+            if ( root.tagName.toLowerCase() === 'application-window-content' ) {
+              break;
             }
-
-            Utils.$addClass(input, 'gui-active');
-            root.querySelectorAll('gui-button[data-group="' + g + '"] > button').forEach(function(b) {
-              if ( b.name === input.name ) {
-                return;
-              }
-              Utils.$removeClass(b, 'gui-active');
-            });
-          });
-        }
-      }
-
-      function setImage() {
-        if ( icon && icon !== 'null' ) {
-          var tip = API._(el.getAttribute('data-tooltip') || '');
-          var img = document.createElement('img');
-          img.src = icon;
-          img.alt = tip;
-          img.title = tip;
-
-          if ( input.firstChild ) {
-            input.insertBefore(img, input.firstChild);
-          } else {
-            input.appendChild(img);
+            root = root.parentNode;
           }
-          Utils.$addClass(el, 'gui-has-image');
+
+          DOM.$addClass(input, 'gui-active');
+          root.querySelectorAll('gui-button[data-group="' + g + '"] > button').forEach((b) => {
+            if ( b.name === input.name ) {
+              return;
+            }
+            DOM.$removeClass(b, 'gui-active');
+          });
+        });
+      }
+    }
+
+    function setImage() {
+      if ( icon && icon !== 'null' ) {
+        const tip = _(el.getAttribute('data-tooltip') || '');
+        const img = document.createElement('img');
+        img.src = icon;
+        img.alt = tip;
+        img.title = tip;
+
+        if ( input.firstChild ) {
+          input.insertBefore(img, input.firstChild);
+        } else {
+          input.appendChild(img);
         }
+        DOM.$addClass(el, 'gui-has-image');
       }
-
-      function setLabel() {
-        if ( label ) {
-          Utils.$addClass(el, 'gui-has-label');
-        }
-        input.appendChild(document.createTextNode(label));
-        input.setAttribute('aria-label', label);
-      }
-
-      if ( disabled ) {
-        input.setAttribute('disabled', 'disabled');
-      }
-
-      setLabel();
-      setImage();
-      setGroup(group);
-      _buttonCount++;
-
-      el.setAttribute('role', 'navigation');
-      el.appendChild(input);
-
-      return this;
     }
-  };
 
-  /**
-   * Element: 'gui-select'
-   *
-   * A selection dropdown.
-   *
-   * See `ev.detail` for data on events (like on 'change').
-   *
-   * <pre><code>
-   *   getter    value     String        The value
-   *   setter    value     String        The value
-   *   setter    disabled  boolean       Set disabled state
-   *   property  disabled  boolean       Disabled state
-   *   event     change                  When input has changed => fn(ev)
-   *   action    add                     Add elements(s) => fn(entries)
-   *   action    clear                   Clear elements => fn()
-   *   action    remove                  Removes element => fn(arg)
-   * </code></pre>
-   *
-   * @example
-   *   add({
-   *    label: "Label",
-   *    value: "Value"
-   *   })
-   *
-   * @constructor SelectList
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUISelect = {
-    on: bindInputEvents,
-
-    add: function(arg) {
-      addToSelectBox(this.$element, arg);
-      return this;
-    },
-
-    remove: function(arg) {
-      removeFromSelectBox(this.$element, arg);
-      return this;
-    },
-
-    clear: function() {
-      var target = this.$element.querySelector('select');
-      Utils.$empty(target);
-      return this;
-    },
-
-    build: function() {
-      var el = this.$element;
-      var multiple = (el.tagName.toLowerCase() === 'gui-select-list');
-      createSelectInput(el, multiple);
-
-      return this;
+    function setLabel() {
+      if ( label ) {
+        DOM.$addClass(el, 'gui-has-label');
+      }
+      input.appendChild(document.createTextNode(label));
+      input.setAttribute('aria-label', label);
     }
-  };
 
-  /**
-   * Element: 'gui-select-list'
-   *
-   * A selection list (same as dropdown except multiple)
-   *
-   * See `ev.detail` for data on events (like on 'change').
-   *
-   * <pre><code>
-   *   getter    value     String        The value
-   *   setter    value     String        The value
-   *   setter    disabled  boolean       Set disabled state
-   *   property  disabled  boolean       Disabled state
-   *   event     change                  When input has changed => fn(ev)
-   *   action    add                     Add elements(s) => fn(entries)
-   *   action    clear                   Clear elements => fn()
-   *   action    remove                  Removes element => fn(arg)
-   * </code></pre>
-   *
-   * @constructor SelectList
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUISelectList = GUISelect;
-
-  /**
-   * Element: 'gui-slider'
-   *
-   * A slider input.
-   *
-   * See `ev.detail` for data on events (like on 'change').
-   *
-   * <pre><code>
-   *   getter    value     String        The value
-   *   setter    value     String        The value
-   *   setter    disabled  boolean       Set disabled state
-   *   property  min       integer       The minimum value
-   *   property  max       integer       The maxmimum value
-   *   property  disabled  boolean       Disabled state
-   *   event     change                  When input has changed => fn(ev)
-   * </code></pre>
-   *
-   * @constructor Slider
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUISlider = {
-    on: bindInputEvents,
-
-    get: function(param) {
-      var val = GUI.Helpers.getProperty(this.$element, param);
-      if ( param === 'value' ) {
-        return parseInt(val, 10);
-      }
-      return val;
-    },
-
-    build: function() {
-      createInputOfType(this.$element, 'range');
-
-      return this;
-    }
-  };
-
-  /**
-   * Element: 'gui-input-modal'
-   *
-   * A text area displaying current value with a button to open a modal/dialog etc.
-   *
-   * <pre><code>
-   *   getter    value     String        The value
-   *   setter    value     String        The value
-   *   event     open                    When button was pressed => fn(ev)
-   * </code></pre>
-   *
-   * @constructor InputModal
-   * @extends OSjs.GUI.Element
-   * @memberof OSjs.GUI.Elements
-   */
-  var GUIInputModal = {
-    on: function(evName, callback, params) {
-      if ( evName === 'open' ) {
-        evName = '_open';
-      }
-      Utils.$bind(this.$element, evName, callback.bind(this), params);
-      return this;
-    },
-
-    get: function(param) {
-      if ( param === 'value' ) {
-        var input = this.$element.querySelector('input');
-        return input.value;
-      }
-      return GUI.Element.prototype.get.apply(this, arguments);
-    },
-
-    set: function(param, value) {
-      if ( param === 'value' ) {
-        var input = this.$element.querySelector('input');
-        input.removeAttribute('disabled');
-        input.value = value;
-        input.setAttribute('disabled', 'disabled');
-        input.setAttribute('aria-disabled', 'true');
-
-        return this;
-      }
-      return GUI.Element.prototype.set.apply(this, arguments);
-    },
-
-    build: function() {
-      var el = this.$element;
-      var container = document.createElement('div');
-
-      var input = document.createElement('input');
-      input.type = 'text';
+    if ( disabled ) {
       input.setAttribute('disabled', 'disabled');
+    }
 
-      var button = document.createElement('button');
-      button.innerHTML = '...';
+    setLabel();
+    setImage();
+    setGroup(group);
+    _buttonCount++;
 
-      Utils.$bind(button, 'click', function(ev) {
-        el.dispatchEvent(new CustomEvent('_open', {detail: input.value}));
-      }, false);
+    el.setAttribute('role', 'navigation');
+    el.appendChild(input);
 
-      container.appendChild(input);
-      container.appendChild(button);
-      el.appendChild(container);
+    return this;
+  }
+}
+
+class _GUISelect extends _GUIInput {
+  add(arg) {
+    addToSelectBox(this.$element, arg);
+    return this;
+  }
+
+  remove(arg) {
+    removeFromSelectBox(this.$element, arg);
+    return this;
+  }
+
+  clear() {
+    const target = this.$element.querySelector('select');
+    DOM.$empty(target);
+    return this;
+  }
+
+  build() {
+    const el = this.$element;
+    const multiple = (el.tagName.toLowerCase() === 'gui-select-list');
+    createSelectInput(el, multiple);
+
+    return this;
+  }
+
+}
+
+/**
+ * Element: 'gui-select'
+ *
+ * A selection dropdown.
+ *
+ * See `ev.detail` for data on events (like on 'change').
+ *
+ * <pre><code>
+ *   getter    value     String        The value
+ *   setter    value     String        The value
+ *   setter    disabled  boolean       Set disabled state
+ *   property  disabled  boolean       Disabled state
+ *   event     change                  When input has changed => fn(ev)
+ *   action    add                     Add elements(s) => fn(entries)
+ *   action    clear                   Clear elements => fn()
+ *   action    remove                  Removes element => fn(arg)
+ * </code></pre>
+ *
+ * @example
+ *   add({
+ *    label: "Label",
+ *    value: "Value"
+ *   })
+ */
+class GUISelect extends _GUISelect {
+  static register() {
+    return super.register({
+      tagName: 'gui-select',
+      type: 'input'
+    }, this);
+  }
+}
+
+/**
+ * Element: 'gui-select-list'
+ *
+ * A selection list (same as dropdown except multiple)
+ *
+ * See `ev.detail` for data on events (like on 'change').
+ *
+ * <pre><code>
+ *   getter    value     String        The value
+ *   setter    value     String        The value
+ *   setter    disabled  boolean       Set disabled state
+ *   property  disabled  boolean       Disabled state
+ *   event     change                  When input has changed => fn(ev)
+ *   action    add                     Add elements(s) => fn(entries)
+ *   action    clear                   Clear elements => fn()
+ *   action    remove                  Removes element => fn(arg)
+ * </code></pre>
+ */
+class GUISelectList extends _GUISelect {
+  static register() {
+    return super.register({
+      tagName: 'gui-select-list',
+      type: 'input'
+    }, this);
+  }
+}
+
+/**
+ * Element: 'gui-slider'
+ *
+ * A slider input.
+ *
+ * See `ev.detail` for data on events (like on 'change').
+ *
+ * <pre><code>
+ *   getter    value     String        The value
+ *   setter    value     String        The value
+ *   setter    disabled  boolean       Set disabled state
+ *   property  min       integer       The minimum value
+ *   property  max       integer       The maxmimum value
+ *   property  disabled  boolean       Disabled state
+ *   event     change                  When input has changed => fn(ev)
+ * </code></pre>
+ */
+class GUISlider extends _GUIInput {
+  static register() {
+    return super.register({
+      tagName: 'gui-slider',
+      type: 'input'
+    }, this);
+  }
+
+  get(param) {
+    const val = GUI.getProperty(this.$element, param);
+    if ( param === 'value' ) {
+      return parseInt(val, 10);
+    }
+    return val;
+  }
+
+  build() {
+    createInputOfType(this.$element, 'range');
+
+    return this;
+  }
+}
+
+/**
+ * Element: 'gui-input-modal'
+ *
+ * A text area displaying current value with a button to open a modal/dialog etc.
+ *
+ * <pre><code>
+ *   getter    value     String        The value
+ *   setter    value     String        The value
+ *   event     open                    When button was pressed => fn(ev)
+ * </code></pre>
+ */
+class GUIInputModal extends GUIElement {
+  static register() {
+    return super.register({
+      tagName: 'gui-input-modal',
+      type: 'input'
+    }, this);
+  }
+
+  on(evName, callback, params) {
+    if ( evName === 'open' ) {
+      evName = '_open';
+    }
+    Events.$bind(this.$element, evName, callback.bind(this), params);
+    return this;
+  }
+
+  get(param) {
+    if ( param === 'value' ) {
+      const input = this.$element.querySelector('input');
+      return input.value;
+    }
+    return super.get(...arguments);
+  }
+
+  set(param, value) {
+    if ( param === 'value' ) {
+      const input = this.$element.querySelector('input');
+      input.removeAttribute('disabled');
+      input.value = value;
+      input.setAttribute('disabled', 'disabled');
+      input.setAttribute('aria-disabled', 'true');
 
       return this;
     }
-  };
+    return super.set(...arguments);
+  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // REGISTRATION
-  /////////////////////////////////////////////////////////////////////////////
+  build() {
+    const el = this.$element;
+    const container = document.createElement('div');
 
-  GUI.Element.register({
-    tagName: 'gui-label'
-  }, GUILabel);
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.setAttribute('disabled', 'disabled');
 
-  GUI.Element.register({
-    tagName: 'gui-textarea',
-    type: 'input'
-  }, GUITextarea);
+    const button = document.createElement('button');
+    button.innerHTML = '...';
 
-  GUI.Element.register({
-    tagName: 'gui-text',
-    type: 'input'
-  }, GUIText);
+    Events.$bind(button, 'click', (ev) => {
+      el.dispatchEvent(new CustomEvent('_open', {detail: input.value}));
+    }, false);
 
-  GUI.Element.register({
-    tagName: 'gui-password',
-    type: 'input'
-  }, GUIPassword);
+    container.appendChild(input);
+    container.appendChild(button);
+    el.appendChild(container);
 
-  GUI.Element.register({
-    tagName: 'gui-file-upload',
-    type: 'input'
-  }, GUIFileUpload);
+    return this;
+  }
+}
 
-  GUI.Element.register({
-    tagName: 'gui-radio',
-    type: 'input'
-  }, GUIRadio);
+/////////////////////////////////////////////////////////////////////////////
+// EXPORTS
+/////////////////////////////////////////////////////////////////////////////
 
-  GUI.Element.register({
-    tagName: 'gui-checkbox',
-    type: 'input'
-  }, GUICheckbox);
+export default {
+  GUILabel: GUILabel,
+  GUITextarea: GUITextarea,
+  GUIText: GUIText,
+  GUIPassword: GUIPassword,
+  GUIFileUpload: GUIFileUpload,
+  GUIRadio: GUIRadio,
+  GUICheckbox: GUICheckbox,
+  GUISwitch: GUISwitch,
+  GUIButton: GUIButton,
+  GUISelect: GUISelect,
+  GUISelectList: GUISelectList,
+  GUISlider: GUISlider,
+  GUIInputModal: GUIInputModal
+};
 
-  GUI.Element.register({
-    tagName: 'gui-switch',
-    type: 'input'
-  }, GUISwitch);
-
-  GUI.Element.register({
-    tagName: 'gui-button',
-    type: 'input'
-  }, GUIButton);
-
-  GUI.Element.register({
-    tagName: 'gui-select',
-    type: 'input'
-  }, GUISelect);
-
-  GUI.Element.register({
-    tagName: 'gui-select-list',
-    type: 'input'
-  }, GUISelectList);
-
-  GUI.Element.register({
-    tagName: 'gui-slider',
-    type: 'input'
-  }, GUISlider);
-
-  GUI.Element.register({
-    tagName: 'gui-input-modal',
-    type: 'input'
-  }, GUIInputModal);
-
-})(OSjs.API, OSjs.Utils, OSjs.VFS, OSjs.GUI);

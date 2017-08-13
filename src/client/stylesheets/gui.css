@@ -615,7 +615,7 @@ gui-grid {
         right : 0;
         bottom : 0;
         width : 100%;
-        height : 100%;
+        height : 100% !important;
         margin : 0;
         box-sizing : border-box;
         overflow : hidden;

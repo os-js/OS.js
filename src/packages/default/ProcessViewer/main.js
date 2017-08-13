@@ -29,39 +29,35 @@
  */
 
 /*eslint valid-jsdoc: "off"*/
-(function(Application, Window, Utils, API, VFS, GUI) {
-  'use strict';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // WINDOWS
-  /////////////////////////////////////////////////////////////////////////////
+const Window = OSjs.require('core/window');
+const Application = OSjs.require('core/application');
 
-  function ApplicationProcessViewerWindow(app, metadata, scheme) {
-    Window.apply(this, ['ApplicationProcessViewerWindow', {
+class ApplicationProcessViewerWindow extends Window {
+
+  constructor(app, metadata) {
+    super('ApplicationProcessViewerWindow', {
       icon: metadata.icon,
       title: metadata.name,
       width: 400,
       height: 300
-    }, app, scheme]);
+    }, app);
 
     this.interval = null;
   }
 
-  ApplicationProcessViewerWindow.prototype = Object.create(Window.prototype);
-  ApplicationProcessViewerWindow.constructor = Window.prototype;
-
-  ApplicationProcessViewerWindow.prototype.init = function(wm, app, scheme) {
-    var root = Window.prototype.init.apply(this, arguments);
+  init(wm, app) {
+    const root = super.init(...arguments);
 
     // Load and set up scheme (GUI) here
-    this._render('ProcessViewerWindow');
+    this._render('ProcessViewerWindow', require('osjs-scheme-loader!scheme.html'));
 
     var view = this._find('View');
 
     function update() {
       var now = new Date();
       var rows = [];
-      API.getProcesses().forEach(function(p) {
+      Application.getProcesses().forEach(function(p) {
         if ( p ) {
           var alive = now - p.__started;
           var iter = {
@@ -90,7 +86,7 @@
     this._find('ButtonKill').on('click', function() {
       var selected = view.get('selected');
       if ( selected && selected[0] && typeof selected[0].data !== 'undefined' ) {
-        API.kill(selected[0].data);
+        Application.kill(selected[0].data);
       }
     });
 
@@ -101,39 +97,26 @@
     update();
 
     return root;
-  };
+  }
 
-  ApplicationProcessViewerWindow.prototype.destroy = function() {
-    Window.prototype.destroy.apply(this, arguments);
+  destroy() {
+    super.destroy(...arguments);
+
     this.interval = clearInterval(this.interval);
-  };
+  }
+}
 
-  /////////////////////////////////////////////////////////////////////////////
-  // APPLICATION
-  /////////////////////////////////////////////////////////////////////////////
+class ApplicationProcessViewer extends Application {
 
-  var ApplicationProcessViewer = function(args, metadata) {
-    Application.apply(this, ['ApplicationProcessViewer', args, metadata]);
-  };
+  constructor(args, metadata) {
+    super('ApplicationProcessViewer', args, metadata);
+  }
 
-  ApplicationProcessViewer.prototype = Object.create(Application.prototype);
-  ApplicationProcessViewer.constructor = Application;
+  init(settings, metadata) {
+    super.init(...arguments);
+    this._addWindow(new ApplicationProcessViewerWindow(this, metadata));
+  }
 
-  ApplicationProcessViewer.prototype.destroy = function() {
-    return Application.prototype.destroy.apply(this, arguments);
-  };
+}
 
-  ApplicationProcessViewer.prototype.init = function(settings, metadata, scheme) {
-    Application.prototype.init.apply(this, arguments);
-    this._addWindow(new ApplicationProcessViewerWindow(this, metadata, scheme));
-  };
-
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationProcessViewer = OSjs.Applications.ApplicationProcessViewer || {};
-  OSjs.Applications.ApplicationProcessViewer.Class = Object.seal(ApplicationProcessViewer);
-
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI);
+OSjs.Applications.ApplicationProcessViewer = ApplicationProcessViewer;

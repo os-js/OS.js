@@ -41,10 +41,6 @@
     {
       "src": "main.css",
       "type": "stylesheet"
-    },
-    {
-      "src": "scheme.html",
-      "type": "scheme"
     }
   ]
 }

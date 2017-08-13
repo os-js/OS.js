@@ -29,18 +29,14 @@
  */
 
 /*eslint valid-jsdoc: "off"*/
-(function(Widget, Utils, API, VFS, GUI, Window) {
-  'use strict';
+import Widget from '../widget';
 
-  /////////////////////////////////////////////////////////////////////////////
-  // ITEM
-  /////////////////////////////////////////////////////////////////////////////
-
-  /**
-   * Widget: AnalogClock
-   */
-  function WidgetAnalogClock(settings) {
-    Widget.call(this, 'AnalogClock', {
+/**
+ * Widget: AnalogClock
+ */
+export default class WidgetAnalogClock extends Widget {
+  constructor(settings) {
+    super('AnalogClock', {
       width: 300,
       height: 300,
       aspect: true,
@@ -55,24 +51,13 @@
     this.radius = 300 / 2;
   }
 
-  WidgetAnalogClock.prototype = Object.create(Widget.prototype);
-  WidgetAnalogClock.constructor = Widget;
-
-  WidgetAnalogClock.prototype.init = function(root) {
-    return Widget.prototype.init.apply(this, arguments);
-  };
-
-  WidgetAnalogClock.prototype.destroy = function(root) {
-    return Widget.prototype.destroy.apply(this, arguments);
-  };
-
-  WidgetAnalogClock.prototype.onRender = function() {
+  onRender() {
     if ( !this._$canvas ) {
       return;
     }
 
-    var ctx = this._$context;
-    var radius = Math.round(this.radius * 0.95);
+    const ctx = this._$context;
+    const radius = Math.round(this.radius * 0.95);
 
     function drawHand(ctx, pos, length, width) {
       ctx.beginPath();
@@ -106,8 +91,9 @@
     ctx.textBaseline = 'middle';
     ctx.textAlign = 'center';
 
-    for ( var num = 1; num < 13; num++ ) {
-      var ang = num * Math.PI / 6;
+    let ang;
+    for ( let num = 1; num < 13; num++ ) {
+      ang = num * Math.PI / 6;
       ctx.rotate(ang);
       ctx.translate(0, -radius * 0.85);
       ctx.rotate(-ang);
@@ -118,10 +104,10 @@
     }
 
     // Draw time
-    var now = new Date();
-    var hour = now.getHours();
-    var minute = now.getMinutes();
-    var second = now.getSeconds();
+    const now = new Date();
+    let hour = now.getHours();
+    let minute = now.getMinutes();
+    let second = now.getSeconds();
 
     hour = hour % 12;
     hour = (hour * Math.PI / 6) + (minute * Math.PI / (6 * 60)) + (second * Math.PI / (360 * 60));
@@ -131,23 +117,15 @@
     drawHand(ctx, hour, radius * 0.5, radius * 0.07);
     drawHand(ctx, minute, radius * 0.8, radius * 0.07);
     drawHand(ctx, second, radius * 0.9, radius * 0.02);
-  };
+  }
 
-  WidgetAnalogClock.prototype.onResize = function(dimension) {
+  onResize(dimension) {
     if ( !this._$canvas || !this._$context ) {
       return;
     }
 
     this.radius = dimension.height / 2;
     this._$context.translate(this.radius, this.radius);
-  };
+  }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
-
-  OSjs.Applications.CoreWM = OSjs.Applications.CoreWM || {};
-  OSjs.Applications.CoreWM.Widgets = OSjs.Applications.CoreWM.Widgets || {};
-  OSjs.Applications.CoreWM.Widgets.AnalogClock = WidgetAnalogClock;
-
-})(OSjs.Applications.CoreWM.Widget, OSjs.Utils, OSjs.API, OSjs.VFS, OSjs.GUI, OSjs.Core.Window);
+}

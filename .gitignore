@@ -10,6 +10,8 @@ twistd.*
 *.bak
 *.o
 .tern-project
+.happypack
+.external-ecmascript.js
 
 # Misc
 .nightly
@@ -29,19 +31,17 @@ src/server/settings.json
 src/server/packages.json
 src/server/*.key
 src/server/*.crt
-src/installer/installer.exe
+src/overlays
 
 # Builds
+doc/
 dist/*
-dist-electron
 doc/jsdoc
 src/server/*.sqlite
 src/x11-launcher/session-launch
 
 # Vendor
-vendor/dropbox*
-vendor/zip.js
-vendor/html2canvas
+vendor
 src/server/php/vendor
 src/packages/*
 !src/packages/default

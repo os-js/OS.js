@@ -29,190 +29,169 @@
  */
 
 /*eslint valid-jsdoc: "off"*/
-(function(Application, Window, Utils, API, User, GUI) {
-  'use strict';
+import Translations from './locales';
+const Locales = OSjs.require('core/locales');
+const Dialog = OSjs.require('core/dialog');
+const Config = OSjs.require('core/config');
+const Connection = OSjs.require('core/connection');
+const Window = OSjs.require('core/window');
+const _ = Locales.createLocalizer(Translations);
 
-  function renderUsers(win, scheme) {
-    API.call('users', {command: 'list'}, function(err, users) {
-      if ( users instanceof Array ) {
-        win._find('UsersList').clear().add(users.map(function(iter, idx) {
-          return {
-            value: iter,
-            columns: [
-              {label: iter.username},
-              {label: iter.name}
-            ]
-          };
-        }));
+function renderUsers(win, scheme) {
+  Connection.request('users', {command: 'list'}).then((users) => {
+    if ( users instanceof Array ) {
+      win._find('UsersList').clear().add(users.map(function(iter, idx) {
+        return {
+          value: iter,
+          columns: [
+            {label: iter.id},
+            {label: iter.username},
+            {label: iter.name}
+          ]
+        };
+      }));
+    }
+  });
+}
+
+function showDialog(win, scheme, data, id) {
+  win._toggleDisabled(true);
+
+  if ( id ) {
+    Dialog.create('Input', {
+      message: _('Set user password'),
+      type: 'password'
+    }, function(ev, button, value) {
+      if ( !value ) {
+        win._toggleDisabled(false);
+        return;
       }
+
+      Connection.request('users', {command: 'passwd', user: {password: value, id: id}}).then(() => {
+        win._toggleDisabled(false);
+        renderUsers(win, scheme);
+      }).catch((err) => {
+        win._toggleDisabled(false);
+        OSjs.error('Settings', _('Error while managing users'), err);
+      });
     });
+    return;
   }
 
-  function showDialog(win, scheme, data, passwd) {
-    var _ = OSjs.Applications.ApplicationSettings._;
+  const action = data === null ? 'add' : 'edit';
+  data = data || {};
 
-    win._toggleDisabled(true);
+  const nwin = new Window('SettingsUserWindow', {
+    icon: win._app.__metadata.icon,
+    title: win._app.__metadata.name,
+    width: 400,
+    height: 250
+  }, win._app);
 
-    if ( passwd ) {
-      API.createDialog('Input', {
-        message: _('Set user password'),
-        type: 'password'
-      }, function(ev, button, value) {
-        if ( !value ) {
-          win._toggleDisabled(false);
-          return;
-        }
+  nwin._on('destroy', function(root) {
+    win._toggleDisabled(false);
+  });
 
-        API.call('users', {command: 'passwd', user: {password: value, username: passwd}}, function(err, users) {
-          win._toggleDisabled(false);
-          if ( err ) {
-            API.error('Settings', _('Error while managing users'), err);
-          }
-          renderUsers(win, scheme);
-        });
-      });
-      return;
+  nwin._on('init', function(root) {
+    scheme.render(nwin, nwin._name);
+
+    if ( Object.keys(data).length ) {
+      nwin._find('UserUsername').set('value', data.username);
+      nwin._find('UserName').set('value', data.name);
+      nwin._find('UserGroups').set('value', (data.groups || []).join(','));
     }
 
-    var action = data === null ? 'add' : 'edit';
-    data = data || {};
-
-    var nwin = new Window('SettingsUserWindow', {
-      icon: win._app.__metadata.icon,
-      title: win._app.__metadata.name,
-      width: 400,
-      height: 250
-    }, win._app, scheme);
-
-    nwin._on('destroy', function(root) {
-      win._toggleDisabled(false);
+    nwin._find('ButtonClose').on('click', function() {
+      nwin._close();
     });
 
-    nwin._on('init', function(root) {
-      nwin._render(nwin._name);
+    nwin._find('ButtonOK').on('click', function() {
+      data.username = nwin._find('UserUsername').get('value');
+      data.name = nwin._find('UserName').get('value') || data.username;
+      data.groups = nwin._find('UserGroups').get('value').replace(/\s/g, '').split(',');
 
-      if ( Object.keys(data).length ) {
-        nwin._find('UserUsername').set('value', data.username);
-        nwin._find('UserName').set('value', data.name);
-        nwin._find('UserGroups').set('value', JSON.stringify(data.groups));
-      }
-
-      nwin._find('ButtonClose').on('click', function() {
+      if ( !data.username || !data.groups ) {
         nwin._close();
-      });
+        return;
+      }
 
-      nwin._find('ButtonOK').on('click', function() {
-        data.username = nwin._find('UserUsername').get('value');
-        data.name = nwin._find('UserName').get('value') || data.username;
-        data.groups = [];
-
-        var groupString = nwin._find('UserGroups').get('value');
-        if ( groupString.substr(0, 1) === '[' ) {
-          try {
-            data.groups = JSON.parse(groupString);
-          } catch ( e ) {
-          }
-        } else {
-          data.groups = groupString.replace(/\s/, '').split(',');
-        }
-
-        if ( !data.username || !data.groups ) {
-          nwin._close();
-          return;
-        }
-
-        API.call('users', {command: action, user: data}, function(err, users) {
-          if ( err ) {
-            API.error('Settings', _('Error while managing users'), err);
-          }
-          renderUsers(win, scheme);
-
-          nwin._close();
-        });
+      Connection.request('users', {command: action, user: data}).then(() => {
+        renderUsers(win, scheme);
+        nwin._close();
+      }).catch((err) => {
+        OSjs.error('Settings', _('Error while managing users'), err);
       });
     });
+  });
 
-    win._addChild(nwin, true, true);
-  }
+  win._addChild(nwin, true, true);
+}
 
-  function removeUser(win, scheme, data) {
-    var _ = OSjs.Applications.ApplicationSettings._;
+function removeUser(win, scheme, data) {
+  Connection.request('users', {command: 'remove', user: data}).then((users) => {
+    renderUsers(win, scheme);
+  }).catch((err) => {
+    OSjs.error('Settings', _('Error while managing users'), err);
+  });
+}
 
-    API.call('users', {command: 'remove', user: data}, function(err, users) {
-      if ( err ) {
-        API.error('Settings', _('Error while managing users'), err);
-      }
-      renderUsers(win, scheme);
-    });
-  }
+/////////////////////////////////////////////////////////////////////////////
+// MODULE
+/////////////////////////////////////////////////////////////////////////////
 
-  /////////////////////////////////////////////////////////////////////////////
-  // MODULE
-  /////////////////////////////////////////////////////////////////////////////
+export default {
+  group: 'system',
+  name: 'Users',
+  label: 'LBL_USERS',
+  icon: 'apps/system-users.png',
+  button: false,
 
-  var module = {
-    group: 'system',
-    name: 'Users',
-    label: 'LBL_USERS',
-    icon: 'apps/system-users.png',
-    button: false,
+  compatible: function() {
+    const cfg = Config.getConfig('Connection.Authenticator');
+    return ['demo', 'pam', 'shadow'].indexOf(cfg) === -1;
+  },
 
-    compatible: function() {
-      var cfg = API.getConfig('Connection.Authenticator');
-      return ['demo', 'pam', 'shadow'].indexOf(cfg) === -1;
-    },
+  init: function() {
+  },
 
-    init: function() {
-    },
+  update: function(win, scheme, settings, wm) {
+    renderUsers(win, scheme);
+  },
 
-    update: function(win, scheme, settings, wm) {
-      renderUsers(win, scheme);
-    },
-
-    render: function(win, scheme, root, settings, wm) {
-      function _action(cb, te) {
-        var sel = win._find('UsersList').get('selected');
-        if ( sel && sel.length ) {
-          var data = sel[0].data;
-          data._username = data.username;
-          cb(data);
-        } else {
-          if ( te ) {
-            cb(null);
-          }
+  render: function(win, scheme, root, settings, wm) {
+    function _action(cb, te) {
+      const sel = win._find('UsersList').get('selected');
+      if ( sel && sel.length ) {
+        const data = sel[0].data;
+        data._username = data.username;
+        cb(data);
+      } else {
+        if ( te ) {
+          cb(null);
         }
       }
-      win._find('UsersAdd').on('click', function() {
-        showDialog(win, scheme, null);
-      });
-      win._find('UsersRemove').on('click', function() {
-        _action(function(data) {
-          removeUser(win, scheme, data);
-        });
-      });
-      win._find('UsersEdit').on('click', function() {
-        _action(function(data) {
-          showDialog(win, scheme, data);
-        });
-      });
-      win._find('UsersPasswd').on('click', function() {
-        _action(function(data) {
-          showDialog(win, scheme, null, data.username);
-        });
-      });
-    },
-
-    save: function(win, scheme, settings, wm) {
     }
-  };
+    win._find('UsersAdd').on('click', function() {
+      showDialog(win, scheme, null);
+    });
+    win._find('UsersRemove').on('click', function() {
+      _action(function(data) {
+        removeUser(win, scheme, data);
+      });
+    });
+    win._find('UsersEdit').on('click', function() {
+      _action(function(data) {
+        showDialog(win, scheme, data);
+      });
+    });
+    win._find('UsersPasswd').on('click', function() {
+      _action(function(data) {
+        showDialog(win, scheme, null, data.id);
+      });
+    });
+  },
 
-  /////////////////////////////////////////////////////////////////////////////
-  // EXPORTS
-  /////////////////////////////////////////////////////////////////////////////
+  save: function(win, scheme, settings, wm) {
+  }
+};
 
-  OSjs.Applications = OSjs.Applications || {};
-  OSjs.Applications.ApplicationSettings = OSjs.Applications.ApplicationSettings || {};
-  OSjs.Applications.ApplicationSettings.Modules = OSjs.Applications.ApplicationSettings.Modules || {};
-  OSjs.Applications.ApplicationSettings.Modules.Users = module;
-
-})(OSjs.Core.Application, OSjs.Core.Window, OSjs.Utils, OSjs.API, OSjs.User, OSjs.GUI);

@@ -1,0 +1,70 @@
+@import 'animations.less';
+
+body[data-style-theme="glass"] {
+  @import 'theme.less';
+
+  @base_background_color        : #fefefe;
+  @base_foreground_color        : #656565;
+  @gui_border_color             : #c3c3c3;
+  @gui_selected_background_color       : rgb(51, 165, 80);
+  @gui_selected_blur_background_color  : rgba(51, 165, 80, .8);
+
+  @gui_input_border_color       : #c3c3c3;
+
+  @window_top_height    : 3em;
+  @window_border_size   : .4em;
+
+  @gui_progress_bar_background : @gui_selected_background_color url('./gui/progressbar.png') repeat-x center;
+
+
+  .application-window-button-entry {
+    width : 20px;
+  }
+  application-window-top {
+    height : 2.6em;
+    line-height : 2.6em;
+  }
+  application-window-title {
+    line-height : 2.6em;
+  }
+
+  application-window-content {
+    background : @base_background_color;
+  }
+
+  application-window:before {
+    opacity : .7;
+    border : 1px solid @base_background_color;
+  }
+
+  /* Max */
+  application-window-button-maximize,
+  application-window-button-maximize:hover,
+  application-window-button-maximize:active,
+  application-window[data-focused="true"] application-window-button-maximize,
+  application-window[data-focused="true"] application-window-button-maximize:hover,
+  application-window[data-focused="true"] application-window-button-maximize:active {
+    background : url('wm/maximize.png') no-repeat center center;
+  }
+
+  /* Min */
+  application-window-button-minimize,
+  application-window-button-minimize:hover,
+  application-window-button-minimize:active,
+  application-window[data-focused="true"] application-window-button-minimize,
+  application-window[data-focused="true"] application-window-button-minimize:hover,
+  application-window[data-focused="true"] application-window-button-minimize:active {
+    background : url('wm/minimize.png') no-repeat center 70%;
+  }
+
+  /* Close */
+  application-window-button-close,
+  application-window-button-close:hover,
+  application-window-button-close:active,
+  application-window[data-focused="true"] application-window-button-close,
+  application-window[data-focused="true"] application-window-button-close:hover,
+  application-window[data-focused="true"] application-window-button-close:active {
+    background : url('wm/close.png') no-repeat center center;
+  }
+
+}
