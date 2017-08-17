@@ -342,7 +342,7 @@ class GUIMenuBar extends GUIElement {
 
       if ( submenu ) {
         Menu.setActive((ev) => {
-          if ( ev ) {
+          if ( ev instanceof window.Event  ) {
             ev.stopPropagation();
           }
           DOM.$removeClass(mel, 'gui-active');
