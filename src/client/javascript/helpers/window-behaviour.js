@@ -288,6 +288,7 @@ export function createWindowBehaviour(win, wm) {
     }
 
     current.$element.setAttribute('data-hint', '');
+    document.body.setAttribute('data-window-hint', '');
 
     win._emit('postop');
 
@@ -347,9 +348,11 @@ export function createWindowBehaviour(win, wm) {
 
     if ( action === 'move' ) {
       current.$element.setAttribute('data-hint', 'moving');
+      document.body.setAttribute('data-window-hint', 'moving');
     } else {
       current.calculateDirection();
       current.$element.setAttribute('data-hint', 'resizing');
+      document.body.setAttribute('data-window-hint', 'resizing');
 
       newRect = current.getRect();
     }
