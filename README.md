@@ -39,5 +39,3 @@ You can find the quick setup guide in the [INSTALL.md file](https://github.com/o
 * [Facebook](https://www.facebook.com/os.js.org)
 * [Docker Hub](https://hub.docker.com/u/osjs/)
 
-
-[![Analytics](https://ga-beacon.appspot.com/UA-35975596-2/repo?pixel)](https://github.com/igrigorik/ga-beacon)
