@@ -158,7 +158,7 @@ class ApplicationSettingsWindow extends Window {
 
     // Adds all groups and their respective entries
     const container = document.createElement('div');
-    container.className = 'ListView gui-generic-zebra-container';
+    container.className = 'ListView gui-generic-zebra-container gui-element';
 
     let containers = {};
     let tmpcontent = document.createDocumentFragment();
@@ -203,7 +203,7 @@ class ApplicationSettingsWindow extends Window {
 
         const found = root.querySelector('[data-module="' + m.name +  '"]');
         if ( found ) {
-          found.className  = 'gui-generic-padded';
+          found.className = 'gui-generic-padded';
         } else {
           console.warn('Not found', m.name);
         }
