@@ -28,11 +28,11 @@
 # Dockerfile created by: junland
 #
 
-FROM node:boron
+FROM node:boron-alpine
 MAINTAINER osjs
 
 # Install dependencies
-RUN apk add --update git
+RUN apk add --no-cache git
 RUN npm install -g supervisor
 
 # Clone OS.js
