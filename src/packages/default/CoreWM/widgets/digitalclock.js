@@ -99,9 +99,9 @@ export default class WidgetDigitalClock extends Widget {
       onClick: () => {
         Dialog.create('Color', {
           color: color
-        }, function(ev, btn, result) {
+        }, (ev, btn, result) => {
           if ( btn === 'ok' ) {
-            self._setSetting('color', result.hex, true);
+            this._setSetting('color', result.hex, true);
           }
         });
       }
