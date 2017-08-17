@@ -1,40 +1,25 @@
 #!/bin/bash
-
 ## OS.js For Docker
-## Builder Version: 1.00
+## Builder Version: 1.10
 
-## Introduction
-echo "OS.js Image Builder for Docker."
-sleep 5
+TAG=$1
 
-## Prompt user for image name and build image.
-echo -n "What would you like to name your image?"
-read imagename
-echo "Building now."
-sleep 3
-docker build -t $imagename .
-echo "Build Complete"
-sleep 1
+if [ -z "$TAG" ]; then
+  echo -n "What would you like to name your image (ex: org/pkg)? "
+  read TAG
+fi
 
-## Start Container
-echo "Starting Docker Container from image called $imagename"
-sleep 1
-docker start $imagename
+if [ -z "$TAG" ]; then
+  echo "You need to supply an image name"
+  exit 1
+fi
 
-## Find IP of container
-echo "Finding IP address of built container."
-docker inspect --format '{{ .NetworkSettings.IPAddress }}' $(docker ps -q)
-echo "Enter this IP address with port 8000 into your browsers address bar."
-sleep 1
-echo "Have fun."
+echo "> Making image \"$TAG\""
+docker build -t $TAG .
+CID=$(docker run -d $TAG)
 
+echo "> Made image $CID"
 
+IPADDR=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' $CID)
 
-
-
-
-
-
-
-
-
+echo "> Open your browser on http://$IPADDR:8000"

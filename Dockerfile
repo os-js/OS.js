@@ -33,11 +33,12 @@ MAINTAINER osjs
 
 # Install dependencies
 RUN apk add --no-cache git
+RUN apk add --no-cache bash
 RUN npm install -g supervisor
 
 # Clone OS.js
+WORKDIR /
 RUN git clone https://github.com/os-js/OS.js.git
-RUN cd OS.js/
 
 # Install OS.js
 WORKDIR OS.js/
@@ -45,5 +46,5 @@ RUN npm install
 RUN node osjs build
 
 # Run OS.js
-CMD ./bin/start.sh
+CMD ["bash", "bin/start.sh"]
 EXPOSE 8000
