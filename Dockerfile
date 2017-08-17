@@ -28,15 +28,15 @@
 # Dockerfile created by: junland
 #
 
-FROM ubuntu:xenial
+FROM node:boron
 MAINTAINER osjs
 
 # Install dependencies
-RUN apt-get -y update
-RUN apt-get -y install git npm nodejs-legacy
-
-RUN git clone https://github.com/os-js/OS.js.git
+RUN apk add --update git
 RUN npm install -g supervisor
+
+# Clone OS.js
+RUN git clone https://github.com/os-js/OS.js.git
 RUN cd OS.js/
 
 # Install OS.js
