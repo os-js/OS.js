@@ -947,24 +947,29 @@ class CoreWM extends WindowManager {
     return this.panels[(idx || 0)];
   }
 
+  static get Widgets() {
+    return {
+      DigitalClock: WidgetDigitalClock,
+      AnalogClock: WidgetAnalogClock
+    };
+  }
+
+  static get PanelItems() {
+    return {
+      AppMenu: PanelItemAppMenu,
+      Buttons: PanelItemButtons,
+      Clock: PanelItemClock,
+      NotificationArea: PanelItemNotificationArea,
+      Search: PanelItemSearch,
+      Weather: PanelItemWeather,
+      WindowList: PanelItemWindowList
+    };
+  }
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // EXPORTS
 /////////////////////////////////////////////////////////////////////////////
 
-OSjs.Applications.CoreWM                   = OSjs.Applications.CoreWM || {};
-OSjs.Applications.CoreWM.Class             = Object.seal(CoreWM);
-OSjs.Applications.CoreWM.PanelItems        = OSjs.Applications.CoreWM.PanelItems || {};
-OSjs.Applications.CoreWM.Widgets           = OSjs.Applications.CoreWM.Widgets || {};
-
-OSjs.Applications.CoreWM.Widgets.DigitalClock = WidgetDigitalClock;
-OSjs.Applications.CoreWM.Widgets.AnalogClock = WidgetAnalogClock;
-OSjs.Applications.CoreWM.PanelItems.AppMenu = PanelItemAppMenu;
-OSjs.Applications.CoreWM.PanelItems.Buttons = PanelItemButtons;
-OSjs.Applications.CoreWM.PanelItems.Clock = PanelItemClock;
-OSjs.Applications.CoreWM.PanelItems.NotificationArea = PanelItemNotificationArea;
-OSjs.Applications.CoreWM.PanelItems.Search = PanelItemSearch;
-OSjs.Applications.CoreWM.PanelItems.Weather = PanelItemWeather;
-OSjs.Applications.CoreWM.PanelItems.WindowList = PanelItemWindowList;
+OSjs.Applications.CoreWM = CoreWM;
 
