@@ -608,12 +608,7 @@ export default class Process {
 
           try {
             const ResolvedPackage = OSjs.Applications[name];
-            if ( ResolvedPackage.Class ) {
-              // FIXME: Backward compability
-              instance = new ResolvedPackage.Class(args, metadata);
-            } else {
-              instance = new ResolvedPackage(args, metadata);
-            }
+            instance = new ResolvedPackage(args, metadata);
 
             onconstruct(instance, metadata);
           } catch ( e ) {
