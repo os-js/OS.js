@@ -28,35 +28,9 @@
  * @licence Simplified BSD License
  */
 
-/*eslint valid-jsdoc: "off"*/
-'use strict';
-
-/////////////////////////////////////////////////////////////////////////////
-// MODULE API
-/////////////////////////////////////////////////////////////////////////////
-
-/**
- * Extension modules requires an init() method
- */
-const EXAMPLE = {
-  init: function(metadata, done) {
-    done();
-  },
-
-  test: function(done) {
-    API.call('test', {}, function(err, res) {
-      console.log('Result from your server API method', err, res);
-    });
+OSjs.Extensions.EXAMPLE = {
+  init: function(metadata) {
+    return Promise.resolve(true);
   }
 };
-
-/////////////////////////////////////////////////////////////////////////////
-// EXPORTS
-/////////////////////////////////////////////////////////////////////////////
-
-/**
- * This is an example using the internal Extension system.
- * You can use any namespace you want and override already defined internal methods
- */
-OSjs.Extensions.EXAMPLE = EXAMPLE;
 

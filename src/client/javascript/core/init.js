@@ -258,14 +258,16 @@ const initExtensions = (config) => new Promise((resolve, reject) => {
     const exts = Object.keys(OSjs.Extensions);
 
     Promise.each(exts, (entry) => {
-      return new Promise((next) => {
+      return new Promise((yes, no) => {
         try {
-          // FIXME
           const m = packages[entry];
-          OSjs.Extensions[entry].init(m, () => next());
+          OSjs.Extensions[entry].init(m).then(yes).catch((err) => {
+            console.error(err);
+            return yes(false);
+          });
         } catch ( e ) {
           console.warn('Extension init failed', e.stack, e);
-          next();
+          yes(false);
         }
       });
     }).then(resolve).catch((err) => {
