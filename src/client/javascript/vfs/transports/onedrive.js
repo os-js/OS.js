@@ -95,8 +95,9 @@ function getItemMime(iter) {
 /*
  * Get OS.js VFS File Metadata from OneDrive item
  */
-function getMetadataFromItem(dir, item) {
-  const path = 'onedrive://' + dir.replace(/^\/+/, '').replace(/\/+$/, '') + '/' + item.name; // FIXME
+function getMetadataFromItem(dir, item, root) {
+  const par = dir.replace(/^\/+/, '').replace(/\/+$/, '');
+  const path = root + (par ? par + '/' : par) + item.name;
 
   const itemFile = new FileMetadata({
     id: item.id,
@@ -112,7 +113,7 @@ function getMetadataFromItem(dir, item) {
 /*
  * Create an Array filled with OS.js VFS file metadata
  */
-function createDirectoryList(dir, list, item, options) {
+function createDirectoryList(dir, list, item, options, root) {
   const result = [];
 
   if ( dir !== '/' ) {
@@ -126,7 +127,7 @@ function createDirectoryList(dir, list, item, options) {
   }
 
   list.forEach((iter) => {
-    result.push(getMetadataFromItem(dir, iter));
+    result.push(getMetadataFromItem(dir, iter, root));
   });
 
   return result;
@@ -325,7 +326,7 @@ export default class OneDriveTransport extends Transport {
                 if ( error ) {
                   reject(new Error(error));
                 } else {
-                  const fileList = createDirectoryList(relativePath, list, item, options);
+                  const fileList = createDirectoryList(relativePath, list, item, options, mount.option('root'));
                   resolve(fileList);
                 }
               });
