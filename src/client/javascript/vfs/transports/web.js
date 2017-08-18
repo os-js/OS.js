@@ -33,6 +33,13 @@ import Transport from 'vfs/transport';
 import Connection from 'core/connection';
 import * as FS from 'utils/fs';
 
+/**
+ * Web VFS Transport Module
+ *
+ * This module makes it possible to use normal URLs in VFS operations
+ *
+ * @extends Transport
+ */
 export default class WebTransport extends Transport {
 
   _request(url, responseType, method, options) {
