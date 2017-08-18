@@ -1,6 +1,6 @@
-# Installation instructions
+# Installing OS.js
 
-Installation is done in a few simple steps and only takes a minute to get running.
+Installation is done in a few simple steps and only takes a couple of minutes to get running.
 
 It is highly recommended that you use `git` to install instead of downloading an archive.
 
@@ -10,7 +10,7 @@ The only requirement is that you have `node` and `npm` installed (v6 or newer).
 
 *Note for Debian/Ubuntu users*: You might need to install the `nodejs-legacy` package.
 
-## Installation
+## Instructions
 
 Inside the OS.js directory:
 
