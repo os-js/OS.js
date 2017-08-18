@@ -1,15 +1,7 @@
-src/packages/default/**/*.css
-src/packages/default/**/*.php
-src/client/stylesheets/**
-src/client/themes/**
 src/templates/**
-src/installer/**
 src/server/php/**
 src/server/test/**
 src/client/test/**
 src/conf/**
-src/x11-launcher/**
-vendor/*
 dist/**
 vfs/**
-doc/**
