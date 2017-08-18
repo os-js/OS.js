@@ -30,7 +30,6 @@
 import * as DOM from 'utils/dom';
 import * as Utils from 'utils/misc';
 import * as Events from 'utils/events';
-import {getConfig} from 'core/config';
 import GUIElement from 'gui/element';
 
 /////////////////////////////////////////////////////////////////////////////
@@ -185,11 +184,13 @@ class GUIIframe extends GUIElement {
   }
 
   static get _tagName() {
-    let tagName = 'iframe';
-    if ( (['nw', 'electron', 'x11']).indexOf(getConfig('Connection.Authenticator')) >= 0 ) { // FIXME: re-implement
-      tagName = 'webview';
-    }
-    return tagName;
+    let isStandalone = false;
+
+    try {
+      isStandalone = (window.navigator.standalone) || window.matchMedia('(display-mode: standalone)').matches;
+    } catch ( e ) {}
+
+    return isStandalone ? 'webview' : 'iframe';
   }
 
   set(key, val) {
