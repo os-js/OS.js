@@ -454,28 +454,31 @@ class ApplicationSettings extends Application {
   setModule(m) {
     this.currentModule = m;
   }
+
+  static get SettingsItemDialog() {
+    return SettingsItemDialog;
+  }
+
+  static get Modules() {
+    return {
+      Desktop: ModuleDesktop,
+      Input: ModuleInput,
+      Locale: ModuleLocale,
+      Panel: ModulePanel,
+      PM: ModulePM,
+      Search: ModuleSearch,
+      Sounds: ModuleSounds,
+      Store: ModuleStore,
+      Theme: ModuleTheme,
+      User: ModuleUser,
+      Users: ModuleUsers,
+      VFS: ModuleVFS
+    };
+  }
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // EXPORTS
 /////////////////////////////////////////////////////////////////////////////
 
-OSjs.Applications = OSjs.Applications || {};
-OSjs.Applications.ApplicationSettings = OSjs.Applications.ApplicationSettings || {};
-OSjs.Applications.ApplicationSettings.Class = Object.seal(ApplicationSettings);
-OSjs.Applications.ApplicationSettings.SettingsItemDialog = SettingsItemDialog;
-OSjs.Applications.ApplicationSettings.Modules = {
-  Desktop: ModuleDesktop,
-  Input: ModuleInput,
-  Locale: ModuleLocale,
-  Panel: ModulePanel,
-  PM: ModulePM,
-  Search: ModuleSearch,
-  Sounds: ModuleSounds,
-  Store: ModuleStore,
-  Theme: ModuleTheme,
-  User: ModuleUser,
-  Users: ModuleUsers,
-  VFS: ModuleVFS
-};
-
+OSjs.Applications.ApplicationSettings = Object.seal(ApplicationSettings);
