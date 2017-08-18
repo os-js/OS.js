@@ -36,6 +36,9 @@ const minimist = require('minimist');
 const Modules = require('./modules.js');
 const Settings = require('./settings.js');
 
+/**
+ * Shuts down the server
+ */
 const shutdown = () => {
   console.log('\n');
 
@@ -44,6 +47,21 @@ const shutdown = () => {
     .catch(() => process.exit(1));
 };
 
+/**
+ * Starts the server
+ * @param {Object}  [opts]                Override default options object
+ * @param {String}  [opts.HOSTNAME=null]  Hostname (autodetected)
+ * @param {Number}  [opts.PORT=8000]      Listen port
+ * @param {Boolean} [opts.DEBUG=false]    Enable debugging
+ * @param {Number}  [opts.LOGLEVEL=7]     Loglevel
+ * @param {String}  [opts.NODEDIR]        The `src/server/node` sources directory
+ * @param {String}  [opts.ROOTDIR]        OS.js root directory
+ * @param {String}  [opts.SERVERDIR]      The `src/server` directory
+ * @param {String}  [opts.CONNECTION]     Load this connection module instead of the configured one
+ * @param {String}  [opts.AUTH]           Load this authentication module instead of the configured one
+ * @param {String}  [opts.STORAGE]        Load this storage module instead of the configured one
+ * @return {Promise<Boolean, Error>}
+ */
 const start = (opts) => {
   opts = opts || {};
 
@@ -86,10 +104,7 @@ const start = (opts) => {
   });
 };
 
-module.exports = {start, shutdown};
-
-if ( require.main === module ) {
-
+if ( require.main === module ) { // If run directly via cli
   process.on('uncaughtException', (error) => {
     console.log('UNCAUGHT EXCEPTION', error, error.stack);
   });
@@ -107,5 +122,7 @@ if ( require.main === module ) {
   start().catch((err) => {
     console.error(err);
   });
+} else { // Or if was used as require()
+  module.exports = {start, shutdown};
 }
 

@@ -179,6 +179,16 @@ const installFromZip = (username, args) => {
 // EXPORTS
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * Installs a package
+ *
+ * @param {User} user The user
+ * @param {Object} args Arguments
+ * @param {String} args.zip Zip file virtual path
+ * @param {String} args.dest Destination virtual path
+ * @param {Boolean} [args.overwrite=false] Overwrite previously installed
+ * @return {Promise<Boolean, Error>}
+ */
 module.exports.install = function(user, args) {
   // FIXME: Make totally async
   if ( args.zip && args.dest && args.paths ) {
@@ -217,6 +227,14 @@ module.exports.install = function(user, args) {
   return Promise.reject('Not enough arguments');
 };
 
+/**
+ * Uninstalls a package
+ *
+ * @param {User} user The user
+ * @param {Object} args Arguments
+ * @param {String} args.path Path tot the package
+ * @return {Promise<Boolean, Error>}
+ */
 module.exports.uninstall = function(user, args) {
   if ( !args.path ) {
     return Promise.reject('Missing path');
@@ -238,6 +256,15 @@ module.exports.update = function() {
   return Promise.reject('Not yet implemented');
 };
 
+/**
+ * Perform an action on the cache
+ *
+ * @param {User} user The user
+ * @param {Object} args Arguments
+ * @param {String} args.action Action
+ * @param {String} args.scope Action scope
+ * @return {Promise<*, Error>}
+ */
 module.exports.cache = function(user, args) {
   if ( args.action === 'generate' ) {
     if ( args.scope === 'user' ) {
@@ -248,6 +275,14 @@ module.exports.cache = function(user, args) {
   return Promise.reject('Not available');
 };
 
+/**
+ * List all packages (local + global)
+ *
+ * @param {User} user The user
+ * @param {Object} args Arguments
+ * @param {String[]} args.paths User package paths
+ * @return {Promise<Object, Error>}
+ */
 module.exports.list = function(user, args) {
   return new Promise((resolve, reject) => {
     const paths = args.paths;
