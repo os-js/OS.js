@@ -48,9 +48,9 @@ let _treeCache;
 /*
  * Generate FileView compatible array of scandir()
  */
-function createDirectoryList(dir, list, item, options) {
+function createDirectoryList(dir, list, item, options, match) {
   const result = [];
-  const rdir = dir.replace(/^google-drive\:\/+/, '/'); // FIXME
+  const rdir = dir.replace(match, '/').replace(/\/+/g, '/');
   const isOnRoot = rdir === '/';
 
   function createItem(iter, i) {
@@ -471,7 +471,7 @@ export default class GoogleDriveTransport extends Transport {
         if ( error ) {
           reject(new Error(error));
         } else {
-          const result = createDirectoryList(dir, list, item, options);
+          const result = createDirectoryList(dir, list, item, options, mount.option('match'));
           resolve(result);
         }
       });
