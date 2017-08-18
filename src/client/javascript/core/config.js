@@ -50,14 +50,14 @@ export function getConfig(path, defaultValue) {
 /**
  * Get default configured path
  *
- * @param   {String}    fallback      Fallback path on error (default= "osjs:///")
+ * @param   {String}    fallback      Fallback path on error
  * @return  {String}
  */
 export function getDefaultPath(fallback) {
   if ( fallback && fallback.match(/^\//) ) {
     fallback = null;
   }
-  return getConfig('VFS.Home') || fallback || 'osjs:///';
+  return getConfig('VFS.Home') || fallback || getConfig('VFS.Dist');
 }
 
 /**

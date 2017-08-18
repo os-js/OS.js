@@ -141,9 +141,10 @@ export default class Connection {
   getVFSPath(item, options) {
     options = options || {};
 
-    const base = getConfig('Connection.RootURI', '/');
+    const base = getConfig('Connection.RootURI', '/').replace(/\/?$/, '/');
+    const defaultDist = getConfig('VFS.Dist');
     if ( window.location.protocol === 'file:' ) {
-      return base + item.path.replace(/^osjs:\/\/\//, '');
+      return item ? base + item.path.substr(defaultDist.length) : base;
     }
 
     let url = getConfig('Connection.FSURI', '/');

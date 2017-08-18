@@ -12,6 +12,7 @@
     },
     "VFS": {
       "MaxUploadSize": 2097152,
+      "Dist": "osjs:///",
       "Home": "home:///",
 
       "Mountpoints": {

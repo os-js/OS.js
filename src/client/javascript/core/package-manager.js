@@ -388,7 +388,7 @@ class PackageManager {
       if ( vfspath ) {
         return pkg.scope === 'user'
           ? path.substr(fsuri.length)
-          : 'osjs:///' + path;
+          : getConfig('VFS.Dist') + path;
       }
     }
 
