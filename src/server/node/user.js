@@ -30,7 +30,7 @@
 const Settings = require('./settings.js');
 
 /**
- * Contains user about a user
+ * Contains information about a user
  *
  * @desc This is normally passed around in modules
  */
