@@ -425,7 +425,7 @@ export default class WindowManager extends Process {
    */
   destroyStylesheet() {
     if ( this._stylesheet ) {
-      this._stylesheet.remove();
+      DOM.$remove(this._stylesheet);
     }
     this._stylesheet = null;
   }
