@@ -94,7 +94,7 @@ export default class PanelItemSearch extends PanelItem {
       }
     };
 
-    Hooks.addHook('onBlurMenu', () => this.hide());
+    Hooks.addHook('menuBlur', () => this.hide());
 
     Events.$bind(root, 'click', function(ev) {
       ev.stopPropagation();

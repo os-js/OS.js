@@ -125,28 +125,30 @@ export default class EventHandler {
   /**
    * Fire an event
    *
-   * @param   {String}    name        Event name
-   * @param   {Array}     args        List of arguments to send to .apply()
-   *
-   * @return {Boolean} If none of the handlers returned false
+   * @param   {String}    name              Event name
+   * @param   {Array}     args              List of arguments to send to .apply()
+   * @param   {Object}    [thisArg=this]    The `this` context
+   * @param   {Boolean}   [applyArgs=false] Run `apply` on arguments
    */
-  emit(name, args) {
+  emit(name, args, thisArg, applyArgs) {
     args = args || [];
+    thisArg = thisArg || this;
 
     if ( !(this.events[name] instanceof Array) ) {
-      return true;
+      return;
     }
 
-    return (this.events[name]).every(function(fn) {
-      let result;
+    (this.events[name]).forEach((fn) => {
       try {
-        result = fn(args);
+        if ( applyArgs ) {
+          fn.apply(thisArg, args);
+        } else {
+          fn.call(thisArg, args);
+        }
       } catch ( e ) {
         console.warn('EventHandler::emit() exception', name, e);
         console.warn(e.stack);
       }
-
-      return typeof result === 'undefined' || result === true;
     });
   }
 }

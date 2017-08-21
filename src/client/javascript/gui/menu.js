@@ -101,7 +101,7 @@ export function blur(ev) {
   }
   lastMenu = null;
 
-  triggerHook('onBlurMenu');
+  triggerHook('menuBlur');
 }
 
 /**

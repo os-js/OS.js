@@ -475,7 +475,7 @@ export function start() {
   SplashScreen.watermark(config);
   SplashScreen.show();
 
-  triggerHook('onInitialize');
+  triggerHook('initialize');
 
   Promise.each([
     initPreloading,
@@ -505,7 +505,7 @@ export function start() {
 
     window.addEventListener('message', onMessage, false);
 
-    triggerHook('onInited');
+    triggerHook('initialized');
     SplashScreen.hide();
 
     if ( !testMode ) {
@@ -517,7 +517,7 @@ export function start() {
       }
 
       initSession(config).then(() => {
-        return triggerHook('onSessionLoaded');
+        return triggerHook('sessionLoaded');
       });
     }
 
@@ -558,7 +558,7 @@ export function stop(restart = false) {
   Storage.instance.destroy();
   Connection.instance.destroy();
 
-  triggerHook('onShutdown');
+  triggerHook('shutdown');
 
   console.warn('OS.js was shut down!');
 

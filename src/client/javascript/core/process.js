@@ -568,7 +568,7 @@ export default class Process {
         return Promise.resolve(alreadyRunning);
       }
 
-      triggerHook('onApplicationLaunch', [name, args]);
+      triggerHook('processStart', [name, args]);
 
       // Create loading ui
       Loader.create('Main.launch.' + name, {
@@ -622,7 +622,7 @@ export default class Process {
             const settings = SettingsManager.get(instance.__pname) || {};
             instance.init(settings, metadata);
 
-            triggerHook('onApplicationLaunched', [{
+            triggerHook('processStarted', [{
               application: instance,
               name: name,
               args: args,

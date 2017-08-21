@@ -27,24 +27,17 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-const _hooks = {
-  'onInitialize': [],
-  'onInited': [],
-  'onSessionLoaded': [],
-  'onShutdown': [],
-  'onApplicationLaunch': [],
-  'onApplicationLaunched': [],
-  'onBlurMenu': []
-};
+import EventHandler from 'helpers/event-handler';
 
-/**
- * Get all hooks
- * @param {String} name Hook name
- * @return {Map<String, Array>}
- */
-export function getHooks(name) {
-  return _hooks[name];
-}
+let handler = new EventHandler('core-hooks', [
+  'initialize',
+  'initialized',
+  'sessionLoaded',
+  'shudown',
+  'processStart', // => (name, args)
+  'processStarted', // => (info)
+  'menuBlur'
+]);
 
 /**
  * Method for triggering a hook
@@ -54,21 +47,8 @@ export function getHooks(name) {
  * @param   {Object}    thisarg   'this' ref
  */
 export function triggerHook(name, args, thisarg) {
-  thisarg = thisarg || OSjs;
-  args = args || [];
-
-  if ( _hooks[name] ) {
-    _hooks[name].forEach(function(hook) {
-      if ( typeof hook === 'function' ) {
-        try {
-          hook.apply(thisarg, args);
-        } catch ( e ) {
-          console.warn('Error on Hook', e, e.stack);
-        }
-      } else {
-        console.warn('No such Hook', name);
-      }
-    });
+  if ( handler ) {
+    handler.emit(name, args, thisarg, true);
   }
 }
 
@@ -81,8 +61,8 @@ export function triggerHook(name, args, thisarg) {
  * @return  {Number}       The index of hook
  */
 export function addHook(name, fn) {
-  if ( typeof _hooks[name] !== 'undefined' ) {
-    return _hooks[name].push(fn) - 1;
+  if ( handler ) {
+    return handler.on(name, fn);
   }
   return -1;
 }
@@ -91,16 +71,14 @@ export function addHook(name, fn) {
  * Method for removing a hook
  *
  * @param   {String}    name    Hook name
- * @param   {Number}    index     Hook index
+ * @param   {Number}    [index] Hook index
  *
  * @return  {Boolean}
  */
 export function removeHook(name, index) {
-  if ( typeof _hooks[name] !== 'undefined' ) {
-    if ( _hooks[name][index] ) {
-      _hooks[name][index] = null;
-      return true;
-    }
+  if ( handler ) {
+    return handler.off(name, index);
   }
+
   return false;
 }
