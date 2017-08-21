@@ -56,8 +56,12 @@ export function $safeName(str) {
  * @param   {Node}    node      The DOM Element
  */
 export function $remove(node) {
-  if ( node && node.parentNode ) {
-    node.parentNode.removeChild(node);
+  if ( node ) {
+    if ( typeof node.remove === 'function' ) {
+      node.remove();
+    } else if ( node.parentNode ) {
+      node.parentNode.removeChild(node);
+    }
   }
 }
 
