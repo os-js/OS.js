@@ -480,13 +480,14 @@ export default class Process {
       n = [n];
     }
 
-    n.map((name) => this.getProcess(name)).filter((p) => !!p).forEach((p) => {
+    n.map((name) => this.getProcess(name, true)).filter((p) => !!p).forEach((p) => {
       let promise = null;
-      let data = p instanceof Process ? p._getSessionData() : null;
+      let data = p._getSessionData();
       let args = {};
+      let name;
 
       try {
-        n = p.__pname;
+        name = p.__pname;
         promise = p.destroy(); // kill
       } catch ( e ) {
         console.warn('Process::reload()', e.stack, e);
@@ -503,11 +504,13 @@ export default class Process {
         promise = Promise.resolve(true);
       }
 
-      promise.then(() => {
-        return setTimeout(() => {
-          this.create(n, args);
-        }, 500);
-      });
+      if ( name ) {
+        promise.then(() => {
+          return setTimeout(() => {
+            this.create(name, args);
+          }, 500);
+        });
+      }
     });
   }
 
