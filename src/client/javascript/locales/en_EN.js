@@ -279,6 +279,8 @@ module.exports = {
   'ERR_VFSMODULE_EXISTS_FMT'     : 'Failed to check if exists: {0}',
 
   // VFS -> Dropbox
+  'ERR_DROPBOX_API'            : 'Failed to load Dropbox API',
+  'ERR_DROPBOX_AUTH'           : 'Failed to authenticate via Dropbox',
   'DROPBOX_NOTIFICATION_TITLE' : 'You are signed in to Dropbox API',
   'DROPBOX_SIGN_OUT'           : 'Sign out from Google API Services',
 
