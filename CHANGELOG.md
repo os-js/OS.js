@@ -1,3 +1,49 @@
+# 2.1.1
+
+Mainly bugfixes related to previous release, but also brings back Dropbox support.
+
+Relevant:
+
+* https://community.os-js.org/t/update-version-bump-2-1-1/156
+
+Digest:
+
+* Settings: Corrections of some paddings in main window
+* Settings: Updated compability
+* CoreWM: Fixed an invalid self-reference in DigitalClock
+* CoreWM: Updated compability
+* VFS: Dropbox now supports find() (#28)
+* VFS: Added Dropbox v2 support (#28)
+* VFS: Now possible to override 'osjs:' mountpoint
+* VFS: Replaced a static mountpoint definition (onedrive)
+* VFS: Replaced a static mountpoint definition (google-drive)
+* GUI: Correctly check for <webview> in GUIIframe
+* GUI: Prevent error on non-event fn args
+* CSS: Move pointer-events block prevention decleration down to body
+* server-node: Updated some documentation
+* server-node: Correction in User documentation
+* client: Revert to a default promise on Extension init
+* client: Updated some documentation
+* core: Renamed internal hooks
+* utils: Added 'urlparams' method
+* dom: check for native remove() support in $remove()
+* process: Fixed some issues in reload()
+* window-manager: Use DOM.$remove for Opera compability
+* process: Removed BC kept when refactoring
+* window-behaviour: Add 'data-window-hint' to body when manipulating windows
+* misc: Updated locales
+* misc: Updated some dotfiles
+* misc: Updated INSTALL.md
+* misc: Update LICENSE (Closes #604)
+* misc: Updated 'Extension' package init and template
+* misc: Removed bin/build-opkg.sh
+* misc: Now using node:boron-alpine for Docker
+* misc: Removed a beacon from README
+* misc: Updated dependencies
+* misc: Updated github ISSUE_TEMPLATE
+* bin: Removed some defunct scripts
+* bin: Updated docker image
+
 # 2.1.0
 
 Rewritten to ES6 (Babel), Webpack and Express.
