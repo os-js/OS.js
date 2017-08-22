@@ -261,7 +261,12 @@ const initExtensions = (config) => new Promise((resolve, reject) => {
       return new Promise((yes, no) => {
         try {
           const m = packages[entry];
-          OSjs.Extensions[entry].init(m).then(yes).catch((err) => {
+          let promise = OSjs.Extensions[entry].init(m);
+          if ( !(promise instanceof Promise) ) {
+            promise = Promise.resolve(true);
+          }
+
+          promise.then(yes).catch((err) => {
             console.error(err);
             return yes(false);
           });
