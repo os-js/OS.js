@@ -32,8 +32,6 @@
 // https://github.com/dropbox/dropbox-sdk-js/blob/master/examples/javascript/auth/index.html
 // http://dropbox.github.io/dropbox-sdk-js/Dropbox.html
 
-// TODO: find()
-
 import Promise from 'bluebird';
 import Transport from 'vfs/transport';
 import Preloader from 'utils/preloader';
@@ -44,6 +42,7 @@ import {_} from 'core/locales';
 import * as FS from 'utils/fs';
 
 const AUTH_TIMEOUT = (1000 * 30);
+const MAX_RESULTS = 100;
 
 ///////////////////////////////////////////////////////////////////////////////
 // TRANSPORTER
@@ -160,6 +159,35 @@ export default class DropboxTransport extends Transport {
     });
   }
 
+  _createMetadata(root, iter) {
+    return {
+      id: iter.id,
+      filename: iter.name,
+      path: FS.pathJoin(root, iter.path_display),
+      type: iter['.tag'] === 'folder' ? 'dir' : 'file',
+      size: iter.size || 0
+    };
+  }
+
+  find(file, options, a, mount) {
+    const root = FS.getPathFromVirtual(file.path);
+
+    return new Promise((resolve, reject) => {
+      this.dbx.filesSearch({
+        path: root === '/' ? '' : root,
+        query: options.query,
+        max_results: MAX_RESULTS,
+        mode: {
+          '.tag': 'filename'
+        }
+      }).then((response) => {
+        return resolve(response.matches.map((iter) => {
+          return this._createMetadata(mount.option('root'), iter.metadata);
+        }));
+      }).catch(reject);
+    });
+  }
+
   scandir(item, options, mount) {
     const root = FS.getPathFromVirtual(item.path);
 
@@ -171,13 +199,7 @@ export default class DropboxTransport extends Transport {
 
       this.dbx[m](a).then((response) => {
         const found = (response.entries || []).map((iter) => {
-          return {
-            id: iter.id,
-            filename: iter.name,
-            path: FS.pathJoin(item.path, iter.name),
-            type: iter['.tag'] === 'folder' ? 'dir' : 'file',
-            size: iter.size || 0
-          };
+          return this._createMetadata(mount.option('root'), iter);
         });
 
         result = result.concat(found);
@@ -199,7 +221,6 @@ export default class DropboxTransport extends Transport {
         this.dbx.sharingGetSharedLinkFile({
           url
         }).then((data) => {
-          console.error(data);
           return resolve(data.fileBlob);
         }).catch(reject);
       }).catch(reject);
