@@ -281,6 +281,7 @@ module.exports = {
   // VFS -> Dropbox
   'ERR_DROPBOX_API'            : 'Failed to load Dropbox API',
   'ERR_DROPBOX_AUTH'           : 'Failed to authenticate via Dropbox',
+  'ERR_DROPBOX_KEY'            : 'No Dropbox client key configured',
   'DROPBOX_NOTIFICATION_TITLE' : 'You are signed in to Dropbox API',
   'DROPBOX_SIGN_OUT'           : 'Sign out from Google API Services',
 

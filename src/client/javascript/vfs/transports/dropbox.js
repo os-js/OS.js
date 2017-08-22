@@ -133,7 +133,7 @@ export default class DropboxTransport extends Transport {
   _init() {
     const clientId = getConfig('DropboxAPI.ClientKey');
     if ( !clientId ) {
-      return Promise.reject(new Error('No Dropbox client key defined'));
+      return Promise.reject(new Error(_('ERR_DROPBOX_KEY')));
     }
 
     return new Promise((resolve, reject) => {
