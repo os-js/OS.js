@@ -134,6 +134,21 @@ export function parseurl(url, modify) {
   };
 }
 
+/**
+ * Get URL query parameters
+ * @link https://gist.github.com/pirate/9298155edda679510723
+ * @param {String} search The url to search
+ * @param {Boolean} [hash=false] Use hash instead of query
+ * @return {String[]}
+ */
+export function urlparams(search, hash) {
+  let hashes = search.slice(search.indexOf(hash ? '#' : '?') + 1).split('&');
+  return hashes.reduce((params, hash) => {
+    let [key, val] = hash.split('=');
+    return Object.assign(params, {[key]: decodeURIComponent(val)});
+  }, {});
+}
+
 /////////////////////////////////////////////////////////////////////////////
 // OBJECT HELPERS
 /////////////////////////////////////////////////////////////////////////////
