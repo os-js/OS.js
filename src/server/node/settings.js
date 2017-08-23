@@ -152,7 +152,12 @@ class Settings {
    * @return {*}
    */
   get(key, defaultValue) {
-    return simplejsonconf.getJSON(this.settings, key, defaultValue);
+    try {
+      return simplejsonconf.getJSON(this.settings, key, defaultValue);
+    } catch ( e ) {
+      console.warn(e);
+    }
+    return defaultValue;
   }
 
   /**
