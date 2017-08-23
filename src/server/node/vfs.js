@@ -261,11 +261,13 @@ class VFS {
   /*
    * Wrapper for making stream
    */
-  _createStream(method, vpath, options, streamOptions) {
-    const transportName = this.getTransportName(vpath);
-    const transport = Modules.getVFS(transportName);
-    const resolved = this.parseVirtualPath(vpath, options);
+  _createStream(method, vpath, options, streamOptions, transport) {
+    if ( !transport ) {
+      const transportName = this.getTransportName(vpath);
+      transport = Modules.getVFS(transportName);
+    }
 
+    const resolved = this.parseVirtualPath(vpath, options);
     if ( !transport ) {
       return Promise.reject('Could not find any supported VFS module');
     }
@@ -278,7 +280,7 @@ class VFS {
    * @param {String} vpath Virtual path
    * @param {Object} options Options
    * @param {Object} [streamOptions] Stream options
-   * @return {ReadeableStream}
+   * @return {Promise<ReadeableStream, Error>}
    */
   createReadStream(vpath, options, streamOptions) {
     return this._createStream('createReadStream', vpath, options, streamOptions);
@@ -289,7 +291,7 @@ class VFS {
    * @param {String} vpath Virtual path
    * @param {Object} options Options
    * @param {Object} [streamOptions] Stream options
-   * @return {WriteableStream}
+   * @return {Promise<WriteableStream, Error>}
    */
   createWriteStream(vpath, options, streamOptions) {
     return this._createStream('createWriteStream', vpath, options, streamOptions);
@@ -301,13 +303,16 @@ class VFS {
    * @param {String} method VFS method
    * @param {Object} args VFS arguments
    * @param {Boolean} [root=false] Allow use of root features
+   * @param {Object} [transport] Use given transport instead of auto-detection
    * @return {Promise<*, Error>}
    */
-  request(user, method, args, root) {
+  request(user, method, args, root, transport) {
     args.options = args.options || {};
 
-    const transportName = this.getTransportName(args);
-    const transport = Modules.getVFS(transportName);
+    if ( !transport ) {
+      const transportName = this.getTransportName(args);
+      transport = Modules.getVFS(transportName);
+    }
 
     if ( !transport ) {
       return Promise.reject('Could not find any supported VFS module');
