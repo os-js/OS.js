@@ -71,6 +71,7 @@ describe('HTTP Server', function() {
         method: 'GET',
         url: url + '/'
       }, function(error, res) {
+        assert.equal(null, error);
         assert.equal(200, res.statusCode);
         done();
       });
@@ -341,6 +342,6 @@ describe('HTTP Server', function() {
   });
 
   after(function() {
-    //osjs.shutdown();
+    osjs.shutdown();
   });
 });

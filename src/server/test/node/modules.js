@@ -104,27 +104,27 @@ describe('Connection', () => {
 // Authenticator
 //
 describe('Authenticator', () => {
-  let inststance;
-
-  let userObject = User.createFromObject({
-    id: 666,
-    username: 'Chthulu'
-  });
-
-  let httpObject = {
-    session: {
-      get: (n) => {
-        const vars = {
-          uid: 1,
-          username: 'demo'
-        };
-        return vars[n];
-      }
-    }
-  };
+  let inststance, userObject, httpObject;
 
   before(() => {
     instance = new Authenticator();
+
+    userObject = User.createFromObject({
+      id: 666,
+      username: 'Chthulu'
+    });
+
+    httpObject = {
+      session: {
+        get: (n) => {
+          const vars = {
+            uid: 1,
+            username: 'demo'
+          };
+          return vars[n];
+        }
+      }
+    };
   });
 
   describe('#register', () => {
