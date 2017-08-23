@@ -341,6 +341,6 @@ describe('HTTP Server', function() {
   });
 
   after(function() {
-    osjs.shutdown();
+    //osjs.shutdown();
   });
 });
