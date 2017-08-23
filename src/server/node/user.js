@@ -102,7 +102,7 @@ class User {
    */
   hasGroup(groupList, all) {
     if ( !(groupList instanceof Array) ) {
-      groupList = [];
+      groupList = [groupList];
     }
 
     if ( !groupList.length ) {
