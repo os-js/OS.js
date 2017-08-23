@@ -45,46 +45,6 @@ let indexContent;
 // TESTS
 /////////////////////////////////////////////////////////////////////////////
 
-const p = path.resolve(__dirname + '/../../node');
-
-describe('Node Modules', function() {
-  before(function(done) {
-    require(path.resolve(p, 'settings.js')).load({}, {
-        HOSTNAME: null,
-        DEBUG: false,
-        PORT: null,
-        LOGLEVEL: 7,
-        NODEDIR: path.resolve(p),
-        ROOTDIR: path.resolve(p  + '/../../../'),
-        SERVERDIR: path.resolve(p + '/../')
-    }, {});
-
-    done();
-  });
-
-  describe('#vfs', function() {
-    const m = require(path.resolve(p, 'settings.js'));
-
-    it('should return error', function() {
-      try {
-        m.parseVirtualPath('xxx:///yyy', {});
-      } catch ( e ) {
-
-        console.log(e)
-      }
-
-    });
-
-
-  });
-
-});
-
-/////////////////////////////////////////////////////////////////////////////
-// TESTS
-/////////////////////////////////////////////////////////////////////////////
-
-/*
 describe('HTTP Server', function() {
   before(function(done) {
     url = 'http://localhost:' + String(8008);
@@ -377,11 +337,10 @@ describe('HTTP Server', function() {
         done();
       });
     });
-    * /
+    */
   });
 
   after(function() {
     osjs.shutdown();
   });
 });
-*/
