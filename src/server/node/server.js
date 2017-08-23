@@ -36,15 +36,24 @@ const minimist = require('minimist');
 const Modules = require('./modules.js');
 const Settings = require('./settings.js');
 
+const isDirect = require.main === module;
+
 /**
  * Shuts down the server
+ * @return {Promise}
  */
 const shutdown = () => {
   console.log('\n');
 
-  Modules.destroy()
-    .then(() => process.exit(0))
-    .catch(() => process.exit(1));
+  if ( isDirect ) {
+    Modules.destroy()
+      .then(() => process.exit(0))
+      .catch(() => process.exit(1));
+
+    return Promise.resolve(true);
+  }
+
+  return Modules.destroy();
 };
 
 /**
@@ -104,7 +113,7 @@ const start = (opts) => {
   });
 };
 
-if ( require.main === module ) { // If run directly via cli
+if ( isDirect ) { // If run directly via cli
   process.on('uncaughtException', (error) => {
     console.log('UNCAUGHT EXCEPTION', error, error.stack);
   });
