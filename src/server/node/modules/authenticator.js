@@ -59,7 +59,7 @@ class Authenticator {
    * @return {Promise<Boolean, Error>}
    */
   login(data) {
-    return Promise.reject('Not implemented');
+    return Promise.reject(new Error('Not implemented'));
   }
 
   /**
@@ -77,7 +77,7 @@ class Authenticator {
    * @return {Promise<Boolean, Error>}
    */
   manage(command, args) {
-    return Promise.reject('Not implemented');
+    return Promise.reject(new Error('Not implemented'));
   }
 
   /**
