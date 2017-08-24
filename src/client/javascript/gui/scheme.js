@@ -333,6 +333,7 @@ export default class GUIScheme {
         content = this.scheme.querySelector(type + '[data-id="' + id + '"]');
       } else {
         content = this.scheme.querySelector('application-window[data-id="' + id + '"]') ||
+                  this.scheme.querySelector('application-dialog[data-id="' + id + '"]') ||
                   this.scheme.querySelector('application-fragment[data-id="' + id + '"]');
       }
     }

@@ -55,8 +55,6 @@ import {_} from 'core/locales';
  * @param {*}       result  Result from dialog input
  */
 
-let _dialogScheme;
-
 /////////////////////////////////////////////////////////////////////////////
 // DIALOG
 /////////////////////////////////////////////////////////////////////////////
@@ -102,25 +100,11 @@ export default class DialogWindow extends Window {
     if ( args.scheme && args.scheme instanceof GUIScheme ) {
       this.scheme = args.scheme;
       delete args.scheme;
-    } else {
-      try {
-        if ( !_dialogScheme ) {
-          const cachedHtml = require('osjs-scheme-loader!dialogs.html');
-          if ( cachedHtml ) {
-            _dialogScheme = GUIScheme.fromString(cachedHtml);
-          }
-        }
-      } catch ( e ) {
-        console.warn(e);
-      }
-
-      this.scheme = _dialogScheme;
     }
 
     this.args = args;
     this.className = className;
     this.buttonClicked = false;
-
     this.closeCallback = (ev, button, result) => {
       if ( this._destroyed ) {
         return;
@@ -135,13 +119,33 @@ export default class DialogWindow extends Window {
   /**
    * @override
    */
+  destroy() {
+    if ( this.scheme ) {
+      this.scheme = this.scheme.destroy();
+    }
+
+    return super.destroy(...arguments);
+  }
+
+  /**
+   * @override
+   */
   init() {
     const root = super.init(...arguments);
 
     root.setAttribute('role', 'dialog');
 
+    const windowName = this.className.replace(/Dialog$/, '');
+    const focusButtons = ['ButtonCancel', 'ButtonNo'];
+    const buttonMap = {
+      ButtonOK: 'ok',
+      ButtonCancel: 'cancel',
+      ButtonYes: 'yes',
+      ButtonNo: 'no'
+    };
+
     if ( this.scheme ) {
-      this.scheme.render(this, this.className.replace(/Dialog$/, ''), root, 'application-dialog', (node) => {
+      this.scheme.render(this, windowName, root, 'application-dialog', (node) => {
         node.querySelectorAll('gui-label').forEach((el) => {
           if ( el.childNodes.length && el.childNodes[0].nodeType === 3 && el.childNodes[0].nodeValue ) {
             const label = el.childNodes[0].nodeValue;
@@ -150,27 +154,20 @@ export default class DialogWindow extends Window {
           }
         });
       });
-
-      const buttonMap = {
-        ButtonOK: 'ok',
-        ButtonCancel: 'cancel',
-        ButtonYes: 'yes',
-        ButtonNo: 'no'
-      };
-
-      const focusButtons = ['ButtonCancel', 'ButtonNo'];
-
-      Object.keys(buttonMap).filter((id) => this._findDOM(id)).forEach((id) => {
-        const btn = this._find(id);
-        btn.on('click', (ev) => {
-          this.onClose(ev, buttonMap[id]);
-        });
-
-        if ( focusButtons.indexOf(id) >= 0 ) {
-          btn.focus();
-        }
-      });
+    } else {
+      this._render(windowName, require('osjs-scheme-loader!dialogs.html'));
     }
+
+    Object.keys(buttonMap).filter((id) => this._findDOM(id)).forEach((id) => {
+      const btn = this._find(id);
+      btn.on('click', (ev) => {
+        this.onClose(ev, buttonMap[id]);
+      });
+
+      if ( focusButtons.indexOf(id) >= 0 ) {
+        btn.focus();
+      }
+    });
 
     $addClass(root, 'DialogWindow');
 
