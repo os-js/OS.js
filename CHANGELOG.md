@@ -1,3 +1,24 @@
+# 2.1.2
+
+Updated test coverage, some small fixes to node server.
+
+Relevant:
+
+* https://community.os-js.org/t/update-version-bump-2-1-2/157
+
+Digest:
+
+* dialogs: Cleaned up some old scheme handling
+* server-node: Updated environmental variable reading on startup
+* server-node: Return promise on shutdown method
+* server-node: Allow overriding VFS transports in certain methods
+* server-node: Correction in User.hasGroup check
+* server-node: Prevent exception in Settings::get() when no config set
+* server-node: Updated some default promise rejections
+* tests: Reverted a commit that commented out tests
+* tests: Updated server tests
+* tests: Better node server coverage
+
 # 2.1.1
 
 Mainly bugfixes related to previous release, but also brings back Dropbox support.
