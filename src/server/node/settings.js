@@ -63,8 +63,10 @@ class Settings {
 
     // Arguments from environment
     Object.keys(process.env)
+      .filter((k) => k.match(/^OSJS_/i))
+      .map((k) => k.replace(/^OSJS_/i, ''))
       .filter((k) => allowedKeys.indexOf(k) !== -1)
-      .forEach((k) => (result[k] = process.env[k]));
+      .forEach((k) => (result[k] = process.env['OSJS_' + k]));
 
     // Arguments from process
     Object.keys(argvOptions)
