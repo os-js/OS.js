@@ -632,7 +632,6 @@ class CoreWM extends WindowManager {
   onContextMenu(ev) {
     if ( ev.target === document.body ) {
       ev.preventDefault();
-      ev.stopPropagation();
       this.openDesktopMenu(ev);
       return false;
     }

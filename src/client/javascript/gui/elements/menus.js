@@ -30,9 +30,11 @@
 import * as DOM from 'utils/dom';
 import * as GUI from 'utils/gui';
 import * as Events from 'utils/events';
-import * as Compability from 'utils/compability';
+//import * as Compability from 'utils/compability';
 import * as Menu from 'gui/menu';
 import GUIElement from 'gui/element';
+
+let debounce;
 
 /////////////////////////////////////////////////////////////////////////////
 // HELPERS
@@ -83,21 +85,6 @@ function onEntryClick(ev, pos, target, original) {
   const isExpander = !!target.querySelector('gui-menu');
 
   if ( !isExpander ) {
-    Menu.blur(ev);
-
-    const hasInput = target.querySelector('input');
-    if ( hasInput ) {
-      if ( !Compability.isIE() && window.MouseEvent ) {
-        hasInput.dispatchEvent(new MouseEvent('click', {
-          clientX: pos.x,
-          clientY: pos.y
-        }));
-      } else {
-        const nev = document.createEvent('MouseEvent');
-        nev.initMouseEvent('click', true, true, window, 0, 0, 0, pos.x, pos.y, ev.ctrlKey, ev.altKey, ev.shiftKey, ev.metaKey, ev.button, hasInput);
-      }
-    }
-
     const dispatcher = (original || target).querySelector('label');
     dispatcher.dispatchEvent(new CustomEvent('_select', {detail: getSelectionEventAttribs(target, true)}));
   }
@@ -211,9 +198,8 @@ class GUIMenu extends GUIElement {
     evName = getEventName(evName);
 
     Events.$bind(this.$element, evName, function(ev) {
-      const t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
-      if ( t.tagName === 'LABEL' ) {
-        callback.apply(new GUIElement(t.parentNode), arguments);
+      if ( ev.target.tagName === 'LABEL' ) {
+        callback.apply(new GUIElement(ev.target.parentNode), arguments);
       }
     }, true);
 
@@ -226,12 +212,7 @@ class GUIMenu extends GUIElement {
 
     // This is to use a menu-bar > menu as a contextmenu
     const newNode = this.$element.cloneNode(true);
-    const el = this.$element;
     Menu.create(null, ev, newNode);
-
-    Events.$bind(newNode, 'click', (ev, pos) => {
-      Menu.clickWrapper(ev, pos, onEntryClick, el);
-    }, true);
   }
 
   set(param, value, arg) {
@@ -271,7 +252,11 @@ class GUIMenu extends GUIElement {
 
     if ( !customMenu ) {
       Events.$bind(el, 'click', (ev, pos) => {
-        Menu.clickWrapper(ev, pos, onEntryClick);
+        clearTimeout(debounce);
+        debounce = setTimeout(() => {
+          debounce = clearTimeout(debounce);
+          Menu.clickWrapper(ev, pos, onEntryClick);
+        }, 1);
       }, true);
     }
 
@@ -324,12 +309,10 @@ class GUIMenuBar extends GUIElement {
       }
     }
 
-    function _onClick(ev, mel) {
-      Menu.blur(ev);
-
+    function _onClick(ev) {
       ev.preventDefault();
-      ev.stopPropagation();
 
+      const mel = ev.target;
       const submenu = mel.querySelector('gui-menu');
 
       if ( mel.getAttribute('data-disabled') === 'true' ) {
@@ -382,11 +365,9 @@ class GUIMenuBar extends GUIElement {
       updateChildren(submenu, 2);
     });
 
-    Events.$bind(el, 'mousedown', (ev) => {
-      ev.preventDefault();
-      const t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
-      if ( t && t.tagName === 'GUI-MENU-BAR-ENTRY' ) {
-        _onClick(ev, t);
+    Events.$bind(el, 'click', (ev) => {
+      if ( ev.target.tagName === 'GUI-MENU-BAR-ENTRY' ) {
+        _onClick(ev);
       }
     }, true);
 

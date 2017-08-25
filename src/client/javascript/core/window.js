@@ -69,13 +69,6 @@ import {running} from 'core/init';
  * @typedef WindowEvent
  */
 
-function _noEvent(ev) {
-  Menu.blur();
-  ev.preventDefault();
-  ev.stopPropagation();
-  return false;
-}
-
 function camelCased(str) {
   return str.replace(/_([a-z])/g, function(g) {
     return g[1].toUpperCase();
@@ -674,9 +667,6 @@ export default class Window {
     windowTitle.setAttribute('role', 'heading');
 
     // Bind events
-    Events.$bind(this._$loading, 'mousedown', _noEvent);
-    Events.$bind(this._$disabled, 'mousedown', _noEvent);
-
     let preventTimeout;
     const _onanimationend = (ev) => {
       if ( typeof this._animationCallback === 'function') {
@@ -691,40 +681,19 @@ export default class Window {
 
     Events.$bind(this._$element, 'transitionend', _onanimationend);
     Events.$bind(this._$element, 'animationend', _onanimationend);
-
-    Events.$bind(this._$element, 'mousedown', (ev) => {
-      this._focus();
-    });
-
-    Events.$bind(this._$element, 'contextmenu', (ev) => {
-      const r = DOM.$isFormElement(ev);
-
-      if ( !r ) {
-        ev.preventDefault();
-        ev.stopPropagation();
-      }
-
-      Menu.blur();
-
-      return !!r;
-    });
-
-    Events.$bind(this._$top, 'click', (ev) => {
-      const t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
-
-      ev.preventDefault();
+    Events.$bind(this._$element, 'click', (ev) => {
+      const t = ev.target;
       if ( t ) {
         if ( t.tagName.match(/^APPLICATION\-WINDOW\-BUTTON/) ) {
           this._onWindowButtonClick(ev, t, t.getAttribute('data-action'));
         } else if ( t.tagName === 'APPLICATION-WINDOW-ICON' ) {
-          ev.stopPropagation();
-          this._onWindowIconClick(ev, t);
+          this._onWindowIconClick(ev);
         }
       }
+      this._focus();
     }, true);
 
-    Events.$bind(windowTitle, 'mousedown', _noEvent);
-    Events.$bind(windowTitle, 'dblclick', () => {
+    Events.$bind(this._$top, 'dblclick', () => {
       this._maximize();
     });
 
@@ -947,7 +916,7 @@ export default class Window {
         if ( this._$element ) {
           const anim = wm ? wm.getSetting('animations') : false;
           if ( anim ) {
-            this._$element.setAttribute('data-hint', 'closing');
+            this._$element.setAttribute('data-closing', 'true');
             this._animationCallback = fn;
 
             // This prevents windows from sticking when shutting down.
@@ -1886,9 +1855,8 @@ export default class Window {
    * On Window Icon Click
    *
    * @param   {Event}   ev        DOM Event
-   * @param   {Node}    el        DOM Element
    */
-  _onWindowIconClick(ev, el) {
+  _onWindowIconClick(ev) {
     if ( !this._properties.allow_iconmenu || this._destroyed  ) {
       return;
     }
@@ -1981,16 +1949,18 @@ export default class Window {
    * @param   {String}  btn       Button name
    */
   _onWindowButtonClick(ev, el, btn) {
-    //console.debug(this._name, '>', 'Window::_onWindowButtonClick()', btn);
+    const map = {
+      close: this._close,
+      minimize: this._minimize,
+      maximize: this._maximize
+    };
 
-    this._blurGUI();
+    if ( map[btn] ) {
+      try {
+        this._blurGUI();
+      } catch ( e ) {}
 
-    if ( btn === 'close' ) {
-      this._close();
-    } else if ( btn === 'minimize' ) {
-      this._minimize();
-    } else if ( btn === 'maximize' ) {
-      this._maximize();
+      map[btn].call(this);
     }
   }
 

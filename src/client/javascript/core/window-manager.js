@@ -167,6 +167,7 @@ export default class WindowManager extends Process {
     this._dcTimeout      = null;
     this._resizeTimeout  = null;
     this._$fullscreen    = null;
+    this._$lastDomInput  = null;
 
     // Important for usage as "Application"
     this.__name    = (name || 'WindowManager');
@@ -194,8 +195,8 @@ export default class WindowManager extends Process {
 
     this.destroyStylesheet();
 
-    Events.$unbind(document, 'mouseout:windowmanager');
-    Events.$unbind(document, 'mouseenter:windowmanager');
+    Events.$unbind(document, 'pointerout:windowmanager');
+    Events.$unbind(document, 'pointerenter:windowmanager');
     Events.$unbind(window, 'orientationchange:windowmanager');
     Events.$unbind(window, 'hashchange:windowmanager');
     Events.$unbind(window, 'resize:windowmanager');
@@ -205,6 +206,7 @@ export default class WindowManager extends Process {
     Events.$unbind(window, 'webkitfullscreenchange:windowmanager');
     Events.$unbind(window, 'msfullscreenchange:windowmanager');
     Events.$unbind(document.body, 'contextmenu:windowmanager');
+    Events.$unbind(document.body, 'pointerdown:windowmanager,touchstart:windowmanager');
     Events.$unbind(document.body, 'click:windowmanager');
     Events.$unbind(document, 'keyup:windowmanager');
     Events.$unbind(document, 'keydown:windowmanager');
@@ -240,8 +242,14 @@ export default class WindowManager extends Process {
   init(metadata, settings) {
     console.debug('WindowManager::init()');
 
-    Events.$bind(document, 'mouseout:windowmanager', (ev) => this._onMouseLeave(ev));
-    Events.$bind(document, 'mouseenter:windowmanager', (ev) => this._onMouseLeave(ev));
+    document.body.addEventListener('touchend', (ev) => {
+      if ( ev.target === document.body ) {
+        ev.preventDefault();
+      }
+    });
+
+    Events.$bind(document, 'pointerout:windowmanager', (ev) => this._onMouseLeave(ev));
+    Events.$bind(document, 'pointerenter:windowmanager', (ev) => this._onMouseLeave(ev));
     Events.$bind(window, 'orientationchange:windowmanager', (ev) => this._onOrientationChange(ev));
     Events.$bind(window, 'hashchange:windowmanager', (ev) => this._onHashChange(ev));
     Events.$bind(window, 'resize:windowmanager', (ev) => this._onResize(ev));
@@ -251,6 +259,7 @@ export default class WindowManager extends Process {
     Events.$bind(window, 'webkitfullscreenchange:windowmanager', (ev) => this._onFullscreen(ev));
     Events.$bind(window, 'msfullscreenchange:windowmanager', (ev) => this._onFullscreen(ev));
     Events.$bind(document.body, 'contextmenu:windowmanager', (ev) => this._onContextMenu(ev));
+    Events.$bind(document.body, 'pointerdown:windowmanager,touchstart:windowmanager', (ev) => this._onMouseDown(ev));
     Events.$bind(document.body, 'click:windowmanager', (ev) => this._onClick(ev));
     Events.$bind(document, 'keyup:windowmanager', (ev) => this._onKeyUp(ev));
     Events.$bind(document, 'keydown:windowmanager', (ev) => this._onKeyDown(ev));
@@ -325,7 +334,7 @@ export default class WindowManager extends Process {
     w._inited();
 
     if ( focus === true || w instanceof DialogWindow ) {
-      setTimeout(() => w._focus(), 10);
+      w._focus();
     }
 
     return w;
@@ -643,10 +652,11 @@ export default class WindowManager extends Process {
   }
 
   _onContextMenu(ev) {
-    ev.stopPropagation();
-
     this.onContextMenu(ev);
-    if ( !DOM.$isFormElement(ev) ) {
+
+    if ( DOM.$isFormElement(ev) ) {
+      Menu.blur();
+    } else {
       ev.preventDefault();
       return false;
     }
@@ -654,14 +664,58 @@ export default class WindowManager extends Process {
     return true;
   }
 
+  _onMouseDown(ev) {
+    if ( DOM.$isFormElement(ev) ) {
+      this._$lastDomInput = ev.target;
+    } else {
+      if ( this._$lastDomInput ) {
+        try {
+          this._$lastDomInput.blur();
+        } catch ( e ) {}
+
+        this._$lastDomInput = null;
+      }
+    }
+  }
+
   _onClick(ev) {
-    const t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
-    const allowed = ['GUI-MENU-BAR-ENTRY', 'GUI-MENU-ENTRY'];
-    if ( !t || allowed.indexOf(t.tagName) === -1  ) {
+    let hitWindow, hitMenu;
+    let el = ev.target;
+
+    while ( el.parentNode ) {
+      if ( el.tagName.match(/^GUI\-MENU/) ) {
+        hitMenu = el;
+      } else if (  el.tagName.match(/^APPLICATION\-WINDOW/) ) {
+        hitWindow = true;
+      }
+
+      if ( hitWindow || hitMenu ) {
+        break;
+      }
+
+      el = el.parentNode;
+    }
+
+    // We should hide the menu if the clicked entry does not match up with
+    // the following conditions
+    if ( hitMenu ) {
+      if ( hitMenu.tagName === 'GUI-MENU-ENTRY'  ) {
+        if ( hitMenu.getAttribute('data-disabled') !== 'true' ) {
+          if ( !DOM.$hasClass(hitMenu, 'gui-menu-expand') ) {
+            hitMenu = null;
+          }
+        }
+      } else if ( hitMenu.tagName === 'GUI-MENU-BAR'  ) {
+        hitMenu = null;
+      }
+    }
+
+    if ( !hitMenu ) {
       Menu.blur();
     }
 
-    if ( t === document.body ) {
+    // Blur menu if we click body
+    if ( ev.target.tagName === 'BODY' ) {
       const win = this.getCurrentWindow();
       if ( win ) {
         win._blur();

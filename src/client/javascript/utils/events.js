@@ -28,7 +28,6 @@
  * @licence Simplified BSD License
  */
 
-import * as DOM from 'utils/dom';
 import * as Keycodes from 'utils/keycodes';
 
 /**
@@ -88,8 +87,8 @@ export function mousePosition(ev) {
   }
 
   // If this was a touch event
-  const touch = ev.touches || ev.changedTouches;
-  if ( touch && touch[0] ) {
+  const touch = ev.touches || ev.changedTouches || [];
+  if ( touch.length ) {
     return {x: touch[0].clientX, y: touch[0].clientY};
   }
 
@@ -222,11 +221,18 @@ export const keyCombination = (function() {
  * @param   {Boolean}         [useCapture]  Use capture mode
  */
 export const $bind = (function() {
-  // Default timeouts
-  const TOUCH_CONTEXTMENU = 1000;
-  const TOUCH_CLICK_MIN = 30;
-  const TOUCH_CLICK_MAX = 1000;
-  const TOUCH_DBLCLICK = 400;
+
+  function makeFakeEvent(name, ev) {
+    const pos = mousePosition(ev);
+    const nev = Object.assign({
+      clientX: pos.x,
+      clientY: pos.y,
+      x: pos.x,
+      y: pos.y
+    }, ev);
+
+    return new MouseEvent(name, nev);
+  }
 
   /*
    * This is the wrapper for using addEventListener
@@ -260,162 +266,137 @@ export const $bind = (function() {
     addEventHandler(el, n, 'DOMMouseScroll', callback, _wheel, useCapture, 'DOMMouseScroll');
   }
 
-  /*
-   * Creates touch gestures for emulating mouse input
-   */
-  function createGestureHandler(el, n, t, callback, useCapture) {
-    /*eslint no-use-before-define: "off"*/
-    let started;
-    let contextTimeout;
-    let dblTimeout;
-    let moved = false;
-    let clicks = 0;
+  function createClick(el, n, t, callback, useCapture) {
+    let cancelled = false;
+    let timeout;
+    let firstTarget;
+    let firstEvent;
 
-    // Wrapper for destroying` the event
-    function _done() {
-      contextTimeout = clearTimeout(contextTimeout);
-      started = null;
-      moved = false;
+    const tempMove = () => (cancelled = true);
 
-      el.removeEventListener('touchend', _touchend, false);
-      el.removeEventListener('touchmove', _touchmove, false);
-      el.removeEventListener('touchcancel', _touchcancel, false);
+    function cancel() {
+      clearTimeout(timeout);
+      firstTarget = null;
+      cancelled = true;
+
+      window.removeEventListener('toucmove', tempMove);
     }
 
-    // Figure out what kind of event we're supposed to handle on start
-    function _touchstart(ev) {
-      if ( ev.target === document.body ) {
-        ev.preventDefault();
+    function tempEnd(ev) {
+      clearTimeout(timeout);
+      window.removeEventListener('touchmove', tempMove);
+      if ( !cancelled && ev.target === firstTarget ) {
+        ev.target.dispatchEvent(makeFakeEvent('click', firstEvent));
       }
-
-      contextTimeout = clearTimeout(contextTimeout);
-      started = new Date();
-      moved = false;
-
-      if ( t === 'contextmenu' ) {
-        contextTimeout = setTimeout(() => {
-          emitTouchEvent(ev, t, {button: 2, which: 3, buttons: 2});
-          _done();
-        }, TOUCH_CONTEXTMENU);
-      } else if ( t === 'dblclick' ) {
-        if ( clicks === 0 ) {
-          dblTimeout = clearTimeout(dblTimeout);
-          dblTimeout = setTimeout(() => {
-            clicks = 0;
-          }, TOUCH_DBLCLICK);
-
-          clicks++;
-        } else {
-          if ( !moved ) {
-            emitTouchEvent(ev, t);
-          }
-          clicks = 0;
-        }
-      }
-
-      el.addEventListener('touchend', _touchend, false);
-      el.addEventListener('touchmove', _touchmove, false);
-      el.addEventListener('touchcancel', _touchcancel, false);
     }
 
-    // Tapping is registered when you let go of the screen
-    function _touchend(ev) {
-      contextTimeout = clearTimeout(contextTimeout);
-      if ( !started ) {
-        return _done();
-      }
-
-      if ( !DOM.$isFormElement(ev) ) {
-        ev.preventDefault();
-      }
-
-      const now = new Date();
-      const diff = now - started;
-
-      if ( !moved && t === 'click' ) {
-        if ( (diff > TOUCH_CLICK_MIN) && (diff < TOUCH_CLICK_MAX) ) {
-          ev.stopPropagation();
-          emitTouchEvent(ev, t);
-        }
-      }
-
-      return _done();
+    function tempStart(ev) {
+      firstEvent = ev;
+      firstTarget = ev.target;
+      timeout = setTimeout(() => {
+        cancelled = true;
+      }, 300);
+      window.addEventListener('touchmove', tempMove);
     }
 
-    // Whenever a movement has occured make sure to avoid clicks
-    function _touchmove(ev) {
-      if ( ev.target === document.body || !moved ) {
-        ev.preventDefault();
-      }
-
-      if ( !started ) {
-        return;
-      }
-
-      contextTimeout = clearTimeout(contextTimeout);
-      dblTimeout = clearTimeout(dblTimeout);
-      clicks = 0;
-      moved = true;
-    }
-
-    // In case touch is canceled we reset our clickers
-    function _touchcancel(ev) {
-      dblTimeout = clearTimeout(dblTimeout);
-      clicks = 0;
-
-      _done();
-    }
-
-    addEventHandler(el, n, 'touchstart', callback, _touchstart, false, 'touchstart');
+    addEventHandler(el, n, 'touchcancel', callback, cancel, useCapture, 'dblclick');
+    addEventHandler(el, n, 'touchstart', callback, tempStart, useCapture, 'click');
+    addEventHandler(el, n, 'touchend', callback, tempEnd, useCapture, 'click');
   }
 
-  /*
-   * Emits a normal mouse event from touches
-   *
-   * This basically emulates mouse behaviour on touch events
-   */
-  function emitTouchEvent(ev, type, combineWith) {
-    if ( ev.target === document.body ) {
-      ev.preventDefault();
+  function createDoubleClick(el, n, t, callback, useCapture) {
+    let count = 0;
+    let cancelled = false;
+    let firstTarget;
+    let firstEvent;
+    let debounce;
+
+    const tempMove = () => (cancelled = true);
+
+    function cancel() {
+      firstTarget = null;
+      cancelled = true;
+      count = 0;
+
+      window.removeEventListener('toucmove', tempMove);
     }
 
-    if ( !ev.currentTarget || ev.changedTouches.length > 1 || (ev.type === 'touchend' && ev.changedTouches > 0) ) {
-      return;
+    function tempEnd() {
+      window.removeEventListener('touchmove', tempMove);
+      debounce = setTimeout(cancel, 680);
     }
 
-    // Make sure we copy the keyboard attributes as well
-    const copy = ['ctrlKey', 'altKey', 'shiftKey', 'metaKey', 'screenX', 'screenY'];
-    const touch = ev.changedTouches[0];
-    const evtArgs = {
-      clientX: touch.clientX,
-      clientY: touch.clientY,
-      relatedTarget: ev.target
-    };
+    function tempStart(ev) {
+      window.addEventListener('touchmove', tempMove);
+      clearTimeout(debounce);
 
-    copy.forEach((k) => {
-      evtArgs[k] = ev[k];
-    });
+      if ( count === 0 ) {
+        firstEvent = ev;
+        firstTarget = ev.target;
+      } else if ( count > 0 ) {
+        if ( ev.target !== firstTarget ) {
+          cancel();
+          return;
+        }
 
-    if ( combineWith ) {
-      Object.keys(combineWith).forEach((k) => {
-        evtArgs[k] = combineWith[k];
-      });
+        if ( !cancelled ) {
+          ev.preventDefault(); // Prevent any zooming etc
+          ev.stopPropagation(); // The first tap already propagated
+          ev.target.dispatchEvent(makeFakeEvent('dblclick', firstEvent));
+        }
+      }
+
+      cancelled = false;
+      count++;
     }
 
-    ev.currentTarget.dispatchEvent(new MouseEvent(type, evtArgs));
+    addEventHandler(el, n, 'touchcancel', callback, cancel, useCapture, 'dblclick');
+    addEventHandler(el, n, 'touchstart', callback, tempStart, useCapture, 'dblclick');
+    addEventHandler(el, n, 'touchend', callback, tempEnd, useCapture, 'dblclick');
+  }
+
+  function createContextMenu(el, n, t, callback, useCapture) {
+    let cancelled = false;
+    let timeout;
+
+    const tempMove = () => (cancelled = true);
+
+    function cancel() {
+      clearTimeout(timeout);
+      cancelled = true;
+
+      window.removeEventListener('toucmove', tempMove);
+    }
+
+    function tempEnd(ev) {
+      cancelled = true;
+      clearTimeout(timeout);
+      window.removeEventListener('touchmove', tempMove);
+    }
+
+    function tempStart(ev) {
+      timeout = setTimeout(() => {
+        if ( !cancelled ) {
+          ev.preventDefault();
+          ev.target.dispatchEvent(makeFakeEvent('contextmenu', ev));
+        }
+      }, 300);
+      window.addEventListener('touchmove', tempMove);
+    }
+
+    addEventHandler(el, n, 'touchcancel', callback, cancel, useCapture, 'contextmenu');
+    addEventHandler(el, n, 'touchstart', callback, tempStart, useCapture, 'contextmenu');
+    addEventHandler(el, n, 'touchend', callback, tempEnd, useCapture, 'contextmenu');
   }
 
   /*
    * Map of touch events
    */
   const customEvents = {
-    mousedown: 'touchstart',
-    mouseup: 'touchend',
-    mousemove: 'touchmove',
     mousewheel: createWheelHandler,
-    contextmenu: createGestureHandler,
-    click: createGestureHandler,
-    dblclick: createGestureHandler
+    click: createClick,
+    dblclick: createDoubleClick,
+    contextmenu: createContextMenu
   };
 
   return function Utils_$bind(el, evName, callback, useCapture, noBind) {
@@ -446,13 +427,7 @@ export const $bind = (function() {
       }, useCapture);
 
       if ( customEvents[type] ) {
-        if ( typeof customEvents[type] === 'function' ) {
-          customEvents[type](el, nsType, type, callback, useCapture);
-        } else {
-          addEventHandler(el, nsType, customEvents[type], callback, function touchEventHandler(ev) {
-            emitTouchEvent(ev, type);
-          }, useCapture, customEvents[type]);
-        }
+        customEvents[type](el, nsType, type, callback, useCapture);
       }
     }
 
@@ -512,15 +487,6 @@ export const $bind = (function() {
  */
 export function $unbind(el, evName, callback, useCapture) {
 
-  function unbindAll() {
-    if ( el._boundEvents ) {
-      Object.keys(el._boundEvents).forEach((type) => {
-        unbindNamed(type);
-      });
-      delete el._boundEvents;
-    }
-  }
-
   function unbindNamed(type) {
     if ( el._boundEvents ) {
       const list = el._boundEvents || {};
@@ -541,6 +507,15 @@ export function $unbind(el, evName, callback, useCapture) {
           i--;
         }
       }
+    }
+  }
+
+  function unbindAll() {
+    if ( el._boundEvents ) {
+      Object.keys(el._boundEvents).forEach((type) => {
+        unbindNamed(type);
+      });
+      delete el._boundEvents;
     }
   }
 

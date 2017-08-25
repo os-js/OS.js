@@ -294,9 +294,7 @@ export default class DialogWindow extends Window {
       parentObj._toggleDisabled(true);
     }
 
-    setTimeout(() => {
-      win._focus();
-    }, 10);
+    win._focus();
 
     return win;
   }

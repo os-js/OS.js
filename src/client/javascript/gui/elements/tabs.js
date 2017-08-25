@@ -83,7 +83,7 @@ function createTab(el, tabs, label, prog) {
   const tab = document.createElement('li');
   const idx = tabs.children.length;
 
-  Events.$bind(tab, 'click', (ev) => {
+  Events.$bind(tab, 'pointerdown', (ev) => {
     selectTab(el, tabs, ev, idx, tab);
   }, false);
 

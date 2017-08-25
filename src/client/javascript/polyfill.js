@@ -91,8 +91,9 @@ import 'babel-polyfill';
 //
 // MouseEvent
 //
+/*
 (function() {
-  /*eslint no-new: 0*/
+  // eslint no-new: 0
   try {
     new window.MouseEvent('test');
     return;
@@ -110,4 +111,4 @@ import 'babel-polyfill';
   MouseEvent.prototype = Event.prototype;
   window.MouseEvent = MouseEvent;
 })();
-
+*/

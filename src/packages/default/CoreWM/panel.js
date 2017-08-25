@@ -102,9 +102,6 @@ export default class Panel {
     Events.$bind(this._$element, 'mouseout', (ev) => {
       this.onMouseOut(ev);
     });
-    Events.$bind(this._$element, 'click', function(ev) {
-      Menu.blur();
-    });
     Events.$bind(this._$element, 'contextmenu', function(ev) {
       createMenu(ev);
     });

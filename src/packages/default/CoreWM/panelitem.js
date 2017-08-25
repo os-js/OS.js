@@ -41,7 +41,6 @@ export default class PanelItem {
     if ( this._settings ) {
       var title = _('Open {0} Settings', _(this._itemName));
       Events.$bind(this._$root, 'contextmenu', (ev) => {
-        ev.stopPropagation();
         ev.preventDefault();
 
         Menu.create([{

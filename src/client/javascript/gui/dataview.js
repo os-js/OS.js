@@ -29,7 +29,6 @@
  */
 import * as GUI from 'utils/gui';
 import * as DOM from 'utils/dom';
-import * as Menu from 'gui/menu';
 import * as Events from 'utils/events';
 import * as Clipboard from 'utils/clipboard';
 import * as Keycodes from 'utils/keycodes';
@@ -62,7 +61,7 @@ function getEntryTagName(type) {
 }
 
 function getEntryFromEvent(ev, header) {
-  const t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
+  const t = ev.target;
   const tn = t.tagName.toLowerCase();
 
   if ( tn.match(/(view|textarea|body)$/) ) {
@@ -583,15 +582,13 @@ export default class UIDataView extends GUIElement {
 
     const singleClick = el.getAttribute('data-single-click') === 'true';
 
+    let moved;
     let wasResized = false;
     let multipleSelect = el.getAttribute('data-multiple');
     multipleSelect = multipleSelect === null || multipleSelect === 'true';
 
     const select = (ev) => {
-      ev.stopPropagation();
-      Menu.blur();
-
-      if ( wasResized ) {
+      if ( moved || wasResized ) {
         return false;
       }
 
@@ -641,10 +638,7 @@ export default class UIDataView extends GUIElement {
     };
 
     const activate = (ev) => {
-      ev.stopPropagation();
-      Menu.blur();
-
-      if ( isHeader(ev) ) {
+      if ( moved || isHeader(ev) ) {
         return;
       }
 
@@ -670,11 +664,6 @@ export default class UIDataView extends GUIElement {
       el.dispatchEvent(new CustomEvent('_contextmenu', {detail: {entries: this.values(), x: ev.clientX, y: ev.clientY}}));
     };
 
-    function mousedown(ev) {
-      const target = ev.target;
-      wasResized = target && target.tagName === 'GUI-LIST-VIEW-COLUMN-RESIZER';
-    }
-
     if ( !el.querySelector('textarea.gui-focus-element') && !el.getAttribute('no-selection') ) {
       const underlay = document.createElement('textarea');
       underlay.setAttribute('aria-label', '');
@@ -697,7 +686,14 @@ export default class UIDataView extends GUIElement {
         ev.preventDefault();
       });
 
-      Events.$bind(el, 'mousedown', mousedown, true);
+      Events.$bind(el, 'pointerdown,touchstart', (ev) => {
+        moved = false;
+        const target = ev.target;
+        wasResized = target && target.tagName === 'GUI-LIST-VIEW-COLUMN-RESIZER';
+      }, true);
+      Events.$bind(el, 'touchmove', (ev) => {
+        moved = true;
+      }, true);
 
       if ( singleClick ) {
         Events.$bind(el, 'click', activate, true);

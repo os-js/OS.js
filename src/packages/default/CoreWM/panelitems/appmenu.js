@@ -57,13 +57,9 @@ export default class PanelItemAppMenu extends PanelItem {
     sel.setAttribute('data-label', 'OS.js Application Menu');
     sel.appendChild(img);
 
-    Events.$bind(sel, 'mousedown', function(ev) {
-      ev.preventDefault();
-      ev.stopPropagation();
-    });
     Events.$bind(sel, 'click', function(ev) {
-      ev.stopPropagation();
       ev.preventDefault();
+      ev.stopPropagation();
 
       const wm = WindowManager.instance;
       if ( wm ) {

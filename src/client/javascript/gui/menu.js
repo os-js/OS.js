@@ -37,21 +37,17 @@ import {triggerHook} from 'helpers/hooks';
 let lastMenu;
 
 export function clickWrapper(ev, pos, onclick, original) {
-  let t = ev.isTrusted ? ev.target : (ev.relatedTarget || ev.target);
+  ev.stopPropagation();
 
+  let t = ev.target;
   if ( t && t.tagName === 'LABEL' ) {
     t = t.parentNode;
   }
 
-  ev.preventDefault();
+  let isExpander = false;
   if ( t && t.tagName === 'GUI-MENU-ENTRY' ) {
     let subMenu = t.querySelector('gui-menu');
-    let isExpander = !!subMenu;
-    let hasInput = t.querySelector('input');
-
-    if ( hasInput || isExpander ) {
-      ev.stopPropagation();
-    }
+    isExpander = !!subMenu;
 
     try {
       if ( isExpander ) {
@@ -65,7 +61,7 @@ export function clickWrapper(ev, pos, onclick, original) {
       console.warn(e);
     }
 
-    onclick(ev, pos, t, original);
+    onclick(ev, pos, t, original, isExpander);
   }
 }
 
@@ -152,19 +148,17 @@ export function create(items, ev, customInstance) {
 
     GUIElement.createFromNode(root, null, 'gui-menu').build(true);
 
-    Events.$bind(root, 'mousedown', function(ev, pos) {
-      clickWrapper(ev, pos, function(ev, pos, t) {
+    Events.$bind(root, 'click', function(ev, pos) {
+      clickWrapper(ev, pos, function(ev, pos, t, orig, isExpander) {
         const index = parseInt(t.getAttribute('data-callback-id'), 10);
         if ( callbackMap[index] ) {
           callbackMap[index](ev, pos);
+        }
 
-          blur(ev); // !last!
+        if ( !isExpander ) {
+          blur(ev);
         }
       });
-    }, true);
-
-    Events.$bind(root, 'touchstart', function(ev) {
-      ev.preventDefault();
     }, true);
   }
 
@@ -211,5 +205,7 @@ export function create(items, ev, customInstance) {
 }
 
 export function setActive(menu) {
+  blur();
+
   lastMenu = menu;
 }

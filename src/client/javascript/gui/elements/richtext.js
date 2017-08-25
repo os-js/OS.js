@@ -166,7 +166,7 @@ class GUIRichText extends GUIElement {
       iframe.contentWindow.addEventListener('selectstart', () => {
         el.dispatchEvent(new CustomEvent('_selection', {detail: {}}));
       });
-      iframe.contentWindow.addEventListener('mouseup', () => {
+      iframe.contentWindow.addEventListener('pointerup', () => {
         el.dispatchEvent(new CustomEvent('_selection', {detail: {}}));
       });
     };

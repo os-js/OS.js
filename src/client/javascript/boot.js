@@ -62,6 +62,7 @@ window.OSjs.require = (n) => {
 //
 // Then proceed to start up
 //
+require('pepjs');
 import {start} from 'core/init';
 
 if ( document.readyState !== 'loading' ) {

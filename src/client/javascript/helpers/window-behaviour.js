@@ -27,7 +27,6 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-import * as Menu from 'gui/menu';
 import * as DOM from 'utils/dom';
 import * as Events from 'utils/events';
 import Theme from 'core/theme';
@@ -334,7 +333,6 @@ export function createWindowBehaviour(win, wm) {
    * When mouse button is pressed
    */
   function onMouseDown(ev, action, win, mousePosition) {
-    Menu.blur();
     ev.preventDefault();
 
     if ( win._state.maximized ) {
@@ -366,25 +364,29 @@ export function createWindowBehaviour(win, wm) {
     }
     function _onMouseUp(ev, pos) {
       onMouseUp(ev, action, win, pos);
-      Events.$unbind(document, 'mousemove:movewindow');
-      Events.$unbind(document, 'mouseup:movewindowstop');
+      Events.$unbind(document, 'pointermove:movewindow,touchmove:movewindowTouch');
+      Events.$unbind(document, 'pointerup:movewindowstop,touchend:movewindowstopTouch');
     }
 
-    Events.$bind(document, 'mousemove:movewindow', _onMouseMove, false);
-    Events.$bind(document, 'mouseup:movewindowstop', _onMouseUp, false);
+    Events.$bind(document, 'pointermove:movewindow,touchmove:movewindowTouch', _onMouseMove, false);
+    Events.$bind(document, 'pointerup:movewindowstop,touchend:movewindowstopTouch', _onMouseUp, false);
   }
 
   /*
    * Register a window
    */
   if ( win._properties.allow_move ) {
-    Events.$bind(win._$top, 'mousedown', (ev, pos) => {
-      onMouseDown(ev, 'move', win, pos);
+    Events.$bind(win._$top, 'pointerdown,touchstart', (ev, pos) => {
+      if ( !win._destroyed ) {
+        onMouseDown(ev, 'move', win, pos);
+      }
     }, true);
   }
   if ( win._properties.allow_resize ) {
-    Events.$bind(win._$resize, 'mousedown', (ev, pos) => {
-      onMouseDown(ev, 'resize', win, pos);
+    Events.$bind(win._$resize, 'pointerdown,touchstart', (ev, pos) => {
+      if ( win._destroyed ) {
+        onMouseDown(ev, 'resize', win, pos);
+      }
     });
   }
 }

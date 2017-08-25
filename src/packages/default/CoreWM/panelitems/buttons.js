@@ -244,13 +244,11 @@ export default class PanelItemButtons extends PanelItem {
     sel.setAttribute('aria-label', title);
     sel.appendChild(img);
 
-    Events.$bind(sel, 'mousedown', function(ev) {
-      ev.stopPropagation();
-    });
     Events.$bind(sel, 'click', callback, true);
     Events.$bind(sel, 'contextmenu', function(ev) {
       ev.preventDefault();
       ev.stopPropagation();
+
       if ( menu ) {
         Menu.create(menu, ev);
       }

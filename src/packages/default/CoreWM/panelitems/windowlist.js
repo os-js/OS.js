@@ -63,7 +63,6 @@ class WindowListEntry {
     Events.$bind(el, 'contextmenu', function(ev) {
       /* eslint no-invalid-this: "off" */
       ev.preventDefault();
-      ev.stopPropagation();
 
       if ( win ) {
         win._onWindowIconClick(ev, this);

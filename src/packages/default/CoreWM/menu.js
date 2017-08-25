@@ -132,9 +132,7 @@ class ApplicationMenu {
       txt.appendChild(document.createTextNode(iter.name)); //.replace(/([^\s-]{8})([^\s-]{8})/, '$1-$2')));
 
       Events.$bind(entry, 'click', function(ev) {
-        ev.stopPropagation();
         Process.create(a);
-        Menu.blur();
       });
 
       entry.appendChild(img);

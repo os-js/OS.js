@@ -154,7 +154,7 @@ class GUIColorSwatch extends GUIElement {
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    Events.$bind(cv, 'click', (ev) => {
+    Events.$bind(cv, 'pointerdown', (ev) => {
       const c = getColor(ev);
       if ( c ) {
         cv.dispatchEvent(new CustomEvent('_change', {detail: c}));

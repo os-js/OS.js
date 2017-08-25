@@ -180,6 +180,7 @@ application-window-title {
   white-space : nowrap;
   line-height : 1.666em;
   display : block;
+  pointer-events : none;
 
   -webkit-text-overflow: ellipsis;
      -moz-text-overflow: ellipsis;

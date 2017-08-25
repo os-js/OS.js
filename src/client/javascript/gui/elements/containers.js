@@ -381,7 +381,7 @@ class GUIExpander extends GUIElement {
     const lbltxt = el.getAttribute('data-label') || '';
     const label = document.createElement('gui-expander-label');
 
-    Events.$bind(label, 'click', (ev) => {
+    Events.$bind(label, 'pointerdown', (ev) => {
       el.dispatchEvent(new CustomEvent('_change', {detail: {expanded: toggleState(el)}}));
     }, false);
 

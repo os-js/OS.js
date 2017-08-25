@@ -146,7 +146,7 @@ body[data-animations="true"] {
            transition: none;
   }
 
-  application-window[data-hint="closing"],
+  application-window[data-closing="true"],
   application-window[data-minimized="true"] {
    -webkit-animation: hide .3s;
       -moz-animation: hide .3s;
@@ -216,7 +216,7 @@ body[data-animations="true"] {
            animation: fadeIn .3s;
   }
   gui-menu[data-hint="closing"],
-  corewm-notification[data-hint="closing"] {
+  corewm-notification[data-closing="true"] {
    -webkit-animation: fadeOut .3s;
       -moz-animation: fadeOut .3s;
        -ms-animation: fadeOut .3s;

@@ -441,8 +441,8 @@ export function createDrag(el, onDown, onMove, onUp) {
     onUp(ev, {x: currentX, y: currentY});
     dragging = false;
 
-    Events.$unbind(window, 'mouseup:guidrag');
-    Events.$unbind(window, 'mousemove:guidrag');
+    Events.$unbind(window, 'pointerup:guidrag');
+    Events.$unbind(window, 'pointermove:guidrag');
   }
 
   function _onMouseDown(ev, pos, touchDevice) {
@@ -454,11 +454,11 @@ export function createDrag(el, onDown, onMove, onUp) {
     onDown(ev, {x: startX, y: startY});
     dragging = true;
 
-    Events.$bind(window, 'mouseup:guidrag', _onMouseUp, false);
-    Events.$bind(window, 'mousemove:guidrag', _onMouseMove, false);
+    Events.$bind(window, 'pointerup:guidrag', _onMouseUp, false);
+    Events.$bind(window, 'pointermove:guidrag', _onMouseMove, false);
   }
 
-  Events.$bind(el, 'mousedown', _onMouseDown, false);
+  Events.$bind(el, 'pointerdown', _onMouseDown, false);
 }
 
 /**

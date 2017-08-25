@@ -571,7 +571,7 @@ class GUISwitch extends _GUIInput {
       setSwitchValue(val, input, button);
     }
 
-    Events.$bind(inner, 'click', (ev) => {
+    Events.$bind(inner, 'pointerup', (ev) => {
       ev.preventDefault();
       const disabled = el.getAttribute('data-disabled') !== null;
       if ( !disabled ) {
@@ -656,7 +656,7 @@ class GUIButton extends GUIElement {
       if ( g ) {
         input.setAttribute('name', g + '[' + _buttonCount + ']');
 
-        Events.$bind(input, 'click', () => {
+        Events.$bind(input, 'pointerup', () => {
           // NOTE: This is probably a bit slow
           let root = el;
           while ( root.parentNode ) {
@@ -904,7 +904,7 @@ class GUIInputModal extends GUIElement {
     const button = document.createElement('button');
     button.innerHTML = '...';
 
-    Events.$bind(button, 'click', (ev) => {
+    Events.$bind(button, 'pointerup', (ev) => {
       el.dispatchEvent(new CustomEvent('_open', {detail: input.value}));
     }, false);
 
