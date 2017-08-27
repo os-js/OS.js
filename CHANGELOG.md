@@ -1,3 +1,15 @@
+# 2.1.3
+
+Did a pass of the event handling, making significant improvements on
+non-mouse input devices.
+
+Solves quite a fiew issues, especially with touch devices that made
+certain UI elements hard to use.
+
+Relevant:
+
+* https://community.os-js.org/t/update-version-bump-2-1-3/158
+
 # 2.1.2
 
 Updated test coverage, some small fixes to node server.
