@@ -64,7 +64,7 @@ export default class DemoAuthenticator extends Authenticator {
   }
 
   createUI() {
-    return this.onLoginRequest({
+    return this.requestLogin({
       username: 'demo',
       password: 'demo'
     });

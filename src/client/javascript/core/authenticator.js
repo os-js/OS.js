@@ -167,7 +167,7 @@ export default class Authenticator {
    * @param  {Object}               data            Login data
    * @return {Promise<Object, Error>}
    */
-  onLoginRequest(data) {
+  requestLogin(data) {
     return new Promise((resolve, reject) => {
       this.login(data).then((res) => {
         return this.onLogin(res).then(resolve).catch(reject);
@@ -266,7 +266,7 @@ export default class Authenticator {
           ev.preventDefault();
         }
 
-        this.onLoginRequest({
+        this.requestLogin({
           username: u.value,
           password: p.value
         }).then(() => {
