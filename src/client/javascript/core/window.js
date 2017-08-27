@@ -1938,6 +1938,8 @@ export default class Window {
       }
     });
 
+    ev.stopPropagation();
+    this._focus();
     Menu.create(list, ev);
   }
 
