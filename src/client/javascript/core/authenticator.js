@@ -227,8 +227,13 @@ export default class Authenticator {
    * @return {Promise<Object, Error>}
    */
   createUI() {
+    this._renderUI('login.html');
+    return this._createUI();
+  }
+
+  _renderUI(filename) {
     const tempNode = document.createElement('div');
-    tempNode.innerHTML = require('osjs-scheme-loader!login.html');
+    tempNode.innerHTML = require('osjs-scheme-loader!' + filename);
     tempNode.childNodes.forEach((n) => {
       const nn = n.cloneNode(true);
       if ( ['STYLE', 'SCRIPT'].indexOf(n.tagName) === -1 ) {
@@ -237,7 +242,9 @@ export default class Authenticator {
         document.querySelector('head').appendChild(nn);
       }
     });
+  }
 
+  _createUI() {
     const container = document.getElementById('Login');
     const login = document.getElementById('LoginForm');
     const u = document.getElementById('LoginUsername');
