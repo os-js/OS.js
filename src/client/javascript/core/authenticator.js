@@ -81,7 +81,7 @@ export default class Authenticator {
    * @return {Promise}
    */
   init() {
-    return this.onCreateUI();
+    return this.createUI();
   }
 
   /**
@@ -226,7 +226,7 @@ export default class Authenticator {
    * When login UI is requested
    * @return {Promise<Object, Error>}
    */
-  onCreateUI() {
+  createUI() {
     const tempNode = document.createElement('div');
     tempNode.innerHTML = require('osjs-scheme-loader!login.html');
     tempNode.childNodes.forEach((n) => {

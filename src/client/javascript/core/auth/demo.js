@@ -63,7 +63,7 @@ export default class DemoAuthenticator extends Authenticator {
     });
   }
 
-  onCreateUI() {
+  createUI() {
     return this.onLoginRequest({
       username: 'demo',
       password: 'demo'
