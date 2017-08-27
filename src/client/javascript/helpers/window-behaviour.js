@@ -358,6 +358,7 @@ export function createWindowBehaviour(win, wm) {
     win._emit('preop');
 
     function _onMouseMove(ev, pos) {
+      ev.preventDefault();
       if ( wm._mouselock ) {
         onMouseMove(ev, action, win, pos);
       }
@@ -377,6 +378,7 @@ export function createWindowBehaviour(win, wm) {
    */
   if ( win._properties.allow_move ) {
     Events.$bind(win._$top, 'pointerdown,touchstart', (ev, pos) => {
+      ev.preventDefault();
       if ( !win._destroyed ) {
         onMouseDown(ev, 'move', win, pos);
       }
@@ -384,7 +386,8 @@ export function createWindowBehaviour(win, wm) {
   }
   if ( win._properties.allow_resize ) {
     Events.$bind(win._$resize, 'pointerdown,touchstart', (ev, pos) => {
-      if ( win._destroyed ) {
+      ev.preventDefault();
+      if ( !win._destroyed ) {
         onMouseDown(ev, 'resize', win, pos);
       }
     });
