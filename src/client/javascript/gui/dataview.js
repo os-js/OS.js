@@ -31,7 +31,7 @@ import * as GUI from 'utils/gui';
 import * as DOM from 'utils/dom';
 import * as Events from 'utils/events';
 import * as Clipboard from 'utils/clipboard';
-import * as Keycodes from 'utils/keycodes';
+import Keycodes from 'utils/keycodes';
 import FileMetadata from 'vfs/file';
 import GUIElement from 'gui/element';
 
