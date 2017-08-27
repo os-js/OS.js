@@ -67,8 +67,8 @@ class ApplicationEXAMPLE extends Application {
 
     // Example on how to call `api.js` methods
     this._api('test', {}).then((res) => {
-      console.log('Result from your server API method', res);
-    });
+      return console.log('Result from your server API method', res);
+    })
   };
 }
 
