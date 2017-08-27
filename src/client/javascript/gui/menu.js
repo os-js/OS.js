@@ -50,8 +50,9 @@ export function clickWrapper(ev, pos, onclick, original) {
     isExpander = !!subMenu;
 
     try {
-      if ( isExpander ) {
-        t.parentNode.querySelectorAll('gui-menu-entry').forEach(function(pn) {
+      // Only do this on non-mouse devices
+      if ( isExpander && !ev.isTrusted ) {
+        t.parentNode.querySelectorAll('gui-menu-entry').forEach((pn) => {
           DOM.$removeClass(pn, 'active');
         });
 
