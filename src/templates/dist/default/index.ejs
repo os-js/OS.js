@@ -46,12 +46,10 @@
 <% htmlWebpackPlugin.options.osjs.styles.forEach(function(path) { %>
     <link type="text/css" rel="stylesheet" href="<%= path %>" />
 <% }); %>
-
   </head>
   <body>
 
 <%= require('./splash.html') %>
-<%= require('./login.html') %>
 
 <% htmlWebpackPlugin.options.osjs.scripts.forEach(function(path) { %>
     <script charset="utf-8" src="<%= path %>"></script>
