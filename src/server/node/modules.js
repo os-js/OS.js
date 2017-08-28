@@ -34,7 +34,6 @@ const fs = require('fs-extra');
 const glob = require('glob-promise');
 const colors = require('colors');
 const child_process = require('child_process');
-const chokidar = require('chokidar');
 
 const Settings = require('./settings.js');
 
@@ -54,7 +53,6 @@ class Modules {
    */
   constructor() {
     this.destroyed = false;
-    this.watchers = [];
     this.spawners = [];
     this.metadata = {};
     this.loadedPackages = [];
@@ -86,17 +84,7 @@ class Modules {
       return m && m.destroy ? m.destroy() : Promise.resolve(true);
     }));
 
-    console.log('Destroying', this.spawners.length, 'spawners');
-
-    this.spawners.forEach((c) => {
-      if ( c && typeof c.kill === 'function' ) {
-        c.kill();
-      }
-    });
-
-    this.watchers = this.watchers.forEach((w) => {
-      w.close();
-    });
+    this.unloadPackages();
 
     console.log('Destroying', modules.length, 'modules');
 
@@ -114,17 +102,6 @@ class Modules {
     const metaPath = path.resolve(Settings.option('SERVERDIR'), 'packages.json');
     this.metadata = fs.readJsonSync(metaPath);
 
-    const watcher = chokidar.watch(metaPath);
-    watcher.on('change', () => {
-      console.log('Reloading manifest');
-      this.metadata = fs.readJsonSync(metaPath);
-
-      this.loadPackages(app).then(() => {
-        console.log('Loaded new packages');
-      });
-    });
-    this.watchers.push(watcher);
-
     return Promise.each([
       this.loadConnection,
       this.loadRoutes,
@@ -137,6 +114,14 @@ class Modules {
     ], (fn) => {
       return fn.call(this, app);
     });
+  }
+
+  /**
+   * Set metadata object
+   * @param {Object} meta Metadata
+   */
+  setMetadata(meta) {
+    this.metadata = meta;
   }
 
   /**
@@ -382,6 +367,48 @@ class Modules {
   }
 
   /**
+   * Unloads all packages
+   * @return {Promise<Boolean, Error>}
+   */
+  unloadPackages() {
+    console.log('Destroying', this.spawners.length, 'spawners');
+
+    this.spawners.forEach((c) => {
+      if ( c && typeof c.kill === 'function' ) {
+        c.kill();
+      }
+    });
+
+    console.log('Destroying', this.loadedPackages.length, 'packages');
+    const promise = Promise.each(this.loadedPackages, (main) => {
+      let p, m;
+      try {
+        m = require(main);
+        if ( m && typeof m.destroy === 'function' ) {
+          p = m.destroy();
+        }
+      } catch ( e ) {
+        console.warn(e);
+      }
+
+      if ( !(p instanceof Promise) ) {
+        p = Promise.resolve(true);
+      }
+
+      if ( require.cache[main] ) {
+        delete require.cache[main];
+      }
+
+      return p;
+    });
+
+    this.spawners = [];
+    this.loadedPackages = [];
+
+    return promise;
+  }
+
+  /**
    * Loads all packages
    * @param {Object} app The express app
    * @return {Promise<Boolean, Error>}
@@ -421,8 +448,10 @@ class Modules {
 
       let result;
       try {
-        const main = this.getPackageEntry(name);
+        let main = this.getPackageEntry(name);
         if ( main !== null ) {
+          main = path.resolve(main);
+
           log(colors.bold('Loading'), colors.green(meta.type), main);
 
           const pkg = require(main);
@@ -436,7 +465,7 @@ class Modules {
             });
           }
 
-          this.loadedPackages.push(name);
+          this.loadedPackages.push(main);
         }
       } catch ( e ) {
         console.warn(e);
