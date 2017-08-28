@@ -42,7 +42,7 @@
       "session": {
         "module": "session-file-store",
         "secret": "YOU SHOULD GENERATE YOUR OWN KEY",
-        "name": null,
+        "name": "connect.sid",
         "options": {
           "session-file-store": {
             "path": "%ROOT%/src/server/sessions"
