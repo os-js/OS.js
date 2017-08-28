@@ -52,6 +52,7 @@ class Settings {
 
     // Arguments from command-line
     const argvOptions = {
+      RELOAD: argv.reload,
       DEBUG: argv.debug,
       HOSTNAME: argv.h || argv.hostname,
       ROOT: argv.r || argv.root,

@@ -36,6 +36,7 @@ const path = require('path');
 const chokidar = require('chokidar');
 
 let watcher;
+let packageWatcher;
 
 /*
  * Unloads the Code watching
@@ -45,6 +46,11 @@ module.exports.destroy = function() {
     watcher.close();
   }
   watcher = null;
+
+  if ( packageWatcher ) {
+    packageWatcher.close();
+  }
+  packageWatcher = null;
 
   return Promise.resolve(true);
 };
@@ -56,18 +62,73 @@ module.exports.register = function(env, config, wrapper) {
   const app = wrapper.getApp();
   const metaPath = path.resolve(Settings.option('SERVERDIR'), 'packages.json');
 
+  console.log('> Watching', metaPath);
+  if ( env.RELOAD ) {
+    console.log('> Will reload all packages on update because you supplied --reload');
+  }
+
+  const createPackageWatch = () => {
+    if ( !env.RELOAD ) {
+      return;
+    }
+
+    if ( packageWatcher ) {
+      packageWatcher.close();
+    }
+
+    const metadata = Modules.getMetadata();
+    const metaMap = {};
+    const watchPaths = [];
+
+    Object.keys(metadata).forEach((pn) => {
+      const entry = Modules.getPackageEntry(pn);
+      if ( entry ) {
+        const dn = path.dirname(entry);
+        metaMap[pn] = dn;
+        watchPaths.push(dn);
+      }
+    });
+
+    const discoverPackage = (filename) => {
+      const dir = path.dirname(filename);
+      const found = Object.keys(metaMap).find((pn) => {
+        return metaMap[pn].substr(0, dir.length) === dir;
+      });
+
+      return found;
+    };
+
+    packageWatcher = chokidar.watch(watchPaths);
+    packageWatcher.on('change', (filename) => {
+      const found = discoverPackage(filename);
+      if ( found ) {
+        Modules.unloadPackages([found]).then(() => {
+          Modules.loadPackages(app).then(() => {
+            console.log('! Reloaded', found);
+          });
+        });
+      }
+    });
+  };
+
   watcher = chokidar.watch(metaPath);
   watcher.on('change', () => {
     console.log('! Reloading manifest');
 
     Modules.setMetadata(fs.readJsonSync(metaPath));
 
-    Modules.unloadPackages().then(() => {
+    const unloader = env.RELOAD ? Modules.unloadPackages() : Promise.resolve(true);
+
+    unloader.then(() => {
       Modules.loadPackages(app).then(() => {
         console.log('! Loaded new packages');
+
+        createPackageWatch();
       });
     });
   });
+
+  createPackageWatch();
 
   return Promise.resolve(true);
 };

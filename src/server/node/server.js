@@ -79,6 +79,7 @@ const start = (opts) => {
 
     try {
       Settings.load(minimist(process.argv.slice(2)), {
+        RELOAD: false,
         HOSTNAME: null,
         DEBUG: false,
         PORT: null,

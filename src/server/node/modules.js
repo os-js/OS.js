@@ -125,6 +125,14 @@ class Modules {
   }
 
   /**
+   * Get metadata object
+   * @return {Object}
+   */
+  getMetadata() {
+    return this.metadata;
+  }
+
+  /**
    * Gets the loaded Connection module
    * @return {Connection}
    */
@@ -368,20 +376,40 @@ class Modules {
 
   /**
    * Unloads all packages
+   * @param {String[]} [names] A list of names (default all)
    * @return {Promise<Boolean, Error>}
    */
-  unloadPackages() {
-    console.log('Destroying', this.spawners.length, 'spawners');
+  unloadPackages(names) {
 
-    this.spawners.forEach((c) => {
-      if ( c && typeof c.kill === 'function' ) {
-        c.kill();
+    // Unload spawners
+    const spawners = names ? names : this.spawners.map((iter) => iter.name);
+    spawners.forEach((name) => {
+      const found = this.spawners.find((iter) => iter.name === name);
+      if ( found ) {
+        console.log('Destroying spawner', name);
+        const c = found.proc;
+        if ( c && typeof c.kill === 'function' ) {
+          c.kill();
+        }
+      }
+
+      const idx = this.spawners.findIndex((iter) => {
+        return iter.name === name;
+      });
+
+      if ( idx >= 0 ) {
+        this.spawners.splice(idx, 1);
       }
     });
 
-    console.log('Destroying', this.loadedPackages.length, 'packages');
-    const promise = Promise.each(this.loadedPackages, (main) => {
+    // Unload packages
+    const packages = names ? names : this.loadedPackages;
+    const promise = Promise.each(packages, (name) => {
+      console.log('Destroying package', name);
+
+      let main = this.getPackageEntry(name);
       let p, m;
+
       try {
         m = require(main);
         if ( m && typeof m.destroy === 'function' ) {
@@ -399,11 +427,13 @@ class Modules {
         delete require.cache[main];
       }
 
+      const idx = this.loadedPackages.findIndex((iter) => iter === name);
+      if ( idx >= 0 ) {
+        this.loadedPackages.splice(idx, 1);
+      }
+
       return p;
     });
-
-    this.spawners = [];
-    this.loadedPackages = [];
 
     return promise;
   }
@@ -432,7 +462,10 @@ class Modules {
 
         proc.on('error', (err) => console.error(metadata.path, 'error', err));
         proc.on('exit', (code) => console.debug(metadata.path, 'exited', code));
-        this.spawners.push(proc);
+        this.spawners.push({
+          proc: proc,
+          name: metadata.path
+        });
       }
     };
 
@@ -465,7 +498,7 @@ class Modules {
             });
           }
 
-          this.loadedPackages.push(main);
+          this.loadedPackages.push(name);
         }
       } catch ( e ) {
         console.warn(e);
