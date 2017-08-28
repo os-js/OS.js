@@ -155,6 +155,14 @@ class Connection {
   }
 
   /**
+   * Get the running session
+   * @return {Session}
+   */
+  getSession() {
+    return this.session;
+  }
+
+  /**
    * Gets the session ID from reqeuest
    * @param {IncomingMessage} request The http request
    * @return {String}
