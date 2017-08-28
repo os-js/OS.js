@@ -504,3 +504,21 @@ export function $fromPath(path, doc) {
   const result = evaluator.evaluate(path, doc.documentElement, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
   return result.singleNodeValue;
 }
+
+/**
+ * Remove whitespaces and newlines from HTML document
+ *
+ * @param   {String}    html          HTML string input
+ *
+ * @return  {String}
+ */
+export function $clean(html) {
+  if ( typeof html !== 'string' ) {
+    html = html.innerHTML;
+  }
+
+  return (html || '').replace(/\n/g, '')
+    .replace(/[\t ]+</g, '<')
+    .replace(/\>[\t ]+</g, '><')
+    .replace(/\>[\t ]+$/g, '>');
+}

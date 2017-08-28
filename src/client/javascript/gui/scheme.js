@@ -32,7 +32,6 @@ import axios from 'axios';
 
 //import * as FS from 'utils/fs';
 import * as DOM from 'utils/dom';
-import * as Utils from 'utils/misc';
 import GUIElement from 'gui/element';
 import {getConfig, getBrowserPath} from 'core/config';
 
@@ -109,7 +108,7 @@ function removeSelfClosingTags(str) {
  * Cleans a HTML string
  */
 function cleanScheme(html) {
-  return Utils.cleanHTML(removeSelfClosingTags(html));
+  return DOM.$clean(removeSelfClosingTags(html));
 }
 
 /* FIXME: This is no longer used because of Webpack, but I might

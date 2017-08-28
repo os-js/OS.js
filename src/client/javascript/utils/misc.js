@@ -54,20 +54,6 @@ export function format(format) {
 }
 
 /**
- * Remove whitespaces and newlines from HTML document
- *
- * @param   {String}    html          HTML string input
- *
- * @return  {String}
- */
-export function cleanHTML(html) {
-  return html.replace(/\n/g, '')
-    .replace(/[\t ]+</g, '<')
-    .replace(/\>[\t ]+</g, '><')
-    .replace(/\>[\t ]+$/g, '>');
-}
-
-/**
  * Parses url into a dictionary (supports modification)
  *
  * @param     {String}        url       Input URL
