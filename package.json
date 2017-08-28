@@ -58,11 +58,11 @@
   },
   "devDependencies": {
     "axios": "^0.16.2",
-    "babel-polyfill": "^6.23.0",
+    "babel-polyfill": "^6.26.0",
     "chai": "^4.0.2",
     "chai-as-promised": "^7.1.1",
     "mocha": "^3.5.0",
-    "osjs-build": "^1.0.6",
+    "osjs-build": "^1.0.7",
     "pepjs": "^0.4.3",
     "promise-limit": "^2.4.0",
     "then-jsonp": "^1.0.3"
