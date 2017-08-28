@@ -59,6 +59,7 @@ const FileMetadata = OSjs.require('vfs/file');
 const Notification = OSjs.require('gui/notification');
 const Theme = OSjs.require('core/theme');
 const DOM = OSjs.require('utils/dom');
+const Colors = OSjs.require('utils/colors');
 const Utils = OSjs.require('utils/misc');
 const Init = OSjs.require('core/init');
 const GUI = OSjs.require('utils/gui');
@@ -852,7 +853,7 @@ class CoreWM extends WindowManager {
 
     styles['#CoreWMDesktopIconView'] = {};
     if ( settings.invertIconViewColor && settings.backgroundColor ) {
-      styles['#CoreWMDesktopIconView']['color'] = Utils.invertHEX(settings.backgroundColor);
+      styles['#CoreWMDesktopIconView']['color'] = Colors.invertHEX(settings.backgroundColor);
     }
 
     if ( Object.keys(styles).length ) {

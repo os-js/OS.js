@@ -29,6 +29,7 @@
  */
 import DialogWindow from 'core/dialog';
 import * as Utils from 'utils/misc';
+import * as Colors from 'utils/colors';
 import {_} from 'core/locales';
 
 function getColor(rgb) {
@@ -36,7 +37,7 @@ function getColor(rgb) {
 
   if ( typeof rgb === 'string' ) {
     hex = rgb;
-    rgb = Utils.convertToRGB(rgb);
+    rgb = Colors.convertToRGB(rgb);
     rgb.a = null;
   } else {
     if ( typeof rgb.a === 'undefined' ) {
@@ -48,7 +49,7 @@ function getColor(rgb) {
     }
 
     rgb = rgb || {r: 0, g: 0, b: 0, a: 100};
-    hex = Utils.convertToHEX(rgb.r, rgb.g, rgb.b);
+    hex = Colors.convertToHEX(rgb.r, rgb.g, rgb.b);
   }
 
   return [rgb, hex];
@@ -93,7 +94,7 @@ export default class ColorDialog extends DialogWindow {
       this._find('LabelAlpha').set('value', _('DIALOG_COLOR_A', this.color.a));
 
       if ( update ) {
-        this.color.hex = Utils.convertToHEX(this.color.r, this.color.g, this.color.b);
+        this.color.hex = Colors.convertToHEX(this.color.r, this.color.g, this.color.b);
       }
 
       let value = this.color.hex;

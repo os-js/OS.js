@@ -35,7 +35,7 @@ const Locales = OSjs.require('core/locales');
 const Dialog = OSjs.require('core/dialog');
 const GUI = OSjs.require('utils/gui');
 const DOM = OSjs.require('utils/dom');
-const Utils = OSjs.require('utils/misc');
+const Colors = OSjs.require('utils/colors');
 const FileDataURL = OSjs.require('vfs/filedataurl');
 const DefaultApplication = OSjs.require('helpers/default-application');
 const DefaultApplicationWindow = OSjs.require('helpers/default-application-window');
@@ -85,7 +85,7 @@ var toolEvents = {
 
       var index = ((args.pos.x + args.pos.y * args.canvas.width) * 4);
       try {
-        value = Utils.convertToHEX({
+        value = Colors.convertToHEX({
           r: imageData[index + 0],
           g: imageData[index + 1],
           b: imageData[index + 2],

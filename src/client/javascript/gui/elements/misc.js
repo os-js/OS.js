@@ -28,8 +28,8 @@
  * @licence Simplified BSD License
  */
 import * as DOM from 'utils/dom';
-import * as Utils from 'utils/misc';
 import * as Events from 'utils/events';
+import * as Colors from 'utils/colors';
 import GUIElement from 'gui/element';
 
 /////////////////////////////////////////////////////////////////////////////
@@ -130,7 +130,7 @@ class GUIColorSwatch extends GUIElement {
         r: data[0],
         g: data[1],
         b: data[2],
-        hex: Utils.convertToHEX(data[0], data[1], data[2])
+        hex: Colors.convertToHEX(data[0], data[1], data[2])
       };
     }
 
