@@ -1,6 +1,7 @@
 {
   "client" : {
     "Connection": {
+      "SessionName": "%server.http.session.name%",
       "Connection": "%connection%",
       "Authenticator": "%authenticator%",
       "Storage": "%storage%",
