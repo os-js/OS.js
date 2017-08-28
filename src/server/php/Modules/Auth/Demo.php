@@ -31,18 +31,15 @@
 
 use OSjs\Core\Request;
 use OSjs\Core\Authenticator;
+use OSjs\Core\Instance;
 
 class Demo extends Authenticator
 {
 
     final public function login(Request $request)
     {
-        return [
-            'id'  => 0,
-            'username' => 'demo',
-            'name' => 'Demo',
-            'groups' => ['admin']
-        ];
+        $user = Instance::GetConfig()->modules->auth->demo->user;
+        return (array)$user;
     }
 
     final public function logout(Request $request)

@@ -72,6 +72,14 @@
     },
     "modules": {
       "auth": {
+        "demo": {
+          "user": {
+            "id": 1000,
+            "username": "demo",
+            "name": "Demo User",
+            "groups": ["admin"]
+          }
+        },
         "pam": {
           "groups": "/etc/osjs/groups.json",
           "blacklist": "/etc/osjs/blacklist.json"

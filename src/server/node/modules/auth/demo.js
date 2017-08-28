@@ -30,26 +30,19 @@
 
 const Authenticator = require('./../authenticator.js');
 const User = require('./../../user.js');
-
-const users = {
-  1000: {
-    id: 1000,
-    username: 'demo',
-    name: 'Demo User',
-    groups: ['admin']
-  }
-};
+const Settings = require('./../../settings.js');
 
 class DemoAuthenticator extends Authenticator {
   login(data) {
     return new Promise((resolve, reject) => {
-      resolve(users[1000]);
+      const user = Settings.get('modules.auth.demo.user');
+      resolve(user);
     });
   }
 
   getUserFromRequest(http) {
-    const uid = http.session.get('uid');
-    return Promise.resolve(User.createFromObject(users[uid]));
+    const user = Settings.get('modules.auth.demo.user');
+    return Promise.resolve(User.createFromObject(user));
   }
 }
 
