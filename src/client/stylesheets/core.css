@@ -336,6 +336,8 @@ application-window[data-dnd-state="true"]:after {
   /*z-index : 10;*/
 }
 
+body[data-window-hint="resizing"] application-window object,
+body[data-window-hint="moving"] application-window object,
 body[data-window-hint="resizing"] application-window iframe,
 body[data-window-hint="moving"] application-window iframe {
   pointer-events: none;
