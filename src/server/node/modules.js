@@ -318,7 +318,8 @@ class Modules {
    */
   loadConnection(app) {
     let filename = 'http.js';
-    if ( Settings.get('connection') === 'ws'  ) {
+    const connections = Settings.get('connection').split('+');
+    if (  connections.indexOf('ws') !== -1  ) {
       filename = 'ws.js';
     }
 

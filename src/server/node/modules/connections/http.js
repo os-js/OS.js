@@ -55,7 +55,7 @@ class HttpConnection extends Connection {
   register() {
     return new Promise((resolve, reject) => {
       super.register(...arguments).then(() => {
-        const isHttp2 = Settings.get('connection') === 'http2';
+        const isHttp2 = Settings.get('connection').split('+').indexOf('http2') !== -1;
         const httpServer = require(isHttp2 ? 'spdy' : 'http');
         const httpPort = Settings.option('PORT') || Settings.get('http.port');
         const hostname = Settings.option('HOSTNAME') || Settings.get('http.hostname') || '0.0.0.0';
@@ -65,8 +65,14 @@ class HttpConnection extends Connection {
           const rdir = Settings.get('http.cert.path') || Settings.option('SERVERDIR');
           const cname = Settings.get('http.cert.name') || 'localhost';
           const copts = Settings.get('http.cert.options') || {};
-          copts.key = fs.readFileSync(path.join(rdir, cname + '.key'));
-          copts.cert = fs.readFileSync(path.join(rdir, cname + '.crt'));
+          const keyFilename = path.join(rdir, cname + '.key');
+          const certFilename = path.join(rdir, cname + '.crt');
+
+          console.log(colors.bold('Using'), colors.green('keyfile'), keyFilename);
+          console.log(colors.bold('Using'), colors.green('certificate'), certFilename);
+
+          copts.key = fs.readFileSync(keyFilename);
+          copts.cert = fs.readFileSync(certFilename);
 
           this.server = httpServer.createServer(copts, this.app);
         } else {

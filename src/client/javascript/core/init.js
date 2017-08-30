@@ -150,9 +150,10 @@ const initHandlers = (config) => new Promise((resolve, reject) => {
   });
 
   let Authenticator, Connection, Storage;
+  let connectionName = options.Connection.split('+').indexOf('ws') !== -1 ? 'ws' : 'http';
   try {
     Authenticator = require('core/auth/' + options.Authenticator + '.js').default;
-    Connection = require('core/connections/' + options.Connection + '.js').default;
+    Connection = require('core/connections/' + connectionName + '.js').default;
     Storage = require('core/storage/' + options.Storage + '.js').default;
   } catch ( e ) {
     reject(e);
