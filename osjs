@@ -1,3 +1,6 @@
 #!/usr/bin/env node
-process.env.OSJS_ROOT = __dirname;
+if ( !process.env.OSJS_ROOT ) {
+  process.env.OSJS_ROOT = __dirname;
+}
+
 require('osjs-build').cli();
