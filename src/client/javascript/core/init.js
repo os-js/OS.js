@@ -502,6 +502,7 @@ export function start() {
         console.groupEnd();
         return resolve(res);
       }).catch((err) => {
+        console.warn(err);
         console.groupEnd();
         return reject(new Error(err));
       });
