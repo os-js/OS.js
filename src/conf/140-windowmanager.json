@@ -46,6 +46,7 @@
           "OPEN": "CTRL+O"
         },
         "sounds": {
+          "BELL": "bell",
           "LOGOUT": "service-logout",
           "LOGIN": "service-login",
           "ERROR": "dialog-warning"

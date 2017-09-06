@@ -42,8 +42,12 @@ import * as VFS from 'vfs/fs';
 class Theme {
 
   constructor() {
+    const compability = Compability.getCompability();
+
     this.settings = null;
     this.$themeScript = null;
+    this.audioAvailable = !!compability.audio;
+    this.oggAvailable = !!compability.audioTypes.ogg;
   }
 
   init() {
@@ -252,9 +256,9 @@ class Theme {
     function getName(str, theme) {
       if ( !str.match(/^\//) ) {
         if ( type === 'base' || type === null ) {
-          str = root + '/' + theme + '/' + str;
+          str = `${root}/${theme}/${str}`;
         } else {
-          str = root + '/' + theme + '/' + type + '/' + str;
+          str = `${root}/${theme}/${type}/${str}`;
         }
       }
       return str;
@@ -277,19 +281,14 @@ class Theme {
    */
   getSound(name) {
     name = name || null;
-    if ( name ) {
+    if ( name && !name.match(/^(https?:)?\//) ) {
       const theme = this.getSoundTheme();
       const root = getConfig('Connection.SoundURI');
-      const compability = Compability.getCompability();
+      const ext = this.oggAvailable ? 'oga' : 'mp3';
 
-      if ( !name.match(/^\//) ) {
-        let ext = 'oga';
-        if ( !compability.audioTypes.ogg ) {
-          ext = 'mp3';
-        }
-        name = root + '/' + theme + '/' + name + '.' + ext;
-      }
+      name = `${root}/${theme}/${name}.${ext}`;
     }
+
     return name;
   }
 
@@ -333,11 +332,11 @@ class Theme {
     name = name || '';
     size = size || '16x16';
 
-    if ( !name.match(/^(https?)?:?\//) ) {
+    if ( !name.match(/^(https:?)?\//) ) {
       const root = getConfig('Connection.IconURI');
       const theme = this.getIconTheme();
 
-      return root + '/' + theme + '/' + size + '/' + name;
+      name = `${root}/${theme}/${size}/${name}`;
     }
 
     return name;
@@ -444,8 +443,7 @@ class Theme {
    * @return  {String}
    */
   getSoundFilename(k) {
-    const compability = Compability.getCompability();
-    if ( !compability.audio || !this.settings.get('enableSounds') || !k ) {
+    if ( !this.audioAvailable || !this.settings.get('enableSounds') || !k ) {
       return false;
     }
 
