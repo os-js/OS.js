@@ -69,7 +69,15 @@
               },
               {
                 "name": "Buttons",
-                "settings": {}
+                "settings": {
+                  "buttons": [
+                    {
+                      "title": "LBL_SETTINGS",
+                      "icon": "categories/applications-system.png",
+                      "launch": "ApplicationSettings"
+                    }
+                  ]
+                }
               },
               {
                 "name": "WindowList",

@@ -51,13 +51,17 @@ const WindowManager = OSjs.require('core/window-manager');
  */
 export default class PanelItemButtons extends PanelItem {
   constructor(settings) {
+    if ( settings ) {
+      // Certain items need transformations due to being in config
+      settings.set('buttons', settings.get('buttons', []).map((iter) => {
+        iter.title = Locales._(iter.title);
+        return iter;
+      }));
+    }
+
     super('PanelItemButtons', 'Buttons', settings, {
       buttons: [
-        {
-          title: Locales._('LBL_SETTINGS'),
-          icon: 'categories/applications-system.png',
-          launch: 'ApplicationSettings'
-        }
+        // These are defined in src/conf
       ]
     });
   }
