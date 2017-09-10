@@ -1,3 +1,30 @@
+# 2.1.4
+
+General improvements, server auto-reload feature, updates to some API methods.
+
+Relevant:
+
+* https://community.os-js.org/t/update-version-bump-2-1-4/162
+
+Digest:
+
+* CoreWM: Moved buttons panelitem config into src/conf
+* client: Split cookie util methods into cookies.js
+* client: Split color util methods into colors.js
+* client: Moved misc->cleanHTML to dom->$clean
+* css: Copy some 'iframe' rules for 'object'
+* auth: Separated some code in 'createUI()'
+* auth: Renamed 'onRequestLogin()' to 'requestLogin()'
+* auth: Renamed 'onCreateUI()' to 'createUI()'
+* auth: Moved login template to client
+* auth: User object in demo auth now set in config
+* server-node: Code watcher now a service, improvements
+* server-node: New '--reload' feature
+* server-node: Added 'getSession' to connection module
+* server: Now possible to mix connection modules
+* bin: Allow override OSJS_ROOT in cli
+* misc: Updated dependencies
+
 # 2.1.3
 
 Did a pass of the event handling, making significant improvements on
