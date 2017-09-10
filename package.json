@@ -31,7 +31,7 @@
   "dependencies": {
     "app-module-path": "^2.2.0",
     "bluebird": "^3.5.0",
-    "body-parser": "^1.17.2",
+    "body-parser": "^1.18.0",
     "chokidar": "^1.7.0",
     "colors": "^1.1.2",
     "compression": "^1.6.2",
