@@ -160,7 +160,7 @@ export function init(locale, options, languages) {
   options = options || {};
 
   const names = languages ? Object.keys(languages) : {};
-  if ( names.indexOf(locale) !== -1 ) {
+  if ( (names instanceof Array) && names.indexOf(locale) !== -1 ) {
     CurrentLocale = locale;
   }
 

@@ -72,13 +72,15 @@ function runChildren(pel, level, winRef, cb) {
   level = level || 0;
   cb = cb || function() {};
 
-  (pel.children || []).forEach((child, i) => {
-    if ( child && child.tagName.toLowerCase() === 'gui-menu-entry') {
-      GUIElement.createFromNode(child).build(null, winRef);
+  if ( pel.children ) {
+    pel.children.forEach((child, i) => {
+      if ( child && child.tagName.toLowerCase() === 'gui-menu-entry') {
+        GUIElement.createFromNode(child).build(null, winRef);
 
-      cb(child, level);
-    }
-  });
+        cb(child, level);
+      }
+    });
+  }
 }
 
 function onEntryClick(ev, pos, target, original) {
@@ -237,18 +239,22 @@ class GUIMenu extends GUIElement {
     const el = this.$element;
     el.setAttribute('role', 'menu');
 
-    runChildren(el, 0, winRef, (child, level) => {
-      if ( customMenu ) {
-        if ( child ) {
-          const submenus = child.getElementsByTagName('gui-menu');
-          submenus.forEach((sub) => {
-            if ( sub ) {
-              runChildren(sub, level + 1, winRef);
-            }
-          });
+    try {
+      runChildren(el, 0, winRef, (child, level) => {
+        if ( customMenu ) {
+          if ( child ) {
+            const submenus = child.getElementsByTagName('gui-menu');
+            submenus.forEach((sub) => {
+              if ( sub ) {
+                runChildren(sub, level + 1, winRef);
+              }
+            });
+          }
         }
-      }
-    });
+      });
+    } catch ( e ) {
+      console.warn(e);
+    }
 
     if ( !customMenu ) {
       Events.$bind(el, 'click', (ev, pos) => {

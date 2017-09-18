@@ -535,9 +535,18 @@ export default class UIDataView extends GUIElement {
       return (asValue && result) ? getValueParameter(result) : result;
     }
 
-    return !asValue ? entries : (entries || []).map((iter) => {
-      return getValueParameter(iter);
-    });
+    if ( asValue && entries ) {
+      try {
+        return entries.map((iter) => {
+          return getValueParameter(iter);
+        });
+      } catch ( e ) {
+        console.warn(e);
+      }
+
+    }
+
+    return entries;
   }
 
   /*
