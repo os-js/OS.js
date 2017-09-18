@@ -217,7 +217,8 @@ const initPackageManager = (config) => new Promise((resolve, reject) => {
     metadata = OSjs.getManifest();
   } catch ( e ) {}
 
-  PackageManager.init(metadata).then(() => {
+  const auth = Authenticator.instance;
+  PackageManager.init(metadata, auth.isStandalone).then(() => {
     return Promise.each(list, (iter) => {
       return new Promise((next) => {
         var pkg = PackageManager.getPackage(iter);
@@ -483,6 +484,7 @@ export function start() {
 
   triggerHook('initialize');
 
+  console.profile();
   Promise.each([
     initPreloading,
     initHandlers,
@@ -509,6 +511,8 @@ export function start() {
     });
   }).then(() => {
     console.info('Done!');
+
+    console.profileEnd();
 
     window.addEventListener('message', onMessage, false);
 

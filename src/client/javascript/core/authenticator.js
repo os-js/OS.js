@@ -74,6 +74,11 @@ export default class Authenticator {
      * @type {Boolean}
      */
     this.loggedIn = false;
+
+    /**
+     * If we're in standalone
+     */
+    this.isStandalone = false;
   }
 
   /**

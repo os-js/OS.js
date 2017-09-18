@@ -37,6 +37,12 @@ import DemoAuthenticator from './demo';
  */
 export default class StandaloneAuthenticator extends DemoAuthenticator {
 
+  constructor() {
+    super();
+
+    this.isStandalone = true;
+  }
+
   login(login) {
     return Promise.resolve({
       userData: {

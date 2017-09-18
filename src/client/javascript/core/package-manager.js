@@ -112,15 +112,20 @@ class PackageManager {
   /**
    * Initializes Package Manager
    * @param {Object} [metadata] An initial set of packages
+   * @param {Boolean} [isStandalone] If we're in standalone mode
    * @return {Promise<undefined, Error>}
    */
-  init(metadata) {
+  init(metadata, isStandalone) {
     console.debug('PackageManager::load()', metadata);
 
     return new Promise((resolve, reject) => {
       const setPackages = metadata ? this.setPackages(metadata) : Promise.resolve();
 
       setPackages.then(() => {
+        if ( isStandalone ) {
+          return resolve(true);
+        }
+
         return this._loadMetadata().then(() => {
           const len = Object.keys(this.packages).length;
           if ( len ) {
