@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Usage: ./bin/add-package.sh namespace PackageName http://git-repository
 repo=$1
 name=$2
