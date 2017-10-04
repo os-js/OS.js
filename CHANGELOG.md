@@ -1,3 +1,7 @@
+# 2.1.5
+
+This update just contains a few minor updates regarding building.
+
 # 2.1.4
 
 General improvements, server auto-reload feature, updates to some API methods.
