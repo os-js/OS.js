@@ -25,7 +25,7 @@ if [ -d "src/packages/$repo/$name" ]; then
 fi
 
 mkdir src/packages/$repo
-git clone --recursive $src src/packages/$repo/$name --branch
+git clone --recursive $src src/packages/$repo/$name
 pushd src/packages/$repo/$name
 npm install
 popd
