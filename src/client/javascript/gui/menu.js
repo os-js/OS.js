@@ -87,6 +87,21 @@ export function clamp(r) {
   DOM.$addClass(r, 'gui-showing');
 }
 
+function clampSubMenu(sm) {
+  if ( sm ) {
+    const pos = DOM.$position(sm);
+    const wm = WindowManager.instance;
+    const space = wm.getWindowSpace(true);
+
+    if ( pos ) {
+      const diff = space.height - pos.bottom;
+      if ( diff < 0 ) {
+        sm.style.marginTop = String(diff) + 'px';
+      }
+    }
+  }
+}
+
 /**
  * Blur the currently open menu (aka hiding)
  *
@@ -148,6 +163,14 @@ export function create(items, ev, customInstance) {
     resolveItems(items || [], root);
 
     GUIElement.createFromNode(root, null, 'gui-menu').build(true);
+
+    Events.$bind(root, 'mouseover', function(ev, pos) {
+      if ( ev.target && ev.target.tagName === 'GUI-MENU-ENTRY' ) {
+        setTimeout(() => {
+          clampSubMenu(ev.target.querySelector('gui-menu'));
+        }, 1);
+      }
+    }, true);
 
     Events.$bind(root, 'click', function(ev, pos) {
       clickWrapper(ev, pos, function(ev, pos, t, orig, isExpander) {
