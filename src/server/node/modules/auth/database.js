@@ -78,8 +78,12 @@ class Manager {
   add(user) {
     return new Promise((resolve, reject) => {
       const groups = user.groups || [];
+      let query = 'INSERT INTO `users` (username, name, password) VALUES(?, ?, ?);'
+      if (this.db.type == "sqlite") {
+        query = 'INSERT INTO `users` (id, username, name, password) VALUES(NULL, ?, ?, ?);';
+      }
       this.db.query(
-        'INSERT INTO `users` (id, username, name, password) VALUES(NULL, ?, ?, ?);',
+        query,
         [user.username, user.name, '']
       ).then(() => {
         return this.getUserFromUsername(user.username).then((user) => {

@@ -7,6 +7,7 @@ RUN apk add --no-cache bash
 RUN apk add --no-cache python
 RUN apk add --no-cache make
 RUN apk add --no-cache g++
+RUN apk add --no-cache mysql-client
 RUN apk add --no-cache --virtual .build-deps 
 
 RUN npm install -g supervisor
@@ -22,7 +23,7 @@ RUN npm install
 RUN node osjs build
 
 # Install Database Storage
-RUN npm install sqlite3
+RUN npm install sqlite3 mysql
 RUN npm install bcrypt --build-from-source
 
 # Run OS.js
