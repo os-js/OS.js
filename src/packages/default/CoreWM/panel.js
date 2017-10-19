@@ -103,7 +103,9 @@ export default class Panel {
       this.onMouseOut(ev);
     });
     Events.$bind(this._$element, 'contextmenu', function(ev) {
-      createMenu(ev);
+      if ( !ev.target || ev.target.getAttribute('role') !== 'button' ) {
+        createMenu(ev);
+      }
     });
 
     Events.$bind(document, 'mouseout:panelmouseleave', (ev) => {
