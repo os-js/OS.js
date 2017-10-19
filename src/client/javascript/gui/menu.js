@@ -214,18 +214,18 @@ export function create(items, ev, customInstance) {
     }
 
     clamp(root);
-  }, 1);
 
-  lastMenu = function() {
-    callbackMap = null;
-    if ( root ) {
-      root.querySelectorAll('gui-menu-entry').forEach(function(el) {
-        Events.$unbind(el);
-      });
-      Events.$unbind(root);
-    }
-    root = DOM.$remove(root);
-  };
+    lastMenu = function() {
+      callbackMap = null;
+      if ( root ) {
+        root.querySelectorAll('gui-menu-entry').forEach(function(el) {
+          Events.$unbind(el);
+        });
+        Events.$unbind(root);
+      }
+      root = DOM.$remove(root);
+    };
+  }, 1);
 }
 
 export function setActive(menu) {
