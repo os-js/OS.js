@@ -88,7 +88,7 @@ if ( auther !== 'database' ) {
 if ( ARGS.length < 4 ) {
   console.log('Available commands:');
   console.log('  add <username> <groups> - Add a user (ex: anders api,fs,curl)');
-  console.log('  pwd <username>          - Change a user password');
+  console.log('  pwd <username> [password] - Change a user password');
   console.log('  grp <username> <groups> - Change a users group(s)');
   process.exit(1);
 }

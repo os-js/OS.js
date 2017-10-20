@@ -22,7 +22,3 @@ ALTER TABLE `groups`
 
 ALTER TABLE `settings`
   ADD PRIMARY KEY (`user_id`);
-
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`);
-
