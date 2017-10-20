@@ -11,6 +11,8 @@ RUN apk add --no-cache mysql-client
 RUN apk add --no-cache --virtual .build-deps 
 
 RUN npm install -g supervisor
+RUN npm install sqlite3 mysql
+RUN npm install bcrypt --build-from-source
 
 # Clone OS.js
 WORKDIR /
@@ -22,11 +24,7 @@ WORKDIR OS.js/
 RUN npm install
 RUN node osjs build
 
-# Install Database Storage
-RUN npm install sqlite3 mysql
-RUN npm install bcrypt --build-from-source
 
 # Run OS.js
-CMD ["bash", "bin/docker_install.sh"]
-# CMD ["bash", "bin/start.sh"]
+CMD ["bash", "bin/docker_start.sh"]
 EXPOSE 8000
