@@ -23,6 +23,26 @@ $ node osjs run
 For more information, see the [Installation Manual](https://manual.os-js.org/installation/).
 
 ## Docker
+Clone this repository.
+Build the Dockerfile image : 
+```
+docker build -t [YOUR_TAG] .
+```
+
+Run as demo : 
+```
+docker run -p 8000:8000 [YOUR_TAG]
+```
+
+Run with sqlite storage : 
+```
+docker run -p 8000:8000 --env STORAGE=sqlite --env ADMIN_USER=admin --env ADMIN_PASS=admin [YOUR_TAG]
+```
+
+Access it at localhost:8000.
+
+See [docker-compose file template](https://github.com/os-js/OS.js/tree/development/src/templates/docker/) for a fully running example with mysql database, reverse nginx proxy and docker-compose 
+
 Environement variables :
 * STORAGE : Storage type ( mysql | sqlite )
 * ADMIN_USER : Admin username used to log into OS.js 
@@ -31,34 +51,4 @@ Environement variables :
 * MYSQL_USER : mysql user
 * MYSQL_PASSWORD :  mysql user password
 
-Docker compose example : 
-```
-nginx-proxy:
-    image: jwilder/nginx-proxy
-    ports:
-      - "80:80"
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
 
-os:
-    build: ./osjs
-    command: ./bin/docker_start.sh
-    ports:
-      - "86:8000"
-    environment:
-      - "VIRTUAL_HOST=osjs.local"
-      - "STORAGE=mysql"
-      - "ADMIN_USER=admin"
-      - "ADMIN_PASS=admin"
-      - "MYSQL_HOST=mysql"
-      - "MYSQL_USER=root"
-      - "MYSQL_PASSWORD=PASSWORD"
-    depends_on:
-      - nginx-proxy
-      - mysql
-
-mysql:
-    image: mysql:5.7
-    environment:
-      - "MYSQL_ROOT_PASSWORD=PASSWORD"
-```
