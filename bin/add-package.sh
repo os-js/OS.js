@@ -31,4 +31,4 @@ npm install
 popd
 node osjs config:add --name=repositories --value=$repo
 node osjs build:manifest
-node osjs build:package --name=$reoo/$name
+node osjs build:package --name=$repo/$name
