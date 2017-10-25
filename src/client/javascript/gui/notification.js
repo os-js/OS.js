@@ -201,7 +201,7 @@ class Notification {
    * @param   {String}    name      Internal name (unique)
    * @return {Boolean}
    */
-  destroyIcon() {
+  destroyIcon(name) {
     const wm = WindowManager.instance;
     if ( wm && typeof wm.getNotificationArea === 'function' ) {
       const pitem = wm.getNotificationArea();
