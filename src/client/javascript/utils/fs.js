@@ -208,11 +208,11 @@ export function pathJoin() {
 
   function getPart(s) {
     if ( s.match(/^([A-z0-9\-_]+)\:\//) ) {
-      const spl = s.split(':/');
+      const spl = s.split(/^([A-z0-9\-_]+)\:\//);
       if ( !prefix ) {
-        prefix = spl[0] + '://';
+        prefix = spl[1] + '://';
       }
-      s = spl[1] || '';
+      s = spl[2] || '';
     }
 
     s = s.replace(/^\/+/, '').replace(/\/+$/, '');
