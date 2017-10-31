@@ -1,4 +1,7 @@
 #! /bin/bash
+# OS.js - JavaScript Cloud/Web Desktop Platform
+# @author : Jules Bourdalé <jules.bourdale@gmail.com>
+# @licence Simplified BSD License
 
 function mysql_connect() {
 	try=0
