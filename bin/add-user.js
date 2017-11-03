@@ -40,6 +40,7 @@ const auther = config.authenticator;
 const command = ARGS[2];
 const username = ARGS[3];
 const groups = String(ARGS[4] || 'admin').replace(/\s/g, '').split(',');
+const password = ARGS[4];
 
 function createPassword() {
   return new Promise(function(resolve, reject) {
@@ -87,7 +88,7 @@ if ( auther !== 'database' ) {
 if ( ARGS.length < 4 ) {
   console.log('Available commands:');
   console.log('  add <username> <groups> - Add a user (ex: anders api,fs,curl)');
-  console.log('  pwd <username>          - Change a user password');
+  console.log('  pwd <username> [password] - Change a user password');
   console.log('  grp <username> <groups> - Change a users group(s)');
   process.exit(1);
 }
@@ -111,12 +112,20 @@ instance.register(config.modules.auth[auther]).then(() => {
       promise = new Promise((yes, no) => {
         instance.manager().then((manager) => {
           manager.getUserFromUsername(username).then((user) => {
-            createPassword().then((input) => {
+            if(password){
               instance.manage('passwd', {
                 id: user.id,
-                password: input
+                password: password
               }).then(yes).catch(no);
-            });
+            }
+            else {
+              createPassword().then((input) => {
+                instance.manage('passwd', {
+                  id: user.id,
+                  password: input
+                }).then(yes).catch(no);
+              });
+            }
           }).catch(no);
         }).catch(no);
       });

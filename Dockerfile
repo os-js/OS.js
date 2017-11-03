@@ -24,7 +24,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# Dockerfile maintained by: andersevenrud
+# Dockerfile maintained by: andersevenrud, jbourdale
 # Dockerfile created by: junland
 #
 
@@ -34,17 +34,27 @@ MAINTAINER osjs
 # Install dependencies
 RUN apk add --no-cache git
 RUN apk add --no-cache bash
+RUN apk add --no-cache python
+RUN apk add --no-cache make
+RUN apk add --no-cache g++
+RUN apk add --no-cache mysql-client
+RUN apk add --no-cache --virtual .build-deps 
+
 RUN npm install -g supervisor
+RUN npm install sqlite3 mysql
+RUN npm install bcrypt --build-from-source
 
 # Clone OS.js
 WORKDIR /
-RUN git clone https://github.com/os-js/OS.js.git
+RUN mkdir OS.js
+ADD . /OS.js/
 
 # Install OS.js
 WORKDIR OS.js/
 RUN npm install
 RUN node osjs build
 
+
 # Run OS.js
-CMD ["bash", "bin/start.sh"]
+CMD ["bash", "bin/docker_start.sh"]
 EXPOSE 8000

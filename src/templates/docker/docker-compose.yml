@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      - "MYSQL_ROOT_PASSWORD=development"
+
+  os:
+    build: ./osjs
+    command: ./bin/docker_start.sh
+    ports:
+      - "86:8000"
+    environment:
+      - "VIRTUAL_HOST=osjs.local"
+      - "STORAGE=mysql"
+      - "ADMIN_USER=admin"
+      - "ADMIN_PASS=admin"
+      - "MYSQL_HOST=mysql"
+      - "MYSQL_PASSWORD=development"
+      - "MYSQL_USER=root"
+    depends_on:
+      - nginx-proxy
+      - mysql
