@@ -279,7 +279,7 @@ export const $bind = (function() {
       firstTarget = null;
       cancelled = true;
 
-      window.removeEventListener('toucmove', tempMove);
+      window.removeEventListener('touchmove', tempMove);
     }
 
     function tempEnd(ev) {
