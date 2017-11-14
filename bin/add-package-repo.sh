@@ -28,4 +28,4 @@ done
 
 node osjs config:add --name=repositories --value=$repo
 node osjs build:manifest
-node osjs build:packages -repositories=$reoo
+node osjs build:packages -repositories=$repo
