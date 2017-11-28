@@ -216,7 +216,7 @@ export function create(items, ev, customInstance) {
     clamp(root);
 
     lastMenu = function() {
-      callbackMap = null;
+      callbackMap = [];
       if ( root ) {
         root.querySelectorAll('gui-menu-entry').forEach(function(el) {
           Events.$unbind(el);
