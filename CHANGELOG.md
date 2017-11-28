@@ -1,3 +1,24 @@
+# 2.1.6
+
+Bugfixes and UX improvements.
+
+Relevant:
+
+* https://community.os-js.org/t/update-version-bump-2-1-6/195
+
+Digest:
+
+* CoreWM: Fixed panel item contextmenu overlapping (#639)
+* Utils: Fix for pathJoin in Windows file://
+* Misc: Updated dependencies
+* Misc: Docker with database support (#642)
+* Misc: Some fixes regarding database authenticator templates
+* GUI: Add missing parameter in Notifications.destroyIcon (#646)
+* GUI: Updated menu clamping
+* GUI: Misc menu fixes
+* CLI: Some improvements to bin/add-package scripts
+* UX: Solved some touch-related issues (#637)
+
 # 2.1.5
 
 This update just contains a few minor updates regarding building.
