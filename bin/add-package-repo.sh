@@ -13,19 +13,21 @@ if [ -z "$src" ]; then
   exit 1
 fi
 
-if [ -d "src/packages/$repo" ]; then
-  echo "Repo already installed"
-  exit 1
+#if [ -d "src/packages/$repo" ]; then
+#  echo "Repo already installed"
+#  exit 1
+#fi
+
+if [ ! -d "src/packages/$repo" ]; then
+  git clone --recursive $src src/packages/$repo
 fi
 
-git clone --recursive $src src/packages/$repo
-
 for d in "src/packages/$repo/*/"; do
-  pushd $d
-  npm install
-  popd
+  (cd $d && npm install)
 done
 
 node osjs config:add --name=repositories --value=$repo
 node osjs build:manifest
 node osjs build:packages -repositories=$repo
+
+echo "Done :-)"

@@ -1,5 +1,7 @@
 #!/bin/bash
 # Usage: ./bin/add-package.sh namespace PackageName http://git-repository
+set -e
+
 repo=$1
 name=$2
 src=$3
@@ -19,16 +21,20 @@ if [ -z "$src" ]; then
   exit 1
 fi
 
-if [ -d "src/packages/$repo/$name" ]; then
-  echo "Package already installed"
-  exit 1
+#if [ -d "src/packages/$repo/$name" ]; then
+#  echo "Package already installed"
+#  exit 1
+#fi
+
+if [ ! -d "src/packages/$repo/$name" ]; then
+  mkdir src/packages/$repo
+  git clone --recursive $src src/packages/$repo/$name
 fi
 
-mkdir src/packages/$repo
-git clone --recursive $src src/packages/$repo/$name
-pushd src/packages/$repo/$name
-npm install
-popd
+(cd src/packages/$repo/$name && npm install)
+
 node osjs config:add --name=repositories --value=$repo
 node osjs build:manifest
 node osjs build:package --name=$repo/$name
+
+echo "Done :-)"
