@@ -221,6 +221,7 @@ export const keyCombination = (function() {
  * @param   {Boolean}         [useCapture]  Use capture mode
  */
 export const $bind = (function() {
+  let globalTouchDebounce;
 
   function makeFakeEvent(name, ev) {
     const pos = mousePosition(ev);
@@ -276,6 +277,8 @@ export const $bind = (function() {
 
     function cancel() {
       clearTimeout(timeout);
+      clearTimeout(globalTouchDebounce);
+
       firstTarget = null;
       cancelled = true;
 
@@ -284,13 +287,20 @@ export const $bind = (function() {
 
     function tempEnd(ev) {
       clearTimeout(timeout);
+      clearTimeout(globalTouchDebounce);
+
       window.removeEventListener('touchmove', tempMove);
-      if ( !cancelled && ev.target === firstTarget ) {
-        ev.target.dispatchEvent(makeFakeEvent('click', firstEvent));
-      }
+
+      globalTouchDebounce = setTimeout(() => {
+        if ( !cancelled && ev.target === firstTarget ) {
+          ev.target.dispatchEvent(makeFakeEvent('click', firstEvent));
+        }
+      }, 1);
     }
 
     function tempStart(ev) {
+      clearTimeout(globalTouchDebounce);
+
       firstEvent = ev;
       firstTarget = ev.target;
       timeout = setTimeout(() => {
@@ -415,19 +425,30 @@ export const $bind = (function() {
     function addEvent(nsType, type) {
       type = getRealEventName(type);
 
+      let handled = false;
+
+      const whenDone = (ev) => {
+        clearTimeout(handled);
+        handled = setTimeout(() => {
+          if ( noBind ) {
+            callback(ev, mousePosition(ev));
+          }
+          callback.call(el, ev, mousePosition(ev));
+        }, 1);
+      };
+
       addEventHandler(el, nsType, type, callback, function mouseEventHandler(ev) {
         if ( !window.OSjs ) { // Probably shut down
           return null;
         }
 
-        if ( noBind ) {
-          return callback(ev, mousePosition(ev));
-        }
-        return callback.call(el, ev, mousePosition(ev));
+        return whenDone(ev);
       }, useCapture);
 
       if ( customEvents[type] ) {
-        customEvents[type](el, nsType, type, callback, useCapture);
+        customEvents[type](el, nsType, type, function fakeEventHandler(ev) {
+          return whenDone(ev);
+        }, useCapture);
       }
     }
 
