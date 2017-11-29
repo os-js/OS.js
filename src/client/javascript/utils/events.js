@@ -427,14 +427,22 @@ export const $bind = (function() {
 
       let handled = false;
 
+      const onCallback = (ev) => {
+        if ( noBind ) {
+          callback(ev, mousePosition(ev));
+        }
+        callback.call(el, ev, mousePosition(ev));
+      };
+
       const whenDone = (ev) => {
         clearTimeout(handled);
-        handled = setTimeout(() => {
-          if ( noBind ) {
-            callback(ev, mousePosition(ev));
-          }
-          callback.call(el, ev, mousePosition(ev));
-        }, 1);
+        if ( customEvents[type] ) {
+          handled = setTimeout(() => {
+            onCallback(ev);
+          }, 1);
+        } else {
+          onCallback(ev);
+        }
       };
 
       addEventHandler(el, nsType, type, callback, function mouseEventHandler(ev) {
@@ -442,6 +450,9 @@ export const $bind = (function() {
           return null;
         }
 
+        if ( type === 'contextmenu' ) {
+          return onCallback(ev);
+        }
         return whenDone(ev);
       }, useCapture);
 

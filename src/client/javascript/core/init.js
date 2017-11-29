@@ -484,7 +484,6 @@ export function start() {
 
   triggerHook('initialize');
 
-  console.profile();
   Promise.each([
     initPreloading,
     initHandlers,
@@ -511,8 +510,6 @@ export function start() {
     });
   }).then(() => {
     console.info('Done!');
-
-    console.profileEnd();
 
     window.addEventListener('message', onMessage, false);
 
