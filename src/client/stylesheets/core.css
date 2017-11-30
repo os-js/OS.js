@@ -201,7 +201,9 @@ application-window-title {
   height : 100%;
   text-align : center;
   position : relative;
+  z-index: 10;
   display : none;
+  pointer-events: all;
 }
 
   application-window[data-allow-maximize="true"] application-window-button-maximize {

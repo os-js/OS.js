@@ -682,6 +682,10 @@ export default class Window {
     Events.$bind(this._$element, 'transitionend', _onanimationend);
     Events.$bind(this._$element, 'animationend', _onanimationend);
     Events.$bind(this._$element, 'click', (ev) => {
+      this._focus();
+    }, true);
+
+    Events.$bind(this._$top, 'mouseup', (ev) => {
       const t = ev.target;
       if ( t ) {
         if ( t.tagName.match(/^APPLICATION\-WINDOW\-BUTTON/) ) {
@@ -690,8 +694,7 @@ export default class Window {
           this._onWindowIconClick(ev);
         }
       }
-      this._focus();
-    }, true);
+    });
 
     Events.$bind(this._$top, 'dblclick', () => {
       this._maximize();
@@ -1938,8 +1941,8 @@ export default class Window {
       }
     });
 
-    ev.stopPropagation();
     this._focus();
+
     Menu.create(list, ev);
   }
 
@@ -1951,6 +1954,7 @@ export default class Window {
    * @param   {String}  btn       Button name
    */
   _onWindowButtonClick(ev, el, btn) {
+
     const map = {
       close: this._close,
       minimize: this._minimize,

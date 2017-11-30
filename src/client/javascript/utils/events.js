@@ -221,8 +221,6 @@ export const keyCombination = (function() {
  * @param   {Boolean}         [useCapture]  Use capture mode
  */
 export const $bind = (function() {
-  let globalTouchDebounce;
-
   function makeFakeEvent(name, ev) {
     const pos = mousePosition(ev);
     const nev = Object.assign({
@@ -277,7 +275,6 @@ export const $bind = (function() {
 
     function cancel() {
       clearTimeout(timeout);
-      clearTimeout(globalTouchDebounce);
 
       firstTarget = null;
       cancelled = true;
@@ -287,20 +284,20 @@ export const $bind = (function() {
 
     function tempEnd(ev) {
       clearTimeout(timeout);
-      clearTimeout(globalTouchDebounce);
 
       window.removeEventListener('touchmove', tempMove);
 
-      globalTouchDebounce = setTimeout(() => {
-        if ( !cancelled && ev.target === firstTarget ) {
-          ev.target.dispatchEvent(makeFakeEvent('click', firstEvent));
-        }
-      }, 1);
+      if ( !cancelled && ev.target === firstTarget ) {
+        const newEvent = makeFakeEvent('click', firstEvent);
+        Object.defineProperty(newEvent, 'target', {
+          value: firstEvent.target,
+          enumerable: false
+        });
+        el.dispatchEvent(newEvent);
+      }
     }
 
     function tempStart(ev) {
-      clearTimeout(globalTouchDebounce);
-
       firstEvent = ev;
       firstTarget = ev.target;
       timeout = setTimeout(() => {
@@ -425,40 +422,27 @@ export const $bind = (function() {
     function addEvent(nsType, type) {
       type = getRealEventName(type);
 
-      let handled = false;
+      addEventHandler(el, nsType, type, callback, function mouseEventHandler(ev) {
+        if ( !window.OSjs ) { // Probably shut down
+          return;
+        }
 
-      const onCallback = (ev) => {
         if ( noBind ) {
           callback(ev, mousePosition(ev));
         }
         callback.call(el, ev, mousePosition(ev));
-      };
-
-      const whenDone = (ev) => {
-        clearTimeout(handled);
-        if ( customEvents[type] ) {
-          handled = setTimeout(() => {
-            onCallback(ev);
-          }, 1);
-        } else {
-          onCallback(ev);
-        }
-      };
-
-      addEventHandler(el, nsType, type, callback, function mouseEventHandler(ev) {
-        if ( !window.OSjs ) { // Probably shut down
-          return null;
-        }
-
-        if ( type === 'contextmenu' ) {
-          return onCallback(ev);
-        }
-        return whenDone(ev);
       }, useCapture);
+
+      if ( type === 'click' && el.tagName === 'BUTTON' ) {
+        return;
+      }
 
       if ( customEvents[type] ) {
         customEvents[type](el, nsType, type, function fakeEventHandler(ev) {
-          return whenDone(ev);
+          if ( noBind ) {
+            callback(ev, mousePosition(ev));
+          }
+          callback.call(el, ev, mousePosition(ev));
         }, useCapture);
       }
     }
