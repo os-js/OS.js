@@ -278,7 +278,7 @@ class GUITreeView extends GUIDataView {
 
   patch(entries) {
     const body = this.$element.querySelector('gui-tree-view-body');
-    return super.patch(entries, 'gui-list-view-entry', body, createEntry, initEntry);
+    return super.patch(entries, 'gui-tree-view-entry', body, createEntry, initEntry);
   }
 
   expand(entry) {
