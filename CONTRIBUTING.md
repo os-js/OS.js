@@ -13,6 +13,8 @@ If you want to contribute, but not sure what to do, here's a list of things that
 
 If you need help, or just up for some general discussion, head into the [community forums](https://community.os-js.org/) or [community chat](https://gitter.im/os-js/OS.js).
 
+You can also help triage issues which may include reproducing bug reports or asking for vital information, such as version numbers or reproduction instructions. If you would like to start triaging issues, one easy way to get started is to [subscribe to OS.js on CodeTriage](https://www.codetriage.com/os-js/OS.js).
+
 You can also donate or become a patreon, which helps out covering server costs and potentially make it possible to put out bounties:
 
 * Donate/tip anonymously with [Gratipay](https://gratipay.com/os-js/)
