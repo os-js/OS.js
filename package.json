@@ -1,0 +1,30 @@
+{
+  "name": "@osjs/osjs",
+  "version": "3.0.0-alpha.1",
+  "description": "OS.js v3",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:manifest": "node src/build.js --manifest",
+    "build:dist": "node src/build.js",
+    "watch:dist": "node src/build.js --watch",
+    "serve": "node src/server.js"
+  },
+  "keywords": [
+    "osjs"
+  ],
+  "author": "Anders Evenrud <andersevenrud@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@osjs/standard-theme": "^3.0.0",
+    "@osjs/core": "^3.0.0",
+    "@osjs/gui": "^3.0.0",
+    "@osjs/server": "^3.0.0",
+    "@osjs/cli": "^3.0.0",
+    "hyperapp": "^1.1.2"
+  },
+  "devDependencies": {
+    "eslint": "^4.16.0",
+    "stylelint": "^8.4.0"
+  }
+}
