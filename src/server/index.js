@@ -29,13 +29,13 @@
  */
 
 const {
-  server,
+  Core,
   PackageServiceProvider,
   VFSServiceProvider
 } = require('@osjs/server');
 
 const config = require('../conf/server.js');
-const instance = server(config);
+const instance = new Core(config);
 
 instance.register(PackageServiceProvider);
 instance.register(VFSServiceProvider);
