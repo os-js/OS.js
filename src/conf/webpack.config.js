@@ -39,8 +39,12 @@ const {
 module.exports = baseWebpackConfiguration(root, {
   title: 'OS.js v3 Prototype MKI',
   template: path.resolve(root, 'src/client/index.ejs'),
+  mode: production ? 'production' : 'development',
   minimize: production,
   sourceMap: true,
+  splitChunks: {
+    chunks: 'all'
+  },
   entry: {
     osjs: [
       path.resolve(root, 'src/client/index.js'),
@@ -48,16 +52,7 @@ module.exports = baseWebpackConfiguration(root, {
     ]
   },
   plugins: [
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      chunks: ['osjs'],
-      minChunks: (m) => {
-        const context = m.context;
-        if ( typeof context !== 'string' ) {
-          return false;
-        }
-        return context.indexOf('node_modules') !== -1;
-      }
-    })
+
+
   ]
 });
