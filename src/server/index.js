@@ -43,5 +43,7 @@ instance.register(VFSServiceProvider);
 process.on('SIGTERM', () => instance.destroy());
 process.on('SIGINT', () => instance.destroy());
 process.on('exit', () => instance.destroy());
+process.on('uncaughtException', e => console.error(e));
+process.on('unhandledRejection', e => console.error(e));
 
 instance.init();
