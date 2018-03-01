@@ -37,6 +37,7 @@ import {
   PanelServiceProvider,
   ThemeServiceProvider,
   NotificationServiceProvider,
+  SessionServiceProvider
 } from '@osjs/core';
 
 import {build as config} from '../conf/client.js';
@@ -53,6 +54,7 @@ const init = async () => {
   osjs.register(NotificationServiceProvider);
   osjs.register(GUIServiceProvider);
   osjs.register(VFSServiceProvider);
+  osjs.register(SessionServiceProvider);
 
   await osjs.start();
 };
