@@ -8,7 +8,7 @@
     "build:manifest": "node src/build.js --manifest",
     "build:dist": "node src/build.js",
     "watch:dist": "node src/build.js --watch",
-    "serve": "node src/server.js"
+    "serve": "node src/server"
   },
   "keywords": [
     "osjs"
