@@ -30,12 +30,7 @@
 
 import {
   Core,
-  VFSServiceProvider,
-  PackageServiceProvider,
-  DesktopServiceProvider,
-  ThemeServiceProvider,
-  NotificationServiceProvider,
-  SessionServiceProvider
+  DefaultServiceProvider
 } from '@osjs/core';
 
 import {
@@ -57,15 +52,10 @@ const init = async () => {
 
   osjs.configure(config);
 
-  osjs.register(PackageServiceProvider);
-  osjs.register(DesktopServiceProvider);
+  osjs.register(DefaultServiceProvider);
   osjs.register(PanelServiceProvider);
-  osjs.register(ThemeServiceProvider);
   osjs.register(DialogServiceProvider);
-  osjs.register(NotificationServiceProvider);
   osjs.register(GUIServiceProvider);
-  osjs.register(VFSServiceProvider);
-  osjs.register(SessionServiceProvider);
 
   await osjs.start();
 };
