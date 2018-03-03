@@ -31,7 +31,6 @@
 import {
   Core,
   VFSServiceProvider,
-  GUIServiceProvider,
   PackageServiceProvider,
   DesktopServiceProvider,
   PanelServiceProvider,
@@ -39,6 +38,10 @@ import {
   NotificationServiceProvider,
   SessionServiceProvider
 } from '@osjs/core';
+
+import {
+  GUIServiceProvider
+} from '@osjs/gui';
 
 import {
   DialogServiceProvider
