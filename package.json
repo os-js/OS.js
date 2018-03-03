@@ -19,6 +19,7 @@
     "@osjs/standard-theme": "^3.0.0",
     "@osjs/core": "^3.0.0",
     "@osjs/gui": "^3.0.0",
+    "@osjs/dialogs": "^3.0.0",
     "@osjs/server": "^3.0.0",
     "@osjs/cli": "^3.0.0",
     "hyperapp": "^1.1.2"

@@ -40,6 +40,10 @@ import {
   SessionServiceProvider
 } from '@osjs/core';
 
+import {
+  DialogServiceProvider
+} from '@osjs/dialogs';
+
 import {build as config} from '../conf/client.js';
 
 const init = async () => {
@@ -51,6 +55,7 @@ const init = async () => {
   osjs.register(DesktopServiceProvider);
   osjs.register(PanelServiceProvider);
   osjs.register(ThemeServiceProvider);
+  osjs.register(DialogServiceProvider);
   osjs.register(NotificationServiceProvider);
   osjs.register(GUIServiceProvider);
   osjs.register(VFSServiceProvider);
