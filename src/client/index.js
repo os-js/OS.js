@@ -33,11 +33,14 @@ import {
   VFSServiceProvider,
   PackageServiceProvider,
   DesktopServiceProvider,
-  PanelServiceProvider,
   ThemeServiceProvider,
   NotificationServiceProvider,
   SessionServiceProvider
 } from '@osjs/core';
+
+import {
+  PanelServiceProvider
+} from '@osjs/panels';
 
 import {
   GUIServiceProvider
