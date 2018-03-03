@@ -14,7 +14,7 @@
     "osjs"
   ],
   "author": "Anders Evenrud <andersevenrud@gmail.com>",
-  "license": "MIT",
+  "license": "BSD-2-Clause",
   "dependencies": {
     "@osjs/standard-theme": "^3.0.0",
     "@osjs/core": "^3.0.0",
