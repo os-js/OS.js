@@ -45,7 +45,9 @@ import {
   DialogServiceProvider
 } from '@osjs/dialogs';
 
-import {build as config} from '../conf/client.js';
+import {
+  build as config
+} from '../conf/client.js';
 
 const init = async () => {
   const osjs = new Core();
