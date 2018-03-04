@@ -28,15 +28,11 @@
  * @licence Simplified BSD License
  */
 
-const build = {
-  public: '/'
-};
-
-const runtime = {
-  theme: 'standard'
-};
-
 module.exports = {
-  build,
-  runtime
+  public: '/',
+  theme: 'standard',
+  login: {
+    username: 'demo',
+    password: 'demo'
+  }
 };

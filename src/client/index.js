@@ -45,21 +45,21 @@ import {
   DialogServiceProvider
 } from '@osjs/dialogs';
 
-import {
-  build as config
-} from '../conf/client.js';
+import * as config from '../conf/client.js';
 
-const init = async () => {
+const init = () => {
   const osjs = new Core();
 
+  // Configure
   osjs.configure(config);
 
+  // Register your service providers
   osjs.register(DefaultServiceProvider);
   osjs.register(PanelServiceProvider);
   osjs.register(DialogServiceProvider);
   osjs.register(GUIServiceProvider);
 
-  await osjs.start();
+  osjs.boot();
 };
 
 window.addEventListener('DOMContentLoaded', () => init());
