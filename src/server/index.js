@@ -30,17 +30,13 @@
 
 const {
   Core,
-  PackageServiceProvider,
-  VFSServiceProvider,
-  LoginServiceProvider
+  DefaultServiceProvider
 } = require('@osjs/server');
 
 const config = require('../conf/server.js');
 const instance = new Core(config);
 
-instance.register(PackageServiceProvider);
-instance.register(VFSServiceProvider);
-instance.register(LoginServiceProvider);
+instance.register(DefaultServiceProvider);
 
 process.on('SIGTERM', () => instance.destroy());
 process.on('SIGINT', () => instance.destroy());
