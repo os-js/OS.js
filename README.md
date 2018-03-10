@@ -16,8 +16,6 @@ This is the base project that can be used to make, deploy or develop OS.js.
 
 **PLEASE NOTE THAT THIS IS AN ALPHA PRE-RELEASE AND SUBJECT TO CHANGE WITHOUT NOTICE**
 
-**ALSO PLEASE NOTE THAT THE DEPENDENCIES ARE NOT PUBLISHED NPM AS OF NOW, SO YOU NEED TO USE 'npm link'**
-
 https://github.com/os-js/OS.js/issues/671
 
 ## Requirements
@@ -29,7 +27,8 @@ Node 8 (or newer) and any modern web-browser.
 ## Installation
 
 ```
-git clone -b v3 https://github.com/os-js/OS.js.git
+# Clone *only* the v3 branch
+git clone -b v3 --single-branch https://github.com/os-js/OS.js.git
 cd OS.js
 npm install
 
@@ -42,6 +41,8 @@ npm run build:dist
 # Start serving
 npm run serve
 ```
+
+Use `NODE_ENV=production npm run build:dist` to create a minimized and optimized distribution.
 
 ## Development
 
