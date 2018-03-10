@@ -28,5 +28,13 @@
   "devDependencies": {
     "eslint": "^4.16.0",
     "stylelint": "^8.4.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/osjs/OS.js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/osjs/OS.js/issues"
+  },
+  "homepage": "https://www.os-js.org"
 }
