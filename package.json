@@ -23,7 +23,8 @@
     "@osjs/panels": "^3.0.0-alpha",
     "@osjs/server": "^3.0.0-alpha",
     "@osjs/cli": "^3.0.0-alpha",
-    "hyperapp": "^1.1.2"
+    "hyperapp": "^1.1.2",
+    "typeface-roboto": "0.0.54"
   },
   "devDependencies": {
     "eslint": "^4.16.0",
