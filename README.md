@@ -44,6 +44,16 @@ npm run serve
 
 Use `NODE_ENV=production npm run build:dist` to create a minimized and optimized distribution.
 
+## Upgrading
+
+```
+npm update
+```
+
+For any packages using Git, run `git pull`, then `npm install`.
+
+When you've updated the sources, proceed to rebuild with `npm run build:dist`.
+
 ## Development
 
 ```
