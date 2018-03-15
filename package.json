@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:manifest": "node src/build.js --manifest",
-    "build:dist": "node src/build.js",
-    "watch:dist": "node src/build.js --watch",
+    "build:manifest": "node src/cli.js build:manifest",
+    "build:dist": "node src/cli.js build:dist",
+    "watch:dist": "node src/cli.js build:dist --watch",
     "serve": "node src/server"
   },
   "keywords": [
