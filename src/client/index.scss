@@ -29,17 +29,13 @@
  */
 @import "~typeface-roboto/index.css";
 
-@import "@osjs/core/index.scss";
-@import "@osjs/gui/index.scss";
-@import "@osjs/dialogs/index.scss";
-@import "@osjs/panels/index.scss";
-@import "@osjs/standard-theme/index.scss";
+@import "~@osjs/core/index.scss";
+@import "~@osjs/gui/index.scss";
+@import "~@osjs/dialogs/index.scss";
+@import "~@osjs/panels/index.scss";
+@import "~@osjs/standard-theme/index.scss";
 
 body, html {
   width: 100%;
   height: 100%;
-}
-
-.osjs-root {
-  background-image: url('./wallpaper.png');
 }
