@@ -8,7 +8,7 @@
     "build:manifest": "osjs-cli build:manifest",
     "build:dist": "osjs-cli build:dist",
     "watch:dist": "osjs-cli build:dist --watch",
-    "serve": "node src/server"
+    "serve": "node src/server/index.js"
   },
   "keywords": [
     "osjs"
