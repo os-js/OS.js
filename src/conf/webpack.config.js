@@ -37,7 +37,7 @@ const {
 } = require('@osjs/cli')
 
 module.exports = baseWebpackConfiguration(root, {
-  title: 'OS.js v3 Prototype MKI',
+  title: 'OS.js',
   template: path.resolve(root, 'src/client/index.ejs'),
   mode: production ? 'production' : 'development',
   minimize: production,
