@@ -30,18 +30,16 @@
 
 const path = require('path');
 const root = path.resolve(__dirname, '../../');
-const {
-  baseWebpackConfiguration,
-  webpack,
-  production
-} = require('@osjs/cli')
+const {createWebpack} = require('@osjs/cli')
 
-module.exports = baseWebpackConfiguration(root, {
+module.exports = createWebpack(root, {
   title: 'OS.js',
   template: path.resolve(root, 'src/client/index.ejs'),
-  mode: production ? 'production' : 'development',
-  minimize: production,
+  /* Defaults:
+  mode: 'development',
+  minimize: true,
   sourceMap: true,
+  */
   splitChunks: {
     chunks: 'all'
   },

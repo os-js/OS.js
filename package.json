@@ -1,6 +1,6 @@
 {
   "name": "@osjs/osjs",
-  "version": "3.0.0-alpha.5",
+  "version": "3.0.0-alpha.6",
   "description": "OS.js v3",
   "main": "index.js",
   "scripts": {
@@ -16,13 +16,13 @@
   "author": "Anders Evenrud <andersevenrud@gmail.com>",
   "license": "BSD-2-Clause",
   "dependencies": {
-    "@osjs/standard-theme": "^3.0.0-alpha.5",
-    "@osjs/core": "^3.0.0-alpha.5",
-    "@osjs/gui": "^3.0.0-alpha.5",
-    "@osjs/dialogs": "^3.0.0-alpha.5",
-    "@osjs/panels": "^3.0.0-alpha.5",
-    "@osjs/server": "^3.0.0-alpha.5",
-    "@osjs/cli": "^3.0.0-alpha.7",
+    "@osjs/standard-theme": "^3.0.0-alpha.6",
+    "@osjs/core": "^3.0.0-alpha.6",
+    "@osjs/gui": "^3.0.0-alpha.6",
+    "@osjs/dialogs": "^3.0.0-alpha.6",
+    "@osjs/panels": "^3.0.0-alpha.6",
+    "@osjs/server": "^3.0.0-alpha.6",
+    "@osjs/cli": "^3.0.0-alpha.8",
     "hyperapp": "^1.1.2",
     "typeface-roboto": "0.0.54"
   },
