@@ -35,11 +35,6 @@ const {createWebpack} = require('@osjs/cli')
 module.exports = createWebpack(root, {
   title: 'OS.js',
   template: path.resolve(root, 'src/client/index.ejs'),
-  /* Defaults:
-  mode: 'development',
-  minimize: true,
-  sourceMap: true,
-  */
   splitChunks: {
     chunks: 'all'
   },
@@ -48,9 +43,5 @@ module.exports = createWebpack(root, {
       path.resolve(root, 'src/client/index.js'),
       path.resolve(root, 'src/client/index.scss')
     ]
-  },
-  plugins: [
-
-
-  ]
+  }
 });
