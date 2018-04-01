@@ -44,4 +44,4 @@ npm run serve
 
 ## Documentation
 
-You can find the initial draft(s) here: https://github.com/os-js/OS.js/wiki/v3-documentation
+https://manual.os-js.org/v3/
