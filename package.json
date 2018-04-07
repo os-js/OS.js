@@ -1,6 +1,6 @@
 {
   "name": "@osjs/osjs",
-  "version": "3.0.0-alpha.7",
+  "version": "3.0.0-alpha.8",
   "description": "OS.js v3",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,8 @@
     "build:manifest": "osjs-cli build:manifest",
     "build:dist": "osjs-cli build:dist",
     "watch:dist": "osjs-cli build:dist --watch",
-    "serve": "node src/server/index.js"
+    "serve": "node src/server/index.js",
+    "install:package": "osjs-install-package"
   },
   "keywords": [
     "osjs"
@@ -16,13 +17,12 @@
   "author": "Anders Evenrud <andersevenrud@gmail.com>",
   "license": "BSD-2-Clause",
   "dependencies": {
-    "@osjs/standard-theme": "^3.0.0-alpha.7",
-    "@osjs/core": "^3.0.0-alpha.7",
-    "@osjs/gui": "^3.0.0-alpha.7",
-    "@osjs/dialogs": "^3.0.0-alpha.7",
-    "@osjs/panels": "^3.0.0-alpha.7",
-    "@osjs/server": "^3.0.0-alpha.7",
-    "@osjs/cli": "^3.0.0-alpha.9",
+    "@osjs/core": "^3.0.0-alpha.8",
+    "@osjs/gui": "^3.0.0-alpha.8",
+    "@osjs/dialogs": "^3.0.0-alpha.9",
+    "@osjs/panels": "^3.0.0-alpha.8",
+    "@osjs/server": "^3.0.0-alpha.8",
+    "@osjs/cli": "^3.0.0-alpha.10",
     "hyperapp": "^1.1.2",
     "typeface-roboto": "0.0.54"
   },

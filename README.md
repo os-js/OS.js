@@ -22,8 +22,6 @@ https://github.com/os-js/OS.js/issues/671
 
 Node 8 (or newer) and any modern web-browser.
 
-**NOT TESTED ON WINDOWS AT THE MOMENT**
-
 ## Installation
 
 ```
@@ -31,6 +29,10 @@ Node 8 (or newer) and any modern web-browser.
 git clone -b v3 --single-branch https://github.com/os-js/OS.js.git
 cd OS.js
 npm install
+
+# Now install applications and themes, ex:
+npm run install:package -- https://github.com/os-js/osjs-standard-theme.git
+npm run install:package -- https://github.com/os-js/osjs-example-package.git
 
 # Build package manifests
 npm run build:manifest
