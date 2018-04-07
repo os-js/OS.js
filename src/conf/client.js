@@ -30,7 +30,7 @@
 
 module.exports = {
   public: '/',
-  theme: 'standard',
+  theme: 'Standard',
   login: {
     username: 'demo',
     password: 'demo'
