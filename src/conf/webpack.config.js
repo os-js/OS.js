@@ -32,7 +32,7 @@ const path = require('path');
 const root = path.resolve(__dirname, '../../');
 const {createWebpack} = require('@osjs/cli')
 
-module.exports = createWebpack(root, {
+const config = createWebpack(root, {
   title: 'OS.js',
   template: path.resolve(root, 'src/client/index.ejs'),
   splitChunks: {
@@ -45,3 +45,5 @@ module.exports = createWebpack(root, {
     ]
   }
 });
+
+module.exports = config;
