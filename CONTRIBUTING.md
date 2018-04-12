@@ -11,9 +11,7 @@ If you want to contribute, but not sure what to do, here's a list of things that
 
 If you need help, or just up for some general discussion, head into the [community forums](https://community.os-js.org/) or [community chat](https://gitter.im/os-js/OS.js).
 
-# Rules
-
-Use the provided `eslint` and `csslint` configurations to make sure your changes uses the coding standards.
+See [manual](https://manual.os-js.org/v3/development/) for more information.
 
 # Support
 
