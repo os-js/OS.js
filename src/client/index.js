@@ -28,7 +28,7 @@
  * @licence Simplified BSD License
  */
 
-import {Core} from '@osjs/core';
+import {Core} from '@osjs/client';
 import {PanelServiceProvider} from '@osjs/panels';
 import {GUIServiceProvider} from '@osjs/gui';
 import {DialogServiceProvider} from '@osjs/dialogs';

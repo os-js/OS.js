@@ -35,7 +35,7 @@ const {createWebpack} = require('@osjs/cli')
 const config = createWebpack(root, {
   html: {
     template: path.resolve(root, 'src/client/index.ejs'),
-    favicon: path.resolve(root, 'node_modules/@osjs/core/src/styles/favicon.png'),
+    favicon: path.resolve(root, 'node_modules/@osjs/client/src/styles/favicon.png'),
     title: 'OS.js'
   },
   splitChunks: {
