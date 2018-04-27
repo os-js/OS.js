@@ -17,18 +17,15 @@
   "author": "Anders Evenrud <andersevenrud@gmail.com>",
   "license": "BSD-2-Clause",
   "dependencies": {
-    "@osjs/client": "^3.0.0-alpha.11",
-    "@osjs/gui": "^3.0.0-alpha.9",
+    "@osjs/client": "^3.0.0-alpha.12",
+    "@osjs/gui": "^3.0.0-alpha.10",
     "@osjs/dialogs": "^3.0.0-alpha.11",
-    "@osjs/panels": "^3.0.0-alpha.8",
-    "@osjs/server": "^3.0.0-alpha.10",
+    "@osjs/panels": "^3.0.0-alpha.9",
+    "@osjs/server": "^3.0.0-alpha.12",
     "@osjs/cli": "^3.0.0-alpha.12",
-    "hyperapp": "^1.2.5",
     "typeface-roboto": "0.0.54"
   },
   "devDependencies": {
-    "eslint": "^4.16.0",
-    "stylelint": "^8.4.0"
   },
   "repository": {
     "type": "git",
