@@ -31,8 +31,10 @@
 module.exports = {
   public: '/',
   theme: 'Standard',
-  login: {
-    username: 'demo',
-    password: 'demo'
+  auth: {
+    login: {
+      username: 'demo',
+      password: 'demo'
+    }
   }
 };
