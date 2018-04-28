@@ -22,7 +22,7 @@
     "@osjs/dialogs": "^3.0.0-alpha.11",
     "@osjs/panels": "^3.0.0-alpha.9",
     "@osjs/server": "^3.0.0-alpha.12",
-    "@osjs/cli": "^3.0.0-alpha.12",
+    "@osjs/cli": "^3.0.0-alpha.13",
     "typeface-roboto": "0.0.54"
   },
   "devDependencies": {
