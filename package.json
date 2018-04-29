@@ -1,6 +1,6 @@
 {
   "name": "@osjs/osjs",
-  "version": "3.0.0-alpha.15",
+  "version": "3.0.0-alpha.16",
   "description": "OS.js v3",
   "main": "index.js",
   "scripts": {
@@ -21,7 +21,7 @@
     "@osjs/gui": "^3.0.0-alpha.10",
     "@osjs/dialogs": "^3.0.0-alpha.11",
     "@osjs/panels": "^3.0.0-alpha.9",
-    "@osjs/server": "^3.0.0-alpha.12",
+    "@osjs/server": "^3.0.0-alpha.13",
     "@osjs/cli": "^3.0.0-alpha.14",
     "typeface-roboto": "0.0.54"
   },
