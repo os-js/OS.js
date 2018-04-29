@@ -1,6 +1,6 @@
 {
   "name": "@osjs/osjs",
-  "version": "3.0.0-alpha.16",
+  "version": "3.0.0-alpha.17",
   "description": "OS.js v3",
   "main": "index.js",
   "scripts": {
@@ -17,7 +17,7 @@
   "author": "Anders Evenrud <andersevenrud@gmail.com>",
   "license": "BSD-2-Clause",
   "dependencies": {
-    "@osjs/client": "^3.0.0-alpha.14",
+    "@osjs/client": "^3.0.0-alpha.15",
     "@osjs/gui": "^3.0.0-alpha.10",
     "@osjs/dialogs": "^3.0.0-alpha.11",
     "@osjs/panels": "^3.0.0-alpha.9",
