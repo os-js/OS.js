@@ -31,6 +31,7 @@
 const path = require('path');
 const root = path.resolve(__dirname, '../../');
 const {createWebpack} = require('@osjs/cli')
+const npm = require('../../package.json');
 
 const config = createWebpack(root, {
   html: {
@@ -40,6 +41,9 @@ const config = createWebpack(root, {
   },
   splitChunks: {
     chunks: 'all'
+  },
+  define: {
+    OSJS_VERSION: npm.version
   },
   entry: {
     osjs: [
