@@ -25,8 +25,6 @@
     "@osjs/cli": "^3.0.0-alpha.16",
     "typeface-roboto": "0.0.54"
   },
-  "devDependencies": {
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/osjs/OS.js.git"
