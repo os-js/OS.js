@@ -28,14 +28,22 @@
  * @licence Simplified BSD License
  */
 
-const {Core} = require('@osjs/server');
+const {
+  Core,
+  CoreServiceProvider,
+  PackageServiceProvider,
+  VFSServiceProvider,
+  AuthServiceProvider,
+  SettingsServiceProvider
+} = require('@osjs/server');
 const config = require('../conf/server.js');
 
-const instance = new Core(config, {
-  // This will register default provided service providers
-  // in the core
-  registerDefault: true
-});
+const instance = new Core(config, {});
+instance.register(CoreServiceProvider);
+instance.register(PackageServiceProvider);
+instance.register(VFSServiceProvider);
+instance.register(AuthServiceProvider);
+instance.register(SettingsServiceProvider);
 
 process.on('SIGTERM', () => instance.destroy());
 process.on('SIGINT', () => instance.destroy());

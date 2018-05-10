@@ -28,20 +28,31 @@
  * @licence Simplified BSD License
  */
 
-import {Core} from '@osjs/client';
+import {
+  Core,
+  CoreServiceProvider,
+  DesktopServiceProvider,
+  VFSServiceProvider,
+  NotificationServiceProvider,
+  SettingsServiceProvider,
+  AuthServiceProvider
+} from '@osjs/client';
+
 import {PanelServiceProvider} from '@osjs/panels';
 import {GUIServiceProvider} from '@osjs/gui';
 import {DialogServiceProvider} from '@osjs/dialogs';
 import * as config from '../conf/client.js';
 
 const init = () => {
-  const osjs = new Core(config, {
-    // This will register default provided service providers
-    // in the core
-    registerDefault: true
-  });
+  const osjs = new Core(config, {});
 
   // Register your service providers
+  osjs.register(CoreServiceProvider);
+  osjs.register(DesktopServiceProvider);
+  osjs.register(VFSServiceProvider);
+  osjs.register(NotificationServiceProvider);
+  osjs.register(SettingsServiceProvider, {before: true});
+  osjs.register(AuthServiceProvider, {before: true});
   osjs.register(PanelServiceProvider);
   osjs.register(DialogServiceProvider);
   osjs.register(GUIServiceProvider);
