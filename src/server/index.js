@@ -36,9 +36,10 @@ const {
   AuthServiceProvider,
   SettingsServiceProvider
 } = require('@osjs/server');
-const config = require('../conf/server.js');
 
+const config = require('../conf/server.js');
 const instance = new Core(config, {});
+
 instance.register(CoreServiceProvider);
 instance.register(PackageServiceProvider);
 instance.register(VFSServiceProvider);
