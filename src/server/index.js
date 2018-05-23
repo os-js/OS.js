@@ -40,7 +40,7 @@ const {
 const config = require('../conf/server.js');
 const instance = new Core(config, {});
 
-instance.register(CoreServiceProvider);
+instance.register(CoreServiceProvider, {before: true});
 instance.register(PackageServiceProvider);
 instance.register(VFSServiceProvider);
 instance.register(AuthServiceProvider);
