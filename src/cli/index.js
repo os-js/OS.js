@@ -28,4 +28,4 @@
  * @licence Simplified BSD License
  */
 
-module.exports = {};
+module.exports = [];
