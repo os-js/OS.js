@@ -1,15 +1,16 @@
 {
   "name": "@osjs/osjs",
-  "version": "3.0.0-alpha.23",
+  "version": "3.0.0-alpha.24",
   "description": "OS.js v3",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "node src/server/index.js",
     "build:manifest": "osjs-cli build:manifest",
     "build:dist": "osjs-cli build:dist",
     "watch:dist": "osjs-cli build:dist --watch",
-    "serve": "node src/server/index.js",
-    "install:package": "osjs-install-package"
+    "package:install": "osjs-cli package:install",
+    "package:discover": "osjs-cli package:discover"
   },
   "keywords": [
     "osjs"
@@ -17,12 +18,12 @@
   "author": "Anders Evenrud <andersevenrud@gmail.com>",
   "license": "BSD-2-Clause",
   "dependencies": {
-    "@osjs/cli": "^3.0.0-alpha.19",
-    "@osjs/client": "^3.0.0-alpha.29",
-    "@osjs/dialogs": "^3.0.0-alpha.13",
+    "@osjs/cli": "^3.0.0-alpha.21",
+    "@osjs/client": "^3.0.0-alpha.30",
+    "@osjs/dialogs": "^3.0.0-alpha.14",
     "@osjs/gui": "^3.0.0-alpha.13",
-    "@osjs/panels": "^3.0.0-alpha.14",
-    "@osjs/server": "^3.0.0-alpha.21",
+    "@osjs/panels": "^3.0.0-alpha.15",
+    "@osjs/server": "^3.0.0-alpha.22",
     "typeface-roboto": "0.0.54"
   },
   "repository": {
