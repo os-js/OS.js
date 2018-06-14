@@ -37,8 +37,8 @@ cd OS.js
 npm install
 
 # Now install applications and themes, ex:
-npm run install:package -- https://github.com/os-js/osjs-standard-theme.git
-npm run install:package -- https://github.com/os-js/osjs-example-application.git
+npm run package:install -- https://github.com/os-js/osjs-standard-theme.git
+npm run package:install -- https://github.com/os-js/osjs-example-application.git
 
 # Build package manifests
 npm run build:manifest
