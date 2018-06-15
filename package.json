@@ -18,7 +18,7 @@
   "author": "Anders Evenrud <andersevenrud@gmail.com>",
   "license": "BSD-2-Clause",
   "dependencies": {
-    "@osjs/cli": "^3.0.0-alpha.21",
+    "@osjs/cli": "^3.0.0-alpha.22",
     "@osjs/client": "^3.0.0-alpha.30",
     "@osjs/dialogs": "^3.0.0-alpha.14",
     "@osjs/gui": "^3.0.0-alpha.13",

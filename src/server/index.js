@@ -37,7 +37,7 @@ const {
   SettingsServiceProvider
 } = require('@osjs/server');
 
-const config = require('../conf/server.js');
+const config = require('./config.js');
 const instance = new Core(config, {});
 
 instance.register(CoreServiceProvider, {before: true});
