@@ -1,6 +1,6 @@
 {
   "name": "@osjs/osjs",
-  "version": "3.0.0-alpha.25",
+  "version": "3.0.0-alpha.26",
   "description": "OS.js v3",
   "main": "index.js",
   "scripts": {
@@ -19,11 +19,11 @@
   "license": "BSD-2-Clause",
   "dependencies": {
     "@osjs/cli": "^3.0.0-alpha.22",
-    "@osjs/client": "^3.0.0-alpha.30",
-    "@osjs/dialogs": "^3.0.0-alpha.14",
-    "@osjs/gui": "^3.0.0-alpha.13",
-    "@osjs/panels": "^3.0.0-alpha.15",
-    "@osjs/server": "^3.0.0-alpha.22",
+    "@osjs/client": "^3.0.0-alpha.35",
+    "@osjs/dialogs": "^3.0.0-alpha.16",
+    "@osjs/gui": "^3.0.0-alpha.14",
+    "@osjs/panels": "^3.0.0-alpha.16",
+    "@osjs/server": "^3.0.0-alpha.24",
     "typeface-roboto": "0.0.54"
   },
   "repository": {
