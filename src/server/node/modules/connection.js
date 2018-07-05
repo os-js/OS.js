@@ -36,6 +36,7 @@ const parser = require('cookie-parser');
 const morgan = require('morgan');
 const proxy = require('http-proxy');
 const jsonTransform = require('express-json-transform');
+const fs = require('fs-extra');
 
 const Settings = require('./../settings.js');
 const Modules = require('./../modules.js');
@@ -47,6 +48,8 @@ const tmpdir = (() => {
     return '/tmp';
   }
 })();
+
+const keepFileTrail = (typeof Settings.get('audit') === 'undefined') ? Settings.get('audit.fileTrail') || false : false;
 
 /**
  * Base Connection Class
@@ -71,7 +74,8 @@ class Connection {
         this.app.use(morgan(Settings.get('logger.format')));
       }
 
-      this.app.use(bodyParser.json());
+      this.app.use(bodyParser.json({limit: '50mb'}));
+      this.app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
       this.app.use(jsonTransform((json) => {
         if ( json.error instanceof Error ) {
@@ -202,6 +206,7 @@ class Connection {
   getWrapper() {
     const methods = ['post', 'get', 'head', 'put', 'delete'];
     const wrapperMethods = {
+      httpServer: () => this.httpServer,
       broadcastMessage: (u, a, m) => this.broadcast(u, a, m),
       isWebsocket: () => !!this.getWebsocket(),
       getServer: () => this.getServer(),
@@ -237,6 +242,9 @@ class Connection {
     };
 
     const result = Object.assign({
+      set: (name, el) => {
+        this.app.set(name, el);
+      },
       use: (cb) => {
         if ( cb.length > 4 ) { // We have one extra argument in wrapper
           this.app.use(function(err, req, res, next) {
@@ -251,15 +259,39 @@ class Connection {
         }
       },
       upload: (q, cb) => {
-        const form = new formidable.IncomingForm({
-          uploadDir: tmpdir
-        });
-
         this.app.post(q, (req, res, next) => {
+
+          const form = new formidable.IncomingForm({ // moved inside the post method
+            uploadDir: tmpdir
+          });
+
+          // /tmp file cleanup after request is finished
           form.parse(req, (err, fields, files) => {
+            if (err) {
+              cb(createHttpObject(req, res, next, {err}), req, res, next);
+              return;
+            }
+
+            function cleanupFiles() {
+              res.removeListener('finish', cleanupFiles);
+              res.removeListener('close', cleanupFiles);
+
+              for (const key of Object.keys(files)) {
+                fs.remove(files[key].path).catch(() => {});
+              }
+            }
+
+            if (keepFileTrail === false) {
+              res.on('finish', cleanupFiles);
+              res.on('close', cleanupFiles);
+            }
+
+            Object.assign(req, {fields, files});
+
             cb(createHttpObject(req, res, next, {fields, files}), req, res, next);
           });
         });
+
       }
     }, wrapperMethods);
 
@@ -277,3 +309,4 @@ class Connection {
 }
 
 module.exports = Connection;
+
