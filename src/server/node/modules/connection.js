@@ -49,11 +49,7 @@ const tmpdir = (() => {
   }
 })();
 
-// checks audit.fileTrail setting; defaults to false
-let keepFileTrail;
-if (Settings.get('audit') !== undefined) {
-  keepFileTrail = Settings.get('audit.fileTrail') || false;
-} else {keepFileTrail = false;}
+const keepFileTrail = (typeof Settings.get('audit') === 'undefined') ? Settings.get('audit.fileTrail') || false : false;
 
 /**
  * Base Connection Class
@@ -210,7 +206,7 @@ class Connection {
   getWrapper() {
     const methods = ['post', 'get', 'head', 'put', 'delete'];
     const wrapperMethods = {
-      httpServer: () => this.httpServer, // returns the http object returned from initialising express
+      httpServer: () => this.httpServer,
       broadcastMessage: (u, a, m) => this.broadcast(u, a, m),
       isWebsocket: () => !!this.getWebsocket(),
       getServer: () => this.getServer(),
@@ -246,10 +242,10 @@ class Connection {
     };
 
     const result = Object.assign({
-	  set: (name, el) => { // dded support for the set method
-		this.app.set(name, el);
+      set: (name, el) => {
+        this.app.set(name, el);
       },
-	  use: (cb) => {
+      use: (cb) => {
         if ( cb.length > 4 ) { // We have one extra argument in wrapper
           this.app.use(function(err, req, res, next) {
             const nargs = [createHttpObject(req, res, next), err, req, res, next];
@@ -271,23 +267,26 @@ class Connection {
 
           // /tmp file cleanup after request is finished
           form.parse(req, (err, fields, files) => {
-            if (err) { cb(createHttpObject(req, res, next, {err}), req, res, next); return; }
+            if (err) {
+              cb(createHttpObject(req, res, next, {err}), req, res, next);
+              return;
+            }
+
+            function cleanupFiles() {
+              res.removeListener('finish', cleanupFiles);
+              res.removeListener('close', cleanupFiles);
+
+              for (const key of Object.keys(files)) {
+                fs.remove(files[key].path).catch(() => {});
+              }
+            }
 
             if (keepFileTrail === false) {
-              function cleanupFiles () {
-                res.removeListener('finish', cleanupFiles);
-                res.removeListener('close', cleanupFiles);
-
-                for (const key of Object.keys(files)) {
-                  fs.remove(files[key].path).catch(() => {});
-                }
-              }
-
               res.on('finish', cleanupFiles);
               res.on('close', cleanupFiles);
             }
 
-            Object.assign(req, { fields, files });
+            Object.assign(req, {fields, files});
 
             cb(createHttpObject(req, res, next, {fields, files}), req, res, next);
           });
