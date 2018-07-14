@@ -54,11 +54,11 @@ WORKDIR /usr/src/osjs
 # Copy our sources
 COPY . .
 
-RUN mkdir -p sessions node_modules dist
+RUN mkdir -p node_modules dist
 
 # Set permissions and working user
-RUN chown -R $OSJS_USER node_modules sessions dist src/packages && \
-    chmod -R 744 node_modules sessions dist src/packages
+RUN chown -R $OSJS_USER node_modules dist src/packages && \
+    chmod -R 744 node_modules dist src/packages
 
 USER $OSJS_USER
 

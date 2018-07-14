@@ -4,3 +4,4 @@ node_modules
 src/packages/*
 /sessions
 /.env*
+/session-store.db

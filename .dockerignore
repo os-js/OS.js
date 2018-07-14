@@ -8,3 +8,4 @@ npm-debug.log
 /sessions
 /src/packages/*
 /.env.example
+/session-store.db
