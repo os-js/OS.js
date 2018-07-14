@@ -27,8 +27,14 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
-@import "~typeface-roboto/index.css";
 
+//
+// This is the client base stylesheet.
+// This is where you add all your dependent styles and override any
+// OS.js defaults.
+//
+
+@import "~typeface-roboto/index.css";
 @import "~@osjs/client/index.scss";
 @import "~@osjs/gui/index.scss";
 @import "~@osjs/dialogs/index.scss";

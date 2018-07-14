@@ -28,4 +28,10 @@
  * @licence Simplified BSD License
  */
 
+//
+// This is where you can place your custom CLI tasks
+// https://manual.os-js.org/v3/guide/cli/
+// https://manual.os-js.org/v3/resource/official/
+//
+
 module.exports = [];

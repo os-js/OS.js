@@ -28,6 +28,11 @@
  * @licence Simplified BSD License
  */
 
+//
+// This is the client configuration tree.
+// https://manual.os-js.org/v3/config/#client
+//
+
 module.exports = {
   public: '/',
   theme: 'Standard',

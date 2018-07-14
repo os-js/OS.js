@@ -28,6 +28,16 @@
  * @licence Simplified BSD License
  */
 
+//
+// This is the server bootstrapping script.
+// This is where you can register service providers or set up
+// your libraries etc.
+//
+// https://manual.os-js.org/v3/guide/provider/
+// https://manual.os-js.org/v3/install/
+// https://manual.os-js.org/v3/resource/official/
+//
+
 const {
   Core,
   CoreServiceProvider,
