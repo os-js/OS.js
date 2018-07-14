@@ -1,0 +1,79 @@
+#
+# OS.js - JavaScript Cloud/Web Desktop Platform
+#
+# Copyright (c) 2011-2018, Anders Evenrud <andersevenrud@gmail.com>
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice, this
+#    list of conditions and the following disclaimer
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
+#    and/or other materials provided with the distribution
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+# @author  Anders Evenrud <andersevenrud@gmail.com>
+# @licence Simplified BSD License
+#
+
+# THIS IS ONLY INTENDED FOR DEVELOPMENT USAGE
+
+# Build: docker build -t username/osjs:dev
+# Usage: docker run --user $(id -u):$(id -g) username/osjs:dev
+# Using docker-compose is recommended
+# You can freely modify this file
+
+FROM node:10
+
+# Default Environment
+ARG NODE_ENV=production
+ARG OSJS_PORT=8000
+ARG OSJS_USER=node
+ENV NODE_ENV $NODE_ENV
+ENV OSJS_PORT $OSJS_PORT
+ENV OSJS_USER $OSJS_USER
+
+# Install system dependencies
+RUN npm install -g nodemon
+
+# Working area
+WORKDIR /usr/src/osjs
+
+# Copy our sources
+COPY . .
+
+RUN mkdir -p sessions node_modules dist
+
+# Set permissions and working user
+RUN chown -R $OSJS_USER node_modules sessions dist src/packages && \
+    chmod -R 744 node_modules sessions dist src/packages
+
+USER $OSJS_USER
+
+# Install dependencies
+RUN npm install
+
+# Install OS.js packages
+RUN npx osjs-cli package:install https://github.com/os-js/osjs-standard-theme.git
+RUN npx osjs-cli package:install https://github.com/os-js/osjs-example-application.git
+
+# Build OS.js
+RUN npx osjs-cli build:manifest
+RUN npx osjs-cli build:dist
+
+# Start the node server
+EXPOSE $OSJS_PORT
+
+CMD ["npm", "run", "serve"]

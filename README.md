@@ -12,7 +12,7 @@
 
 # OS.js
 
-This is the base project that can be used to make, deploy or develop OS.js.
+This is the OS.js base project that you can use as a template to make your own distributions, installations and do general development.
 
 **PLEASE NOTE THAT THIS IS AN ALPHA PRE-RELEASE AND SUBJECT TO CHANGE WITHOUT NOTICE**
 
@@ -22,6 +22,8 @@ https://github.com/os-js/OS.js/issues/671
 
 Visit the [official demo](https://demo.os-js.org) for a preview version. Please note that some features are disabled and might be outdated or unavailable at times.
 
+*Official v3 demo coming soon*
+
 ![ScreenShot](https://www.os-js.org/screenshot.png)
 
 ## Requirements
@@ -30,10 +32,26 @@ Node 8 (or newer) and any modern web-browser.
 
 ## Installation
 
+> OS.js runs on `localhost:8000` by default.
+
 ```
 # Clone *only* the v3 branch
 git clone -b v3 --single-branch https://github.com/os-js/OS.js.git
 cd OS.js
+```
+
+You can now either use Docker:
+
+```
+cp .env.example .env
+edit .env
+docker-compose up
+```
+
+Or set up locally on your own system:
+
+```
+# Install dependencies
 npm install
 
 # Now install applications and themes, ex:

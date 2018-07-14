@@ -2,3 +2,5 @@
 .tern-*
 node_modules
 src/packages/*
+/sessions
+/.env*
