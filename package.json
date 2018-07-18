@@ -19,12 +19,12 @@
   "author": "Anders Evenrud <andersevenrud@gmail.com>",
   "license": "BSD-2-Clause",
   "dependencies": {
-    "@osjs/cli": "^3.0.0-alpha.26",
-    "@osjs/client": "^3.0.0-alpha.44",
-    "@osjs/dialogs": "^3.0.0-alpha.23",
-    "@osjs/gui": "^3.0.0-alpha.25",
-    "@osjs/panels": "^3.0.0-alpha.21",
-    "@osjs/server": "^3.0.0-alpha.29",
+    "@osjs/cli": "^3.0.0-alpha.27",
+    "@osjs/client": "^3.0.0-alpha.45",
+    "@osjs/dialogs": "^3.0.0-alpha.24",
+    "@osjs/gui": "^3.0.0-alpha.27",
+    "@osjs/panels": "^3.0.0-alpha.22",
+    "@osjs/server": "^3.0.0-alpha.30",
     "typeface-roboto": "0.0.54"
   },
   "repository": {
