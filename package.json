@@ -20,7 +20,7 @@
   "author": "Anders Evenrud <andersevenrud@gmail.com>",
   "license": "BSD-2-Clause",
   "dependencies": {
-    "@osjs/cli": "^3.0.0-alpha.30",
+    "@osjs/cli": "^3.0.0-alpha.31",
     "@osjs/client": "^3.0.0-alpha.49",
     "@osjs/dialogs": "^3.0.0-alpha.25",
     "@osjs/gui": "^3.0.0-alpha.28",
