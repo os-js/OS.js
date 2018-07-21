@@ -10,6 +10,7 @@
     "build:dist": "osjs-cli build:dist",
     "watch:dist": "osjs-cli build:dist --watch",
     "package:install": "osjs-cli package:install",
+    "package:upgrade": "osjs-cli package:upgrade",
     "package:discover": "osjs-cli package:discover",
     "package:create": "osjs-cli package:create"
   },
@@ -19,12 +20,12 @@
   "author": "Anders Evenrud <andersevenrud@gmail.com>",
   "license": "BSD-2-Clause",
   "dependencies": {
-    "@osjs/cli": "^3.0.0-alpha.28",
+    "@osjs/cli": "^3.0.0-alpha.29",
     "@osjs/client": "^3.0.0-alpha.47",
     "@osjs/dialogs": "^3.0.0-alpha.25",
     "@osjs/gui": "^3.0.0-alpha.28",
     "@osjs/panels": "^3.0.0-alpha.23",
-    "@osjs/server": "^3.0.0-alpha.32",
+    "@osjs/server": "^3.0.0-alpha.33",
     "typeface-roboto": "0.0.54"
   },
   "repository": {
