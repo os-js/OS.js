@@ -7,26 +7,45 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "node src/server/index.js",
     "build:manifest": "osjs-cli build:manifest",
-    "build:dist": "osjs-cli build:dist",
-    "watch:dist": "osjs-cli build:dist --watch",
-    "package:install": "osjs-cli package:install",
-    "package:upgrade": "osjs-cli package:upgrade",
     "package:discover": "osjs-cli package:discover",
-    "package:create": "osjs-cli package:create"
+    "package:create": "osjs-cli package:create",
+    "build": "webpack",
+    "watch": "webpack --watch"
   },
   "keywords": [
     "osjs"
   ],
   "author": "Anders Evenrud <andersevenrud@gmail.com>",
   "license": "BSD-2-Clause",
-  "dependencies": {
+  "devDependencies": {
+    "@babel/core": "^7.0.0-beta.54",
+    "@babel/plugin-transform-runtime": "^7.0.0-beta.54",
+    "@babel/preset-env": "^7.0.0-beta.54",
+    "@babel/runtime": "^7.0.0-beta.54",
     "@osjs/cli": "^3.0.0-alpha.31",
     "@osjs/client": "^3.0.0-alpha.51",
     "@osjs/dialogs": "^3.0.0-alpha.27",
     "@osjs/gui": "^3.0.0-alpha.30",
     "@osjs/panels": "^3.0.0-alpha.24",
-    "@osjs/server": "^3.0.0-alpha.34",
-    "typeface-roboto": "0.0.54"
+    "babel-loader": "^8.0.0-beta.4",
+    "css-loader": "^1.0.0",
+    "eslint": "^5.1.0",
+    "file-loader": "^1.1.11",
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.4.1",
+    "node-sass": "^4.9.2",
+    "optimize-css-assets-webpack-plugin": "^5.0.0",
+    "sass-loader": "^7.0.3",
+    "source-map-loader": "^0.2.3",
+    "stylelint": "^9.3.0",
+    "stylelint-config-standard": "^18.2.0",
+    "stylelint-scss": "^3.1.3",
+    "typeface-roboto": "0.0.54",
+    "webpack": "^4.16.2",
+    "webpack-cli": "^3.1.0"
+  },
+  "dependencies": {
+    "@osjs/server": "^3.0.0-alpha.35"
   },
   "repository": {
     "type": "git",

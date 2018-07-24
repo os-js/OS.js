@@ -66,12 +66,13 @@ USER $OSJS_USER
 RUN npm install
 
 # Install OS.js packages
-RUN npx osjs-cli package:install https://github.com/os-js/osjs-standard-theme.git
-RUN npx osjs-cli package:install https://github.com/os-js/osjs-example-application.git
+RUN npm install @osjs/standard-theme
+RUN npm install @osjs/example-application
 
 # Build OS.js
-RUN npx osjs-cli build:manifest
-RUN npx osjs-cli build:dist
+RUN npm run package:discover
+RUN npm run build:manifest
+RUN npm run build
 
 # Start the node server
 EXPOSE $OSJS_PORT

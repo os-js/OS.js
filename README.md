@@ -54,15 +54,18 @@ Or set up locally on your own system:
 # Install dependencies
 npm install
 
-# Now install applications and themes, ex:
-npm run package:install -- https://github.com/os-js/osjs-standard-theme.git
-npm run package:install -- https://github.com/os-js/osjs-example-application.git
+# Select your packages
+npm install @osjs/standard-theme
+npm install @osjs/example-application
+
+# Discover installed packages
+npm run package:discover
 
 # Build package manifests
 npm run build:manifest
 
-# Build your project
-npm run build:dist
+# Build your client
+npm run build
 
 # Start serving
 npm run serve
