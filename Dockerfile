@@ -71,7 +71,6 @@ RUN npm install @osjs/example-application
 
 # Build OS.js
 RUN npm run package:discover
-RUN npm run build:manifest
 RUN npm run build
 
 # Start the node server
