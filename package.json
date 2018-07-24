@@ -46,7 +46,7 @@
     "webpack-cli": "^3.1.0"
   },
   "dependencies": {
-    "@osjs/server": "^3.0.0-alpha.35"
+    "@osjs/server": "^3.0.0-alpha.36"
   },
   "repository": {
     "type": "git",
