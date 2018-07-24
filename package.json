@@ -21,10 +21,10 @@
   "license": "BSD-2-Clause",
   "dependencies": {
     "@osjs/cli": "^3.0.0-alpha.31",
-    "@osjs/client": "^3.0.0-alpha.49",
-    "@osjs/dialogs": "^3.0.0-alpha.25",
-    "@osjs/gui": "^3.0.0-alpha.28",
-    "@osjs/panels": "^3.0.0-alpha.23",
+    "@osjs/client": "^3.0.0-alpha.51",
+    "@osjs/dialogs": "^3.0.0-alpha.27",
+    "@osjs/gui": "^3.0.0-alpha.30",
+    "@osjs/panels": "^3.0.0-alpha.24",
     "@osjs/server": "^3.0.0-alpha.34",
     "typeface-roboto": "0.0.54"
   },
