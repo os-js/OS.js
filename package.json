@@ -28,6 +28,7 @@
     "@osjs/gui": "^3.0.0-alpha.30",
     "@osjs/panels": "^3.0.0-alpha.24",
     "babel-loader": "^8.0.0-beta.4",
+    "copy-webpack-plugin": "^4.5.2",
     "css-loader": "^1.0.0",
     "eslint": "^5.1.0",
     "file-loader": "^1.1.11",
