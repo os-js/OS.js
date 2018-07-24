@@ -48,18 +48,18 @@ const {
 } = require('@osjs/server');
 
 const config = require('./config.js');
-const instance = new Core(config, {});
+const osjs = new Core(config, {});
 
-instance.register(CoreServiceProvider, {before: true});
-instance.register(PackageServiceProvider);
-instance.register(VFSServiceProvider);
-instance.register(AuthServiceProvider);
-instance.register(SettingsServiceProvider);
+osjs.register(CoreServiceProvider, {before: true});
+osjs.register(PackageServiceProvider);
+osjs.register(VFSServiceProvider);
+osjs.register(AuthServiceProvider);
+osjs.register(SettingsServiceProvider);
 
-process.on('SIGTERM', () => instance.destroy());
-process.on('SIGINT', () => instance.destroy());
-process.on('exit', () => instance.destroy());
+process.on('SIGTERM', () => osjs.destroy());
+process.on('SIGINT', () => osjs.destroy());
+process.on('exit', () => osjs.destroy());
 process.on('uncaughtException', e => console.error(e));
 process.on('unhandledRejection', e => console.error(e));
 
-instance.boot();
+osjs.boot();
