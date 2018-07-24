@@ -61,9 +61,6 @@ npm install @osjs/example-application
 # Discover installed packages
 npm run package:discover
 
-# Build package manifests
-npm run build:manifest
-
 # Build your client
 npm run build
 

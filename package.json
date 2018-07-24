@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve": "node src/server/index.js",
-    "build:manifest": "osjs-cli build:manifest",
+    "build:manifest": "osjs-cli package:discover",
     "package:discover": "osjs-cli package:discover",
     "package:create": "osjs-cli package:create",
     "build": "webpack",
@@ -22,7 +22,7 @@
     "@babel/plugin-transform-runtime": "^7.0.0-beta.54",
     "@babel/preset-env": "^7.0.0-beta.54",
     "@babel/runtime": "^7.0.0-beta.54",
-    "@osjs/cli": "^3.0.0-alpha.34",
+    "@osjs/cli": "^3.0.0-alpha.35",
     "@osjs/client": "^3.0.0-alpha.51",
     "@osjs/dialogs": "^3.0.0-alpha.27",
     "@osjs/gui": "^3.0.0-alpha.30",
