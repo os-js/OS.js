@@ -35,10 +35,10 @@
 //
 
 @import "~typeface-roboto/index.css";
-@import "~@osjs/client/index.scss";
-@import "~@osjs/gui/index.scss";
-@import "~@osjs/dialogs/index.scss";
-@import "~@osjs/panels/index.scss";
+@import "~@osjs/client/dist/main.css";
+@import "~@osjs/gui/dist/main.css";
+@import "~@osjs/dialogs/dist/main.css";
+@import "~@osjs/panels/dist/main.css";
 
 body,
 html {
