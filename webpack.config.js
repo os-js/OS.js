@@ -2,7 +2,6 @@ const path = require('path');
 const mode = process.env.NODE_ENV || 'development';
 const minimize = mode === 'production';
 const webpack = require('webpack');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const {DefinePlugin} = webpack;
