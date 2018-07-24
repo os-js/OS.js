@@ -68,6 +68,8 @@ npm run build
 npm run serve
 ```
 
+For a list of packages, see the [official resource list](https://manual.os-js.org/v3/resource/official/).
+
 ## Documentation
 
 * [Manuals](https://manual.os-js.org/v3/)
