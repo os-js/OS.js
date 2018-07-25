@@ -51,6 +51,7 @@ services:
     volumes:
       - ./src:/usr/src/osjs/src
       - ./vfs:/usr/src/osjs/vfs
+      - ./packages.json:/usr/src/osjs/packages.json
       - ./package.json:/usr/src/osjs/package.json
       - ./package-lock.json:/usr/src/osjs/package-lock.json
     ports:
