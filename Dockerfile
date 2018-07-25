@@ -51,7 +51,7 @@ WORKDIR /usr/src/osjs
 COPY . .
 
 # Install dependencies
-RUN npm install
+RUN NODE_ENV=development npm install
 
 # Install OS.js packages
 RUN npm install @osjs/standard-theme
