@@ -55,7 +55,12 @@ RUN NODE_ENV=development npm install
 
 # Install OS.js packages
 RUN npm install @osjs/standard-theme
-RUN npm install @osjs/example-application
+RUN npm install @osjs/calculator-application
+RUN npm install @osjs/draw-application
+RUN npm install @osjs/htmlviewer-application
+RUN npm install @osjs/musicplayer-application
+RUN npm install @osjs/preview-application
+RUN npm install @osjs/textpad-application
 
 # Build OS.js
 RUN npm run package:discover
