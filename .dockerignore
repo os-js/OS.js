@@ -9,3 +9,4 @@ npm-debug.log
 /src/packages/*
 /.env.example
 /session-store.db
+/packages.json

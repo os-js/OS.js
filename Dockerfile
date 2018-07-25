@@ -39,11 +39,7 @@ FROM node:10
 
 # Default Environment
 ARG NODE_ENV=production
-ARG OSJS_PORT=8000
-ARG OSJS_USER=node
 ENV NODE_ENV $NODE_ENV
-ENV OSJS_PORT $OSJS_PORT
-ENV OSJS_USER $OSJS_USER
 
 # Install system dependencies
 RUN npm install -g nodemon
@@ -51,16 +47,8 @@ RUN npm install -g nodemon
 # Working area
 WORKDIR /usr/src/osjs
 
-# Copy our sources
+# Copy our npm setup
 COPY . .
-
-RUN mkdir -p node_modules dist
-
-# Set permissions and working user
-RUN chown -R $OSJS_USER node_modules dist && \
-    chmod -R 744 node_modules dist
-
-USER $OSJS_USER
 
 # Install dependencies
 RUN npm install
@@ -74,6 +62,6 @@ RUN npm run package:discover
 RUN npm run build
 
 # Start the node server
-EXPOSE $OSJS_PORT
+EXPOSE 8000
 
 CMD ["npm", "run", "serve"]

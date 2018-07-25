@@ -38,21 +38,15 @@ version: '3'
 
 services:
   osjs:
-    user: "${DOCKER_OSJS_USER}"
     build:
       context: .
       args:
         - NODE_ENV=${DOCKER_NODE_ENV}
-        - OSJS_PORT=${DOCKER_OSJS_PORT}
-        - OSJS_USER=${DOCKER_OSJS_USER}
     environment:
       - NODE_ENV=${DOCKER_NODE_ENV}
     command: nodemon --watch package-lock.json --watch src/server src/server/index.js
     volumes:
       - ./src:/usr/src/osjs/src
       - ./vfs:/usr/src/osjs/vfs
-      - ./packages.json:/usr/src/osjs/packages.json
-      - ./package.json:/usr/src/osjs/package.json
-      - ./package-lock.json:/usr/src/osjs/package-lock.json
     ports:
-      - "8000:${DOCKER_OSJS_PORT}"
+      - "8000:8000"
