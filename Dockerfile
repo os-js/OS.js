@@ -54,17 +54,18 @@ COPY . .
 RUN NODE_ENV=development npm install
 
 # Install OS.js packages
-RUN npm install @osjs/standard-theme
-RUN npm install @osjs/calculator-application
-RUN npm install @osjs/draw-application
-RUN npm install @osjs/htmlviewer-application
-RUN npm install @osjs/musicplayer-application
-RUN npm install @osjs/preview-application
-RUN npm install @osjs/textpad-application
+RUN npm install \
+  @osjs/standard-theme \
+  @osjs/calculator-application \
+  @osjs/draw-application \
+  @osjs/htmlviewer-application \
+  @osjs/musicplayer-application \
+  @osjs/preview-application \
+  @osjs/textpad-application
 
 # Build OS.js
-RUN npm run package:discover
-RUN npm run build
+RUN npm run package:discover && \
+    npm run build
 
 # Start the node server
 EXPOSE 8000
