@@ -57,8 +57,8 @@ COPY . .
 RUN mkdir -p node_modules dist
 
 # Set permissions and working user
-RUN chown -R $OSJS_USER node_modules dist src/packages && \
-    chmod -R 744 node_modules dist src/packages
+RUN chown -R $OSJS_USER node_modules dist && \
+    chmod -R 744 node_modules dist
 
 USER $OSJS_USER
 
