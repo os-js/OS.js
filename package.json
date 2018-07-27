@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "eslint": "eslint src/client/**/*.js src/server/**/*.js",
+    "stylelint": "stylelint src/client/*.scss",
     "serve": "node src/server/index.js",
     "build:manifest": "osjs-cli package:discover",
     "package:discover": "osjs-cli package:discover",
