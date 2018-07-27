@@ -78,7 +78,6 @@ You can also build a Docker image yourself
 
 ```
 cp .env.example .env
-edit .env
 docker-compose up
 ```
 

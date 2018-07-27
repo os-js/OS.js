@@ -42,11 +42,13 @@ services:
       context: .
       args:
         - NODE_ENV=${DOCKER_NODE_ENV}
+        - NODE_PORT=${DOCKER_NODE_PORT}
     environment:
       - NODE_ENV=${DOCKER_NODE_ENV}
-    command: nodemon --watch package-lock.json --watch src/server src/server/index.js
+      - NODE_PORT=${DOCKER_NODE_PORT}
+    #command: nodemon --watch package-lock.json --watch src/server src/server/index.js
     volumes:
       - ./src:/usr/src/osjs/src
       - ./vfs:/usr/src/osjs/vfs
     ports:
-      - "8000:8000"
+      - "${DOCKER_NODE_PORT}:${DOCKER_NODE_PORT}"

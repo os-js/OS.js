@@ -39,7 +39,9 @@ FROM node:10
 
 # Default Environment
 ARG NODE_ENV=production
+ARG NODE_PORT=8000
 ENV NODE_ENV $NODE_ENV
+ENV NODE_PORT $NODE_PORT
 
 # Install system dependencies
 RUN npm install -g nodemon
@@ -68,6 +70,6 @@ RUN npm run package:discover && \
     npm run build
 
 # Start the node server
-EXPOSE 8000
+EXPOSE $NODE_PORT
 
-CMD ["npm", "run", "serve"]
+CMD npm run serve -- --port=${NODE_PORT}
