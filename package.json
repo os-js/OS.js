@@ -25,7 +25,7 @@
     "@babel/preset-env": "^7.0.0-beta.54",
     "@babel/runtime": "^7.0.0-beta.54",
     "@osjs/cli": "^3.0.0-alpha.37",
-    "@osjs/client": "^3.0.0-alpha.53",
+    "@osjs/client": "^3.0.0-alpha.54",
     "@osjs/dialogs": "^3.0.0-alpha.28",
     "@osjs/gui": "^3.0.0-alpha.32",
     "@osjs/panels": "^3.0.0-alpha.26",
