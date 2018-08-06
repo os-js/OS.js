@@ -57,7 +57,6 @@ RUN NODE_ENV=development npm install
 
 # Install OS.js packages
 RUN npm install \
-  @osjs/standard-theme \
   @osjs/calculator-application \
   @osjs/draw-application \
   @osjs/htmlviewer-application \

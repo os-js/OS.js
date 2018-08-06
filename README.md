@@ -57,7 +57,6 @@ cd OS.js
 npm install
 
 # Select your packages
-npm install @osjs/standard-theme
 npm install @osjs/example-application
 
 # Discover installed packages

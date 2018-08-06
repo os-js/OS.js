@@ -24,8 +24,8 @@
     "@babel/plugin-transform-runtime": "^7.0.0-beta.54",
     "@babel/preset-env": "^7.0.0-beta.54",
     "@babel/runtime": "^7.0.0-beta.54",
-    "@osjs/cli": "^3.0.0-alpha.37",
-    "@osjs/client": "^3.0.0-alpha.55",
+    "@osjs/cli": "^3.0.0-alpha.38",
+    "@osjs/client": "^3.0.0-alpha.56",
     "@osjs/dialogs": "^3.0.0-alpha.28",
     "@osjs/gui": "^3.0.0-alpha.32",
     "@osjs/panels": "^3.0.0-alpha.26",
@@ -48,7 +48,9 @@
     "webpack-cli": "^3.1.0"
   },
   "dependencies": {
-    "@osjs/server": "^3.0.0-alpha.37"
+    "@osjs/gnome-icons": "^3.0.0-alpha.0",
+    "@osjs/server": "^3.0.0-alpha.37",
+    "@osjs/standard-theme": "^3.0.0-alpha.25"
   },
   "repository": {
     "type": "git",
