@@ -49,7 +49,7 @@
   },
   "dependencies": {
     "@osjs/gnome-icons": "^3.0.0-alpha.0",
-    "@osjs/server": "^3.0.0-alpha.37",
+    "@osjs/server": "^3.0.0-alpha.38",
     "@osjs/standard-theme": "^3.0.0-alpha.25"
   },
   "repository": {
