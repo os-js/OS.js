@@ -34,6 +34,17 @@ Node 8 (or newer) and any modern web-browser.
 
 > OS.js runs on `localhost:8000` by default.
 
+By default the following packages  are installed by default:
+
+- `@osjs/standard-theme`
+- `@osjs/gnome-icons`
+- `@osjs/calculator-application`
+- `@osjs/draw-application`
+- `@osjs/htmlviewer-application`
+- `@osjs/musicplayer-application`
+- `@osjs/preview-application`
+- `@osjs/textpad-application`
+
 ### Docker
 
 You can run a demo using docker without checkout out any source-code:
@@ -56,7 +67,7 @@ cd OS.js
 # Install dependencies
 npm install
 
-# Select your packages
+# Optionally install extra packages:
 npm install @osjs/example-application
 
 # Discover installed packages

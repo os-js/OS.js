@@ -48,9 +48,15 @@
     "webpack-cli": "^3.1.0"
   },
   "dependencies": {
+    "@osjs/calculator-application": "^1.1.3",
+    "@osjs/draw-application": "^1.1.2",
     "@osjs/gnome-icons": "^3.0.0-alpha.0",
+    "@osjs/htmlviewer-application": "^1.1.2",
+    "@osjs/musicplayer-application": "^1.1.2",
+    "@osjs/preview-application": "^1.1.2",
     "@osjs/server": "^3.0.0-alpha.39",
-    "@osjs/standard-theme": "^3.0.0-alpha.25"
+    "@osjs/standard-theme": "^3.0.0-alpha.25",
+    "@osjs/textpad-application": "^1.1.2"
   },
   "repository": {
     "type": "git",
