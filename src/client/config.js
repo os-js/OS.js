@@ -35,7 +35,6 @@
 
 module.exports = {
   public: '/',
-  theme: 'Standard',
   auth: {
     login: {
       username: 'demo',
