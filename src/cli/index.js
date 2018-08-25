@@ -34,4 +34,7 @@
 // https://manual.os-js.org/v3/resource/official/
 //
 
-module.exports = [];
+module.exports = {
+  discover: [],
+  tasks: []
+};
