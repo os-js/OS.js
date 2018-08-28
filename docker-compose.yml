@@ -46,7 +46,7 @@ services:
     environment:
       - NODE_ENV=${DOCKER_NODE_ENV}
       - NODE_PORT=${DOCKER_NODE_PORT}
-    #command: nodemon --watch package-lock.json --watch src/server src/server/index.js
+    command: nodemon --watch package-lock.json --watch src/server src/server/index.js
     volumes:
       - ./src:/usr/src/osjs/src
       - ./vfs:/usr/src/osjs/vfs
