@@ -27,6 +27,7 @@
  * @author  Anders Evenrud <andersevenrud@gmail.com>
  * @licence Simplified BSD License
  */
+const path = require('path');
 
 //
 // This is where you can place your custom CLI tasks
