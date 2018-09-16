@@ -1,7 +1,6 @@
 .swp
 .tern-*
 node_modules
-src/packages/*
 /packages.json
 /sessions
 /.env*

@@ -35,6 +35,8 @@
 //
 
 module.exports = {
-  discover: [],
+  discover: [
+    path.resolve(__dirname, '../packages') // OS.js/src/packages
+  ],
   tasks: []
 };
