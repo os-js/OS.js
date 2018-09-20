@@ -63,7 +63,8 @@ RUN npm install \
   @osjs/htmlviewer-application \
   @osjs/musicplayer-application \
   @osjs/preview-application \
-  @osjs/textpad-application
+  @osjs/textpad-application \
+  @osjs/settings-application
 
 # Build OS.js
 RUN npm run package:discover && \

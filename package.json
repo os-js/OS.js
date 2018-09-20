@@ -56,6 +56,7 @@
     "@osjs/panels": "^3.0.0-alpha.30",
     "@osjs/preview-application": "^1.1.2",
     "@osjs/server": "^3.0.0-alpha.39",
+    "@osjs/settings-application": "^1.0.0",
     "@osjs/standard-theme": "^3.0.0-alpha.26",
     "@osjs/textpad-application": "^1.1.3"
   },
