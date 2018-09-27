@@ -12,7 +12,13 @@
 [![Donate](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=andersevenrud%40gmail%2ecom&lc=NO&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted)
 [![Support](https://img.shields.io/badge/patreon-support-orange.svg)](https://www.patreon.com/user?u=2978551&ty=h&u=2978551)
 
-**NOTE: [v3 is in development](https://github.com/os-js/OS.js/tree/v3)**
+## v2 deprecation notice
+
+**OS.js v3 is under development and will soon be released**.
+
+This version (v2) will then become deprecated.
+
+*See [v3 branch](https://github.com/os-js/OS.js/tree/v3) for latest release*
 
 ## Try it yourself
 
