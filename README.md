@@ -72,7 +72,7 @@ npm run serve
 
 #### Docker
 
-You can also build a Docker image yourself
+You can also build a Docker image yourself or use docker-compose:
 
 ```
 cp .env.example .env

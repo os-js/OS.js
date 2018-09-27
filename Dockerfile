@@ -31,7 +31,6 @@
 # THIS IS ONLY INTENDED FOR DEVELOPMENT USAGE
 
 # Build: docker build -t username/osjs:dev
-# Usage: docker run --user $(id -u):$(id -g) username/osjs:dev
 # Using docker-compose is recommended
 # You can freely modify this file
 
@@ -40,8 +39,16 @@ FROM node:10
 # Default Environment
 ARG NODE_ENV=production
 ARG NODE_PORT=8000
+ARG DOCKER_UID=1000
+ARG DOCKER_GID=1000
 ENV NODE_ENV $NODE_ENV
-ENV NODE_PORT $NODE_PORT
+
+# Set user/group IDs
+RUN usermod -u ${DOCKER_UID} node; exit 0
+RUN groupmod -g ${DOCKER_GID} node; exit 0
+
+# Set up base dirs and permissions
+RUN mkdir -p /usr/src/osjs/dist/{apps,icons,themes}
 
 # Install system dependencies
 RUN npm install -g nodemon
@@ -52,25 +59,20 @@ WORKDIR /usr/src/osjs
 # Copy our npm setup
 COPY . .
 
+# Set the correct user
+RUN chown -R node:node /usr/src/osjs
+USER node
+
 # Install dependencies
 RUN NODE_ENV=development npm install
 
-# Install OS.js packages
-RUN npm install \
-  @osjs/filemanager-application \
-  @osjs/calculator-application \
-  @osjs/draw-application \
-  @osjs/htmlviewer-application \
-  @osjs/musicplayer-application \
-  @osjs/preview-application \
-  @osjs/textpad-application \
-  @osjs/settings-application
+# Discover packages
+RUN npm run package:discover
 
 # Build OS.js
-RUN npm run package:discover && \
-    npm run build
+RUN npm run build
 
 # Start the node server
 EXPOSE $NODE_PORT
 
-CMD npm run serve -- --port=${NODE_PORT}
+CMD npm run serve

@@ -31,7 +31,6 @@
 # THIS IS ONLY INTENDED FOR DEVELOPMENT USAGE
 
 # Start: docker-compose up
-# OS.js CLI: docker-compose exec osjs npx osjs-cli
 # You can freely modify this file
 
 version: '3'
@@ -42,13 +41,13 @@ services:
       context: .
       args:
         - NODE_ENV=${DOCKER_NODE_ENV}
-        - NODE_PORT=${DOCKER_NODE_PORT}
+        - DOCKER_UID=${DOCKER_UID:-1000}
+        - DOCKER_GID=${DOCKER_GID:-1000}
     environment:
       - NODE_ENV=${DOCKER_NODE_ENV}
-      - NODE_PORT=${DOCKER_NODE_PORT}
     command: nodemon --watch package-lock.json --watch src/server --watch src/packages src/server/index.js
     volumes:
       - ./src:/usr/src/osjs/src
       - ./vfs:/usr/src/osjs/vfs
     ports:
-      - "${DOCKER_NODE_PORT}:${DOCKER_NODE_PORT}"
+      - "${DOCKER_NODE_PORT}:8000"
