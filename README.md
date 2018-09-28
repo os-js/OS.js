@@ -39,7 +39,7 @@ Node 8 (or newer) and any modern web-browser.
 You can run a demo using docker without checkout out any source-code:
 
 ```
-docker run -p 8000:8000 osjs/osjs-v3:demo
+docker run -p 8000:8000 osjs/osjs:v3
 ```
 
 ### Manual
