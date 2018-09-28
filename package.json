@@ -11,6 +11,11 @@
     "build:manifest": "osjs-cli package:discover",
     "package:discover": "osjs-cli package:discover",
     "package:create": "osjs-cli package:create",
+    "make:auth": "osjs-cli make:auth",
+    "make:settings": "osjs-cli make:settings",
+    "make:vfs": "osjs-cli make:vfs",
+    "make:application": "osjs-cli make:application",
+    "make:provider": "osjs-cli make:provider",
     "build": "webpack",
     "watch": "webpack --watch"
   },
@@ -44,7 +49,7 @@
   },
   "dependencies": {
     "@osjs/calculator-application": "^1.1.5",
-    "@osjs/cli": "^3.0.0-alpha.44",
+    "@osjs/cli": "^3.0.0-alpha.45",
     "@osjs/client": "^3.0.0-alpha.74",
     "@osjs/dialogs": "^3.0.0-alpha.32",
     "@osjs/draw-application": "^1.1.3",
