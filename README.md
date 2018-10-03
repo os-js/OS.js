@@ -14,7 +14,7 @@
 
 This is the OS.js base project that you can use as a template to make your own distributions, installations and do general development.
 
-**PLEASE NOTE THAT THIS IS AN ALPHA PRE-RELEASE AND SUBJECT TO CHANGE WITHOUT NOTICE**
+**PLEASE NOTE THAT THIS IS A PRE-RELEASE**
 
 https://github.com/os-js/OS.js/issues/671
 
