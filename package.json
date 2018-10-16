@@ -49,7 +49,7 @@
   },
   "dependencies": {
     "@osjs/calculator-application": "^1.1.5",
-    "@osjs/cli": "^3.0.0-alpha.48",
+    "@osjs/cli": "^3.0.0-alpha.49",
     "@osjs/client": "^3.0.0-alpha.80",
     "@osjs/dialogs": "^3.0.0-alpha.33",
     "@osjs/draw-application": "^1.1.4",
