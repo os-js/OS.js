@@ -54,6 +54,7 @@
     "@osjs/dialogs": "^3.0.0-alpha.33",
     "@osjs/draw-application": "^1.1.4",
     "@osjs/filemanager-application": "^1.1.5",
+    "@osjs/freedesktop-sounds": "^3.0.0-alpha.0",
     "@osjs/gnome-icons": "^3.0.0-alpha.0",
     "@osjs/gui": "^3.0.0-alpha.35",
     "@osjs/htmlviewer-application": "^1.1.3",
