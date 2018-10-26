@@ -69,7 +69,6 @@ module.exports = {
       },
       {
         test: /\.(sa|sc|c)ss$/,
-        exclude: /(node_modules|bower_components)/,
         use: [
           MiniCssExtractPlugin.loader,
           {
@@ -89,7 +88,6 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        exclude: /(node_modules|bower_components)/,
         use: {
           loader: 'babel-loader'
         }
