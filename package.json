@@ -59,7 +59,7 @@
     "@osjs/gui": "^4.0.5",
     "@osjs/htmlviewer-application": "^1.2.0",
     "@osjs/musicplayer-application": "^1.2.2",
-    "@osjs/panels": "^3.0.0-alpha.36",
+    "@osjs/panels": "^3.0.1",
     "@osjs/preview-application": "^1.1.8",
     "@osjs/server": "^3.0.0-alpha.42",
     "@osjs/settings-application": "^1.0.7",
