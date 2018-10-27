@@ -48,23 +48,23 @@
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
-    "@osjs/calculator-application": "^1.1.9",
+    "@osjs/calculator-application": "^1.2.0",
     "@osjs/cli": "^3.0.0-alpha.51",
-    "@osjs/client": "^3.0.0-alpha.85",
+    "@osjs/client": "^3.0.0-alpha.86",
     "@osjs/dialogs": "^3.0.2",
-    "@osjs/draw-application": "^1.1.9",
-    "@osjs/filemanager-application": "^1.2.0",
+    "@osjs/draw-application": "^1.2.0",
+    "@osjs/filemanager-application": "^1.2.1",
     "@osjs/freedesktop-sounds": "^3.0.0-alpha.0",
     "@osjs/gnome-icons": "^3.0.0-alpha.0",
     "@osjs/gui": "^4.0.2",
-    "@osjs/htmlviewer-application": "^1.1.9",
-    "@osjs/musicplayer-application": "^1.2.1",
+    "@osjs/htmlviewer-application": "^1.2.0",
+    "@osjs/musicplayer-application": "^1.2.2",
     "@osjs/panels": "^3.0.0-alpha.36",
-    "@osjs/preview-application": "^1.1.7",
+    "@osjs/preview-application": "^1.1.8",
     "@osjs/server": "^3.0.0-alpha.42",
-    "@osjs/settings-application": "^1.0.6",
+    "@osjs/settings-application": "^1.0.7",
     "@osjs/standard-theme": "^3.0.0-alpha.26",
-    "@osjs/textpad-application": "^1.1.9"
+    "@osjs/textpad-application": "^1.2.0"
   },
   "repository": {
     "type": "git",
