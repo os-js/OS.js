@@ -42,8 +42,7 @@ module.exports = {
       title: 'OS.js'
     }),
     new MiniCssExtractPlugin({
-      filename: '[name].css',
-      chunkFilename: '[id].css'
+      filename: '[name].css'
     }),
     ...plugins
   ],
@@ -88,7 +87,7 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        exclude: /node_modules\/(?!@osjs)/,
+        exclude: /node_modules/,
         use: {
           loader: 'babel-loader'
         }
