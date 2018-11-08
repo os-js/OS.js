@@ -14,7 +14,7 @@
 
 This is the OS.js base project that you can use as a template to make your own distributions, installations and do general development.
 
-**PLEASE NOTE THAT THIS IS A PRE-RELEASE**
+*This version is scheduled for release soon (fall/winter 2018)*
 
 https://github.com/os-js/OS.js/issues/671
 
@@ -34,7 +34,7 @@ Node 8 (or newer) and any modern web-browser.
 
 > OS.js runs on `localhost:8000` by default.
 
-### Docker
+### Demo
 
 You can run a demo using docker without checkout out any source-code:
 
