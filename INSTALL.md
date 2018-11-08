@@ -4,6 +4,14 @@ Installation is done in a few simple steps and only takes a couple of minutes to
 
 It is highly recommended that you use `git` to install instead of downloading an archive.
 
+## v2 deprecation notice
+
+**OS.js v3 is under development and will soon be released**.
+
+This version (v2) will then become deprecated.
+
+*See [v3 branch](https://github.com/os-js/OS.js/tree/v3) for latest release*
+
 ## Dependencies
 
 The only requirement is that you have `node` and `npm` installed (v6 or newer).
