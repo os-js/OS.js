@@ -1,6 +1,6 @@
 {
   "name": "@osjs/osjs",
-  "version": "3.0.0-alpha.27",
+  "version": "3.0.0-alpha.28",
   "description": "OS.js v3",
   "main": "index.js",
   "scripts": {
