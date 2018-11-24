@@ -20,9 +20,7 @@ https://github.com/os-js/OS.js/issues/671
 
 ## Try it yourself
 
-Visit the [official demo](https://demo.os-js.org) for a preview version. Please note that some features are disabled and might be outdated or unavailable at times.
-
-*Official v3 demo coming soon*
+Visit the [official demo](https://demo.os-js.org/v3/) for a preview version. Please note that some features are disabled and might be outdated or unavailable at times.
 
 ![ScreenShot](https://www.os-js.org/screenshot.png)
 
