@@ -29,6 +29,10 @@ module.exports = {
       path.resolve(__dirname, 'src/client/index.scss')
     ]
   },
+  performance: {
+    maxEntrypointSize: 500 * 1024,
+    maxAssetSize: 500 * 1024
+  },
   optimization: {
     minimize,
     splitChunks: {
