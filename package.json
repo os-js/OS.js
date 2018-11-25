@@ -53,18 +53,18 @@
     "@osjs/client": "^3.0.11",
     "@osjs/dialogs": "^3.0.4",
     "@osjs/draw-application": "^1.2.0",
-    "@osjs/filemanager-application": "^1.2.2",
+    "@osjs/filemanager-application": "^1.2.3",
     "@osjs/freedesktop-sounds": "^3.0.0",
     "@osjs/gnome-icons": "^4.0.1",
     "@osjs/gui": "^4.0.8",
     "@osjs/htmlviewer-application": "^1.2.0",
     "@osjs/musicplayer-application": "^1.2.2",
     "@osjs/panels": "^3.0.4",
-    "@osjs/preview-application": "^1.1.8",
-    "@osjs/server": "^3.0.4",
+    "@osjs/preview-application": "^1.1.9",
+    "@osjs/server": "^3.0.5",
     "@osjs/settings-application": "^1.0.7",
     "@osjs/standard-theme": "^4.0.2",
-    "@osjs/textpad-application": "^1.2.0"
+    "@osjs/textpad-application": "^1.2.1"
   },
   "repository": {
     "type": "git",
