@@ -73,5 +73,8 @@
   "bugs": {
     "url": "https://github.com/osjs/OS.js/issues"
   },
-  "homepage": "https://www.os-js.org"
+  "homepage": "https://www.os-js.org",
+  "engines": {
+    "node": ">=8.0.0"
+  }
 }
