@@ -56,7 +56,7 @@
     "@osjs/filemanager-application": "^1.2.2",
     "@osjs/freedesktop-sounds": "^3.0.0",
     "@osjs/gnome-icons": "^4.0.1",
-    "@osjs/gui": "^4.0.7",
+    "@osjs/gui": "^4.0.8",
     "@osjs/htmlviewer-application": "^1.2.0",
     "@osjs/musicplayer-application": "^1.2.2",
     "@osjs/panels": "^3.0.4",
