@@ -50,7 +50,7 @@
   "dependencies": {
     "@osjs/calculator-application": "^1.2.1",
     "@osjs/cli": "^3.0.5",
-    "@osjs/client": "^3.0.22",
+    "@osjs/client": "^3.0.23",
     "@osjs/dialogs": "^3.0.4",
     "@osjs/draw-application": "^1.2.0",
     "@osjs/filemanager-application": "^1.2.4",

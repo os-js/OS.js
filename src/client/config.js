@@ -34,7 +34,6 @@
 //
 
 module.exports = {
-  public: '/',
   auth: {
     login: {
       username: 'demo',
