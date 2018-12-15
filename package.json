@@ -25,7 +25,7 @@
   "author": "Anders Evenrud <andersevenrud@gmail.com>",
   "license": "BSD-2-Clause",
   "devDependencies": {
-    "@babel/core": "^7.2.0",
+    "@babel/core": "^7.2.2",
     "@babel/plugin-transform-runtime": "^7.2.0",
     "@babel/preset-env": "^7.2.0",
     "@babel/runtime": "^7.2.0",
@@ -48,23 +48,23 @@
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
-    "@osjs/calculator-application": "^1.2.1",
+    "@osjs/calculator-application": "^1.2.2",
     "@osjs/cli": "^3.0.5",
-    "@osjs/client": "^3.0.25",
+    "@osjs/client": "^3.0.26",
     "@osjs/dialogs": "^3.0.4",
-    "@osjs/draw-application": "^1.2.0",
-    "@osjs/filemanager-application": "^1.2.4",
+    "@osjs/draw-application": "^1.2.1",
+    "@osjs/filemanager-application": "^1.2.5",
     "@osjs/freedesktop-sounds": "^3.0.0",
     "@osjs/gnome-icons": "^4.0.1",
     "@osjs/gui": "^4.0.12",
-    "@osjs/htmlviewer-application": "^1.2.0",
-    "@osjs/musicplayer-application": "^1.2.2",
+    "@osjs/htmlviewer-application": "^1.2.2",
+    "@osjs/musicplayer-application": "^1.2.3",
     "@osjs/panels": "^3.0.6",
-    "@osjs/preview-application": "^1.1.9",
+    "@osjs/preview-application": "^1.1.10",
     "@osjs/server": "^3.0.11",
     "@osjs/settings-application": "^1.0.8",
     "@osjs/standard-theme": "^4.0.2",
-    "@osjs/textpad-application": "^1.2.1"
+    "@osjs/textpad-application": "^1.2.2"
   },
   "repository": {
     "type": "git",
