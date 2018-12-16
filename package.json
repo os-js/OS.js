@@ -50,8 +50,8 @@
   "dependencies": {
     "@osjs/calculator-application": "^1.2.2",
     "@osjs/cli": "^3.0.5",
-    "@osjs/client": "^3.0.26",
-    "@osjs/dialogs": "^3.0.4",
+    "@osjs/client": "^3.0.27",
+    "@osjs/dialogs": "^3.0.5",
     "@osjs/draw-application": "^1.2.1",
     "@osjs/filemanager-application": "^1.2.5",
     "@osjs/freedesktop-sounds": "^3.0.0",
@@ -61,7 +61,7 @@
     "@osjs/musicplayer-application": "^1.2.3",
     "@osjs/panels": "^3.0.6",
     "@osjs/preview-application": "^1.1.10",
-    "@osjs/server": "^3.0.11",
+    "@osjs/server": "^3.0.12",
     "@osjs/settings-application": "^1.0.8",
     "@osjs/standard-theme": "^4.0.2",
     "@osjs/textpad-application": "^1.2.2"
