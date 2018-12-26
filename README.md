@@ -13,6 +13,8 @@
 
 This is the OS.js base project that you can use as a template to make your own distributions, installations and do general development.
 
+> **This is v3. For v2 (deprecated) see the `master` branch.**
+
 ## Try it yourself
 
 Visit the [official demo](https://demo.os-js.org/v3/) for a preview version. Please note that some features are disabled and might be outdated or unavailable at times.
