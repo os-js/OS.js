@@ -61,7 +61,7 @@
     "@osjs/musicplayer-application": "^1.2.3",
     "@osjs/panels": "^3.0.9",
     "@osjs/preview-application": "^1.1.10",
-    "@osjs/server": "^3.0.17",
+    "@osjs/server": "^3.0.18",
     "@osjs/settings-application": "^1.1.0",
     "@osjs/standard-theme": "^4.0.3",
     "@osjs/textpad-application": "^1.2.2"
