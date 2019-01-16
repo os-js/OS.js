@@ -30,7 +30,8 @@
 
 //
 // This is the server configuration tree.
-// https://manual.os-js.org/v3/config/#client
+// Guide: https://manual.os-js.org/v3/config/#server
+// Complete config tree: https://github.com/os-js/osjs-server/blob/master/src/config.js
 //
 
 const path = require('path');
