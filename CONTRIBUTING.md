@@ -13,6 +13,10 @@ If you need help, or just up for some general discussion, head into the [communi
 
 See [manual](https://manual.os-js.org/v3/development/) for more information.
 
+You can view all open issues on github, which is usually a good starting point if you want to start contributing:
+
+https://github.com/search?q=org%3Aos-js+is%3Aopen+is%3Aissue+archived%3Afalse&type=Issues
+
 # Support
 
 You can also donate or become a patreon, which helps out covering server costs and potentially make it possible to put out bounties:
