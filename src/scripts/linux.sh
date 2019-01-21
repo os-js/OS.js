@@ -202,8 +202,23 @@ fi
 if $SYSTEMD_SERVICE; then
   echo "Enabling systemd service..."
   if [ "$EUID" -ne 0 ]; then
-    echo "Error: user is not root."
-    exit 1
+    echo "Warning: user is not root."
+    sudo bash -c 'cat << EOF > /etc/systemd/system/osjs.service
+[Unit]
+Description=OS.js Server
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+ExecStart=$(readlink -f $(which node)) $OSJS_PATH/src/server/index.js
+
+[Install]
+WantedBy=multi-user.target
+EOF'
+    sudo systemctl enable osjs.service
   else
     cat << EOF > /etc/systemd/system/osjs.service
 [Unit]
@@ -220,6 +235,7 @@ ExecStart=$(readlink -f $(which node)) $OSJS_PATH/src/server/index.js
 [Install]
 WantedBy=multi-user.target
 EOF
+    systemctl enable osjs.service
   fi
 fi
 
