@@ -98,7 +98,7 @@ install_pkg() {
   fi
 
   case $OS in
-    Arch Linux)
+    "Arch Linux")
       if [ "$EUID" -ne 0 ]; then
         echo "Warning: command not running as root."
         command_check sudo
