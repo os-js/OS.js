@@ -115,6 +115,11 @@ install_pkg() {
       else
         apt-get install $PKGNAME -y
       fi
+      ;;
+    *)
+      echo "Error: unsupported distro $OS"
+      exit 1
+      ;;
   esac
 }
 
@@ -136,7 +141,7 @@ fi
 if $PM2_SERVICE; then
   if type pm2 2>/dev/null; then
     echo "Warning: command pm2 not found, installing pm2."
-    if [ "$EUID" -ne 0 ]
+    if [ "$EUID" -ne 0 ]; then
       echo "Warning: command not running as root."
       command_check sudo
       if $VERBOSE; then
@@ -168,21 +173,21 @@ echo "Installing packages..."
 if $VERBOSE; then
   npm install
 else
-  npm install >/dev/null
+  npm install 1>/dev/null
 fi
 
 echo "Building..."
 if $VERBOSE; then
   npm run build
 else
-  npm run build >/dev/null
+  npm run build 1>/dev/null
 fi
 
 echo "Finding applications..."
 if $VERBOSE; then
   npm run package:discover
 else
-  npm run package:discover >/dev/null
+  npm run package:discover 1>/dev/null
 fi
 
 if $PM2_SERVICE; then
