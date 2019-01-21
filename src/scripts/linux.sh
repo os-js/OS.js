@@ -65,7 +65,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 command_check() {
-  if type $1 2>/dev/null; then
+  if ! type $1 2>/dev/null; then
     echo "Error: command $1 not found, you must have $1 installed in order to use this script."
     exit 1
   fi
@@ -123,23 +123,23 @@ install_pkg() {
   esac
 }
 
-if type git 2>/dev/null; then
+if ! type git 2>/dev/null; then
   echo "Warning: command git not found, installing git."
   install_pkg git
 fi
 
-if type npm 2>/dev/null; then
+if ! type npm 2>/dev/null; then
   echo "Warning: command npm not found, installing npm."
   install_pkg npm
 fi
 
-if type node 2>/dev/null; then
+if ! type node 2>/dev/null; then
   echo "Warning: command node not found, installing nodejs."
   install_pkg nodejs
 fi
 
 if $PM2_SERVICE; then
-  if type pm2 2>/dev/null; then
+  if ! type pm2 2>/dev/null; then
     echo "Warning: command pm2 not found, installing pm2."
     if [ "$EUID" -ne 0 ]; then
       echo "Warning: command not running as root."
