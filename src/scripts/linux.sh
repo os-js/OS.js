@@ -99,7 +99,7 @@ install_pkg() {
 
   case $OS in
     Arch Linux)
-      if [ "$EUID" -ne 0 ]
+      if [ "$EUID" -ne 0 ]; then
         echo "Warning: command not running as root."
         command_check sudo
         sudo pacman -S $PKGNAME --noconfirm
@@ -108,7 +108,7 @@ install_pkg() {
       fi
       ;;
     Debian)
-      if [ "$EUID" -ne 0 ]
+      if [ "$EUID" -ne 0 ]; then
         echo "Warning: command not running as root."
         command_check sudo
         sudo apt-get install $PKGNAME -y
