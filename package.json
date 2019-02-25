@@ -1,6 +1,6 @@
 {
   "name": "@osjs/osjs",
-  "version": "3.0.0-beta.16",
+  "version": "3.0.0-beta.17",
   "description": "OS.js v3",
   "main": "index.js",
   "scripts": {
@@ -25,10 +25,10 @@
   "author": "Anders Evenrud <andersevenrud@gmail.com>",
   "license": "BSD-2-Clause",
   "devDependencies": {
-    "@babel/core": "^7.3.3",
-    "@babel/plugin-transform-runtime": "^7.2.0",
-    "@babel/preset-env": "^7.3.1",
-    "@babel/runtime": "^7.3.1",
+    "@babel/core": "^7.3.4",
+    "@babel/plugin-transform-runtime": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
+    "@babel/runtime": "^7.3.4",
     "babel-loader": "^8.0.5",
     "copy-webpack-plugin": "^4.6.0",
     "css-loader": "^2.1.0",
@@ -48,11 +48,11 @@
     "webpack-cli": "^3.2.3"
   },
   "dependencies": {
-    "@osjs/calculator-application": "^1.2.3",
-    "@osjs/cli": "^3.0.12",
-    "@osjs/client": "^3.0.51",
+    "@osjs/calculator-application": "^1.2.4",
+    "@osjs/cli": "^3.0.13",
+    "@osjs/client": "^3.0.52",
     "@osjs/dialogs": "^3.0.9",
-    "@osjs/draw-application": "^1.2.2",
+    "@osjs/draw-application": "^1.2.3",
     "@osjs/filemanager-application": "^1.3.1",
     "@osjs/freedesktop-sounds": "^3.0.1",
     "@osjs/gnome-icons": "^4.0.2",
@@ -61,7 +61,7 @@
     "@osjs/musicplayer-application": "^1.2.4",
     "@osjs/panels": "^3.0.15",
     "@osjs/preview-application": "^1.1.13",
-    "@osjs/server": "^3.0.24",
+    "@osjs/server": "^3.0.25",
     "@osjs/settings-application": "^1.1.1",
     "@osjs/standard-theme": "^4.0.4",
     "@osjs/textpad-application": "^1.2.4"
