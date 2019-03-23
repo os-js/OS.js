@@ -62,4 +62,8 @@ process.on('exit', () => osjs.destroy());
 process.on('uncaughtException', e => console.error(e));
 process.on('unhandledRejection', e => console.error(e));
 
-osjs.boot();
+osjs.boot()
+  .catch(err => {
+    console.error(err);
+    process.exit(1);
+  });
