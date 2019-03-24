@@ -1,6 +1,6 @@
 {
   "name": "@osjs/osjs",
-  "version": "3.0.0-beta.19",
+  "version": "3.0.0-beta.20",
   "description": "OS.js v3",
   "main": "index.js",
   "scripts": {
@@ -61,7 +61,7 @@
     "@osjs/musicplayer-application": "^1.2.4",
     "@osjs/panels": "^3.0.16",
     "@osjs/preview-application": "^1.1.13",
-    "@osjs/server": "^3.0.31",
+    "@osjs/server": "^3.0.32",
     "@osjs/settings-application": "^1.1.1",
     "@osjs/standard-theme": "^4.0.4",
     "@osjs/textpad-application": "^1.2.4"
