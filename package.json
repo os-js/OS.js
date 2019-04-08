@@ -15,6 +15,7 @@
     "make:settings": "osjs-cli make:settings",
     "make:vfs": "osjs-cli make:vfs",
     "make:application": "osjs-cli make:application",
+    "make:iframe-application": "osjs-cli make:iframe-application",
     "make:provider": "osjs-cli make:provider",
     "build": "webpack",
     "watch": "webpack --watch"
