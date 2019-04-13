@@ -6,11 +6,9 @@ It is highly recommended that you use `git` to install instead of downloading an
 
 ## v2 deprecation notice
 
-**OS.js v3 is under development and will soon be released**.
+**This version of OS.js is DEPRECATED**
 
-This version (v2) will then become deprecated.
-
-*See [v3 branch](https://github.com/os-js/OS.js/tree/v3) for latest release*
+*See [v3 branch](https://github.com/os-js/OS.js/tree/v3) for latest releases*
 
 ## Dependencies
 
