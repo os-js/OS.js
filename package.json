@@ -51,7 +51,7 @@
   "dependencies": {
     "@osjs/calculator-application": "^1.2.4",
     "@osjs/cli": "^3.0.16",
-    "@osjs/client": "^3.0.60",
+    "@osjs/client": "^3.0.61",
     "@osjs/dialogs": "^3.0.11",
     "@osjs/draw-application": "^1.2.3",
     "@osjs/filemanager-application": "^1.3.2",
@@ -60,7 +60,7 @@
     "@osjs/gui": "^4.0.23",
     "@osjs/htmlviewer-application": "^1.2.3",
     "@osjs/musicplayer-application": "^1.2.5",
-    "@osjs/panels": "^3.0.17",
+    "@osjs/panels": "^3.0.18",
     "@osjs/preview-application": "^1.1.13",
     "@osjs/server": "^3.0.41",
     "@osjs/settings-application": "^1.1.1",
