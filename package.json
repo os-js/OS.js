@@ -41,7 +41,7 @@
     "optimize-css-assets-webpack-plugin": "^5.0.1",
     "sass-loader": "^7.1.0",
     "source-map-loader": "^0.2.4",
-    "stylelint": "^10.0.0",
+    "stylelint": "^10.0.1",
     "stylelint-config-standard": "^18.3.0",
     "stylelint-scss": "^3.5.4",
     "typeface-roboto": "0.0.54",
@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "@osjs/calculator-application": "^1.2.4",
-    "@osjs/cli": "^3.0.15",
+    "@osjs/cli": "^3.0.16",
     "@osjs/client": "^3.0.60",
     "@osjs/dialogs": "^3.0.11",
     "@osjs/draw-application": "^1.2.3",
