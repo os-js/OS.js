@@ -17,6 +17,8 @@ You can view all open issues on github, which is usually a good starting point i
 
 https://github.com/search?q=org%3Aos-js+is%3Aopen+is%3Aissue+archived%3Afalse&type=Issues
 
+You can contribute by triaging issues which may include reproducing bug reports or asking for vital information, such as version numbers or reproduction instructions. If you would like to start triaging issues, one easy way to get started is to [subscribe to os.js-v2 on CodeTriage](https://www.codetriage.com/andersevenrud/os.js-v2). [![Open Source Helpers](https://www.codetriage.com/andersevenrud/os.js-v2/badges/users.svg)](https://www.codetriage.com/andersevenrud/os.js-v2)
+
 # Support
 
 You can also donate or become a patreon, which helps out covering server costs and potentially make it possible to put out bounties:
