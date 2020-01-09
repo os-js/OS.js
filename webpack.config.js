@@ -24,10 +24,7 @@ module.exports = {
   mode,
   devtool: 'source-map',
   entry: {
-    osjs: [
-      path.resolve(__dirname, 'src/client/index.js'),
-      path.resolve(__dirname, 'src/client/index.scss')
-    ]
+    osjs: path.resolve(__dirname, 'src/client/index.js')
   },
   performance: {
     maxEntrypointSize: 500 * 1024,

@@ -34,7 +34,7 @@
 // Complete config tree: https://github.com/os-js/osjs-client/blob/master/src/config.js
 //
 
-module.exports = {
+export default {
   auth: {
     login: {
       username: 'demo',

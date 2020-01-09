@@ -51,7 +51,8 @@ import {
 import {PanelServiceProvider} from '@osjs/panels';
 import {GUIServiceProvider} from '@osjs/gui';
 import {DialogServiceProvider} from '@osjs/dialogs';
-import * as config from './config.js';
+import config from './config.js';
+import './index.scss';
 
 const init = () => {
   const osjs = new Core(config, {});
