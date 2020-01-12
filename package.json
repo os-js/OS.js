@@ -30,6 +30,7 @@
     "@babel/plugin-transform-runtime": "^7.8.0",
     "@babel/preset-env": "^7.8.0",
     "@babel/runtime": "^7.8.0",
+    "@osjs/stylelint-config": "^1.0.1",
     "babel-loader": "^8.0.6",
     "copy-webpack-plugin": "^5.1.1",
     "css-loader": "^3.4.2",
@@ -42,8 +43,6 @@
     "sass-loader": "^8.0.1",
     "source-map-loader": "^0.2.4",
     "stylelint": "^12.0.1",
-    "stylelint-config-standard": "^19.0.0",
-    "stylelint-scss": "^3.13.0",
     "typeface-roboto": "0.0.75",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10"
@@ -90,20 +89,14 @@
     }
   },
   "stylelint": {
-    "plugins": [
-      "stylelint-scss"
-    ],
-    "rules": {
-      "at-rule-no-unknown": [true, {
-        "ignoreAtRules": ["extend", "mixin", "include"]
-      }]
-    },
-    "extends": "stylelint-config-standard"
+    "extends": "@osjs/stylelint-config"
   },
   "babel": {
     "presets": [
-      ["@babel/preset-env", {
-      }]
+      [
+        "@babel/preset-env",
+        {}
+      ]
     ],
     "plugins": [
       "@babel/plugin-transform-runtime"
