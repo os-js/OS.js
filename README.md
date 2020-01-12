@@ -13,9 +13,11 @@
 [![Donate](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://paypal.me/andersevenrud)
 [![Community](https://img.shields.io/badge/join-community-green.svg)](https://community.os-js.org/)
 
-This is the OS.js base project that you can use as a template to make your own distributions, installations and do general development.
+## Introduction
 
-> **This is v3. For v2 (deprecated) see the `master` branch.**
+This is the OS.js base repository that you can use as a template to make your own distributions, installations and development environments.
+
+> **This branch is for v3. The deprecated v2 codebase can be found in the `master` branch.**
 
 ## Try it yourself
 
