@@ -34,6 +34,7 @@ version: '3'
 
 services:
   osjs:
+    user: node
     build:
       context: .
     volumes:
