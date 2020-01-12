@@ -1,0 +1,107 @@
+{
+  "name": "@osjs/osjs",
+  "version": "3.0.7",
+  "description": "OS.js v3",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "eslint": "eslint 'src/client/**/*.js' 'src/server/**/*.js'",
+    "stylelint": "stylelint 'src/client/*.scss'",
+    "serve": "node src/server/index.js",
+    "build:manifest": "osjs-cli package:discover",
+    "package:discover": "osjs-cli package:discover",
+    "package:create": "osjs-cli package:create",
+    "make:auth": "osjs-cli make:auth",
+    "make:settings": "osjs-cli make:settings",
+    "make:vfs": "osjs-cli make:vfs",
+    "make:application": "osjs-cli make:application",
+    "make:iframe-application": "osjs-cli make:iframe-application",
+    "make:provider": "osjs-cli make:provider",
+    "build": "webpack",
+    "watch": "webpack --watch"
+  },
+  "keywords": [
+    "osjs"
+  ],
+  "author": "Anders Evenrud <andersevenrud@gmail.com>",
+  "license": "BSD-2-Clause",
+  "devDependencies": {
+    "@babel/core": "^7.8.0",
+    "@babel/plugin-transform-runtime": "^7.8.0",
+    "@babel/preset-env": "^7.8.0",
+    "@babel/runtime": "^7.8.0",
+    "@osjs/eslint-config": "^1.0.2",
+    "@osjs/stylelint-config": "^1.0.1",
+    "babel-loader": "^8.0.6",
+    "copy-webpack-plugin": "^5.1.1",
+    "css-loader": "^3.4.2",
+    "eslint": "^6.8.0",
+    "file-loader": "^5.0.2",
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.9.0",
+    "node-sass": "^4.13.0",
+    "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "sass-loader": "^8.0.1",
+    "source-map-loader": "^0.2.4",
+    "stylelint": "^12.0.1",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
+  },
+  "dependencies": {
+    "@osjs/calculator-application": "^1.2.4",
+    "@osjs/cli": "^3.0.18",
+    "@osjs/client": "^3.1.14",
+    "@osjs/dialogs": "^3.0.15",
+    "@osjs/draw-application": "^1.2.3",
+    "@osjs/filemanager-application": "^1.3.9",
+    "@osjs/freedesktop-sounds": "^3.0.1",
+    "@osjs/gnome-icons": "^4.0.2",
+    "@osjs/gui": "^4.0.27",
+    "@osjs/htmlviewer-application": "^1.2.3",
+    "@osjs/musicplayer-application": "^1.2.5",
+    "@osjs/panels": "^3.0.19",
+    "@osjs/preview-application": "^1.1.13",
+    "@osjs/server": "^3.0.49",
+    "@osjs/settings-application": "^1.1.2",
+    "@osjs/standard-theme": "^4.0.6",
+    "@osjs/textpad-application": "^1.2.4",
+    "hyperapp": "^1.2.10",
+    "typeface-roboto": "0.0.75"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/osjs/OS.js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/osjs/OS.js/issues"
+  },
+  "homepage": "https://www.os-js.org",
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "node": true
+    },
+    "parserOptions": {
+      "sourceType": "module",
+      "ecmaVersion": 8
+    },
+    "extends": "@osjs/eslint-config"
+  },
+  "stylelint": {
+    "extends": "@osjs/stylelint-config"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {}
+      ]
+    ],
+    "plugins": [
+      "@babel/plugin-transform-runtime"
+    ]
+  }
+}
