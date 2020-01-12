@@ -3,7 +3,5 @@ node_js:
   - 8
 install:
   - npm install
-  - npm install --no-save eslint stylelint stylelint-config-standard stylelint-scss
 script:
-  - npx eslint src/**/*.js
-  - npx stylelint src/**/*.scss
+  - npm run test
