@@ -44,7 +44,6 @@
     "sass-loader": "^8.0.1",
     "source-map-loader": "^0.2.4",
     "stylelint": "^12.0.1",
-    "typeface-roboto": "0.0.75",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10"
   },
@@ -66,7 +65,8 @@
     "@osjs/settings-application": "^1.1.2",
     "@osjs/standard-theme": "^4.0.6",
     "@osjs/textpad-application": "^1.2.4",
-    "hyperapp": "^1.2.10"
+    "hyperapp": "^1.2.10",
+    "typeface-roboto": "0.0.75"
   },
   "repository": {
     "type": "git",
