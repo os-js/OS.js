@@ -1,4 +1,4 @@
-/*!
+/*
  * OS.js - JavaScript Cloud/Web Desktop Platform
  *
  * Copyright (c) 2011-2019, Anders Evenrud <andersevenrud@gmail.com>
@@ -41,4 +41,4 @@ module.exports = {
   root,
   port: 8000,
   public: path.resolve(root, 'dist')
-}
+};
