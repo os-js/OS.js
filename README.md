@@ -23,10 +23,6 @@ Visit the [official demo](https://demo.os-js.org/v3/) for a preview version. Ple
 
 ![ScreenShot](https://www.os-js.org/screenshot.png)
 
-## Requirements
-
-Node 8 (or newer) and any modern web-browser.
-
 ## Installation
 
 > OS.js runs on `localhost:8000` by default.
@@ -39,10 +35,11 @@ You can run a demo using Docker without checkout out any source-code:
 docker run -p 8000:8000 osjs/osjs:v3
 ```
 
-### Manual
+### Custom
+
+Clone the v3 branch of the official OS.js repository:
 
 ```
-# Clone *only* the v3 branch
 git clone -b v3 --single-branch https://github.com/os-js/OS.js.git
 cd OS.js
 ```
@@ -58,6 +55,8 @@ docker-compose up
 ```
 
 #### Locally
+
+To install directly on the host system you'll need Node 8 (or later).
 
 ```
 # Install dependencies
