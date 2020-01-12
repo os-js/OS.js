@@ -40,4 +40,4 @@ services:
     volumes:
       - .:/usr/src/osjs
     ports:
-      - "${DOCKER_NODE_PORT:-8000}:8000"
+      - "${OSJS_NODE_PORT:-8000}:8000"
