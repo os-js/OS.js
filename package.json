@@ -78,5 +78,35 @@
   "homepage": "https://www.os-js.org",
   "engines": {
     "node": ">=8.0.0"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "node": true
+    },
+    "parserOptions": {
+      "sourceType": "module",
+      "ecmaVersion": 8
+    }
+  },
+  "stylelint": {
+    "plugins": [
+      "stylelint-scss"
+    ],
+    "rules": {
+      "at-rule-no-unknown": [true, {
+        "ignoreAtRules": ["extend", "mixin", "include"]
+      }]
+    },
+    "extends": "stylelint-config-standard"
+  },
+  "babel": {
+    "presets": [
+      ["@babel/preset-env", {
+      }]
+    ],
+    "plugins": [
+      "@babel/plugin-transform-runtime"
+    ]
   }
 }
