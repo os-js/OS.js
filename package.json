@@ -30,6 +30,7 @@
     "@babel/plugin-transform-runtime": "^7.8.0",
     "@babel/preset-env": "^7.8.0",
     "@babel/runtime": "^7.8.0",
+    "@osjs/eslint-config": "^1.0.2",
     "@osjs/stylelint-config": "^1.0.1",
     "babel-loader": "^8.0.6",
     "copy-webpack-plugin": "^5.1.1",
@@ -86,7 +87,8 @@
     "parserOptions": {
       "sourceType": "module",
       "ecmaVersion": 8
-    }
+    },
+    "extends": "@osjs/eslint-config"
   },
   "stylelint": {
     "extends": "@osjs/stylelint-config"
