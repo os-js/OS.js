@@ -33,7 +33,7 @@ Node 8 (or newer) and any modern web-browser.
 
 ### Demo
 
-You can run a demo using docker without checkout out any source-code:
+You can run a demo using Docker without checkout out any source-code:
 
 ```
 docker run -p 8000:8000 osjs/osjs:v3
@@ -45,6 +45,16 @@ docker run -p 8000:8000 osjs/osjs:v3
 # Clone *only* the v3 branch
 git clone -b v3 --single-branch https://github.com/os-js/OS.js.git
 cd OS.js
+```
+
+#### Docker
+
+You can run OS.js locally without installing anything on your host system if you have Docker and Docker Compose installed.
+
+Simply run the following command and a complete environment will be set up for you:
+
+```
+docker-compose up
 ```
 
 #### Locally
@@ -68,15 +78,6 @@ npm run build
 
 # Start serving
 npm run serve
-```
-
-#### Docker
-
-You can also build a Docker image yourself or use docker-compose:
-
-```
-cp .env.example .env
-docker-compose up
 ```
 
 ## Contribution

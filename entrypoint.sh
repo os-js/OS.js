@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 # OS.js - JavaScript Cloud/Web Desktop Platform
 #
@@ -30,13 +31,7 @@
 
 # THIS IS ONLY INTENDED FOR DEVELOPMENT USAGE
 
-version: '3'
-
-services:
-  osjs:
-    build:
-      context: .
-    volumes:
-      - .:/usr/src/osjs
-    ports:
-      - "${DOCKER_NODE_PORT:-8000}:8000"
+npm install
+npm run build
+npm run package:discover
+npx nodemon --watch package-lock.json --watch src/server --watch package.json --watch src/packages src/server/index.js
