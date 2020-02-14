@@ -59,11 +59,17 @@ module.exports = (electronConfig = {}) => {
   osjs.register(AuthServiceProvider);
   osjs.register(SettingsServiceProvider);
 
-  process.on('SIGTERM', () => osjs.destroy());
-  process.on('SIGINT', () => osjs.destroy());
-  process.on('exit', () => osjs.destroy());
-  process.on('uncaughtException', e => console.error(e));
-  process.on('unhandledRejection', e => console.error(e));
+  const shutdown = signal => (error) => {
+    if (error instanceof Error) {
+      console.error(error);
+    }
+
+    osjs.destroy(() => process.exit(signal));
+  };
+
+  process.on('SIGTERM', shutdown(0));
+  process.on('SIGINT', shutdown(0));
+  process.on('exit', shutdown(0));
 
   return osjs;
 };
