@@ -26,6 +26,7 @@ You can also donate or become a patreon, which helps out covering server costs a
 * Donate/tip anonymously with [Gratipay](https://gratipay.com/os-js/)
 * Donate via [Liberapay](https://liberapay.com/os-js/)
 * Donate via [PayPal](https://paypal.me/andersevenrud)
+* Sponsor on [Github][https://github.com/sponsors/andersevenrud]
 
 # Members
 
