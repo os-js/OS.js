@@ -64,17 +64,17 @@ To install directly on the host system you'll need Node 8 (or later).
 # Install dependencies
 npm install
 
-# It's recommended that you keep your dependencies (including OS.js) up-to-date
+# It's recommended that you update dependencies
 npm update
 
 # Optionally install extra packages:
 # For a list of packages, see https://manual.os-js.org/v3/resource/official/
-npm install --production @osjs/example-application
+npm install @osjs/example-application
 
 # Discover installed packages
 npm run package:discover
 
-# Build your client
+# Build client
 npm run build
 
 # Start serving
