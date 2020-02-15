@@ -26,26 +26,9 @@
   "author": "Anders Evenrud <andersevenrud@gmail.com>",
   "license": "BSD-2-Clause",
   "devDependencies": {
-    "@babel/core": "^7.8.4",
-    "@babel/plugin-transform-runtime": "^7.8.0",
-    "@babel/preset-env": "^7.8.4",
-    "@babel/runtime": "^7.8.4",
-    "@osjs/eslint-config": "^1.0.2",
-    "@osjs/stylelint-config": "^1.0.1",
-    "babel-loader": "^8.0.6",
-    "copy-webpack-plugin": "^5.1.1",
-    "css-loader": "^3.4.2",
-    "eslint": "^6.8.0",
-    "file-loader": "^5.0.2",
+    "@osjs/dev-meta": "^1.0.1",
     "html-webpack-plugin": "^3.2.0",
-    "mini-css-extract-plugin": "^0.9.0",
-    "node-sass": "^4.13.0",
-    "optimize-css-assets-webpack-plugin": "^5.0.3",
-    "sass-loader": "^8.0.1",
-    "source-map-loader": "^0.2.4",
-    "stylelint": "^13.2.0",
-    "webpack": "^4.41.6",
-    "webpack-cli": "^3.3.11"
+    "source-map-loader": "^0.2.4"
   },
   "dependencies": {
     "@osjs/calculator-application": "^1.2.4",
