@@ -17,8 +17,6 @@
 
 This is the OS.js base repository that you can use as a template to make your own distributions, installations and development environments.
 
-> **This branch is for v3. The deprecated v2 codebase can be found in the `master` branch.**
-
 ## Try it yourself
 
 Visit the [official demo](https://demo.os-js.org/v3/) for a preview version. Please note that some features are disabled and might be outdated or unavailable at times.
@@ -27,14 +25,14 @@ Visit the [official demo](https://demo.os-js.org/v3/) for a preview version. Ple
 
 ## Installation
 
-> OS.js runs on `localhost:8000` by default.
+> OS.js runs on `http://localhost:8000` by default.
 
 ### Demo
 
 You can run a demo using Docker without checkout out any source-code:
 
 ```
-docker run -p 8000:8000 osjs/osjs:v3
+docker run -p 8000:8000 osjs/osjs:latest
 ```
 
 ### Custom
