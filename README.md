@@ -83,7 +83,7 @@ npm run serve
 * **Sponsor on [Github](https://github.com/sponsors/andersevenrud)**
 * **Become a [Patreon](https://www.patreon.com/user?u=2978551&ty=h&u=2978551)**
 * **Support on [Open Collective](https://opencollective.com/osjs)**
-* [Contribution Guide](https://github.com/os-js/OS.js/blob/v3/CONTRIBUTING.md)
+* [Contribution Guide](https://github.com/os-js/OS.js/blob/master/CONTRIBUTING.md)
 
 ## Documentation
 
