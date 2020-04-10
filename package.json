@@ -33,7 +33,7 @@
   "dependencies": {
     "@osjs/calculator-application": "^1.2.8",
     "@osjs/cli": "^3.0.24",
-    "@osjs/client": "^3.1.27",
+    "@osjs/client": "^3.1.29",
     "@osjs/dialogs": "^3.0.19",
     "@osjs/draw-application": "^1.2.7",
     "@osjs/filemanager-application": "^1.4.2",
@@ -45,7 +45,7 @@
     "@osjs/panels": "^3.0.26",
     "@osjs/preview-application": "^1.1.17",
     "@osjs/server": "^3.0.56",
-    "@osjs/settings-application": "^1.1.5",
+    "@osjs/settings-application": "^1.1.6",
     "@osjs/standard-theme": "^4.0.9",
     "@osjs/textpad-application": "^1.2.7",
     "hyperapp": "^1.2.10",
