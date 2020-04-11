@@ -55,7 +55,7 @@ docker-compose up
 
 #### Locally
 
-To install directly on the host system you'll need Node 8 (or later).
+To install directly on the host system you'll need Node 10 (or later).
 
 ```
 # Install dependencies
