@@ -28,7 +28,7 @@ Visit the [official demo](https://demo.os-js.org/v3/) for a preview version. Ple
 
 ### Demo
 
-You can run a demo using Docker without checkout out any source-code:
+You can run a demo using Docker without checking out any source-code:
 
 ```
 docker run -p 8000:8000 osjs/osjs:latest
