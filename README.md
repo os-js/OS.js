@@ -95,6 +95,5 @@ See the [Official Manuals](https://manual.os-js.org/v3/) for articles, tutorials
 * [Community Forums and Announcements](https://community.os-js.org/)
 * [Homepage](https://os-js.org/)
 * [Twitter](https://twitter.com/osjsorg) ([author](https://twitter.com/andersevenrud))
-* [Google+](https://plus.google.com/b/113399210633478618934/113399210633478618934)
 * [Facebook](https://www.facebook.com/os.js.org)
 * [Docker Hub](https://hub.docker.com/u/osjs/)
