@@ -17,7 +17,7 @@ You can find the quick setup guide in the [INSTALL.md file](https://github.com/o
 
 ## Links
 
-* [Manuals](https://manual.os-js.org/)
+* [LEGACY Manuals](https://manual-legacy.os-js.org/)
 * [Official Chat](https://gitter.im/os-js/OS.js)
 * [Community Forums and Announcements](https://community.os-js.org/)
 * [Homepage](https://os-js.org/)
