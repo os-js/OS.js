@@ -11,7 +11,7 @@
 
 ## Installation
 
-Visit the [official demo](https://demo.os-js.org) for a preview version. Please note that some features are disabled and might be outdated or unavailable at times.
+Visit the [official LEGACY demo](https://demo-legacy.os-js.org) for a preview version. Please note that some features are disabled and might be outdated or unavailable at times.
 
 You can find the quick setup guide in the [INSTALL.md file](https://github.com/os-js/OS.js/blob/master/INSTALL.md).
 
