@@ -18,7 +18,7 @@ This is the OS.js base repository that you can use as a template to make your ow
 
 ## Try it yourself
 
-Visit the [official demo](https://demo.os-js.org/v3/) for a preview version. Please note that some features are disabled and might be outdated or unavailable at times.
+Visit the [official demo](https://demo.os-js.org/) for a preview version. Please note that some features are disabled and might be outdated or unavailable at times.
 
 ![ScreenShot](https://www.os-js.org/screenshot.png)
 
@@ -65,7 +65,7 @@ npm install
 npm update
 
 # Optionally install extra packages:
-# For a list of packages, see https://manual.os-js.org/v3/resource/official/
+# For a list of packages, see https://manual.os-js.org/resource/official/
 npm install @osjs/example-application
 
 # Discover installed packages
@@ -87,7 +87,7 @@ npm run serve
 
 ## Documentation
 
-See the [Official Manuals](https://manual.os-js.org/v3/) for articles, tutorials and guides.
+See the [Official Manuals](https://manual.os-js.org/) for articles, tutorials and guides.
 
 ## Links
 
