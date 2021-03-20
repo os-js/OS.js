@@ -27,6 +27,10 @@ You can also donate or become a patreon, which helps out covering server costs a
 * Donate via [Liberapay](https://liberapay.com/os-js/)
 * Donate via [PayPal](https://paypal.me/andersevenrud)
 
+Or via Bitcoin: bc1q8wd9e9xlppr7nft09n4guz89j0cp9gepl606s0
+
+<img src="https://manual.os-js.org/wallet.png" alt="bitcoin qr code" width="177" height="177">
+
 # Members
 
 If you are a member of the official OS.js developer Team:
