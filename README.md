@@ -6,11 +6,13 @@
 
 [OS.js](https://www.os-js.org/) is an [open-source](https://raw.githubusercontent.com/os-js/OS.js/master/LICENSE) web desktop platform with a window manager, application APIs, GUI toolkit, filesystem abstractions and much more.
 
-[![Support](https://img.shields.io/badge/patreon-support-orange.svg)](https://www.patreon.com/user?u=2978551&ty=h&u=2978551)
-[![Support](https://img.shields.io/badge/opencollective-donate-red.svg)](https://opencollective.com/osjs)
-[![Donate](https://img.shields.io/badge/liberapay-donate-yellowgreen.svg)](https://liberapay.com/os-js/)
-[![Donate](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://paypal.me/andersevenrud)
-[![Donate](https://img.shields.io/badge/bitcoin-donate-blue.svg)](https://manual.os-js.org/wallet.png)
+**Backing/Donations:**
+[Github sponsorship](https://github.com/sponsors/andersevenrud) | 
+[Patreon](https://www.patreon.com/user?u=2978551&ty=h&u=2978551) | 
+[OpenCollective](https://opencollective.com/osjs) | 
+[LibrePay](https://liberapay.com/os-js/) | 
+[PayPal](https://paypal.me/andersevenrud) | 
+[Bitcoin](https://manual.os-js.org/wallet.png)
 
 ## Introduction
 
@@ -82,7 +84,7 @@ npm run build
 npm run serve
 ```
 
-## Contributions
+## Contribution
 
 See the [Contribution Guide](https://github.com/os-js/OS.js/blob/master/CONTRIBUTING.md) for
 contribution guidelines, sponsorship/donation links and other resources.
