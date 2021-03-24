@@ -78,12 +78,10 @@ npm run build
 npm run serve
 ```
 
-## Contribution
+## Contributions
 
-* **Sponsor on [Github](https://github.com/sponsors/andersevenrud)**
-* **Become a [Patreon](https://www.patreon.com/user?u=2978551&ty=h&u=2978551)**
-* **Support on [Open Collective](https://opencollective.com/osjs)**
-* [Contribution Guide](https://github.com/os-js/OS.js/blob/master/CONTRIBUTING.md)
+See the [Contribution Guide](https://github.com/os-js/OS.js/blob/master/CONTRIBUTING.md) for
+contribution guidelines, sponsorship/donation links and other resources.
 
 ## Documentation
 
