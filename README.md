@@ -30,7 +30,7 @@ Visit the [official demo](https://demo.os-js.org/) for a preview version. Please
 
 You can run a demo using Docker without checking out any source-code:
 
-```
+```bash
 docker run -p 8000:8000 osjs/osjs:latest
 ```
 
@@ -38,7 +38,7 @@ docker run -p 8000:8000 osjs/osjs:latest
 
 Clone the master branch of the official OS.js repository:
 
-```
+```bash
 git clone -b master --single-branch https://github.com/os-js/OS.js.git
 cd OS.js
 ```
@@ -49,7 +49,7 @@ You can run OS.js locally without installing anything on your host system if you
 
 Simply run the following command and a complete environment will be set up for you:
 
-```
+```bash
 docker-compose up
 ```
 
@@ -57,7 +57,7 @@ docker-compose up
 
 To install directly on the host system you'll need Node 10 (or later).
 
-```
+```bash
 # Install dependencies
 npm install
 
