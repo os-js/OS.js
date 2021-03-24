@@ -22,6 +22,10 @@ Visit the [official demo](https://demo.os-js.org/) for a preview version. Please
 
 ![ScreenShot](https://www.os-js.org/screenshot.png)
 
+## Documentation
+
+See the [Official Manuals](https://manual.os-js.org/) for articles, tutorials and guides.
+
 ## Installation
 
 > OS.js runs on `http://localhost:8000` by default.
@@ -82,10 +86,6 @@ npm run serve
 
 See the [Contribution Guide](https://github.com/os-js/OS.js/blob/master/CONTRIBUTING.md) for
 contribution guidelines, sponsorship/donation links and other resources.
-
-## Documentation
-
-See the [Official Manuals](https://manual.os-js.org/) for articles, tutorials and guides.
 
 ## Links
 
