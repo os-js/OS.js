@@ -7,12 +7,18 @@
 [OS.js](https://www.os-js.org/) is an [open-source](https://raw.githubusercontent.com/os-js/OS.js/master/LICENSE) web desktop platform with a window manager, application APIs, GUI toolkit, filesystem abstractions and much more.
 
 **Backing/Donations:**
-[Github sponsorship](https://github.com/sponsors/andersevenrud) | 
-[Patreon](https://www.patreon.com/user?u=2978551&ty=h&u=2978551) | 
-[OpenCollective](https://opencollective.com/osjs) | 
-[LibrePay](https://liberapay.com/os-js/) | 
-[PayPal](https://paypal.me/andersevenrud) | 
+[Github sponsorship](https://github.com/sponsors/andersevenrud),
+[Patreon](https://www.patreon.com/user?u=2978551&ty=h&u=2978551),
+[OpenCollective](https://opencollective.com/osjs),
+[LibrePay](https://liberapay.com/os-js/),
+[PayPal](https://paypal.me/andersevenrud),
 [Bitcoin](https://manual.os-js.org/wallet.png)
+
+**Support:**
+[Chat](https://gitter.im/os-js/OS.js),
+[Forums](https://community.os-js.org/),
+[Twitter](https://twitter.com/osjsorg),
+[Facebook](https://www.facebook.com/os.js.org)
 
 ## Introduction
 
@@ -26,7 +32,9 @@ Visit the [official demo](https://demo.os-js.org/) for a preview version. Please
 
 ## Documentation
 
-See the [Official Manuals](https://manual.os-js.org/) for articles, tutorials and guides.
+See the [official manuals](https://manual.os-js.org/) for articles, tutorials and guides.
+
+There's also a [contribution guide](https://github.com/os-js/OS.js/blob/master/CONTRIBUTING.md) if you want to contribute to this project.
 
 ## Installation
 
@@ -83,17 +91,3 @@ npm run build
 # Start serving
 npm run serve
 ```
-
-## Contribution
-
-See the [Contribution Guide](https://github.com/os-js/OS.js/blob/master/CONTRIBUTING.md) for
-contribution guidelines, sponsorship/donation links and other resources.
-
-## Links
-
-* [Official Chat](https://gitter.im/os-js/OS.js)
-* [Community Forums and Announcements](https://community.os-js.org/)
-* [Homepage](https://os-js.org/)
-* [Twitter](https://twitter.com/osjsorg) ([author](https://twitter.com/andersevenrud))
-* [Facebook](https://www.facebook.com/os.js.org)
-* [Docker Hub](https://hub.docker.com/u/osjs/)
