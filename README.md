@@ -40,36 +40,41 @@ There's also a [contribution guide](https://github.com/os-js/OS.js/blob/master/C
 
 > OS.js runs on `http://localhost:8000` by default.
 
-### Demo
+### Using a pre-made image
 
-You can run a demo using Docker without checking out any source-code:
+You can use the official Docker base image to run OS.js without downloading this repository.
+
+This image is based on this source code and comes with a minimal setup.
 
 ```bash
 docker run -p 8000:8000 osjs/osjs:latest
 ```
 
-### Custom
+### Using this repository
 
-Clone the master branch of the official OS.js repository:
+Clone the master branch:
+
+> You can also download an archived version (ex. zip file) instead of using git.
 
 ```bash
 git clone -b master --single-branch https://github.com/os-js/OS.js.git
 cd OS.js
 ```
 
-#### Docker
+#### Docker Compose installation
 
-You can run OS.js locally without installing anything on your host system if you have Docker and Docker Compose installed.
-
-Simply run the following command and a complete environment will be set up for you:
+The easiest way to install is to use Docker Compose. This allows you to run a single command
+to set everything up:
 
 ```bash
 docker-compose up
 ```
 
-#### Locally
+#### Local installation
 
-To install directly on the host system you'll need Node 10 (or later).
+You can also install this directly onto your system by using the following set of commands.
+
+> **NOTE:** Requires Node v10 (or later).
 
 ```bash
 # Install dependencies
