@@ -32,9 +32,9 @@
   },
   "dependencies": {
     "@osjs/calculator-application": "^1.2.8",
-    "@osjs/cli": "^3.0.28",
+    "@osjs/cli": "^3.1.3",
     "@osjs/client": "^3.7.1",
-    "@osjs/dialogs": "^3.0.24",
+    "@osjs/dialogs": "^3.1.0",
     "@osjs/draw-application": "^1.2.12",
     "@osjs/filemanager-application": "^1.6.2",
     "@osjs/freedesktop-sounds": "^3.0.3",
