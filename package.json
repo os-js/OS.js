@@ -36,6 +36,7 @@
     "@osjs/client": "^3.7.2",
     "@osjs/dialogs": "^3.1.1",
     "@osjs/draw-application": "^1.2.12",
+    "@osjs/example-application": "^1.1.16",
     "@osjs/filemanager-application": "^1.6.2",
     "@osjs/freedesktop-sounds": "^3.0.3",
     "@osjs/gnome-icons": "^4.0.5",
