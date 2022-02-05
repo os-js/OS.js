@@ -74,7 +74,7 @@ docker-compose up
 
 You can also install this directly onto your system by using the following set of commands.
 
-> **NOTE:** Requires Node v10 (or later).
+> **NOTE:** Requires Node v10 (or later. **[node 17 not currently supported without workaround](https://github.com/os-js/OS.js/issues/785)**).
 
 ```bash
 # Install dependencies
