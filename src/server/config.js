@@ -30,7 +30,7 @@
 
 //
 // This is the server configuration tree.
-// Guide: https://manual.os-js.org/v3/config/#server
+// Guide: https://manual.os-js.org/config/#server
 // Complete config tree: https://github.com/os-js/osjs-server/blob/master/src/config.js
 //
 
