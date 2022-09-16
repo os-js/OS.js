@@ -2,7 +2,7 @@ name: Node tests
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
 jobs:
   build:
