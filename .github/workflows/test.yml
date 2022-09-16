@@ -1,5 +1,9 @@
 name: Lint tests
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 jobs:
   build:
     name: Lint tests (node latest)
