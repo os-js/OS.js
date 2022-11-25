@@ -17,8 +17,8 @@
     "make:application": "osjs-cli make:application",
     "make:iframe-application": "osjs-cli make:iframe-application",
     "make:provider": "osjs-cli make:provider",
-    "build": "webpack",
-    "watch": "webpack --watch"
+    "build": "vite build",
+    "watch": "vite build --watch"
   },
   "keywords": [
     "osjs"
@@ -27,8 +27,7 @@
   "license": "BSD-2-Clause",
   "devDependencies": {
     "@osjs/dev-meta": "^2.1.0",
-    "html-webpack-plugin": "^3.2.0",
-    "source-map-loader": "^0.2.4"
+    "vite": "^3.2.4"
   },
   "dependencies": {
     "@osjs/calculator-application": "^1.2.8",
