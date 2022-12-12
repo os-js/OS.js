@@ -24,6 +24,23 @@
 
 This is the OS.js base repository that you can use as a template to make your own distributions, installations and development environments.
 
+#### Comparison of os.js(frontend, backend) to other similar solutions, alternatives
+
+| os-name                                           |  license                          |  feature                                     | active?|written in web?      |
+|---------------------------------------------------|-----------------------------------|----------------------------------------------|--------|---------------------|
+| [OS.js](https://github.com/os-js/OS.js)           | BSD 2-Clause License              | full web-desktop                             | yes    | yes                 |
+| [NodeOS](https://github.com/NodeOS/NodeOS)        | MIT License                       | desktop(only cli, without gui)               | no     | c, assembly,web     |
+| [OS13k](https://github.com/KilledByAPixel/OS13k)  | GNU General Public License v3.0   | web desktop(but only games)                  | yes    | web                 |
+| [meeseOS](https://github.com/meeseOS/meeseOS)     | MIT License                       | full web-desktop+games                       | yes    | web                 |
+| [web3os](https://github.com/web3os-org)           | add                               | full web-desktop                             | yes    | asm, web            |
+| [jde](https://github.com/Manjaro-WebDad/jde)      | GNU General Public License v3.0   | desktop envrionment for manjaro(distro-linux)| no     | web, c, python      |
+| [Stealify](https://github.com/stealify/stealify)  | Apache License 2.0                | not is full desktop, compiler                | yes    | c, js               |
+| [Awesome]()                                       | add                               | not is full desktop, compiler                | yes    | add.                |
+| [Just-js](https://github.com/just-js)             | MIT License                       |  not is full desktop, compiler "partial"     | yes    | -                   |
+| [B8G](https://github.com/stealify/b8g)            | The Unlicense                     | add.                                         | yes    | -                   |
+| [Fuchsia OS](https://github.com/vsrinivas/fuchsia)| BSD 2-Clause "Simplified" License | full desktop.                                | yes    | c++,rust,go,python,c|
+| [dahlia-os](https://github.com/dahliaOS/pangolin_desktop)|  Apache License 2.0        | full web-desktop.                            | yes    | dart, c, ruby, c... |
+
 ## Try it yourself
 
 Visit the [official demo](https://demo.os-js.org/) for a preview version. Please note that some features are disabled and might be outdated or unavailable at times.
