@@ -113,3 +113,8 @@ npm run build
 # Start serving
 npm run serve
 ```
+
+## Contributors
+<a href="https://github.com/os-js/OS.js/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=os-js/OS.js" />
+</a>
